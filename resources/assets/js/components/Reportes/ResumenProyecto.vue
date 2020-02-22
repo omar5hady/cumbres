@@ -85,7 +85,11 @@
                                        </tr>
                                        <tr>
                                            <th>Total Enganche</th>
-                                           <th v-text="'$'+formatNumber(enganche - excedente)"></th>
+                                           <th v-text="'$'+formatNumber(enganche - excedente - directo)"></th>
+                                       </tr>
+                                       <tr>
+                                        <th>Crédito Directo</th>
+                                           <th v-text="'$'+formatNumber(directo)"></th>
                                        </tr>
                                        <tr v-if="excedente > 0">
                                            <th>Enganche excedente por apartados</th>
@@ -197,6 +201,7 @@
                 b_etapa : '',
                 precio_venta:0,
                 enganche:0,
+                directo:0,
                 credito:0,
                 saldo:0,
                 monto_cobrado:0,
@@ -261,6 +266,7 @@
                     me.enganche = respuesta.sumas[0].enganche;
                     me.credito = respuesta.sumas[0].credito_netoSum;
                     me.saldo = respuesta.sumas[0].totSaldo;
+                    me.directo = respuesta.directo[0].enganche;
                     
 
                     me.monto_cobrado = me.precio_venta - me.saldo;

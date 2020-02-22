@@ -2027,6 +2027,18 @@ class EstadisticasController extends Controller
                                 ->where('contratos.status','=',3)
                                 ->where('inst_seleccionadas.elegido', '=', 1)->get();
 
+                $sumaDirecto = Contrato::join('creditos','contratos.id','=','creditos.id')
+                                ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->select(       
+                                                DB::raw("SUM(contratos.total_pagar) as enganche")
+                                        )
+                                ->where('lotes.fraccionamiento_id','=',$proyecto)
+                                ->where('lotes.etapa_id','=',$etapa)
+                                ->where('contratos.status','=',3)
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('inst_seleccionadas.tipo_credito', '=', 'Crédito Directo')->get();
+
                 $resContratos = Contrato::join('creditos','contratos.id','=','creditos.id')
                                 ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
                                 ->join('lotes','creditos.lote_id','=','lotes.id')
@@ -2141,6 +2153,17 @@ class EstadisticasController extends Controller
                                 ->where('contratos.status','=',3)
                                 ->where('inst_seleccionadas.elegido', '=', 1)->get();
 
+                $sumaDirecto = Contrato::join('creditos','contratos.id','=','creditos.id')
+                                ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->select(       
+                                                DB::raw("SUM(contratos.total_pagar) as enganche")
+                                        )
+                                ->where('lotes.fraccionamiento_id','=',$proyecto)
+                                ->where('contratos.status','=',3)
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('inst_seleccionadas.tipo_credito', '=', 'Crédito Directo')->get();
+
                 $resContratos = Contrato::join('creditos','contratos.id','=','creditos.id')
                                 ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
                                 ->join('lotes','creditos.lote_id','=','lotes.id')
@@ -2184,6 +2207,7 @@ class EstadisticasController extends Controller
                 'vendidas'=>$vendidas,
                 'individualizadas'=>$individualizadas,
                 'sumas'=>$sumas,
+                'directo'=>$sumaDirecto,
                 'resContratos'=>$resContratos,
                 'habilitados'=>$lotesHabilitados,
                 'diferencia'=>$diff_in_months,

@@ -1193,7 +1193,7 @@ class UserController extends Controller
     }
 
     public function updateProfile(Request $request, $id){
-        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        if(!$request->ajax())return redirect('/');
 
         $imgAnterior = User::select('foto_user','id')
                             ->where('foto_user','!=','default-image.gif')

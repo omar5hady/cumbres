@@ -147,11 +147,11 @@
                                         <button v-if="ver_mascotas == 1" @click="loadMascotas()" class="btn btn-default btn-sm">Mascotas</button></th>
                                 </tr>
                                     <tr v-if="ver_mascotas == 1">
-                                        <th>Residentes con mascota: </th>
+                                        <th>Residentes sin mascota: </th>
                                         <th v-text="this.mascotas[0].sin_mascotas"></th>
                                     </tr>
                                     <tr v-if="ver_mascotas == 1">
-                                        <th>Residentes sin mascota:</th>
+                                        <th>Residentes con mascota:</th>
                                         <th v-text="this.mascotas[0].sumMascota"></th>
                                     </tr>
                                     <tr v-if="ver_mascotas == 1">
