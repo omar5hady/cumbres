@@ -52,6 +52,8 @@ class CreateLotesTable extends Migration
             $table->float('extra')->default(0);
             $table->float('extra_ext')->default(0);
 
+            $table->string('nombre_archivo')->nullable();
+
             $table->date('fecha_entrega_obra')->nullable();
             
 

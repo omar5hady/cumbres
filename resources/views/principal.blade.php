@@ -219,6 +219,11 @@
                                         <a class="nav-link" href="#"><i class="icon-bag"></i> Asignar Modelo</a>
                                     </li>
                                 @endif
+                                @if(Auth::user()->rol_id == 1)
+                                    <li @click="menu=230" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="icon-bag"></i> Especificaciones de modelo</a>
+                                    </li>
+                                @endif
                                 @if(Auth::user()->licencias == 1)
                                     <li @click="menu=6" class="nav-item">
                                         <a class="nav-link" href="#"><i class="icon-bag"></i> Licencias</a>

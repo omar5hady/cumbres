@@ -450,9 +450,6 @@
                                 </div>
 
                                 
-
-
-                                    
                             </template>
                                 
                                 <!-- Div para mostrar los errores que mande validerDepartamento -->

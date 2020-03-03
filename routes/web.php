@@ -200,6 +200,7 @@ Route::group(['middleware' => ['auth']],function(){
     
     ////////////////////        RUTAS LOTES    /////////////////////////////////
         Route::get('/lote','LoteController@index'); 
+        Route::get('/lote/dispEspecificaciones','VersionModeloController@indexLotes'); 
         Route::get('/asignar_modelo/excel','LoteController@exportExcelAsignarModelo');
         Route::get('/lote2','LoteController@index2');
         Route::get('/lotesDisponibles','LoteController@indexLotesDisponibles');
@@ -651,12 +652,19 @@ Route::group(['middleware' => ['auth']],function(){
          Route::put('/detalles/updateCosto','SolicDetallesController@updateCosto');
          Route::put('/detalles/updateFechaConcluido','SolicDetallesController@updateFechaConcluido');
 
-         /////////////////////// RUTAS DROPBOX /////////////////////////
+        /////////////////////// RUTAS DROPBOX /////////////////////////
          
        
         Route::post('/dropbox/files/{id}/{sub}', 'DropboxFilesController@store');
         Route::delete('/files/delete', 'DropboxFilesController@destroy');
         Route::get('/files/{carpeta}/{file}/download', 'DropboxFilesController@download');
+
+
+        /////////////////////// RUTAS Versiones archivos modelo /////////////////////////
+        Route::get('/modelos/archivos/versiones', 'VersionModeloController@getVersiones');
+        Route::post('/modelos/archivos/formSubmit/{id}/{version}','VersionModeloController@formSubmit');
+        Route::put('/modelos/archivos/updateVersionLote','VersionModeloController@updateVersionLote');
+        Route::delete('/modelos/archivos/delete', 'VersionModeloController@delete');
 
     });
 

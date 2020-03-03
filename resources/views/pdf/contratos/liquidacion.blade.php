@@ -78,7 +78,33 @@ body {
     <div style="position: static; margin: 30px; ">
         <div class="table2" style="border: ridge #0B173B 1px; color:black; margin-top: 0.3em; float:left;">
                 <div class="table-row">
-                    <div colspan="2" class="table-cell">PRECIO DE VENTA </div> 
+                    <div colspan="2" class="table-cell">PRECIO BASE </div> 
+                    <div class="table-cell">${{$liquidacion[0]->precio_base}}</div>
+                    <div class="table-cell">M.N.</div>      
+                </div>
+                <div class="table-row">
+                    <div colspan="2" class="table-cell">TERR. EXCEDENTE </div> 
+                    <div class="table-cell">${{$liquidacion[0]->precio_terreno_excedente}}</div>
+                    <div class="table-cell">M.N.</div>      
+                </div>
+                <div class="table-row">
+                    <div colspan="2" class="table-cell">OBRA EXTRA </div> 
+                    <div class="table-cell">${{$liquidacion[0]->precio_obra_extra}}</div>
+                    <div class="table-cell">M.N.</div>      
+                </div>
+                <div class="table-row">
+                    <div colspan="2" class="table-cell">SOBREPRECIO </div> 
+                    <div class="table-cell">${{$liquidacion[0]->sobreprecio}}</div>
+                    <div class="table-cell">M.N.</div>      
+                </div>
+                <div class="table-row">
+                    <div colspan="2" class="table-cell">PAQUETE </div> 
+                    <div class="table-cell">${{$liquidacion[0]->costo_paquete}}</div>
+                    <div class="table-cell">M.N.</div>      
+                </div>
+
+                <div class="table-row">
+                    <div colspan="2" class="table-cell"><strong> PRECIO DE VENTA </strong></div> 
                     <div class="table-cell">${{$liquidacion[0]->precio_venta}}</div>
                     <div class="table-cell">M.N.</div>      
                 </div>

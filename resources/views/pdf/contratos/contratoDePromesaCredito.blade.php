@@ -10,7 +10,7 @@
 <style>
 
 body{
- font-size: 12.5pt;
+ font-size: 11pt;
  text-align: justify;
 }
 
@@ -20,7 +20,7 @@ body{
     margin-left: 90px;
 }
 
-.table-cell3 { display: table-cell; padding: 0em; font-size: 11pt; }
+.table-cell3 { display: table-cell; padding: 0em; font-size: 10pt; }
 .table3 { display: table; width:100%; border-collapse: collapse; table-layout: fixed; }
 .table-row { display: table-row; }
 </style>

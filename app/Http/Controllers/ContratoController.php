@@ -24353,6 +24353,7 @@ class ContratoController extends Controller
                 'lotes.sobreprecio',
                 'lotes.fecha_termino_ventas',
                 'medios_publicitarios.nombre as medio_publicidad',
+                'lotes.ajuste',
 
                 'inst_seleccionadas.institucion',
                 'personal.nombre',
@@ -24442,6 +24443,10 @@ class ContratoController extends Controller
             ->where('contratos.id', '=', $id)
             ->orderBy('id', 'desc')->get();
 
+            if($contratos[0]->institucion == 'Crea Más' || $contratos[0]->institucion == 'Gamu'){
+                $contratos[0]->institucion = 'INFONAVIT';
+            }
+
         setlocale(LC_TIME, 'es_MX.utf8');
         $tiempo = new Carbon($contratos[0]->fecha);
         $contratos[0]->fecha = $tiempo->formatLocalized('%d de %B de %Y');
@@ -24456,6 +24461,7 @@ class ContratoController extends Controller
         $contratos[0]->f_nacimiento_coa = $fecha_nac_coa->formatLocalized('%d-%m-%Y');
 
         $contratos[0]->precio_base = $contratos[0]->precio_base - $contratos[0]->descuento_promocion;
+        $contratos[0]->precio_base = $contratos[0]->precio_base + $contratos[0]->ajuste;
 
         $contratos[0]->precio_base = number_format((float)$contratos[0]->precio_base, 2, '.', ',');
         $contratos[0]->credito_solic = number_format((float)$contratos[0]->credito_solic, 2, '.', ',');
@@ -24753,7 +24759,7 @@ class ContratoController extends Controller
         }
 
         setlocale(LC_TIME, 'es_MX.utf8');
-        if($contratoPromesa[0]->avaluo_cliente>0){
+        if($contratoPromesa[0]->avaluo_cliente>=0){
             $contratoPromesa[0]->engancheTotalLetra = NumerosEnLetras::convertir(($contratoPromesa[0]->enganche_total - $contratoPromesa[0]->avaluo_cliente), 'Pesos', true, 'Centavos');
         }
         else{
@@ -25221,6 +25227,7 @@ class ContratoController extends Controller
                 $contrato->telefono_empresa_coa = $request->telefono_empresa_coa;
                 $contrato->ext_empresa_coa = $request->ext_empresa_coa;
                 $contrato->observacion = $request->observacion;
+                $contrato->publicidad_id = $request->publicidad_id;
 
             $sumaIntereses = Expediente::select(DB::raw("SUM(interes_ord) as suma"))->where('id','=',$request->contrato_id)->get();
                 if($sumaIntereses[0]->suma == NULL){

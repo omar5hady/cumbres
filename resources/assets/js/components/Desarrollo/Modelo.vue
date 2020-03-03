@@ -70,10 +70,15 @@
                                         <td v-text="modelo.nombre"></td>
                                         <td v-text="modelo.terreno"></td>
                                         <td v-text="modelo.construccion"></td>
-                                        <td style="width:7%">
-                                            <a v-if="modelo.archivo" class="btn btn-primary btn-sm" v-bind:href="'/downloadModelo/'+modelo.archivo"><i class="icon-cloud-download"></i></a>
-                                            <a v-if="modelo.espec_obra" class="btn btn-warning btn-sm" title="Especificaciones de obra" v-bind:href="'/downloadModelo/obra/'+modelo.espec_obra"><i class="icon-cloud-download"></i></a>
+                                        <td v-if="modelo.archivo" style="width:7%">
+                                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false" @click="getVersiones(modelo.id)"><i class="icon-cloud-download"></i></a>
+                                            <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                <a v-if="modelo.archivo" class="dropdown-item" v-bind:href="'/downloadModelo/'+modelo.archivo">Descargar versión 1</a>
+                                                <a v-for="archivo in arrayVersiones" :key="archivo.id" class="dropdown-item" v-bind:href="'/downloadModelo/'+ archivo.archivo">{{archivo.version}}</a>
+                                                <a v-if="modelo.espec_obra" class="dropdown-item" title="Especificaciones de obra" v-bind:href="'/downloadModelo/obra/'+modelo.espec_obra">Especifiaciones obra</a>
+                                            </div>
                                         </td>
+                                        <td v-else style="width:7%"></td>
                                     </tr>                               
                                 </tbody>
                             </table>  
@@ -186,35 +191,97 @@
                           {{success}}
 
                         </div>
-                            <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
+                        <div class="modal-body">
+                            <div class="form-group row">
+                                <table class="table table-bordered table-striped table-sm">
+                                    <thead>
+                                        <tr><th>
+                                            <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
+                                                <div class="form-group row">
+                                                    <label class="col-md-1 form-control-label" for="text-input"><strong>Archivo:</strong></label>
+                                                    <div class="col-md-8">
+                                                        <input type="file" class="form-control" v-on:change="onImageChange">
+                                                    </div>
+                                                     <div class="col-md-3">
+                                                        <button type="submit" class="btn btn-success">Cargar</button>
+                                                    </div>
+                                                    
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="col-md-5">
+                                                        <button v-if="archivoOrg != null && nuevo == 0" type="button" @click="getVersiones(id)" class="btn btn-primary">Añadir nuevas especificaciones</button>
+                                                        <button v-if="archivoOrg != null && nuevo == 1" type="button" @click="nuevo = 0" class="btn btn-danger">Cerrar añadir nuevas especificaciones</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </th></tr>
+                                    </thead>
+                                </table>
+                            </div>
 
-                                    <strong>Modelo:</strong>
 
-                                    <input type="text" class="form-control" v-model="nombre" >
+                            <div class="form-group" v-if="nuevo == 1">
+                                <table class="table table-bordered table-striped table-sm">
+                                    <thead>
+                                        <tr><th>
+                                            <form  method="post" @submit="formSubmitOtro" enctype="multipart/form-data">
+                                                <div class="form-group row">
+                                                    <label class="col-md-1 form-control-label" for="text-input"> <strong>Version</strong> </label>
+                                                    <div class="col-md-3">
+                                                        <input type="text" v-model="version" class="form-control" placeholder="Version del archivo">
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <input type="file" class="form-control" v-on:change="onImageChangeOtro">
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <button type="submit" class="btn btn-success">Cargar</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </th></tr>
+                                    </thead>
+                                </table>
 
-                                    <strong>Archivo:</strong>
+                                    <div class="col-md-12" v-if="arrayVersiones.length">
+                                        <div class="form-group row">
+                                            <div class="col-md-12">
+                                                <table class="table table-bordered table-striped table-sm">
+                                                    <thead>
+                                                        <tr>
+                                                            <th style="width:12%"></th>
+                                                            <th>Version</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="version in arrayVersiones" :key="version.id">
+                                                            <td style="width:12%">
+                                                                <button @click="eliminarVersion(version.id)" type="button" class="btn btn-danger btn-sm" title="Quitar archivo">
+                                                                    <i class="icon-close"></i>
+                                                                </button>
+                                                            </td>
+                                                            <td>
+                                                                <a v-bind:href="'/downloadModelo/'+ version.archivo"> {{version.version}}</a>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                    <input type="file" class="form-control" v-on:change="onImageChange">
+                            </div>
 
+                            <div class="form-group row">
+                                <form  v-if="rolId != '7'" method="post" @submit="formSubmitEspeObra" enctype="multipart/form-data">
 
+                                        <strong>Archivo especificaciones obra:</strong>
 
-                                    <button type="submit" class="btn btn-success">Cargar</button>
-                            </form>
-                            <br>
-                            <form  v-if="rolId != '7'" method="post" @submit="formSubmitEspeObra" enctype="multipart/form-data">
+                                        <input type="file" class="form-control" v-on:change="onImageChangeEspeObra">
 
-                                    <strong>Modelo:</strong>
-
-                                    <input type="text" class="form-control" v-model="nombre" >
-
-                                    <strong>Archivo especificaciones obra:</strong>
-
-                                    <input type="file" class="form-control" v-on:change="onImageChangeEspeObra">
-
-
-
-                                    <button type="submit" class="btn btn-success">Cargar</button>
-                            </form>
+                                        <button type="submit" class="btn btn-success">Cargar</button>
+                                </form>
+                            </div>
+                            </div>
 
                         </div>
                         <!-- Botones del modal -->
@@ -254,9 +321,15 @@
                 fraccionamiento_id : 0,
                 terreno : 0,
                 construccion : 0.0,
+
+                nuevo:0,
+                version:'',
+
+                archivoOrg:'',
              
                 archivo: '',
                 archivoEspeObra: '',
+                archivoOtro:'',
                 success: '',
                 arrayModelo : [],
                 modal : 0,
@@ -278,7 +351,8 @@
                 criterio : 'modelos.nombre', 
                 buscar : '',
                 arrayCiudades : [],
-                arrayFraccionamientos : []
+                arrayFraccionamientos : [],
+                arrayVersiones : [],
             }
         },
         computed:{
@@ -334,6 +408,51 @@
                 formData.append('archivo', this.archivo);
                 let me = this;
                 axios.post('/formSubmitModelo/'+this.id, formData)
+                .then(function (response) {
+                    currentObj.success = response.data.success;
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo guardado correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+                    me.cerrarModal2();
+                    me.listarModelo(1,'','modelo');
+
+                })
+
+                .catch(function (error) {
+
+                    currentObj.output = error;
+
+                });
+
+            },
+
+            onImageChangeOtro(e){
+
+                console.log(e.target.files[0]);
+
+                this.archivoOtro = e.target.files[0];
+
+            },
+
+            formSubmitOtro(e) {
+
+                e.preventDefault();
+
+                let currentObj = this;
+                // const config = {
+
+                //     headers: { 'content-type': 'multipart/form-data' }
+
+                // }
+                let formData = new FormData();
+               // formData.append('id', this.id);
+                formData.append('archivo', this.archivoOtro);
+                let me = this;
+                axios.post('/modelos/archivos/formSubmit/' + this.id + '/' + this.version, formData)
                 .then(function (response) {
                     currentObj.success = response.data.success;
                     swal({
@@ -430,6 +549,47 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayFraccionamientos = respuesta.fraccionamientos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            eliminarVersion(id){
+                swal({
+                title: '¿Desea eliminar?',
+                text: "Esta acción no se puede revertir!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, eliminar!'
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+
+                axios.delete('/modelos/archivos/delete', 
+                        {params: {'id': id}}).then(function (response){
+                        swal(
+                        'Borrado!',
+                        'Archivo borrado correctamente.',
+                        'success'
+                        )
+                        me.getVersiones(me.id);
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+                }
+                })
+            },
+            getVersiones(id){
+                let me = this;
+                me.nuevo = 1;
+                me.arrayVersiones=[];
+                var url = '/modelos/archivos/versiones?modelo='+id;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayVersiones = respuesta.versiones;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -562,6 +722,7 @@
                 this.fraccionamiento_id = 0;
                 this.terreno = 0;
                 this.construccion = 0;
+                this.archivo = '';
                 
                 this.errorModelo = 0;
                 this.errorMostrarMsjModelo = [];
@@ -573,6 +734,9 @@
                 this.nombre = '';
                 this.archivo = '';
                 this.errorModelo = 0;
+                this.archivoOtro = '';
+                this.archivoEspeObra = '';
+                this.version = '';
                 this.errorMostrarMsjModelo = [];
 
             },
@@ -610,11 +774,15 @@
                             case 'subirArchivo':
                             {
                                 this.modal2 =1;
-                                this.tituloModal2='Subir Archivo (Pdf)';
+                                this.tituloModal2='Subir Archivo (Pdf) para modelo ' + data['nombre'];
                                 this.tipoAccion=3;
                                 this.id=data['id'];
                                 this.nombre=data['nombre'];
                                 this.archivo=data['archivo'];
+                                this.version='';
+                                this.nuevo = 0;
+                                this.archivoOrg = data['archivo'];
+                                
                                 break;
                             }
                         }
@@ -632,6 +800,11 @@
     .modal-content{
         width: 100% !important;
         position: absolute !important;
+    }
+    .modal-body{
+        height: 400px;
+        width: 100%;
+        overflow-y: auto;
     }
     .mostrar{
         display: list-item !important;

@@ -391,6 +391,9 @@
         <template v-if="menu==229">
             <comision-anticipos></comision-anticipos>
         </template>
+        <template v-if="menu==230">
+            <asignar-especificaciones></asignar-especificaciones>
+        </template>
 
         
 

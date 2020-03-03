@@ -36,7 +36,6 @@ body {
         <br>
         <br>
         <br>
-        <br>
        
             <div>
             <p style="margin-bottom: 0em;  margin-top: 0em;">DEBE(MOS) Y PAGARE(MOS) INCONDICIONALMENTE POR ESTE PAGARE A LA ORDEN DE GRUPO CONSTRUCTOR CUMBRES, S.A DE C.V., EN SAN LUIS POTOSI, SAN LUIS POTOSI, <strong> EL {{strtoupper($pagos[$i]->fecha_pago)}}</strong></p>

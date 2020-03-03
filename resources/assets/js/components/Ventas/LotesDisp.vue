@@ -111,6 +111,7 @@
                                         <th>Promoción</th>
                                         <th>Fecha termino</th>
                                         <th>Canal de venta</th>
+                                        <th>% de venta extra</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -156,6 +157,9 @@
                                         <td class="td2" v-else v-text="lote.promocion"></td>
                                         <td class="td2" v-text="this.moment(lote.fecha_termino_ventas).locale('es').format('MMMM YYYY')"></td>
                                         <td class="td2" style="width:40%" v-text="lote.comentarios"></td>
+                                        <td class="td2" v-if="lote.tipo == 0" style="width:40%" v-text="lote.extra + '%'"></td>
+                                        <td class="td2" v-else-if="lote.tipo == 1" style="width:40%" v-text="lote.extra_ext + '%'"></td>
+                                        <td class="td2" v-else style="width:40%" v-text="'Interno: ' + lote.extra + '% Externo: ' + lote.extra_ext +'%'"></td>
                                     </tr>                               
                                 </tbody>
                             </table>  

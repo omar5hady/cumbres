@@ -81,6 +81,11 @@
                     <div colspan="4" class="table-cell"></div>     
                 </div>
                 <div class="table-row">
+                    <div colspan="2" class="table-cell"> <b> Firma de escrituras</div>
+                    <div colspan="2" class="table-cell">{{$contratos[0]->fecha_firma_esc}}</div>   
+                    <div colspan="4" class="table-cell"></div>     
+                </div>
+                <div class="table-row">
                     <div colspan="8" class="table-cell"><br></div>     
                 </div>
                 <div class="table-row">

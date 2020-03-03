@@ -10113,6 +10113,13 @@ class ExpedienteController extends Controller
             'creditos.num_lote',
             'creditos.modelo',
             'creditos.precio_venta',
+            'creditos.precio_base',
+                'creditos.terreno_excedente',
+                'creditos.precio_terreno_excedente',
+                'creditos.descuento_promocion',
+                'creditos.precio_venta',
+                'creditos.costo_paquete',
+                'creditos.precio_obra_extra',
             'contratos.fecha_status',
             'i.tipo_credito',
             'i.institucion',
@@ -10147,6 +10154,7 @@ class ExpedienteController extends Controller
             'liquidacion.direccion2 as direccion_aval2',
             'liquidacion.telefono2 as telefono_aval2',
             'lotes.calle','lotes.numero','lotes.interior',
+            'lotes.ajuste','lotes.sobreprecio',
             'avaluos.resultado','avaluos.fecha_recibido'
         )
         ->where('i.elegido', '=', 1)
@@ -10160,6 +10168,9 @@ class ExpedienteController extends Controller
         ->where('contratos.id', '=', $id)
         ->orderBy('contratos.id','asc')
         ->get();
+
+        $liquidacion[0]->precio_base = $liquidacion[0]->precio_base - $liquidacion[0]->descuento_promocion;
+        $liquidacion[0]->precio_base = $liquidacion[0]->precio_base + $liquidacion[0]->ajuste;
 
         $depositos = Pago_contrato::select('monto_pago','restante')->where('contrato_id','=',$id)->get();
         $suma= 0;
@@ -10217,6 +10228,12 @@ class ExpedienteController extends Controller
         $liquidacion[0]->infonavit = number_format((float)$liquidacion[0]->infonavit, 2, '.', ',');
         $liquidacion[0]->descuento = number_format((float)$liquidacion[0]->descuento, 2, '.', ',');
         $liquidacion[0]->totalRestante = number_format((float)$liquidacion[0]->totalRestante, 2, '.', ',');
+
+        $liquidacion[0]->precio_base = number_format((float)$liquidacion[0]->precio_base, 2, '.', ',');
+        $liquidacion[0]->precio_terreno_excedente = number_format((float)$liquidacion[0]->precio_terreno_excedente, 2, '.', ',');
+        $liquidacion[0]->precio_obra_extra = number_format((float)$liquidacion[0]->precio_obra_extra, 2, '.', ',');
+        $liquidacion[0]->sobreprecio = number_format((float)$liquidacion[0]->sobreprecio, 2, '.', ',');
+        $liquidacion[0]->costo_paquete = number_format((float)$liquidacion[0]->costo_paquete, 2, '.', ',');
 
         
         $fecha1 = new Carbon($liquidacion[0]->fecha_firma_esc);

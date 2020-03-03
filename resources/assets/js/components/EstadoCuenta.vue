@@ -10,7 +10,7 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i>Estado de cuenta
                          <!--   Boton descargar excel    -->
-                         <a class="btn btn-success" v-bind:href="'/estadoCuenta/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote + '&b_status=' + b_status + '&criterio=' + criterio">
+                         <a class="btn btn-success" v-bind:href="'/estadoCuenta/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote + '&b_status=' + b_status + '&criterio=' + criterio + '&credito=' + b_credito">
                             <i class="fa fa-file-text"></i>&nbsp; Descargar excel
                         </a>
                         <!---->
@@ -39,11 +39,34 @@
                                     </select>
 
                                     
-                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
-                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
 
                                     <input v-else type="text"  v-model="buscar" @keyup.enter="listarContratos(1,buscar,buscar2,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
                                     <input v-if="criterio=='c.nombre'" type="text"  v-model="buscar2" @keyup.enter="listarContratos(1,buscar,buscar2,b_manzana,b_lote,criterio)" class="form-control" placeholder="Apellidos">
+                                   
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="form-group row" v-if="criterio=='lotes.fraccionamiento_id'">
+
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
+                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_credito"> 
+                                        <option value="">Tipo de Credito</option>
+                                        <option v-for="credito in arrayCreditos" :key="credito.nombre" :value="credito.nombre" v-text="credito.nombre"></option>
+                                    </select>
+                                </div>    
+                            </div>
+
+                        </div>
+
+                        <div class="form-group row">
+
+                            <div class="col-md-6">
+                                <div class="input-group">
                                     <select class="form-control col-md-4" v-model="b_status">
                                             <option value="">Seleccionar Status</option>
                                             <option value="0">Cancelado</option>
@@ -51,18 +74,14 @@
                                             <option value="2">No firmado</option>
                                             <option value="3">Firmado</option>
                                     </select>
-                                   
-                                </div>
-
-                            <div class="col-md-8">
-                                <div class="input-group">
                                     <button type="submit" @click="listarContratos(1,buscar,buscar2,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
                                 </div>    
                             </div>
 
-                            </div>
                         </div>
+
+
                         <div class="table-responsive">
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
@@ -101,6 +120,7 @@
                                                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{contratos.folio}}</a>
                                                 <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
                                                     <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ contratos.folio">Contrato de compra venta</a>
+                                                    <a v-if="contratos.liquidado == 1" class="dropdown-item" target="_blank" v-bind:href="'/expediente/liquidacionPDF/'+contratos.folio">Liquidación</a>
                                                 </div>
                                             </td>
                                         <td class="td2" v-text="contratos.nombre_cliente"></td>
@@ -370,6 +390,7 @@
 
                 arrayFraccionamientos:[],
                 arrayEtapas:[],
+                arrayCreditos:[],
 
                  //para los datos del cliente
                 nombre_cliente: '',
@@ -419,7 +440,8 @@
                 buscar2: '',
                 b_manzana: '',
                 b_lote: '',
-                b_status: 3
+                b_status: 3,
+                b_credito:''
                
             }
         },
@@ -460,7 +482,7 @@
             /**Metodo para mostrar los registros */
             listarContratos(page, buscar, buscar2, b_manzana, b_lote, criterio){
                 let me = this;
-                var url = '/estadoCuenta/index?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote + '&b_status=' + me.b_status + '&criterio=' + criterio;
+                var url = '/estadoCuenta/index?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote + '&b_status=' + me.b_status + '&criterio=' + criterio + '&credito=' + this.b_credito;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayContratos = respuesta.contratos.data;
@@ -502,6 +524,19 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayEtapas = respuesta.etapas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            selectCreditos(){
+                let me = this;
+                me.arrayCreditos=[];
+                var url = '/select_tipoCredito';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayCreditos = respuesta.Tipos_creditos;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -632,6 +667,7 @@
         mounted() {
             this.listarContratos(1,this.buscar,this.buscar2,this.b_manzana,this.b_lote,this.criterio);
             this.selectFraccionamientos();
+            this.selectCreditos();
         }
     }
 </script>

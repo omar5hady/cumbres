@@ -1434,6 +1434,7 @@ class LicenciasController extends Controller
     public function formSubmit(Request $request, $id)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $fecha = Carbon::now();
         $licenciaAnterior = Licencia::select('foto_lic', 'id')
             ->where('id', '=', $id)
             ->get();
@@ -1447,6 +1448,7 @@ class LicenciasController extends Controller
                 $licencias = Licencia::findOrFail($request->id);
                 $licencias->foto_lic = $fileName;
                 $licencias->id = $id;
+                $licencias->fecha_licencia = $fecha;
                 $licencias->save(); //Insert
 
             }
@@ -1463,6 +1465,7 @@ class LicenciasController extends Controller
                 $licencias = Licencia::findOrFail($request->id);
                 $licencias->foto_lic = $fileName;
                 $licencias->id = $id;
+                $licencias->fecha_licencia = $fecha;
                 $licencias->save(); //Insert
 
             }
@@ -1483,6 +1486,7 @@ class LicenciasController extends Controller
     public function formSubmitActa(Request $request, $id)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $fecha = Carbon::now();
         $actaAnterior = Licencia::select('foto_acta', 'id')
             ->where('id', '=', $id)
             ->get();
@@ -1495,6 +1499,7 @@ class LicenciasController extends Controller
                 $actas = Licencia::findOrFail($request->id);
                 $actas->foto_acta = $fileName;
                 $actas->id = $id;
+                $actas->fecha_acta = $fecha;
                 $actas->save(); //Insert
 
             }
@@ -1512,6 +1517,7 @@ class LicenciasController extends Controller
                 $actas = Licencia::findOrFail($request->id);
                 $actas->foto_acta = $fileName;
                 $actas->id = $id;
+                $actas->fecha_acta = $fecha;
                 $actas->save(); //Insert
 
             }

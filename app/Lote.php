@@ -14,7 +14,7 @@ class lote extends Model
                             'siembra','fecha_ini','fecha_fin','arquitecto_id','ehl_solicitado','sobreprecio',
                             'aviso','obra_extra', 'habilitado','apartado','contrato','excedente_terreno',
                             'precio_base', 'regimen_condom','ajuste','fecha_termino_ventas','paquete',
-                            'fecha_entrega_obra','firmado','extra','extra_ext'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
+                            'fecha_entrega_obra','firmado','extra','extra_ext','nombre_archivo'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
     
                            
     public function fraccionamiento(){

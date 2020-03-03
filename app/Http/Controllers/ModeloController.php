@@ -8,6 +8,7 @@ use App\Modelo;
 use DB;
 use App\Contrato;
 use Auth;
+use App\Version_modelo;
 
 
 class ModeloController extends Controller
@@ -377,8 +378,14 @@ class ModeloController extends Controller
          $modelo = Contrato::join('creditos','contratos.id','=','creditos.id')
         ->join('lotes','creditos.lote_id','=','lotes.id')
         ->join('modelos','lotes.modelo_id','=','modelos.id')
-        ->select('modelos.archivo')
+        ->select('modelos.archivo','lotes.nombre_archivo')
         ->where('contratos.id','=',$id)->get();
+
+        if($modelo[0]->nombre_archivo != NULL){
+            $version = Version_modelo::select('archivo')->where('version','=',$modelo[0]->nombre_archivo)->get();
+
+            $modelo[0]->archivo = $version[0]->archivo;
+        }
 
         return ['modelo' => $modelo];
     }

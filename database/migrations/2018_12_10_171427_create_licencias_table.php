@@ -31,6 +31,9 @@ class CreateLicenciasTable extends Migration
             $table->string('foto_predial')->nullable();
             $table->string('modelo_ant')->default('N/A');
             $table->date('visita_avaluo')->nullable(); 
+
+            $table->date('fecha_licencia')->nullable(); 
+            $table->date('fecha_acta')->nullable(); 
              
             $table->foreign('id')->references('id')->on('lotes')->onDelete('cascade'); 
             $table->foreign('perito_dro')->references('id')->on('personal');

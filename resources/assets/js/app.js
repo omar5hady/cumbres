@@ -49,6 +49,7 @@ Vue.component('etapa', require('./components/Desarrollo/Etapa.vue'));
 Vue.component('modelo', require('./components/Desarrollo/Modelo.vue'));
 Vue.component('lote', require('./components/Desarrollo/Lote.vue'));
 Vue.component('asignar-modelo', require('./components/Desarrollo/AsignarModelo.vue'));
+Vue.component('asignar-especificaciones', require('./components/Desarrollo/EspecificacionModelo.vue'));
 Vue.component('licencias', require('./components/Desarrollo/Licencias.vue'));
 Vue.component('actadeterminacion', require('./components/Desarrollo/ActaDeTerminacion.vue'));
 Vue.component('publicidad-etapa', require('./components/Desarrollo/PublicidadEtapa.vue'));
