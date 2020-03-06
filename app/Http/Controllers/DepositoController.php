@@ -1520,6 +1520,342 @@ class DepositoController extends Controller
             return ['depositos' => $depositos, 'restante' => $pagares[0]->restante];
     }
 
+    public function historialDepositos(Request $request){
+        if(!$request->ajax())return redirect('/');
+        $fecha1 = $request->fecha1;
+        $fecha2 = $request->fecha2;
+        $banco = $request->banco;
+        $monto = $request->monto;
+
+        if($fecha1 == '' && $fecha2 == ''){
+            if($banco == '' && $monto == ''){
+                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+                ->join('creditos','creditos.id','=','contratos.id')
+                ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                ->join('personal','clientes.id','=','personal.id')
+                ->select('contratos.id', 
+                        'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
+                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
+                        'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
+                        'depositos.banco','depositos.concepto','depositos.fecha_pago')
+                        ->orderBy('depositos.fecha_pago','desc')->paginate(8);
+            }
+            elseif($banco != '' && $monto == ''){
+                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+                ->join('creditos','creditos.id','=','contratos.id')
+                ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                ->join('personal','clientes.id','=','personal.id')
+                ->select('contratos.id', 
+                        'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
+                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
+                        'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
+                        'depositos.banco','depositos.concepto','depositos.fecha_pago')
+                        ->where('depositos.banco','=',$banco)
+                        ->orderBy('depositos.fecha_pago','desc')->paginate(8);
+            }
+            elseif($banco != '' && $monto != ''){
+                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+                ->join('creditos','creditos.id','=','contratos.id')
+                ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                ->join('personal','clientes.id','=','personal.id')
+                ->select('contratos.id', 
+                        'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
+                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
+                        'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
+                        'depositos.banco','depositos.concepto','depositos.fecha_pago')
+                        ->where('depositos.banco','=',$banco)
+                        ->where('depositos.cant_depo','=',$monto)
+                        ->orderBy('depositos.fecha_pago','desc')->paginate(8);
+
+            }
+            elseif($banco == '' && $monto != ''){
+                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+                ->join('creditos','creditos.id','=','contratos.id')
+                ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                ->join('personal','clientes.id','=','personal.id')
+                ->select('contratos.id', 
+                        'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
+                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
+                        'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
+                        'depositos.banco','depositos.concepto','depositos.fecha_pago')
+                        ->where('depositos.cant_depo','=',$monto)
+                        ->orderBy('depositos.fecha_pago','desc')->paginate(8);
+
+            }
+        }
+        elseif($fecha1 != '' && $fecha2 != ''){
+            if($banco == '' && $monto == ''){
+                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+                ->join('creditos','creditos.id','=','contratos.id')
+                ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                ->join('personal','clientes.id','=','personal.id')
+                ->select('contratos.id', 
+                        'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
+                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
+                        'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
+                        'depositos.banco','depositos.concepto','depositos.fecha_pago')
+                        ->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2])
+                        ->orderBy('depositos.fecha_pago','desc')->paginate(8);
+            }
+            elseif($banco != '' && $monto == ''){
+                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+                ->join('creditos','creditos.id','=','contratos.id')
+                ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                ->join('personal','clientes.id','=','personal.id')
+                ->select('contratos.id', 
+                        'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
+                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
+                        'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
+                        'depositos.banco','depositos.concepto','depositos.fecha_pago')
+                        ->where('depositos.banco','=',$banco)
+                        ->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2])
+                        ->orderBy('depositos.fecha_pago','desc')->paginate(8);
+            }
+            elseif($banco != '' && $monto != ''){
+                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+                ->join('creditos','creditos.id','=','contratos.id')
+                ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                ->join('personal','clientes.id','=','personal.id')
+                ->select('contratos.id', 
+                        'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
+                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
+                        'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
+                        'depositos.banco','depositos.concepto','depositos.fecha_pago')
+                        ->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2])
+                        ->where('depositos.banco','=',$banco)
+                        ->where('depositos.cant_depo','=',$monto)
+                        ->orderBy('depositos.fecha_pago','desc')->paginate(8);
+
+            }
+            elseif($banco == '' && $monto != ''){
+                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+                ->join('creditos','creditos.id','=','contratos.id')
+                ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                ->join('personal','clientes.id','=','personal.id')
+                ->select('contratos.id', 
+                        'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
+                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
+                        'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
+                        'depositos.banco','depositos.concepto','depositos.fecha_pago')
+                        ->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2])
+                        ->where('depositos.cant_depo','=',$monto)
+                        ->orderBy('depositos.fecha_pago','desc')->paginate(8);
+
+            }
+        }
+        
+        
+        return[
+            'pagination' => [
+                'total'         => $depositos->total(),
+                'current_page'  => $depositos->currentPage(),
+                'per_page'      => $depositos->perPage(),
+                'last_page'     => $depositos->lastPage(),
+                'from'          => $depositos->firstItem(),
+                'to'            => $depositos->lastItem(),
+            ],
+                'depositos' => $depositos
+        ];
+
+    }
+
+    public function excelHistorialDepositos(Request $request){
+        
+        $fecha1 = $request->fecha1;
+        $fecha2 = $request->fecha2;
+        $banco = $request->banco;
+        $monto = $request->monto;
+
+        if($fecha1 == '' && $fecha2 == ''){
+            if($banco == '' && $monto == ''){
+                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+                ->join('creditos','creditos.id','=','contratos.id')
+                ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                ->join('personal','clientes.id','=','personal.id')
+                ->select('contratos.id', 
+                        'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
+                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
+                        'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
+                        'depositos.banco','depositos.concepto','depositos.fecha_pago')
+                        ->orderBy('depositos.fecha_pago','desc')->get();
+            }
+            elseif($banco != '' && $monto == ''){
+                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+                ->join('creditos','creditos.id','=','contratos.id')
+                ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                ->join('personal','clientes.id','=','personal.id')
+                ->select('contratos.id', 
+                        'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
+                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
+                        'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
+                        'depositos.banco','depositos.concepto','depositos.fecha_pago')
+                        ->where('depositos.banco','=',$banco)
+                        ->orderBy('depositos.fecha_pago','desc')->get();
+            }
+            elseif($banco != '' && $monto != ''){
+                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+                ->join('creditos','creditos.id','=','contratos.id')
+                ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                ->join('personal','clientes.id','=','personal.id')
+                ->select('contratos.id', 
+                        'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
+                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
+                        'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
+                        'depositos.banco','depositos.concepto','depositos.fecha_pago')
+                        ->where('depositos.banco','=',$banco)
+                        ->where('depositos.cant_depo','=',$monto)
+                        ->orderBy('depositos.fecha_pago','desc')->get();
+
+            }
+            elseif($banco == '' && $monto != ''){
+                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+                ->join('creditos','creditos.id','=','contratos.id')
+                ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                ->join('personal','clientes.id','=','personal.id')
+                ->select('contratos.id', 
+                        'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
+                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
+                        'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
+                        'depositos.banco','depositos.concepto','depositos.fecha_pago')
+                        ->where('depositos.cant_depo','=',$monto)
+                        ->orderBy('depositos.fecha_pago','desc')->get();
+
+            }
+        }
+        elseif($fecha1 != '' && $fecha2 != ''){
+            if($banco == '' && $monto == ''){
+                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+                ->join('creditos','creditos.id','=','contratos.id')
+                ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                ->join('personal','clientes.id','=','personal.id')
+                ->select('contratos.id', 
+                        'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
+                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
+                        'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
+                        'depositos.banco','depositos.concepto','depositos.fecha_pago')
+                        ->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2])
+                        ->orderBy('depositos.fecha_pago','desc')->get();
+            }
+            elseif($banco != '' && $monto == ''){
+                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+                ->join('creditos','creditos.id','=','contratos.id')
+                ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                ->join('personal','clientes.id','=','personal.id')
+                ->select('contratos.id', 
+                        'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
+                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
+                        'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
+                        'depositos.banco','depositos.concepto','depositos.fecha_pago')
+                        ->where('depositos.banco','=',$banco)
+                        ->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2])
+                        ->orderBy('depositos.fecha_pago','desc')->get();
+            }
+            elseif($banco != '' && $monto != ''){
+                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+                ->join('creditos','creditos.id','=','contratos.id')
+                ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                ->join('personal','clientes.id','=','personal.id')
+                ->select('contratos.id', 
+                        'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
+                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
+                        'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
+                        'depositos.banco','depositos.concepto','depositos.fecha_pago')
+                        ->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2])
+                        ->where('depositos.banco','=',$banco)
+                        ->where('depositos.cant_depo','=',$monto)
+                        ->orderBy('depositos.fecha_pago','desc')->get();
+
+            }
+            elseif($banco == '' && $monto != ''){
+                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+                ->join('creditos','creditos.id','=','contratos.id')
+                ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                ->join('personal','clientes.id','=','personal.id')
+                ->select('contratos.id', 
+                        'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
+                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
+                        'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
+                        'depositos.banco','depositos.concepto','depositos.fecha_pago')
+                        ->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2])
+                        ->where('depositos.cant_depo','=',$monto)
+                        ->orderBy('depositos.fecha_pago','desc')->get();
+
+            }
+        }
+        
+        
+        return Excel::create('Depositos', function($excel) use ($depositos){
+            $excel->sheet('Depositos', function($sheet) use ($depositos){
+                
+                $sheet->row(1, [
+                    '# Contrato', 'Cliente', 'Proyecto', 'Etapa', 'Manzana',
+                    '# Lote','# Fecha de deposito', 'Cuenta', '# Recibo', 'Monto'
+                ]);
+
+                $sheet->setColumnFormat(array(
+                    'J' => '$#,##0.00',
+                ));
+
+                $sheet->cells('A1:J1', function ($cells) {
+                    $cells->setBackground('#052154');
+                    $cells->setFontColor('#ffffff');
+                    // Set font family
+                    $cells->setFontFamily('Calibri');
+
+                    // Set font size
+                    $cells->setFontSize(13);
+
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+                $cont=1;
+                foreach($depositos as $index => $deposito) {
+                    $cont++;
+
+                    setlocale(LC_TIME, 'es_MX.utf8');
+                    $fecha1 = new Carbon($deposito->fecha_pago);
+                    $deposito->fecha_pago = $fecha1->formatLocalized('%d de %B de %Y');
+
+                    $cliente = $deposito->nombre.' '.$deposito->apellidos;
+                    $sheet->row($index+2, [
+                        $deposito->id, 
+                        $cliente,
+                        $deposito->fraccionamiento,
+                        $deposito->etapa,
+                        $deposito->manzana,
+                        $deposito->num_lote,
+                        $deposito->fecha_pago,
+                        $deposito->banco,
+                        $deposito->num_recibo,
+                        $deposito->cant_depo
+
+                    ]);	
+                }
+                $num='A1:J' . $cont;
+                $sheet->setBorder($num, 'thin');
+            });
+            }
+    )->download('xls');
+
+    }
+
     public function excelDepositos(Request $request){
         
         if($request->desde == ''){

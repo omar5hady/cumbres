@@ -11,6 +11,7 @@ use App\Credito;
 use App\Contrato;
 use App\Expediente;
 use App\Lote;
+use Excel;
 use Carbon\Carbon;
 
 class EstadisticasController extends Controller
@@ -2040,6 +2041,7 @@ class EstadisticasController extends Controller
                                 ->where('inst_seleccionadas.tipo_credito', '=', 'Crédito Directo')->get();
 
                 $resContratos = Contrato::join('creditos','contratos.id','=','creditos.id')
+                                ->leftJoin('expedientes','contratos.id','=','expedientes.id')
                                 ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
                                 ->join('lotes','creditos.lote_id','=','lotes.id')
                                 ->join('modelos','lotes.modelo_id','=','modelos.id')
@@ -2059,7 +2061,7 @@ class EstadisticasController extends Controller
                                                 'contratos.total_pagar',
                                                 'contratos.saldo',
                                                 'contratos.monto_total_credito',
-                                                'lotes.calle','lotes.numero',
+                                                'lotes.calle','lotes.numero','expedientes.fecha_firma_esc',
                                                 'modelos.nombre as modelo'
                                         )
                                 ->where('lotes.fraccionamiento_id','=',$proyecto)
@@ -2166,6 +2168,7 @@ class EstadisticasController extends Controller
 
                 $resContratos = Contrato::join('creditos','contratos.id','=','creditos.id')
                                 ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                                ->leftJoin('expedientes','contratos.id','=','expedientes.id')
                                 ->join('lotes','creditos.lote_id','=','lotes.id')
                                 ->join('modelos','lotes.modelo_id','=','modelos.id')
                                 ->join('personal as c', 'creditos.prospecto_id', '=', 'c.id')
@@ -2184,7 +2187,7 @@ class EstadisticasController extends Controller
                                                 'contratos.total_pagar',
                                                 'contratos.saldo',
                                                 'contratos.monto_total_credito',
-                                                'lotes.calle','lotes.numero',
+                                                'lotes.calle','lotes.numero','expedientes.fecha_firma_esc',
                                                 'modelos.nombre as modelo'
                                         )
                                 ->where('lotes.fraccionamiento_id','=',$proyecto)
@@ -2223,6 +2226,149 @@ class EstadisticasController extends Controller
         ];
 
 
+    }
+
+    public function excelResumen(Request $request){
+        $proyecto = $request->proyecto;
+        $etapa = $request->etapa;
+
+
+        if($etapa != ''){
+                $resContratos = Contrato::join('creditos','contratos.id','=','creditos.id')
+                                ->leftJoin('expedientes','contratos.id','=','expedientes.id')
+                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->join('personal as c', 'creditos.prospecto_id', '=', 'c.id')
+                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                ->select(       DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                                'creditos.fraccionamiento as proyecto',
+                                                'creditos.etapa',
+                                                'creditos.manzana',
+                                                'creditos.num_lote',
+                                                'contratos.fecha_status',
+                                                'i.tipo_credito',
+                                                'i.institucion', 
+                                                'creditos.precio_venta',
+                                                'creditos.descuento_promocion',
+                                                'creditos.costo_paquete',
+                                                'contratos.total_pagar',
+                                                'contratos.saldo',
+                                                'contratos.monto_total_credito',
+                                                'lotes.calle','lotes.numero','expedientes.fecha_firma_esc',
+                                                'modelos.nombre as modelo'
+                                        )
+                                ->where('lotes.fraccionamiento_id','=',$proyecto)
+                                ->where('lotes.etapa_id','=',$etapa)
+                                ->where('contratos.status','=',3)
+                                ->where('i.elegido', '=', 1)->get();
+        }
+        else{
+                $resContratos = Contrato::join('creditos','contratos.id','=','creditos.id')
+                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                                ->leftJoin('expedientes','contratos.id','=','expedientes.id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->join('personal as c', 'creditos.prospecto_id', '=', 'c.id')
+                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                ->select(       DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                                'creditos.fraccionamiento as proyecto',
+                                                'creditos.etapa',
+                                                'creditos.manzana',
+                                                'creditos.num_lote',
+                                                'contratos.fecha_status',
+                                                'i.tipo_credito',
+                                                'i.institucion', 
+                                                'creditos.precio_venta',
+                                                'creditos.descuento_promocion',
+                                                'creditos.costo_paquete',
+                                                'contratos.total_pagar',
+                                                'contratos.saldo',
+                                                'contratos.monto_total_credito',
+                                                'lotes.calle','lotes.numero','expedientes.fecha_firma_esc',
+                                                'modelos.nombre as modelo'
+                                        )
+                                ->where('lotes.fraccionamiento_id','=',$proyecto)
+                                ->where('contratos.status','=',3)
+                                ->where('i.elegido', '=', 1)->get();
+        }
+
+        return Excel::create('Resumen', function($excel) use ($resContratos){
+                $excel->sheet('Resumen', function($sheet) use ($resContratos){
+                    
+                    $sheet->row(1, [
+                        'Proyecto', 'Etapa', 'Manzana',
+                        '# Lote', 'Modelo','Dirección', 'Venta', 
+                        'Cliente', 'Institución', 'Tipo Crédito',
+                        'Firma escrituras','Precio venta', 'Enganche',
+                        'Crédito', 'Saldo'
+                    ]);
+
+                    $sheet->setColumnFormat(array(
+                        'L' => '$#,##0.00',
+                        'M' => '$#,##0.00',
+                        'N' => '$#,##0.00',
+                        'O' => '$#,##0.00',
+                    ));
+
+
+                    $sheet->cells('A1:O1', function ($cells) {
+                        $cells->setBackground('#052154');
+                        $cells->setFontColor('#ffffff');
+                        // Set font family
+                        $cells->setFontFamily('Calibri');
+
+                        // Set font size
+                        $cells->setFontSize(13);
+
+                        // Set font weight to bold
+                        $cells->setFontWeight('bold');
+                        $cells->setAlignment('center');
+                    });
+
+                    
+                    $cont=1;
+
+                    foreach($resContratos as $index => $contrato) {
+                        $cont++;
+
+                        $direccion = $contrato->calle.' Num. '.$contrato->numero;
+
+                        $precio_venta = $contrato->precio_venta - $contrato->descuento_promocion + $contrato->costo_paquete;
+
+                        setlocale(LC_TIME, 'es_MX.utf8');
+                        $fecha_venta = new Carbon($contrato->fecha_status);
+                        $contrato->fecha_status = $fecha_venta->formatLocalized('%d de %B de %Y');
+
+                        if($contrato->fecha_firma_esc != NULL){
+                                $fecha = new Carbon($contrato->fecha_firma_esc);
+                                $contrato->fecha_firma_esc = $fecha->formatLocalized('%d de %B de %Y');
+                        }
+                        
+                        $sheet->row($index+2, [
+                            $contrato->proyecto, 
+                            $contrato->etapa,
+                            $contrato->manzana,
+                            $contrato->num_lote,
+                            $contrato->modelo,
+                            $direccion,
+                            $contrato->fecha_status,
+                            $contrato->nombre_cliente,
+                            $contrato->institucion,
+                            $contrato->tipo_credito,
+                            $contrato->fecha_firma_esc,
+                            $precio_venta,
+                            $contrato->total_pagar,
+                            $contrato->monto_total_credito,
+                            $contrato->saldo
+
+                        ]);	
+                    }
+                    $num='A1:O' . $cont;
+                    $sheet->setBorder($num, 'thin');
+                });
+                }
+        )->download('xls');
     }
 
 }

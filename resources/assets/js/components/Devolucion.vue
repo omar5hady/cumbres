@@ -29,6 +29,8 @@
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
+
+                                    <input type="text" class="form-control" v-if="criterio != 'lotes.fraccionamiento_id'" v-model="buscar" @keyup.enter="listarContratos(1, buscar, b_etapa, b_manzana, b_lote, criterio)">
                                    
                                 </div>
                             </div>

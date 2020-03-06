@@ -10170,7 +10170,7 @@ class ExpedienteController extends Controller
         ->get();
 
         $liquidacion[0]->precio_base = $liquidacion[0]->precio_base - $liquidacion[0]->descuento_promocion;
-        $liquidacion[0]->precio_base = $liquidacion[0]->precio_base + $liquidacion[0]->ajuste;
+        $liquidacion[0]->precio_base = $liquidacion[0]->precio_base;
 
         $depositos = Pago_contrato::select('monto_pago','restante')->where('contrato_id','=',$id)->get();
         $suma= 0;

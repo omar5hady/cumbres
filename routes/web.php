@@ -441,6 +441,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/pagares/excel','DepositoController@excelPagares');
         Route::get('/depositos/excel','DepositoController@excelDepositos');
         Route::get('/depositos','DepositoController@indexDepositos');
+        Route::get('/depositos/historial','DepositoController@historialDepositos');
+        Route::get('/depositos/historial/excel','DepositoController@excelHistorialDepositos');
         Route::post('/deposito/registrar','DepositoController@store');
         Route::put('/deposito/actualizar','DepositoController@update');
         Route::get('deposito/reciboPDF/{id}','DepositoController@reciboPDF');
@@ -455,6 +457,7 @@ Route::group(['middleware' => ['auth']],function(){
     /************************** RUTAS ESTADISTICAS ***************************/
         Route::get('/estadisticas/datos_extra','EstadisticasController@estad_datos_extra');
         Route::get('/estadisticas/res_proyecto','EstadisticasController@resumenProyecto');
+        Route::get('/estadisticas/res_proyecto/excel','EstadisticasController@excelResumen');
         Route::get('/estadisticas/publicidad','MedioPublicitarioController@estadisticas');
 
 
@@ -547,6 +550,8 @@ Route::group(['middleware' => ['auth']],function(){
     //////////////////////  RUTAS COBRO CREDITO //////////////////////////////////////
         Route::get('/cobroCredito/indexCreditos','InstSeleccionadasController@indexCreditoSel');
         Route::get('/cobroCredito/indexDepositos','InstSeleccionadasController@indexDepCredito');
+        Route::get('/cobroCredito/indexDepositos/historial','InstSeleccionadasController@historialDepositos');
+        Route::get('/cobroCredito/indexDepositos/excelHistorialDep','InstSeleccionadasController@excelHistorialDep');
         Route::post('/cobroCredito/registrar','InstSeleccionadasController@storeDepositoCredito');
         Route::put('/cobroCredito/update','InstSeleccionadasController@updateDepositoCredito');
         Route::get('/cobroCredito/excel','InstSeleccionadasController@excelCobroCredito');
@@ -732,6 +737,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::get('/select_datos_notaria','NotariaController@getDatosNotaria'); 
         Route::get('/select_ultima_fecha_instalacion','EntregaController@select_ultimaFecha_instalacion');
+        Route::get('/selectCreditoPuente','CuentasController@selectCreditoPuente');
     
     
 });

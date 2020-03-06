@@ -24461,7 +24461,6 @@ class ContratoController extends Controller
         $contratos[0]->f_nacimiento_coa = $fecha_nac_coa->formatLocalized('%d-%m-%Y');
 
         $contratos[0]->precio_base = $contratos[0]->precio_base - $contratos[0]->descuento_promocion;
-        $contratos[0]->precio_base = $contratos[0]->precio_base + $contratos[0]->ajuste;
 
         $contratos[0]->precio_base = number_format((float)$contratos[0]->precio_base, 2, '.', ',');
         $contratos[0]->credito_solic = number_format((float)$contratos[0]->credito_solic, 2, '.', ',');
@@ -25349,13 +25348,14 @@ class ContratoController extends Controller
             if ($buscar == '') {
                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                    ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
                     ->select(
                         'creditos.id',
                         'creditos.prospecto_id',
-                        'creditos.num_dep_economicos',
+                        'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                         'creditos.tipo_economia',
                         'creditos.nombre_primera_ref',
                         'creditos.telefono_primera_ref',
@@ -25478,13 +25478,14 @@ class ContratoController extends Controller
                     case 'personal.nombre': {
                             $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
                                 ->select(
                                     'creditos.id',
                                     'creditos.prospecto_id',
-                                    'creditos.num_dep_economicos',
+                                    'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                     'creditos.tipo_economia',
                                     'creditos.nombre_primera_ref',
                                     'creditos.telefono_primera_ref',
@@ -25612,13 +25613,14 @@ class ContratoController extends Controller
                     case 'v.nombre': {
                             $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
                                 ->select(
                                     'creditos.id',
                                     'creditos.prospecto_id',
-                                    'creditos.num_dep_economicos',
+                                    'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                     'creditos.tipo_economia',
                                     'creditos.nombre_primera_ref',
                                     'creditos.telefono_primera_ref',
@@ -25745,13 +25747,14 @@ class ContratoController extends Controller
                     case 'inst_seleccionadas.tipo_credito': {
                             $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
                                 ->select(
                                     'creditos.id',
                                     'creditos.prospecto_id',
-                                    'creditos.num_dep_economicos',
+                                    'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                     'creditos.tipo_economia',
                                     'creditos.nombre_primera_ref',
                                     'creditos.telefono_primera_ref',
@@ -25874,13 +25877,14 @@ class ContratoController extends Controller
                     case 'creditos.id': {
                             $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
                                 ->select(
                                     'creditos.id',
                                     'creditos.prospecto_id',
-                                    'creditos.num_dep_economicos',
+                                    'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                     'creditos.tipo_economia',
                                     'creditos.nombre_primera_ref',
                                     'creditos.telefono_primera_ref',
@@ -26007,6 +26011,7 @@ class ContratoController extends Controller
                             if($b_etapa == "" && $buscar3 == "" && $buscar != ""){
                                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                 ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
@@ -26014,7 +26019,7 @@ class ContratoController extends Controller
                                 ->select(
                                     'creditos.id',
                                     'creditos.prospecto_id',
-                                    'creditos.num_dep_economicos',
+                                    'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                     'creditos.tipo_economia',
                                     'creditos.nombre_primera_ref',
                                     'creditos.telefono_primera_ref',
@@ -26138,6 +26143,7 @@ class ContratoController extends Controller
                                 if($b_etapa == "" && $buscar3 != "" && $buscar != ""){
                                     $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                    ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                     ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
@@ -26145,7 +26151,7 @@ class ContratoController extends Controller
                                     ->select(
                                         'creditos.id',
                                         'creditos.prospecto_id',
-                                        'creditos.num_dep_economicos',
+                                        'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                         'creditos.tipo_economia',
                                         'creditos.nombre_primera_ref',
                                         'creditos.telefono_primera_ref',
@@ -26270,6 +26276,7 @@ class ContratoController extends Controller
                                     if($b_etapa != "" && $buscar3 != "" && $buscar != ""){
                                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                         ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                        ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                         ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
@@ -26277,7 +26284,7 @@ class ContratoController extends Controller
                                         ->select(
                                             'creditos.id',
                                             'creditos.prospecto_id',
-                                            'creditos.num_dep_economicos',
+                                            'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                             'creditos.tipo_economia',
                                             'creditos.nombre_primera_ref',
                                             'creditos.telefono_primera_ref',
@@ -26408,6 +26415,7 @@ class ContratoController extends Controller
                             if($b_etapa == "" && $buscar3 == "" && $buscar != ""){
                                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                 ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
@@ -26415,7 +26423,7 @@ class ContratoController extends Controller
                                 ->select(
                                     'creditos.id',
                                     'creditos.prospecto_id',
-                                    'creditos.num_dep_economicos',
+                                    'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                     'creditos.tipo_economia',
                                     'creditos.nombre_primera_ref',
                                     'creditos.telefono_primera_ref',
@@ -26540,6 +26548,7 @@ class ContratoController extends Controller
                                 if($b_etapa == "" && $buscar3 != "" && $buscar != ""){
                                     $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                    ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                     ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
@@ -26547,7 +26556,7 @@ class ContratoController extends Controller
                                     ->select(
                                         'creditos.id',
                                         'creditos.prospecto_id',
-                                        'creditos.num_dep_economicos',
+                                        'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                         'creditos.tipo_economia',
                                         'creditos.nombre_primera_ref',
                                         'creditos.telefono_primera_ref',
@@ -26673,6 +26682,7 @@ class ContratoController extends Controller
                                     if($b_etapa != "" && $buscar3 != "" && $buscar != ""){
                                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                         ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                        ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                         ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
@@ -26680,7 +26690,7 @@ class ContratoController extends Controller
                                         ->select(
                                             'creditos.id',
                                             'creditos.prospecto_id',
-                                            'creditos.num_dep_economicos',
+                                            'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                             'creditos.tipo_economia',
                                             'creditos.nombre_primera_ref',
                                             'creditos.telefono_primera_ref',
@@ -26813,13 +26823,14 @@ class ContratoController extends Controller
                     case 'contratos.fecha': {
                             $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
                                 ->select(
                                     'creditos.id',
                                     'creditos.prospecto_id',
-                                    'creditos.num_dep_economicos',
+                                    'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                     'creditos.tipo_economia',
                                     'creditos.nombre_primera_ref',
                                     'creditos.telefono_primera_ref',
@@ -26946,13 +26957,14 @@ class ContratoController extends Controller
                     case 'contratos.fecha_status': {
                             $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
                                 ->select(
                                     'creditos.id',
                                     'creditos.prospecto_id',
-                                    'creditos.num_dep_economicos',
+                                    'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                     'creditos.tipo_economia',
                                     'creditos.nombre_primera_ref',
                                     'creditos.telefono_primera_ref',
@@ -27080,6 +27092,7 @@ class ContratoController extends Controller
                             if ($b_etapa != '' && $b_manzana != '' && $b_lote != '') {
                                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                    ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                     ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
@@ -27087,7 +27100,7 @@ class ContratoController extends Controller
                                     ->select(
                                         'creditos.id',
                                         'creditos.prospecto_id',
-                                        'creditos.num_dep_economicos',
+                                        'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                         'creditos.tipo_economia',
                                         'creditos.nombre_primera_ref',
                                         'creditos.telefono_primera_ref',
@@ -27214,6 +27227,7 @@ class ContratoController extends Controller
                                 if ($b_etapa != '' && $b_manzana != '') {
                                     $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                         ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                        ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                         ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
@@ -27221,7 +27235,7 @@ class ContratoController extends Controller
                                         ->select(
                                             'creditos.id',
                                             'creditos.prospecto_id',
-                                            'creditos.num_dep_economicos',
+                                            'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                             'creditos.tipo_economia',
                                             'creditos.nombre_primera_ref',
                                             'creditos.telefono_primera_ref',
@@ -27347,6 +27361,7 @@ class ContratoController extends Controller
                                     if ($b_etapa != '') {
                                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                             ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                            ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                             ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                             ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
@@ -27354,7 +27369,7 @@ class ContratoController extends Controller
                                             ->select(
                                                 'creditos.id',
                                                 'creditos.prospecto_id',
-                                                'creditos.num_dep_economicos',
+                                                'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                                 'creditos.tipo_economia',
                                                 'creditos.nombre_primera_ref',
                                                 'creditos.telefono_primera_ref',
@@ -27479,6 +27494,7 @@ class ContratoController extends Controller
                                         if ($b_manzana != '') {
                                             $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                                ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                                 ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
@@ -27486,7 +27502,7 @@ class ContratoController extends Controller
                                                 ->select(
                                                     'creditos.id',
                                                     'creditos.prospecto_id',
-                                                    'creditos.num_dep_economicos',
+                                                    'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                                     'creditos.tipo_economia',
                                                     'creditos.nombre_primera_ref',
                                                     'creditos.telefono_primera_ref',
@@ -27611,6 +27627,7 @@ class ContratoController extends Controller
                                             if ($b_lote != '') {
                                                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                                    ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                                     ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
@@ -27618,7 +27635,7 @@ class ContratoController extends Controller
                                                     ->select(
                                                         'creditos.id',
                                                         'creditos.prospecto_id',
-                                                        'creditos.num_dep_economicos',
+                                                        'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                                         'creditos.tipo_economia',
                                                         'creditos.nombre_primera_ref',
                                                         'creditos.telefono_primera_ref',
@@ -27742,6 +27759,7 @@ class ContratoController extends Controller
                                             } else {
                                                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                                    ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                                     ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
@@ -27749,7 +27767,7 @@ class ContratoController extends Controller
                                                     ->select(
                                                         'creditos.id',
                                                         'creditos.prospecto_id',
-                                                        'creditos.num_dep_economicos',
+                                                        'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                                         'creditos.tipo_economia',
                                                         'creditos.nombre_primera_ref',
                                                         'creditos.telefono_primera_ref',
@@ -27879,6 +27897,7 @@ class ContratoController extends Controller
                             if ($b_etapa != '' && $b_manzana != '' && $b_lote != '') {
                                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                    ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                     ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
@@ -27886,7 +27905,7 @@ class ContratoController extends Controller
                                     ->select(
                                         'creditos.id',
                                         'creditos.prospecto_id',
-                                        'creditos.num_dep_economicos',
+                                        'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                         'creditos.tipo_economia',
                                         'creditos.nombre_primera_ref',
                                         'creditos.telefono_primera_ref',
@@ -28014,6 +28033,7 @@ class ContratoController extends Controller
                                 if ($b_etapa != '' && $b_manzana != '') {
                                     $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                         ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                        ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                         ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
@@ -28021,7 +28041,7 @@ class ContratoController extends Controller
                                         ->select(
                                             'creditos.id',
                                             'creditos.prospecto_id',
-                                            'creditos.num_dep_economicos',
+                                            'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                             'creditos.tipo_economia',
                                             'creditos.nombre_primera_ref',
                                             'creditos.telefono_primera_ref',
@@ -28148,6 +28168,7 @@ class ContratoController extends Controller
                                     if ($b_etapa != '') {
                                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                             ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                            ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                             ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                             ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
@@ -28155,7 +28176,7 @@ class ContratoController extends Controller
                                             ->select(
                                                 'creditos.id',
                                                 'creditos.prospecto_id',
-                                                'creditos.num_dep_economicos',
+                                                'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                                 'creditos.tipo_economia',
                                                 'creditos.nombre_primera_ref',
                                                 'creditos.telefono_primera_ref',
@@ -28281,6 +28302,7 @@ class ContratoController extends Controller
                                         if ($b_manzana != '') {
                                             $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                                ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                                 ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
@@ -28288,7 +28310,7 @@ class ContratoController extends Controller
                                                 ->select(
                                                     'creditos.id',
                                                     'creditos.prospecto_id',
-                                                    'creditos.num_dep_economicos',
+                                                    'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                                     'creditos.tipo_economia',
                                                     'creditos.nombre_primera_ref',
                                                     'creditos.telefono_primera_ref',
@@ -28414,6 +28436,7 @@ class ContratoController extends Controller
                                             if ($b_lote != '') {
                                                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                                    ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                                     ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
@@ -28421,7 +28444,7 @@ class ContratoController extends Controller
                                                     ->select(
                                                         'creditos.id',
                                                         'creditos.prospecto_id',
-                                                        'creditos.num_dep_economicos',
+                                                        'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                                         'creditos.tipo_economia',
                                                         'creditos.nombre_primera_ref',
                                                         'creditos.telefono_primera_ref',
@@ -28546,6 +28569,7 @@ class ContratoController extends Controller
                                             } else {
                                                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                                    ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                                     ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
@@ -28553,7 +28577,7 @@ class ContratoController extends Controller
                                                     ->select(
                                                         'creditos.id',
                                                         'creditos.prospecto_id',
-                                                        'creditos.num_dep_economicos',
+                                                        'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                                         'creditos.tipo_economia',
                                                         'creditos.nombre_primera_ref',
                                                         'creditos.telefono_primera_ref',
@@ -28690,13 +28714,14 @@ class ContratoController extends Controller
             if ($buscar == '' && $criterio != 'creditos.vendedor_id') {
                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                    ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
                     ->select(
                         'creditos.id',
                         'creditos.prospecto_id',
-                        'creditos.num_dep_economicos',
+                        'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                         'creditos.tipo_economia',
                         'creditos.nombre_primera_ref',
                         'creditos.telefono_primera_ref',
@@ -28820,13 +28845,14 @@ class ContratoController extends Controller
                     case 'personal.nombre': {
                             $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
                                 ->select(
                                     'creditos.id',
                                     'creditos.prospecto_id',
-                                    'creditos.num_dep_economicos',
+                                    'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                     'creditos.tipo_economia',
                                     'creditos.nombre_primera_ref',
                                     'creditos.telefono_primera_ref',
@@ -28955,13 +28981,14 @@ class ContratoController extends Controller
                     case 'v.nombre': {
                             $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
                                 ->select(
                                     'creditos.id',
                                     'creditos.prospecto_id',
-                                    'creditos.num_dep_economicos',
+                                    'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                     'creditos.tipo_economia',
                                     'creditos.nombre_primera_ref',
                                     'creditos.telefono_primera_ref',
@@ -29090,13 +29117,14 @@ class ContratoController extends Controller
                     case 'inst_seleccionadas.tipo_credito': {
                             $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
                                 ->select(
                                     'creditos.id',
                                     'creditos.prospecto_id',
-                                    'creditos.num_dep_economicos',
+                                    'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                     'creditos.tipo_economia',
                                     'creditos.nombre_primera_ref',
                                     'creditos.telefono_primera_ref',
@@ -29222,13 +29250,14 @@ class ContratoController extends Controller
                     case 'creditos.id': {
                             $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
                                 ->select(
                                     'creditos.id',
                                     'creditos.prospecto_id',
-                                    'creditos.num_dep_economicos',
+                                    'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                     'creditos.tipo_economia',
                                     'creditos.nombre_primera_ref',
                                     'creditos.telefono_primera_ref',
@@ -29356,6 +29385,7 @@ class ContratoController extends Controller
                             if($b_etapa == "" && $buscar3 == "" && $buscar != ""){
                                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                 ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
@@ -29363,7 +29393,7 @@ class ContratoController extends Controller
                                 ->select(
                                     'creditos.id',
                                     'creditos.prospecto_id',
-                                    'creditos.num_dep_economicos',
+                                    'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                     'creditos.tipo_economia',
                                     'creditos.nombre_primera_ref',
                                     'creditos.telefono_primera_ref',
@@ -29488,6 +29518,7 @@ class ContratoController extends Controller
                                 if($b_etapa == "" && $buscar3 != "" && $buscar != ""){
                                     $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                    ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                     ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
@@ -29495,7 +29526,7 @@ class ContratoController extends Controller
                                     ->select(
                                         'creditos.id',
                                         'creditos.prospecto_id',
-                                        'creditos.num_dep_economicos',
+                                        'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                         'creditos.tipo_economia',
                                         'creditos.nombre_primera_ref',
                                         'creditos.telefono_primera_ref',
@@ -29621,6 +29652,7 @@ class ContratoController extends Controller
                                     if($b_etapa != "" && $buscar3 != "" && $buscar != ""){
                                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                         ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                        ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                         ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
@@ -29628,7 +29660,7 @@ class ContratoController extends Controller
                                         ->select(
                                             'creditos.id',
                                             'creditos.prospecto_id',
-                                            'creditos.num_dep_economicos',
+                                            'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                             'creditos.tipo_economia',
                                             'creditos.nombre_primera_ref',
                                             'creditos.telefono_primera_ref',
@@ -29760,13 +29792,14 @@ class ContratoController extends Controller
                     case 'contratos.fecha': {
                             $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
                                 ->select(
                                     'creditos.id',
                                     'creditos.prospecto_id',
-                                    'creditos.num_dep_economicos',
+                                    'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                     'creditos.tipo_economia',
                                     'creditos.nombre_primera_ref',
                                     'creditos.telefono_primera_ref',
@@ -29894,13 +29927,14 @@ class ContratoController extends Controller
                     case 'contratos.fecha_status': {
                             $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
                                 ->select(
                                     'creditos.id',
                                     'creditos.prospecto_id',
-                                    'creditos.num_dep_economicos',
+                                    'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                     'creditos.tipo_economia',
                                     'creditos.nombre_primera_ref',
                                     'creditos.telefono_primera_ref',
@@ -30026,6 +30060,7 @@ class ContratoController extends Controller
                             if ($b_etapa != '' && $b_manzana != '' && $b_lote != '') {
                                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                    ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                     ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
@@ -30033,7 +30068,7 @@ class ContratoController extends Controller
                                     ->select(
                                         'creditos.id',
                                         'creditos.prospecto_id',
-                                        'creditos.num_dep_economicos',
+                                        'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                         'creditos.tipo_economia',
                                         'creditos.nombre_primera_ref',
                                         'creditos.telefono_primera_ref',
@@ -30161,6 +30196,7 @@ class ContratoController extends Controller
                                 if ($b_etapa != '' && $b_manzana != '') {
                                     $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                         ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                        ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                         ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
@@ -30168,7 +30204,7 @@ class ContratoController extends Controller
                                         ->select(
                                             'creditos.id',
                                             'creditos.prospecto_id',
-                                            'creditos.num_dep_economicos',
+                                            'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                             'creditos.tipo_economia',
                                             'creditos.nombre_primera_ref',
                                             'creditos.telefono_primera_ref',
@@ -30295,6 +30331,7 @@ class ContratoController extends Controller
                                     if ($b_etapa != '') {
                                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                             ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                            ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                             ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                             ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
@@ -30302,7 +30339,7 @@ class ContratoController extends Controller
                                             ->select(
                                                 'creditos.id',
                                                 'creditos.prospecto_id',
-                                                'creditos.num_dep_economicos',
+                                                'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                                 'creditos.tipo_economia',
                                                 'creditos.nombre_primera_ref',
                                                 'creditos.telefono_primera_ref',
@@ -30428,6 +30465,7 @@ class ContratoController extends Controller
                                         if ($b_manzana != '') {
                                             $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                                ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                                 ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
@@ -30435,7 +30473,7 @@ class ContratoController extends Controller
                                                 ->select(
                                                     'creditos.id',
                                                     'creditos.prospecto_id',
-                                                    'creditos.num_dep_economicos',
+                                                    'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                                     'creditos.tipo_economia',
                                                     'creditos.nombre_primera_ref',
                                                     'creditos.telefono_primera_ref',
@@ -30561,6 +30599,7 @@ class ContratoController extends Controller
                                             if ($b_lote != '') {
                                                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                                    ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                                     ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
@@ -30568,7 +30607,7 @@ class ContratoController extends Controller
                                                     ->select(
                                                         'creditos.id',
                                                         'creditos.prospecto_id',
-                                                        'creditos.num_dep_economicos',
+                                                        'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                                         'creditos.tipo_economia',
                                                         'creditos.nombre_primera_ref',
                                                         'creditos.telefono_primera_ref',
@@ -30693,6 +30732,7 @@ class ContratoController extends Controller
                                             } else {
                                                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                                    ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                                                     ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
@@ -30700,7 +30740,7 @@ class ContratoController extends Controller
                                                     ->select(
                                                         'creditos.id',
                                                         'creditos.prospecto_id',
-                                                        'creditos.num_dep_economicos',
+                                                        'creditos.num_dep_economicos','medios_publicitarios.nombre as publicidad',
                                                         'creditos.tipo_economia',
                                                         'creditos.nombre_primera_ref',
                                                         'creditos.telefono_primera_ref',
@@ -30839,11 +30879,11 @@ class ContratoController extends Controller
                 
                 $sheet->row(1, [
                     '# Contrato', 'Cliente', 'Vendedor', 'Proyecto', 'Etapa', 'Manzana',
-                    '# Lote','Modelo', 'Fecha del contrato', 'Precio de Venta', 'Status'
+                    '# Lote','Modelo', 'Tipo de crédito', 'Institución','Fecha del contrato', 'Precio de Venta', 'Status', 'Publicidad'
                 ]);
 
 
-                $sheet->cells('A1:K1', function ($cells) {
+                $sheet->cells('A1:N1', function ($cells) {
                     $cells->setBackground('#052154');
                     $cells->setFontColor('#ffffff');
                     // Set font family
@@ -30861,7 +30901,7 @@ class ContratoController extends Controller
                 $cont=1;
 
                 $sheet->setColumnFormat(array(
-                    'J' => '$#,##0.00',
+                    'L' => '$#,##0.00',
                 ));
 
                 foreach($contratos as $index => $contrato) {
@@ -30900,13 +30940,16 @@ class ContratoController extends Controller
                         $contrato->manzana,
                         $contrato->num_lote,
                         $contrato->modelo,
+                        $contrato->tipo_credito,
+                        $contrato->institucion,
                         $contrato->fecha,
                         $contrato->precio_venta,
-                        $status
+                        $status,
+                        $contrato->publicidad,
 
                     ]);	
                 }
-                $num='A1:K' . $cont;
+                $num='A1:N' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
         }

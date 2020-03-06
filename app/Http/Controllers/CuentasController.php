@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Cuenta;
 use Auth;
+use App\Lote;
 
 class CuentasController extends Controller
 {
@@ -34,6 +35,13 @@ class CuentasController extends Controller
             ],
             'cuentas' => $cuentas
         ];
+    }
+
+    public function selectCreditoPuente(Request $request){
+
+        $creditos = Lote::select('credito_puente')->where('credito_puente','!=',NULL)->orderBy('credito_puente','asc')->distinct()->get();
+
+        return['creditos'=>$creditos];
     }
 
     public function store(Request $request)

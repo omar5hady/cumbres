@@ -14,6 +14,11 @@
                             Excel Depositos
                         </button>
                     </div>
+                    <div class="card-header" v-if="deposito==0">
+                        <button type="button" class="btn btn-dark" @click="listarHistorialDep(1)">
+                            Historial de Depositos
+                        </button>
+                    </div>
                     <div class="card-header" v-if="deposito==1">
                         <i class="fa fa-align-justify"></i> Depositos
                         <!--   Boton Nuevo    -->
@@ -178,6 +183,86 @@
                             </table>
                         </div>
                     </div>
+                    <div class="card-header" v-if="deposito==2">
+                        <i class="fa fa-align-justify"></i> Historial de Depositos
+                        <!--   Boton Nuevo    -->
+                        <button type="button" @click="listarPagares(1,buscar, buscar2, buscar3, b_vencidos,criterio)" class="btn btn-secondary">
+                            <i class="fa fa-mail-reply"></i>&nbsp;Regresar
+                        </button>
+                        <a :href="'/depositos/historial/excel?fecha1=' + b_fecha1 + '&fecha2=' + b_fecha2 + '&banco=' + banco + '&monto=' + b_deposito"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel Pagares</a>
+                        <!---->
+                    </div>
+                    <div class="card-body" v-if="deposito==2">
+                        <div class="form-group row">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <!--Criterios para el listado de busqueda -->
+                                    <input type="date" v-model="b_fecha1" @keyup.enter="listarHistorialDep(1)" class="form-control" >
+                                    <input type="date" v-model="b_fecha2" @keyup.enter="listarHistorialDep(1)" class="form-control" >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <select class="form-control" v-model="banco">
+                                        <option value="">Seleccione</option>
+                                        <option v-for="banco in arrayBancos" :key="banco.num_cuenta" :value="banco.num_cuenta + '-' + banco.banco" v-text="banco.num_cuenta + '-' + banco.banco"></option>
+                                    </select>
+                                    
+                                    <input type="text" pattern="\d*" v-on:keypress="isNumber($event)" v-model="b_deposito" maxlength="10" class="form-control" placeholder="Monto">
+                                    <button type="submit" @click="listarHistorialDep(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th># Ref</th>
+                                        <th>Cliente</th>
+                                        <th>Proyecto</th>
+                                        <th>Etapa</th>
+                                        <th>Manzana</th>
+                                        <th># Lote</th>
+                                        <th>Fecha de deposito</th>
+                                        <th>Cuenta</th>
+                                        <th># Recibo</th>
+                                        <th>$ Monto</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="depo in arrayHistorial" :key="depo.num_recibo">
+                                        <td v-text="depo.id"></td>
+                                        <td v-text="depo.nombre + ' ' +depo.apellidos"></td>
+                                        <td v-text="depo.fraccionamiento"></td>
+                                        <td v-text="depo.etapa"></td>
+                                        <td v-text="depo.manzana"></td>
+                                        <td v-text="depo.num_lote"></td>
+                                        <td v-text="this.moment(depo.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <td v-text="depo.banco"></td>
+                                        <td v-text="depo.num_recibo"></td>
+                                        <td v-text="'$'+formatNumber(depo.cant_depo)"></td>
+                                    </tr>                               
+                                </tbody>
+                            </table>
+                        </div>
+                        <nav>
+                            <!--Botones de paginacion -->
+                            <ul class="pagination">
+                                <li class="page-item" v-if="pagination2.current_page > 1">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1)">Ant</a>
+                                </li>
+                                <li class="page-item" v-for="page in pagesNumber2" :key="page" :class="[page == isActived2 ? 'active' : '']">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(page)" v-text="page"></a>
+                                </li>
+                                <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page + 1)">Sig</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
@@ -601,6 +686,7 @@
                 arrayEtapas : [],
                 arrayManzana: [],
                 arrayDepositos : [],
+                arrayHistorial : [],
                 arrayBancos : [],
                 modal : 0,
                 modalDepositos : 0,
@@ -675,12 +761,23 @@
                     'from' : 0,
                     'to' : 0,
                 },
+                pagination2 : {
+                    'total' : 0,         
+                    'current_page' : 0,
+                    'per_page' : 0,
+                    'last_page' : 0,
+                    'from' : 0,
+                    'to' : 0,
+                },
                 offset : 3,
                 criterio : 'creditos.fraccionamiento', 
                 buscar : '',
                 buscar2: '',
                 buscar3:'',
-                b_vencidos : 0
+                b_vencidos : 0,
+                b_deposito : '',
+                b_fecha1 : '',
+                b_fecha2 : '',
             }
         },
         computed:{
@@ -688,7 +785,6 @@
             totalRestante: function(){
                 var totalRestante = parseFloat(this.restante) + parseFloat(this.interes_mor) + parseFloat(this.interes_ord) - parseFloat(this.cant_depo);
                 return totalRestante;
-
             },
 
             isActived: function(){
@@ -717,12 +813,49 @@
                 }
                 return pagesArray;
             },
+            isActived2: function(){
+                return this.pagination2.current_page;
+            },
+            //Calcula los elementos de la paginación
+            pagesNumber2:function(){
+                if(!this.pagination2.to){
+                    return [];
+                }
 
+                var from = this.pagination2.current_page - this.offset;
+                if(from < 1){
+                    from = 1;
+                }
 
+                var to = from + (this.offset * 2);
+                if(to >= this.pagination2.last_page){
+                    to = this.pagination2.last_page;
+                }
+
+                var pagesArray = [];
+                while(from <= to){
+                    pagesArray.push(from);
+                    from++;
+                }
+                return pagesArray;
+            },
 
         },
         methods : {
             /**Metodo para mostrar los registros */
+            listarHistorialDep(page){
+                let me = this;
+                me.deposito = 2;
+                var url = '/depositos/historial?page=' + page + '&fecha1=' + me.b_fecha1 + '&fecha2=' + me.b_fecha2 + '&banco=' + me.banco + '&monto=' + me.b_deposito;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayHistorial = respuesta.depositos.data;
+                    me.pagination2 = respuesta.pagination;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
             listarPagares(page, buscar,buscar2,buscar3, b_vencidos, criterio){
                 let me = this;
                 me.cliente='';
@@ -777,6 +910,13 @@
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarPagares(page,buscar, buscar2,buscar3, b_vencidos ,criterio);
+            },
+            cambiarPagina2(page){
+                let me = this;
+                //Actualiza la pagina actual
+                me.pagination2.current_page = page;
+                //Envia la petición para visualizar la data de esta pagina
+                me.listarHistorialDep(page);
             },
             selectFraccionamiento(){
                 let me = this;
@@ -1195,6 +1335,7 @@
         mounted() {
             this.listarPagares(1,this.buscar, this.buscar2, this.buscar3, this.b_vencidos, this.criterio);
             this.selectFraccionamiento();
+            this.selectCuenta();
 
         }
     }

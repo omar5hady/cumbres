@@ -65,7 +65,7 @@ class InstitucionFinanciamientoController extends Controller
     public function select_institucion_financiamiento(Request $request){
              //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
              if(!$request->ajax())return redirect('/');
-             $instituciones_financiamiento = InstitucionFinanciamiento::select('nombre','id')->get();
+             $instituciones_financiamiento = InstitucionFinanciamiento::select('nombre','id')->orderBy('nombre','asc')->get();
              return['instituciones_financiamiento' => $instituciones_financiamiento];
     }
 }

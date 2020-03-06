@@ -18,7 +18,7 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
-                            <div class="col-md-12">
+                            <div class="col-md-10">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
@@ -26,11 +26,6 @@
                                         <option value="modelos.nombre">Modelo</option>
                                         <option value="lotes.calle">Calle</option>
                                         <option value="lotes.credito_puente">Credito Puente</option>
-                                    </select>
-
-                                    <select class="form-control" v-model="b_habilitado" >
-                                        <option value="1">Habilitado</option>
-                                        <option value="0">Deshabilitado</option>
                                     </select>
 
                                     <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @click="selectEtapa(buscar), selectModelo(buscar)" >
@@ -42,18 +37,48 @@
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_modelo" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,b_habilitado,criterio)">
-                                            <option value="">Modelo</option>
-                                            <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.id" v-text="modelos.nombre"></option>
-                                        </select>
-                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar3" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,b_habilitado,criterio)" class="form-control" placeholder="Manzana a buscar">
-                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,b_habilitado,criterio)" class="form-control" placeholder="Lote a buscar">
+                                    
                                     <input type="text" v-if="criterio=='modelos.nombre'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,b_habilitado,criterio)" class="form-control" placeholder="Texto a buscar">
                                     <input type="text" v-if="criterio=='lotes.calle'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,b_habilitado,criterio)" class="form-control" placeholder="Texto a buscar">
                                                                         
                                     <input type="text" v-if="criterio=='lotes.credito_puente'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,b_habilitado,criterio)" class="form-control" placeholder="Texto a buscar">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row" v-if="criterio=='lotes.fraccionamiento_id'">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_modelo" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,b_habilitado,criterio)">
+                                        <option value="">Modelo</option>
+                                        <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.id" v-text="modelos.nombre"></option>
+                                    </select>
+                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar3" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,b_habilitado,criterio)" class="form-control" placeholder="Manzana a buscar">
+                                   
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row" v-if="criterio=='lotes.fraccionamiento_id'">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                   
+                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,b_habilitado,criterio)" class="form-control" placeholder="Lote a buscar">
+                                     <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_puente" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,b_habilitado,criterio)"> 
+                                        <option value="">Credito Puente</option>
+                                        <option v-for="puente in arrayPuentes" :key="puente.credito_puente" :value="puente.credito_puente" v-text="puente.credito_puente"></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <select class="form-control" v-model="b_habilitado" >
+                                        <option value="1">Habilitado</option>
+                                        <option value="0">Deshabilitado</option>
+                                        <option value="">Todos</option>
+                                    </select>
                                     <button type="submit" @click="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,b_habilitado,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                    <a class="btn btn-success" v-bind:href="'/asignar_modelo/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3  + '&bmodelo=' + b_modelo + '&blote=' + b_lote + '&b_habilitado='+ b_habilitado+'&criterio=' + criterio " >
+                                    <a class="btn btn-success" v-bind:href="'/asignar_modelo/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3  + '&bmodelo=' + b_modelo + '&blote=' + b_lote + '&b_habilitado='+ b_habilitado+'&criterio=' + criterio + '&b_puente=' + b_puente" >
                                         <i class="icon-pencil"></i>&nbsp;Excel
                                     </a>
                                     <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
@@ -81,6 +106,7 @@
                                         <th>Terreno mts&sup2;</th>
                                         <th>Construcción mts&sup2;</th>
                                         <th>Credito puente</th>
+                                        <th>Avance</th>
                                         <th>Casa en venta</th>
                                         <th>Canal de ventas</th>
                                     </tr>
@@ -119,6 +145,7 @@
                                         <td class="td2" v-text="lote.terreno"></td>
                                         <td class="td2" v-text="lote.construccion"></td>
                                         <td class="td2" v-text="lote.credito_puente"></td>
+                                        <td class="td2" v-text="lote.avance+'%'"></td>
                                         <td class="td2">
                                             <span v-if = "lote.casa_muestra==0 && lote.lote_comercial==0 && lote.habilitado==1" class="badge badge-success">Activo</span>
                                             <span v-else class="badge badge-danger">Inactivo</span>
@@ -498,12 +525,14 @@
                 buscar2 : '',
                 buscar3 : '',
                 buscar : '',
+                b_puente: '',
                 arrayFraccionamientos : [],
                 arrayEtapas : [],
                 arrayModelos : [],
                 arrayModelosTC: [],
                 arrayEmpresas : [],
                 arrayManzanas: [],
+                arrayPuentes: [],
 
                 fecha_termino_ventas: ''
             }
@@ -609,12 +638,26 @@
             /**Metodo para mostrar los registros */
             listarLote(page, buscar, buscar2, buscar3, b_modelo, b_lote,b_habilitado, criterio){
                 let me = this;
-                var url = '/lote?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3  + '&bmodelo=' + b_modelo + '&blote=' + b_lote + '&b_habilitado='+ b_habilitado+'&criterio=' + criterio;
+                var url = '/lote?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3  + '&bmodelo=' + b_modelo + '&blote=' + b_lote + '&b_habilitado='+ b_habilitado+'&criterio=' + criterio + '&b_puente=' + me.b_puente;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLote = respuesta.lotes.data;
                     me.pagination = respuesta.pagination;
                     me.contador = respuesta.contadorAsignarModelos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            selectPuente(){
+                let me = this;
+
+                me.arrayPuentes=[];
+                var url = '/selectCreditoPuente';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayPuentes = respuesta.creditos;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -948,12 +991,13 @@
                 this.selectEtapa(this.fraccionamiento_id);
                 this.selectModelo(this.fraccionamiento_id);
                 this.selectConsYTerreno(this.modelo_id);
-                
 
             }
         },
         mounted() {
             this.listarLote(1,this.buscar,this.buscar2,this.buscar3,this.b_modelo,this.b_lote,this.b_habilitado, this.criterio);
+            this.selectPuente();
+            this.selectFraccionamientos();
         }
     }
 </script>

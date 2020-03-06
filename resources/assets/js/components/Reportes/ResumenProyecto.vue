@@ -124,6 +124,13 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="form-group row" v-if="mostrar == 1">
+                            <div class="col-md-3">
+                                <a class="btn btn-success" v-bind:href="'/estadisticas/res_proyecto/excel?proyecto='+ b_proyecto + '&etapa='+ b_etapa">
+                                    <i class="fa fa-file-text"></i>&nbsp; Descargar excel
+                                </a>
+                            </div>
+                        </div>
                         <div class="table-responsive" v-if="mostrar == 1">
                         <table class="table2 table-bordered table-striped table-sm">
                             <thead>
@@ -136,6 +143,7 @@
                                     <th>Cliente</th>
                                     <th>Institución</th>
                                     <th>Tipo Crédito</th>
+                                    <th>Firma de escrituras</th>
                                     <th>Precio venta</th>
                                     <th>Enganche</th>
                                     <th>Crédito</th>
@@ -152,6 +160,8 @@
                                     <td class="td2" v-text="contrato.nombre_cliente"></td>
                                     <td class="td2" v-text="contrato.institucion"></td>
                                     <td class="td2" v-text="contrato.tipo_credito"></td>
+                                    <td v-if="contrato.fecha_firma_esc == null" class="td2" v-text="''"></td>
+                                    <td v-else class="td2" v-text="this.moment(contrato.fecha_firma_esc).locale('es').format('DD/MMM/YYYY')"></td>
                                     <td class="td2" v-text="'$'+formatNumber(contrato.precio_venta - contrato.descuento_promocion + contrato.costo_paquete)"></td>
                                     <td class="td2" v-text="'$'+formatNumber(contrato.total_pagar)"></td>
                                     <td class="td2" v-text="'$'+formatNumber(contrato.monto_total_credito)"></td>
