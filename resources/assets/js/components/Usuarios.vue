@@ -202,6 +202,9 @@
                                                     <li class="nav-item" v-if="rol_id==1 || rol_id==7 || rol_id == 11">
                                                         <a class="nav-link"><i class="icon-bag"></i> <input v-model="p_etapa" type="checkbox" value="1"/> Publicidad-Etapas</a>
                                                     </li>
+                                                    <li class="nav-item" v-if="rol_id==1 || rol_id==6 || rol_id == 9">
+                                                        <a class="nav-link"><i class="icon-bag"></i> <input v-model="descarga_actas" type="checkbox" value="1"/> Prediales y actas</a>
+                                                    </li>
                                                 </ul>
                                     </div>
                                 </div> 
@@ -710,6 +713,7 @@
                     licencias:0,
                     acta_terminacion:0,
                     p_etapa:0,
+                    descarga_actas:0,
                    
 
                     //Precios
@@ -897,6 +901,7 @@
                 this.licencias=0;
                 this.acta_terminacion=0;
                 this.p_etapa=0;
+                this.descarga_actas = 0;
                
             },
             limpiarPrecios(){
@@ -1020,6 +1025,7 @@
                     me.licencias=usuarios[0].licencias;
                     me.acta_terminacion=usuarios[0].acta_terminacion;
                     me.p_etapa=usuarios[0].p_etapa;
+                    me.descarga_actas = usuarios[0].descarga_actas;
 
                     //Precios
                     me.agregar_sobreprecios = usuarios[0].agregar_sobreprecios;
@@ -1303,6 +1309,7 @@
                     'licencias':this.licencias,
                     'acta_terminacion':this.acta_terminacion,
                     'p_etapa':this.p_etapa,
+                    'descarga_actas':this.descarga_actas,
                    
                         //Precios
                     'agregar_sobreprecios':this.agregar_sobreprecios,
@@ -1590,6 +1597,7 @@
                 me.licencias=0;
                 me.acta_terminacion=0;
                 me.p_etapa=0;
+                me.descarga_actas = 0;
                
 
                     //Precios

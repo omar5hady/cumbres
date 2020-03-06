@@ -394,6 +394,9 @@
         <template v-if="menu==230">
             <asignar-especificaciones></asignar-especificaciones>
         </template>
+        <template v-if="menu==231">
+            <prediales-descarga></prediales-descarga>
+        </template>
 
         
 

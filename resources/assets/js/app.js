@@ -55,6 +55,8 @@ Vue.component('actadeterminacion', require('./components/Desarrollo/ActaDeTermin
 Vue.component('publicidad-etapa', require('./components/Desarrollo/PublicidadEtapa.vue'));
 Vue.component('publicidad-fraccionamiento', require('./components/Desarrollo/PublicidadFraccionamiento.vue'));
 
+Vue.component('prediales-descarga', require('./components/Desarrollo/DescargaActas.vue'));
+
 //Componentes Precios
 Vue.component('precios-vivienda', require('./components/Precios/PreciosVivienda.vue'));
 Vue.component('agregar-sobreprecios', require('./components/Precios/SobrepreciosAdd.vue'));

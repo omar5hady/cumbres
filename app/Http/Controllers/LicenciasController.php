@@ -1538,6 +1538,8 @@ class LicenciasController extends Controller
     public function formSubmitPredial(Request $request, $id)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $fecha = Carbon::now();
+
         $predialAnterior = Licencia::select('foto_predial', 'id')
             ->where('id', '=', $id)
             ->get();
@@ -1550,6 +1552,7 @@ class LicenciasController extends Controller
                 $predial = Licencia::findOrFail($request->id);
                 $predial->foto_predial = $fileName;
                 $predial->id = $id;
+                $predial->fecha_predial = $fecha;
                 $predial->save(); //Insert
 
             }
@@ -1567,6 +1570,7 @@ class LicenciasController extends Controller
                 $predial = Licencia::findOrFail($request->id);
                 $predial->foto_predial = $fileName;
                 $predial->id = $id;
+                $predial->fecha_predial = $fecha;
                 $predial->save(); //Insert
 
             }
@@ -2362,5 +2366,593 @@ class LicenciasController extends Controller
             }
 
         )->download('xls');
+    }
+
+    public function indexDescargas(Request $request){
+
+        $proyecto = $request->proyecto;
+        $etapa = $request->etapa;
+        $manzana = $request->manzana;
+        $lote = $request->lote;
+        $fecha1 = $request->fecha1;
+        $fecha2 = $request->fecha2;
+        $busqueda = $request->busqueda;
+
+
+        switch($busqueda){
+            case 'licencias.fecha_licencia':{
+                if($fecha1 != '' && $fecha2 != ''){
+                    if($proyecto == ''){
+                        $lotes = Licencia::join('lotes','licencias.id','=','lotes.id')
+                            ->join('modelos','lotes.modelo_id','=','modelos.id')
+                            ->join('etapas','lotes.etapa_id','=','etapas.id')
+                            ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                            ->select('licencias.id','licencias.fecha_licencia as fecha','licencias.fecha_acta','licencias.fecha_predial',
+                                    'licencias.foto_lic as archivo','licencias.foto_acta','licencias.foto_predial','lotes.manzana','lotes.num_lote',
+                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo')
+                            ->where('licencias.foto_lic', '!=', NULL)
+                            ->whereBetween($busqueda, [$fecha1, $fecha2])
+                            ->orderBy('fraccionamientos.nombre','asc')
+                            ->orderBy('etapas.num_etapa','asc')
+                            ->orderBy('lotes.manzana','asc')
+                            ->orderBy('lotes.num_lote','asc')
+                            ->paginate(10);
+                    }
+                    else{
+                        if($etapa == '' && $manzana == '' && $lote == ''){
+                            $lotes = Licencia::join('lotes','licencias.id','=','lotes.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                ->select('licencias.id','licencias.fecha_licencia as fecha','licencias.fecha_acta','licencias.fecha_predial',
+                                    'licencias.foto_lic as archivo','licencias.foto_acta','licencias.foto_predial','lotes.manzana','lotes.num_lote',
+                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo')
+                                ->where('licencias.foto_lic', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->whereBetween($busqueda, [$fecha1, $fecha2])
+                                ->orderBy('fraccionamientos.nombre','asc')
+                                ->orderBy('etapas.num_etapa','asc')
+                                ->orderBy('lotes.manzana','asc')
+                                ->orderBy('lotes.num_lote','asc')
+                                ->paginate(10);
+                        }
+                        elseif($etapa != '' && $manzana == '' && $lote == ''){
+                            $lotes = Licencia::join('lotes','licencias.id','=','lotes.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                ->select('licencias.id','licencias.fecha_licencia as fecha','licencias.fecha_acta','licencias.fecha_predial',
+                                    'licencias.foto_lic as archivo','licencias.foto_acta','licencias.foto_predial','lotes.manzana','lotes.num_lote',
+                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo')
+                                ->where('licencias.foto_lic', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa)
+                                ->whereBetween($busqueda, [$fecha1, $fecha2])
+                                ->orderBy('fraccionamientos.nombre','asc')
+                                ->orderBy('etapas.num_etapa','asc')
+                                ->orderBy('lotes.manzana','asc')
+                                ->orderBy('lotes.num_lote','asc')
+                                ->paginate(10);
+                        }
+                        elseif($etapa != '' && $manzana != '' && $lote == ''){
+                            $lotes = Licencia::join('lotes','licencias.id','=','lotes.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                ->select('licencias.id','licencias.fecha_licencia as fecha','licencias.fecha_acta','licencias.fecha_predial',
+                                    'licencias.foto_lic as archivo','licencias.foto_acta','licencias.foto_predial','lotes.manzana','lotes.num_lote',
+                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo')
+                                ->where('licencias.foto_lic', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa)
+                                ->where('lotes.manzana', '=', $manzana)
+                                ->whereBetween($busqueda, [$fecha1, $fecha2])
+                                ->orderBy('fraccionamientos.nombre','asc')
+                                ->orderBy('etapas.num_etapa','asc')
+                                ->orderBy('lotes.manzana','asc')
+                                ->orderBy('lotes.num_lote','asc')
+                                ->paginate(10);
+                        }
+                        elseif($etapa != '' && $manzana != '' && $lote != ''){
+                            $lotes = Licencia::join('lotes','licencias.id','=','lotes.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                ->select('licencias.id','licencias.fecha_licencia as fecha','licencias.fecha_acta','licencias.fecha_predial',
+                                    'licencias.foto_lic as archivo','licencias.foto_acta','licencias.foto_predial','lotes.manzana','lotes.num_lote',
+                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo')
+                                ->where('licencias.foto_lic', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa)
+                                ->where('lotes.manzana', '=', $manzana)
+                                ->where('lotes.num_lote', '=', $lote)
+                                ->whereBetween($busqueda, [$fecha1, $fecha2])
+                                ->orderBy('fraccionamientos.nombre','asc')
+                                ->orderBy('etapas.num_etapa','asc')
+                                ->orderBy('lotes.manzana','asc')
+                                ->orderBy('lotes.num_lote','asc')
+                                ->paginate(10);
+                        }
+                    }
+                }
+                else{
+                    if($proyecto == ''){
+                        $lotes = Licencia::join('lotes','licencias.id','=','lotes.id')
+                            ->join('modelos','lotes.modelo_id','=','modelos.id')
+                            ->join('etapas','lotes.etapa_id','=','etapas.id')
+                            ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                            ->select('licencias.id','licencias.fecha_licencia as fecha','licencias.fecha_acta','licencias.fecha_predial',
+                                    'licencias.foto_lic as archivo','licencias.foto_acta','licencias.foto_predial','lotes.manzana','lotes.num_lote',
+                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo')
+                            ->where('licencias.foto_lic', '!=', NULL)
+                            ->orderBy('fraccionamientos.nombre','asc')
+                            ->orderBy('etapas.num_etapa','asc')
+                            ->orderBy('lotes.manzana','asc')
+                            ->orderBy('lotes.num_lote','asc')
+                            ->paginate(10);
+                    }
+                    else{
+                        if($etapa == '' && $manzana == '' && $lote == ''){
+                            $lotes = Licencia::join('lotes','licencias.id','=','lotes.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                ->select('licencias.id','licencias.fecha_licencia as fecha','licencias.fecha_acta','licencias.fecha_predial',
+                                    'licencias.foto_lic as archivo','licencias.foto_acta','licencias.foto_predial','lotes.manzana','lotes.num_lote',
+                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo')
+                                ->where('licencias.foto_lic', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->orderBy('fraccionamientos.nombre','asc')
+                                ->orderBy('etapas.num_etapa','asc')
+                                ->orderBy('lotes.manzana','asc')
+                                ->orderBy('lotes.num_lote','asc')
+                                ->paginate(10);
+                        }
+                        elseif($etapa != '' && $manzana == '' && $lote == ''){
+                            $lotes = Licencia::join('lotes','licencias.id','=','lotes.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                ->select('licencias.id','licencias.fecha_licencia as fecha','licencias.fecha_acta','licencias.fecha_predial',
+                                    'licencias.foto_lic as archivo','licencias.foto_acta','licencias.foto_predial','lotes.manzana','lotes.num_lote',
+                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo')
+                                ->where('licencias.foto_lic', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa)
+                                ->orderBy('fraccionamientos.nombre','asc')
+                                ->orderBy('etapas.num_etapa','asc')
+                                ->orderBy('lotes.manzana','asc')
+                                ->orderBy('lotes.num_lote','asc')
+                                ->paginate(10);
+                        }
+                        elseif($etapa != '' && $manzana != '' && $lote == ''){
+                            $lotes = Licencia::join('lotes','licencias.id','=','lotes.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                ->select('licencias.id','licencias.fecha_licencia as fecha','licencias.fecha_acta','licencias.fecha_predial',
+                                    'licencias.foto_lic as archivo','licencias.foto_acta','licencias.foto_predial','lotes.manzana','lotes.num_lote',
+                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo')
+                                ->where('licencias.foto_lic', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa)
+                                ->where('lotes.manzana', '=', $manzana)
+                                ->orderBy('fraccionamientos.nombre','asc')
+                                ->orderBy('etapas.num_etapa','asc')
+                                ->orderBy('lotes.manzana','asc')
+                                ->orderBy('lotes.num_lote','asc')
+                                ->paginate(10);
+                        }
+                        elseif($etapa != '' && $manzana != '' && $lote != ''){
+                            $lotes = Licencia::join('lotes','licencias.id','=','lotes.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                ->select('licencias.id','licencias.fecha_licencia as fecha','licencias.fecha_acta','licencias.fecha_predial',
+                                    'licencias.foto_lic as archivo','licencias.foto_acta','licencias.foto_predial','lotes.manzana','lotes.num_lote',
+                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo')
+                                ->where('licencias.foto_lic', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa)
+                                ->where('lotes.manzana', '=', $manzana)
+                                ->where('lotes.num_lote', '=', $lote)
+                                ->orderBy('fraccionamientos.nombre','asc')
+                                ->orderBy('etapas.num_etapa','asc')
+                                ->orderBy('lotes.manzana','asc')
+                                ->orderBy('lotes.num_lote','asc')
+                                ->paginate(10);
+                        }
+                    }
+                }  
+                break;
+            }
+            case 'licencias.fecha_acta':{
+                if($fecha1 != '' && $fecha2 != ''){
+                    if($proyecto == ''){
+                        $lotes = Licencia::join('lotes','licencias.id','=','lotes.id')
+                            ->join('modelos','lotes.modelo_id','=','modelos.id')
+                            ->join('etapas','lotes.etapa_id','=','etapas.id')
+                            ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                            ->select('licencias.id','licencias.fecha_licencia','licencias.fecha_acta as fecha','licencias.fecha_predial',
+                                    'licencias.foto_lic','licencias.foto_acta as archivo','licencias.foto_predial','lotes.manzana','lotes.num_lote',
+                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo')
+                            ->where('licencias.foto_acta', '!=', NULL)
+                            ->whereBetween($busqueda, [$fecha1, $fecha2])
+                            ->orderBy('fraccionamientos.nombre','asc')
+                            ->orderBy('etapas.num_etapa','asc')
+                            ->orderBy('lotes.manzana','asc')
+                            ->orderBy('lotes.num_lote','asc')
+                            ->paginate(10);
+                    }
+                    else{
+                        if($etapa == '' && $manzana == '' && $lote == ''){
+                            $lotes = Licencia::join('lotes','licencias.id','=','lotes.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                ->select('licencias.id','licencias.fecha_licencia','licencias.fecha_acta as fecha','licencias.fecha_predial',
+                                    'licencias.foto_lic','licencias.foto_acta as archivo','licencias.foto_predial','lotes.manzana','lotes.num_lote',
+                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo')
+                                ->where('licencias.foto_acta', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->whereBetween($busqueda, [$fecha1, $fecha2])
+                                ->orderBy('fraccionamientos.nombre','asc')
+                                ->orderBy('etapas.num_etapa','asc')
+                                ->orderBy('lotes.manzana','asc')
+                                ->orderBy('lotes.num_lote','asc')
+                                ->paginate(10);
+                        }
+                        elseif($etapa != '' && $manzana == '' && $lote == ''){
+                            $lotes = Licencia::join('lotes','licencias.id','=','lotes.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                ->select('licencias.id','licencias.fecha_licencia','licencias.fecha_acta as fecha','licencias.fecha_predial',
+                                    'licencias.foto_lic','licencias.foto_acta as archivo','licencias.foto_predial','lotes.manzana','lotes.num_lote',
+                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo')
+                                ->where('licencias.foto_acta', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa)
+                                ->whereBetween($busqueda, [$fecha1, $fecha2])
+                                ->orderBy('fraccionamientos.nombre','asc')
+                                ->orderBy('etapas.num_etapa','asc')
+                                ->orderBy('lotes.manzana','asc')
+                                ->orderBy('lotes.num_lote','asc')
+                                ->paginate(10);
+                        }
+                        elseif($etapa != '' && $manzana != '' && $lote == ''){
+                            $lotes = Licencia::join('lotes','licencias.id','=','lotes.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                ->select('licencias.id','licencias.fecha_licencia','licencias.fecha_acta as fecha','licencias.fecha_predial',
+                                    'licencias.foto_lic','licencias.foto_acta as archivo','licencias.foto_predial','lotes.manzana','lotes.num_lote',
+                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo')
+                                ->where('licencias.foto_acta', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa)
+                                ->where('lotes.manzana', '=', $manzana)
+                                ->whereBetween($busqueda, [$fecha1, $fecha2])
+                                ->orderBy('fraccionamientos.nombre','asc')
+                                ->orderBy('etapas.num_etapa','asc')
+                                ->orderBy('lotes.manzana','asc')
+                                ->orderBy('lotes.num_lote','asc')
+                                ->paginate(10);
+                        }
+                        elseif($etapa != '' && $manzana != '' && $lote != ''){
+                            $lotes = Licencia::join('lotes','licencias.id','=','lotes.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                ->select('licencias.id','licencias.fecha_licencia','licencias.fecha_acta as fecha','licencias.fecha_predial',
+                                    'licencias.foto_lic','licencias.foto_acta as archivo','licencias.foto_predial','lotes.manzana','lotes.num_lote',
+                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo')
+                                ->where('licencias.foto_acta', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa)
+                                ->where('lotes.manzana', '=', $manzana)
+                                ->where('lotes.num_lote', '=', $lote)
+                                ->whereBetween($busqueda, [$fecha1, $fecha2])
+                                ->orderBy('fraccionamientos.nombre','asc')
+                                ->orderBy('etapas.num_etapa','asc')
+                                ->orderBy('lotes.manzana','asc')
+                                ->orderBy('lotes.num_lote','asc')
+                                ->paginate(10);
+                        }
+                    }
+                }
+                else{
+                    if($proyecto == ''){
+                        $lotes = Licencia::join('lotes','licencias.id','=','lotes.id')
+                            ->join('modelos','lotes.modelo_id','=','modelos.id')
+                            ->join('etapas','lotes.etapa_id','=','etapas.id')
+                            ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                            ->select('licencias.id','licencias.fecha_licencia','licencias.fecha_acta as fecha','licencias.fecha_predial',
+                                    'licencias.foto_lic','licencias.foto_acta as archivo','licencias.foto_predial','lotes.manzana','lotes.num_lote',
+                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo')
+                            ->where('licencias.foto_acta', '!=', NULL)
+                            ->orderBy('fraccionamientos.nombre','asc')
+                            ->orderBy('etapas.num_etapa','asc')
+                            ->orderBy('lotes.manzana','asc')
+                            ->orderBy('lotes.num_lote','asc')
+                            ->paginate(10);
+                    }
+                    else{
+                        if($etapa == '' && $manzana == '' && $lote == ''){
+                            $lotes = Licencia::join('lotes','licencias.id','=','lotes.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                ->select('licencias.id','licencias.fecha_licencia','licencias.fecha_acta as fecha','licencias.fecha_predial',
+                                    'licencias.foto_lic','licencias.foto_acta as archivo','licencias.foto_predial','lotes.manzana','lotes.num_lote',
+                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo')
+                                ->where('licencias.foto_acta', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->orderBy('fraccionamientos.nombre','asc')
+                                ->orderBy('etapas.num_etapa','asc')
+                                ->orderBy('lotes.manzana','asc')
+                                ->orderBy('lotes.num_lote','asc')
+                                ->paginate(10);
+                        }
+                        elseif($etapa != '' && $manzana == '' && $lote == ''){
+                            $lotes = Licencia::join('lotes','licencias.id','=','lotes.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                ->select('licencias.id','licencias.fecha_licencia','licencias.fecha_acta as fecha','licencias.fecha_predial',
+                                    'licencias.foto_lic','licencias.foto_acta as archivo','licencias.foto_predial','lotes.manzana','lotes.num_lote',
+                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo')
+                                ->where('licencias.foto_acta', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa)
+                                ->orderBy('fraccionamientos.nombre','asc')
+                                ->orderBy('etapas.num_etapa','asc')
+                                ->orderBy('lotes.manzana','asc')
+                                ->orderBy('lotes.num_lote','asc')
+                                ->paginate(10);
+                        }
+                        elseif($etapa != '' && $manzana != '' && $lote == ''){
+                            $lotes = Licencia::join('lotes','licencias.id','=','lotes.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                ->select('licencias.id','licencias.fecha_licencia','licencias.fecha_acta as fecha','licencias.fecha_predial',
+                                    'licencias.foto_lic','licencias.foto_acta as archivo','licencias.foto_predial','lotes.manzana','lotes.num_lote',
+                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo')
+                                ->where('licencias.foto_acta', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa)
+                                ->where('lotes.manzana', '=', $manzana)
+                                ->orderBy('fraccionamientos.nombre','asc')
+                                ->orderBy('etapas.num_etapa','asc')
+                                ->orderBy('lotes.manzana','asc')
+                                ->orderBy('lotes.num_lote','asc')
+                                ->paginate(10);
+                        }
+                        elseif($etapa != '' && $manzana != '' && $lote != ''){
+                            $lotes = Licencia::join('lotes','licencias.id','=','lotes.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                ->select('licencias.id','licencias.fecha_licencia','licencias.fecha_acta as fecha','licencias.fecha_predial',
+                                    'licencias.foto_lic','licencias.foto_acta as archivo','licencias.foto_predial','lotes.manzana','lotes.num_lote',
+                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo')
+                                ->where('licencias.foto_acta', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa)
+                                ->where('lotes.manzana', '=', $manzana)
+                                ->where('lotes.num_lote', '=', $lote)
+                                ->orderBy('fraccionamientos.nombre','asc')
+                                ->orderBy('etapas.num_etapa','asc')
+                                ->orderBy('lotes.manzana','asc')
+                                ->orderBy('lotes.num_lote','asc')
+                                ->paginate(10);
+                        }
+                    }
+                }  
+                break;
+            }
+            case 'licencias.fecha_predial':{
+                if($fecha1 != '' && $fecha2 != ''){
+                    if($proyecto == ''){
+                        $lotes = Licencia::join('lotes','licencias.id','=','lotes.id')
+                            ->join('modelos','lotes.modelo_id','=','modelos.id')
+                            ->join('etapas','lotes.etapa_id','=','etapas.id')
+                            ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                            ->select('licencias.id','licencias.fecha_licencia','licencias.fecha_acta','licencias.fecha_predial as fecha',
+                                    'licencias.foto_lic','licencias.foto_acta','licencias.foto_predial as archivo','lotes.manzana','lotes.num_lote',
+                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo')
+                            ->where('licencias.foto_predial', '!=', NULL)
+                            ->whereBetween($busqueda, [$fecha1, $fecha2])
+                            ->orderBy('fraccionamientos.nombre','asc')
+                            ->orderBy('etapas.num_etapa','asc')
+                            ->orderBy('lotes.manzana','asc')
+                            ->orderBy('lotes.num_lote','asc')
+                            ->paginate(10);
+                    }
+                    else{
+                        if($etapa == '' && $manzana == '' && $lote == ''){
+                            $lotes = Licencia::join('lotes','licencias.id','=','lotes.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                ->select('licencias.id','licencias.fecha_licencia','licencias.fecha_acta','licencias.fecha_predial as fecha',
+                                    'licencias.foto_lic','licencias.foto_acta','licencias.foto_predial as archivo','lotes.manzana','lotes.num_lote',
+                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo')
+                                ->where('licencias.foto_predial', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->whereBetween($busqueda, [$fecha1, $fecha2])
+                                ->orderBy('fraccionamientos.nombre','asc')
+                                ->orderBy('etapas.num_etapa','asc')
+                                ->orderBy('lotes.manzana','asc')
+                                ->orderBy('lotes.num_lote','asc')
+                                ->paginate(10);
+                        }
+                        elseif($etapa != '' && $manzana == '' && $lote == ''){
+                            $lotes = Licencia::join('lotes','licencias.id','=','lotes.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                ->select('licencias.id','licencias.fecha_licencia','licencias.fecha_acta','licencias.fecha_predial as fecha',
+                                    'licencias.foto_lic','licencias.foto_acta','licencias.foto_predial as archivo','lotes.manzana','lotes.num_lote',
+                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo')
+                                ->where('licencias.foto_predial', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa)
+                                ->whereBetween($busqueda, [$fecha1, $fecha2])
+                                ->orderBy('fraccionamientos.nombre','asc')
+                                ->orderBy('etapas.num_etapa','asc')
+                                ->orderBy('lotes.manzana','asc')
+                                ->orderBy('lotes.num_lote','asc')
+                                ->paginate(10);
+                        }
+                        elseif($etapa != '' && $manzana != '' && $lote == ''){
+                            $lotes = Licencia::join('lotes','licencias.id','=','lotes.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                ->select('licencias.id','licencias.fecha_licencia','licencias.fecha_acta','licencias.fecha_predial as fecha',
+                                    'licencias.foto_lic','licencias.foto_acta','licencias.foto_predial as archivo','lotes.manzana','lotes.num_lote',
+                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo')
+                                ->where('licencias.foto_predial', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa)
+                                ->where('lotes.manzana', '=', $manzana)
+                                ->whereBetween($busqueda, [$fecha1, $fecha2])
+                                ->orderBy('fraccionamientos.nombre','asc')
+                                ->orderBy('etapas.num_etapa','asc')
+                                ->orderBy('lotes.manzana','asc')
+                                ->orderBy('lotes.num_lote','asc')
+                                ->paginate(10);
+                        }
+                        elseif($etapa != '' && $manzana != '' && $lote != ''){
+                            $lotes = Licencia::join('lotes','licencias.id','=','lotes.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                ->select('licencias.id','licencias.fecha_licencia','licencias.fecha_acta','licencias.fecha_predial as fecha',
+                                    'licencias.foto_lic','licencias.foto_acta','licencias.foto_predial as archivo','lotes.manzana','lotes.num_lote',
+                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo')
+                                ->where('licencias.foto_predial', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa)
+                                ->where('lotes.manzana', '=', $manzana)
+                                ->where('lotes.num_lote', '=', $lote)
+                                ->whereBetween($busqueda, [$fecha1, $fecha2])
+                                ->orderBy('fraccionamientos.nombre','asc')
+                                ->orderBy('etapas.num_etapa','asc')
+                                ->orderBy('lotes.manzana','asc')
+                                ->orderBy('lotes.num_lote','asc')
+                                ->paginate(10);
+                        }
+                    }
+                }
+                else{
+                    if($proyecto == ''){
+                        $lotes = Licencia::join('lotes','licencias.id','=','lotes.id')
+                            ->join('modelos','lotes.modelo_id','=','modelos.id')
+                            ->join('etapas','lotes.etapa_id','=','etapas.id')
+                            ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                            ->select('licencias.id','licencias.fecha_licencia','licencias.fecha_acta','licencias.fecha_predial as fecha',
+                                    'licencias.foto_lic','licencias.foto_acta','licencias.foto_predial as archivo','lotes.manzana','lotes.num_lote',
+                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo')
+                            ->where('licencias.foto_predial', '!=', NULL)
+                            ->orderBy('fraccionamientos.nombre','asc')
+                            ->orderBy('etapas.num_etapa','asc')
+                            ->orderBy('lotes.manzana','asc')
+                            ->orderBy('lotes.num_lote','asc')
+                            ->paginate(10);
+                    }
+                    else{
+                        if($etapa == '' && $manzana == '' && $lote == ''){
+                            $lotes = Licencia::join('lotes','licencias.id','=','lotes.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                ->select('licencias.id','licencias.fecha_licencia','licencias.fecha_acta','licencias.fecha_predial as fecha',
+                                    'licencias.foto_lic','licencias.foto_acta','licencias.foto_predial as archivo','lotes.manzana','lotes.num_lote',
+                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo')
+                                ->where('licencias.foto_predial', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->orderBy('fraccionamientos.nombre','asc')
+                                ->orderBy('etapas.num_etapa','asc')
+                                ->orderBy('lotes.manzana','asc')
+                                ->orderBy('lotes.num_lote','asc')
+                                ->paginate(10);
+                        }
+                        elseif($etapa != '' && $manzana == '' && $lote == ''){
+                            $lotes = Licencia::join('lotes','licencias.id','=','lotes.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                ->select('licencias.id','licencias.fecha_licencia','licencias.fecha_acta','licencias.fecha_predial as fecha',
+                                    'licencias.foto_lic','licencias.foto_acta','licencias.foto_predial as archivo','lotes.manzana','lotes.num_lote',
+                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo')
+                                ->where('licencias.foto_predial', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa)
+                                ->orderBy('fraccionamientos.nombre','asc')
+                                ->orderBy('etapas.num_etapa','asc')
+                                ->orderBy('lotes.manzana','asc')
+                                ->orderBy('lotes.num_lote','asc')
+                                ->paginate(10);
+                        }
+                        elseif($etapa != '' && $manzana != '' && $lote == ''){
+                            $lotes = Licencia::join('lotes','licencias.id','=','lotes.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                ->select('licencias.id','licencias.fecha_licencia','licencias.fecha_acta','licencias.fecha_predial as fecha',
+                                    'licencias.foto_lic','licencias.foto_acta','licencias.foto_predial as archivo','lotes.manzana','lotes.num_lote',
+                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo')
+                                ->where('licencias.foto_predial', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa)
+                                ->where('lotes.manzana', '=', $manzana)
+                                ->orderBy('fraccionamientos.nombre','asc')
+                                ->orderBy('etapas.num_etapa','asc')
+                                ->orderBy('lotes.manzana','asc')
+                                ->orderBy('lotes.num_lote','asc')
+                                ->paginate(10);
+                        }
+                        elseif($etapa != '' && $manzana != '' && $lote != ''){
+                            $lotes = Licencia::join('lotes','licencias.id','=','lotes.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                ->select('licencias.id','licencias.fecha_licencia','licencias.fecha_acta','licencias.fecha_predial as fecha',
+                                    'licencias.foto_lic','licencias.foto_acta','licencias.foto_predial as archivo','lotes.manzana','lotes.num_lote',
+                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo')
+                                ->where('licencias.foto_predial', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa)
+                                ->where('lotes.manzana', '=', $manzana)
+                                ->where('lotes.num_lote', '=', $lote)
+                                ->orderBy('fraccionamientos.nombre','asc')
+                                ->orderBy('etapas.num_etapa','asc')
+                                ->orderBy('lotes.manzana','asc')
+                                ->orderBy('lotes.num_lote','asc')
+                                ->paginate(10);
+                        }
+                    }
+                }  
+                break;
+            }
+        }
+        
+
+        
+        return [
+            'pagination' => [
+                'total'         => $lotes->total(),
+                'current_page'  => $lotes->currentPage(),
+                'per_page'      => $lotes->perPage(),
+                'last_page'     => $lotes->lastPage(),
+                'from'          => $lotes->firstItem(),
+                'to'            => $lotes->lastItem(),
+            ],
+            'lotes' => $lotes, 'criterio'=> $busqueda
+
+        ];
     }
 }

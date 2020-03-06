@@ -52,6 +52,7 @@ class User extends Authenticatable
         'acta_terminacion',
         'p_etapa',
         'p_fraccionamiento',
+        'descarga_actas',
 
         //Precios
         'agregar_sobreprecios',

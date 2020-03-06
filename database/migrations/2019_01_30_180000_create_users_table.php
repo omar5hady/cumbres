@@ -64,6 +64,7 @@ class CreateUsersTable extends Migration
             $table->boolean('acta_terminacion')->default(0);
             $table->boolean('p_fraccionamiento')->default(0);
             $table->boolean('p_etapa')->default(0);
+            $table->boolean('descarga_actas')->default(0);
 
             //Precios
             $table->boolean('agregar_sobreprecios')->default(0);

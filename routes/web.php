@@ -232,6 +232,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/formSubmitLicencias/{id}','LicenciasController@formSubmit'); //carga de licencias
         Route::get('/downloadLicencias/{fileName}' , 'LicenciasController@downloadFile'); //descarga de licencias
         Route::get('/licencias/excel','LicenciasController@exportExcelLicencias'); //excel de las licencias
+
+        Route::get('/licencias/indexDescargas','LicenciasController@indexDescargas');
         
     ///////////////////       RUTAS LICENCIA-ACTA  ////////////////////////////////////
         Route::get('/acta_terminacion','LicenciasController@indexActa');

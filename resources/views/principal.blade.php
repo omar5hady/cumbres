@@ -234,6 +234,11 @@
                                         <a class="nav-link" href="#"><i class="icon-bag"></i> Acta de terminacion</a>
                                     </li>
                                 @endif
+                                @if(Auth::user()->descarga_actas == 1)
+                                    <li @click="menu=231" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="icon-bag"></i> Prediales y actas</a>
+                                    </li>
+                                @endif
                                 
                                 </ul>
                             </li>

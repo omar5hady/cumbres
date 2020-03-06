@@ -34,6 +34,7 @@ class CreateLicenciasTable extends Migration
 
             $table->date('fecha_licencia')->nullable(); 
             $table->date('fecha_acta')->nullable(); 
+            $table->date('fecha_predial')->nullable(); 
              
             $table->foreign('id')->references('id')->on('lotes')->onDelete('cascade'); 
             $table->foreign('perito_dro')->references('id')->on('personal');
