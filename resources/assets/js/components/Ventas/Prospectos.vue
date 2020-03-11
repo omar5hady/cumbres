@@ -609,7 +609,7 @@
                                             :onChange="getDatosEmpresa"
                                         >
                                         </v-select>
-                                         <input v-if="empresa != null" type="text" class="form-control" readonly  v-model="empresa">
+                                        <input v-if="empresa != null" type="text" class="form-control" readonly  v-model="empresa">
                                 </div>
                                 </div>
 

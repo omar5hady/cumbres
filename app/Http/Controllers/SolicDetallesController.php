@@ -82,19 +82,22 @@ class SolicDetallesController extends Controller
         $status = $request->status;
         $criterio = $request->criterio;
 
+        $query = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
+            ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
+            ->join('creditos','contratos.id','=','creditos.id')
+            ->join('lotes','creditos.lote_id','=','lotes.id')
+            ->select('solic_detalles.id','contratos.id as folio','creditos.fraccionamiento',
+                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
+                    'solic_detalles.lunes','solic_detalles.martes',
+                    'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
+                    'solic_detalles.sabado','solic_detalles.nom_contrato',
+                    'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
+                    'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at' ,
+                    'solic_detalles.fecha_program','solic_detalles.hora_program');
+
         if($status == ''){
             if($buscar == ''){
-                $solicitudes = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                    ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                    ->join('creditos','contratos.id','=','creditos.id')
-                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                    ->select('solic_detalles.id','contratos.id as folio','creditos.fraccionamiento',
-                            'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
-                            'solic_detalles.lunes','solic_detalles.martes',
-                            'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                            'solic_detalles.sabado','solic_detalles.nom_contrato',
-                            'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
-                            'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at' ,'solic_detalles.fecha_program','solic_detalles.hora_program')
+                $solicitudes = $query
                     ->orderBy('solic_detalles.status','asc')
                     ->orderBy('solic_detalles.created_at','asc')
                     ->paginate(8);
@@ -102,17 +105,7 @@ class SolicDetallesController extends Controller
             else{
                 switch($criterio){
                     case 'contratos.id':{
-                        $solicitudes = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                            ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('lotes','creditos.lote_id','=','lotes.id')
-                            ->select('solic_detalles.id','contratos.id as folio','creditos.fraccionamiento',
-                                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
-                                    'solic_detalles.lunes','solic_detalles.martes',
-                                    'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                    'solic_detalles.sabado','solic_detalles.nom_contrato',
-                                    'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
-                                    'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at' ,'solic_detalles.fecha_program','solic_detalles.hora_program')
+                        $solicitudes = $query
                             ->where($criterio,'=',$buscar)
                             ->orderBy('solic_detalles.status','asc')
                             ->orderBy('solic_detalles.created_at','asc')
@@ -121,34 +114,14 @@ class SolicDetallesController extends Controller
                     }
                     case 'lotes.fraccionamiento_id':{
                         if($etapa == '' && $manzana == '' && $lote == ''){
-                            $solicitudes = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                            ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('lotes','creditos.lote_id','=','lotes.id')
-                            ->select('solic_detalles.id','contratos.id as folio','creditos.fraccionamiento',
-                                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
-                                    'solic_detalles.lunes','solic_detalles.martes',
-                                    'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                    'solic_detalles.sabado','solic_detalles.nom_contrato',
-                                    'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
-                                    'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at' ,'solic_detalles.fecha_program','solic_detalles.hora_program')
+                            $solicitudes = $query
                             ->where($criterio,'=',$buscar)
                             ->orderBy('solic_detalles.status','asc')
                             ->orderBy('solic_detalles.created_at','asc')
                             ->paginate(8);
                         }
                         elseif($etapa != '' && $manzana == '' && $lote == ''){
-                            $solicitudes = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                            ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('lotes','creditos.lote_id','=','lotes.id')
-                            ->select('solic_detalles.id','contratos.id as folio','creditos.fraccionamiento',
-                                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
-                                    'solic_detalles.lunes','solic_detalles.martes',
-                                    'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                    'solic_detalles.sabado','solic_detalles.nom_contrato',
-                                    'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
-                                    'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at' ,'solic_detalles.fecha_program','solic_detalles.hora_program')
+                            $solicitudes = $query
                             ->where($criterio,'=',$buscar)
                             ->where('lotes.etapa_id','=',$etapa)
                             ->orderBy('solic_detalles.status','asc')
@@ -156,17 +129,7 @@ class SolicDetallesController extends Controller
                             ->paginate(8);
                         }
                         elseif($etapa != '' && $manzana != '' && $lote == ''){
-                            $solicitudes = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                            ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('lotes','creditos.lote_id','=','lotes.id')
-                            ->select('solic_detalles.id','contratos.id as folio','creditos.fraccionamiento',
-                                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
-                                    'solic_detalles.lunes','solic_detalles.martes',
-                                    'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                    'solic_detalles.sabado','solic_detalles.nom_contrato',
-                                    'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
-                                    'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at' ,'solic_detalles.fecha_program','solic_detalles.hora_program')
+                            $solicitudes = $query
                             ->where($criterio,'=',$buscar)
                             ->where('lotes.etapa_id','=',$etapa)
                             ->where('lotes.manzana','=',$manzana)
@@ -175,17 +138,7 @@ class SolicDetallesController extends Controller
                             ->paginate(8);
                         }
                         elseif($etapa != '' && $manzana != '' && $lote != ''){
-                            $solicitudes = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                            ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('lotes','creditos.lote_id','=','lotes.id')
-                            ->select('solic_detalles.id','contratos.id as folio','creditos.fraccionamiento',
-                                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
-                                    'solic_detalles.lunes','solic_detalles.martes',
-                                    'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                    'solic_detalles.sabado','solic_detalles.nom_contrato',
-                                    'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
-                                    'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at' ,'solic_detalles.fecha_program','solic_detalles.hora_program')
+                            $solicitudes = $query
                             ->where($criterio,'=',$buscar)
                             ->where('lotes.etapa_id','=',$etapa)
                             ->where('lotes.manzana','=',$manzana)
@@ -195,17 +148,7 @@ class SolicDetallesController extends Controller
                             ->paginate(8);
                         }
                         elseif($etapa != '' && $manzana == '' && $lote != ''){
-                            $solicitudes = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                            ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('lotes','creditos.lote_id','=','lotes.id')
-                            ->select('solic_detalles.id','contratos.id as folio','creditos.fraccionamiento',
-                                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
-                                    'solic_detalles.lunes','solic_detalles.martes',
-                                    'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                    'solic_detalles.sabado','solic_detalles.nom_contrato',
-                                    'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
-                                    'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at' ,'solic_detalles.fecha_program','solic_detalles.hora_program')
+                            $solicitudes = $query
                             ->where($criterio,'=',$buscar)
                             ->where('lotes.etapa_id','=',$etapa)
                             ->where('lotes.num_lote','=',$lote)
@@ -214,17 +157,7 @@ class SolicDetallesController extends Controller
                             ->paginate(8);
                         }
                         elseif($etapa == '' && $manzana == '' && $lote != ''){
-                            $solicitudes = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                            ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('lotes','creditos.lote_id','=','lotes.id')
-                            ->select('solic_detalles.id','contratos.id as folio','creditos.fraccionamiento',
-                                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
-                                    'solic_detalles.lunes','solic_detalles.martes',
-                                    'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                    'solic_detalles.sabado','solic_detalles.nom_contrato',
-                                    'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
-                                    'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at' ,'solic_detalles.fecha_program','solic_detalles.hora_program')
+                            $solicitudes = $query
                             ->where($criterio,'=',$buscar)
                             ->where('lotes.num_lote','=',$lote)
                             ->orderBy('solic_detalles.status','asc')
@@ -234,17 +167,7 @@ class SolicDetallesController extends Controller
                         break;
                     }
                     default:{
-                        $solicitudes = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                            ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('lotes','creditos.lote_id','=','lotes.id')
-                            ->select('solic_detalles.id','contratos.id as folio','creditos.fraccionamiento',
-                                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
-                                    'solic_detalles.lunes','solic_detalles.martes',
-                                    'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                    'solic_detalles.sabado','solic_detalles.nom_contrato',
-                                    'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
-                                    'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at' ,'solic_detalles.fecha_program','solic_detalles.hora_program')
+                        $solicitudes = $query
                             ->where($criterio,'like','%'.$buscar.'%')
                             ->orderBy('solic_detalles.status','asc')
                             ->orderBy('solic_detalles.created_at','asc')
@@ -257,17 +180,7 @@ class SolicDetallesController extends Controller
         }
         else{
             if($buscar == ''){
-                $solicitudes = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                    ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                    ->join('creditos','contratos.id','=','creditos.id')
-                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                    ->select('solic_detalles.id','contratos.id as folio','creditos.fraccionamiento',
-                            'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
-                            'solic_detalles.lunes','solic_detalles.martes',
-                            'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                            'solic_detalles.sabado','solic_detalles.nom_contrato',
-                            'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
-                            'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at')
+                $solicitudes = $query
                     ->where('solic_detalles.status','=',$status)
                     ->orderBy('solic_detalles.status','asc')
                     ->orderBy('solic_detalles.created_at','asc')
@@ -276,17 +189,7 @@ class SolicDetallesController extends Controller
             else{
                 switch($criterio){
                     case 'contratos.id':{
-                        $solicitudes = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                            ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('lotes','creditos.lote_id','=','lotes.id')
-                            ->select('solic_detalles.id','contratos.id as folio','creditos.fraccionamiento',
-                                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
-                                    'solic_detalles.lunes','solic_detalles.martes',
-                                    'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                    'solic_detalles.sabado','solic_detalles.nom_contrato',
-                                    'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
-                                    'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at')
+                        $solicitudes = $query
                             ->where($criterio,'=',$buscar)
                             ->where('solic_detalles.status','=',$status)
                             ->orderBy('solic_detalles.status','asc')
@@ -296,17 +199,7 @@ class SolicDetallesController extends Controller
                     }
                     case 'lotes.fraccionamiento_id':{
                         if($etapa == '' && $manzana == '' && $lote == ''){
-                            $solicitudes = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                            ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('lotes','creditos.lote_id','=','lotes.id')
-                            ->select('solic_detalles.id','contratos.id as folio','creditos.fraccionamiento',
-                                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
-                                    'solic_detalles.lunes','solic_detalles.martes',
-                                    'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                    'solic_detalles.sabado','solic_detalles.nom_contrato',
-                                    'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
-                                    'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at')
+                            $solicitudes = $query
                             ->where($criterio,'=',$buscar)
                             ->where('solic_detalles.status','=',$status)
                             ->orderBy('solic_detalles.status','asc')
@@ -314,17 +207,7 @@ class SolicDetallesController extends Controller
                             ->paginate(8);
                         }
                         elseif($etapa != '' && $manzana == '' && $lote == ''){
-                            $solicitudes = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                            ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('lotes','creditos.lote_id','=','lotes.id')
-                            ->select('solic_detalles.id','contratos.id as folio','creditos.fraccionamiento',
-                                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
-                                    'solic_detalles.lunes','solic_detalles.martes',
-                                    'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                    'solic_detalles.sabado','solic_detalles.nom_contrato',
-                                    'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
-                                    'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at')
+                            $solicitudes = $query
                             ->where($criterio,'=',$buscar)
                             ->where('solic_detalles.status','=',$status)
                             ->where('lotes.etapa_id','=',$etapa)
@@ -333,17 +216,7 @@ class SolicDetallesController extends Controller
                             ->paginate(8);
                         }
                         elseif($etapa != '' && $manzana != '' && $lote == ''){
-                            $solicitudes = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                            ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('lotes','creditos.lote_id','=','lotes.id')
-                            ->select('solic_detalles.id','contratos.id as folio','creditos.fraccionamiento',
-                                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
-                                    'solic_detalles.lunes','solic_detalles.martes',
-                                    'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                    'solic_detalles.sabado','solic_detalles.nom_contrato',
-                                    'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
-                                    'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at')
+                            $solicitudes = $query
                             ->where($criterio,'=',$buscar)
                             ->where('solic_detalles.status','=',$status)
                             ->where('lotes.etapa_id','=',$etapa)
@@ -353,17 +226,7 @@ class SolicDetallesController extends Controller
                             ->paginate(8);
                         }
                         elseif($etapa != '' && $manzana != '' && $lote != ''){
-                            $solicitudes = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                            ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('lotes','creditos.lote_id','=','lotes.id')
-                            ->select('solic_detalles.id','contratos.id as folio','creditos.fraccionamiento',
-                                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
-                                    'solic_detalles.lunes','solic_detalles.martes',
-                                    'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                    'solic_detalles.sabado','solic_detalles.nom_contrato',
-                                    'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
-                                    'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at')
+                            $solicitudes = $query
                             ->where($criterio,'=',$buscar)
                             ->where('solic_detalles.status','=',$status)
                             ->where('lotes.etapa_id','=',$etapa)
@@ -374,17 +237,7 @@ class SolicDetallesController extends Controller
                             ->paginate(8);
                         }
                         elseif($etapa != '' && $manzana == '' && $lote != ''){
-                            $solicitudes = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                            ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('lotes','creditos.lote_id','=','lotes.id')
-                            ->select('solic_detalles.id','contratos.id as folio','creditos.fraccionamiento',
-                                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
-                                    'solic_detalles.lunes','solic_detalles.martes',
-                                    'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                    'solic_detalles.sabado','solic_detalles.nom_contrato',
-                                    'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
-                                    'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at')
+                            $solicitudes = $query
                             ->where($criterio,'=',$buscar)
                             ->where('solic_detalles.status','=',$status)
                             ->where('lotes.etapa_id','=',$etapa)
@@ -394,17 +247,7 @@ class SolicDetallesController extends Controller
                             ->paginate(8);
                         }
                         elseif($etapa == '' && $manzana == '' && $lote != ''){
-                            $solicitudes = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                            ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('lotes','creditos.lote_id','=','lotes.id')
-                            ->select('solic_detalles.id','contratos.id as folio','creditos.fraccionamiento',
-                                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
-                                    'solic_detalles.lunes','solic_detalles.martes',
-                                    'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                    'solic_detalles.sabado','solic_detalles.nom_contrato',
-                                    'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
-                                    'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at')
+                            $solicitudes = $query
                             ->where($criterio,'=',$buscar)
                             ->where('solic_detalles.status','=',$status)
                             ->where('lotes.num_lote','=',$lote)
@@ -415,17 +258,7 @@ class SolicDetallesController extends Controller
                         break;
                     }
                     default:{
-                        $solicitudes = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                            ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('lotes','creditos.lote_id','=','lotes.id')
-                            ->select('solic_detalles.id','contratos.id as folio','creditos.fraccionamiento',
-                                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
-                                    'solic_detalles.lunes','solic_detalles.martes',
-                                    'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                    'solic_detalles.sabado','solic_detalles.nom_contrato',
-                                    'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
-                                    'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at')
+                        $solicitudes = $query
                             ->where($criterio,'like','%'.$buscar.'%')
                             ->where('solic_detalles.status','=',$status)
                             ->orderBy('solic_detalles.status','asc')
@@ -509,18 +342,21 @@ class SolicDetallesController extends Controller
         $criterio = $request->criterio;
         $status = $request->status;
 
+        $query = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
+            ->join('creditos','contratos.id','=','creditos.id')
+            ->join('lotes','creditos.lote_id','=','lotes.id')
+            ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
+            ->select('contratos.id as folio','solic_detalles.id as solicitudID','solic_detalles.cliente',
+                 'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
+                 'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
+                 'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
+                 'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
+                 'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id',
+                 'solic_detalles.fecha_program','solic_detalles.hora_program');
+
         if(Auth::user()->rol_id == 1){
             if($buscar == ''){
-                $contratos = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                ->join('creditos','contratos.id','=','creditos.id')
-                ->join('lotes','creditos.lote_id','=','lotes.id')
-                ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                ->select('contratos.id as folio','solic_detalles.id as solicitudID','solic_detalles.cliente',
-                         'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
-                         'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                         'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                         'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
-                         'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
+                $contratos = $query
                          ->where('contratos.entregado','=',1)
                          ->where('solic_detalles.fecha_program','!=',NULL)
                          ->orderBy('solic_detalles.fecha_program','ASC')
@@ -529,16 +365,7 @@ class SolicDetallesController extends Controller
                 switch($criterio){
                     case 'lotes.fraccionamiento_id': {
                         if($buscar != '' && $b_etapa != '' && $b_manzana != '' && $b_lote != '' ){
-                            $contratos = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('lotes','creditos.lote_id','=','lotes.id')
-                            ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                            ->select('contratos.id as folio','solic_detalles.id as solicitudID','solic_detalles.cliente',
-                                        'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
-                                        'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                        'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                        'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
-                                        'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
+                            $contratos = $query
                                         ->where('contratos.entregado','=',1)
                                         ->where('solic_detalles.fecha_program','!=',NULL)
                                         ->where($criterio,'=',$buscar)
@@ -548,16 +375,7 @@ class SolicDetallesController extends Controller
                                         ->orderBy('solic_detalles.fecha_program','ASC')
                                         ->paginate(10);
                         }elseif($buscar != '' && $b_etapa != '' && $b_manzana != '' && $b_lote == ''){
-                            $contratos = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('lotes','creditos.lote_id','=','lotes.id')
-                            ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                            ->select('contratos.id as folio','solic_detalles.id as solicitudID','solic_detalles.cliente',
-                                        'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
-                                        'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                        'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                        'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
-                                        'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
+                            $contratos = $query
                                         ->where('contratos.entregado','=',1)
                                         ->where('solic_detalles.fecha_program','!=',NULL)
                                         ->where($criterio,'=',$buscar)
@@ -566,16 +384,7 @@ class SolicDetallesController extends Controller
                                         ->orderBy('solic_detalles.fecha_program','ASC')
                                         ->paginate(10);
                         }elseif($buscar != '' && $b_etapa != '' && $b_manzana == '' && $b_lote == ''){
-                            $contratos = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('lotes','creditos.lote_id','=','lotes.id')
-                            ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                            ->select('contratos.id as folio','solic_detalles.id as solicitudID','solic_detalles.cliente',
-                                        'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
-                                        'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                        'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                        'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
-                                        'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
+                            $contratos =$query
                                         ->where('contratos.entregado','=',1)
                                         ->where('solic_detalles.fecha_program','!=',NULL)
                                         ->where($criterio,'=',$buscar)
@@ -583,32 +392,14 @@ class SolicDetallesController extends Controller
                                         ->orderBy('solic_detalles.fecha_program','ASC')
                                         ->paginate(10);
                         }elseif($buscar != '' && $b_etapa == '' && $b_manzana == '' && $b_lote == ''){
-                            $contratos = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('lotes','creditos.lote_id','=','lotes.id')
-                            ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                            ->select('contratos.id as folio','solic_detalles.id as solicitudID','solic_detalles.cliente',
-                                        'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
-                                        'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                        'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                        'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
-                                        'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
+                            $contratos = $query
                                         ->where('contratos.entregado','=',1)
                                         ->where('solic_detalles.fecha_program','!=',NULL)
                                         ->where($criterio,'=',$buscar)
                                         ->orderBy('solic_detalles.fecha_program','ASC')
                                         ->paginate(10);
                         }elseif($buscar != '' && $b_etapa == '' && $b_manzana == '' && $b_lote != ''){
-                            $contratos = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('lotes','creditos.lote_id','=','lotes.id')
-                            ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                            ->select('contratos.id as folio','solic_detalles.id as solicitudID','solic_detalles.cliente',
-                                        'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
-                                        'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                        'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                        'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
-                                        'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
+                            $contratos = $query
                                         ->where('contratos.entregado','=',1)
                                         ->where('solic_detalles.fecha_program','!=',NULL)
                                         ->where($criterio,'=',$buscar)
@@ -616,16 +407,7 @@ class SolicDetallesController extends Controller
                                         ->orderBy('solic_detalles.fecha_program','ASC')
                                         ->paginate(10);
                         }elseif($buscar != '' && $b_etapa == '' && $b_manzana != '' && $b_lote == ''){
-                            $contratos = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('lotes','creditos.lote_id','=','lotes.id')
-                            ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                            ->select('contratos.id as folio','solic_detalles.id as solicitudID','solic_detalles.cliente',
-                                        'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
-                                        'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                        'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                        'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
-                                        'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
+                            $contratos = $query
                                         ->where('contratos.entregado','=',1)
                                         ->where('solic_detalles.fecha_program','!=',NULL)
                                         ->where($criterio,'=',$buscar)
@@ -636,16 +418,7 @@ class SolicDetallesController extends Controller
                         break;
                     }
                     default: {
-                        $contratos = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                        ->select('contratos.id as folio','solic_detalles.id as solicitudID','solic_detalles.cliente',
-                                 'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
-                                 'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                 'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                 'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
-                                 'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
+                        $contratos = $query
                                  ->where('contratos.entregado','=',1)
                                  ->where('solic_detalles.fecha_program','!=',NULL)
                                  ->where($criterio,'=',$buscar)
@@ -659,16 +432,7 @@ class SolicDetallesController extends Controller
         else{
             if($status == ''){
                 if($buscar == ''){
-                    $contratos = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                    ->join('creditos','contratos.id','=','creditos.id')
-                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                    ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                    ->select('contratos.id as folio','solic_detalles.id as solicitudID','solic_detalles.cliente',
-                             'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
-                             'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                             'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                             'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
-                             'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
+                    $contratos = $query
                              ->where('contratos.entregado','=',1)
                              ->where('solic_detalles.fecha_program','!=',NULL)
                              ->where('solic_detalles.contratista_id','=',Auth::user()->id)
@@ -679,16 +443,7 @@ class SolicDetallesController extends Controller
                     switch($criterio){
                         case 'lotes.fraccionamiento_id': {
                             if($buscar != '' && $b_etapa != '' && $b_manzana != '' && $b_lote != '' ){
-                                $contratos = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                                ->join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                                ->select('contratos.id as folio','solic_detalles.id as solicitudID','solic_detalles.cliente',
-                                            'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
-                                            'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                            'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
-                                            'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
+                                $contratos = $query
                                             ->where('contratos.entregado','=',1)
                                             ->where('solic_detalles.fecha_program','!=',NULL)
                                             ->where('solic_detalles.contratista_id','=',Auth::user()->id)
@@ -700,16 +455,7 @@ class SolicDetallesController extends Controller
                                             ->orderBy('solic_detalles.fecha_program','ASC')
                                             ->paginate(10);
                             }elseif($buscar != '' && $b_etapa != '' && $b_manzana != '' && $b_lote == ''){
-                                $contratos = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                                ->join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                                ->select('contratos.id as folio','solic_detalles.id as solicitudID','solic_detalles.cliente',
-                                            'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
-                                            'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                            'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
-                                            'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
+                                $contratos = $query
                                             ->where('contratos.entregado','=',1)
                                             ->where('solic_detalles.fecha_program','!=',NULL)
                                             ->where('solic_detalles.contratista_id','=',Auth::user()->id)
@@ -720,16 +466,7 @@ class SolicDetallesController extends Controller
                                             ->orderBy('solic_detalles.fecha_program','ASC')
                                             ->paginate(10);
                             }elseif($buscar != '' && $b_etapa != '' && $b_manzana == '' && $b_lote == ''){
-                                $contratos = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                                ->join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                                ->select('contratos.id as folio','solic_detalles.id as solicitudID','solic_detalles.cliente',
-                                            'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
-                                            'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                            'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
-                                            'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
+                                $contratos = $query
                                             ->where('contratos.entregado','=',1)
                                             ->where('solic_detalles.fecha_program','!=',NULL)
                                             ->where('solic_detalles.contratista_id','=',Auth::user()->id)
@@ -739,16 +476,7 @@ class SolicDetallesController extends Controller
                                             ->orderBy('solic_detalles.fecha_program','ASC')
                                             ->paginate(10);
                             }elseif($buscar != '' && $b_etapa == '' && $b_manzana == '' && $b_lote == ''){
-                                $contratos = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                                ->join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                                ->select('contratos.id as folio','solic_detalles.id as solicitudID','solic_detalles.cliente',
-                                            'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
-                                            'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                            'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
-                                            'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
+                                $contratos = $query
                                             ->where('contratos.entregado','=',1)
                                             ->where('solic_detalles.fecha_program','!=',NULL)
                                             ->where('solic_detalles.contratista_id','=',Auth::user()->id)
@@ -757,16 +485,7 @@ class SolicDetallesController extends Controller
                                             ->orderBy('solic_detalles.fecha_program','ASC')
                                             ->paginate(10);
                             }elseif($buscar != '' && $b_etapa == '' && $b_manzana == '' && $b_lote != ''){
-                                $contratos = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                                ->join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                                ->select('contratos.id as folio','solic_detalles.id as solicitudID','solic_detalles.cliente',
-                                            'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
-                                            'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                            'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
-                                            'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
+                                $contratos = $query
                                             ->where('contratos.entregado','=',1)
                                             ->where('solic_detalles.fecha_program','!=',NULL)
                                             ->where('solic_detalles.contratista_id','=',Auth::user()->id)
@@ -776,16 +495,7 @@ class SolicDetallesController extends Controller
                                             ->orderBy('solic_detalles.fecha_program','ASC')
                                             ->paginate(10);
                             }elseif($buscar != '' && $b_etapa == '' && $b_manzana != '' && $b_lote == ''){
-                                $contratos = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                                ->join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                                ->select('contratos.id as folio','solic_detalles.id as solicitudID','solic_detalles.cliente',
-                                            'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
-                                            'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                            'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
-                                            'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
+                                $contratos = $query
                                             ->where('contratos.entregado','=',1)
                                             ->where('solic_detalles.fecha_program','!=',NULL)
                                             ->where('solic_detalles.contratista_id','=',Auth::user()->id)
@@ -798,16 +508,7 @@ class SolicDetallesController extends Controller
                             break;
                         }
                         default: {
-                            $contratos = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('lotes','creditos.lote_id','=','lotes.id')
-                            ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                            ->select('contratos.id as folio','solic_detalles.id as solicitudID','solic_detalles.cliente',
-                                     'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
-                                     'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                     'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                     'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
-                                     'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
+                            $contratos = $query
                                      ->where('contratos.entregado','=',1)
                                      ->where('solic_detalles.fecha_program','!=',NULL)
                                      ->where('solic_detalles.contratista_id','=',Auth::user()->id)
@@ -822,16 +523,7 @@ class SolicDetallesController extends Controller
             }
             else{
                 if($buscar == ''){
-                    $contratos = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                    ->join('creditos','contratos.id','=','creditos.id')
-                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                    ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                    ->select('contratos.id as folio','solic_detalles.id as solicitudID','solic_detalles.cliente',
-                             'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
-                             'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                             'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                             'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
-                             'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
+                    $contratos = $query
                              ->where('contratos.entregado','=',1)
                              ->where('solic_detalles.fecha_program','!=',NULL)
                              ->where('solic_detalles.status','=',2)
@@ -842,16 +534,7 @@ class SolicDetallesController extends Controller
                     switch($criterio){
                         case 'lotes.fraccionamiento_id': {
                             if($buscar != '' && $b_etapa != '' && $b_manzana != '' && $b_lote != '' ){
-                                $contratos = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                                ->join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                                ->select('contratos.id as folio','solic_detalles.id as solicitudID','solic_detalles.cliente',
-                                            'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
-                                            'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                            'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
-                                            'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
+                                $contratos = $query
                                             ->where('contratos.entregado','=',1)
                                             ->where('solic_detalles.fecha_program','!=',NULL)
                                             ->where('solic_detalles.status','=',2)
@@ -863,16 +546,7 @@ class SolicDetallesController extends Controller
                                             ->orderBy('solic_detalles.fecha_program','ASC')
                                             ->paginate(10);
                             }elseif($buscar != '' && $b_etapa != '' && $b_manzana != '' && $b_lote == ''){
-                                $contratos = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                                ->join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                                ->select('contratos.id as folio','solic_detalles.id as solicitudID','solic_detalles.cliente',
-                                            'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
-                                            'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                            'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
-                                            'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
+                                $contratos = $query
                                             ->where('contratos.entregado','=',1)
                                             ->where('solic_detalles.fecha_program','!=',NULL)
                                             ->where('solic_detalles.status','=',2)
@@ -883,16 +557,7 @@ class SolicDetallesController extends Controller
                                             ->orderBy('solic_detalles.fecha_program','ASC')
                                             ->paginate(10);
                             }elseif($buscar != '' && $b_etapa != '' && $b_manzana == '' && $b_lote == ''){
-                                $contratos = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                                ->join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                                ->select('contratos.id as folio','solic_detalles.id as solicitudID','solic_detalles.cliente',
-                                            'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
-                                            'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                            'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
-                                            'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
+                                $contratos = $query
                                             ->where('contratos.entregado','=',1)
                                             ->where('solic_detalles.fecha_program','!=',NULL)
                                             ->where('solic_detalles.status','=',2)
@@ -920,16 +585,7 @@ class SolicDetallesController extends Controller
                                             ->orderBy('solic_detalles.fecha_program','ASC')
                                             ->paginate(10);
                             }elseif($buscar != '' && $b_etapa == '' && $b_manzana == '' && $b_lote != ''){
-                                $contratos = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                                ->join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                                ->select('contratos.id as folio','solic_detalles.id as solicitudID','solic_detalles.cliente',
-                                            'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
-                                            'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                            'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
-                                            'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
+                                $contratos = $query
                                             ->where('contratos.entregado','=',1)
                                             ->where('solic_detalles.fecha_program','!=',NULL)
                                             ->where('solic_detalles.status','=',2)
@@ -939,16 +595,7 @@ class SolicDetallesController extends Controller
                                             ->orderBy('solic_detalles.fecha_program','ASC')
                                             ->paginate(10);
                             }elseif($buscar != '' && $b_etapa == '' && $b_manzana != '' && $b_lote == ''){
-                                $contratos = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                                ->join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                                ->select('contratos.id as folio','solic_detalles.id as solicitudID','solic_detalles.cliente',
-                                            'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
-                                            'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                            'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
-                                            'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
+                                $contratos = $query
                                             ->where('contratos.entregado','=',1)
                                             ->where('solic_detalles.fecha_program','!=',NULL)
                                             ->where('solic_detalles.status','=',2)
@@ -961,16 +608,7 @@ class SolicDetallesController extends Controller
                             break;
                         }
                         default: {
-                            $contratos = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('lotes','creditos.lote_id','=','lotes.id')
-                            ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
-                            ->select('contratos.id as folio','solic_detalles.id as solicitudID','solic_detalles.cliente',
-                                     'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
-                                     'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                     'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                     'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
-                                     'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
+                            $contratos = $query
                                      ->where('contratos.entregado','=',1)
                                      ->where('solic_detalles.fecha_program','!=',NULL)
                                      ->where('solic_detalles.status','=',2)

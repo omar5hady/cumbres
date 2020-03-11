@@ -57,14 +57,18 @@ class VersionModeloController extends Controller
         $manzana = $request->manzana;
         $lote = $request->lote;
 
-        if($manzana == '' && $lote == ''){
-            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+        $query = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
             ->join('etapas','lotes.etapa_id','=','etapas.id')
             ->join('modelos','lotes.modelo_id','=','modelos.id')
-            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
+            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas',
+                    'lotes.manzana','lotes.num_lote','lotes.sublote',
                     'modelos.nombre as modelo', 'modelos.archivo', 'lotes.nombre_archivo',
                     'lotes.habilitado','lotes.lote_comercial','lotes.id',
-                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.credito_puente','lotes.fecha_termino_ventas')
+                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id',
+                    'lotes.credito_puente','lotes.fecha_termino_ventas');
+
+        if($manzana == '' && $lote == ''){
+            $lotes = $query
             ->where('lotes.habilitado','=',1)
             ->where('lotes.contrato','=',0)
             ->where('lotes.fraccionamiento_id','=',$proyecto)
@@ -76,13 +80,7 @@ class VersionModeloController extends Controller
             ->orderBy('lotes.num_lote','ASC')->paginate(15);
         }
         elseif($manzana != '' && $lote == ''){
-            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-            ->join('etapas','lotes.etapa_id','=','etapas.id')
-            ->join('modelos','lotes.modelo_id','=','modelos.id')
-            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote',
-                    'modelos.nombre as modelo', 'modelos.archivo', 'lotes.nombre_archivo',
-                    'lotes.habilitado','lotes.lote_comercial','lotes.id',
-                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.credito_puente','lotes.fecha_termino_ventas')
+            $lotes = $query
             ->where('lotes.habilitado','=',1)
             ->where('lotes.contrato','=',0)
             ->where('lotes.fraccionamiento_id','=',$proyecto)
@@ -95,13 +93,7 @@ class VersionModeloController extends Controller
             ->orderBy('lotes.num_lote','ASC')->paginate(15);
         }
         elseif($manzana != '' && $lote != ''){
-            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-            ->join('etapas','lotes.etapa_id','=','etapas.id')
-            ->join('modelos','lotes.modelo_id','=','modelos.id')
-            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote',
-                    'modelos.nombre as modelo', 'modelos.archivo', 'lotes.nombre_archivo',
-                    'lotes.habilitado','lotes.lote_comercial','lotes.id',
-                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.credito_puente','lotes.fecha_termino_ventas')
+            $lotes = $query
             ->where('lotes.habilitado','=',1)
             ->where('lotes.contrato','=',0)
             ->where('lotes.fraccionamiento_id','=',$proyecto)
@@ -115,13 +107,7 @@ class VersionModeloController extends Controller
             ->orderBy('lotes.num_lote','ASC')->paginate(15);
         }
         elseif($manzana == '' && $lote != ''){
-            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-            ->join('etapas','lotes.etapa_id','=','etapas.id')
-            ->join('modelos','lotes.modelo_id','=','modelos.id')
-            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote',
-                    'modelos.nombre as modelo', 'modelos.archivo', 'lotes.nombre_archivo',
-                    'lotes.habilitado','lotes.lote_comercial','lotes.id',
-                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.credito_puente','lotes.fecha_termino_ventas')
+            $lotes = $query
             ->where('lotes.habilitado','=',1)
             ->where('lotes.contrato','=',0)
             ->where('lotes.fraccionamiento_id','=',$proyecto)

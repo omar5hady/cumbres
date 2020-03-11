@@ -24,18 +24,26 @@ class InstSeleccionadasController extends Controller
         $b_cobrados = $request->b_cobrados;
         $criterio = $request->criterio;
 
+        $query = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+            ->join('contratos','contratos.id','=','creditos.id')
+            ->join('lotes','lotes.id','=','creditos.lote_id')
+            ->join('personal','personal.id','=','creditos.prospecto_id')
+            ->select('contratos.id as folio', 'lotes.credito_puente',
+                    'creditos.fraccionamiento as proyecto',
+                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                    'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
+                    'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                    'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado');
+
+        $queryCont = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+            ->join('contratos','contratos.id','=','creditos.id')
+            ->join('lotes','lotes.id','=','creditos.lote_id')
+            ->join('personal','personal.id','=','creditos.prospecto_id')
+            ->select('contratos.id as folio');
+
         if($b_cobrados == 0){
             if($buscar == '' && $criterio != 'personal.nombre'){
-                $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                    ->join('contratos','contratos.id','=','creditos.id')
-                    ->join('lotes','lotes.id','=','creditos.lote_id')
-                    ->join('personal','personal.id','=','creditos.prospecto_id')
-                    ->select('contratos.id as folio', 'lotes.credito_puente',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                            'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                            'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                            'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                $creditos = $query
                     ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
                     ->where('inst_seleccionadas.elegido', '=', 1)
                     ->where('contratos.status', '=', 3)
@@ -49,11 +57,7 @@ class InstSeleccionadasController extends Controller
                     
                     ->paginate(10);
 
-                    $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('contratos','contratos.id','=','creditos.id')
-                        ->join('lotes','lotes.id','=','creditos.lote_id')
-                        ->join('personal','personal.id','=','creditos.prospecto_id')
-                        ->select('contratos.id as folio')
+                    $contador = $queryCont
                         ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
                         ->where('inst_seleccionadas.elegido', '=', 1)
                         ->where('contratos.status', '=', 3)
@@ -71,16 +75,7 @@ class InstSeleccionadasController extends Controller
                 switch($criterio){
                     case 'personal.nombre':{
                         if($buscar2 == ''){
-                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio', 'lotes.credito_puente',
-                                        'creditos.fraccionamiento as proyecto',
-                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                            $creditos = $query
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -95,11 +90,7 @@ class InstSeleccionadasController extends Controller
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
 
-                                $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                    ->join('contratos','contratos.id','=','creditos.id')
-                                    ->join('lotes','lotes.id','=','creditos.lote_id')
-                                    ->join('personal','personal.id','=','creditos.prospecto_id')
-                                    ->select('contratos.id as folio')
+                                $contador = $queryCont
                                     ->where('inst_seleccionadas.elegido', '=', 1)
                                     ->where('contratos.status', '=', 3)
                                     ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -115,16 +106,7 @@ class InstSeleccionadasController extends Controller
                                     ->count();
                         }
                         elseif ($buscar2 != '' && $buscar == '') {
-                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio', 'lotes.credito_puente',
-                                        'creditos.fraccionamiento as proyecto',
-                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                            $creditos = $query
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -139,11 +121,7 @@ class InstSeleccionadasController extends Controller
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
 
-                                $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                    ->join('contratos','contratos.id','=','creditos.id')
-                                    ->join('lotes','lotes.id','=','creditos.lote_id')
-                                    ->join('personal','personal.id','=','creditos.prospecto_id')
-                                    ->select('contratos.id as folio')
+                                $contador = $queryCont
                                     ->where('inst_seleccionadas.elegido', '=', 1)
                                     ->where('contratos.status', '=', 3)
                                     ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -159,16 +137,7 @@ class InstSeleccionadasController extends Controller
                                     ->count();
                         }
                         else{
-                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio', 'lotes.credito_puente',
-                                        'creditos.fraccionamiento as proyecto',
-                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                            $creditos = $query
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -186,11 +155,7 @@ class InstSeleccionadasController extends Controller
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
                             
-                                $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                    ->join('contratos','contratos.id','=','creditos.id')
-                                    ->join('lotes','lotes.id','=','creditos.lote_id')
-                                    ->join('personal','personal.id','=','creditos.prospecto_id')
-                                    ->select('contratos.id as folio')
+                                $contador = $queryCont
                                     ->where('inst_seleccionadas.elegido', '=', 1)
                                     ->where('contratos.status', '=', 3)
                                     ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -213,16 +178,7 @@ class InstSeleccionadasController extends Controller
                     }
                     case 'creditos.fraccionamiento': {
                         if($buscar2 == '' && $buscar3 == '' && $buscar4 == ''){
-                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio', 'lotes.credito_puente',
-                                        'creditos.fraccionamiento as proyecto',
-                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                            $creditos = $query
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -237,11 +193,7 @@ class InstSeleccionadasController extends Controller
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
 
-                            $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio')
+                            $contador = $queryCont
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -257,16 +209,7 @@ class InstSeleccionadasController extends Controller
                                 ->count();
                         }
                         elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 == '') {
-                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio', 'lotes.credito_puente',
-                                        'creditos.fraccionamiento as proyecto',
-                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                            $creditos = $query
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -283,11 +226,7 @@ class InstSeleccionadasController extends Controller
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
 
-                            $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio')
+                            $contador = $queryCont
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -305,16 +244,7 @@ class InstSeleccionadasController extends Controller
                                 ->count();
                         }
                         elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 == '') {
-                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio', 'lotes.credito_puente',
-                                        'creditos.fraccionamiento as proyecto',
-                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                            $creditos = $query
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -333,11 +263,7 @@ class InstSeleccionadasController extends Controller
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
 
-                            $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio')
+                            $contador = $queryCont
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -357,16 +283,7 @@ class InstSeleccionadasController extends Controller
                                 ->count();
                         }
                         elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 != '') {
-                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio', 'lotes.credito_puente',
-                                        'creditos.fraccionamiento as proyecto',
-                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                            $creditos = $query
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -388,11 +305,7 @@ class InstSeleccionadasController extends Controller
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
 
-                            $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio')
+                            $contador = $queryCont
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -415,16 +328,7 @@ class InstSeleccionadasController extends Controller
                                 ->count();
                         }
                         elseif ($buscar2 == '' && $buscar3 == '' && $buscar4 != '') {
-                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio', 'lotes.credito_puente',
-                                        'creditos.fraccionamiento as proyecto',
-                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                            $creditos = $query
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -441,11 +345,7 @@ class InstSeleccionadasController extends Controller
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
 
-                            $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio')
+                            $contador = $queryCont
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -463,16 +363,7 @@ class InstSeleccionadasController extends Controller
                                 ->count();
                         }
                         elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 != '') {
-                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio', 'lotes.credito_puente',
-                                        'creditos.fraccionamiento as proyecto',
-                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                            $creditos = $query
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -491,11 +382,7 @@ class InstSeleccionadasController extends Controller
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
 
-                            $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio')
+                            $contador = $queryCont
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -518,16 +405,7 @@ class InstSeleccionadasController extends Controller
                     }
     
                     case 'contratos.id': {
-                        $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio', 'lotes.credito_puente',
-                                        'creditos.fraccionamiento as proyecto',
-                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                        $creditos = $query
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -542,11 +420,7 @@ class InstSeleccionadasController extends Controller
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
 
-                            $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio')
+                            $contador = $queryCont
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -567,16 +441,7 @@ class InstSeleccionadasController extends Controller
         }
         else{
             if($buscar == '' && $criterio != 'personal.nombre'){
-                $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                    ->join('contratos','contratos.id','=','creditos.id')
-                    ->join('lotes','lotes.id','=','creditos.lote_id')
-                    ->join('personal','personal.id','=','creditos.prospecto_id')
-                    ->select('contratos.id as folio', 'lotes.credito_puente',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                            'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                            'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                            'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                $creditos = $query
                     ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
                     ->where('inst_seleccionadas.elegido', '=', 1)
                     ->where('contratos.status', '=', 3)
@@ -590,11 +455,7 @@ class InstSeleccionadasController extends Controller
                     
                     ->paginate(10);
 
-                    $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                    ->join('contratos','contratos.id','=','creditos.id')
-                    ->join('lotes','lotes.id','=','creditos.lote_id')
-                    ->join('personal','personal.id','=','creditos.prospecto_id')
-                    ->select('contratos.id as folio')
+                    $contador = $queryCont
                     ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
                     ->where('inst_seleccionadas.elegido', '=', 1)
                     ->where('contratos.status', '=', 3)
@@ -612,16 +473,7 @@ class InstSeleccionadasController extends Controller
                 switch($criterio){
                     case 'personal.nombre':{
                         if($buscar2 == ''){
-                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio', 'lotes.credito_puente',
-                                        'creditos.fraccionamiento as proyecto',
-                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                            $creditos = $query
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -636,11 +488,7 @@ class InstSeleccionadasController extends Controller
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
 
-                                $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio')
+                            $contador = $queryCont
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -656,16 +504,7 @@ class InstSeleccionadasController extends Controller
                                 ->count();
                         }
                         elseif ($buscar2 != '' && $buscar == '') {
-                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio', 'lotes.credito_puente',
-                                        'creditos.fraccionamiento as proyecto',
-                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                            $creditos = $query
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -680,11 +519,7 @@ class InstSeleccionadasController extends Controller
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
 
-                                $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio')
+                            $contador = $queryCont
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -700,16 +535,7 @@ class InstSeleccionadasController extends Controller
                                 ->count();
                         }
                         else{
-                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio', 'lotes.credito_puente',
-                                        'creditos.fraccionamiento as proyecto',
-                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                            $creditos = $query
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -727,11 +553,7 @@ class InstSeleccionadasController extends Controller
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
 
-                                $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio')
+                            $contador = $queryCont
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -754,16 +576,7 @@ class InstSeleccionadasController extends Controller
                     }
                     case 'creditos.fraccionamiento': {
                         if($buscar2 == '' && $buscar3 == '' && $buscar4 == ''){
-                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio', 'lotes.credito_puente',
-                                        'creditos.fraccionamiento as proyecto',
-                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                            $creditos = $query
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -778,11 +591,7 @@ class InstSeleccionadasController extends Controller
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
 
-                                $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio')
+                            $contador = $queryCont
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -798,16 +607,7 @@ class InstSeleccionadasController extends Controller
                                 ->count();
                         }
                         elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 == '') {
-                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio', 'lotes.credito_puente',
-                                        'creditos.fraccionamiento as proyecto',
-                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                            $creditos = $query
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -824,11 +624,7 @@ class InstSeleccionadasController extends Controller
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
 
-                                $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio')
+                            $contador = $queryCont
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -846,16 +642,7 @@ class InstSeleccionadasController extends Controller
                                 ->count();
                         }
                         elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 == '') {
-                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio', 'lotes.credito_puente',
-                                        'creditos.fraccionamiento as proyecto',
-                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                            $creditos = $query
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -874,11 +661,7 @@ class InstSeleccionadasController extends Controller
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
 
-                                $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio')
+                            $contador = $queryCont
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -898,16 +681,7 @@ class InstSeleccionadasController extends Controller
                                 ->count();
                         }
                         elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 != '') {
-                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio', 'lotes.credito_puente',
-                                        'creditos.fraccionamiento as proyecto',
-                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                            $creditos = $query
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -929,11 +703,7 @@ class InstSeleccionadasController extends Controller
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
 
-                                $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio')
+                            $contador = $queryCont
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -956,16 +726,7 @@ class InstSeleccionadasController extends Controller
                                 ->count();
                         }
                         elseif ($buscar2 == '' && $buscar3 == '' && $buscar4 != '') {
-                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio', 'lotes.credito_puente',
-                                        'creditos.fraccionamiento as proyecto',
-                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                            $creditos = $query
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -982,11 +743,7 @@ class InstSeleccionadasController extends Controller
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
 
-                                $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio')
+                            $contador = $queryCont
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -1004,16 +761,7 @@ class InstSeleccionadasController extends Controller
                                 ->count();
                         }
                         elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 != '') {
-                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio', 'lotes.credito_puente',
-                                        'creditos.fraccionamiento as proyecto',
-                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                            $creditos = $query
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -1032,11 +780,7 @@ class InstSeleccionadasController extends Controller
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
 
-                                $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio')
+                            $contador = $queryCont
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -1059,16 +803,7 @@ class InstSeleccionadasController extends Controller
                     }
     
                     case 'contratos.id': {
-                        $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio', 'lotes.credito_puente',
-                                        'creditos.fraccionamiento as proyecto',
-                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                        $creditos = $query
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -1083,11 +818,7 @@ class InstSeleccionadasController extends Controller
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
 
-                                $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                                ->join('contratos','contratos.id','=','creditos.id')
-                                ->join('lotes','lotes.id','=','creditos.lote_id')
-                                ->join('personal','personal.id','=','creditos.prospecto_id')
-                                ->select('contratos.id as folio')
+                        $contador = $queryCont
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
@@ -1145,37 +876,28 @@ class InstSeleccionadasController extends Controller
         $fecha2 = $request->fecha2;
         $banco = $request->banco;
 
+        $query = Dep_credito::join('inst_seleccionadas','inst_seleccionadas.id','=','dep_creditos.inst_sel_id')
+            ->join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+            ->join('contratos','contratos.id','=','creditos.id')
+            ->join('lotes','lotes.id','=','creditos.lote_id')
+            ->join('personal','personal.id','=','creditos.prospecto_id')
+            ->select('contratos.id as folio',
+                'creditos.fraccionamiento as proyecto',
+                'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                'personal.nombre','personal.apellidos', 
+                'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                'dep_creditos.cant_depo', 'dep_creditos.banco', 'dep_creditos.fecha_deposito'
+            );
+
         
         if($fecha1 != '' && $fecha2 != ''){
             if($banco == ''){
-                $depositos = Dep_credito::join('inst_seleccionadas','inst_seleccionadas.id','=','dep_creditos.inst_sel_id')
-                ->join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                ->join('contratos','contratos.id','=','creditos.id')
-                ->join('lotes','lotes.id','=','creditos.lote_id')
-                ->join('personal','personal.id','=','creditos.prospecto_id')
-                ->select('contratos.id as folio',
-                        'creditos.fraccionamiento as proyecto',
-                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                        'personal.nombre','personal.apellidos', 
-                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                        'dep_creditos.cant_depo', 'dep_creditos.banco', 'dep_creditos.fecha_deposito'
-                        )
+                $depositos = $query
                         ->whereBetween('dep_creditos.fecha_deposito', [$fecha1, $fecha2])
                         ->orderBy('dep_creditos.fecha_deposito','desc')->paginate(10);
             }
             else{
-                $depositos = Dep_credito::join('inst_seleccionadas','inst_seleccionadas.id','=','dep_creditos.inst_sel_id')
-                ->join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                ->join('contratos','contratos.id','=','creditos.id')
-                ->join('lotes','lotes.id','=','creditos.lote_id')
-                ->join('personal','personal.id','=','creditos.prospecto_id')
-                ->select('contratos.id as folio',
-                        'creditos.fraccionamiento as proyecto',
-                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                        'personal.nombre','personal.apellidos', 
-                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                        'dep_creditos.cant_depo', 'dep_creditos.banco', 'dep_creditos.fecha_deposito'
-                        )
+                $depositos = $query
                         ->whereBetween('dep_creditos.fecha_deposito', [$fecha1, $fecha2])
                         ->where('dep_creditos.banco','=',$banco)
                         ->orderBy('dep_creditos.fecha_deposito','desc')->paginate(10);
@@ -1183,32 +905,10 @@ class InstSeleccionadasController extends Controller
         }
         else{
             if($banco == ''){
-                $depositos = Dep_credito::join('inst_seleccionadas','inst_seleccionadas.id','=','dep_creditos.inst_sel_id')
-                ->join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                ->join('contratos','contratos.id','=','creditos.id')
-                ->join('lotes','lotes.id','=','creditos.lote_id')
-                ->join('personal','personal.id','=','creditos.prospecto_id')
-                ->select('contratos.id as folio',
-                        'creditos.fraccionamiento as proyecto',
-                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                        'personal.nombre','personal.apellidos', 
-                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                        'dep_creditos.cant_depo', 'dep_creditos.banco', 'dep_creditos.fecha_deposito'
-                        )->orderBy('dep_creditos.fecha_deposito','desc')->paginate(10);
+                $depositos = $query->orderBy('dep_creditos.fecha_deposito','desc')->paginate(10);
             }
             else{
-                $depositos = Dep_credito::join('inst_seleccionadas','inst_seleccionadas.id','=','dep_creditos.inst_sel_id')
-                ->join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                ->join('contratos','contratos.id','=','creditos.id')
-                ->join('lotes','lotes.id','=','creditos.lote_id')
-                ->join('personal','personal.id','=','creditos.prospecto_id')
-                ->select('contratos.id as folio',
-                        'creditos.fraccionamiento as proyecto',
-                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                        'personal.nombre','personal.apellidos', 
-                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                        'dep_creditos.cant_depo', 'dep_creditos.banco', 'dep_creditos.fecha_deposito'
-                        )
+                $depositos = $query
                         ->where('dep_creditos.banco','=',$banco)
                         ->orderBy('dep_creditos.fecha_deposito','desc')->paginate(10);
             }
@@ -1236,36 +936,27 @@ class InstSeleccionadasController extends Controller
         $fecha2 = $request->fecha2;
         $banco = $request->banco;
 
+        $query =  Dep_credito::join('inst_seleccionadas','inst_seleccionadas.id','=','dep_creditos.inst_sel_id')
+            ->join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+            ->join('contratos','contratos.id','=','creditos.id')
+            ->join('lotes','lotes.id','=','creditos.lote_id')
+            ->join('personal','personal.id','=','creditos.prospecto_id')
+            ->select('contratos.id as folio',
+                'creditos.fraccionamiento as proyecto',
+                'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                'personal.nombre','personal.apellidos', 
+                'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                'dep_creditos.cant_depo', 'dep_creditos.banco', 'dep_creditos.fecha_deposito'
+            );
+
         if($fecha1 != '' && $fecha2 != ''){
             if($banco == ''){
-                $depositos = Dep_credito::join('inst_seleccionadas','inst_seleccionadas.id','=','dep_creditos.inst_sel_id')
-                ->join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                ->join('contratos','contratos.id','=','creditos.id')
-                ->join('lotes','lotes.id','=','creditos.lote_id')
-                ->join('personal','personal.id','=','creditos.prospecto_id')
-                ->select('contratos.id as folio',
-                        'creditos.fraccionamiento as proyecto',
-                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                        'personal.nombre','personal.apellidos', 
-                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                        'dep_creditos.cant_depo', 'dep_creditos.banco', 'dep_creditos.fecha_deposito'
-                        )
+                $depositos = $query
                         ->whereBetween('dep_creditos.fecha_deposito', [$fecha1, $fecha2])
                         ->orderBy('dep_creditos.fecha_deposito','desc')->get();
             }
             else{
-                $depositos = Dep_credito::join('inst_seleccionadas','inst_seleccionadas.id','=','dep_creditos.inst_sel_id')
-                ->join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                ->join('contratos','contratos.id','=','creditos.id')
-                ->join('lotes','lotes.id','=','creditos.lote_id')
-                ->join('personal','personal.id','=','creditos.prospecto_id')
-                ->select('contratos.id as folio',
-                        'creditos.fraccionamiento as proyecto',
-                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                        'personal.nombre','personal.apellidos', 
-                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                        'dep_creditos.cant_depo', 'dep_creditos.banco', 'dep_creditos.fecha_deposito'
-                        )
+                $depositos = $query
                         ->whereBetween('dep_creditos.fecha_deposito', [$fecha1, $fecha2])
                         ->where('dep_creditos.banco','=',$banco)
                         ->orderBy('dep_creditos.fecha_deposito','desc')->get();
@@ -1273,32 +964,10 @@ class InstSeleccionadasController extends Controller
         }
         else{
             if($banco == ''){
-                $depositos = Dep_credito::join('inst_seleccionadas','inst_seleccionadas.id','=','dep_creditos.inst_sel_id')
-                ->join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                ->join('contratos','contratos.id','=','creditos.id')
-                ->join('lotes','lotes.id','=','creditos.lote_id')
-                ->join('personal','personal.id','=','creditos.prospecto_id')
-                ->select('contratos.id as folio',
-                        'creditos.fraccionamiento as proyecto',
-                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                        'personal.nombre','personal.apellidos', 
-                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                        'dep_creditos.cant_depo', 'dep_creditos.banco', 'dep_creditos.fecha_deposito'
-                        )->orderBy('dep_creditos.fecha_deposito','desc')->get();
+                $depositos = $query->orderBy('dep_creditos.fecha_deposito','desc')->get();
             }
             else{
-                $depositos = Dep_credito::join('inst_seleccionadas','inst_seleccionadas.id','=','dep_creditos.inst_sel_id')
-                ->join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                ->join('contratos','contratos.id','=','creditos.id')
-                ->join('lotes','lotes.id','=','creditos.lote_id')
-                ->join('personal','personal.id','=','creditos.prospecto_id')
-                ->select('contratos.id as folio',
-                        'creditos.fraccionamiento as proyecto',
-                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                        'personal.nombre','personal.apellidos', 
-                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                        'dep_creditos.cant_depo', 'dep_creditos.banco', 'dep_creditos.fecha_deposito'
-                        )
+                $depositos = $query
                         ->where('dep_creditos.banco','=',$banco)
                         ->orderBy('dep_creditos.fecha_deposito','desc')->get();
             }
@@ -1376,7 +1045,7 @@ class InstSeleccionadasController extends Controller
             $credito->cobrado = $credito->cobrado + $request->cant_depo;
 
             $contrato = Contrato::findOrFail($credito->credito_id);
-            $contrato->saldo = $contrato->saldo - $deposito->cant_depo;
+            $contrato->saldo = round($contrato->saldo - $deposito->cant_depo,2);
             $contrato->save();
 
             $credito->save();
@@ -1398,7 +1067,7 @@ class InstSeleccionadasController extends Controller
             $credito->cobrado = $credito->cobrado - $deposito->cant_depo + $request->cant_depo;
 
             $contrato = Contrato::findOrFail($credito->credito_id);
-            $contrato->saldo = $contrato->saldo + $deposito->cant_depo - $request->cant_depo;
+            $contrato->saldo = round($contrato->saldo + $deposito->cant_depo - $request->cant_depo,2);
             $contrato->save();
 
             $credito->save();
@@ -2096,20 +1765,22 @@ class InstSeleccionadasController extends Controller
         $b_lote = $request->b_lote;
         $criterio = $request->criterio;
 
+        $query = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+            ->join('contratos','contratos.id','=','creditos.id')
+            ->join('lotes','lotes.id','=','creditos.lote_id')
+            ->join('personal','personal.id','=','creditos.prospecto_id')
+            ->select('contratos.id', 'lotes.credito_puente',
+                    'creditos.fraccionamiento as proyecto',
+                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                    'personal.nombre','personal.apellidos', 
+                    DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
+                    'inst_seleccionadas.id as inst_sel_id', 'contratos.saldo',
+                    'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                    'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
+            );
+
         if($buscar == ''){
-            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                    ->join('contratos','contratos.id','=','creditos.id')
-                    ->join('lotes','lotes.id','=','creditos.lote_id')
-                    ->join('personal','personal.id','=','creditos.prospecto_id')
-                    ->select('contratos.id', 'lotes.credito_puente',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                            'personal.nombre','personal.apellidos', 
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                            'inst_seleccionadas.id as inst_sel_id', 'contratos.saldo',
-                            'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                            'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
-                            )
+            $creditos = $query
 
                     ->where('contratos.saldo','<',0)
                     ->where('inst_seleccionadas.elegido', '=', 1)
@@ -2121,19 +1792,7 @@ class InstSeleccionadasController extends Controller
         else{
             switch($criterio){
                 case 'creditos.id':{
-                    $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                    ->join('contratos','contratos.id','=','creditos.id')
-                    ->join('lotes','lotes.id','=','creditos.lote_id')
-                    ->join('personal','personal.id','=','creditos.prospecto_id')
-                    ->select('contratos.id', 'lotes.credito_puente',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                            'personal.nombre','personal.apellidos', 
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                            'inst_seleccionadas.id as inst_sel_id', 'contratos.saldo',
-                            'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                            'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
-                            )
+                    $creditos = $query
 
                         ->where('contratos.saldo','<',0)
                         ->where('inst_seleccionadas.elegido', '=', 1)
@@ -2146,19 +1805,7 @@ class InstSeleccionadasController extends Controller
                     break;
                 }
                 case 'personal.nombre':{
-                    $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                    ->join('contratos','contratos.id','=','creditos.id')
-                    ->join('lotes','lotes.id','=','creditos.lote_id')
-                    ->join('personal','personal.id','=','creditos.prospecto_id')
-                    ->select('contratos.id', 'lotes.credito_puente',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                            'personal.nombre','personal.apellidos', 
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                            'inst_seleccionadas.id as inst_sel_id', 'contratos.saldo',
-                            'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                            'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
-                            )
+                    $creditos = $query
                         ->where('contratos.saldo','<',0)
                         ->where('inst_seleccionadas.elegido', '=', 1)
                         ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
@@ -2170,19 +1817,7 @@ class InstSeleccionadasController extends Controller
                 }
                 case 'lotes.fraccionamiento_id':{
                     if($b_etapa == '' && $b_manzana == '' && $b_lote == ''){
-                        $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('contratos','contratos.id','=','creditos.id')
-                        ->join('lotes','lotes.id','=','creditos.lote_id')
-                        ->join('personal','personal.id','=','creditos.prospecto_id')
-                        ->select('contratos.id', 'lotes.credito_puente',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                            'personal.nombre','personal.apellidos', 
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                            'inst_seleccionadas.id as inst_sel_id', 'contratos.saldo',
-                            'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                            'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
-                            )
+                        $creditos = $query
                         ->where('contratos.saldo','<',0)
                         ->where('inst_seleccionadas.elegido', '=', 1)
                         ->where($criterio,'=',$buscar)
@@ -2193,19 +1828,7 @@ class InstSeleccionadasController extends Controller
                         
                     }
                     elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
-                        $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('contratos','contratos.id','=','creditos.id')
-                        ->join('lotes','lotes.id','=','creditos.lote_id')
-                        ->join('personal','personal.id','=','creditos.prospecto_id')
-                        ->select('contratos.id', 'lotes.credito_puente',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                            'personal.nombre','personal.apellidos', 
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                            'inst_seleccionadas.id as inst_sel_id', 'contratos.saldo',
-                            'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                            'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
-                            )
+                        $creditos = $query
                         ->where('contratos.saldo','<',0)
                         ->where('inst_seleccionadas.elegido', '=', 1)
                         ->where($criterio,'=',$buscar)
@@ -2217,19 +1840,7 @@ class InstSeleccionadasController extends Controller
                         
                     }
                     elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
-                        $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('contratos','contratos.id','=','creditos.id')
-                        ->join('lotes','lotes.id','=','creditos.lote_id')
-                        ->join('personal','personal.id','=','creditos.prospecto_id')
-                        ->select('contratos.id', 'lotes.credito_puente',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                            'personal.nombre','personal.apellidos', 
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                            'inst_seleccionadas.id as inst_sel_id', 'contratos.saldo',
-                            'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                            'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
-                            )
+                        $creditos = $query
                         ->where('contratos.saldo','<',0)
                         ->where('inst_seleccionadas.elegido', '=', 1)
                         ->where($criterio,'=',$buscar)
@@ -2241,19 +1852,7 @@ class InstSeleccionadasController extends Controller
                         ->paginate(10);
                     }
                     elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
-                        $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('contratos','contratos.id','=','creditos.id')
-                        ->join('lotes','lotes.id','=','creditos.lote_id')
-                        ->join('personal','personal.id','=','creditos.prospecto_id')
-                        ->select('contratos.id', 'lotes.credito_puente',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                            'personal.nombre','personal.apellidos', 
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                            'inst_seleccionadas.id as inst_sel_id', 'contratos.saldo',
-                            'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                            'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
-                            )
+                        $creditos = $query
                         ->where('contratos.saldo','<',0)
                         ->where('inst_seleccionadas.elegido', '=', 1)
                         ->where($criterio,'=',$buscar)
@@ -2266,19 +1865,7 @@ class InstSeleccionadasController extends Controller
                         ->paginate(10);
                     }
                     elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
-                        $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('contratos','contratos.id','=','creditos.id')
-                        ->join('lotes','lotes.id','=','creditos.lote_id')
-                        ->join('personal','personal.id','=','creditos.prospecto_id')
-                        ->select('contratos.id', 'lotes.credito_puente',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                            'personal.nombre','personal.apellidos', 
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                            'inst_seleccionadas.id as inst_sel_id', 'contratos.saldo',
-                            'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                            'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
-                            )
+                        $creditos = $query
                         ->where('contratos.saldo','<',0)
                         ->where('inst_seleccionadas.elegido', '=', 1)
                         ->where($criterio,'=',$buscar)
@@ -2290,19 +1877,7 @@ class InstSeleccionadasController extends Controller
                         ->paginate(10);
                     }
                     elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
-                        $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('contratos','contratos.id','=','creditos.id')
-                        ->join('lotes','lotes.id','=','creditos.lote_id')
-                        ->join('personal','personal.id','=','creditos.prospecto_id')
-                        ->select('contratos.id', 'lotes.credito_puente',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                            'personal.nombre','personal.apellidos', 
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                            'inst_seleccionadas.id as inst_sel_id', 'contratos.saldo',
-                            'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                            'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
-                            )
+                        $creditos = $query
                         ->where('contratos.saldo','<',0)
                         ->where('inst_seleccionadas.elegido', '=', 1)
                         ->where($criterio,'=',$buscar)
@@ -2340,20 +1915,22 @@ class InstSeleccionadasController extends Controller
         $b_lote = $request->b_lote;
         $criterio = $request->criterio;
 
+        $query = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+            ->join('contratos','contratos.id','=','creditos.id')
+            ->join('lotes','lotes.id','=','creditos.lote_id')
+            ->join('personal','personal.id','=','creditos.prospecto_id')
+            ->select('contratos.id', 'lotes.credito_puente',
+                'creditos.fraccionamiento as proyecto',
+                'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                'personal.nombre','personal.apellidos', 
+                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
+                'inst_seleccionadas.id as inst_sel_id', 'contratos.saldo',
+                'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
+            );
+
         if($buscar == ''){
-            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                    ->join('contratos','contratos.id','=','creditos.id')
-                    ->join('lotes','lotes.id','=','creditos.lote_id')
-                    ->join('personal','personal.id','=','creditos.prospecto_id')
-                    ->select('contratos.id', 'lotes.credito_puente',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                            'personal.nombre','personal.apellidos', 
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                            'inst_seleccionadas.id as inst_sel_id', 'contratos.saldo',
-                            'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                            'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
-                            )
+            $creditos = $query
 
                     ->where('contratos.saldo','<',0)
                     ->where('inst_seleccionadas.elegido', '=', 1)
@@ -2365,19 +1942,7 @@ class InstSeleccionadasController extends Controller
         else{
             switch($criterio){
                 case 'creditos.id':{
-                    $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                    ->join('contratos','contratos.id','=','creditos.id')
-                    ->join('lotes','lotes.id','=','creditos.lote_id')
-                    ->join('personal','personal.id','=','creditos.prospecto_id')
-                    ->select('contratos.id', 'lotes.credito_puente',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                            'personal.nombre','personal.apellidos', 
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                            'inst_seleccionadas.id as inst_sel_id', 'contratos.saldo',
-                            'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                            'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
-                            )
+                    $creditos = $query
 
                         ->where('contratos.saldo','<',0)
                         ->where('inst_seleccionadas.elegido', '=', 1)
@@ -2390,19 +1955,7 @@ class InstSeleccionadasController extends Controller
                     break;
                 }
                 case 'personal.nombre':{
-                    $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                    ->join('contratos','contratos.id','=','creditos.id')
-                    ->join('lotes','lotes.id','=','creditos.lote_id')
-                    ->join('personal','personal.id','=','creditos.prospecto_id')
-                    ->select('contratos.id', 'lotes.credito_puente',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                            'personal.nombre','personal.apellidos', 
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                            'inst_seleccionadas.id as inst_sel_id', 'contratos.saldo',
-                            'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                            'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
-                            )
+                    $creditos = $query
                         ->where('contratos.saldo','<',0)
                         ->where('inst_seleccionadas.elegido', '=', 1)
                         ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
@@ -2414,19 +1967,7 @@ class InstSeleccionadasController extends Controller
                 }
                 case 'lotes.fraccionamiento_id':{
                     if($b_etapa == '' && $b_manzana == '' && $b_lote == ''){
-                        $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('contratos','contratos.id','=','creditos.id')
-                        ->join('lotes','lotes.id','=','creditos.lote_id')
-                        ->join('personal','personal.id','=','creditos.prospecto_id')
-                        ->select('contratos.id', 'lotes.credito_puente',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                            'personal.nombre','personal.apellidos', 
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                            'inst_seleccionadas.id as inst_sel_id', 'contratos.saldo',
-                            'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                            'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
-                            )
+                        $creditos = $query
                         ->where('contratos.saldo','<',0)
                         ->where('inst_seleccionadas.elegido', '=', 1)
                         ->where($criterio,'=',$buscar)
@@ -2437,19 +1978,7 @@ class InstSeleccionadasController extends Controller
                         
                     }
                     elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
-                        $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('contratos','contratos.id','=','creditos.id')
-                        ->join('lotes','lotes.id','=','creditos.lote_id')
-                        ->join('personal','personal.id','=','creditos.prospecto_id')
-                        ->select('contratos.id', 'lotes.credito_puente',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                            'personal.nombre','personal.apellidos', 
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                            'inst_seleccionadas.id as inst_sel_id', 'contratos.saldo',
-                            'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                            'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
-                            )
+                        $creditos = $query
                         ->where('contratos.saldo','<',0)
                         ->where('inst_seleccionadas.elegido', '=', 1)
                         ->where($criterio,'=',$buscar)
@@ -2461,19 +1990,7 @@ class InstSeleccionadasController extends Controller
                         
                     }
                     elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
-                        $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('contratos','contratos.id','=','creditos.id')
-                        ->join('lotes','lotes.id','=','creditos.lote_id')
-                        ->join('personal','personal.id','=','creditos.prospecto_id')
-                        ->select('contratos.id', 'lotes.credito_puente',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                            'personal.nombre','personal.apellidos', 
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                            'inst_seleccionadas.id as inst_sel_id', 'contratos.saldo',
-                            'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                            'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
-                            )
+                        $creditos = $query
                         ->where('contratos.saldo','<',0)
                         ->where('inst_seleccionadas.elegido', '=', 1)
                         ->where($criterio,'=',$buscar)
@@ -2485,19 +2002,7 @@ class InstSeleccionadasController extends Controller
                         ->get();
                     }
                     elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
-                        $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('contratos','contratos.id','=','creditos.id')
-                        ->join('lotes','lotes.id','=','creditos.lote_id')
-                        ->join('personal','personal.id','=','creditos.prospecto_id')
-                        ->select('contratos.id', 'lotes.credito_puente',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                            'personal.nombre','personal.apellidos', 
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                            'inst_seleccionadas.id as inst_sel_id', 'contratos.saldo',
-                            'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                            'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
-                            )
+                        $creditos = $query
                         ->where('contratos.saldo','<',0)
                         ->where('inst_seleccionadas.elegido', '=', 1)
                         ->where($criterio,'=',$buscar)
@@ -2510,19 +2015,7 @@ class InstSeleccionadasController extends Controller
                         ->get();
                     }
                     elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
-                        $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('contratos','contratos.id','=','creditos.id')
-                        ->join('lotes','lotes.id','=','creditos.lote_id')
-                        ->join('personal','personal.id','=','creditos.prospecto_id')
-                        ->select('contratos.id', 'lotes.credito_puente',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                            'personal.nombre','personal.apellidos', 
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                            'inst_seleccionadas.id as inst_sel_id', 'contratos.saldo',
-                            'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                            'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
-                            )
+                        $creditos = $query
                         ->where('contratos.saldo','<',0)
                         ->where('inst_seleccionadas.elegido', '=', 1)
                         ->where($criterio,'=',$buscar)
@@ -2534,19 +2027,7 @@ class InstSeleccionadasController extends Controller
                         ->get();
                     }
                     elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
-                        $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('contratos','contratos.id','=','creditos.id')
-                        ->join('lotes','lotes.id','=','creditos.lote_id')
-                        ->join('personal','personal.id','=','creditos.prospecto_id')
-                        ->select('contratos.id', 'lotes.credito_puente',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                            'personal.nombre','personal.apellidos', 
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                            'inst_seleccionadas.id as inst_sel_id', 'contratos.saldo',
-                            'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                            'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
-                            )
+                        $creditos = $query
                         ->where('contratos.saldo','<',0)
                         ->where('inst_seleccionadas.elegido', '=', 1)
                         ->where($criterio,'=',$buscar)
@@ -2616,18 +2097,6 @@ class InstSeleccionadasController extends Controller
         }
         
         )->download('xls');
-
-        // return[
-        //         'pagination' => [
-        //         'total'         => $creditos->total(),
-        //         'current_page'  => $creditos->currentPage(),
-        //         'per_page'      => $creditos->perPage(),
-        //         'last_page'     => $creditos->lastPage(),
-        //         'from'          => $creditos->firstItem(),
-        //         'to'            => $creditos->lastItem(),
-        //     ],
-        //     'creditos' => $creditos
-        // ];
         
     }
 
@@ -2647,6 +2116,7 @@ class InstSeleccionadasController extends Controller
 
             $contrato = Contrato::findOrFail($request->id);
             $contrato->saldo += $request->cant_dev;
+            $contrato->saldo = round($contrato->saldo,2);
             if($contrato->saldo < 0 && $contrato->saldo > -0.001)
                 $contrato->saldo = 0;
             $contrato->save();
@@ -2672,67 +2142,69 @@ class InstSeleccionadasController extends Controller
         $b_manzana = $request->b_manzana;
         $b_lote = $request->b_lote;
         $criterio = $request->criterio;
+
+        $query = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+            ->join('dev_creditos','contratos.id','=','dev_creditos.contrato_id')
+            ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+            ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+            ->select(
+                'creditos.id',
+                'creditos.prospecto_id',
+                'creditos.etapa',
+                'creditos.manzana',
+                'creditos.num_lote',
+                'creditos.modelo',
+                'creditos.precio_base',
+                'creditos.precio_venta',
+                'creditos.fraccionamiento as proyecto',
+                'creditos.lote_id',
+
+                'personal.nombre',
+                'personal.apellidos',
+                'personal.telefono',
+                'personal.celular',
+                'personal.email',
+                'personal.direccion',
+                'personal.cp',
+                'personal.colonia',
+                'personal.f_nacimiento',
+                'personal.rfc',
+                'personal.homoclave',
+                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
+                
+                'v.nombre as vendedor_nombre',
+                'v.apellidos as vendedor_apellidos',
+                DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
+                
+
+                'contratos.status',
+                'contratos.fecha_status',
+                'contratos.total_pagar',
+                'contratos.monto_total_credito',
+                'contratos.enganche_total',
+                'contratos.avance_lote',
+                'contratos.observacion',
+
+                'dev_creditos.fecha',
+                'dev_creditos.cheque',
+                'dev_creditos.cuenta',
+                'dev_creditos.observaciones',
+                'dev_creditos.devolver',
+
+
+                DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                            WHERE pagos_contratos.contrato_id = contratos.id
+                            GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
+                
+                DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                            WHERE pagos_contratos.contrato_id = contratos.id
+                            GROUP BY pagos_contratos.contrato_id) as sumaRestante")
+            );
        
         if ($buscar == '') {
-            $devoluciones = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-                ->join('dev_creditos','contratos.id','=','dev_creditos.contrato_id')
-                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                ->join('personal as v', 'clientes.vendedor_id', 'v.id')
-                ->select(
-                    'creditos.id',
-                    'creditos.prospecto_id',
-                    'creditos.etapa',
-                    'creditos.manzana',
-                    'creditos.num_lote',
-                    'creditos.modelo',
-                    'creditos.precio_base',
-                    'creditos.precio_venta',
-                    'creditos.fraccionamiento as proyecto',
-                    'creditos.lote_id',
-
-                    'personal.nombre',
-                    'personal.apellidos',
-                    'personal.telefono',
-                    'personal.celular',
-                    'personal.email',
-                    'personal.direccion',
-                    'personal.cp',
-                    'personal.colonia',
-                    'personal.f_nacimiento',
-                    'personal.rfc',
-                    'personal.homoclave',
-                    DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                    
-                    'v.nombre as vendedor_nombre',
-                    'v.apellidos as vendedor_apellidos',
-                    DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
-                    
-
-                    'contratos.status',
-                    'contratos.fecha_status',
-                    'contratos.total_pagar',
-                    'contratos.monto_total_credito',
-                    'contratos.enganche_total',
-                    'contratos.avance_lote',
-                    'contratos.observacion',
-
-                    'dev_creditos.fecha',
-                    'dev_creditos.cheque',
-                    'dev_creditos.cuenta',
-                    'dev_creditos.observaciones',
-                    'dev_creditos.devolver',
-
-
-                    DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                WHERE pagos_contratos.contrato_id = contratos.id
-                                GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
-                    
-                    DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                WHERE pagos_contratos.contrato_id = contratos.id
-                                GROUP BY pagos_contratos.contrato_id) as sumaRestante")
-                )
+            $devoluciones = $query
                 ->orderBy('id', 'desc')->paginate(8);
            
         }
@@ -2741,258 +2213,25 @@ class InstSeleccionadasController extends Controller
                 case 'lotes.fraccionamiento_id':{
                     if($b_etapa == '' && $b_manzana == '' && $b_lote == '')
                     {
-                        $devoluciones = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('dev_creditos','contratos.id','=','dev_creditos.contrato_id')
-                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
-                        ->select(
-                            'creditos.id',
-                            'creditos.prospecto_id',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.modelo',
-                            'creditos.precio_base',
-                            'creditos.precio_venta',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.lote_id',
-
-                            'personal.nombre',
-                            'personal.apellidos',
-                            'personal.telefono',
-                            'personal.celular',
-                            'personal.email',
-                            'personal.direccion',
-                            'personal.cp',
-                            'personal.colonia',
-                            'personal.f_nacimiento',
-                            'personal.rfc',
-                            'personal.homoclave',
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                            
-                            'v.nombre as vendedor_nombre',
-                            'v.apellidos as vendedor_apellidos',
-                            DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
-                            
-
-                            'contratos.status',
-                            'contratos.fecha_status',
-                            'contratos.total_pagar',
-                            'contratos.monto_total_credito',
-                            'contratos.enganche_total',
-                            'contratos.avance_lote',
-                            'contratos.observacion',
-
-                            'dev_creditos.fecha',
-                            
-                            'dev_creditos.cheque',
-                            'dev_creditos.cuenta',
-                            'dev_creditos.observaciones',
-                            'dev_creditos.devolver',
-                            
-
-                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                        WHERE pagos_contratos.contrato_id = contratos.id
-                                        GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
-                            
-                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                        WHERE pagos_contratos.contrato_id = contratos.id
-                                        GROUP BY pagos_contratos.contrato_id) as sumaRestante")
-                        )
+                        $devoluciones = $query
                         ->where($criterio, '=', $buscar)
                         ->orderBy('id', 'desc')->paginate(8);
                     }
                     elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
-                        $devoluciones = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('dev_creditos','contratos.id','=','dev_creditos.contrato_id')
-                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
-                        ->select(
-                            'creditos.id',
-                            'creditos.prospecto_id',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.modelo',
-                            'creditos.precio_base',
-                            'creditos.precio_venta',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.lote_id',
-
-                            'personal.nombre',
-                            'personal.apellidos',
-                            'personal.telefono',
-                            'personal.celular',
-                            'personal.email',
-                            'personal.direccion',
-                            'personal.cp',
-                            'personal.colonia',
-                            'personal.f_nacimiento',
-                            'personal.rfc',
-                            'personal.homoclave',
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                            
-                            'v.nombre as vendedor_nombre',
-                            'v.apellidos as vendedor_apellidos',
-                            DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
-                            
-
-                            'contratos.status',
-                            'contratos.fecha_status',
-                            'contratos.total_pagar',
-                            'contratos.monto_total_credito',
-                            'contratos.enganche_total',
-                            'contratos.avance_lote',
-                            'contratos.observacion',
-                            
-                            'dev_creditos.fecha',
-                            
-                            'dev_creditos.cheque',
-                            'dev_creditos.cuenta',
-                            'dev_creditos.observaciones',
-                            'dev_creditos.devolver',
-
-                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                        WHERE pagos_contratos.contrato_id = contratos.id
-                                        GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
-                            
-                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                        WHERE pagos_contratos.contrato_id = contratos.id
-                                        GROUP BY pagos_contratos.contrato_id) as sumaRestante")
-                        )
+                        $devoluciones = $query
                         ->where($criterio, '=', $buscar)
                         ->where('lotes.etapa_id', '=', $b_etapa)
                         ->orderBy('id', 'desc')->paginate(8);
                     }
                     elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
-                        $devoluciones = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('dev_creditos','contratos.id','=','dev_creditos.contrato_id')
-                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
-                        ->select(
-                            'creditos.id',
-                            'creditos.prospecto_id',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.modelo',
-                            'creditos.precio_base',
-                            'creditos.precio_venta',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.lote_id',
-
-                            'personal.nombre',
-                            'personal.apellidos',
-                            'personal.telefono',
-                            'personal.celular',
-                            'personal.email',
-                            'personal.direccion',
-                            'personal.cp',
-                            'personal.colonia',
-                            'personal.f_nacimiento',
-                            'personal.rfc',
-                            'personal.homoclave',
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                            
-                            'v.nombre as vendedor_nombre',
-                            'v.apellidos as vendedor_apellidos',
-                            DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
-                            
-
-                            'contratos.status',
-                            'contratos.fecha_status',
-                            'contratos.total_pagar',
-                            'contratos.monto_total_credito',
-                            'contratos.enganche_total',
-                            'contratos.avance_lote',
-                            'contratos.observacion',
-                            
-                            'dev_creditos.fecha',
-                            
-                            'dev_creditos.cheque',
-                            'dev_creditos.cuenta',
-                            'dev_creditos.observaciones',
-                            'dev_creditos.devolver',
-
-                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                        WHERE pagos_contratos.contrato_id = contratos.id
-                                        GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
-                            
-                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                        WHERE pagos_contratos.contrato_id = contratos.id
-                                        GROUP BY pagos_contratos.contrato_id) as sumaRestante")
-                        )
+                        $devoluciones = $query
                         ->where($criterio, '=', $buscar)
                         ->where('lotes.etapa_id', '=', $b_etapa)
                         ->where('lotes.manzana', '=', $b_manzana)
                         ->orderBy('id', 'desc')->paginate(8);
                     }
                     elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
-                        $devoluciones = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('dev_creditos','contratos.id','=','dev_creditos.contrato_id')
-                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
-                        ->select(
-                            'creditos.id',
-                            'creditos.prospecto_id',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.modelo',
-                            'creditos.precio_base',
-                            'creditos.precio_venta',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.lote_id',
-
-                            'personal.nombre',
-                            'personal.apellidos',
-                            'personal.telefono',
-                            'personal.celular',
-                            'personal.email',
-                            'personal.direccion',
-                            'personal.cp',
-                            'personal.colonia',
-                            'personal.f_nacimiento',
-                            'personal.rfc',
-                            'personal.homoclave',
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                            
-                            'v.nombre as vendedor_nombre',
-                            'v.apellidos as vendedor_apellidos',
-                            DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
-                            
-
-                            'contratos.status',
-                            'contratos.fecha_status',
-                            'contratos.total_pagar',
-                            'contratos.monto_total_credito',
-                            'contratos.enganche_total',
-                            'contratos.avance_lote',
-                            'contratos.observacion',
-                            
-                            'dev_creditos.fecha',
-                            
-                            'dev_creditos.cheque',
-                            'dev_creditos.cuenta',
-                            'dev_creditos.observaciones',
-                            'dev_creditos.devolver',
-
-                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                        WHERE pagos_contratos.contrato_id = contratos.id
-                                        GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
-                            
-                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                        WHERE pagos_contratos.contrato_id = contratos.id
-                                        GROUP BY pagos_contratos.contrato_id) as sumaRestante")
-                        )
+                        $devoluciones = $query
                         ->where($criterio, '=', $buscar)
                         ->where('lotes.etapa_id', '=', $b_etapa)
                         ->where('lotes.manzana', '=', $b_manzana)
@@ -3000,130 +2239,14 @@ class InstSeleccionadasController extends Controller
                         ->orderBy('id', 'desc')->paginate(8);
                     }
                     elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
-                        $devoluciones = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('dev_creditos','contratos.id','=','dev_creditos.contrato_id')
-                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
-                        ->select(
-                            'creditos.id',
-                            'creditos.prospecto_id',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.modelo',
-                            'creditos.precio_base',
-                            'creditos.precio_venta',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.lote_id',
-
-                            'personal.nombre',
-                            'personal.apellidos',
-                            'personal.telefono',
-                            'personal.celular',
-                            'personal.email',
-                            'personal.direccion',
-                            'personal.cp',
-                            'personal.colonia',
-                            'personal.f_nacimiento',
-                            'personal.rfc',
-                            'personal.homoclave',
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                            
-                            'v.nombre as vendedor_nombre',
-                            'v.apellidos as vendedor_apellidos',
-                            DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
-                            
-
-                            'contratos.status',
-                            'contratos.fecha_status',
-                            'contratos.total_pagar',
-                            'contratos.monto_total_credito',
-                            'contratos.enganche_total',
-                            'contratos.avance_lote',
-                            'contratos.observacion',
-                            
-                            'dev_creditos.fecha',
-                            
-                            'dev_creditos.cheque',
-                            'dev_creditos.cuenta',
-                            'dev_creditos.observaciones',
-                            'dev_creditos.devolver',
-
-                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                        WHERE pagos_contratos.contrato_id = contratos.id
-                                        GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
-                            
-                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                        WHERE pagos_contratos.contrato_id = contratos.id
-                                        GROUP BY pagos_contratos.contrato_id) as sumaRestante")
-                        )
+                        $devoluciones = $query
                         ->where($criterio, '=', $buscar)
                         ->where('lotes.etapa_id', '=', $b_etapa)
                         ->where('lotes.num_lote', '=', $b_lote)
                         ->orderBy('id', 'desc')->paginate(8);
                     }
                     elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
-                        $devoluciones = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('dev_creditos','contratos.id','=','dev_creditos.contrato_id')
-                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
-                        ->select(
-                            'creditos.id',
-                            'creditos.prospecto_id',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.modelo',
-                            'creditos.precio_base',
-                            'creditos.precio_venta',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.lote_id',
-
-                            'personal.nombre',
-                            'personal.apellidos',
-                            'personal.telefono',
-                            'personal.celular',
-                            'personal.email',
-                            'personal.direccion',
-                            'personal.cp',
-                            'personal.colonia',
-                            'personal.f_nacimiento',
-                            'personal.rfc',
-                            'personal.homoclave',
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                            
-                            'v.nombre as vendedor_nombre',
-                            'v.apellidos as vendedor_apellidos',
-                            DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
-                            
-
-                            'contratos.status',
-                            'contratos.fecha_status',
-                            'contratos.total_pagar',
-                            'contratos.monto_total_credito',
-                            'contratos.enganche_total',
-                            'contratos.avance_lote',
-                            'contratos.observacion',
-                            
-                            'dev_creditos.fecha',
-                            
-                            'dev_creditos.cheque',
-                            'dev_creditos.cuenta',
-                            'dev_creditos.observaciones',
-                            'dev_creditos.devolver',
-
-                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                        WHERE pagos_contratos.contrato_id = contratos.id
-                                        GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
-                            
-                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                        WHERE pagos_contratos.contrato_id = contratos.id
-                                        GROUP BY pagos_contratos.contrato_id) as sumaRestante")
-                        )
+                        $devoluciones = $query
                         ->where($criterio, '=', $buscar)
                         ->where('lotes.num_lote', '=', $b_lote)
                         ->orderBy('id', 'desc')->paginate(8);
@@ -3132,129 +2255,13 @@ class InstSeleccionadasController extends Controller
                     break;
                 }
                 case 'creditos.id':{
-                    $devoluciones = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-                    ->join('dev_creditos','contratos.id','=','dev_creditos.contrato_id')
-                    ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as v', 'clientes.vendedor_id', 'v.id')
-                    ->select(
-                        'creditos.id',
-                        'creditos.prospecto_id',
-                        'creditos.etapa',
-                        'creditos.manzana',
-                        'creditos.num_lote',
-                        'creditos.modelo',
-                        'creditos.precio_base',
-                        'creditos.precio_venta',
-                        'creditos.fraccionamiento as proyecto',
-                        'creditos.lote_id',
-
-                        'personal.nombre',
-                        'personal.apellidos',
-                        'personal.telefono',
-                        'personal.celular',
-                        'personal.email',
-                        'personal.direccion',
-                        'personal.cp',
-                        'personal.colonia',
-                        'personal.f_nacimiento',
-                        'personal.rfc',
-                        'personal.homoclave',
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                        
-                        'v.nombre as vendedor_nombre',
-                        'v.apellidos as vendedor_apellidos',
-                        DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
-                        
-
-                        'contratos.status',
-                        'contratos.fecha_status',
-                        'contratos.total_pagar',
-                        'contratos.monto_total_credito',
-                        'contratos.enganche_total',
-                        'contratos.avance_lote',
-                        'contratos.observacion',
-
-                        'dev_creditos.fecha',
-                        
-                        'dev_creditos.cheque',
-                        'dev_creditos.cuenta',
-                        'dev_creditos.observaciones',
-                        'dev_creditos.devolver',
-
-                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                    WHERE pagos_contratos.contrato_id = contratos.id
-                                    GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
-                        
-                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                    WHERE pagos_contratos.contrato_id = contratos.id
-                                    GROUP BY pagos_contratos.contrato_id) as sumaRestante")
-                    )
+                    $devoluciones = $query
                     ->where($criterio, '=', $buscar)
                     ->orderBy('id', 'desc')->paginate(8);
                     break;
                 }
                 case 'personal.nombre':{
-                    $devoluciones = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('dev_creditos','contratos.id','=','dev_creditos.contrato_id')
-                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
-                        ->select(
-                            'creditos.id',
-                            'creditos.prospecto_id',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.modelo',
-                            'creditos.precio_base',
-                            'creditos.precio_venta',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.lote_id',
-
-                            'personal.nombre',
-                            'personal.apellidos',
-                            'personal.telefono',
-                            'personal.celular',
-                            'personal.email',
-                            'personal.direccion',
-                            'personal.cp',
-                            'personal.colonia',
-                            'personal.f_nacimiento',
-                            'personal.rfc',
-                            'personal.homoclave',
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                            
-                            'v.nombre as vendedor_nombre',
-                            'v.apellidos as vendedor_apellidos',
-                            DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
-                            
-
-                            'contratos.status',
-                            'contratos.fecha_status',
-                            'contratos.total_pagar',
-                            'contratos.monto_total_credito',
-                            'contratos.enganche_total',
-                            'contratos.avance_lote',
-                            'contratos.observacion',
-
-                            'dev_creditos.fecha',
-                            
-                            'dev_creditos.cheque',
-                            'dev_creditos.cuenta',
-                            'dev_creditos.observaciones',
-                            'dev_creditos.devolver',
-
-                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                        WHERE pagos_contratos.contrato_id = contratos.id
-                                        GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
-                            
-                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                        WHERE pagos_contratos.contrato_id = contratos.id
-                                        GROUP BY pagos_contratos.contrato_id) as sumaRestante")
-                        )
+                    $devoluciones = $query
                         ->where($criterio, 'like', '%' . $buscar . '%')
                         ->orWhere('personal.apellidos', 'like', '%' . $buscar . '%')
                         ->orderBy('id', 'desc')->paginate(8);
@@ -3283,67 +2290,69 @@ class InstSeleccionadasController extends Controller
         $b_manzana = $request->b_manzana;
         $b_lote = $request->b_lote;
         $criterio = $request->criterio;
+
+        $query = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+            ->join('dev_creditos','contratos.id','=','dev_creditos.contrato_id')
+            ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+            ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+            ->select(
+                'creditos.id',
+                'creditos.prospecto_id',
+                'creditos.etapa',
+                'creditos.manzana',
+                'creditos.num_lote',
+                'creditos.modelo',
+                'creditos.precio_base',
+                'creditos.precio_venta',
+                'creditos.fraccionamiento as proyecto',
+                'creditos.lote_id',
+
+                'personal.nombre',
+                'personal.apellidos',
+                'personal.telefono',
+                'personal.celular',
+                'personal.email',
+                'personal.direccion',
+                'personal.cp',
+                'personal.colonia',
+                'personal.f_nacimiento',
+                'personal.rfc',
+                'personal.homoclave',
+                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
+                
+                'v.nombre as vendedor_nombre',
+                'v.apellidos as vendedor_apellidos',
+                DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
+                
+
+                'contratos.status',
+                'contratos.fecha_status',
+                'contratos.total_pagar',
+                'contratos.monto_total_credito',
+                'contratos.enganche_total',
+                'contratos.avance_lote',
+                'contratos.observacion',
+
+                'dev_creditos.fecha',
+                'dev_creditos.cheque',
+                'dev_creditos.cuenta',
+                'dev_creditos.observaciones',
+                'dev_creditos.devolver',
+
+
+                DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                            WHERE pagos_contratos.contrato_id = contratos.id
+                            GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
+                
+                DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                            WHERE pagos_contratos.contrato_id = contratos.id
+                            GROUP BY pagos_contratos.contrato_id) as sumaRestante")
+            );
        
         if ($buscar == '') {
-            $devoluciones = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-                ->join('dev_creditos','contratos.id','=','dev_creditos.contrato_id')
-                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                ->join('personal as v', 'clientes.vendedor_id', 'v.id')
-                ->select(
-                    'creditos.id',
-                    'creditos.prospecto_id',
-                    'creditos.etapa',
-                    'creditos.manzana',
-                    'creditos.num_lote',
-                    'creditos.modelo',
-                    'creditos.precio_base',
-                    'creditos.precio_venta',
-                    'creditos.fraccionamiento as proyecto',
-                    'creditos.lote_id',
-
-                    'personal.nombre',
-                    'personal.apellidos',
-                    'personal.telefono',
-                    'personal.celular',
-                    'personal.email',
-                    'personal.direccion',
-                    'personal.cp',
-                    'personal.colonia',
-                    'personal.f_nacimiento',
-                    'personal.rfc',
-                    'personal.homoclave',
-                    DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                    
-                    'v.nombre as vendedor_nombre',
-                    'v.apellidos as vendedor_apellidos',
-                    DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
-                    
-
-                    'contratos.status',
-                    'contratos.fecha_status',
-                    'contratos.total_pagar',
-                    'contratos.monto_total_credito',
-                    'contratos.enganche_total',
-                    'contratos.avance_lote',
-                    'contratos.observacion',
-
-                    'dev_creditos.fecha',
-                    'dev_creditos.cheque',
-                    'dev_creditos.cuenta',
-                    'dev_creditos.observaciones',
-                    'dev_creditos.devolver',
-
-
-                    DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                WHERE pagos_contratos.contrato_id = contratos.id
-                                GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
-                    
-                    DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                WHERE pagos_contratos.contrato_id = contratos.id
-                                GROUP BY pagos_contratos.contrato_id) as sumaRestante")
-                )
+            $devoluciones = $query
                 ->orderBy('id', 'desc')->paginate(8);
            
         }
@@ -3352,258 +2361,25 @@ class InstSeleccionadasController extends Controller
                 case 'lotes.fraccionamiento_id':{
                     if($b_etapa == '' && $b_manzana == '' && $b_lote == '')
                     {
-                        $devoluciones = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('dev_creditos','contratos.id','=','dev_creditos.contrato_id')
-                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
-                        ->select(
-                            'creditos.id',
-                            'creditos.prospecto_id',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.modelo',
-                            'creditos.precio_base',
-                            'creditos.precio_venta',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.lote_id',
-
-                            'personal.nombre',
-                            'personal.apellidos',
-                            'personal.telefono',
-                            'personal.celular',
-                            'personal.email',
-                            'personal.direccion',
-                            'personal.cp',
-                            'personal.colonia',
-                            'personal.f_nacimiento',
-                            'personal.rfc',
-                            'personal.homoclave',
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                            
-                            'v.nombre as vendedor_nombre',
-                            'v.apellidos as vendedor_apellidos',
-                            DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
-                            
-
-                            'contratos.status',
-                            'contratos.fecha_status',
-                            'contratos.total_pagar',
-                            'contratos.monto_total_credito',
-                            'contratos.enganche_total',
-                            'contratos.avance_lote',
-                            'contratos.observacion',
-
-                            'dev_creditos.fecha',
-                            
-                            'dev_creditos.cheque',
-                            'dev_creditos.cuenta',
-                            'dev_creditos.observaciones',
-                            'dev_creditos.devolver',
-                            
-
-                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                        WHERE pagos_contratos.contrato_id = contratos.id
-                                        GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
-                            
-                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                        WHERE pagos_contratos.contrato_id = contratos.id
-                                        GROUP BY pagos_contratos.contrato_id) as sumaRestante")
-                        )
+                        $devoluciones = $query
                         ->where($criterio, '=', $buscar)
                         ->orderBy('id', 'desc')->paginate(8);
                     }
                     elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
-                        $devoluciones = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('dev_creditos','contratos.id','=','dev_creditos.contrato_id')
-                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
-                        ->select(
-                            'creditos.id',
-                            'creditos.prospecto_id',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.modelo',
-                            'creditos.precio_base',
-                            'creditos.precio_venta',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.lote_id',
-
-                            'personal.nombre',
-                            'personal.apellidos',
-                            'personal.telefono',
-                            'personal.celular',
-                            'personal.email',
-                            'personal.direccion',
-                            'personal.cp',
-                            'personal.colonia',
-                            'personal.f_nacimiento',
-                            'personal.rfc',
-                            'personal.homoclave',
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                            
-                            'v.nombre as vendedor_nombre',
-                            'v.apellidos as vendedor_apellidos',
-                            DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
-                            
-
-                            'contratos.status',
-                            'contratos.fecha_status',
-                            'contratos.total_pagar',
-                            'contratos.monto_total_credito',
-                            'contratos.enganche_total',
-                            'contratos.avance_lote',
-                            'contratos.observacion',
-                            
-                            'dev_creditos.fecha',
-                            
-                            'dev_creditos.cheque',
-                            'dev_creditos.cuenta',
-                            'dev_creditos.observaciones',
-                            'dev_creditos.devolver',
-
-                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                        WHERE pagos_contratos.contrato_id = contratos.id
-                                        GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
-                            
-                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                        WHERE pagos_contratos.contrato_id = contratos.id
-                                        GROUP BY pagos_contratos.contrato_id) as sumaRestante")
-                        )
+                        $devoluciones = $query
                         ->where($criterio, '=', $buscar)
                         ->where('lotes.etapa_id', '=', $b_etapa)
                         ->orderBy('id', 'desc')->paginate(8);
                     }
                     elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
-                        $devoluciones = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('dev_creditos','contratos.id','=','dev_creditos.contrato_id')
-                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
-                        ->select(
-                            'creditos.id',
-                            'creditos.prospecto_id',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.modelo',
-                            'creditos.precio_base',
-                            'creditos.precio_venta',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.lote_id',
-
-                            'personal.nombre',
-                            'personal.apellidos',
-                            'personal.telefono',
-                            'personal.celular',
-                            'personal.email',
-                            'personal.direccion',
-                            'personal.cp',
-                            'personal.colonia',
-                            'personal.f_nacimiento',
-                            'personal.rfc',
-                            'personal.homoclave',
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                            
-                            'v.nombre as vendedor_nombre',
-                            'v.apellidos as vendedor_apellidos',
-                            DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
-                            
-
-                            'contratos.status',
-                            'contratos.fecha_status',
-                            'contratos.total_pagar',
-                            'contratos.monto_total_credito',
-                            'contratos.enganche_total',
-                            'contratos.avance_lote',
-                            'contratos.observacion',
-                            
-                            'dev_creditos.fecha',
-                            
-                            'dev_creditos.cheque',
-                            'dev_creditos.cuenta',
-                            'dev_creditos.observaciones',
-                            'dev_creditos.devolver',
-
-                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                        WHERE pagos_contratos.contrato_id = contratos.id
-                                        GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
-                            
-                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                        WHERE pagos_contratos.contrato_id = contratos.id
-                                        GROUP BY pagos_contratos.contrato_id) as sumaRestante")
-                        )
+                        $devoluciones = $query
                         ->where($criterio, '=', $buscar)
                         ->where('lotes.etapa_id', '=', $b_etapa)
                         ->where('lotes.manzana', '=', $b_manzana)
                         ->orderBy('id', 'desc')->paginate(8);
                     }
                     elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
-                        $devoluciones = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('dev_creditos','contratos.id','=','dev_creditos.contrato_id')
-                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
-                        ->select(
-                            'creditos.id',
-                            'creditos.prospecto_id',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.modelo',
-                            'creditos.precio_base',
-                            'creditos.precio_venta',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.lote_id',
-
-                            'personal.nombre',
-                            'personal.apellidos',
-                            'personal.telefono',
-                            'personal.celular',
-                            'personal.email',
-                            'personal.direccion',
-                            'personal.cp',
-                            'personal.colonia',
-                            'personal.f_nacimiento',
-                            'personal.rfc',
-                            'personal.homoclave',
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                            
-                            'v.nombre as vendedor_nombre',
-                            'v.apellidos as vendedor_apellidos',
-                            DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
-                            
-
-                            'contratos.status',
-                            'contratos.fecha_status',
-                            'contratos.total_pagar',
-                            'contratos.monto_total_credito',
-                            'contratos.enganche_total',
-                            'contratos.avance_lote',
-                            'contratos.observacion',
-                            
-                            'dev_creditos.fecha',
-                            
-                            'dev_creditos.cheque',
-                            'dev_creditos.cuenta',
-                            'dev_creditos.observaciones',
-                            'dev_creditos.devolver',
-
-                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                        WHERE pagos_contratos.contrato_id = contratos.id
-                                        GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
-                            
-                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                        WHERE pagos_contratos.contrato_id = contratos.id
-                                        GROUP BY pagos_contratos.contrato_id) as sumaRestante")
-                        )
+                        $devoluciones = $query
                         ->where($criterio, '=', $buscar)
                         ->where('lotes.etapa_id', '=', $b_etapa)
                         ->where('lotes.manzana', '=', $b_manzana)
@@ -3611,130 +2387,14 @@ class InstSeleccionadasController extends Controller
                         ->orderBy('id', 'desc')->paginate(8);
                     }
                     elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
-                        $devoluciones = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('dev_creditos','contratos.id','=','dev_creditos.contrato_id')
-                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
-                        ->select(
-                            'creditos.id',
-                            'creditos.prospecto_id',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.modelo',
-                            'creditos.precio_base',
-                            'creditos.precio_venta',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.lote_id',
-
-                            'personal.nombre',
-                            'personal.apellidos',
-                            'personal.telefono',
-                            'personal.celular',
-                            'personal.email',
-                            'personal.direccion',
-                            'personal.cp',
-                            'personal.colonia',
-                            'personal.f_nacimiento',
-                            'personal.rfc',
-                            'personal.homoclave',
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                            
-                            'v.nombre as vendedor_nombre',
-                            'v.apellidos as vendedor_apellidos',
-                            DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
-                            
-
-                            'contratos.status',
-                            'contratos.fecha_status',
-                            'contratos.total_pagar',
-                            'contratos.monto_total_credito',
-                            'contratos.enganche_total',
-                            'contratos.avance_lote',
-                            'contratos.observacion',
-                            
-                            'dev_creditos.fecha',
-                            
-                            'dev_creditos.cheque',
-                            'dev_creditos.cuenta',
-                            'dev_creditos.observaciones',
-                            'dev_creditos.devolver',
-
-                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                        WHERE pagos_contratos.contrato_id = contratos.id
-                                        GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
-                            
-                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                        WHERE pagos_contratos.contrato_id = contratos.id
-                                        GROUP BY pagos_contratos.contrato_id) as sumaRestante")
-                        )
+                        $devoluciones = $query
                         ->where($criterio, '=', $buscar)
                         ->where('lotes.etapa_id', '=', $b_etapa)
                         ->where('lotes.num_lote', '=', $b_lote)
                         ->orderBy('id', 'desc')->paginate(8);
                     }
                     elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
-                        $devoluciones = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('dev_creditos','contratos.id','=','dev_creditos.contrato_id')
-                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
-                        ->select(
-                            'creditos.id',
-                            'creditos.prospecto_id',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.modelo',
-                            'creditos.precio_base',
-                            'creditos.precio_venta',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.lote_id',
-
-                            'personal.nombre',
-                            'personal.apellidos',
-                            'personal.telefono',
-                            'personal.celular',
-                            'personal.email',
-                            'personal.direccion',
-                            'personal.cp',
-                            'personal.colonia',
-                            'personal.f_nacimiento',
-                            'personal.rfc',
-                            'personal.homoclave',
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                            
-                            'v.nombre as vendedor_nombre',
-                            'v.apellidos as vendedor_apellidos',
-                            DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
-                            
-
-                            'contratos.status',
-                            'contratos.fecha_status',
-                            'contratos.total_pagar',
-                            'contratos.monto_total_credito',
-                            'contratos.enganche_total',
-                            'contratos.avance_lote',
-                            'contratos.observacion',
-                            
-                            'dev_creditos.fecha',
-                            
-                            'dev_creditos.cheque',
-                            'dev_creditos.cuenta',
-                            'dev_creditos.observaciones',
-                            'dev_creditos.devolver',
-
-                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                        WHERE pagos_contratos.contrato_id = contratos.id
-                                        GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
-                            
-                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                        WHERE pagos_contratos.contrato_id = contratos.id
-                                        GROUP BY pagos_contratos.contrato_id) as sumaRestante")
-                        )
+                        $devoluciones = $query
                         ->where($criterio, '=', $buscar)
                         ->where('lotes.num_lote', '=', $b_lote)
                         ->orderBy('id', 'desc')->paginate(8);
@@ -3743,129 +2403,13 @@ class InstSeleccionadasController extends Controller
                     break;
                 }
                 case 'creditos.id':{
-                    $devoluciones = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-                    ->join('dev_creditos','contratos.id','=','dev_creditos.contrato_id')
-                    ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as v', 'clientes.vendedor_id', 'v.id')
-                    ->select(
-                        'creditos.id',
-                        'creditos.prospecto_id',
-                        'creditos.etapa',
-                        'creditos.manzana',
-                        'creditos.num_lote',
-                        'creditos.modelo',
-                        'creditos.precio_base',
-                        'creditos.precio_venta',
-                        'creditos.fraccionamiento as proyecto',
-                        'creditos.lote_id',
-
-                        'personal.nombre',
-                        'personal.apellidos',
-                        'personal.telefono',
-                        'personal.celular',
-                        'personal.email',
-                        'personal.direccion',
-                        'personal.cp',
-                        'personal.colonia',
-                        'personal.f_nacimiento',
-                        'personal.rfc',
-                        'personal.homoclave',
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                        
-                        'v.nombre as vendedor_nombre',
-                        'v.apellidos as vendedor_apellidos',
-                        DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
-                        
-
-                        'contratos.status',
-                        'contratos.fecha_status',
-                        'contratos.total_pagar',
-                        'contratos.monto_total_credito',
-                        'contratos.enganche_total',
-                        'contratos.avance_lote',
-                        'contratos.observacion',
-
-                        'dev_creditos.fecha',
-                        
-                        'dev_creditos.cheque',
-                        'dev_creditos.cuenta',
-                        'dev_creditos.observaciones',
-                        'dev_creditos.devolver',
-
-                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                    WHERE pagos_contratos.contrato_id = contratos.id
-                                    GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
-                        
-                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                    WHERE pagos_contratos.contrato_id = contratos.id
-                                    GROUP BY pagos_contratos.contrato_id) as sumaRestante")
-                    )
+                    $devoluciones = $query
                     ->where($criterio, '=', $buscar)
                     ->orderBy('id', 'desc')->paginate(8);
                     break;
                 }
                 case 'personal.nombre':{
-                    $devoluciones = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('dev_creditos','contratos.id','=','dev_creditos.contrato_id')
-                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
-                        ->select(
-                            'creditos.id',
-                            'creditos.prospecto_id',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.modelo',
-                            'creditos.precio_base',
-                            'creditos.precio_venta',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.lote_id',
-
-                            'personal.nombre',
-                            'personal.apellidos',
-                            'personal.telefono',
-                            'personal.celular',
-                            'personal.email',
-                            'personal.direccion',
-                            'personal.cp',
-                            'personal.colonia',
-                            'personal.f_nacimiento',
-                            'personal.rfc',
-                            'personal.homoclave',
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
-                            
-                            'v.nombre as vendedor_nombre',
-                            'v.apellidos as vendedor_apellidos',
-                            DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
-                            
-
-                            'contratos.status',
-                            'contratos.fecha_status',
-                            'contratos.total_pagar',
-                            'contratos.monto_total_credito',
-                            'contratos.enganche_total',
-                            'contratos.avance_lote',
-                            'contratos.observacion',
-
-                            'dev_creditos.fecha',
-                            
-                            'dev_creditos.cheque',
-                            'dev_creditos.cuenta',
-                            'dev_creditos.observaciones',
-                            'dev_creditos.devolver',
-
-                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                        WHERE pagos_contratos.contrato_id = contratos.id
-                                        GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
-                            
-                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                        WHERE pagos_contratos.contrato_id = contratos.id
-                                        GROUP BY pagos_contratos.contrato_id) as sumaRestante")
-                        )
+                    $devoluciones = $query
                         ->where($criterio, 'like', '%' . $buscar . '%')
                         ->orWhere('personal.apellidos', 'like', '%' . $buscar . '%')
                         ->orderBy('id', 'desc')->paginate(8);

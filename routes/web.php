@@ -462,6 +462,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/estadisticas/res_proyecto/excel','EstadisticasController@excelResumen');
         Route::get('/estadisticas/publicidad','MedioPublicitarioController@estadisticas');
 
+        /////////// REPORTES ////////////////
+            Route::get('/reprotes/inventario','ReportesController@reporteInventario');
+
 
     ///////////////////        RUTAS NOTARIA     //////////////////////////////////
         Route::get('/notaria','NotariaController@index');

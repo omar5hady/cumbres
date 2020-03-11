@@ -20,38 +20,30 @@ class PromocionController extends Controller
         $buscar2 = $request->buscar2;
         $criterio = $request->criterio;
         $current = Carbon::today()->format('ymd');
-                
-        if($buscar==''){
-            $promociones = Promocion::join('fraccionamientos','promociones.fraccionamiento_id','=','fraccionamientos.id')
+
+        $query = Promocion::join('fraccionamientos','promociones.fraccionamiento_id','=','fraccionamientos.id')
             ->join('etapas','promociones.etapa_id','=','etapas.id')
             ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas',
                     'promociones.id','promociones.fraccionamiento_id', 'promociones.etapa_id','promociones.nombre',
                     'promociones.v_ini','promociones.v_fin','promociones.descuento','promociones.descripcion',
-                    DB::raw('(CASE WHEN promociones.v_fin >= ' . $current . ' THEN 1 ELSE 0 END) AS is_active'))
+                    DB::raw('(CASE WHEN promociones.v_fin >= ' . $current . ' THEN 1 ELSE 0 END) AS is_active'));
+                
+        if($buscar==''){
+            $promociones = $query
             ->orderBy('fraccionamientos.nombre', 'asc')
             ->orderBy('etapas.num_etapa', 'asc')
             ->orderBy('is_active', 'desc')->paginate(20);
         }
         else{
             if($buscar2 == ''){
-                $promociones = Promocion::join('fraccionamientos','promociones.fraccionamiento_id','=','fraccionamientos.id')
-                ->join('etapas','promociones.etapa_id','=','etapas.id')
-                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas',
-                        'promociones.id','promociones.fraccionamiento_id', 'promociones.etapa_id','promociones.nombre',
-                        'promociones.v_ini','promociones.v_fin','promociones.descuento','promociones.descripcion',
-                        DB::raw('(CASE WHEN promociones.v_fin >= ' . $current . ' THEN 1 ELSE 0 END) AS is_active'))
+                $promociones = $query
                 ->where($criterio, 'like', '%'. $buscar . '%')
                 ->orderBy('fraccionamientos.nombre', 'asc')
                 ->orderBy('etapas.num_etapa', 'asc')
                 ->orderBy('is_active', 'desc')->paginate(20);
             }
             else{
-                $promociones = Promocion::join('fraccionamientos','promociones.fraccionamiento_id','=','fraccionamientos.id')
-                ->join('etapas','promociones.etapa_id','=','etapas.id')
-                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas',
-                        'promociones.id','promociones.fraccionamiento_id', 'promociones.etapa_id','promociones.nombre',
-                        'promociones.v_ini','promociones.v_fin','promociones.descuento','promociones.descripcion',
-                        DB::raw('(CASE WHEN promociones.v_fin >= ' . $current . ' THEN 1 ELSE 0 END) AS is_active'))
+                $promociones = $query
                 ->where($criterio, '=', $buscar)
                 ->where('etapas.id', '=', $buscar2)
                 ->orderBy('fraccionamientos.nombre', 'asc')
@@ -96,22 +88,6 @@ class PromocionController extends Controller
         ];
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     //funcion para insertar en la tabla
     public function store(Request $request)
     {
@@ -128,35 +104,6 @@ class PromocionController extends Controller
         $promocion->save();
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     //funcion para actualizar los datos
     public function update(Request $request)
     {
@@ -174,12 +121,6 @@ class PromocionController extends Controller
         $promocion->save();
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');

@@ -174,7 +174,7 @@
                                 </div> 
 
                                 <!-- listado para privilegios del menu Desarrollo -->
-                                <div class="col-md-4" v-if="rol_id==1 || rol_id==3 || rol_id==4 || rol_id==6 || rol_id==8 || rol_id==7 || rol_id == 11">
+                                <div class="col-md-4" v-if="rol_id==1 || rol_id==3 || rol_id==4 || rol_id==6 || rol_id==8 || rol_id == 9 ||  rol_id==7 || rol_id == 11">
                                     <div class="form-group row border">
                                             <a class="nav-link nav-dropdown-toggle"><i class="icon-home"></i> <input @click="limpiarDesarrollo()" v-model="desarrollo" type="checkbox" value="1"/> Modulo Desarrollo</a>
                                                 <ul class="nav-dropdown-items" v-if="desarrollo==1">

@@ -26,41 +26,43 @@ class RevisionPreviaController extends Controller
         $mytime = $fecha->toTimeString();
         $hoy =  $fecha->toDateString();
 
-        if($buscar == ''){
-            $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                    ->join('expedientes','contratos.id','expedientes.id')
-                    ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                    ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id as folio', 
-                        'contratos.equipamiento',
-                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                        'etapas.carta_bienvenida',
+        $query = Entrega::join('contratos','entregas.id','contratos.id')
+            ->join('expedientes','contratos.id','expedientes.id')
+            ->join('creditos', 'contratos.id', '=', 'creditos.id')
+            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+            ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
+            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+            ->join('personal as c', 'clientes.id', '=', 'c.id')
+            ->select('contratos.id as folio', 
+                'contratos.equipamiento',
+                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                'etapas.carta_bienvenida',
 
-                        'creditos.fraccionamiento as proyecto',
-                        'creditos.etapa',
-                        'creditos.manzana',
-                        'creditos.num_lote',
-                        
-                        'licencias.avance as avance_lote',
-                        'licencias.visita_avaluo',
-                        'licencias.foto_predial',
-                        'licencias.foto_lic',
-                        'licencias.num_licencia',
-                        'contratos.fecha_status',
-                        'contratos.status',
-                        'contratos.equipamiento',
-                        'expedientes.fecha_firma_esc',
-                        'lotes.fecha_entrega_obra',
-                        'lotes.id as loteId',
-                        'entregas.revision_previa',
-                        'entregas.fecha_program',
-                        
-                        DB::raw('DATEDIFF(current_date,entregas.fecha_program) as diferencia')
-                    )
+                'creditos.fraccionamiento as proyecto',
+                'creditos.etapa',
+                'creditos.manzana',
+                'creditos.num_lote',
+                
+                'licencias.avance as avance_lote',
+                'licencias.visita_avaluo',
+                'licencias.foto_predial',
+                'licencias.foto_lic',
+                'licencias.num_licencia',
+                'contratos.fecha_status',
+                'contratos.status',
+                'contratos.equipamiento',
+                'expedientes.fecha_firma_esc',
+                'lotes.fecha_entrega_obra',
+                'lotes.id as loteId',
+                'entregas.revision_previa',
+                'entregas.fecha_program',
+                
+                DB::raw('DATEDIFF(current_date,entregas.fecha_program) as diferencia')
+            );
+
+        if($buscar == ''){
+            $contratos = $query
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
                     ->where('contratos.entregado', '=', 0)
@@ -72,40 +74,7 @@ class RevisionPreviaController extends Controller
         else{
             switch($criterio){
                 case 'c.nombre':{
-                    $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                    ->join('expedientes','contratos.id','expedientes.id')
-                    ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                    ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id as folio', 
-                        'contratos.equipamiento',
-                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                        'etapas.carta_bienvenida',
-
-                        'creditos.fraccionamiento as proyecto',
-                        'creditos.etapa',
-                        'creditos.manzana',
-                        'creditos.num_lote',
-                        
-                        'licencias.avance as avance_lote',
-                        'licencias.visita_avaluo',
-                        'licencias.foto_predial',
-                        'licencias.foto_lic',
-                        'licencias.num_licencia',
-                        'contratos.fecha_status',
-                        'contratos.status',
-                        'contratos.equipamiento',
-                        'expedientes.fecha_firma_esc',
-                        'lotes.fecha_entrega_obra',
-                        'lotes.id as loteId',
-                        'entregas.revision_previa',
-                        'entregas.fecha_program',
-                        
-                        DB::raw('DATEDIFF(current_date,entregas.fecha_program) as diferencia')
-                    )
+                    $contratos = $query
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
                     ->where('contratos.entregado', '=', 0)
@@ -119,40 +88,7 @@ class RevisionPreviaController extends Controller
                 }
 
                 case 'entregas.fecha_program':{
-                    $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                    ->join('expedientes','contratos.id','expedientes.id')
-                    ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                    ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id as folio', 
-                        'contratos.equipamiento',
-                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                        'etapas.carta_bienvenida',
-
-                        'creditos.fraccionamiento as proyecto',
-                        'creditos.etapa',
-                        'creditos.manzana',
-                        'creditos.num_lote',
-                        
-                        'licencias.avance as avance_lote',
-                        'licencias.visita_avaluo',
-                        'licencias.foto_predial',
-                        'licencias.foto_lic',
-                        'licencias.num_licencia',
-                        'contratos.fecha_status',
-                        'contratos.status',
-                        'contratos.equipamiento',
-                        'expedientes.fecha_firma_esc',
-                        'lotes.fecha_entrega_obra',
-                        'lotes.id as loteId',
-                        'entregas.revision_previa',
-                        'entregas.fecha_program',
-                        
-                        DB::raw('DATEDIFF(current_date,entregas.fecha_program) as diferencia')
-                    )
+                    $contratos = $query
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
                     ->where('contratos.entregado', '=', 0)
@@ -166,40 +102,7 @@ class RevisionPreviaController extends Controller
                 }
 
                 case 'contratos.id':{
-                    $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                    ->join('expedientes','contratos.id','expedientes.id')
-                    ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                    ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id as folio', 
-                        'contratos.equipamiento',
-                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                        'etapas.carta_bienvenida',
-
-                        'creditos.fraccionamiento as proyecto',
-                        'creditos.etapa',
-                        'creditos.manzana',
-                        'creditos.num_lote',
-                        
-                        'licencias.avance as avance_lote',
-                        'licencias.visita_avaluo',
-                        'licencias.foto_predial',
-                        'licencias.foto_lic',
-                        'licencias.num_licencia',
-                        'contratos.fecha_status',
-                        'contratos.status',
-                        'contratos.equipamiento',
-                        'expedientes.fecha_firma_esc',
-                        'lotes.fecha_entrega_obra',
-                        'lotes.id as loteId',
-                        'entregas.revision_previa',
-                        'entregas.fecha_program',
-                        
-                        DB::raw('DATEDIFF(current_date,entregas.fecha_program) as diferencia')
-                    )
+                    $contratos = $query
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
                     ->where('contratos.entregado', '=', 0)
@@ -214,39 +117,7 @@ class RevisionPreviaController extends Controller
 
                 case 'lotes.fraccionamiento_id':{
                     if($b_etapa == '' && $b_manzana == '' && $b_lote == ''){
-                        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                        ->join('expedientes','contratos.id','expedientes.id')
-                        ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
-                        ->select('contratos.id as folio', 
-                            'contratos.equipamiento',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'etapas.carta_bienvenida',
-
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'licencias.avance as avance_lote',
-                            'licencias.visita_avaluo',
-                            'licencias.foto_predial',
-                            'licencias.foto_lic',
-                            'licencias.num_licencia',
-                            'contratos.fecha_status',
-                            'contratos.status',
-                            'contratos.equipamiento',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.fecha_entrega_obra',
-                            'lotes.id as loteId',
-                            'entregas.revision_previa',
-                            'entregas.fecha_program',
-                            
-                            DB::raw('DATEDIFF(current_date,entregas.fecha_program) as diferencia')
-                        )
+                        $contratos = $query
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('contratos.entregado', '=', 0)
@@ -257,39 +128,7 @@ class RevisionPreviaController extends Controller
                         ->paginate(8);
                     }
                     elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
-                        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                        ->join('expedientes','contratos.id','expedientes.id')
-                        ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
-                        ->select('contratos.id as folio', 
-                            'contratos.equipamiento',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'etapas.carta_bienvenida',
-
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'licencias.avance as avance_lote',
-                            'licencias.visita_avaluo',
-                            'licencias.foto_predial',
-                            'licencias.foto_lic',
-                            'licencias.num_licencia',
-                            'contratos.fecha_status',
-                            'contratos.status',
-                            'contratos.equipamiento',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.fecha_entrega_obra',
-                            'lotes.id as loteId',
-                            'entregas.revision_previa',
-                            'entregas.fecha_program',
-                            
-                            DB::raw('DATEDIFF(current_date,entregas.fecha_program) as diferencia')
-                        )
+                        $contratos = $query
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('contratos.entregado', '=', 0)
@@ -302,39 +141,7 @@ class RevisionPreviaController extends Controller
 
                     }
                     elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
-                        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                        ->join('expedientes','contratos.id','expedientes.id')
-                        ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
-                        ->select('contratos.id as folio', 
-                            'contratos.equipamiento',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'etapas.carta_bienvenida',
-
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'licencias.avance as avance_lote',
-                            'licencias.visita_avaluo',
-                            'licencias.foto_predial',
-                            'licencias.foto_lic',
-                            'licencias.num_licencia',
-                            'contratos.fecha_status',
-                            'contratos.status',
-                            'contratos.equipamiento',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.fecha_entrega_obra',
-                            'lotes.id as loteId',
-                            'entregas.revision_previa',
-                            'entregas.fecha_program',
-                            
-                            DB::raw('DATEDIFF(current_date,entregas.fecha_program) as diferencia')
-                        )
+                        $contratos = $query
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('contratos.entregado', '=', 0)
@@ -347,39 +154,7 @@ class RevisionPreviaController extends Controller
                         ->paginate(8);
                     }
                     elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
-                        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                        ->join('expedientes','contratos.id','expedientes.id')
-                        ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
-                        ->select('contratos.id as folio', 
-                            'contratos.equipamiento',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'etapas.carta_bienvenida',
-
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'licencias.avance as avance_lote',
-                            'licencias.visita_avaluo',
-                            'licencias.foto_predial',
-                            'licencias.foto_lic',
-                            'licencias.num_licencia',
-                            'contratos.fecha_status',
-                            'contratos.status',
-                            'contratos.equipamiento',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.fecha_entrega_obra',
-                            'lotes.id as loteId',
-                            'entregas.revision_previa',
-                            'entregas.fecha_program',
-                            
-                            DB::raw('DATEDIFF(current_date,entregas.fecha_program) as diferencia')
-                        )
+                        $contratos = $query
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('contratos.entregado', '=', 0)
@@ -394,39 +169,7 @@ class RevisionPreviaController extends Controller
 
                     }
                     elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
-                        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                        ->join('expedientes','contratos.id','expedientes.id')
-                        ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
-                        ->select('contratos.id as folio', 
-                            'contratos.equipamiento',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'etapas.carta_bienvenida',
-
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'licencias.avance as avance_lote',
-                            'licencias.visita_avaluo',
-                            'licencias.foto_predial',
-                            'licencias.foto_lic',
-                            'licencias.num_licencia',
-                            'contratos.fecha_status',
-                            'contratos.status',
-                            'contratos.equipamiento',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.fecha_entrega_obra',
-                            'lotes.id as loteId',
-                            'entregas.revision_previa',
-                            'entregas.fecha_program',
-                            
-                            DB::raw('DATEDIFF(current_date,entregas.fecha_program) as diferencia')
-                        )
+                        $contratos = $query
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('contratos.entregado', '=', 0)
@@ -439,39 +182,7 @@ class RevisionPreviaController extends Controller
                         ->paginate(8);
                     }
                     elseif($b_etapa == '' && $b_manzana != '' && $b_lote != ''){
-                        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                        ->join('expedientes','contratos.id','expedientes.id')
-                        ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
-                        ->select('contratos.id as folio', 
-                            'contratos.equipamiento',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'etapas.carta_bienvenida',
-
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'licencias.avance as avance_lote',
-                            'licencias.visita_avaluo',
-                            'licencias.foto_predial',
-                            'licencias.foto_lic',
-                            'licencias.num_licencia',
-                            'contratos.fecha_status',
-                            'contratos.status',
-                            'contratos.equipamiento',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.fecha_entrega_obra',
-                            'lotes.id as loteId',
-                            'entregas.revision_previa',
-                            'entregas.fecha_program',
-                            
-                            DB::raw('DATEDIFF(current_date,entregas.fecha_program) as diferencia')
-                        )
+                        $contratos = $query
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('contratos.entregado', '=', 0)
@@ -485,39 +196,7 @@ class RevisionPreviaController extends Controller
 
                     }
                     elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
-                        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                        ->join('expedientes','contratos.id','expedientes.id')
-                        ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
-                        ->select('contratos.id as folio', 
-                            'contratos.equipamiento',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'etapas.carta_bienvenida',
-
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'licencias.avance as avance_lote',
-                            'licencias.visita_avaluo',
-                            'licencias.foto_predial',
-                            'licencias.foto_lic',
-                            'licencias.num_licencia',
-                            'contratos.fecha_status',
-                            'contratos.status',
-                            'contratos.equipamiento',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.fecha_entrega_obra',
-                            'lotes.id as loteId',
-                            'entregas.revision_previa',
-                            'entregas.fecha_program',
-                            
-                            DB::raw('DATEDIFF(current_date,entregas.fecha_program) as diferencia')
-                        )
+                        $contratos = $query
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('contratos.entregado', '=', 0)
@@ -530,39 +209,7 @@ class RevisionPreviaController extends Controller
 
                     }
                     elseif($b_etapa == '' && $b_manzana != '' && $b_lote == ''){
-                        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                        ->join('expedientes','contratos.id','expedientes.id')
-                        ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
-                        ->select('contratos.id as folio', 
-                            'contratos.equipamiento',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'etapas.carta_bienvenida',
-
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'licencias.avance as avance_lote',
-                            'licencias.visita_avaluo',
-                            'licencias.foto_predial',
-                            'licencias.foto_lic',
-                            'licencias.num_licencia',
-                            'contratos.fecha_status',
-                            'contratos.status',
-                            'contratos.equipamiento',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.fecha_entrega_obra',
-                            'lotes.id as loteId',
-                            'entregas.revision_previa',
-                            'entregas.fecha_program',
-                            
-                            DB::raw('DATEDIFF(current_date,entregas.fecha_program) as diferencia')
-                        )
+                        $contratos = $query
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('contratos.entregado', '=', 0)
@@ -580,16 +227,16 @@ class RevisionPreviaController extends Controller
             }
         }
 
-                return [
-                    'pagination' => [
-                        'total'         => $contratos->total(),
-                        'current_page'  => $contratos->currentPage(),
-                        'per_page'      => $contratos->perPage(),
-                        'last_page'     => $contratos->lastPage(),
-                        'from'          => $contratos->firstItem(),
-                        'to'            => $contratos->lastItem(),
-                    ],'contratos' => $contratos, 'hora' => $mytime, 'hoy' => $hoy,
-                ];
+        return [
+            'pagination' => [
+                'total'         => $contratos->total(),
+                'current_page'  => $contratos->currentPage(),
+                'per_page'      => $contratos->perPage(),
+                'last_page'     => $contratos->lastPage(),
+                'from'          => $contratos->firstItem(),
+                'to'            => $contratos->lastItem(),
+            ],'contratos' => $contratos, 'hora' => $mytime, 'hoy' => $hoy,
+        ];
     }
 
     public function indexSinRevisionContratista(Request $request){
@@ -603,36 +250,38 @@ class RevisionPreviaController extends Controller
         $mytime = $fecha->toTimeString();
         $hoy =  $fecha->toDateString();
 
+        $query = Entrega::join('contratos','entregas.id', '=','contratos.id')
+            ->join('revisiones_previas','revisiones_previas.id', '=','contratos.id')
+            ->join('expedientes','contratos.id','=','expedientes.id')
+            ->join('creditos', 'contratos.id', '=', 'creditos.id')
+            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+            ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
+            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+            ->join('personal as c', 'clientes.id', '=', 'c.id')
+            ->select('contratos.id as folio', 
+                'contratos.equipamiento',
+                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                
+                'creditos.fraccionamiento as proyecto',
+                'creditos.etapa',
+                'creditos.manzana',
+                'creditos.num_lote',
+                
+                'contratos.fecha_status',
+                'contratos.status',
+                'contratos.equipamiento',
+                'expedientes.fecha_firma_esc',
+                'lotes.fecha_entrega_obra',
+                'lotes.id as loteId',
+                'entregas.revision_previa',
+                'entregas.fecha_program',
+                'revisiones_previas.id_contratista',
+                
+                DB::raw('DATEDIFF(current_date,entregas.fecha_program) as diferencia')
+        );
+
         if($buscar == ''){
-            $contratos = Entrega::join('contratos','entregas.id', '=','contratos.id')
-                    ->join('revisiones_previas','revisiones_previas.id', '=','contratos.id')
-                    ->join('expedientes','contratos.id','=','expedientes.id')
-                    ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                    ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id as folio', 
-                        'contratos.equipamiento',
-                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                        
-                        'creditos.fraccionamiento as proyecto',
-                        'creditos.etapa',
-                        'creditos.manzana',
-                        'creditos.num_lote',
-                        
-                        'contratos.fecha_status',
-                        'contratos.status',
-                        'contratos.equipamiento',
-                        'expedientes.fecha_firma_esc',
-                        'lotes.fecha_entrega_obra',
-                        'lotes.id as loteId',
-                        'entregas.revision_previa',
-                        'entregas.fecha_program',
-                        'revisiones_previas.id_contratista',
-                        
-                        DB::raw('DATEDIFF(current_date,entregas.fecha_program) as diferencia')
-                    )
+            $contratos = $query
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
                     ->where('entregas.fecha_program','!=',NULL)
@@ -645,488 +294,178 @@ class RevisionPreviaController extends Controller
         else{
             switch($criterio){
                 case 'c.nombre':{
-                    $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                    ->join('expedientes','contratos.id','expedientes.id')
-                    ->join('revisiones_previas','revisiones_previas.id', '=','contratos.id')
-                    ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                    ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id as folio', 
-                        'contratos.equipamiento',
-                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                        'etapas.carta_bienvenida',
-
-                        'creditos.fraccionamiento as proyecto',
-                        'creditos.etapa',
-                        'creditos.manzana',
-                        'creditos.num_lote',
-                        
-                        'contratos.fecha_status',
-                        'contratos.status',
-                        'contratos.equipamiento',
-                        'expedientes.fecha_firma_esc',
-                        'lotes.fecha_entrega_obra',
-                        'lotes.id as loteId',
-                        'entregas.revision_previa',
-                        'entregas.fecha_program',
-                        
-                        DB::raw('DATEDIFF(current_date,entregas.fecha_program) as diferencia')
-                    )
-                    ->where('contratos.status', '!=', 0)
-                    ->where('contratos.status', '!=', 2)
-                    ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
-                    ->where('entregas.revision_previa','!=',0)
-                    ->where('entregas.fecha_program','!=',NULL)
-                    ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%')
-                    ->orderBy('entregas.revision_previa','asc')
-                    ->orderBy('entregas.fecha_program','asc')
-                    ->paginate(8);
+                    $contratos = $query
+                        ->where('contratos.status', '!=', 0)
+                        ->where('contratos.status', '!=', 2)
+                        ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
+                        ->where('entregas.revision_previa','!=',0)
+                        ->where('entregas.fecha_program','!=',NULL)
+                        ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%')
+                        ->orderBy('entregas.revision_previa','asc')
+                        ->orderBy('entregas.fecha_program','asc')
+                        ->paginate(8);
 
                     break;
                 }
 
                 case 'entregas.fecha_program':{
-                    $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                    ->join('expedientes','contratos.id','expedientes.id')
-                    ->join('revisiones_previas','revisiones_previas.id', '=','contratos.id')
-                    ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                    ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id as folio', 
-                        'contratos.equipamiento',
-                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                        'etapas.carta_bienvenida',
-
-                        'creditos.fraccionamiento as proyecto',
-                        'creditos.etapa',
-                        'creditos.manzana',
-                        'creditos.num_lote',
-                        
-                        'contratos.fecha_status',
-                        'contratos.status',
-                        'contratos.equipamiento',
-                        'expedientes.fecha_firma_esc',
-                        'lotes.fecha_entrega_obra',
-                        'lotes.id as loteId',
-                        'entregas.revision_previa',
-                        'entregas.fecha_program',
-                        
-                        DB::raw('DATEDIFF(current_date,entregas.fecha_program) as diferencia')
-                    )
-                    ->where('contratos.status', '!=', 0)
-                    ->where('contratos.status', '!=', 2)
-                    ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
-                    ->where('entregas.revision_previa','!=',0)
-                    ->where('entregas.fecha_program','!=',NULL)
-                    ->whereBetween($criterio, [$buscar, $b_etapa])
-                    ->orderBy('entregas.revision_previa','asc')
-                    ->orderBy('entregas.fecha_program','asc')
-                    ->paginate(8);
+                    $contratos = $query
+                        ->where('contratos.status', '!=', 0)
+                        ->where('contratos.status', '!=', 2)
+                        ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
+                        ->where('entregas.revision_previa','!=',0)
+                        ->where('entregas.fecha_program','!=',NULL)
+                        ->whereBetween($criterio, [$buscar, $b_etapa])
+                        ->orderBy('entregas.revision_previa','asc')
+                        ->orderBy('entregas.fecha_program','asc')
+                        ->paginate(8);
 
                     break;
                 }
 
                 case 'contratos.id':{
-                    $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                    ->join('expedientes','contratos.id','expedientes.id')
-                    ->join('revisiones_previas','revisiones_previas.id', '=','contratos.id')
-                    ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                    ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id as folio', 
-                        'contratos.equipamiento',
-                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                        'etapas.carta_bienvenida',
-
-                        'creditos.fraccionamiento as proyecto',
-                        'creditos.etapa',
-                        'creditos.manzana',
-                        'creditos.num_lote',
-                        
-                        'contratos.fecha_status',
-                        'contratos.status',
-                        'contratos.equipamiento',
-                        'expedientes.fecha_firma_esc',
-                        'lotes.fecha_entrega_obra',
-                        'lotes.id as loteId',
-                        'entregas.revision_previa',
-                        'entregas.fecha_program',
-                        
-                        DB::raw('DATEDIFF(current_date,entregas.fecha_program) as diferencia')
-                    )
-                    ->where('contratos.status', '!=', 0)
-                    ->where('contratos.status', '!=', 2)
-                    ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
-                    ->where('entregas.revision_previa','!=',0)
-                    ->where('entregas.fecha_program','!=',NULL)
-                    ->where($criterio, '=', $buscar)
-                    ->orderBy('entregas.revision_previa','asc')
-                    ->orderBy('entregas.fecha_program','asc')
-                    ->paginate(8);
+                    $contratos = $query
+                        ->where('contratos.status', '!=', 0)
+                        ->where('contratos.status', '!=', 2)
+                        ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
+                        ->where('entregas.revision_previa','!=',0)
+                        ->where('entregas.fecha_program','!=',NULL)
+                        ->where($criterio, '=', $buscar)
+                        ->orderBy('entregas.revision_previa','asc')
+                        ->orderBy('entregas.fecha_program','asc')
+                        ->paginate(8);
 
                     break;
                 }
 
                 case 'lotes.fraccionamiento_id':{
                     if($b_etapa == '' && $b_manzana == '' && $b_lote == ''){
-                        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                        ->join('expedientes','contratos.id','expedientes.id')
-                        ->join('revisiones_previas','revisiones_previas.id', '=','contratos.id')
-                        ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
-                        ->select('contratos.id as folio', 
-                            'contratos.equipamiento',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'etapas.carta_bienvenida',
-
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            
-                            'licencias.num_licencia',
-                            'contratos.fecha_status',
-                            'contratos.status',
-                            'contratos.equipamiento',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.fecha_entrega_obra',
-                            'lotes.id as loteId',
-                            'entregas.revision_previa',
-                            'entregas.fecha_program',
-                            
-                            DB::raw('DATEDIFF(current_date,entregas.fecha_program) as diferencia')
-                        )
-                        ->where('contratos.status', '!=', 0)
-                        ->where('contratos.status', '!=', 2)
-                        ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
-                        ->where('entregas.revision_previa','!=',0)
-                        ->where('entregas.fecha_program','!=',NULL)
-                        ->where($criterio, '=', $buscar)
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('lotes.fecha_entrega_obra','desc')
-                        ->paginate(8);
+                        $contratos = $query
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
+                            ->where('entregas.revision_previa','!=',0)
+                            ->where('entregas.fecha_program','!=',NULL)
+                            ->where($criterio, '=', $buscar)
+                            ->orderBy('licencias.avance','desc')
+                            ->orderBy('lotes.fecha_entrega_obra','desc')
+                            ->paginate(8);
                     }
                     elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
-                        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                        ->join('expedientes','contratos.id','expedientes.id')
-                        ->join('revisiones_previas','revisiones_previas.id', '=','contratos.id')
-                        ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
-                        ->select('contratos.id as folio', 
-                            'contratos.equipamiento',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'etapas.carta_bienvenida',
-
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            
-                            'contratos.fecha_status',
-                            'contratos.status',
-                            'contratos.equipamiento',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.fecha_entrega_obra',
-                            'lotes.id as loteId',
-                            'entregas.revision_previa',
-                            'entregas.fecha_program',
-                            
-                            DB::raw('DATEDIFF(current_date,entregas.fecha_program) as diferencia')
-                        )
-                        ->where('contratos.status', '!=', 0)
-                        ->where('contratos.status', '!=', 2)
-                        ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
-                        ->where('entregas.revision_previa','!=',0)
-                        ->where('entregas.fecha_program','!=',NULL)
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('lotes.fecha_entrega_obra','desc')
-                        ->paginate(8);
+                        $contratos = $query
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
+                            ->where('entregas.revision_previa','!=',0)
+                            ->where('entregas.fecha_program','!=',NULL)
+                            ->where($criterio, '=', $buscar)
+                            ->where('lotes.etapa_id', '=', $b_etapa)
+                            ->orderBy('licencias.avance','desc')
+                            ->orderBy('lotes.fecha_entrega_obra','desc')
+                            ->paginate(8);
 
                     }
                     elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
-                        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                        ->join('expedientes','contratos.id','expedientes.id')
-                        ->join('revisiones_previas','revisiones_previas.id', '=','contratos.id')
-                        ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
-                        ->select('contratos.id as folio', 
-                            'contratos.equipamiento',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'etapas.carta_bienvenida',
-
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            
-                            'contratos.fecha_status',
-                            'contratos.status',
-                            'contratos.equipamiento',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.fecha_entrega_obra',
-                            'lotes.id as loteId',
-                            'entregas.revision_previa',
-                            'entregas.fecha_program',
-                            
-                            DB::raw('DATEDIFF(current_date,entregas.fecha_program) as diferencia')
-                        )
-                        ->where('contratos.status', '!=', 0)
-                        ->where('contratos.status', '!=', 2)
-                        ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
-                        ->where('entregas.revision_previa','!=',0)
-                        ->where('entregas.fecha_program','!=',NULL)
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('lotes.fecha_entrega_obra','desc')
-                        ->paginate(8);
+                        $contratos = $query
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
+                            ->where('entregas.revision_previa','!=',0)
+                            ->where('entregas.fecha_program','!=',NULL)
+                            ->where($criterio, '=', $buscar)
+                            ->where('lotes.etapa_id', '=', $b_etapa)
+                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
+                            ->orderBy('licencias.avance','desc')
+                            ->orderBy('lotes.fecha_entrega_obra','desc')
+                            ->paginate(8);
                     }
                     elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
-                        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                        ->join('expedientes','contratos.id','expedientes.id')
-                        ->join('revisiones_previas','revisiones_previas.id', '=','contratos.id')
-                        ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
-                        ->select('contratos.id as folio', 
-                            'contratos.equipamiento',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'etapas.carta_bienvenida',
-
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            
-                            'contratos.fecha_status',
-                            'contratos.status',
-                            'contratos.equipamiento',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.fecha_entrega_obra',
-                            'lotes.id as loteId',
-                            'entregas.revision_previa',
-                            'entregas.fecha_program',
-                            
-                            DB::raw('DATEDIFF(current_date,entregas.fecha_program) as diferencia')
-                        )
-                        ->where('contratos.status', '!=', 0)
-                        ->where('contratos.status', '!=', 2)
-                        ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
-                        ->where('entregas.revision_previa','!=',0)
-                        ->where('entregas.fecha_program','!=',NULL)
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->where('lotes.num_lote', '=', $b_lote)
-                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('lotes.fecha_entrega_obra','desc')
-                        ->paginate(8);
+                        $contratos = $query
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
+                            ->where('entregas.revision_previa','!=',0)
+                            ->where('entregas.fecha_program','!=',NULL)
+                            ->where($criterio, '=', $buscar)
+                            ->where('lotes.etapa_id', '=', $b_etapa)
+                            ->where('lotes.num_lote', '=', $b_lote)
+                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
+                            ->orderBy('licencias.avance','desc')
+                            ->orderBy('lotes.fecha_entrega_obra','desc')
+                            ->paginate(8);
 
                     }
                     elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
-                        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                        ->join('expedientes','contratos.id','expedientes.id')
-                        ->join('revisiones_previas','revisiones_previas.id', '=','contratos.id')
-                        ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
-                        ->select('contratos.id as folio', 
-                            'contratos.equipamiento',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'etapas.carta_bienvenida',
-
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            
-                            'contratos.fecha_status',
-                            'contratos.status',
-                            'contratos.equipamiento',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.fecha_entrega_obra',
-                            'lotes.id as loteId',
-                            'entregas.revision_previa',
-                            'entregas.fecha_program',
-                            
-                            DB::raw('DATEDIFF(current_date,entregas.fecha_program) as diferencia')
-                        )
-                        ->where('contratos.status', '!=', 0)
-                        ->where('contratos.status', '!=', 2)
-                        ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
-                        ->where('entregas.revision_previa','!=',0)
-                        ->where('entregas.fecha_program','!=',NULL)
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->where('lotes.num_lote', '=', $b_lote)
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('lotes.fecha_entrega_obra','desc')
-                        ->paginate(8);
-                    }
+                        $contratos = $query
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
+                            ->where('entregas.revision_previa','!=',0)
+                            ->where('entregas.fecha_program','!=',NULL)
+                            ->where($criterio, '=', $buscar)
+                            ->where('lotes.etapa_id', '=', $b_etapa)
+                            ->where('lotes.num_lote', '=', $b_lote)
+                            ->orderBy('licencias.avance','desc')
+                            ->orderBy('lotes.fecha_entrega_obra','desc')
+                            ->paginate(8);
+                        }
                     elseif($b_etapa == '' && $b_manzana != '' && $b_lote != ''){
-                        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                        ->join('expedientes','contratos.id','expedientes.id')
-                        ->join('revisiones_previas','revisiones_previas.id', '=','contratos.id')
-                        ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
-                        ->select('contratos.id as folio', 
-                            'contratos.equipamiento',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'etapas.carta_bienvenida',
-
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            
-                            'contratos.fecha_status',
-                            'contratos.status',
-                            'contratos.equipamiento',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.fecha_entrega_obra',
-                            'lotes.id as loteId',
-                            'entregas.revision_previa',
-                            'entregas.fecha_program',
-                            
-                            DB::raw('DATEDIFF(current_date,entregas.fecha_program) as diferencia')
-                        )
-                        ->where('contratos.status', '!=', 0)
-                        ->where('contratos.status', '!=', 2)
-                        ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
-                        ->where('entregas.revision_previa','!=',0)
-                        ->where('entregas.fecha_program','!=',NULL)
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.num_lote', '=', $b_lote)
-                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('lotes.fecha_entrega_obra','desc')
-                        ->paginate(8);
+                        $contratos = $query
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
+                            ->where('entregas.revision_previa','!=',0)
+                            ->where('entregas.fecha_program','!=',NULL)
+                            ->where($criterio, '=', $buscar)
+                            ->where('lotes.num_lote', '=', $b_lote)
+                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
+                            ->orderBy('licencias.avance','desc')
+                            ->orderBy('lotes.fecha_entrega_obra','desc')
+                            ->paginate(8);
 
                     }
                     elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
-                        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                        ->join('expedientes','contratos.id','expedientes.id')
-                        ->join('revisiones_previas','revisiones_previas.id', '=','contratos.id')
-                        ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
-                        ->select('contratos.id as folio', 
-                            'contratos.equipamiento',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'etapas.carta_bienvenida',
-
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            
-                            'contratos.fecha_status',
-                            'contratos.status',
-                            'contratos.equipamiento',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.fecha_entrega_obra',
-                            'lotes.id as loteId',
-                            'entregas.revision_previa',
-                            'entregas.fecha_program',
-                            
-                            DB::raw('DATEDIFF(current_date,entregas.fecha_program) as diferencia')
-                        )
-                        ->where('contratos.status', '!=', 0)
-                        ->where('contratos.status', '!=', 2)
-                        ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
-                        ->where('entregas.revision_previa','!=',0)
-                        ->where('entregas.fecha_program','!=',NULL)
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.num_lote', '=', $b_lote)
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('lotes.fecha_entrega_obra','desc')
-                        ->paginate(8);
+                        $contratos = $query
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
+                            ->where('entregas.revision_previa','!=',0)
+                            ->where('entregas.fecha_program','!=',NULL)
+                            ->where($criterio, '=', $buscar)
+                            ->where('lotes.num_lote', '=', $b_lote)
+                            ->orderBy('licencias.avance','desc')
+                            ->orderBy('lotes.fecha_entrega_obra','desc')
+                            ->paginate(8);
 
                     }
                     elseif($b_etapa == '' && $b_manzana != '' && $b_lote == ''){
-                        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                        ->join('expedientes','contratos.id','expedientes.id')
-                        ->join('revisiones_previas','revisiones_previas.id', '=','contratos.id')
-                        ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
-                        ->select('contratos.id as folio', 
-                            'contratos.equipamiento',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'etapas.carta_bienvenida',
-
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            
-                            'contratos.fecha_status',
-                            'contratos.status',
-                            'contratos.equipamiento',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.fecha_entrega_obra',
-                            'lotes.id as loteId',
-                            'entregas.revision_previa',
-                            'entregas.fecha_program',
-                            
-                            DB::raw('DATEDIFF(current_date,entregas.fecha_program) as diferencia')
-                        )
-                        ->where('contratos.status', '!=', 0)
-                        ->where('contratos.status', '!=', 2)
-                        ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
-                        ->where('entregas.revision_previa','!=',0)
-                        ->where('entregas.fecha_program','!=',NULL)
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('lotes.fecha_entrega_obra','desc')
-                        ->paginate(8);
-
+                        $contratos = $query
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
+                            ->where('entregas.revision_previa','!=',0)
+                            ->where('entregas.fecha_program','!=',NULL)
+                            ->where($criterio, '=', $buscar)
+                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
+                            ->orderBy('licencias.avance','desc')
+                            ->orderBy('lotes.fecha_entrega_obra','desc')
+                            ->paginate(8);
                     }
-
                     break;
                 }
             }
         }
 
-                return [
-                    'pagination' => [
-                        'total'         => $contratos->total(),
-                        'current_page'  => $contratos->currentPage(),
-                        'per_page'      => $contratos->perPage(),
-                        'last_page'     => $contratos->lastPage(),
-                        'from'          => $contratos->firstItem(),
-                        'to'            => $contratos->lastItem(),
-                    ],'contratos' => $contratos, 'hora' => $mytime, 'hoy' => $hoy,
-                ];
+        return [
+            'pagination' => [
+                'total'         => $contratos->total(),
+                'current_page'  => $contratos->currentPage(),
+                'per_page'      => $contratos->perPage(),
+                'last_page'     => $contratos->lastPage(),
+                'from'          => $contratos->firstItem(),
+                'to'            => $contratos->lastItem(),
+            ],'contratos' => $contratos, 'hora' => $mytime, 'hoy' => $hoy,
+        ];
     }
 
     public function storeRevision(Request $request){

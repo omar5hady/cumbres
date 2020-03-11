@@ -27,28 +27,24 @@ class PartidaController extends Controller
         $buscar = $request->buscar;
         $buscar2 = $request->buscar2;
         $criterio = $request->criterio;
-        
-        if($buscar==''){
-            $partidas = Partida::join('modelos','partidas.modelo_id','=','modelos.id')
+
+        $query = Partida::join('modelos','partidas.modelo_id','=','modelos.id')
             ->select('modelos.nombre as modelo','partidas.partida', 'partidas.costo', 
             'partidas.porcentaje','modelos.fraccionamiento_id','partidas.modelo_id','partidas.id')
-            ->join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')->addSelect('fraccionamientos.nombre as proyecto')
+            ->join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')->addSelect('fraccionamientos.nombre as proyecto');
+        
+        if($buscar==''){
+            $partidas = $query
                 ->orderBy('partidas.id','ASC')->paginate(49);
         }
        else{
            if($buscar2==''){
-                $partidas = Partida::join('modelos','partidas.modelo_id','=','modelos.id')
-                ->select('modelos.nombre as modelo','partidas.partida', 'partidas.costo', 
-                'partidas.porcentaje','modelos.fraccionamiento_id','partidas.modelo_id','partidas.id')
-                ->join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')->addSelect('fraccionamientos.nombre as proyecto')
+                $partidas = $query
                     ->where($criterio, 'like', '%'. $buscar . '%')
                     ->orderBy('partidas.id','ASC')->paginate(49);
            }
            else{
-                $partidas = Partida::join('modelos','partidas.modelo_id','=','modelos.id')
-                ->select('modelos.nombre as modelo','partidas.partida', 'partidas.costo', 
-                'partidas.porcentaje','modelos.fraccionamiento_id','partidas.modelo_id','partidas.id')
-                ->join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')->addSelect('fraccionamientos.nombre as proyecto')
+                $partidas = $query
                     ->where($criterio, '=', $buscar)
                     ->where('modelos.nombre',  'like', '%'. $buscar2 . '%')
                     ->orderBy('partidas.id','ASC')->paginate(49);

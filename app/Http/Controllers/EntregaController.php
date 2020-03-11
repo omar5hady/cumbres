@@ -87,54 +87,56 @@ class EntregaController extends Controller
         $mytime = $fecha->toTimeString();
         $hoy =  $fecha->toDateString();
 
-        if($buscar == ''){
-            $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                    ->join('expedientes','contratos.id','expedientes.id')
-                    ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                    ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id as folio', 
-                        'contratos.equipamiento',
-                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                        'c.celular', 
-                        'c.f_nacimiento','c.rfc',
-                        'c.homoclave','c.direccion','c.colonia','c.cp',
-                        'c.telefono','c.email','creditos.num_dep_economicos',
-                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                        'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                        'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
+        $query = Entrega::join('contratos','entregas.id','contratos.id')
+            ->join('expedientes','contratos.id','expedientes.id')
+            ->join('creditos', 'contratos.id', '=', 'creditos.id')
+            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+            ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
+            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+            ->join('personal as c', 'clientes.id', '=', 'c.id')
+            ->select('contratos.id as folio', 
+                'contratos.equipamiento',
+                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                'c.celular', 
+                'c.f_nacimiento','c.rfc',
+                'c.homoclave','c.direccion','c.colonia','c.cp',
+                'c.telefono','c.email','creditos.num_dep_economicos',
+                'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
+                'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
 
-                        'creditos.fraccionamiento as proyecto',
-                        'creditos.etapa',
-                        'creditos.manzana',
-                        'creditos.num_lote',
-                        'creditos.paquete',
-                        'creditos.promocion',
-                        'creditos.descripcion_paquete',
-                        'creditos.descripcion_promocion',
-                        'licencias.avance as avance_lote',
-                        'licencias.visita_avaluo',
-                        'licencias.foto_predial',
-                        'licencias.foto_lic',
-                        'licencias.num_licencia',
-                        'contratos.fecha_status',
-                        'contratos.status',
-                        'contratos.equipamiento',
-                        'expedientes.fecha_firma_esc',
-                        'lotes.fecha_entrega_obra',
-                        'lotes.id as loteId',
-                        'entregas.fecha_program',
-                        'entregas.hora_entrega_prog',
-                        'entregas.fecha_entrega_real',
-                        'entregas.hora_entrega_real',
-                        'entregas.revision_previa',
-                        DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                    )
+                'creditos.fraccionamiento as proyecto',
+                'creditos.etapa',
+                'creditos.manzana',
+                'creditos.num_lote',
+                'creditos.paquete',
+                'creditos.promocion',
+                'creditos.descripcion_paquete',
+                'creditos.descripcion_promocion',
+                'licencias.avance as avance_lote',
+                'licencias.visita_avaluo',
+                'licencias.foto_predial',
+                'licencias.foto_lic',
+                'licencias.num_licencia',
+                'contratos.fecha_status',
+                'contratos.status',
+                'contratos.equipamiento',
+                'expedientes.fecha_firma_esc',
+                'lotes.fecha_entrega_obra',
+                'lotes.id as loteId',
+                'entregas.fecha_program',
+                'entregas.hora_entrega_prog',
+                'entregas.fecha_entrega_real',
+                'entregas.hora_entrega_real',
+                'entregas.revision_previa',
+                DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
+            );
+
+        if($buscar == ''){
+            $contratos = $query
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
                     ->where('contratos.entregado', '=', 0)
@@ -145,53 +147,7 @@ class EntregaController extends Controller
         else{
             switch($criterio){
                 case 'c.nombre':{
-                    $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                    ->join('expedientes','contratos.id','expedientes.id')
-                    ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                    ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id as folio', 
-                        'contratos.equipamiento',
-                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                        'c.celular', 
-                        'c.f_nacimiento','c.rfc',
-                        'c.homoclave','c.direccion','c.colonia','c.cp',
-                        'c.telefono','c.email','creditos.num_dep_economicos',
-                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                        'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                        'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-
-                        'creditos.fraccionamiento as proyecto',
-                        'creditos.etapa',
-                        'creditos.manzana',
-                        'creditos.num_lote',
-                        'creditos.paquete',
-                        'creditos.promocion',
-                        'creditos.descripcion_paquete',
-                        'creditos.descripcion_promocion',
-                        'licencias.avance as avance_lote',
-                        'licencias.visita_avaluo',
-                        'licencias.foto_predial',
-                        'licencias.foto_lic',
-                        'licencias.num_licencia',
-                        'contratos.fecha_status',
-                        'contratos.status',
-                        'contratos.equipamiento',
-                        'expedientes.fecha_firma_esc',
-                        'lotes.fecha_entrega_obra',
-                        'lotes.id as loteId',
-                        'entregas.fecha_program',
-                        'entregas.hora_entrega_prog',
-                        'entregas.fecha_entrega_real',
-                        'entregas.hora_entrega_real',
-                        'entregas.revision_previa',
-                        DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                    )
+                    $contratos = $query
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
                     ->where('contratos.entregado', '=', 0)
@@ -204,53 +160,7 @@ class EntregaController extends Controller
                 }
 
                 case 'entregas.fecha_program':{
-                    $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                    ->join('expedientes','contratos.id','expedientes.id')
-                    ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                    ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id as folio', 
-                        'contratos.equipamiento',
-                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                        'c.celular', 
-                        'c.f_nacimiento','c.rfc',
-                        'c.homoclave','c.direccion','c.colonia','c.cp',
-                        'c.telefono','c.email','creditos.num_dep_economicos',
-                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                        'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                        'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-
-                        'creditos.fraccionamiento as proyecto',
-                        'creditos.etapa',
-                        'creditos.manzana',
-                        'creditos.num_lote',
-                        'creditos.paquete',
-                        'creditos.promocion',
-                        'creditos.descripcion_paquete',
-                        'creditos.descripcion_promocion',
-                        'licencias.avance as avance_lote',
-                        'licencias.visita_avaluo',
-                        'licencias.foto_predial',
-                        'licencias.foto_lic',
-                        'licencias.num_licencia',
-                        'contratos.fecha_status',
-                        'contratos.status',
-                        'contratos.equipamiento',
-                        'expedientes.fecha_firma_esc',
-                        'lotes.fecha_entrega_obra',
-                        'lotes.id as loteId',
-                        'entregas.fecha_program',
-                        'entregas.hora_entrega_prog',
-                        'entregas.fecha_entrega_real',
-                        'entregas.hora_entrega_real',
-                        'entregas.revision_previa',
-                        DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                    )
+                    $contratos = $query
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
                     ->where('contratos.entregado', '=', 0)
@@ -263,53 +173,7 @@ class EntregaController extends Controller
                 }
 
                 case 'contratos.id':{
-                    $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                    ->join('expedientes','contratos.id','expedientes.id')
-                    ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                    ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id as folio', 
-                        'contratos.equipamiento',
-                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                        'c.celular', 
-                        'c.f_nacimiento','c.rfc',
-                        'c.homoclave','c.direccion','c.colonia','c.cp',
-                        'c.telefono','c.email','creditos.num_dep_economicos',
-                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                        'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                        'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-
-                        'creditos.fraccionamiento as proyecto',
-                        'creditos.etapa',
-                        'creditos.manzana',
-                        'creditos.num_lote',
-                        'creditos.paquete',
-                        'creditos.promocion',
-                        'creditos.descripcion_paquete',
-                        'creditos.descripcion_promocion',
-                        'licencias.avance as avance_lote',
-                        'licencias.visita_avaluo',
-                        'licencias.foto_predial',
-                        'licencias.foto_lic',
-                        'licencias.num_licencia',
-                        'contratos.fecha_status',
-                        'contratos.status',
-                        'contratos.equipamiento',
-                        'expedientes.fecha_firma_esc',
-                        'lotes.fecha_entrega_obra',
-                        'lotes.id as loteId',
-                        'entregas.fecha_program',
-                        'entregas.hora_entrega_prog',
-                        'entregas.fecha_entrega_real',
-                        'entregas.hora_entrega_real',
-                        'entregas.revision_previa',
-                        DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                    )
+                    $contratos = $query
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
                     ->where('contratos.entregado', '=', 0)
@@ -324,53 +188,7 @@ class EntregaController extends Controller
                 case 'lotes.fraccionamiento_id':{
                     if($request->b_desde == ''){
                         if($b_etapa == '' && $b_manzana == '' && $b_lote == ''){
-                            $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                            ->join('expedientes','contratos.id','expedientes.id')
-                            ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                            ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                            ->join('personal as c', 'clientes.id', '=', 'c.id')
-                            ->select('contratos.id as folio', 
-                                'contratos.equipamiento',
-                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                'c.celular', 
-                                'c.f_nacimiento','c.rfc',
-                                'c.homoclave','c.direccion','c.colonia','c.cp',
-                                'c.telefono','c.email','creditos.num_dep_economicos',
-                                'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                                'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-    
-                                'creditos.fraccionamiento as proyecto',
-                                'creditos.etapa',
-                                'creditos.manzana',
-                                'creditos.num_lote',
-                                'creditos.paquete',
-                                'creditos.promocion',
-                                'creditos.descripcion_paquete',
-                                'creditos.descripcion_promocion',
-                                'licencias.avance as avance_lote',
-                                'licencias.visita_avaluo',
-                                'licencias.foto_predial',
-                                'licencias.foto_lic',
-                                'licencias.num_licencia',
-                                'contratos.fecha_status',
-                                'contratos.status',
-                                'contratos.equipamiento',
-                                'expedientes.fecha_firma_esc',
-                                'lotes.fecha_entrega_obra',
-                                'lotes.id as loteId',
-                                'entregas.fecha_program',
-                                'entregas.hora_entrega_prog',
-                                'entregas.fecha_entrega_real',
-                                'entregas.hora_entrega_real',
-                                'entregas.revision_previa',
-                                DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                            )
+                            $contratos = $query
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('contratos.entregado', '=', 0)
@@ -380,53 +198,7 @@ class EntregaController extends Controller
                             ->paginate(8);
                         }
                         elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
-                            $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                            ->join('expedientes','contratos.id','expedientes.id')
-                            ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                            ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                            ->join('personal as c', 'clientes.id', '=', 'c.id')
-                            ->select('contratos.id as folio', 
-                                'contratos.equipamiento',
-                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                'c.celular', 
-                                'c.f_nacimiento','c.rfc',
-                                'c.homoclave','c.direccion','c.colonia','c.cp',
-                                'c.telefono','c.email','creditos.num_dep_economicos',
-                                'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                                'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-    
-                                'creditos.fraccionamiento as proyecto',
-                                'creditos.etapa',
-                                'creditos.manzana',
-                                'creditos.num_lote',
-                                'creditos.paquete',
-                                'creditos.promocion',
-                                'creditos.descripcion_paquete',
-                                'creditos.descripcion_promocion',
-                                'licencias.avance as avance_lote',
-                                'licencias.visita_avaluo',
-                                'licencias.foto_predial',
-                                'licencias.foto_lic',
-                                'licencias.num_licencia',
-                                'contratos.fecha_status',
-                                'contratos.status',
-                                'contratos.equipamiento',
-                                'expedientes.fecha_firma_esc',
-                                'lotes.fecha_entrega_obra',
-                                'lotes.id as loteId',
-                                'entregas.fecha_program',
-                                'entregas.hora_entrega_prog',
-                                'entregas.fecha_entrega_real',
-                                'entregas.hora_entrega_real',
-                                'entregas.revision_previa',
-                                DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                            )
+                            $contratos = $query
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('contratos.entregado', '=', 0)
@@ -438,53 +210,7 @@ class EntregaController extends Controller
     
                         }
                         elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
-                            $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                            ->join('expedientes','contratos.id','expedientes.id')
-                            ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                            ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                            ->join('personal as c', 'clientes.id', '=', 'c.id')
-                            ->select('contratos.id as folio', 
-                                'contratos.equipamiento',
-                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                'c.celular', 
-                                'c.f_nacimiento','c.rfc',
-                                'c.homoclave','c.direccion','c.colonia','c.cp',
-                                'c.telefono','c.email','creditos.num_dep_economicos',
-                                'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                                'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-    
-                                'creditos.fraccionamiento as proyecto',
-                                'creditos.etapa',
-                                'creditos.manzana',
-                                'creditos.num_lote',
-                                'creditos.paquete',
-                                'creditos.promocion',
-                                'creditos.descripcion_paquete',
-                                'creditos.descripcion_promocion',
-                                'licencias.avance as avance_lote',
-                                'licencias.visita_avaluo',
-                                'licencias.foto_predial',
-                                'licencias.foto_lic',
-                                'licencias.num_licencia',
-                                'contratos.fecha_status',
-                                'contratos.status',
-                                'contratos.equipamiento',
-                                'expedientes.fecha_firma_esc',
-                                'lotes.fecha_entrega_obra',
-                                'lotes.id as loteId',
-                                'entregas.fecha_program',
-                                'entregas.hora_entrega_prog',
-                                'entregas.fecha_entrega_real',
-                                'entregas.hora_entrega_real',
-                                'entregas.revision_previa',
-                                DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                            )
+                            $contratos = $query
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('contratos.entregado', '=', 0)
@@ -496,53 +222,7 @@ class EntregaController extends Controller
                             ->paginate(8);
                         }
                         elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
-                            $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                            ->join('expedientes','contratos.id','expedientes.id')
-                            ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                            ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                            ->join('personal as c', 'clientes.id', '=', 'c.id')
-                            ->select('contratos.id as folio', 
-                                'contratos.equipamiento',
-                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                'c.celular', 
-                                'c.f_nacimiento','c.rfc',
-                                'c.homoclave','c.direccion','c.colonia','c.cp',
-                                'c.telefono','c.email','creditos.num_dep_economicos',
-                                'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                                'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-    
-                                'creditos.fraccionamiento as proyecto',
-                                'creditos.etapa',
-                                'creditos.manzana',
-                                'creditos.num_lote',
-                                'creditos.paquete',
-                                'creditos.promocion',
-                                'creditos.descripcion_paquete',
-                                'creditos.descripcion_promocion',
-                                'licencias.avance as avance_lote',
-                                'licencias.visita_avaluo',
-                                'licencias.foto_predial',
-                                'licencias.foto_lic',
-                                'licencias.num_licencia',
-                                'contratos.fecha_status',
-                                'contratos.status',
-                                'contratos.equipamiento',
-                                'expedientes.fecha_firma_esc',
-                                'lotes.fecha_entrega_obra',
-                                'lotes.id as loteId',
-                                'entregas.fecha_program',
-                                'entregas.hora_entrega_prog',
-                                'entregas.fecha_entrega_real',
-                                'entregas.hora_entrega_real',
-                                'entregas.revision_previa',
-                                DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                            )
+                            $contratos = $query
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('contratos.entregado', '=', 0)
@@ -556,53 +236,7 @@ class EntregaController extends Controller
     
                         }
                         elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
-                            $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                            ->join('expedientes','contratos.id','expedientes.id')
-                            ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                            ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                            ->join('personal as c', 'clientes.id', '=', 'c.id')
-                            ->select('contratos.id as folio', 
-                                'contratos.equipamiento',
-                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                'c.celular', 
-                                'c.f_nacimiento','c.rfc',
-                                'c.homoclave','c.direccion','c.colonia','c.cp',
-                                'c.telefono','c.email','creditos.num_dep_economicos',
-                                'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                                'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-    
-                                'creditos.fraccionamiento as proyecto',
-                                'creditos.etapa',
-                                'creditos.manzana',
-                                'creditos.num_lote',
-                                'creditos.paquete',
-                                'creditos.promocion',
-                                'creditos.descripcion_paquete',
-                                'creditos.descripcion_promocion',
-                                'licencias.avance as avance_lote',
-                                'licencias.visita_avaluo',
-                                'licencias.foto_predial',
-                                'licencias.foto_lic',
-                                'licencias.num_licencia',
-                                'contratos.fecha_status',
-                                'contratos.status',
-                                'contratos.equipamiento',
-                                'expedientes.fecha_firma_esc',
-                                'lotes.fecha_entrega_obra',
-                                'lotes.id as loteId',
-                                'entregas.fecha_program',
-                                'entregas.hora_entrega_prog',
-                                'entregas.fecha_entrega_real',
-                                'entregas.hora_entrega_real',
-                                'entregas.revision_previa',
-                                DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                            )
+                            $contratos = $query
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('contratos.entregado', '=', 0)
@@ -614,53 +248,7 @@ class EntregaController extends Controller
                             ->paginate(8);
                         }
                         elseif($b_etapa == '' && $b_manzana != '' && $b_lote != ''){
-                            $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                            ->join('expedientes','contratos.id','expedientes.id')
-                            ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                            ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                            ->join('personal as c', 'clientes.id', '=', 'c.id')
-                            ->select('contratos.id as folio', 
-                                'contratos.equipamiento',
-                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                'c.celular', 
-                                'c.f_nacimiento','c.rfc',
-                                'c.homoclave','c.direccion','c.colonia','c.cp',
-                                'c.telefono','c.email','creditos.num_dep_economicos',
-                                'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                                'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-    
-                                'creditos.fraccionamiento as proyecto',
-                                'creditos.etapa',
-                                'creditos.manzana',
-                                'creditos.num_lote',
-                                'creditos.paquete',
-                                'creditos.promocion',
-                                'creditos.descripcion_paquete',
-                                'creditos.descripcion_promocion',
-                                'licencias.avance as avance_lote',
-                                'licencias.visita_avaluo',
-                                'licencias.foto_predial',
-                                'licencias.foto_lic',
-                                'licencias.num_licencia',
-                                'contratos.fecha_status',
-                                'contratos.status',
-                                'contratos.equipamiento',
-                                'expedientes.fecha_firma_esc',
-                                'lotes.fecha_entrega_obra',
-                                'lotes.id as loteId',
-                                'entregas.fecha_program',
-                                'entregas.hora_entrega_prog',
-                                'entregas.fecha_entrega_real',
-                                'entregas.hora_entrega_real',
-                                'entregas.revision_previa',
-                                DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                            )
+                            $contratos = $query
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('contratos.entregado', '=', 0)
@@ -673,53 +261,7 @@ class EntregaController extends Controller
     
                         }
                         elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
-                            $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                            ->join('expedientes','contratos.id','expedientes.id')
-                            ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                            ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                            ->join('personal as c', 'clientes.id', '=', 'c.id')
-                            ->select('contratos.id as folio', 
-                                'contratos.equipamiento',
-                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                'c.celular', 
-                                'c.f_nacimiento','c.rfc',
-                                'c.homoclave','c.direccion','c.colonia','c.cp',
-                                'c.telefono','c.email','creditos.num_dep_economicos',
-                                'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                                'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-    
-                                'creditos.fraccionamiento as proyecto',
-                                'creditos.etapa',
-                                'creditos.manzana',
-                                'creditos.num_lote',
-                                'creditos.paquete',
-                                'creditos.promocion',
-                                'creditos.descripcion_paquete',
-                                'creditos.descripcion_promocion',
-                                'licencias.avance as avance_lote',
-                                'licencias.visita_avaluo',
-                                'licencias.foto_predial',
-                                'licencias.foto_lic',
-                                'licencias.num_licencia',
-                                'contratos.fecha_status',
-                                'contratos.status',
-                                'contratos.equipamiento',
-                                'expedientes.fecha_firma_esc',
-                                'lotes.fecha_entrega_obra',
-                                'lotes.id as loteId',
-                                'entregas.fecha_program',
-                                'entregas.hora_entrega_prog',
-                                'entregas.fecha_entrega_real',
-                                'entregas.hora_entrega_real',
-                                'entregas.revision_previa',
-                                DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                            )
+                            $contratos = $query
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('contratos.entregado', '=', 0)
@@ -731,53 +273,7 @@ class EntregaController extends Controller
     
                         }
                         elseif($b_etapa == '' && $b_manzana != '' && $b_lote == ''){
-                            $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                            ->join('expedientes','contratos.id','expedientes.id')
-                            ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                            ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                            ->join('personal as c', 'clientes.id', '=', 'c.id')
-                            ->select('contratos.id as folio', 
-                                'contratos.equipamiento',
-                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                'c.celular', 
-                                'c.f_nacimiento','c.rfc',
-                                'c.homoclave','c.direccion','c.colonia','c.cp',
-                                'c.telefono','c.email','creditos.num_dep_economicos',
-                                'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                                'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-    
-                                'creditos.fraccionamiento as proyecto',
-                                'creditos.etapa',
-                                'creditos.manzana',
-                                'creditos.num_lote',
-                                'creditos.paquete',
-                                'creditos.promocion',
-                                'creditos.descripcion_paquete',
-                                'creditos.descripcion_promocion',
-                                'licencias.avance as avance_lote',
-                                'licencias.visita_avaluo',
-                                'licencias.foto_predial',
-                                'licencias.foto_lic',
-                                'licencias.num_licencia',
-                                'contratos.fecha_status',
-                                'contratos.status',
-                                'contratos.equipamiento',
-                                'expedientes.fecha_firma_esc',
-                                'lotes.fecha_entrega_obra',
-                                'lotes.id as loteId',
-                                'entregas.fecha_program',
-                                'entregas.hora_entrega_prog',
-                                'entregas.fecha_entrega_real',
-                                'entregas.hora_entrega_real',
-                                'entregas.revision_previa',
-                                DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                            )
+                            $contratos = $query
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('contratos.entregado', '=', 0)
@@ -791,53 +287,7 @@ class EntregaController extends Controller
                     }
                     else{
                         if($b_etapa == '' && $b_manzana == '' && $b_lote == ''){
-                            $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                            ->join('expedientes','contratos.id','expedientes.id')
-                            ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                            ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                            ->join('personal as c', 'clientes.id', '=', 'c.id')
-                            ->select('contratos.id as folio', 
-                                'contratos.equipamiento',
-                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                'c.celular', 
-                                'c.f_nacimiento','c.rfc',
-                                'c.homoclave','c.direccion','c.colonia','c.cp',
-                                'c.telefono','c.email','creditos.num_dep_economicos',
-                                'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                                'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-    
-                                'creditos.fraccionamiento as proyecto',
-                                'creditos.etapa',
-                                'creditos.manzana',
-                                'creditos.num_lote',
-                                'creditos.paquete',
-                                'creditos.promocion',
-                                'creditos.descripcion_paquete',
-                                'creditos.descripcion_promocion',
-                                'licencias.avance as avance_lote',
-                                'licencias.visita_avaluo',
-                                'licencias.foto_predial',
-                                'licencias.foto_lic',
-                                'licencias.num_licencia',
-                                'contratos.fecha_status',
-                                'contratos.status',
-                                'contratos.equipamiento',
-                                'expedientes.fecha_firma_esc',
-                                'lotes.fecha_entrega_obra',
-                                'lotes.id as loteId',
-                                'entregas.fecha_program',
-                                'entregas.hora_entrega_prog',
-                                'entregas.fecha_entrega_real',
-                                'entregas.hora_entrega_real',
-                                'entregas.revision_previa',
-                                DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                            )
+                            $contratos = $query
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('contratos.entregado', '=', 0)
@@ -848,53 +298,7 @@ class EntregaController extends Controller
                             ->paginate(8);
                         }
                         elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
-                            $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                            ->join('expedientes','contratos.id','expedientes.id')
-                            ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                            ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                            ->join('personal as c', 'clientes.id', '=', 'c.id')
-                            ->select('contratos.id as folio', 
-                                'contratos.equipamiento',
-                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                'c.celular', 
-                                'c.f_nacimiento','c.rfc',
-                                'c.homoclave','c.direccion','c.colonia','c.cp',
-                                'c.telefono','c.email','creditos.num_dep_economicos',
-                                'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                                'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-    
-                                'creditos.fraccionamiento as proyecto',
-                                'creditos.etapa',
-                                'creditos.manzana',
-                                'creditos.num_lote',
-                                'creditos.paquete',
-                                'creditos.promocion',
-                                'creditos.descripcion_paquete',
-                                'creditos.descripcion_promocion',
-                                'licencias.avance as avance_lote',
-                                'licencias.visita_avaluo',
-                                'licencias.foto_predial',
-                                'licencias.foto_lic',
-                                'licencias.num_licencia',
-                                'contratos.fecha_status',
-                                'contratos.status',
-                                'contratos.equipamiento',
-                                'expedientes.fecha_firma_esc',
-                                'lotes.fecha_entrega_obra',
-                                'lotes.id as loteId',
-                                'entregas.fecha_program',
-                                'entregas.hora_entrega_prog',
-                                'entregas.fecha_entrega_real',
-                                'entregas.hora_entrega_real',
-                                'entregas.revision_previa',
-                                DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                            )
+                            $contratos = $query
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('contratos.entregado', '=', 0)
@@ -907,53 +311,7 @@ class EntregaController extends Controller
     
                         }
                         elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
-                            $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                            ->join('expedientes','contratos.id','expedientes.id')
-                            ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                            ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                            ->join('personal as c', 'clientes.id', '=', 'c.id')
-                            ->select('contratos.id as folio', 
-                                'contratos.equipamiento',
-                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                'c.celular', 
-                                'c.f_nacimiento','c.rfc',
-                                'c.homoclave','c.direccion','c.colonia','c.cp',
-                                'c.telefono','c.email','creditos.num_dep_economicos',
-                                'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                                'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-    
-                                'creditos.fraccionamiento as proyecto',
-                                'creditos.etapa',
-                                'creditos.manzana',
-                                'creditos.num_lote',
-                                'creditos.paquete',
-                                'creditos.promocion',
-                                'creditos.descripcion_paquete',
-                                'creditos.descripcion_promocion',
-                                'licencias.avance as avance_lote',
-                                'licencias.visita_avaluo',
-                                'licencias.foto_predial',
-                                'licencias.foto_lic',
-                                'licencias.num_licencia',
-                                'contratos.fecha_status',
-                                'contratos.status',
-                                'contratos.equipamiento',
-                                'expedientes.fecha_firma_esc',
-                                'lotes.fecha_entrega_obra',
-                                'lotes.id as loteId',
-                                'entregas.fecha_program',
-                                'entregas.hora_entrega_prog',
-                                'entregas.fecha_entrega_real',
-                                'entregas.hora_entrega_real',
-                                'entregas.revision_previa',
-                                DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                            )
+                            $contratos = $query
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('contratos.entregado', '=', 0)
@@ -966,53 +324,7 @@ class EntregaController extends Controller
                             ->paginate(8);
                         }
                         elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
-                            $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                            ->join('expedientes','contratos.id','expedientes.id')
-                            ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                            ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                            ->join('personal as c', 'clientes.id', '=', 'c.id')
-                            ->select('contratos.id as folio', 
-                                'contratos.equipamiento',
-                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                'c.celular', 
-                                'c.f_nacimiento','c.rfc',
-                                'c.homoclave','c.direccion','c.colonia','c.cp',
-                                'c.telefono','c.email','creditos.num_dep_economicos',
-                                'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                                'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-    
-                                'creditos.fraccionamiento as proyecto',
-                                'creditos.etapa',
-                                'creditos.manzana',
-                                'creditos.num_lote',
-                                'creditos.paquete',
-                                'creditos.promocion',
-                                'creditos.descripcion_paquete',
-                                'creditos.descripcion_promocion',
-                                'licencias.avance as avance_lote',
-                                'licencias.visita_avaluo',
-                                'licencias.foto_predial',
-                                'licencias.foto_lic',
-                                'licencias.num_licencia',
-                                'contratos.fecha_status',
-                                'contratos.status',
-                                'contratos.equipamiento',
-                                'expedientes.fecha_firma_esc',
-                                'lotes.fecha_entrega_obra',
-                                'lotes.id as loteId',
-                                'entregas.fecha_program',
-                                'entregas.hora_entrega_prog',
-                                'entregas.fecha_entrega_real',
-                                'entregas.hora_entrega_real',
-                                'entregas.revision_previa',
-                                DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                            )
+                            $contratos = $query
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('contratos.entregado', '=', 0)
@@ -1027,53 +339,7 @@ class EntregaController extends Controller
     
                         }
                         elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
-                            $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                            ->join('expedientes','contratos.id','expedientes.id')
-                            ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                            ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                            ->join('personal as c', 'clientes.id', '=', 'c.id')
-                            ->select('contratos.id as folio', 
-                                'contratos.equipamiento',
-                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                'c.celular', 
-                                'c.f_nacimiento','c.rfc',
-                                'c.homoclave','c.direccion','c.colonia','c.cp',
-                                'c.telefono','c.email','creditos.num_dep_economicos',
-                                'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                                'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-    
-                                'creditos.fraccionamiento as proyecto',
-                                'creditos.etapa',
-                                'creditos.manzana',
-                                'creditos.num_lote',
-                                'creditos.paquete',
-                                'creditos.promocion',
-                                'creditos.descripcion_paquete',
-                                'creditos.descripcion_promocion',
-                                'licencias.avance as avance_lote',
-                                'licencias.visita_avaluo',
-                                'licencias.foto_predial',
-                                'licencias.foto_lic',
-                                'licencias.num_licencia',
-                                'contratos.fecha_status',
-                                'contratos.status',
-                                'contratos.equipamiento',
-                                'expedientes.fecha_firma_esc',
-                                'lotes.fecha_entrega_obra',
-                                'lotes.id as loteId',
-                                'entregas.fecha_program',
-                                'entregas.hora_entrega_prog',
-                                'entregas.fecha_entrega_real',
-                                'entregas.hora_entrega_real',
-                                'entregas.revision_previa',
-                                DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                            )
+                            $contratos = $query
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('contratos.entregado', '=', 0)
@@ -1086,53 +352,7 @@ class EntregaController extends Controller
                             ->paginate(8);
                         }
                         elseif($b_etapa == '' && $b_manzana != '' && $b_lote != ''){
-                            $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                            ->join('expedientes','contratos.id','expedientes.id')
-                            ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                            ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                            ->join('personal as c', 'clientes.id', '=', 'c.id')
-                            ->select('contratos.id as folio', 
-                                'contratos.equipamiento',
-                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                'c.celular', 
-                                'c.f_nacimiento','c.rfc',
-                                'c.homoclave','c.direccion','c.colonia','c.cp',
-                                'c.telefono','c.email','creditos.num_dep_economicos',
-                                'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                                'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-    
-                                'creditos.fraccionamiento as proyecto',
-                                'creditos.etapa',
-                                'creditos.manzana',
-                                'creditos.num_lote',
-                                'creditos.paquete',
-                                'creditos.promocion',
-                                'creditos.descripcion_paquete',
-                                'creditos.descripcion_promocion',
-                                'licencias.avance as avance_lote',
-                                'licencias.visita_avaluo',
-                                'licencias.foto_predial',
-                                'licencias.foto_lic',
-                                'licencias.num_licencia',
-                                'contratos.fecha_status',
-                                'contratos.status',
-                                'contratos.equipamiento',
-                                'expedientes.fecha_firma_esc',
-                                'lotes.fecha_entrega_obra',
-                                'lotes.id as loteId',
-                                'entregas.fecha_program',
-                                'entregas.hora_entrega_prog',
-                                'entregas.fecha_entrega_real',
-                                'entregas.hora_entrega_real',
-                                'entregas.revision_previa',
-                                DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                            )
+                            $contratos = $query
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('contratos.entregado', '=', 0)
@@ -1146,53 +366,7 @@ class EntregaController extends Controller
     
                         }
                         elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
-                            $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                            ->join('expedientes','contratos.id','expedientes.id')
-                            ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                            ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                            ->join('personal as c', 'clientes.id', '=', 'c.id')
-                            ->select('contratos.id as folio', 
-                                'contratos.equipamiento',
-                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                'c.celular', 
-                                'c.f_nacimiento','c.rfc',
-                                'c.homoclave','c.direccion','c.colonia','c.cp',
-                                'c.telefono','c.email','creditos.num_dep_economicos',
-                                'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                                'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-    
-                                'creditos.fraccionamiento as proyecto',
-                                'creditos.etapa',
-                                'creditos.manzana',
-                                'creditos.num_lote',
-                                'creditos.paquete',
-                                'creditos.promocion',
-                                'creditos.descripcion_paquete',
-                                'creditos.descripcion_promocion',
-                                'licencias.avance as avance_lote',
-                                'licencias.visita_avaluo',
-                                'licencias.foto_predial',
-                                'licencias.foto_lic',
-                                'licencias.num_licencia',
-                                'contratos.fecha_status',
-                                'contratos.status',
-                                'contratos.equipamiento',
-                                'expedientes.fecha_firma_esc',
-                                'lotes.fecha_entrega_obra',
-                                'lotes.id as loteId',
-                                'entregas.fecha_program',
-                                'entregas.hora_entrega_prog',
-                                'entregas.fecha_entrega_real',
-                                'entregas.hora_entrega_real',
-                                'entregas.revision_previa',
-                                DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                            )
+                            $contratos = $query
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('contratos.entregado', '=', 0)
@@ -1205,53 +379,7 @@ class EntregaController extends Controller
     
                         }
                         elseif($b_etapa == '' && $b_manzana != '' && $b_lote == ''){
-                            $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                            ->join('expedientes','contratos.id','expedientes.id')
-                            ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                            ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                            ->join('personal as c', 'clientes.id', '=', 'c.id')
-                            ->select('contratos.id as folio', 
-                                'contratos.equipamiento',
-                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                'c.celular', 
-                                'c.f_nacimiento','c.rfc',
-                                'c.homoclave','c.direccion','c.colonia','c.cp',
-                                'c.telefono','c.email','creditos.num_dep_economicos',
-                                'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                                'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-    
-                                'creditos.fraccionamiento as proyecto',
-                                'creditos.etapa',
-                                'creditos.manzana',
-                                'creditos.num_lote',
-                                'creditos.paquete',
-                                'creditos.promocion',
-                                'creditos.descripcion_paquete',
-                                'creditos.descripcion_promocion',
-                                'licencias.avance as avance_lote',
-                                'licencias.visita_avaluo',
-                                'licencias.foto_predial',
-                                'licencias.foto_lic',
-                                'licencias.num_licencia',
-                                'contratos.fecha_status',
-                                'contratos.status',
-                                'contratos.equipamiento',
-                                'expedientes.fecha_firma_esc',
-                                'lotes.fecha_entrega_obra',
-                                'lotes.id as loteId',
-                                'entregas.fecha_program',
-                                'entregas.hora_entrega_prog',
-                                'entregas.fecha_entrega_real',
-                                'entregas.hora_entrega_real',
-                                'entregas.revision_previa',
-                                DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                            )
+                            $contratos = $query
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('contratos.entregado', '=', 0)
@@ -1419,54 +547,56 @@ class EntregaController extends Controller
         $b_manzana = $request->b_manzana;
         $b_lote = $request->b_lote;
 
-        if($buscar == ''){
-            $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                    ->join('expedientes','contratos.id','expedientes.id')
-                    ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id as folio', 
-                        'contratos.equipamiento',
-                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                        'c.celular', 
-                        'c.f_nacimiento','c.rfc',
-                        'c.homoclave','c.direccion','c.colonia','c.cp',
-                        'c.telefono','c.email','creditos.num_dep_economicos',
-                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                        'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                        'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
+        $query = Entrega::join('contratos','entregas.id','contratos.id')
+            ->join('expedientes','contratos.id','expedientes.id')
+            ->join('creditos', 'contratos.id', '=', 'creditos.id')
+            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+            ->join('etapas','lotes.etapa_id','=','etapas.id')
+            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+            ->join('personal as c', 'clientes.id', '=', 'c.id')
+            ->select('contratos.id as folio', 
+                'contratos.equipamiento',
+                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                'c.celular', 
+                'c.f_nacimiento','c.rfc',
+                'c.homoclave','c.direccion','c.colonia','c.cp',
+                'c.telefono','c.email','creditos.num_dep_economicos',
+                'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
+                'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
 
-                        'creditos.fraccionamiento as proyecto',
-                        'creditos.etapa',
-                        'creditos.manzana',
-                        'creditos.num_lote',
-                        'creditos.paquete',
-                        'creditos.promocion',
-                        'creditos.descripcion_paquete',
-                        'creditos.descripcion_promocion',
-                        'licencias.avance as avance_lote',
-                        'licencias.visita_avaluo',
-                        'licencias.foto_predial',
-                        'licencias.foto_lic',
-                        'licencias.num_licencia',
-                        'contratos.fecha_status',
-                        'contratos.status',
-                        'contratos.equipamiento',
-                        'expedientes.fecha_firma_esc',
-                        'lotes.fecha_entrega_obra',
-                        'lotes.id as loteId',
-                        'entregas.fecha_program',
-                        'entregas.hora_entrega_prog',
-                        'entregas.fecha_entrega_real',
-                        'entregas.hora_entrega_real',
-                        'entregas.cont_reprogram',
-                        DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                    )
+                'creditos.fraccionamiento as proyecto',
+                'creditos.etapa',
+                'creditos.manzana',
+                'creditos.num_lote',
+                'creditos.paquete',
+                'creditos.promocion',
+                'creditos.descripcion_paquete',
+                'creditos.descripcion_promocion',
+                'licencias.avance as avance_lote',
+                'licencias.visita_avaluo',
+                'licencias.foto_predial',
+                'licencias.foto_lic',
+                'licencias.num_licencia',
+                'contratos.fecha_status',
+                'contratos.status',
+                'contratos.equipamiento',
+                'expedientes.fecha_firma_esc',
+                'lotes.fecha_entrega_obra',
+                'lotes.id as loteId',
+                'entregas.fecha_program',
+                'entregas.hora_entrega_prog',
+                'entregas.fecha_entrega_real',
+                'entregas.hora_entrega_real',
+                'entregas.cont_reprogram',
+                DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
+            );
+
+        if($buscar == ''){
+            $contratos = $query
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
                     ->where('contratos.entregado', '=', 1)
@@ -1477,53 +607,7 @@ class EntregaController extends Controller
         else{
             switch($criterio){
                 case 'c.nombre':{
-                    $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                    ->join('expedientes','contratos.id','expedientes.id')
-                    ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id as folio', 
-                        'contratos.equipamiento',
-                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                        'c.celular', 
-                        'c.f_nacimiento','c.rfc',
-                        'c.homoclave','c.direccion','c.colonia','c.cp',
-                        'c.telefono','c.email','creditos.num_dep_economicos',
-                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                        'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                        'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-
-                        'creditos.fraccionamiento as proyecto',
-                        'creditos.etapa',
-                        'creditos.manzana',
-                        'creditos.num_lote',
-                        'creditos.paquete',
-                        'creditos.promocion',
-                        'creditos.descripcion_paquete',
-                        'creditos.descripcion_promocion',
-                        'licencias.avance as avance_lote',
-                        'licencias.visita_avaluo',
-                        'licencias.foto_predial',
-                        'licencias.foto_lic',
-                        'licencias.num_licencia',
-                        'contratos.fecha_status',
-                        'contratos.status',
-                        'contratos.equipamiento',
-                        'expedientes.fecha_firma_esc',
-                        'lotes.fecha_entrega_obra',
-                        'lotes.id as loteId',
-                        'entregas.fecha_program',
-                        'entregas.hora_entrega_prog',
-                        'entregas.fecha_entrega_real',
-                        'entregas.hora_entrega_real',
-                        'entregas.cont_reprogram',
-                        DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                    )
+                    $contratos = $query
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
                     ->where('contratos.entregado', '=', 1)
@@ -1536,53 +620,7 @@ class EntregaController extends Controller
                 }
 
                 case 'entregas.fecha_entrega_real':{
-                    $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                    ->join('expedientes','contratos.id','expedientes.id')
-                    ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id as folio', 
-                        'contratos.equipamiento',
-                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                        'c.celular', 
-                        'c.f_nacimiento','c.rfc',
-                        'c.homoclave','c.direccion','c.colonia','c.cp',
-                        'c.telefono','c.email','creditos.num_dep_economicos',
-                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                        'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                        'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-
-                        'creditos.fraccionamiento as proyecto',
-                        'creditos.etapa',
-                        'creditos.manzana',
-                        'creditos.num_lote',
-                        'creditos.paquete',
-                        'creditos.promocion',
-                        'creditos.descripcion_paquete',
-                        'creditos.descripcion_promocion',
-                        'licencias.avance as avance_lote',
-                        'licencias.visita_avaluo',
-                        'licencias.foto_predial',
-                        'licencias.foto_lic',
-                        'licencias.num_licencia',
-                        'contratos.fecha_status',
-                        'contratos.status',
-                        'contratos.equipamiento',
-                        'expedientes.fecha_firma_esc',
-                        'lotes.fecha_entrega_obra',
-                        'lotes.id as loteId',
-                        'entregas.fecha_program',
-                        'entregas.hora_entrega_prog',
-                        'entregas.fecha_entrega_real',
-                        'entregas.hora_entrega_real',
-                        'entregas.cont_reprogram',
-                        DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                    )
+                    $contratos = $query
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
                     ->where('contratos.entregado', '=', 1)
@@ -1595,53 +633,7 @@ class EntregaController extends Controller
                 }
 
                 case 'contratos.id':{
-                    $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                    ->join('expedientes','contratos.id','expedientes.id')
-                    ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id as folio', 
-                        'contratos.equipamiento',
-                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                        'c.celular', 
-                        'c.f_nacimiento','c.rfc',
-                        'c.homoclave','c.direccion','c.colonia','c.cp',
-                        'c.telefono','c.email','creditos.num_dep_economicos',
-                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                        'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                        'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-
-                        'creditos.fraccionamiento as proyecto',
-                        'creditos.etapa',
-                        'creditos.manzana',
-                        'creditos.num_lote',
-                        'creditos.paquete',
-                        'creditos.promocion',
-                        'creditos.descripcion_paquete',
-                        'creditos.descripcion_promocion',
-                        'licencias.avance as avance_lote',
-                        'licencias.visita_avaluo',
-                        'licencias.foto_predial',
-                        'licencias.foto_lic',
-                        'licencias.num_licencia',
-                        'contratos.fecha_status',
-                        'contratos.status',
-                        'contratos.equipamiento',
-                        'expedientes.fecha_firma_esc',
-                        'lotes.fecha_entrega_obra',
-                        'lotes.id as loteId',
-                        'entregas.fecha_program',
-                        'entregas.hora_entrega_prog',
-                        'entregas.fecha_entrega_real',
-                        'entregas.hora_entrega_real',
-                        'entregas.cont_reprogram',
-                        DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                    )
+                    $contratos = $query
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
                     ->where('contratos.entregado', '=', 1)
@@ -1654,53 +646,7 @@ class EntregaController extends Controller
                 }
                 case 'lotes.fraccionamiento_id':{
                     if($b_etapa == '' && $b_manzana == '' && $b_lote == ''){
-                        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                        ->join('expedientes','contratos.id','expedientes.id')
-                        ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
-                        ->select('contratos.id as folio', 
-                            'contratos.equipamiento',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'c.celular', 
-                            'c.f_nacimiento','c.rfc',
-                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                            'c.telefono','c.email','creditos.num_dep_economicos',
-                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                            'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.paquete',
-                            'creditos.promocion',
-                            'creditos.descripcion_paquete',
-                            'creditos.descripcion_promocion',
-                            'licencias.avance as avance_lote',
-                            'licencias.visita_avaluo',
-                            'licencias.foto_predial',
-                            'licencias.foto_lic',
-                            'licencias.num_licencia',
-                            'contratos.fecha_status',
-                            'contratos.status',
-                            'contratos.equipamiento',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.fecha_entrega_obra',
-                            'lotes.id as loteId',
-                            'entregas.fecha_program',
-                            'entregas.hora_entrega_prog',
-                            'entregas.fecha_entrega_real',
-                            'entregas.hora_entrega_real',
-                            'entregas.cont_reprogram',
-                            DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                        )
+                        $contratos = $query
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('contratos.entregado', '=', 1)
@@ -1710,53 +656,7 @@ class EntregaController extends Controller
                         ->paginate(8);
                     }
                     elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
-                        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                        ->join('expedientes','contratos.id','expedientes.id')
-                        ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
-                        ->select('contratos.id as folio', 
-                            'contratos.equipamiento',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'c.celular', 
-                            'c.f_nacimiento','c.rfc',
-                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                            'c.telefono','c.email','creditos.num_dep_economicos',
-                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                            'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.paquete',
-                            'creditos.promocion',
-                            'creditos.descripcion_paquete',
-                            'creditos.descripcion_promocion',
-                            'licencias.avance as avance_lote',
-                            'licencias.visita_avaluo',
-                            'licencias.foto_predial',
-                            'licencias.foto_lic',
-                            'licencias.num_licencia',
-                            'contratos.fecha_status',
-                            'contratos.status',
-                            'contratos.equipamiento',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.fecha_entrega_obra',
-                            'lotes.id as loteId',
-                            'entregas.fecha_program',
-                            'entregas.hora_entrega_prog',
-                            'entregas.fecha_entrega_real',
-                            'entregas.hora_entrega_real',
-                            'entregas.cont_reprogram',
-                            DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                        )
+                        $contratos = $query
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('contratos.entregado', '=', 1)
@@ -1768,53 +668,7 @@ class EntregaController extends Controller
 
                     }
                     elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
-                        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                        ->join('expedientes','contratos.id','expedientes.id')
-                        ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
-                        ->select('contratos.id as folio', 
-                            'contratos.equipamiento',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'c.celular', 
-                            'c.f_nacimiento','c.rfc',
-                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                            'c.telefono','c.email','creditos.num_dep_economicos',
-                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                            'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.paquete',
-                            'creditos.promocion',
-                            'creditos.descripcion_paquete',
-                            'creditos.descripcion_promocion',
-                            'licencias.avance as avance_lote',
-                            'licencias.visita_avaluo',
-                            'licencias.foto_predial',
-                            'licencias.foto_lic',
-                            'licencias.num_licencia',
-                            'contratos.fecha_status',
-                            'contratos.status',
-                            'contratos.equipamiento',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.fecha_entrega_obra',
-                            'lotes.id as loteId',
-                            'entregas.fecha_program',
-                            'entregas.hora_entrega_prog',
-                            'entregas.fecha_entrega_real',
-                            'entregas.hora_entrega_real',
-                            'entregas.cont_reprogram',
-                            DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                        )
+                        $contratos = $query
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('contratos.entregado', '=', 1)
@@ -1826,53 +680,7 @@ class EntregaController extends Controller
                         ->paginate(8);
                     }
                     elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
-                        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                        ->join('expedientes','contratos.id','expedientes.id')
-                        ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
-                        ->select('contratos.id as folio', 
-                            'contratos.equipamiento',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'c.celular', 
-                            'c.f_nacimiento','c.rfc',
-                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                            'c.telefono','c.email','creditos.num_dep_economicos',
-                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                            'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.paquete',
-                            'creditos.promocion',
-                            'creditos.descripcion_paquete',
-                            'creditos.descripcion_promocion',
-                            'licencias.avance as avance_lote',
-                            'licencias.visita_avaluo',
-                            'licencias.foto_predial',
-                            'licencias.foto_lic',
-                            'licencias.num_licencia',
-                            'contratos.fecha_status',
-                            'contratos.status',
-                            'contratos.equipamiento',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.fecha_entrega_obra',
-                            'lotes.id as loteId',
-                            'entregas.fecha_program',
-                            'entregas.hora_entrega_prog',
-                            'entregas.fecha_entrega_real',
-                            'entregas.hora_entrega_real',
-                            'entregas.cont_reprogram',
-                            DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                        )
+                        $contratos = $query
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('contratos.entregado', '=', 1)
@@ -1886,53 +694,7 @@ class EntregaController extends Controller
 
                     }
                     elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
-                        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                        ->join('expedientes','contratos.id','expedientes.id')
-                        ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
-                        ->select('contratos.id as folio', 
-                            'contratos.equipamiento',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'c.celular', 
-                            'c.f_nacimiento','c.rfc',
-                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                            'c.telefono','c.email','creditos.num_dep_economicos',
-                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                            'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.paquete',
-                            'creditos.promocion',
-                            'creditos.descripcion_paquete',
-                            'creditos.descripcion_promocion',
-                            'licencias.avance as avance_lote',
-                            'licencias.visita_avaluo',
-                            'licencias.foto_predial',
-                            'licencias.foto_lic',
-                            'licencias.num_licencia',
-                            'contratos.fecha_status',
-                            'contratos.status',
-                            'contratos.equipamiento',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.fecha_entrega_obra',
-                            'lotes.id as loteId',
-                            'entregas.fecha_program',
-                            'entregas.hora_entrega_prog',
-                            'entregas.fecha_entrega_real',
-                            'entregas.hora_entrega_real',
-                            'entregas.cont_reprogram',
-                            DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                        )
+                        $contratos = $query
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('contratos.entregado', '=', 1)
@@ -1944,53 +706,7 @@ class EntregaController extends Controller
                         ->paginate(8);
                     }
                     elseif($b_etapa == '' && $b_manzana != '' && $b_lote != ''){
-                        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                        ->join('expedientes','contratos.id','expedientes.id')
-                        ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
-                        ->select('contratos.id as folio', 
-                            'contratos.equipamiento',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'c.celular', 
-                            'c.f_nacimiento','c.rfc',
-                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                            'c.telefono','c.email','creditos.num_dep_economicos',
-                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                            'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.paquete',
-                            'creditos.promocion',
-                            'creditos.descripcion_paquete',
-                            'creditos.descripcion_promocion',
-                            'licencias.avance as avance_lote',
-                            'licencias.visita_avaluo',
-                            'licencias.foto_predial',
-                            'licencias.foto_lic',
-                            'licencias.num_licencia',
-                            'contratos.fecha_status',
-                            'contratos.status',
-                            'contratos.equipamiento',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.fecha_entrega_obra',
-                            'lotes.id as loteId',
-                            'entregas.fecha_program',
-                            'entregas.hora_entrega_prog',
-                            'entregas.fecha_entrega_real',
-                            'entregas.hora_entrega_real',
-                            'entregas.cont_reprogram',
-                            DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                        )
+                        $contratos = $query
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('contratos.entregado', '=', 1)
@@ -2003,53 +719,7 @@ class EntregaController extends Controller
 
                     }
                     elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
-                        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                        ->join('expedientes','contratos.id','expedientes.id')
-                        ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
-                        ->select('contratos.id as folio', 
-                            'contratos.equipamiento',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'c.celular', 
-                            'c.f_nacimiento','c.rfc',
-                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                            'c.telefono','c.email','creditos.num_dep_economicos',
-                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                            'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.paquete',
-                            'creditos.promocion',
-                            'creditos.descripcion_paquete',
-                            'creditos.descripcion_promocion',
-                            'licencias.avance as avance_lote',
-                            'licencias.visita_avaluo',
-                            'licencias.foto_predial',
-                            'licencias.foto_lic',
-                            'licencias.num_licencia',
-                            'contratos.fecha_status',
-                            'contratos.status',
-                            'contratos.equipamiento',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.fecha_entrega_obra',
-                            'lotes.id as loteId',
-                            'entregas.fecha_program',
-                            'entregas.hora_entrega_prog',
-                            'entregas.fecha_entrega_real',
-                            'entregas.hora_entrega_real',
-                            'entregas.cont_reprogram',
-                            DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                        )
+                        $contratos = $query
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('contratos.entregado', '=', 1)
@@ -2061,53 +731,7 @@ class EntregaController extends Controller
 
                     }
                     elseif($b_etapa == '' && $b_manzana != '' && $b_lote == ''){
-                        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                        ->join('expedientes','contratos.id','expedientes.id')
-                        ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
-                        ->select('contratos.id as folio', 
-                            'contratos.equipamiento',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'c.celular', 
-                            'c.f_nacimiento','c.rfc',
-                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                            'c.telefono','c.email','creditos.num_dep_economicos',
-                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                            'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.paquete',
-                            'creditos.promocion',
-                            'creditos.descripcion_paquete',
-                            'creditos.descripcion_promocion',
-                            'licencias.avance as avance_lote',
-                            'licencias.visita_avaluo',
-                            'licencias.foto_predial',
-                            'licencias.foto_lic',
-                            'licencias.num_licencia',
-                            'contratos.fecha_status',
-                            'contratos.status',
-                            'contratos.equipamiento',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.fecha_entrega_obra',
-                            'lotes.id as loteId',
-                            'entregas.fecha_program',
-                            'entregas.hora_entrega_prog',
-                            'entregas.fecha_entrega_real',
-                            'entregas.hora_entrega_real',
-                            'entregas.cont_reprogram',
-                            DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                        )
+                        $contratos = $query
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('contratos.entregado', '=', 1)
@@ -2352,54 +976,56 @@ class EntregaController extends Controller
         $b_manzana = $request->b_manzana;
         $b_lote = $request->b_lote;
 
-        if($buscar == ''){
-            $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                    ->join('expedientes','contratos.id','expedientes.id')
-                    ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id as folio', 
-                        'contratos.equipamiento',
-                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                        'c.celular', 
-                        'c.f_nacimiento','c.rfc',
-                        'c.homoclave','c.direccion','c.colonia','c.cp',
-                        'c.telefono','c.email','creditos.num_dep_economicos',
-                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                        'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                        'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
+        $query = Entrega::join('contratos','entregas.id','contratos.id')
+                ->join('expedientes','contratos.id','expedientes.id')
+                ->join('creditos', 'contratos.id', '=', 'creditos.id')
+                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                ->join('etapas','lotes.etapa_id','=','etapas.id')
+                ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                ->join('personal as c', 'clientes.id', '=', 'c.id')
+                ->select('contratos.id as folio', 
+                    'contratos.equipamiento',
+                    DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                    'c.celular', 
+                    'c.f_nacimiento','c.rfc',
+                    'c.homoclave','c.direccion','c.colonia','c.cp',
+                    'c.telefono','c.email','creditos.num_dep_economicos',
+                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                    'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
+                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                    'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
 
-                        'creditos.fraccionamiento as proyecto',
-                        'creditos.etapa',
-                        'creditos.manzana',
-                        'creditos.num_lote',
-                        'creditos.paquete',
-                        'creditos.promocion',
-                        'creditos.descripcion_paquete',
-                        'creditos.descripcion_promocion',
-                        'licencias.avance as avance_lote',
-                        'licencias.visita_avaluo',
-                        'licencias.foto_predial',
-                        'licencias.foto_lic',
-                        'licencias.num_licencia',
-                        'contratos.fecha_status',
-                        'contratos.status',
-                        'contratos.equipamiento',
-                        'expedientes.fecha_firma_esc',
-                        'lotes.fecha_entrega_obra',
-                        'lotes.id as loteId',
-                        'entregas.fecha_program',
-                        'entregas.hora_entrega_prog',
-                        'entregas.fecha_entrega_real',
-                        'entregas.hora_entrega_real',
-                        'entregas.cont_reprogram',
-                        DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                    )
+                    'creditos.fraccionamiento as proyecto',
+                    'creditos.etapa',
+                    'creditos.manzana',
+                    'creditos.num_lote',
+                    'creditos.paquete',
+                    'creditos.promocion',
+                    'creditos.descripcion_paquete',
+                    'creditos.descripcion_promocion',
+                    'licencias.avance as avance_lote',
+                    'licencias.visita_avaluo',
+                    'licencias.foto_predial',
+                    'licencias.foto_lic',
+                    'licencias.num_licencia',
+                    'contratos.fecha_status',
+                    'contratos.status',
+                    'contratos.equipamiento',
+                    'expedientes.fecha_firma_esc',
+                    'lotes.fecha_entrega_obra',
+                    'lotes.id as loteId',
+                    'entregas.fecha_program',
+                    'entregas.hora_entrega_prog',
+                    'entregas.fecha_entrega_real',
+                    'entregas.hora_entrega_real',
+                    'entregas.cont_reprogram',
+                    DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
+            );
+
+        if($buscar == ''){
+            $contratos = $query
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
                     ->where('contratos.entregado', '=', 1)
@@ -2410,53 +1036,7 @@ class EntregaController extends Controller
         else{
             switch($criterio){
                 case 'c.nombre':{
-                    $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                    ->join('expedientes','contratos.id','expedientes.id')
-                    ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id as folio', 
-                        'contratos.equipamiento',
-                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                        'c.celular', 
-                        'c.f_nacimiento','c.rfc',
-                        'c.homoclave','c.direccion','c.colonia','c.cp',
-                        'c.telefono','c.email','creditos.num_dep_economicos',
-                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                        'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                        'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-
-                        'creditos.fraccionamiento as proyecto',
-                        'creditos.etapa',
-                        'creditos.manzana',
-                        'creditos.num_lote',
-                        'creditos.paquete',
-                        'creditos.promocion',
-                        'creditos.descripcion_paquete',
-                        'creditos.descripcion_promocion',
-                        'licencias.avance as avance_lote',
-                        'licencias.visita_avaluo',
-                        'licencias.foto_predial',
-                        'licencias.foto_lic',
-                        'licencias.num_licencia',
-                        'contratos.fecha_status',
-                        'contratos.status',
-                        'contratos.equipamiento',
-                        'expedientes.fecha_firma_esc',
-                        'lotes.fecha_entrega_obra',
-                        'lotes.id as loteId',
-                        'entregas.fecha_program',
-                        'entregas.hora_entrega_prog',
-                        'entregas.fecha_entrega_real',
-                        'entregas.hora_entrega_real',
-                        'entregas.cont_reprogram',
-                        DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                    )
+                    $contratos = $query
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
                     ->where('contratos.entregado', '=', 1)
@@ -2469,53 +1049,7 @@ class EntregaController extends Controller
                 }
 
                 case 'entregas.fecha_entrega_real':{
-                    $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                    ->join('expedientes','contratos.id','expedientes.id')
-                    ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id as folio', 
-                        'contratos.equipamiento',
-                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                        'c.celular', 
-                        'c.f_nacimiento','c.rfc',
-                        'c.homoclave','c.direccion','c.colonia','c.cp',
-                        'c.telefono','c.email','creditos.num_dep_economicos',
-                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                        'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                        'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-
-                        'creditos.fraccionamiento as proyecto',
-                        'creditos.etapa',
-                        'creditos.manzana',
-                        'creditos.num_lote',
-                        'creditos.paquete',
-                        'creditos.promocion',
-                        'creditos.descripcion_paquete',
-                        'creditos.descripcion_promocion',
-                        'licencias.avance as avance_lote',
-                        'licencias.visita_avaluo',
-                        'licencias.foto_predial',
-                        'licencias.foto_lic',
-                        'licencias.num_licencia',
-                        'contratos.fecha_status',
-                        'contratos.status',
-                        'contratos.equipamiento',
-                        'expedientes.fecha_firma_esc',
-                        'lotes.fecha_entrega_obra',
-                        'lotes.id as loteId',
-                        'entregas.fecha_program',
-                        'entregas.hora_entrega_prog',
-                        'entregas.fecha_entrega_real',
-                        'entregas.hora_entrega_real',
-                        'entregas.cont_reprogram',
-                        DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                    )
+                    $contratos = $query
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
                     ->where('contratos.entregado', '=', 1)
@@ -2528,53 +1062,7 @@ class EntregaController extends Controller
                 }
 
                 case 'contratos.id':{
-                    $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                    ->join('expedientes','contratos.id','expedientes.id')
-                    ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id as folio', 
-                        'contratos.equipamiento',
-                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                        'c.celular', 
-                        'c.f_nacimiento','c.rfc',
-                        'c.homoclave','c.direccion','c.colonia','c.cp',
-                        'c.telefono','c.email','creditos.num_dep_economicos',
-                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                        'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                        'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-
-                        'creditos.fraccionamiento as proyecto',
-                        'creditos.etapa',
-                        'creditos.manzana',
-                        'creditos.num_lote',
-                        'creditos.paquete',
-                        'creditos.promocion',
-                        'creditos.descripcion_paquete',
-                        'creditos.descripcion_promocion',
-                        'licencias.avance as avance_lote',
-                        'licencias.visita_avaluo',
-                        'licencias.foto_predial',
-                        'licencias.foto_lic',
-                        'licencias.num_licencia',
-                        'contratos.fecha_status',
-                        'contratos.status',
-                        'contratos.equipamiento',
-                        'expedientes.fecha_firma_esc',
-                        'lotes.fecha_entrega_obra',
-                        'lotes.id as loteId',
-                        'entregas.fecha_program',
-                        'entregas.hora_entrega_prog',
-                        'entregas.fecha_entrega_real',
-                        'entregas.hora_entrega_real',
-                        'entregas.cont_reprogram',
-                        DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                    )
+                    $contratos = $query
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
                     ->where('contratos.entregado', '=', 1)
@@ -2587,53 +1075,7 @@ class EntregaController extends Controller
                 }
                 case 'lotes.fraccionamiento_id':{
                     if($b_etapa == '' && $b_manzana == '' && $b_lote == ''){
-                        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                        ->join('expedientes','contratos.id','expedientes.id')
-                        ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
-                        ->select('contratos.id as folio', 
-                            'contratos.equipamiento',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'c.celular', 
-                            'c.f_nacimiento','c.rfc',
-                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                            'c.telefono','c.email','creditos.num_dep_economicos',
-                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                            'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.paquete',
-                            'creditos.promocion',
-                            'creditos.descripcion_paquete',
-                            'creditos.descripcion_promocion',
-                            'licencias.avance as avance_lote',
-                            'licencias.visita_avaluo',
-                            'licencias.foto_predial',
-                            'licencias.foto_lic',
-                            'licencias.num_licencia',
-                            'contratos.fecha_status',
-                            'contratos.status',
-                            'contratos.equipamiento',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.fecha_entrega_obra',
-                            'lotes.id as loteId',
-                            'entregas.fecha_program',
-                            'entregas.hora_entrega_prog',
-                            'entregas.fecha_entrega_real',
-                            'entregas.hora_entrega_real',
-                            'entregas.cont_reprogram',
-                            DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                        )
+                        $contratos = $query
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('contratos.entregado', '=', 1)
@@ -2643,53 +1085,7 @@ class EntregaController extends Controller
                         ->get();
                     }
                     elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
-                        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                        ->join('expedientes','contratos.id','expedientes.id')
-                        ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
-                        ->select('contratos.id as folio', 
-                            'contratos.equipamiento',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'c.celular', 
-                            'c.f_nacimiento','c.rfc',
-                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                            'c.telefono','c.email','creditos.num_dep_economicos',
-                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                            'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.paquete',
-                            'creditos.promocion',
-                            'creditos.descripcion_paquete',
-                            'creditos.descripcion_promocion',
-                            'licencias.avance as avance_lote',
-                            'licencias.visita_avaluo',
-                            'licencias.foto_predial',
-                            'licencias.foto_lic',
-                            'licencias.num_licencia',
-                            'contratos.fecha_status',
-                            'contratos.status',
-                            'contratos.equipamiento',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.fecha_entrega_obra',
-                            'lotes.id as loteId',
-                            'entregas.fecha_program',
-                            'entregas.hora_entrega_prog',
-                            'entregas.fecha_entrega_real',
-                            'entregas.hora_entrega_real',
-                            'entregas.cont_reprogram',
-                            DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                        )
+                        $contratos = $query
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('contratos.entregado', '=', 1)
@@ -2701,53 +1097,7 @@ class EntregaController extends Controller
 
                     }
                     elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
-                        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                        ->join('expedientes','contratos.id','expedientes.id')
-                        ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
-                        ->select('contratos.id as folio', 
-                            'contratos.equipamiento',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'c.celular', 
-                            'c.f_nacimiento','c.rfc',
-                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                            'c.telefono','c.email','creditos.num_dep_economicos',
-                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                            'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.paquete',
-                            'creditos.promocion',
-                            'creditos.descripcion_paquete',
-                            'creditos.descripcion_promocion',
-                            'licencias.avance as avance_lote',
-                            'licencias.visita_avaluo',
-                            'licencias.foto_predial',
-                            'licencias.foto_lic',
-                            'licencias.num_licencia',
-                            'contratos.fecha_status',
-                            'contratos.status',
-                            'contratos.equipamiento',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.fecha_entrega_obra',
-                            'lotes.id as loteId',
-                            'entregas.fecha_program',
-                            'entregas.hora_entrega_prog',
-                            'entregas.fecha_entrega_real',
-                            'entregas.hora_entrega_real',
-                            'entregas.cont_reprogram',
-                            DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                        )
+                        $contratos = $query
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('contratos.entregado', '=', 1)
@@ -2759,53 +1109,7 @@ class EntregaController extends Controller
                         ->get();
                     }
                     elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
-                        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                        ->join('expedientes','contratos.id','expedientes.id')
-                        ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
-                        ->select('contratos.id as folio', 
-                            'contratos.equipamiento',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'c.celular', 
-                            'c.f_nacimiento','c.rfc',
-                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                            'c.telefono','c.email','creditos.num_dep_economicos',
-                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                            'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.paquete',
-                            'creditos.promocion',
-                            'creditos.descripcion_paquete',
-                            'creditos.descripcion_promocion',
-                            'licencias.avance as avance_lote',
-                            'licencias.visita_avaluo',
-                            'licencias.foto_predial',
-                            'licencias.foto_lic',
-                            'licencias.num_licencia',
-                            'contratos.fecha_status',
-                            'contratos.status',
-                            'contratos.equipamiento',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.fecha_entrega_obra',
-                            'lotes.id as loteId',
-                            'entregas.fecha_program',
-                            'entregas.hora_entrega_prog',
-                            'entregas.fecha_entrega_real',
-                            'entregas.hora_entrega_real',
-                            'entregas.cont_reprogram',
-                            DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                        )
+                        $contratos = $query
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('contratos.entregado', '=', 1)
@@ -2819,53 +1123,7 @@ class EntregaController extends Controller
 
                     }
                     elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
-                        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                        ->join('expedientes','contratos.id','expedientes.id')
-                        ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
-                        ->select('contratos.id as folio', 
-                            'contratos.equipamiento',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'c.celular', 
-                            'c.f_nacimiento','c.rfc',
-                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                            'c.telefono','c.email','creditos.num_dep_economicos',
-                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                            'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.paquete',
-                            'creditos.promocion',
-                            'creditos.descripcion_paquete',
-                            'creditos.descripcion_promocion',
-                            'licencias.avance as avance_lote',
-                            'licencias.visita_avaluo',
-                            'licencias.foto_predial',
-                            'licencias.foto_lic',
-                            'licencias.num_licencia',
-                            'contratos.fecha_status',
-                            'contratos.status',
-                            'contratos.equipamiento',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.fecha_entrega_obra',
-                            'lotes.id as loteId',
-                            'entregas.fecha_program',
-                            'entregas.hora_entrega_prog',
-                            'entregas.fecha_entrega_real',
-                            'entregas.hora_entrega_real',
-                            'entregas.cont_reprogram',
-                            DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                        )
+                        $contratos = $query
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('contratos.entregado', '=', 1)
@@ -2877,53 +1135,7 @@ class EntregaController extends Controller
                         ->get();
                     }
                     elseif($b_etapa == '' && $b_manzana != '' && $b_lote != ''){
-                        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                        ->join('expedientes','contratos.id','expedientes.id')
-                        ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
-                        ->select('contratos.id as folio', 
-                            'contratos.equipamiento',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'c.celular', 
-                            'c.f_nacimiento','c.rfc',
-                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                            'c.telefono','c.email','creditos.num_dep_economicos',
-                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                            'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.paquete',
-                            'creditos.promocion',
-                            'creditos.descripcion_paquete',
-                            'creditos.descripcion_promocion',
-                            'licencias.avance as avance_lote',
-                            'licencias.visita_avaluo',
-                            'licencias.foto_predial',
-                            'licencias.foto_lic',
-                            'licencias.num_licencia',
-                            'contratos.fecha_status',
-                            'contratos.status',
-                            'contratos.equipamiento',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.fecha_entrega_obra',
-                            'lotes.id as loteId',
-                            'entregas.fecha_program',
-                            'entregas.hora_entrega_prog',
-                            'entregas.fecha_entrega_real',
-                            'entregas.hora_entrega_real',
-                            'entregas.cont_reprogram',
-                            DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                        )
+                        $contratos = $query
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('contratos.entregado', '=', 1)
@@ -2936,53 +1148,7 @@ class EntregaController extends Controller
 
                     }
                     elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
-                        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                        ->join('expedientes','contratos.id','expedientes.id')
-                        ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
-                        ->select('contratos.id as folio', 
-                            'contratos.equipamiento',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'c.celular', 
-                            'c.f_nacimiento','c.rfc',
-                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                            'c.telefono','c.email','creditos.num_dep_economicos',
-                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                            'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.paquete',
-                            'creditos.promocion',
-                            'creditos.descripcion_paquete',
-                            'creditos.descripcion_promocion',
-                            'licencias.avance as avance_lote',
-                            'licencias.visita_avaluo',
-                            'licencias.foto_predial',
-                            'licencias.foto_lic',
-                            'licencias.num_licencia',
-                            'contratos.fecha_status',
-                            'contratos.status',
-                            'contratos.equipamiento',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.fecha_entrega_obra',
-                            'lotes.id as loteId',
-                            'entregas.fecha_program',
-                            'entregas.hora_entrega_prog',
-                            'entregas.fecha_entrega_real',
-                            'entregas.hora_entrega_real',
-                            'entregas.cont_reprogram',
-                            DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                        )
+                        $contratos = $query
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('contratos.entregado', '=', 1)
@@ -2994,53 +1160,7 @@ class EntregaController extends Controller
 
                     }
                     elseif($b_etapa == '' && $b_manzana != '' && $b_lote == ''){
-                        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
-                        ->join('expedientes','contratos.id','expedientes.id')
-                        ->join('creditos', 'contratos.id', '=', 'creditos.id')
-                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
-                        ->select('contratos.id as folio', 
-                            'contratos.equipamiento',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'c.celular', 
-                            'c.f_nacimiento','c.rfc',
-                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                            'c.telefono','c.email','creditos.num_dep_economicos',
-                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                            'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
-
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.paquete',
-                            'creditos.promocion',
-                            'creditos.descripcion_paquete',
-                            'creditos.descripcion_promocion',
-                            'licencias.avance as avance_lote',
-                            'licencias.visita_avaluo',
-                            'licencias.foto_predial',
-                            'licencias.foto_lic',
-                            'licencias.num_licencia',
-                            'contratos.fecha_status',
-                            'contratos.status',
-                            'contratos.equipamiento',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.fecha_entrega_obra',
-                            'lotes.id as loteId',
-                            'entregas.fecha_program',
-                            'entregas.hora_entrega_prog',
-                            'entregas.fecha_entrega_real',
-                            'entregas.hora_entrega_real',
-                            'entregas.cont_reprogram',
-                            DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
-                        )
+                        $contratos = $query
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('contratos.entregado', '=', 1)

@@ -21,53 +21,34 @@ class PersonalController extends Controller
 
         $buscar = $request->buscar;
         $criterio = $request->criterio;
+
+        $query = Personal::join('departamento','personal.departamento_id','=','departamento.id_departamento')
+                ->join('empresas','personal.empresa_id','=','empresas.id')
+                ->select('personal.nombre','personal.apellidos',
+                    'personal.f_nacimiento','personal.rfc','personal.homoclave','personal.direccion','personal.colonia','personal.cp',
+                    'personal.telefono','personal.ext','personal.celular','personal.email','personal.activo',
+                    'personal.id','personal.departamento_id','departamento.departamento as departamento',
+                    'personal.empresa_id','empresas.nombre as empresa',
+                    'departamento.id_departamento');
         
         if($buscar==''){
-            $Personales = Personal::join('departamento','personal.departamento_id','=','departamento.id_departamento')
-            ->join('empresas','personal.empresa_id','=','empresas.id')
-            ->select('personal.nombre','personal.apellidos',
-                'personal.f_nacimiento','personal.rfc','personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                'personal.telefono','personal.ext','personal.celular','personal.email','personal.activo',
-                'personal.id','personal.departamento_id','departamento.departamento as departamento',
-                'personal.empresa_id','empresas.nombre as empresa',
-                'departamento.id_departamento')
+            $Personales = $query
                 ->where('personal.nombre','!=','Sin Asignar')
                 ->orderBy('id','desc')->paginate(8);
         }
         else{
             if($criterio == 'id_departamento'){
-                $Personales = Personal::join('departamento','personal.departamento_id','=','departamento.id_departamento')
-                ->join('empresas','personal.empresa_id','=','empresas.id')
-                ->select('personal.nombre','personal.apellidos',
-                    'personal.f_nacimiento','personal.rfc','personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                    'personal.telefono','personal.ext','personal.celular','personal.email','personal.activo',
-                    'personal.id','personal.departamento_id','departamento.departamento as departamento',
-                    'personal.empresa_id','empresas.nombre as empresa',
-                    'departamento.id_departamento')
+                $Personales = $query
                     ->where($criterio, '=', $buscar )
                     ->where('personal.nombre','!=','Sin Asignar')->orderBy('id','desc')->paginate(8);
             }
             elseif($criterio == 'personal.nombre'){
-                $Personales = Personal::join('departamento','personal.departamento_id','=','departamento.id_departamento')
-                ->join('empresas','personal.empresa_id','=','empresas.id')
-                ->select('personal.nombre','personal.apellidos',
-                    'personal.f_nacimiento','personal.rfc','personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                    'personal.telefono','personal.ext','personal.celular','personal.email','personal.activo',
-                    'personal.id','personal.departamento_id','departamento.departamento as departamento',
-                    'personal.empresa_id','empresas.nombre as empresa',
-                    'departamento.id_departamento')
+                $Personales = $query
                     ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
                     ->where('personal.nombre','!=','Sin Asignar')->orderBy('id','desc')->paginate(8);
             }
             else{
-                $Personales = Personal::join('departamento','personal.departamento_id','=','departamento.id_departamento')
-                ->join('empresas','personal.empresa_id','=','empresas.id')
-                ->select('personal.nombre','personal.apellidos',
-                    'personal.f_nacimiento','personal.rfc','personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                    'personal.telefono','personal.ext','personal.celular','personal.email','personal.activo',
-                    'personal.id','personal.departamento_id','departamento.departamento as departamento',
-                    'personal.empresa_id','empresas.nombre as empresa',
-                    'departamento.id_departamento')
+                $Personales = $query
                     ->where($criterio, 'like', '%'. $buscar . '%')
                     ->where('personal.nombre','!=','Sin Asignar')->orderBy('id','desc')->paginate(8);
             }
@@ -223,54 +204,37 @@ class PersonalController extends Controller
         $proyecto = $request->proyecto;
         $publicidad = $request->publicidad;
 
+        $query = Cliente::join('personal','clientes.id','=','personal.id')
+            ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
+            ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
+            ->select(
+                'personal.id',
+                'personal.f_nacimiento',
+                'personal.direccion',
+                'personal.telefono',
+                'personal.colonia',
+                'personal.cp',
+                'personal.celular',
+                'personal.email',
+                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
+                'clientes.email_institucional',
+                'clientes.proyecto_interes_id',
+                'clientes.publicidad_id',
+                'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
+                'clientes.created_at',
+                'medios_publicitarios.nombre as publicidad',
+                'fraccionamientos.nombre as proyecto');
+
         if($clasificacion != 5){
             if($desde == '' && $hasta == '' && $proyecto == '' && $publicidad == ''){
-                $cliente= Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select(
-                        'personal.id',
-                        'personal.f_nacimiento',
-                        'personal.direccion',
-                        'personal.telefono',
-                        'personal.colonia',
-                        'personal.cp',
-                        'personal.celular',
-                        'personal.email',
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
-                        'clientes.email_institucional',
-                        'clientes.proyecto_interes_id',
-                        'clientes.publicidad_id',
-                        'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
-                        'clientes.created_at',
-                        'medios_publicitarios.nombre as publicidad',
-                        'fraccionamientos.nombre as proyecto')
+                $cliente = $query
                     ->where('clientes.clasificacion', '=', $clasificacion)
                     ->orderBy('personal.nombre', 'asc')
                     ->orderBy('personal.apellidos', 'asc')
                 ->paginate(15);
             }
             elseif($desde != '' && $hasta != '' && $proyecto == '' && $publicidad == ''){
-                $cliente= Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select(
-                        'personal.id',
-                        'personal.f_nacimiento',
-                        'personal.direccion',
-                        'personal.telefono',
-                        'personal.colonia',
-                        'personal.cp',
-                        'personal.celular',
-                        'personal.email',
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
-                        'clientes.email_institucional',
-                        'clientes.proyecto_interes_id',
-                        'clientes.publicidad_id',
-                        'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
-                        'clientes.created_at',
-                        'medios_publicitarios.nombre as publicidad',
-                        'fraccionamientos.nombre as proyecto')
+                $cliente= $query
                     ->where('clientes.clasificacion', '=', $clasificacion)
                     ->whereBetween('clientes.created_at', [$desde, $hasta])
                     ->orderBy('personal.nombre', 'asc')
@@ -278,26 +242,7 @@ class PersonalController extends Controller
                 ->paginate(15);
             }
             elseif($desde == '' && $hasta == '' && $proyecto != '' && $publicidad == ''){
-                $cliente= Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select(
-                        'personal.id',
-                        'personal.f_nacimiento',
-                        'personal.direccion',
-                        'personal.telefono',
-                        'personal.colonia',
-                        'personal.cp',
-                        'personal.celular',
-                        'personal.email',
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
-                        'clientes.email_institucional',
-                        'clientes.proyecto_interes_id',
-                        'clientes.publicidad_id',
-                        'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
-                        'clientes.created_at',
-                        'medios_publicitarios.nombre as publicidad',
-                        'fraccionamientos.nombre as proyecto')
+                $cliente= $query
                     ->where('clientes.clasificacion', '=', $clasificacion)
                     ->where('clientes.proyecto_interes_id', '=', $proyecto)
                     ->orderBy('personal.nombre', 'asc')
@@ -305,26 +250,7 @@ class PersonalController extends Controller
                 ->paginate(15);
             }
             elseif($desde == '' && $hasta == '' && $proyecto == '' && $publicidad != ''){
-                $cliente= Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select(
-                        'personal.id',
-                        'personal.f_nacimiento',
-                        'personal.direccion',
-                        'personal.telefono',
-                        'personal.colonia',
-                        'personal.cp',
-                        'personal.celular',
-                        'personal.email',
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
-                        'clientes.email_institucional',
-                        'clientes.proyecto_interes_id',
-                        'clientes.publicidad_id',
-                        'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
-                        'clientes.created_at',
-                        'medios_publicitarios.nombre as publicidad',
-                        'fraccionamientos.nombre as proyecto')
+                $cliente= $query
                     ->where('clientes.clasificacion', '=', $clasificacion)
                     ->where('clientes.publicidad_id', '=', $publicidad)
                     ->orderBy('personal.nombre', 'asc')
@@ -332,26 +258,7 @@ class PersonalController extends Controller
                 ->paginate(15);
             }
             elseif($desde != '' && $hasta != '' && $proyecto != '' && $publicidad == ''){
-                $cliente= Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select(
-                        'personal.id',
-                        'personal.f_nacimiento',
-                        'personal.direccion',
-                        'personal.telefono',
-                        'personal.colonia',
-                        'personal.cp',
-                        'personal.celular',
-                        'personal.email',
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
-                        'clientes.email_institucional',
-                        'clientes.proyecto_interes_id',
-                        'clientes.publicidad_id',
-                        'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
-                        'clientes.created_at',
-                        'medios_publicitarios.nombre as publicidad',
-                        'fraccionamientos.nombre as proyecto')
+                $cliente= $query
                     ->where('clientes.clasificacion', '=', $clasificacion)
                     ->whereBetween('clientes.created_at', [$desde, $hasta])
                     ->where('clientes.proyecto_interes_id', '=', $proyecto)
@@ -360,26 +267,7 @@ class PersonalController extends Controller
                 ->paginate(15);
             }
             elseif($desde != '' && $hasta != '' && $proyecto != '' && $publicidad != ''){
-                $cliente= Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select(
-                        'personal.id',
-                        'personal.f_nacimiento',
-                        'personal.direccion',
-                        'personal.telefono',
-                        'personal.colonia',
-                        'personal.cp',
-                        'personal.celular',
-                        'personal.email',
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
-                        'clientes.email_institucional',
-                        'clientes.proyecto_interes_id',
-                        'clientes.publicidad_id',
-                        'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
-                        'clientes.created_at',
-                        'medios_publicitarios.nombre as publicidad',
-                        'fraccionamientos.nombre as proyecto')
+                $cliente= $query
                     ->where('clientes.clasificacion', '=', $clasificacion)
                     ->whereBetween('clientes.created_at', [$desde, $hasta])
                     ->where('clientes.proyecto_interes_id', '=', $proyecto)
@@ -389,26 +277,7 @@ class PersonalController extends Controller
                 ->paginate(15);
             }
             elseif($desde == '' && $hasta == '' && $proyecto != '' && $publicidad != ''){
-                $cliente= Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select(
-                        'personal.id',
-                        'personal.f_nacimiento',
-                        'personal.direccion',
-                        'personal.telefono',
-                        'personal.colonia',
-                        'personal.cp',
-                        'personal.celular',
-                        'personal.email',
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
-                        'clientes.email_institucional',
-                        'clientes.proyecto_interes_id',
-                        'clientes.publicidad_id',
-                        'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
-                        'clientes.created_at',
-                        'medios_publicitarios.nombre as publicidad',
-                        'fraccionamientos.nombre as proyecto')
+                $cliente= $query
                     ->where('clientes.clasificacion', '=', $clasificacion)
                     ->where('clientes.proyecto_interes_id', '=', $proyecto)
                     ->where('clientes.publicidad_id', '=', $publicidad)
@@ -417,26 +286,7 @@ class PersonalController extends Controller
                 ->paginate(15);
             }
             elseif($desde != '' && $hasta != '' && $proyecto == '' && $publicidad != ''){
-                $cliente= Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select(
-                        'personal.id',
-                        'personal.f_nacimiento',
-                        'personal.direccion',
-                        'personal.telefono',
-                        'personal.colonia',
-                        'personal.cp',
-                        'personal.celular',
-                        'personal.email',
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
-                        'clientes.email_institucional',
-                        'clientes.proyecto_interes_id',
-                        'clientes.publicidad_id',
-                        'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
-                        'clientes.created_at',
-                        'medios_publicitarios.nombre as publicidad',
-                        'fraccionamientos.nombre as proyecto')
+                $cliente= $query
                     ->where('clientes.clasificacion', '=', $clasificacion)
                     ->whereBetween('clientes.created_at', [$desde, $hasta])
                     ->where('clientes.publicidad_id', '=', $publicidad)
@@ -447,28 +297,7 @@ class PersonalController extends Controller
         }
         else{
             if($desde == '' && $hasta == '' && $proyecto == '' && $publicidad == ''){
-                $cliente = Contrato::join('creditos','contratos.id','=','creditos.id')
-                    ->join('expedientes','contratos.id','=','expedientes.id')
-                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                    ->join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select('personal.id',
-                                'personal.f_nacimiento',
-                                'personal.direccion',
-                                'personal.telefono',
-                                'personal.colonia',
-                                'personal.cp',
-                                'personal.celular',
-                                'personal.email',
-                                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
-                                'clientes.email_institucional',
-                                'clientes.proyecto_interes_id',
-                                'clientes.publicidad_id',
-                                'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
-                                'clientes.created_at',
-                                'medios_publicitarios.nombre as publicidad',
-                                'fraccionamientos.nombre as proyecto')
+                $cliente = $query
                     ->where('expedientes.fecha_firma_esc','!=',NULL)
                     
                     ->distinct()
@@ -477,28 +306,7 @@ class PersonalController extends Controller
                     ->paginate(15);
             }
             elseif($desde != '' && $hasta != '' && $proyecto == '' && $publicidad == ''){
-                $cliente = Contrato::join('creditos','contratos.id','=','creditos.id')
-                    ->join('expedientes','contratos.id','=','expedientes.id')
-                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                    ->join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select('personal.id',
-                                'personal.f_nacimiento',
-                                'personal.direccion',
-                                'personal.telefono',
-                                'personal.colonia',
-                                'personal.cp',
-                                'personal.celular',
-                                'personal.email',
-                                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
-                                'clientes.email_institucional',
-                                'clientes.proyecto_interes_id',
-                                'clientes.publicidad_id',
-                                'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
-                                'clientes.created_at',
-                                'medios_publicitarios.nombre as publicidad',
-                                'fraccionamientos.nombre as proyecto')
+                $cliente = $query
                     ->whereBetween('clientes.created_at', [$desde, $hasta])
                     ->where('expedientes.fecha_firma_esc','!=',NULL)
                     ->distinct()
@@ -507,29 +315,7 @@ class PersonalController extends Controller
                 ->paginate(15);
             }
             elseif($desde == '' && $hasta == '' && $proyecto != '' && $publicidad == ''){
-                $cliente= Contrato::join('creditos','contratos.id','=','creditos.id')
-                ->join('expedientes','contratos.id','=','expedientes.id')
-                ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                ->join('personal','clientes.id','=','personal.id')
-                ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select(
-                        'personal.id',
-                        'personal.f_nacimiento',
-                        'personal.direccion',
-                        'personal.telefono',
-                        'personal.colonia',
-                        'personal.cp',
-                        'personal.celular',
-                        'personal.email',
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
-                        'clientes.email_institucional',
-                        'clientes.proyecto_interes_id',
-                        'clientes.publicidad_id',
-                        'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
-                        'clientes.created_at',
-                        'medios_publicitarios.nombre as publicidad',
-                        'fraccionamientos.nombre as proyecto')
+                $cliente= $query
                     ->where('clientes.proyecto_interes_id', '=', $proyecto)
                     ->where('expedientes.fecha_firma_esc','=',NULL)
                     ->orderBy('personal.nombre', 'asc')
@@ -537,29 +323,7 @@ class PersonalController extends Controller
                 ->paginate(15);
             }
             elseif($desde == '' && $hasta == '' && $proyecto == '' && $publicidad != ''){
-                $cliente= Contrato::join('creditos','contratos.id','=','creditos.id')
-                ->join('expedientes','contratos.id','=','expedientes.id')
-                ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                ->join('personal','clientes.id','=','personal.id')
-                ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select(
-                        'personal.id',
-                        'personal.f_nacimiento',
-                        'personal.direccion',
-                        'personal.telefono',
-                        'personal.colonia',
-                        'personal.cp',
-                        'personal.celular',
-                        'personal.email',
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
-                        'clientes.email_institucional',
-                        'clientes.proyecto_interes_id',
-                        'clientes.publicidad_id',
-                        'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
-                        'clientes.created_at',
-                        'medios_publicitarios.nombre as publicidad',
-                        'fraccionamientos.nombre as proyecto')
+                $cliente= $query
                     ->where('clientes.publicidad_id', '=', $publicidad)
                     ->where('expedientes.fecha_firma_esc','!=',NULL)
                     ->distinct()
@@ -568,29 +332,7 @@ class PersonalController extends Controller
                 ->paginate(15);
             }
             elseif($desde != '' && $hasta != '' && $proyecto != '' && $publicidad == ''){
-                $cliente= Contrato::join('creditos','contratos.id','=','creditos.id')
-                ->join('expedientes','contratos.id','=','expedientes.id')
-                ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                ->join('personal','clientes.id','=','personal.id')
-                ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select(
-                        'personal.id',
-                        'personal.f_nacimiento',
-                        'personal.direccion',
-                        'personal.telefono',
-                        'personal.colonia',
-                        'personal.cp',
-                        'personal.celular',
-                        'personal.email',
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
-                        'clientes.email_institucional',
-                        'clientes.proyecto_interes_id',
-                        'clientes.publicidad_id',
-                        'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
-                        'clientes.created_at',
-                        'medios_publicitarios.nombre as publicidad',
-                        'fraccionamientos.nombre as proyecto')
+                $cliente= $query
                     ->whereBetween('clientes.created_at', [$desde, $hasta])
                     ->where('clientes.proyecto_interes_id', '=', $proyecto)
                     ->where('expedientes.fecha_firma_esc','!=',NULL)
@@ -598,29 +340,7 @@ class PersonalController extends Controller
                 ->paginate(15);
             }
             elseif($desde != '' && $hasta != '' && $proyecto != '' && $publicidad != ''){
-                $cliente= Contrato::join('creditos','contratos.id','=','creditos.id')
-                ->join('expedientes','contratos.id','=','expedientes.id')
-                ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                ->join('personal','clientes.id','=','personal.id')
-                ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select(
-                        'personal.id',
-                        'personal.f_nacimiento',
-                        'personal.direccion',
-                        'personal.telefono',
-                        'personal.colonia',
-                        'personal.cp',
-                        'personal.celular',
-                        'personal.email',
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
-                        'clientes.email_institucional',
-                        'clientes.proyecto_interes_id',
-                        'clientes.publicidad_id',
-                        'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
-                        'clientes.created_at',
-                        'medios_publicitarios.nombre as publicidad',
-                        'fraccionamientos.nombre as proyecto')
+                $cliente= $query
                     ->whereBetween('clientes.created_at', [$desde, $hasta])
                     ->where('clientes.proyecto_interes_id', '=', $proyecto)
                     ->where('clientes.publicidad_id', '=', $publicidad)
@@ -629,29 +349,7 @@ class PersonalController extends Controller
                 ->paginate(15);
             }
             elseif($desde == '' && $hasta == '' && $proyecto != '' && $publicidad != ''){
-                $cliente= Contrato::join('creditos','contratos.id','=','creditos.id')
-                ->join('expedientes','contratos.id','=','expedientes.id')
-                ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                ->join('personal','clientes.id','=','personal.id')
-                ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select(
-                        'personal.id',
-                        'personal.f_nacimiento',
-                        'personal.direccion',
-                        'personal.telefono',
-                        'personal.colonia',
-                        'personal.cp',
-                        'personal.celular',
-                        'personal.email',
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
-                        'clientes.email_institucional',
-                        'clientes.proyecto_interes_id',
-                        'clientes.publicidad_id',
-                        'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
-                        'clientes.created_at',
-                        'medios_publicitarios.nombre as publicidad',
-                        'fraccionamientos.nombre as proyecto')
+                $cliente= $query
                     ->where('clientes.proyecto_interes_id', '=', $proyecto)
                     ->where('clientes.publicidad_id', '=', $publicidad)
                     ->where('expedientes.fecha_firma_esc','!=',NULL)
@@ -659,29 +357,7 @@ class PersonalController extends Controller
                 ->paginate(15);
             }
             elseif($desde != '' && $hasta != '' && $proyecto == '' && $publicidad != ''){
-                $cliente= Contrato::join('creditos','contratos.id','=','creditos.id')
-                ->join('expedientes','contratos.id','=','expedientes.id')
-                ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                ->join('personal','clientes.id','=','personal.id')
-                ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select(
-                        'personal.id',
-                        'personal.f_nacimiento',
-                        'personal.direccion',
-                        'personal.telefono',
-                        'personal.colonia',
-                        'personal.cp',
-                        'personal.celular',
-                        'personal.email',
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
-                        'clientes.email_institucional',
-                        'clientes.proyecto_interes_id',
-                        'clientes.publicidad_id',
-                        'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
-                        'clientes.created_at',
-                        'medios_publicitarios.nombre as publicidad',
-                        'fraccionamientos.nombre as proyecto')
+                $cliente= $query
                     ->whereBetween('clientes.created_at', [$desde, $hasta])
                     ->where('clientes.publicidad_id', '=', $publicidad)
                     ->where('expedientes.fecha_firma_esc','!=',NULL)
@@ -709,55 +385,37 @@ class PersonalController extends Controller
         $proyecto = $request->proyecto;
         $publicidad = $request->publicidad;
 
+        $query = Cliente::join('personal','clientes.id','=','personal.id')
+            ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
+            ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
+            ->select(
+                'personal.id',
+                'personal.f_nacimiento',
+                'personal.direccion',
+                'personal.telefono',
+                'personal.colonia',
+                'personal.cp',
+                'personal.celular',
+                'personal.email',
+                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
+                'clientes.email_institucional',
+                'clientes.proyecto_interes_id',
+                'clientes.publicidad_id',
+                'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
+                'clientes.created_at',
+                'medios_publicitarios.nombre as publicidad',
+                'fraccionamientos.nombre as proyecto');
 
         if($clasificacion != 5){
             if($desde == '' && $hasta == '' && $proyecto == '' && $publicidad == ''){
-                $cliente= Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select(
-                        'personal.id',
-                        'personal.f_nacimiento',
-                        'personal.direccion',
-                        'personal.telefono',
-                        'personal.colonia',
-                        'personal.cp',
-                        'personal.celular',
-                        'personal.email',
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
-                        'clientes.email_institucional',
-                        'clientes.proyecto_interes_id',
-                        'clientes.publicidad_id',
-                        'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
-                        'clientes.created_at',
-                        'medios_publicitarios.nombre as publicidad',
-                        'fraccionamientos.nombre as proyecto')
+                $cliente= $query
                     ->where('clientes.clasificacion', '=', $clasificacion)
                     ->orderBy('personal.nombre', 'asc')
                     ->orderBy('personal.apellidos', 'asc')
                 ->get();
             }
             elseif($desde != '' && $hasta != '' && $proyecto == '' && $publicidad == ''){
-                $cliente= Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select(
-                        'personal.id',
-                        'personal.f_nacimiento',
-                        'personal.direccion',
-                        'personal.telefono',
-                        'personal.colonia',
-                        'personal.cp',
-                        'personal.celular',
-                        'personal.email',
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
-                        'clientes.email_institucional',
-                        'clientes.proyecto_interes_id',
-                        'clientes.publicidad_id',
-                        'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
-                        'clientes.created_at',
-                        'medios_publicitarios.nombre as publicidad',
-                        'fraccionamientos.nombre as proyecto')
+                $cliente= $query
                     ->where('clientes.clasificacion', '=', $clasificacion)
                     ->whereBetween('clientes.created_at', [$desde, $hasta])
                     ->orderBy('personal.nombre', 'asc')
@@ -765,26 +423,7 @@ class PersonalController extends Controller
                 ->get();
             }
             elseif($desde == '' && $hasta == '' && $proyecto != '' && $publicidad == ''){
-                $cliente= Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select(
-                        'personal.id',
-                        'personal.f_nacimiento',
-                        'personal.direccion',
-                        'personal.telefono',
-                        'personal.colonia',
-                        'personal.cp',
-                        'personal.celular',
-                        'personal.email',
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
-                        'clientes.email_institucional',
-                        'clientes.proyecto_interes_id',
-                        'clientes.publicidad_id',
-                        'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
-                        'clientes.created_at',
-                        'medios_publicitarios.nombre as publicidad',
-                        'fraccionamientos.nombre as proyecto')
+                $cliente= $query
                     ->where('clientes.clasificacion', '=', $clasificacion)
                     ->where('clientes.proyecto_interes_id', '=', $proyecto)
                     ->orderBy('personal.nombre', 'asc')
@@ -792,26 +431,7 @@ class PersonalController extends Controller
                 ->get();
             }
             elseif($desde == '' && $hasta == '' && $proyecto == '' && $publicidad != ''){
-                $cliente= Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select(
-                        'personal.id',
-                        'personal.f_nacimiento',
-                        'personal.direccion',
-                        'personal.telefono',
-                        'personal.colonia',
-                        'personal.cp',
-                        'personal.celular',
-                        'personal.email',
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
-                        'clientes.email_institucional',
-                        'clientes.proyecto_interes_id',
-                        'clientes.publicidad_id',
-                        'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
-                        'clientes.created_at',
-                        'medios_publicitarios.nombre as publicidad',
-                        'fraccionamientos.nombre as proyecto')
+                $cliente= $query
                     ->where('clientes.clasificacion', '=', $clasificacion)
                     ->where('clientes.publicidad_id', '=', $publicidad)
                     ->orderBy('personal.nombre', 'asc')
@@ -819,26 +439,7 @@ class PersonalController extends Controller
                 ->get();
             }
             elseif($desde != '' && $hasta != '' && $proyecto != '' && $publicidad == ''){
-                $cliente= Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select(
-                        'personal.id',
-                        'personal.f_nacimiento',
-                        'personal.direccion',
-                        'personal.telefono',
-                        'personal.colonia',
-                        'personal.cp',
-                        'personal.celular',
-                        'personal.email',
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
-                        'clientes.email_institucional',
-                        'clientes.proyecto_interes_id',
-                        'clientes.publicidad_id',
-                        'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
-                        'clientes.created_at',
-                        'medios_publicitarios.nombre as publicidad',
-                        'fraccionamientos.nombre as proyecto')
+                $cliente= $query
                     ->where('clientes.clasificacion', '=', $clasificacion)
                     ->whereBetween('clientes.created_at', [$desde, $hasta])
                     ->where('clientes.proyecto_interes_id', '=', $proyecto)
@@ -847,26 +448,7 @@ class PersonalController extends Controller
                 ->get();
             }
             elseif($desde != '' && $hasta != '' && $proyecto != '' && $publicidad != ''){
-                $cliente= Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select(
-                        'personal.id',
-                        'personal.f_nacimiento',
-                        'personal.direccion',
-                        'personal.telefono',
-                        'personal.colonia',
-                        'personal.cp',
-                        'personal.celular',
-                        'personal.email',
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
-                        'clientes.email_institucional',
-                        'clientes.proyecto_interes_id',
-                        'clientes.publicidad_id',
-                        'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
-                        'clientes.created_at',
-                        'medios_publicitarios.nombre as publicidad',
-                        'fraccionamientos.nombre as proyecto')
+                $cliente= $query
                     ->where('clientes.clasificacion', '=', $clasificacion)
                     ->whereBetween('clientes.created_at', [$desde, $hasta])
                     ->where('clientes.proyecto_interes_id', '=', $proyecto)
@@ -876,26 +458,7 @@ class PersonalController extends Controller
                 ->get();
             }
             elseif($desde == '' && $hasta == '' && $proyecto != '' && $publicidad != ''){
-                $cliente= Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select(
-                        'personal.id',
-                        'personal.f_nacimiento',
-                        'personal.direccion',
-                        'personal.telefono',
-                        'personal.colonia',
-                        'personal.cp',
-                        'personal.celular',
-                        'personal.email',
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
-                        'clientes.email_institucional',
-                        'clientes.proyecto_interes_id',
-                        'clientes.publicidad_id',
-                        'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
-                        'clientes.created_at',
-                        'medios_publicitarios.nombre as publicidad',
-                        'fraccionamientos.nombre as proyecto')
+                $cliente= $query
                     ->where('clientes.clasificacion', '=', $clasificacion)
                     ->where('clientes.proyecto_interes_id', '=', $proyecto)
                     ->where('clientes.publicidad_id', '=', $publicidad)
@@ -904,26 +467,7 @@ class PersonalController extends Controller
                 ->get();
             }
             elseif($desde != '' && $hasta != '' && $proyecto == '' && $publicidad != ''){
-                $cliente= Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select(
-                        'personal.id',
-                        'personal.f_nacimiento',
-                        'personal.direccion',
-                        'personal.telefono',
-                        'personal.colonia',
-                        'personal.cp',
-                        'personal.celular',
-                        'personal.email',
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
-                        'clientes.email_institucional',
-                        'clientes.proyecto_interes_id',
-                        'clientes.publicidad_id',
-                        'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
-                        'clientes.created_at',
-                        'medios_publicitarios.nombre as publicidad',
-                        'fraccionamientos.nombre as proyecto')
+                $cliente= $query
                     ->where('clientes.clasificacion', '=', $clasificacion)
                     ->whereBetween('clientes.created_at', [$desde, $hasta])
                     ->where('clientes.publicidad_id', '=', $publicidad)
@@ -934,84 +478,20 @@ class PersonalController extends Controller
         }
         else{
             if($desde == '' && $hasta == '' && $proyecto == '' && $publicidad == ''){
-                $cliente = Contrato::join('creditos','contratos.id','=','creditos.id')
-                    ->join('expedientes','contratos.id','=','expedientes.id')
-                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                    ->join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select('personal.id',
-                                'personal.f_nacimiento',
-                                'personal.direccion',
-                                'personal.telefono',
-                                'personal.colonia',
-                                'personal.cp',
-                                'personal.celular',
-                                'personal.email',
-                                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
-                                'clientes.email_institucional',
-                                'clientes.proyecto_interes_id',
-                                'clientes.publicidad_id',
-                                'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
-                                'clientes.created_at',
-                                'medios_publicitarios.nombre as publicidad',
-                                'fraccionamientos.nombre as proyecto')
+                $cliente = $query
                     ->where('expedientes.fecha_firma_esc','!=',NULL)
                     ->distinct()
                     ->get();
             }
             elseif($desde != '' && $hasta != '' && $proyecto == '' && $publicidad == ''){
-                $cliente = Contrato::join('creditos','contratos.id','=','creditos.id')
-                    ->join('expedientes','contratos.id','=','expedientes.id')
-                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                    ->join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select('personal.id',
-                                'personal.f_nacimiento',
-                                'personal.direccion',
-                                'personal.telefono',
-                                'personal.colonia',
-                                'personal.cp',
-                                'personal.celular',
-                                'personal.email',
-                                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
-                                'clientes.email_institucional',
-                                'clientes.proyecto_interes_id',
-                                'clientes.publicidad_id',
-                                'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
-                                'clientes.created_at',
-                                'medios_publicitarios.nombre as publicidad',
-                                'fraccionamientos.nombre as proyecto')
+                $cliente = $query
                     ->whereBetween('clientes.created_at', [$desde, $hasta])
                     ->where('expedientes.fecha_firma_esc','!=',NULL)
                     ->distinct()
                 ->get();
             }
             elseif($desde == '' && $hasta == '' && $proyecto != '' && $publicidad == ''){
-                $cliente= Contrato::join('creditos','contratos.id','=','creditos.id')
-                ->join('expedientes','contratos.id','=','expedientes.id')
-                ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                ->join('personal','clientes.id','=','personal.id')
-                ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select(
-                        'personal.id',
-                        'personal.f_nacimiento',
-                        'personal.direccion',
-                        'personal.telefono',
-                        'personal.colonia',
-                        'personal.cp',
-                        'personal.celular',
-                        'personal.email',
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
-                        'clientes.email_institucional',
-                        'clientes.proyecto_interes_id',
-                        'clientes.publicidad_id',
-                        'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
-                        'clientes.created_at',
-                        'medios_publicitarios.nombre as publicidad',
-                        'fraccionamientos.nombre as proyecto')
+                $cliente= $query
                     ->where('clientes.proyecto_interes_id', '=', $proyecto)
                     ->where('expedientes.fecha_firma_esc','=',NULL)
                     ->orderBy('personal.nombre', 'asc')
@@ -1019,58 +499,14 @@ class PersonalController extends Controller
                 ->get();
             }
             elseif($desde == '' && $hasta == '' && $proyecto == '' && $publicidad != ''){
-                $cliente= Contrato::join('creditos','contratos.id','=','creditos.id')
-                    ->join('expedientes','contratos.id','=','expedientes.id')
-                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                    ->join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select(
-                        'personal.id',
-                        'personal.f_nacimiento',
-                        'personal.direccion',
-                        'personal.telefono',
-                        'personal.colonia',
-                        'personal.cp',
-                        'personal.celular',
-                        'personal.email',
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
-                        'clientes.email_institucional',
-                        'clientes.proyecto_interes_id',
-                        'clientes.publicidad_id',
-                        'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
-                        'clientes.created_at',
-                        'medios_publicitarios.nombre as publicidad',
-                        'fraccionamientos.nombre as proyecto')
+                $cliente= $query
                     ->where('clientes.publicidad_id', '=', $publicidad)
                     ->where('expedientes.fecha_firma_esc','!=',NULL)
                     ->distinct()
                 ->get();
             }
             elseif($desde != '' && $hasta != '' && $proyecto != '' && $publicidad == ''){
-                $cliente= Contrato::join('creditos','contratos.id','=','creditos.id')
-                    ->join('expedientes','contratos.id','=','expedientes.id')
-                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                    ->join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select(
-                        'personal.id',
-                        'personal.f_nacimiento',
-                        'personal.direccion',
-                        'personal.telefono',
-                        'personal.colonia',
-                        'personal.cp',
-                        'personal.celular',
-                        'personal.email',
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
-                        'clientes.email_institucional',
-                        'clientes.proyecto_interes_id',
-                        'clientes.publicidad_id',
-                        'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
-                        'clientes.created_at',
-                        'medios_publicitarios.nombre as publicidad',
-                        'fraccionamientos.nombre as proyecto')
+                $cliente= $query
                     ->whereBetween('clientes.created_at', [$desde, $hasta])
                     ->where('clientes.proyecto_interes_id', '=', $proyecto)
                     ->where('expedientes.fecha_firma_esc','!=',NULL)
@@ -1078,29 +514,7 @@ class PersonalController extends Controller
                 ->get();
             }
             elseif($desde != '' && $hasta != '' && $proyecto != '' && $publicidad != ''){
-                    $cliente= Contrato::join('creditos','contratos.id','=','creditos.id')
-                    ->join('expedientes','contratos.id','=','expedientes.id')
-                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                    ->join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select(
-                        'personal.id',
-                        'personal.f_nacimiento',
-                        'personal.direccion',
-                        'personal.telefono',
-                        'personal.colonia',
-                        'personal.cp',
-                        'personal.celular',
-                        'personal.email',
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
-                        'clientes.email_institucional',
-                        'clientes.proyecto_interes_id',
-                        'clientes.publicidad_id',
-                        'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
-                        'clientes.created_at',
-                        'medios_publicitarios.nombre as publicidad',
-                        'fraccionamientos.nombre as proyecto')
+                    $cliente= $query
                     ->whereBetween('clientes.created_at', [$desde, $hasta])
                     ->where('clientes.proyecto_interes_id', '=', $proyecto)
                     ->where('clientes.publicidad_id', '=', $publicidad)
@@ -1109,29 +523,7 @@ class PersonalController extends Controller
                 ->get();
             }
             elseif($desde == '' && $hasta == '' && $proyecto != '' && $publicidad != ''){
-                $cliente= Contrato::join('creditos','contratos.id','=','creditos.id')
-                    ->join('expedientes','contratos.id','=','expedientes.id')
-                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                    ->join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select(
-                        'personal.id',
-                        'personal.f_nacimiento',
-                        'personal.direccion',
-                        'personal.telefono',
-                        'personal.colonia',
-                        'personal.cp',
-                        'personal.celular',
-                        'personal.email',
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
-                        'clientes.email_institucional',
-                        'clientes.proyecto_interes_id',
-                        'clientes.publicidad_id',
-                        'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
-                        'clientes.created_at',
-                        'medios_publicitarios.nombre as publicidad',
-                        'fraccionamientos.nombre as proyecto')
+                $cliente= $query
                     ->where('clientes.proyecto_interes_id', '=', $proyecto)
                     ->where('clientes.publicidad_id', '=', $publicidad)
                     ->where('expedientes.fecha_firma_esc','!=',NULL)
@@ -1139,29 +531,7 @@ class PersonalController extends Controller
                 ->get();
             }
             elseif($desde != '' && $hasta != '' && $proyecto == '' && $publicidad != ''){
-                $cliente= Contrato::join('creditos','contratos.id','=','creditos.id')
-                    ->join('expedientes','contratos.id','=','expedientes.id')
-                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                    ->join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select(
-                        'personal.id',
-                        'personal.f_nacimiento',
-                        'personal.direccion',
-                        'personal.telefono',
-                        'personal.colonia',
-                        'personal.cp',
-                        'personal.celular',
-                        'personal.email',
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
-                        'clientes.email_institucional',
-                        'clientes.proyecto_interes_id',
-                        'clientes.publicidad_id',
-                        'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
-                        'clientes.created_at',
-                        'medios_publicitarios.nombre as publicidad',
-                        'fraccionamientos.nombre as proyecto')
+                $cliente= $query
                     ->whereBetween('clientes.created_at', [$desde, $hasta])
                     ->where('clientes.publicidad_id', '=', $publicidad)
                     ->where('expedientes.fecha_firma_esc','!=',NULL)

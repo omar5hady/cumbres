@@ -18,21 +18,19 @@ class PrecioEtapaController extends Controller
 
         $buscar = $request->buscar;
         $criterio = $request->criterio;
-        
-        if($buscar==''){
-            $precios_etapas = Precio_etapa::join('fraccionamientos','precios_etapas.fraccionamiento_id','=','fraccionamientos.id')
+
+        $query = Precio_etapa::join('fraccionamientos','precios_etapas.fraccionamiento_id','=','fraccionamientos.id')
             ->join('etapas','precios_etapas.etapa_id','=','etapas.id')
             ->select('fraccionamientos.nombre as fraccionamiento','etapas.num_etapa as etapas', 
-                    'precios_etapas.precio_excedente','precios_etapas.id',
-                    'precios_etapas.etapa_id','precios_etapas.fraccionamiento_id' )
+                'precios_etapas.precio_excedente','precios_etapas.id',
+                'precios_etapas.etapa_id','precios_etapas.fraccionamiento_id' );
+        
+        if($buscar==''){
+            $precios_etapas = $query
                 ->orderBy('id','precios_etapas.fraccionamiento_id')->paginate(8);
         }
        else{
-        $precios_etapas = Precio_etapa::join('fraccionamientos','precios_etapas.fraccionamiento_id','=','fraccionamientos.id')
-        ->join('etapas','precios_etapas.etapa_id','=','etapas.id')
-        ->select('fraccionamientos.nombre as fraccionamiento','etapas.num_etapa as etapas', 
-                'precios_etapas.precio_excedente','precios_etapas.id',
-                'precios_etapas.etapa_id','precios_etapas.fraccionamiento_id' )
+        $precios_etapas = $query
             ->where($criterio, 'like', '%'. $buscar . '%')
             ->orderBy('id','precios_etapas.fraccionamiento_id')->paginate(8);
         }
@@ -50,22 +48,6 @@ class PrecioEtapaController extends Controller
         ];
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     //funcion para insertar en la tabla
     public function store(Request $request)
     {
@@ -77,35 +59,11 @@ class PrecioEtapaController extends Controller
         $precio_etapa->save();
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     //funcion para actualizar los datos
     public function update(Request $request)
     {
@@ -138,12 +96,6 @@ class PrecioEtapaController extends Controller
     
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');

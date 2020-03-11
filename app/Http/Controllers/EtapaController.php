@@ -29,17 +29,19 @@ class EtapaController extends Controller
         $buscar = $request->buscar;
         $buscar2 = $request->buscar2;
         $criterio = $request->criterio;
+
+        $query = Etapa::join('personal','etapas.personal_id','=','personal.id')
+            ->join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
+            ->select('etapas.num_etapa','etapas.f_ini',
+                'etapas.f_fin','etapas.id','etapas.personal_id', 'etapas.fecha_ini_venta',
+                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
+                'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento',
+                'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','etapas.plantilla_telecom','etapas.empresas_telecom',
+                'etapas.empresas_telecom_satelital','etapas.num_cuenta_admin','etapas.clabe_admin','etapas.sucursal_admin',
+                'etapas.titular_admin','etapas.banco_admin','etapas.carta_bienvenida');
         
         if($buscar==''){
-            $etapas = Etapa::join('personal','etapas.personal_id','=','personal.id')
-                ->join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
-                ->select('etapas.num_etapa','etapas.f_ini',
-                    'etapas.f_fin','etapas.id','etapas.personal_id', 'etapas.fecha_ini_venta',
-                    DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
-                    'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento',
-                    'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','etapas.plantilla_telecom','etapas.empresas_telecom',
-                    'etapas.empresas_telecom_satelital','etapas.num_cuenta_admin','etapas.clabe_admin','etapas.sucursal_admin',
-                    'etapas.titular_admin','etapas.banco_admin','etapas.carta_bienvenida')
+            $etapas = $query
                     ->where('etapas.num_etapa','!=','Sin Asignar')
                     ->orderBy('fraccionamientos.nombre','asc')
                     ->orderBy('etapas.num_etapa','asc')->paginate(8);
@@ -47,30 +49,14 @@ class EtapaController extends Controller
         else{
             if($criterio == 'f_ini' || $criterio == 'f_fin')
             {
-                $etapas = Etapa::join('personal','etapas.personal_id','=','personal.id')
-                    ->join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
-                    ->select('etapas.num_etapa','etapas.f_ini','etapas.fecha_ini_venta',
-                        'etapas.f_fin','etapas.id','etapas.personal_id', 
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
-                        'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento',
-                        'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','etapas.plantilla_telecom','etapas.empresas_telecom',
-                        'etapas.empresas_telecom_satelital','etapas.num_cuenta_admin','etapas.clabe_admin','etapas.sucursal_admin',
-                        'etapas.titular_admin','etapas.banco_admin','etapas.carta_bienvenida')
+                $etapas = $query
                         ->whereBetween($criterio, [$buscar,$buscar2])
                         ->where('etapas.num_etapa','!=','Sin Asignar')
                         ->orderBy('fraccionamientos.nombre','asc')
                         ->orderBy('etapas.num_etapa','asc')->paginate(8);
             }
             else{
-                $etapas = Etapa::join('personal','etapas.personal_id','=','personal.id')
-                    ->join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
-                    ->select('etapas.num_etapa','etapas.f_ini','etapas.fecha_ini_venta',
-                        'etapas.f_fin','etapas.id','etapas.personal_id', 
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
-                        'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento',
-                        'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','etapas.plantilla_telecom','etapas.empresas_telecom',
-                        'etapas.empresas_telecom_satelital','etapas.num_cuenta_admin','etapas.clabe_admin','etapas.sucursal_admin',
-                        'etapas.titular_admin','etapas.banco_admin','etapas.carta_bienvenida')
+                $etapas = $query
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('etapas.num_etapa','!=','Sin Asignar')
                         ->orderBy('fraccionamientos.nombre','asc')
@@ -99,17 +85,19 @@ class EtapaController extends Controller
         $buscar = $request->buscar;
         $buscar2 = $request->buscar2;
         $criterio = $request->criterio;
+
+        $query = Etapa::join('personal','etapas.personal_id','=','personal.id')
+            ->join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
+            ->select('etapas.num_etapa','etapas.f_ini',
+                'etapas.f_fin','etapas.id','etapas.personal_id', 
+                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
+                'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento',
+                'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','etapas.plantilla_telecom','etapas.empresas_telecom',
+                'etapas.empresas_telecom_satelital','etapas.num_cuenta_admin','etapas.clabe_admin','etapas.sucursal_admin',
+                'etapas.titular_admin','etapas.banco_admin','etapas.carta_bienvenida');
         
         if($buscar==''){
-            $etapas = Etapa::join('personal','etapas.personal_id','=','personal.id')
-                ->join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
-                ->select('etapas.num_etapa','etapas.f_ini',
-                    'etapas.f_fin','etapas.id','etapas.personal_id', 
-                    DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
-                    'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento',
-                    'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','etapas.plantilla_telecom','etapas.empresas_telecom',
-                    'etapas.empresas_telecom_satelital','etapas.num_cuenta_admin','etapas.clabe_admin','etapas.sucursal_admin',
-                    'etapas.titular_admin','etapas.banco_admin','etapas.carta_bienvenida')
+            $etapas = $query
                     ->where('etapas.num_etapa','!=','Sin Asignar')
                     ->orderBy('fraccionamientos.nombre','asc')
                     ->orderBy('etapas.num_etapa','asc')->paginate(8);
@@ -117,30 +105,14 @@ class EtapaController extends Controller
         else{
             if($criterio == 'f_ini' || $criterio == 'f_fin')
             {
-                $etapas = Etapa::join('personal','etapas.personal_id','=','personal.id')
-                    ->join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
-                    ->select('etapas.num_etapa','etapas.f_ini',
-                        'etapas.f_fin','etapas.id','etapas.personal_id', 
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
-                        'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento',
-                        'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','etapas.plantilla_telecom','etapas.empresas_telecom',
-                        'etapas.empresas_telecom_satelital','etapas.num_cuenta_admin','etapas.clabe_admin','etapas.sucursal_admin',
-                        'etapas.titular_admin','etapas.banco_admin','etapas.carta_bienvenida')
+                $etapas = $query
                         ->whereBetween($criterio, [$buscar,$buscar2])
                         ->where('etapas.num_etapa','!=','Sin Asignar')
                         ->orderBy('fraccionamientos.nombre','asc')
                         ->orderBy('etapas.num_etapa','asc')->paginate(8);
             }
             else{
-                $etapas = Etapa::join('personal','etapas.personal_id','=','personal.id')
-                    ->join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
-                    ->select('etapas.num_etapa','etapas.f_ini',
-                        'etapas.f_fin','etapas.id','etapas.personal_id', 
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
-                        'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento',
-                        'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','etapas.plantilla_telecom','etapas.empresas_telecom',
-                        'etapas.empresas_telecom_satelital','etapas.num_cuenta_admin','etapas.clabe_admin','etapas.sucursal_admin',
-                        'etapas.titular_admin','etapas.banco_admin','etapas.carta_bienvenida')
+                $etapas = $query
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('etapas.num_etapa','!=','Sin Asignar')
                         ->orderBy('fraccionamientos.nombre','asc')
@@ -248,35 +220,7 @@ class EtapaController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    
     //funcion para actualizar los datos
     public function update(Request $request)
     {

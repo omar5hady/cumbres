@@ -25,31 +25,25 @@ class IniObraController extends Controller
  
         $buscar = $request->buscar;
         $criterio = $request->criterio;
-         
-        if ($buscar==''){
-            $ini_obra = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
+
+        $query = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
             ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
             ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
             'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto', 'ini_obras.documento','ini_obras.total_importe',
-            'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto')
+            'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto');
+         
+        if ($buscar==''){
+            $ini_obra = $query
             ->orderBy('ini_obras.id', 'desc')->paginate(8);
         }
         else{
             if($criterio!='ini_obras.f_ini' && $criterio!='ini_obras.f_fin'){
-                $ini_obra = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
-                ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
-                ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
-                'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto', 'ini_obras.documento','ini_obras.total_importe',
-                'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto')
+                $ini_obra = $query
                 ->where($criterio, 'like', '%'. $buscar . '%')
                 ->orderBy('ini_obras.id', 'desc')->paginate(8);
             }
             else{
-                $ini_obra = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
-                ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
-                ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
-                'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto', 'ini_obras.documento','ini_obras.total_importe',
-                'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto')
+                $ini_obra = $query
                 ->where($criterio, '=',  $buscar )
                 ->orderBy('ini_obras.id', 'desc')->paginate(8);
             }
@@ -654,7 +648,7 @@ class IniObraController extends Controller
 
             return back();
         } else {
-            $pathAnterior = public_path() . '/files/contratos/obra/' . $pdfAnterior[0]->pdf;
+            $pathAnterior = public_path() . '/files/contratos/obra/' . $pdfAnterior[0]->documento;
             File::delete($pathAnterior);
 
             $fileName = time() . '.' . $request->pdf->getClientOriginalExtension();

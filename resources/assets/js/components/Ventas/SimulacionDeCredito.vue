@@ -300,7 +300,7 @@
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                 <label for="">CURP</label>
-                                                <input disabled type="text" maxlength="18" style="text-transform:uppercase" class="form-control"  v-model="curp" placeholder="CURP">
+                                                <input type="text" maxlength="18" style="text-transform:uppercase" class="form-control"  v-model="curp" placeholder="CURP">
                                             </div>
                                                 </div>
 
@@ -322,7 +322,7 @@
                                             <div class="col-md-2">
                                                     <div class="form-group">
                                                 <label for="">NSS <span style="color:red;" v-show="nss==''">(*)</span></label>
-                                                <input disabled type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="nss" placeholder="NSS">
+                                                <input type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="nss" placeholder="NSS">
                                             </div>
                                             </div>                           
                                             
@@ -350,8 +350,19 @@
 
                                             <div class="col-md-6" v-if="tipo_economia!=0">
                                                 <div class="form-group">
-                                                    <label for="">Empresa <span style="color:red;" v-show="empresa==0">(*)</span></label>
-                                                            <input v-if="empresa != null" type="text" class="form-control" readonly  v-model="empresa">
+                                                    <!-- <label for="">Empresa <span style="color:red;" v-show="empresa==0">(*)</span></label>
+                                                            <input v-if="empresa != null" type="text" class="form-control" readonly  v-model="empresa"> -->
+
+                                                        <label for="">Empresa <span style="color:red;" v-show="empresa==0">(*)</span></label>
+                                                        <v-select 
+                                                            :on-search="selectEmpresaVueselect"
+                                                            label="nombre"
+                                                            :options="arrayEmpresa"
+                                                            placeholder="Buscar empresa..."
+                                                            :onChange="getDatosEmpresa2"
+                                                        >
+                                                        </v-select>
+                                                    <input type="text" v-if="empresa != null || empresa != ''" class="form-control" disabled v-model="empresa">
                                                     </div>
                                                 </div>
 
@@ -2568,6 +2579,12 @@
                 me.empresa_coa = val1.nombre;
                
             }, 
+            getDatosEmpresa2(val1){
+                let me = this;
+                me.loading = true;
+                me.empresa = val1.nombre;
+               
+            },
             selectFraccionamientos(){
                 let me = this;
                 me.arrayFraccionamientos=[];
@@ -2862,6 +2879,10 @@
                     'estado':this.estado,
                     'nacionalidad':this.nacionalidad,
                     'puesto':this.puesto,
+
+                    'curp':this.curp,
+                    'nss':this.nss,
+                    'empresa':this.empresa,
 
                     'direccion_coa':this.direccion_coa,
                     'colonia_coa':this.colonia_coa,

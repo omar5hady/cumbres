@@ -28,12 +28,7 @@ class ComisionesController extends Controller
         $lote = $request->lote;
         $criterio = $request->criterio;
 
-        if($vendedor == ''){
-            $vendedores = Vendedor::join('personal','vendedores.id','=','personal.id')
-                ->select(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_comp"),'personal.id','vendedores.tipo')->get();
-
-            if($buscar == ''){
-                $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
+        $query = Contrato::join('creditos','contratos.id','=','creditos.id')
                 ->join('lotes','creditos.lote_id','=','lotes.id')
                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                 ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -46,85 +41,40 @@ class ComisionesController extends Controller
                         'creditos.manzana',
                         'creditos.num_lote',
                         'creditos.vendedor_id',
-                        'creditos.precio_venta')
+                        'creditos.precio_venta');
+
+        if($vendedor == ''){
+            $vendedores = Vendedor::join('personal','vendedores.id','=','personal.id')
+                ->select(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_comp"),'personal.id','vendedores.tipo')->get();
+
+            if($buscar == ''){
+                $contratos = $query
                 ->where('contratos.status','=',3)
                 ->where('contratos.fecha_exp','=',NULL)->paginate(8);
             }
             else{
                 if($buscar!='' && $etapa == '' && $manzana == '' && $lote == ''){
-                    $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
-                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id',
-                            'contratos.fecha',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'contratos.avance_lote',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.vendedor_id',
-                            'creditos.precio_venta')
+                    $contratos = $query
                     ->where('contratos.status','=',3)
                     ->where('lotes.fraccionamiento_id','=',$buscar)
                     ->where('contratos.fecha_exp','=',NULL)->paginate(8);
                 }
                 if($buscar!='' && $etapa == '' && $manzana == '' && $lote != ''){
-                    $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
-                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id',
-                            'contratos.fecha',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'contratos.avance_lote',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.vendedor_id',
-                            'creditos.precio_venta')
+                    $contratos = $query
                     ->where('contratos.status','=',3)
                     ->where('lotes.fraccionamiento_id','=',$buscar)
                     ->whree('lotes.num_lote','=',$lote)
                     ->where('contratos.fecha_exp','=',NULL)->paginate(8);
                 }
                 elseif($buscar!='' && $etapa != '' && $manzana == '' && $lote == ''){
-                    $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
-                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id',
-                            'contratos.fecha',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'contratos.avance_lote',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.vendedor_id',
-                            'creditos.precio_venta')
+                    $contratos = $query
                     ->where('contratos.status','=',3)
                     ->where('lotes.fraccionamiento_id','=',$buscar)
                     ->where('lotes.etapa_id','=',$etapa)
                     ->where('contratos.fecha_exp','=',NULL)->paginate(8);
                 }
                 elseif($buscar!='' && $etapa != '' && $manzana == '' && $lote != ''){
-                    $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
-                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id',
-                            'contratos.fecha',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'contratos.avance_lote',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.vendedor_id',
-                            'creditos.precio_venta')
+                    $contratos = $query
                     ->where('contratos.status','=',3)
                     ->where('lotes.fraccionamiento_id','=',$buscar)
                     ->where('lotes.etapa_id','=',$etapa)
@@ -132,20 +82,7 @@ class ComisionesController extends Controller
                     ->where('contratos.fecha_exp','=',NULL)->paginate(8);
                 }
                 elseif($buscar!='' && $etapa != '' && $manzana != '' && $lote == ''){
-                    $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
-                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id',
-                            'contratos.fecha',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'contratos.avance_lote',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.vendedor_id',
-                            'creditos.precio_venta')
+                    $contratos = $query
                     ->where('contratos.status','=',3)
                     ->where('lotes.fraccionamiento_id','=',$buscar)
                     ->where('lotes.etapa_id','=',$etapa)
@@ -153,20 +90,7 @@ class ComisionesController extends Controller
                     ->where('contratos.fecha_exp','=',NULL)->paginate(8);
                 }
                 elseif($buscar!='' && $etapa != '' && $manzana != '' && $lote != ''){
-                    $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
-                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id',
-                            'contratos.fecha',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'contratos.avance_lote',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.vendedor_id',
-                            'creditos.precio_venta')
+                    $contratos = $query
                     ->where('contratos.status','=',3)
                     ->where('lotes.fraccionamiento_id','=',$buscar)
                     ->where('lotes.etapa_id','=',$etapa)
@@ -183,60 +107,21 @@ class ComisionesController extends Controller
                 ->where('vendedores.id','=',$vendedor)->get();
 
             if($buscar == ''){
-                $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
-                ->join('lotes','creditos.lote_id','=','lotes.id')
-                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                ->join('personal as c', 'clientes.id', '=', 'c.id')
-                ->select('contratos.id',
-                        'contratos.fecha',
-                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                        'contratos.avance_lote',
-                        'creditos.fraccionamiento as proyecto',
-                        'creditos.etapa',
-                        'creditos.manzana',
-                        'creditos.num_lote',
-                        'creditos.vendedor_id',
-                        'creditos.precio_venta')
+                $contratos = $query
                 ->where('creditos.vendedor_id','=',$vendedor)
                 ->where('contratos.status','=',3)
                 ->where('contratos.fecha_exp','=',NULL)->paginate(8);
             }
             else{
                 if($buscar!='' && $etapa == '' && $manzana == '' && $lote == ''){
-                    $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
-                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id',
-                            'contratos.fecha',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'contratos.avance_lote',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.vendedor_id',
-                            'creditos.precio_venta')
+                    $contratos = $query
                     ->where('creditos.vendedor_id','=',$vendedor)
                     ->where('contratos.status','=',3)
                     ->where('lotes.fraccionamiento_id','=',$buscar)
                     ->where('contratos.fecha_exp','=',NULL)->paginate(8);
                 }
                 if($buscar!='' && $etapa == '' && $manzana == '' && $lote != ''){
-                    $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
-                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id',
-                            'contratos.fecha',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'contratos.avance_lote',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.vendedor_id',
-                            'creditos.precio_venta')
+                    $contratos = $query
                     ->where('creditos.vendedor_id','=',$vendedor)
                     ->where('contratos.status','=',3)
                     ->where('lotes.fraccionamiento_id','=',$buscar)
@@ -244,20 +129,7 @@ class ComisionesController extends Controller
                     ->where('contratos.fecha_exp','=',NULL)->paginate(8);
                 }
                 elseif($buscar!='' && $etapa != '' && $manzana == '' && $lote == ''){
-                    $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
-                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id',
-                            'contratos.fecha',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'contratos.avance_lote',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.vendedor_id',
-                            'creditos.precio_venta')
+                    $contratos = $query
                     ->where('creditos.vendedor_id','=',$vendedor)
                     ->where('contratos.status','=',3)
                     ->where('lotes.fraccionamiento_id','=',$buscar)
@@ -265,20 +137,7 @@ class ComisionesController extends Controller
                     ->where('contratos.fecha_exp','=',NULL)->paginate(8);
                 }
                 elseif($buscar!='' && $etapa != '' && $manzana == '' && $lote != ''){
-                    $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
-                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id',
-                            'contratos.fecha',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'contratos.avance_lote',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.vendedor_id',
-                            'creditos.precio_venta')
+                    $contratos = $query
                     ->where('creditos.vendedor_id','=',$vendedor)
                     ->where('contratos.status','=',3)
                     ->where('lotes.fraccionamiento_id','=',$buscar)
@@ -287,20 +146,7 @@ class ComisionesController extends Controller
                     ->where('contratos.fecha_exp','=',NULL)->paginate(8);
                 }
                 elseif($buscar!='' && $etapa != '' && $manzana != '' && $lote == ''){
-                    $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
-                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id',
-                            'contratos.fecha',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'contratos.avance_lote',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.vendedor_id',
-                            'creditos.precio_venta')
+                    $contratos = $query
                     ->where('creditos.vendedor_id','=',$vendedor)
                     ->where('contratos.status','=',3)
                     ->where('lotes.fraccionamiento_id','=',$buscar)
@@ -309,20 +155,7 @@ class ComisionesController extends Controller
                     ->where('contratos.fecha_exp','=',NULL)->paginate(8);
                 }
                 elseif($buscar!='' && $etapa != '' && $manzana != '' && $lote != ''){
-                    $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
-                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id',
-                            'contratos.fecha',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'contratos.avance_lote',
-                            'creditos.fraccionamiento as proyecto',
-                            'creditos.etapa',
-                            'creditos.manzana',
-                            'creditos.num_lote',
-                            'creditos.vendedor_id',
-                            'creditos.precio_venta')
+                    $contratos = $query
                     ->where('creditos.vendedor_id','=',$vendedor)
                     ->where('contratos.status','=',3)
                     ->where('lotes.fraccionamiento_id','=',$buscar)
@@ -589,50 +422,34 @@ class ComisionesController extends Controller
         $month = Carbon::now()->month;
         $year = Carbon::now()->year;
 
+        $query = Comision::join('vendedores','comisiones.asesor_id', '=','vendedores.id')
+            ->join('personal','vendedores.id','=','personal.id')
+            ->select('comisiones.mes','comisiones.anio','comisiones.total','comisiones.num_ventas','comisiones.num_cancelaciones',
+                        'comisiones.cobrado','comisiones.bono','comisiones.aPagar','comisiones.id','comisiones.totalAnticipo',
+                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS asesor"),
+                        'vendedores.tipo'
+            );
+
         if($asesor == ''){
             if($mes == '' && $anio == ''){
-                $comisiones = Comision::join('vendedores','comisiones.asesor_id', '=','vendedores.id')
-                        ->join('personal','vendedores.id','=','personal.id')
-                        ->select('comisiones.mes','comisiones.anio','comisiones.total','comisiones.num_ventas','comisiones.num_cancelaciones',
-                                    'comisiones.cobrado','comisiones.bono','comisiones.aPagar','comisiones.id','comisiones.totalAnticipo',
-                                    DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS asesor"),
-                                    'vendedores.tipo'
-                                )
+                $comisiones = $query
                         ->orderBy('comisiones.id','desc')
                         ->orderBy('asesor','asc')->paginate();
             }
             elseif($mes != '' && $anio == ''){
-                $comisiones = Comision::join('vendedores','comisiones.asesor_id', '=','vendedores.id')
-                        ->join('personal','vendedores.id','=','personal.id')
-                        ->select('comisiones.mes','comisiones.anio','comisiones.total','comisiones.num_ventas','comisiones.num_cancelaciones',
-                                    'comisiones.cobrado','comisiones.bono','comisiones.aPagar', 'comisiones.totalAnticipo',
-                                    DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS asesor"),
-                                    'vendedores.tipo'
-                                )
+                $comisiones = $query
                         ->where('comisiones.mes','=',$mes)
                         ->orderBy('comisiones.id','desc')
                         ->orderBy('asesor','asc')->paginate();
             }
             elseif($mes == '' && $anio != ''){
-                $comisiones = Comision::join('vendedores','comisiones.asesor_id', '=','vendedores.id')
-                        ->join('personal','vendedores.id','=','personal.id')
-                        ->select('comisiones.mes','comisiones.anio','comisiones.total','comisiones.num_ventas','comisiones.num_cancelaciones',
-                                    'comisiones.cobrado','comisiones.bono','comisiones.aPagar','comisiones.totalAnticipo',
-                                    DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS asesor"),
-                                    'vendedores.tipo'
-                                )
+                $comisiones = $query
                         ->where('comisiones.anio','=',$anio)
                         ->orderBy('comisiones.id','desc')
                         ->orderBy('asesor','asc')->paginate();
             }
             else{
-                $comisiones = Comision::join('vendedores','comisiones.asesor_id', '=','vendedores.id')
-                        ->join('personal','vendedores.id','=','personal.id')
-                        ->select('comisiones.mes','comisiones.anio','comisiones.total','comisiones.num_ventas','comisiones.num_cancelaciones',
-                                    'comisiones.cobrado','comisiones.bono','comisiones.aPagar','comisiones.totalAnticipo',
-                                    DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS asesor"),
-                                    'vendedores.tipo'
-                                )
+                $comisiones = $query
                         ->where('comisiones.mes','=',$mes)
                         ->where('comisiones.anio','=',$anio)
                         ->orderBy('comisiones.id','desc')
@@ -642,51 +459,27 @@ class ComisionesController extends Controller
         }
         else{
             if($mes == '' && $anio == ''){
-                $comisiones = Comision::join('vendedores','comisiones.asesor_id', '=','vendedores.id')
-                        ->join('personal','vendedores.id','=','personal.id')
-                        ->select('comisiones.mes','comisiones.anio','comisiones.total','comisiones.num_ventas','comisiones.num_cancelaciones',
-                                    'comisiones.cobrado','comisiones.bono','comisiones.aPagar',
-                                    DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS asesor"),
-                                    'vendedores.tipo'
-                                )
+                $comisiones = $query
                         ->where('comisiones.asesor_id','=',$asesor)
                         ->orderBy('comisiones.id','desc')
                         ->orderBy('asesor','asc')->paginate();
             }
             elseif($mes != '' && $anio == ''){
-                $comisiones = Comision::join('vendedores','comisiones.asesor_id', '=','vendedores.id')
-                        ->join('personal','vendedores.id','=','personal.id')
-                        ->select('comisiones.mes','comisiones.anio','comisiones.total','comisiones.num_ventas','comisiones.num_cancelaciones',
-                                    'comisiones.cobrado','comisiones.bono','comisiones.aPagar',
-                                    DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS asesor"),
-                                    'vendedores.tipo'
-                                )
+                $comisiones = $query
                         ->where('comisiones.asesor_id','=',$asesor)
                         ->where('comisiones.mes','=',$mes)
                         ->orderBy('comisiones.id','desc')
                         ->orderBy('asesor','asc')->paginate();
             }
             elseif($mes == '' && $anio != ''){
-                $comisiones = Comision::join('vendedores','comisiones.asesor_id', '=','vendedores.id')
-                        ->join('personal','vendedores.id','=','personal.id')
-                        ->select('comisiones.mes','comisiones.anio','comisiones.total','comisiones.num_ventas','comisiones.num_cancelaciones',
-                                    'comisiones.cobrado','comisiones.bono','comisiones.aPagar',
-                                    DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS asesor"),
-                                    'vendedores.tipo'
-                                )
+                $comisiones = $query
                         ->where('comisiones.asesor_id','=',$asesor)
                         ->where('comisiones.anio','=',$anio)
                         ->orderBy('comisiones.id','desc')
                         ->orderBy('asesor','asc')->paginate();
             }
             else{
-                $comisiones = Comision::join('vendedores','comisiones.asesor_id', '=','vendedores.id')
-                        ->join('personal','vendedores.id','=','personal.id')
-                        ->select('comisiones.mes','comisiones.anio','comisiones.total','comisiones.num_ventas','comisiones.num_cancelaciones',
-                                    'comisiones.cobrado','comisiones.bono','comisiones.aPagar',
-                                    DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS asesor"),
-                                    'vendedores.tipo'
-                                )
+                $comisiones = $query
                         ->where('comisiones.asesor_id','=',$asesor)
                         ->where('comisiones.mes','=',$mes)
                         ->where('comisiones.anio','=',$anio)
@@ -827,20 +620,22 @@ class ComisionesController extends Controller
         setlocale(LC_TIME, 'es_MX.utf8');
         $hoy = Carbon::today()->toDateString();
 
+        $query = Pago_contrato::join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+            ->join('creditos','contratos.id','=','creditos.id')
+            ->join('det_comisiones','contratos.id','=','det_comisiones.id')
+            ->join('comisiones','det_comisiones.idComision','comisiones.id')
+            ->join('vendedores','comisiones.asesor_id', '=','vendedores.id')
+            ->join('personal','vendedores.id','=','personal.id')
+            ->select('contratos.id as folio','pagos_contratos.pagado','creditos.fraccionamiento','creditos.etapa',
+                    'creditos.manzana','creditos.num_lote','det_comisiones.idComision','det_comisiones.total',
+                    'det_comisiones.anticipo','det_comisiones.fecha_anticipo','contratos.fecha',
+                    'det_comisiones.id as detalleId','det_comisiones.bono','det_comisiones.fecha_bono',
+                    DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS asesor")
+            );
+
         if($asesor == ''){
             if($proyecto == ''){
-                $pendientes = Pago_contrato::join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                    ->join('creditos','contratos.id','=','creditos.id')
-                    ->join('det_comisiones','contratos.id','=','det_comisiones.id')
-                    ->join('comisiones','det_comisiones.idComision','comisiones.id')
-                    ->join('vendedores','comisiones.asesor_id', '=','vendedores.id')
-                    ->join('personal','vendedores.id','=','personal.id')
-                    ->select('contratos.id as folio','pagos_contratos.pagado','creditos.fraccionamiento','creditos.etapa',
-                            'creditos.manzana','creditos.num_lote','det_comisiones.idComision','det_comisiones.total',
-                            'det_comisiones.anticipo','det_comisiones.fecha_anticipo','contratos.fecha',
-                            'det_comisiones.id as detalleId','det_comisiones.bono','det_comisiones.fecha_bono',
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS asesor")
-                            )
+                $pendientes = $query
                     ->where('contratos.comision','=','1')
                     ->where('contratos.fecha_exp','!=',NULL)
                     ->where('det_comisiones.fecha_bono','=',NULL)
@@ -850,19 +645,7 @@ class ComisionesController extends Controller
                 ->where('contratos.status','=',3)->paginate(12);
             }
             elseif($proyecto != '' && $etapa == ''){
-                $pendientes = Pago_contrato::join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                    ->join('creditos','contratos.id','=','creditos.id')
-                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                    ->join('det_comisiones','contratos.id','=','det_comisiones.id')
-                    ->join('comisiones','det_comisiones.idComision','comisiones.id')
-                    ->join('vendedores','comisiones.asesor_id', '=','vendedores.id')
-                    ->join('personal','vendedores.id','=','personal.id')
-                    ->select('contratos.id as folio','pagos_contratos.pagado','creditos.fraccionamiento','creditos.etapa',
-                            'creditos.manzana','creditos.num_lote','det_comisiones.idComision','det_comisiones.total',
-                            'det_comisiones.anticipo','det_comisiones.fecha_anticipo','contratos.fecha',
-                            'det_comisiones.id as detalleId','det_comisiones.bono','det_comisiones.fecha_bono',
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS asesor")
-                            )
+                $pendientes = $query
                     ->where('contratos.comision','=','1')
                     ->where('lotes.fraccionamiento_id','=',$proyecto)
                     ->where('contratos.fecha_exp','!=',NULL)
@@ -873,19 +656,7 @@ class ComisionesController extends Controller
                 ->where('contratos.status','=',3)->paginate(12);
             }
             else{
-                $pendientes = Pago_contrato::join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                    ->join('creditos','contratos.id','=','creditos.id')
-                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                    ->join('det_comisiones','contratos.id','=','det_comisiones.id')
-                    ->join('comisiones','det_comisiones.idComision','comisiones.id')
-                    ->join('vendedores','comisiones.asesor_id', '=','vendedores.id')
-                    ->join('personal','vendedores.id','=','personal.id')
-                    ->select('contratos.id as folio','pagos_contratos.pagado','creditos.fraccionamiento','creditos.etapa',
-                            'creditos.manzana','creditos.num_lote','det_comisiones.idComision','det_comisiones.total',
-                            'det_comisiones.anticipo','det_comisiones.fecha_anticipo','contratos.fecha',
-                            'det_comisiones.id as detalleId','det_comisiones.bono','det_comisiones.fecha_bono',
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS asesor")
-                            )
+                $pendientes = $query
                     ->where('contratos.comision','=','1')
                     ->where('lotes.fraccionamiento_id','=',$proyecto)
                     ->where('lotes.etapa_id','=',$etapa)
@@ -900,18 +671,7 @@ class ComisionesController extends Controller
         }
         else{
             if($proyecto == ''){
-                $pendientes = Pago_contrato::join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                    ->join('creditos','contratos.id','=','creditos.id')
-                    ->join('det_comisiones','contratos.id','=','det_comisiones.id')
-                    ->join('comisiones','det_comisiones.idComision','comisiones.id')
-                    ->join('vendedores','comisiones.asesor_id', '=','vendedores.id')
-                    ->join('personal','vendedores.id','=','personal.id')
-                    ->select('contratos.id as folio','pagos_contratos.pagado','creditos.fraccionamiento','creditos.etapa',
-                            'creditos.manzana','creditos.num_lote','det_comisiones.idComision','det_comisiones.total',
-                            'det_comisiones.anticipo','det_comisiones.fecha_anticipo','contratos.fecha',
-                            'det_comisiones.id as detalleId','det_comisiones.bono','det_comisiones.fecha_bono',
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS asesor")
-                            )
+                $pendientes = $query
                     ->where('contratos.comision','=','1')
                     ->where('comisiones.asesor_id','=',$asesor)
                     ->where('contratos.fecha_exp','!=',NULL)
@@ -922,19 +682,7 @@ class ComisionesController extends Controller
                 ->where('contratos.status','=',3)->paginate(12);
             }
             elseif($proyecto != '' && $etapa == ''){
-                $pendientes = Pago_contrato::join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                    ->join('creditos','contratos.id','=','creditos.id')
-                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                    ->join('det_comisiones','contratos.id','=','det_comisiones.id')
-                    ->join('comisiones','det_comisiones.idComision','comisiones.id')
-                    ->join('vendedores','comisiones.asesor_id', '=','vendedores.id')
-                    ->join('personal','vendedores.id','=','personal.id')
-                    ->select('contratos.id as folio','pagos_contratos.pagado','creditos.fraccionamiento','creditos.etapa',
-                            'creditos.manzana','creditos.num_lote','det_comisiones.idComision','det_comisiones.total',
-                            'det_comisiones.anticipo','det_comisiones.fecha_anticipo','contratos.fecha',
-                            'det_comisiones.id as detalleId','det_comisiones.bono','det_comisiones.fecha_bono',
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS asesor")
-                            )
+                $pendientes = $query
                     ->where('contratos.comision','=','1')
                     ->where('lotes.fraccionamiento_id','=',$proyecto)
                     ->where('contratos.fecha_exp','!=',NULL)
@@ -946,19 +694,7 @@ class ComisionesController extends Controller
                 ->where('contratos.status','=',3)->paginate(12);
             }
             else{
-                $pendientes = Pago_contrato::join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                    ->join('creditos','contratos.id','=','creditos.id')
-                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                    ->join('det_comisiones','contratos.id','=','det_comisiones.id')
-                    ->join('comisiones','det_comisiones.idComision','comisiones.id')
-                    ->join('vendedores','comisiones.asesor_id', '=','vendedores.id')
-                    ->join('personal','vendedores.id','=','personal.id')
-                    ->select('contratos.id as folio','pagos_contratos.pagado','creditos.fraccionamiento','creditos.etapa',
-                            'creditos.manzana','creditos.num_lote','det_comisiones.idComision','det_comisiones.total',
-                            'det_comisiones.anticipo','det_comisiones.fecha_anticipo','contratos.fecha',
-                            'det_comisiones.id as detalleId','det_comisiones.bono','det_comisiones.fecha_bono',
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS asesor")
-                            )
+                $pendientes = $query
                     ->where('contratos.comision','=','1')
                     ->where('lotes.fraccionamiento_id','=',$proyecto)
                     ->where('lotes.etapa_id','=',$etapa)
@@ -992,21 +728,23 @@ class ComisionesController extends Controller
         $desde = $request->desde;
         $hasta = $request->hasta;
 
+        $query = Pago_contrato::join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+                ->join('creditos','contratos.id','=','creditos.id')
+                ->join('det_comisiones','contratos.id','=','det_comisiones.id')
+                ->join('comisiones','det_comisiones.idComision','comisiones.id')
+                ->join('vendedores','comisiones.asesor_id', '=','vendedores.id')
+                ->join('personal','vendedores.id','=','personal.id')
+                ->select('contratos.id as folio','pagos_contratos.pagado','creditos.fraccionamiento','creditos.etapa',
+                        'creditos.manzana','creditos.num_lote','det_comisiones.idComision','det_comisiones.total',
+                        'det_comisiones.anticipo','det_comisiones.fecha_anticipo','contratos.fecha',
+                        'det_comisiones.id as detalleId','det_comisiones.bono','det_comisiones.fecha_bono',
+                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS asesor")
+                );
+
         if($asesor == ''){
             if($desde == ''){
                 if($proyecto == ''){
-                    $pendientes = Pago_contrato::join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('det_comisiones','contratos.id','=','det_comisiones.id')
-                        ->join('comisiones','det_comisiones.idComision','comisiones.id')
-                        ->join('vendedores','comisiones.asesor_id', '=','vendedores.id')
-                        ->join('personal','vendedores.id','=','personal.id')
-                        ->select('contratos.id as folio','pagos_contratos.pagado','creditos.fraccionamiento','creditos.etapa',
-                                'creditos.manzana','creditos.num_lote','det_comisiones.idComision','det_comisiones.total',
-                                'det_comisiones.anticipo','det_comisiones.fecha_anticipo','contratos.fecha',
-                                'det_comisiones.id as detalleId','det_comisiones.bono','det_comisiones.fecha_bono',
-                                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS asesor")
-                                )
+                    $pendientes = $query
                         ->where('contratos.comision','=','1')
                         ->where('contratos.fecha_exp','!=',NULL)
                         ->where('det_comisiones.fecha_bono','!=',NULL)
@@ -1016,19 +754,7 @@ class ComisionesController extends Controller
                     ->paginate(12);
                 }
                 elseif($proyecto != '' && $etapa == ''){
-                    $pendientes = Pago_contrato::join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('det_comisiones','contratos.id','=','det_comisiones.id')
-                        ->join('comisiones','det_comisiones.idComision','comisiones.id')
-                        ->join('vendedores','comisiones.asesor_id', '=','vendedores.id')
-                        ->join('personal','vendedores.id','=','personal.id')
-                        ->select('contratos.id as folio','pagos_contratos.pagado','creditos.fraccionamiento','creditos.etapa',
-                                'creditos.manzana','creditos.num_lote','det_comisiones.idComision','det_comisiones.total',
-                                'det_comisiones.anticipo','det_comisiones.fecha_anticipo','contratos.fecha',
-                                'det_comisiones.id as detalleId','det_comisiones.bono','det_comisiones.fecha_bono',
-                                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS asesor")
-                                )
+                    $pendientes = $query
                         ->where('contratos.comision','=','1')
                         ->where('lotes.fraccionamiento_id','=',$proyecto)
                         ->where('contratos.fecha_exp','!=',NULL)
@@ -1039,19 +765,7 @@ class ComisionesController extends Controller
                     ->paginate(12);
                 }
                 else{
-                    $pendientes = Pago_contrato::join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('det_comisiones','contratos.id','=','det_comisiones.id')
-                        ->join('comisiones','det_comisiones.idComision','comisiones.id')
-                        ->join('vendedores','comisiones.asesor_id', '=','vendedores.id')
-                        ->join('personal','vendedores.id','=','personal.id')
-                        ->select('contratos.id as folio','pagos_contratos.pagado','creditos.fraccionamiento','creditos.etapa',
-                                'creditos.manzana','creditos.num_lote','det_comisiones.idComision','det_comisiones.total',
-                                'det_comisiones.anticipo','det_comisiones.fecha_anticipo','contratos.fecha',
-                                'det_comisiones.id as detalleId','det_comisiones.bono','det_comisiones.fecha_bono',
-                                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS asesor")
-                                )
+                    $pendientes = $query
                         ->where('contratos.comision','=','1')
                         ->where('lotes.fraccionamiento_id','=',$proyecto)
                         ->where('lotes.etapa_id','=',$etapa)
@@ -1065,18 +779,7 @@ class ComisionesController extends Controller
             }
             else{
                 if($proyecto == ''){
-                    $pendientes = Pago_contrato::join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('det_comisiones','contratos.id','=','det_comisiones.id')
-                        ->join('comisiones','det_comisiones.idComision','comisiones.id')
-                        ->join('vendedores','comisiones.asesor_id', '=','vendedores.id')
-                        ->join('personal','vendedores.id','=','personal.id')
-                        ->select('contratos.id as folio','pagos_contratos.pagado','creditos.fraccionamiento','creditos.etapa',
-                                'creditos.manzana','creditos.num_lote','det_comisiones.idComision','det_comisiones.total',
-                                'det_comisiones.anticipo','det_comisiones.fecha_anticipo','contratos.fecha',
-                                'det_comisiones.id as detalleId','det_comisiones.bono','det_comisiones.fecha_bono',
-                                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS asesor")
-                                )
+                    $pendientes = $query
                         ->where('contratos.comision','=','1')
                         ->whereBetween('det_comisiones.fecha_anticipo', [$desde, $hasta])
                         ->where('contratos.fecha_exp','!=',NULL)
@@ -1087,19 +790,7 @@ class ComisionesController extends Controller
                     ->paginate(12);
                 }
                 elseif($proyecto != '' && $etapa == ''){
-                    $pendientes = Pago_contrato::join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('det_comisiones','contratos.id','=','det_comisiones.id')
-                        ->join('comisiones','det_comisiones.idComision','comisiones.id')
-                        ->join('vendedores','comisiones.asesor_id', '=','vendedores.id')
-                        ->join('personal','vendedores.id','=','personal.id')
-                        ->select('contratos.id as folio','pagos_contratos.pagado','creditos.fraccionamiento','creditos.etapa',
-                                'creditos.manzana','creditos.num_lote','det_comisiones.idComision','det_comisiones.total',
-                                'det_comisiones.anticipo','det_comisiones.fecha_anticipo','contratos.fecha',
-                                'det_comisiones.id as detalleId','det_comisiones.bono','det_comisiones.fecha_bono',
-                                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS asesor")
-                                )
+                    $pendientes = $query
                         ->where('contratos.comision','=','1')
                         ->whereBetween('det_comisiones.fecha_anticipo', [$desde, $hasta])
                         ->where('lotes.fraccionamiento_id','=',$proyecto)
@@ -1111,19 +802,7 @@ class ComisionesController extends Controller
                     ->paginate(12);
                 }
                 else{
-                    $pendientes = Pago_contrato::join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('det_comisiones','contratos.id','=','det_comisiones.id')
-                        ->join('comisiones','det_comisiones.idComision','comisiones.id')
-                        ->join('vendedores','comisiones.asesor_id', '=','vendedores.id')
-                        ->join('personal','vendedores.id','=','personal.id')
-                        ->select('contratos.id as folio','pagos_contratos.pagado','creditos.fraccionamiento','creditos.etapa',
-                                'creditos.manzana','creditos.num_lote','det_comisiones.idComision','det_comisiones.total',
-                                'det_comisiones.anticipo','det_comisiones.fecha_anticipo','contratos.fecha',
-                                'det_comisiones.id as detalleId','det_comisiones.bono','det_comisiones.fecha_bono',
-                                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS asesor")
-                                )
+                    $pendientes = $query
                         ->where('contratos.comision','=','1')
                         ->whereBetween('det_comisiones.fecha_anticipo', [$desde, $hasta])
                         ->where('lotes.fraccionamiento_id','=',$proyecto)
@@ -1142,18 +821,7 @@ class ComisionesController extends Controller
         else{
             if($desde == ''){
                 if($proyecto == ''){
-                    $pendientes = Pago_contrato::join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('det_comisiones','contratos.id','=','det_comisiones.id')
-                        ->join('comisiones','det_comisiones.idComision','comisiones.id')
-                        ->join('vendedores','comisiones.asesor_id', '=','vendedores.id')
-                        ->join('personal','vendedores.id','=','personal.id')
-                        ->select('contratos.id as folio','pagos_contratos.pagado','creditos.fraccionamiento','creditos.etapa',
-                                'creditos.manzana','creditos.num_lote','det_comisiones.idComision','det_comisiones.total',
-                                'det_comisiones.anticipo','det_comisiones.fecha_anticipo','contratos.fecha',
-                                'det_comisiones.id as detalleId','det_comisiones.bono','det_comisiones.fecha_bono',
-                                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS asesor")
-                                )
+                    $pendientes = $query
                         ->where('contratos.comision','=','1')
                         ->where('comisiones.asesor_id','=',$asesor)
                         ->where('contratos.fecha_exp','!=',NULL)
@@ -1164,19 +832,7 @@ class ComisionesController extends Controller
                     ->paginate(12);
                 }
                 elseif($proyecto != '' && $etapa == ''){
-                    $pendientes = Pago_contrato::join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('det_comisiones','contratos.id','=','det_comisiones.id')
-                        ->join('comisiones','det_comisiones.idComision','comisiones.id')
-                        ->join('vendedores','comisiones.asesor_id', '=','vendedores.id')
-                        ->join('personal','vendedores.id','=','personal.id')
-                        ->select('contratos.id as folio','pagos_contratos.pagado','creditos.fraccionamiento','creditos.etapa',
-                                'creditos.manzana','creditos.num_lote','det_comisiones.idComision','det_comisiones.total',
-                                'det_comisiones.anticipo','det_comisiones.fecha_anticipo','contratos.fecha',
-                                'det_comisiones.id as detalleId','det_comisiones.bono','det_comisiones.fecha_bono',
-                                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS asesor")
-                                )
+                    $pendientes = $query
                         ->where('contratos.comision','=','1')
                         ->where('lotes.fraccionamiento_id','=',$proyecto)
                         ->where('contratos.fecha_exp','!=',NULL)
@@ -1188,19 +844,7 @@ class ComisionesController extends Controller
                     ->paginate(12);
                 }
                 else{
-                    $pendientes = Pago_contrato::join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('det_comisiones','contratos.id','=','det_comisiones.id')
-                        ->join('comisiones','det_comisiones.idComision','comisiones.id')
-                        ->join('vendedores','comisiones.asesor_id', '=','vendedores.id')
-                        ->join('personal','vendedores.id','=','personal.id')
-                        ->select('contratos.id as folio','pagos_contratos.pagado','creditos.fraccionamiento','creditos.etapa',
-                                'creditos.manzana','creditos.num_lote','det_comisiones.idComision','det_comisiones.total',
-                                'det_comisiones.anticipo','det_comisiones.fecha_anticipo','contratos.fecha',
-                                'det_comisiones.id as detalleId','det_comisiones.bono','det_comisiones.fecha_bono',
-                                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS asesor")
-                                )
+                    $pendientes = $query
                         ->where('contratos.comision','=','1')
                         ->where('lotes.fraccionamiento_id','=',$proyecto)
                         ->where('lotes.etapa_id','=',$etapa)
@@ -1215,18 +859,7 @@ class ComisionesController extends Controller
             }
             else{
                 if($proyecto == ''){
-                    $pendientes = Pago_contrato::join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('det_comisiones','contratos.id','=','det_comisiones.id')
-                        ->join('comisiones','det_comisiones.idComision','comisiones.id')
-                        ->join('vendedores','comisiones.asesor_id', '=','vendedores.id')
-                        ->join('personal','vendedores.id','=','personal.id')
-                        ->select('contratos.id as folio','pagos_contratos.pagado','creditos.fraccionamiento','creditos.etapa',
-                                'creditos.manzana','creditos.num_lote','det_comisiones.idComision','det_comisiones.total',
-                                'det_comisiones.anticipo','det_comisiones.fecha_anticipo','contratos.fecha',
-                                'det_comisiones.id as detalleId','det_comisiones.bono','det_comisiones.fecha_bono',
-                                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS asesor")
-                                )
+                    $pendientes = $query
                         ->where('contratos.comision','=','1')
                         ->whereBetween('det_comisiones.fecha_anticipo', [$desde, $hasta])
                         ->where('comisiones.asesor_id','=',$asesor)
@@ -1238,19 +871,7 @@ class ComisionesController extends Controller
                     ->paginate(12);
                 }
                 elseif($proyecto != '' && $etapa == ''){
-                    $pendientes = Pago_contrato::join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('det_comisiones','contratos.id','=','det_comisiones.id')
-                        ->join('comisiones','det_comisiones.idComision','comisiones.id')
-                        ->join('vendedores','comisiones.asesor_id', '=','vendedores.id')
-                        ->join('personal','vendedores.id','=','personal.id')
-                        ->select('contratos.id as folio','pagos_contratos.pagado','creditos.fraccionamiento','creditos.etapa',
-                                'creditos.manzana','creditos.num_lote','det_comisiones.idComision','det_comisiones.total',
-                                'det_comisiones.anticipo','det_comisiones.fecha_anticipo','contratos.fecha',
-                                'det_comisiones.id as detalleId','det_comisiones.bono','det_comisiones.fecha_bono',
-                                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS asesor")
-                                )
+                    $pendientes = $query
                         ->where('contratos.comision','=','1')
                         ->whereBetween('det_comisiones.fecha_anticipo', [$desde, $hasta])
                         ->where('lotes.fraccionamiento_id','=',$proyecto)
@@ -1263,19 +884,7 @@ class ComisionesController extends Controller
                     ->paginate(12);
                 }
                 else{
-                    $pendientes = Pago_contrato::join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('det_comisiones','contratos.id','=','det_comisiones.id')
-                        ->join('comisiones','det_comisiones.idComision','comisiones.id')
-                        ->join('vendedores','comisiones.asesor_id', '=','vendedores.id')
-                        ->join('personal','vendedores.id','=','personal.id')
-                        ->select('contratos.id as folio','pagos_contratos.pagado','creditos.fraccionamiento','creditos.etapa',
-                                'creditos.manzana','creditos.num_lote','det_comisiones.idComision','det_comisiones.total',
-                                'det_comisiones.anticipo','det_comisiones.fecha_anticipo','contratos.fecha',
-                                'det_comisiones.id as detalleId','det_comisiones.bono','det_comisiones.fecha_bono',
-                                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS asesor")
-                                )
+                    $pendientes = $query
                         ->where('contratos.comision','=','1')
                         ->whereBetween('det_comisiones.fecha_anticipo', [$desde, $hasta])
                         ->where('lotes.fraccionamiento_id','=',$proyecto)

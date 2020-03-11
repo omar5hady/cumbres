@@ -827,7 +827,7 @@
                 
             },
 
-            cambiarPagina(page,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2){
+            cambiarPagina(page,buscar,b_manzana,b_lote,criterio,buscar2){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;

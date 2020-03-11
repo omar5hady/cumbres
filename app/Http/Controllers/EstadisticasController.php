@@ -2232,62 +2232,40 @@ class EstadisticasController extends Controller
         $proyecto = $request->proyecto;
         $etapa = $request->etapa;
 
+        $query = Contrato::join('creditos','contratos.id','=','creditos.id')
+                        ->leftJoin('expedientes','contratos.id','=','expedientes.id')
+                        ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('modelos','lotes.modelo_id','=','modelos.id')
+                        ->join('personal as c', 'creditos.prospecto_id', '=', 'c.id')
+                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                        ->select(       DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.etapa',
+                                        'creditos.manzana',
+                                        'creditos.num_lote',
+                                        'contratos.fecha_status',
+                                        'i.tipo_credito',
+                                        'i.institucion', 
+                                        'creditos.precio_venta',
+                                        'creditos.descuento_promocion',
+                                        'creditos.costo_paquete',
+                                        'contratos.total_pagar',
+                                        'contratos.saldo',
+                                        'contratos.monto_total_credito',
+                                        'lotes.calle','lotes.numero','expedientes.fecha_firma_esc',
+                                        'modelos.nombre as modelo'
+                );
 
         if($etapa != ''){
-                $resContratos = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                ->join('personal as c', 'creditos.prospecto_id', '=', 'c.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->select(       DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                                'creditos.fraccionamiento as proyecto',
-                                                'creditos.etapa',
-                                                'creditos.manzana',
-                                                'creditos.num_lote',
-                                                'contratos.fecha_status',
-                                                'i.tipo_credito',
-                                                'i.institucion', 
-                                                'creditos.precio_venta',
-                                                'creditos.descuento_promocion',
-                                                'creditos.costo_paquete',
-                                                'contratos.total_pagar',
-                                                'contratos.saldo',
-                                                'contratos.monto_total_credito',
-                                                'lotes.calle','lotes.numero','expedientes.fecha_firma_esc',
-                                                'modelos.nombre as modelo'
-                                        )
+                $resContratos = $query
                                 ->where('lotes.fraccionamiento_id','=',$proyecto)
                                 ->where('lotes.etapa_id','=',$etapa)
                                 ->where('contratos.status','=',3)
                                 ->where('i.elegido', '=', 1)->get();
         }
         else{
-                $resContratos = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                ->leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                ->join('personal as c', 'creditos.prospecto_id', '=', 'c.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->select(       DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                                'creditos.fraccionamiento as proyecto',
-                                                'creditos.etapa',
-                                                'creditos.manzana',
-                                                'creditos.num_lote',
-                                                'contratos.fecha_status',
-                                                'i.tipo_credito',
-                                                'i.institucion', 
-                                                'creditos.precio_venta',
-                                                'creditos.descuento_promocion',
-                                                'creditos.costo_paquete',
-                                                'contratos.total_pagar',
-                                                'contratos.saldo',
-                                                'contratos.monto_total_credito',
-                                                'lotes.calle','lotes.numero','expedientes.fecha_firma_esc',
-                                                'modelos.nombre as modelo'
-                                        )
+                $resContratos = $query
                                 ->where('lotes.fraccionamiento_id','=',$proyecto)
                                 ->where('contratos.status','=',3)
                                 ->where('i.elegido', '=', 1)->get();

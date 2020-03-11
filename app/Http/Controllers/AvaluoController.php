@@ -66,8 +66,7 @@ class AvaluoController extends Controller
         $b_lote = $request->b_lote;
         $criterio = $request->criterio;
 
-        if($buscar == ''){
-            $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
+        $query = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
                     ->join('creditos','contratos.id','=','creditos.id')
                     ->join('clientes','creditos.prospecto_id','=','clientes.id')
                     ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
@@ -82,7 +81,10 @@ class AvaluoController extends Controller
                         'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
                         'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
 
-                    )
+                    );
+
+        if($buscar == ''){
+            $avaluos = $query
                     ->where('inst_seleccionadas.elegido','=','1')
                     ->where('avaluos.fecha_recibido','=',NULL)
                     ->where('contratos.status','!=',2)
@@ -95,22 +97,7 @@ class AvaluoController extends Controller
             switch($criterio){
                 case 'lotes.fraccionamiento_id':{
                     if($b_etapa == '' && $b_manzana =='' && $b_lote == ''){
-                        $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('personal','clientes.id','=','personal.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('licencias','lotes.id','=','licencias.id')
-                        ->select(
-                            'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
-                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
-                            'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
-                            'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
-                            'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
-                            'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
-
-                        )
+                        $avaluos = $query
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('avaluos.fecha_recibido','=',NULL)
@@ -121,22 +108,7 @@ class AvaluoController extends Controller
 
                     }
                     elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
-                        $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('personal','clientes.id','=','personal.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('licencias','lotes.id','=','licencias.id')
-                        ->select(
-                            'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
-                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
-                            'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
-                            'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
-                            'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
-                            'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
-
-                        )
+                        $avaluos = $query
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.etapa_id','=',$b_etapa)
@@ -148,22 +120,7 @@ class AvaluoController extends Controller
 
                     }
                     elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
-                        $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('personal','clientes.id','=','personal.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('licencias','lotes.id','=','licencias.id')
-                        ->select(
-                            'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
-                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
-                            'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
-                            'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
-                            'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
-                            'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
-
-                        )
+                        $avaluos = $query
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.etapa_id','=',$b_etapa)
@@ -176,22 +133,7 @@ class AvaluoController extends Controller
 
                     }
                     elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
-                        $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('personal','clientes.id','=','personal.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('licencias','lotes.id','=','licencias.id')
-                        ->select(
-                            'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
-                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
-                            'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
-                            'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
-                            'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
-                            'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
-
-                        )
+                        $avaluos = $query
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.etapa_id','=',$b_etapa)
@@ -205,22 +147,7 @@ class AvaluoController extends Controller
 
                     }
                     elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
-                        $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('personal','clientes.id','=','personal.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('licencias','lotes.id','=','licencias.id')
-                        ->select(
-                            'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
-                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
-                            'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
-                            'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
-                            'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
-                            'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
-
-                        )
+                        $avaluos = $query
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.etapa_id','=',$b_etapa)
@@ -233,22 +160,7 @@ class AvaluoController extends Controller
 
                     }
                     elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
-                        $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('personal','clientes.id','=','personal.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('licencias','lotes.id','=','licencias.id')
-                        ->select(
-                            'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
-                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
-                            'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
-                            'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
-                            'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
-                            'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
-
-                        )
+                        $avaluos = $query
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.num_lote','=',$b_lote)
@@ -260,22 +172,7 @@ class AvaluoController extends Controller
 
                     }
                     elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
-                        $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('personal','clientes.id','=','personal.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('licencias','lotes.id','=','licencias.id')
-                        ->select(
-                            'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
-                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
-                            'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
-                            'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
-                            'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
-                            'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
-
-                        )
+                        $avaluos = $query
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.manzana','=',$b_manzana)
@@ -288,22 +185,7 @@ class AvaluoController extends Controller
 
                     }
                     elseif($b_etapa == '' && $b_manzana !='' && $b_lote == ''){
-                        $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('personal','clientes.id','=','personal.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('licencias','lotes.id','=','licencias.id')
-                        ->select(
-                            'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
-                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
-                            'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
-                            'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
-                            'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
-                            'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
-
-                        )
+                        $avaluos = $query
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.manzana','=',$b_manzana)
@@ -317,22 +199,7 @@ class AvaluoController extends Controller
                     break;
                 }
                 case 'licencias.visita_avaluo':{
-                    $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
-                    ->join('creditos','contratos.id','=','creditos.id')
-                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                    ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                    ->join('personal','clientes.id','=','personal.id')
-                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                    ->join('licencias','lotes.id','=','licencias.id')
-                    ->select(
-                        'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
-                        'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
-                        'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
-                        'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
-                        'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
-                        'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
-
-                    )
+                    $avaluos = $query
                     ->where('inst_seleccionadas.elegido','=','1')
                     ->where('licencias.visita_avaluo','=',$buscar)
                     ->where('avaluos.fecha_recibido','=',NULL)
@@ -364,23 +231,25 @@ class AvaluoController extends Controller
         $b_lote = $request->b_lote;
         $criterio = $request->criterio;
 
-        if($buscar == ''){
-            $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
-                    ->join('creditos','contratos.id','=','creditos.id')
-                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                    ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                    ->join('personal','clientes.id','=','personal.id')
-                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                    ->join('licencias','lotes.id','=','licencias.id')
-                    ->select(
-                        'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
-                        'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
-                        'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
-                        'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
-                        'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
-                        'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
+        $query = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
+                ->join('creditos','contratos.id','=','creditos.id')
+                ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                ->join('personal','clientes.id','=','personal.id')
+                ->join('lotes','creditos.lote_id','=','lotes.id')
+                ->join('licencias','lotes.id','=','licencias.id')
+                ->select(
+                    'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
+                    'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
+                    'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
+                    'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
+                    'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
+                    'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
 
-                    )
+                );
+
+        if($buscar == ''){
+            $avaluos = $query
                     ->where('inst_seleccionadas.elegido','=','1')
                     ->where('avaluos.fecha_recibido','!=',NULL)
                     ->orderBy('avaluos.fecha_recibido','asc')
@@ -391,22 +260,7 @@ class AvaluoController extends Controller
             switch($criterio){
                 case 'lotes.fraccionamiento_id':{
                     if($b_etapa == '' && $b_manzana =='' && $b_lote == ''){
-                        $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('personal','clientes.id','=','personal.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('licencias','lotes.id','=','licencias.id')
-                        ->select(
-                            'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
-                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
-                            'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
-                            'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
-                            'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
-                            'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
-
-                        )
+                        $avaluos = $query
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('avaluos.fecha_recibido','!=',NULL)
@@ -415,22 +269,7 @@ class AvaluoController extends Controller
 
                     }
                     elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
-                        $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('personal','clientes.id','=','personal.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('licencias','lotes.id','=','licencias.id')
-                        ->select(
-                            'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
-                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
-                            'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
-                            'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
-                            'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
-                            'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
-
-                        )
+                        $avaluos = $query
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.etapa_id','=',$b_etapa)
@@ -440,22 +279,7 @@ class AvaluoController extends Controller
 
                     }
                     elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
-                        $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('personal','clientes.id','=','personal.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('licencias','lotes.id','=','licencias.id')
-                        ->select(
-                            'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
-                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
-                            'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
-                            'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
-                            'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
-                            'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
-
-                        )
+                        $avaluos = $query
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.etapa_id','=',$b_etapa)
@@ -466,22 +290,7 @@ class AvaluoController extends Controller
 
                     }
                     elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
-                        $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('personal','clientes.id','=','personal.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('licencias','lotes.id','=','licencias.id')
-                        ->select(
-                            'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
-                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
-                            'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
-                            'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
-                            'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
-                            'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
-
-                        )
+                        $avaluos = $query
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.etapa_id','=',$b_etapa)
@@ -493,22 +302,7 @@ class AvaluoController extends Controller
 
                     }
                     elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
-                        $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('personal','clientes.id','=','personal.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('licencias','lotes.id','=','licencias.id')
-                        ->select(
-                            'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
-                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
-                            'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
-                            'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
-                            'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
-                            'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
-
-                        )
+                        $avaluos = $query
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.etapa_id','=',$b_etapa)
@@ -519,22 +313,7 @@ class AvaluoController extends Controller
 
                     }
                     elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
-                        $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('personal','clientes.id','=','personal.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('licencias','lotes.id','=','licencias.id')
-                        ->select(
-                            'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
-                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
-                            'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
-                            'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
-                            'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
-                            'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
-
-                        )
+                        $avaluos = $query
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.num_lote','=',$b_lote)
@@ -544,22 +323,7 @@ class AvaluoController extends Controller
 
                     }
                     elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
-                        $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('personal','clientes.id','=','personal.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('licencias','lotes.id','=','licencias.id')
-                        ->select(
-                            'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
-                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
-                            'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
-                            'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
-                            'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
-                            'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
-
-                        )
+                        $avaluos = $query
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.manzana','=',$b_manzana)
@@ -572,22 +336,7 @@ class AvaluoController extends Controller
                     break;
                 }
                 case 'licencias.visita_avaluo':{
-                    $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
-                    ->join('creditos','contratos.id','=','creditos.id')
-                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                    ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                    ->join('personal','clientes.id','=','personal.id')
-                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                    ->join('licencias','lotes.id','=','licencias.id')
-                    ->select(
-                        'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
-                        'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
-                        'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
-                        'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
-                        'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
-                        'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
-
-                    )
+                    $avaluos = $query
                     ->where($criterio,'=',$buscar)
                     ->where('inst_seleccionadas.elegido','=','1')
                     ->where('avaluos.fecha_recibido','!=',NULL)
@@ -616,8 +365,7 @@ class AvaluoController extends Controller
         $b_lote = $request->b_lote;
         $criterio = $request->criterio;
 
-        if($buscar == ''){
-            $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
+        $query = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
                     ->join('creditos','contratos.id','=','creditos.id')
                     ->join('clientes','creditos.prospecto_id','=','clientes.id')
                     ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
@@ -632,7 +380,10 @@ class AvaluoController extends Controller
                         'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
                         'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
 
-                    )
+                    );
+
+        if($buscar == ''){
+            $avaluos = $query
                     ->where('inst_seleccionadas.elegido','=','1')
                     ->where('avaluos.fecha_recibido','!=',NULL)
                     ->orderBy('avaluos.fecha_recibido','asc')
@@ -643,22 +394,7 @@ class AvaluoController extends Controller
             switch($criterio){
                 case 'lotes.fraccionamiento_id':{
                     if($b_etapa == '' && $b_manzana =='' && $b_lote == ''){
-                        $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('personal','clientes.id','=','personal.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('licencias','lotes.id','=','licencias.id')
-                        ->select(
-                            'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
-                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
-                            'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
-                            'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
-                            'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
-                            'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
-
-                        )
+                        $avaluos = $query
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('avaluos.fecha_recibido','!=',NULL)
@@ -667,22 +403,7 @@ class AvaluoController extends Controller
 
                     }
                     elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
-                        $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('personal','clientes.id','=','personal.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('licencias','lotes.id','=','licencias.id')
-                        ->select(
-                            'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
-                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
-                            'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
-                            'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
-                            'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
-                            'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
-
-                        )
+                        $avaluos = $query
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.etapa_id','=',$b_etapa)
@@ -691,22 +412,7 @@ class AvaluoController extends Controller
 
                     }
                     elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
-                        $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('personal','clientes.id','=','personal.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('licencias','lotes.id','=','licencias.id')
-                        ->select(
-                            'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
-                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
-                            'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
-                            'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
-                            'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
-                            'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
-
-                        )
+                        $avaluos = $query
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.etapa_id','=',$b_etapa)
@@ -716,22 +422,7 @@ class AvaluoController extends Controller
 
                     }
                     elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
-                        $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('personal','clientes.id','=','personal.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('licencias','lotes.id','=','licencias.id')
-                        ->select(
-                            'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
-                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
-                            'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
-                            'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
-                            'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
-                            'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
-
-                        )
+                        $avaluos = $query
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.etapa_id','=',$b_etapa)
@@ -742,22 +433,7 @@ class AvaluoController extends Controller
 
                     }
                     elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
-                        $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('personal','clientes.id','=','personal.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('licencias','lotes.id','=','licencias.id')
-                        ->select(
-                            'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
-                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
-                            'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
-                            'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
-                            'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
-                            'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
-
-                        )
+                        $avaluos = $query
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.etapa_id','=',$b_etapa)
@@ -767,22 +443,7 @@ class AvaluoController extends Controller
 
                     }
                     elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
-                        $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('personal','clientes.id','=','personal.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('licencias','lotes.id','=','licencias.id')
-                        ->select(
-                            'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
-                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
-                            'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
-                            'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
-                            'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
-                            'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
-
-                        )
+                        $avaluos = $query
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.num_lote','=',$b_lote)
@@ -791,22 +452,7 @@ class AvaluoController extends Controller
 
                     }
                     elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
-                        $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('personal','clientes.id','=','personal.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('licencias','lotes.id','=','licencias.id')
-                        ->select(
-                            'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
-                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
-                            'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
-                            'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
-                            'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
-                            'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
-
-                        )
+                        $avaluos = $query
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.manzana','=',$b_manzana)
@@ -818,22 +464,7 @@ class AvaluoController extends Controller
                     break;
                 }
                 case 'licencias.visita_avaluo':{
-                    $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
-                    ->join('creditos','contratos.id','=','creditos.id')
-                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                    ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                    ->join('personal','clientes.id','=','personal.id')
-                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                    ->join('licencias','lotes.id','=','licencias.id')
-                    ->select(
-                        'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
-                        'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
-                        'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
-                        'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
-                        'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
-                        'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
-
-                    )
+                    $avaluos = $query
                     ->where('inst_seleccionadas.elegido','=','1')
                     ->where('avaluos.fecha_recibido','!=',NULL)
                     ->orderBy('avaluos.fecha_recibido','asc')
@@ -971,7 +602,7 @@ class AvaluoController extends Controller
             $avaluo->save();
 
             $contrato = Contrato::findOrFail($request->id);
-            $contrato->saldo = $contrato->saldo + $request->costo;
+            $contrato->saldo = round($contrato->saldo + $request->costo,2);
             $contrato->save(); 
 
             if($request->observacion != ''){
@@ -1020,7 +651,7 @@ class AvaluoController extends Controller
             }
 
             $contrato = Contrato::findOrFail($contrato_id);
-            $contrato->saldo = $contrato->saldo - $costo_ant + $request->costo;
+            $contrato->saldo = round($contrato->saldo - $costo_ant + $request->costo,2);
             $contrato->save(); 
 
             if($request->observacion != ''){

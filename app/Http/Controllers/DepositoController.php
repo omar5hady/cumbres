@@ -27,27 +27,29 @@ class DepositoController extends Controller
         $buscar3 = $request->buscar3;
         $criterio =  $request->criterio;
 
+        $query = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
+            ->join('creditos','creditos.id','=','contratos.id')
+            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+            ->join('personal','clientes.id','=','personal.id')
+            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
+            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
+            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
+                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
+                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
+                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
+                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
+                    'personal.telefono','personal.email','creditos.num_dep_economicos',
+                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
+                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                    'contratos.ext_empresa','contratos.colonia_empresa',
+                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
+                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"));
+
         if($vencido == 1){ //VENCIDOS
             if($buscar == ''){
-                $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                    ->join('creditos','creditos.id','=','contratos.id')
-                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                    ->join('personal','clientes.id','=','personal.id')
-                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                    ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                    ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                            'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                            'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                            'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                            'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                            'personal.telefono','personal.email','creditos.num_dep_economicos',
-                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                            'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa',
-                            DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                            DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                $pagares = $query
                     ->where('pagos_contratos.pagado','!=',2)
                     ->where('pagos_contratos.pagado','!=',3)
                     ->where('contratos.status','!=',0)
@@ -61,25 +63,7 @@ class DepositoController extends Controller
             else{
                 switch($criterio){
                     case 'personal.nombre':{
-                        $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa','contratos.colonia_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                        $pagares = $query
                             ->where('pagos_contratos.pagado','!=',2)
                             ->where('pagos_contratos.pagado','!=',3)
                             ->where('contratos.status','!=',0)
@@ -99,25 +83,7 @@ class DepositoController extends Controller
                         break;
                     }
                     case 'pagos_contratos.fecha_pago':{
-                        $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa','contratos.colonia_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                        $pagares = $query
                             ->where('pagos_contratos.pagado','!=',2)
                             ->where('pagos_contratos.pagado','!=',3)
                             ->where('contratos.status','!=',0)
@@ -132,123 +98,51 @@ class DepositoController extends Controller
                     }
                     case 'creditos.fraccionamiento':{
                         if($buscar2=='' && $buscar3==''){
-                            $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa','contratos.colonia_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
-                            ->where('pagos_contratos.pagado','!=',2)
-                            ->where('pagos_contratos.pagado','!=',3)
-                            ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2)
-                            ->where('pagos_contratos.fecha_pago','<',$hoy)
-                            ->where($criterio,'=',$buscar)
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->paginate(10);
+                            $pagares = $query
+                                ->where('pagos_contratos.pagado','!=',2)
+                                ->where('pagos_contratos.pagado','!=',3)
+                                ->where('contratos.status','!=',0)
+                                ->where('contratos.status','!=',2)
+                                ->where('pagos_contratos.fecha_pago','<',$hoy)
+                                ->where($criterio,'=',$buscar)
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->paginate(10);
                         }
                         if($buscar!='' && $buscar2 !='' && $buscar3 == ''){
-                            $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
-                            ->where('pagos_contratos.pagado','!=',2)
-                            ->where('pagos_contratos.pagado','!=',3)
-                            ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2)
-                            ->where('pagos_contratos.fecha_pago','<',$hoy)
-                            ->where($criterio,'=',$buscar)
-                            ->where('creditos.etapa','=',$buscar2)
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->paginate(10);
+                            $pagares = $query
+                                ->where('pagos_contratos.pagado','!=',2)
+                                ->where('pagos_contratos.pagado','!=',3)
+                                ->where('contratos.status','!=',0)
+                                ->where('contratos.status','!=',2)
+                                ->where('pagos_contratos.fecha_pago','<',$hoy)
+                                ->where($criterio,'=',$buscar)
+                                ->where('creditos.etapa','=',$buscar2)
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->paginate(10);
                         }
                         if($buscar!='' && $buscar2 !='' && $buscar3 != ''){
-                            $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
-                            ->where('pagos_contratos.pagado','!=',2)
-                            ->where('pagos_contratos.pagado','!=',3)
-                            ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2)
-                            ->where('pagos_contratos.fecha_pago','<',$hoy)
-                            ->where($criterio,'=',$buscar)
-                            ->where('creditos.etapa','=',$buscar2)
-                            ->where('creditos.manzana','=',$buscar3)
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->paginate(10);
+                            $pagares = $query
+                                ->where('pagos_contratos.pagado','!=',2)
+                                ->where('pagos_contratos.pagado','!=',3)
+                                ->where('contratos.status','!=',0)
+                                ->where('contratos.status','!=',2)
+                                ->where('pagos_contratos.fecha_pago','<',$hoy)
+                                ->where($criterio,'=',$buscar)
+                                ->where('creditos.etapa','=',$buscar2)
+                                ->where('creditos.manzana','=',$buscar3)
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->paginate(10);
                         }
                         break;
                     }
                     default:{
-                        $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa','contratos.colonia_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                        $pagares = $query
                             ->where('pagos_contratos.pagado','!=',2)
                             ->where('pagos_contratos.pagado','!=',3)
                             ->where('contratos.status','!=',0)
@@ -267,25 +161,7 @@ class DepositoController extends Controller
         } 
         elseif($vencido == 2){ //CANCELADOS
             if($buscar == ''){
-                $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                    ->join('creditos','creditos.id','=','contratos.id')
-                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                    ->join('personal','clientes.id','=','personal.id')
-                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                    ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                    ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                            'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                            'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                            'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                            'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                            'personal.telefono','personal.email','creditos.num_dep_economicos',
-                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                            'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa',
-                            DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                            DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                $pagares = $query
                     //
                 
                     ->where('contratos.status','=',0)
@@ -299,25 +175,7 @@ class DepositoController extends Controller
             else{
                 switch($criterio){
                     case 'personal.nombre':{
-                        $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa','contratos.colonia_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                        $pagares = $query
                             //
                         
                             ->where('contratos.status','=',0)
@@ -340,25 +198,7 @@ class DepositoController extends Controller
                         break;
                     }
                     case 'pagos_contratos.fecha_pago':{
-                        $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa','contratos.colonia_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                        $pagares = $query
                             
                             ->where('contratos.status','=',0)
                             ->whereBetween($criterio, [$buscar,$buscar2])
@@ -373,123 +213,51 @@ class DepositoController extends Controller
                     }
                     case 'creditos.fraccionamiento':{
                         if($buscar2=='' && $buscar3==''){
-                            $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa','contratos.colonia_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                            $pagares = $query
                             
-                            ->where('contratos.status','=',0)
-                            ->where($criterio,'=',$buscar)
-                            ->orWhere('contratos.status','=',2)
-                            ->where($criterio,'=',$buscar)
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->paginate(10);
+                                ->where('contratos.status','=',0)
+                                ->where($criterio,'=',$buscar)
+                                ->orWhere('contratos.status','=',2)
+                                ->where($criterio,'=',$buscar)
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->paginate(10);
                         }
                         if($buscar!='' && $buscar2 !='' && $buscar3 == ''){
-                            $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                            $pagares = $query
                             
-                            ->where('contratos.status','=',0)
-                            ->where($criterio,'=',$buscar)
-                            ->where('creditos.etapa','=',$buscar2)
-                            ->orWhere('contratos.status','=',2)
-                            ->where($criterio,'=',$buscar)
-                            ->where('creditos.etapa','=',$buscar2)
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->paginate(10);
+                                ->where('contratos.status','=',0)
+                                ->where($criterio,'=',$buscar)
+                                ->where('creditos.etapa','=',$buscar2)
+                                ->orWhere('contratos.status','=',2)
+                                ->where($criterio,'=',$buscar)
+                                ->where('creditos.etapa','=',$buscar2)
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->paginate(10);
                         }
                         if($buscar!='' && $buscar2 !='' && $buscar3 != ''){
-                            $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                            $pagares = $query
                             
-                            ->where('contratos.status','=',0)
-                            ->where($criterio,'=',$buscar)
-                            ->where('creditos.etapa','=',$buscar2)
-                            ->where('creditos.manzana','=',$buscar3)
-                            ->orWhere('contratos.status','=',2)
-                            ->where($criterio,'=',$buscar)
-                            ->where('creditos.etapa','=',$buscar2)
-                            ->where('creditos.manzana','=',$buscar3)
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->paginate(10);
+                                ->where('contratos.status','=',0)
+                                ->where($criterio,'=',$buscar)
+                                ->where('creditos.etapa','=',$buscar2)
+                                ->where('creditos.manzana','=',$buscar3)
+                                ->orWhere('contratos.status','=',2)
+                                ->where($criterio,'=',$buscar)
+                                ->where('creditos.etapa','=',$buscar2)
+                                ->where('creditos.manzana','=',$buscar3)
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->paginate(10);
                         }
                         break;
                     }
                     default:{
-                        $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa','contratos.colonia_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                        $pagares = $query
                             
                             ->where('contratos.status','=',0)
                             ->where($criterio,'=',$buscar)
@@ -507,25 +275,7 @@ class DepositoController extends Controller
         }
         else{ //TODOS
             if($buscar==''){
-                $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                    ->join('creditos','creditos.id','=','contratos.id')
-                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                    ->join('personal','clientes.id','=','personal.id')
-                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                    ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                    ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                            'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                            'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                            'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                            'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                            'personal.telefono','personal.email','creditos.num_dep_economicos',
-                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                            'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa',
-                            DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                            DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                $pagares = $query
                             ->where('contratos.status','!=',0)
                             ->where('contratos.status','!=',2) 
                             ->orderBy('pagos_contratos.pagado', 'asc')
@@ -536,25 +286,7 @@ class DepositoController extends Controller
             else{
                 switch($criterio){
                     case 'personal.nombre':{
-                        $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa','contratos.colonia_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                        $pagares = $query
                             ->where('personal.nombre','like', '%'. $buscar . '%')
                             ->where('contratos.status','!=',0)
                             ->where('contratos.status','!=',2)
@@ -568,25 +300,7 @@ class DepositoController extends Controller
                         break;
                     }
                     case 'pagos_contratos.fecha_pago':{
-                        $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa','contratos.colonia_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                        $pagares = $query
                             ->whereBetween($criterio, [$buscar,$buscar2])
                             ->where('contratos.status','!=',0)
                             ->where('contratos.status','!=',2) 
@@ -598,114 +312,42 @@ class DepositoController extends Controller
                     }
                     case 'creditos.fraccionamiento':{
                         if($buscar2=='' && $buscar3==''){
-                            $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa','contratos.colonia_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
-                            ->where($criterio,'=',$buscar)
-                            ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2) 
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->paginate(10);
+                            $pagares = $query
+                                ->where($criterio,'=',$buscar)
+                                ->where('contratos.status','!=',0)
+                                ->where('contratos.status','!=',2) 
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->paginate(10);
                         }
                         if($buscar!='' && $buscar2 !='' && $buscar3 == ''){
-                            $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
-                            ->where($criterio,'=',$buscar)
-                            ->where('creditos.etapa','=',$buscar2)
-                            ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2) 
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->paginate(10);
+                            $pagares = $query
+                                ->where($criterio,'=',$buscar)
+                                ->where('creditos.etapa','=',$buscar2)
+                                ->where('contratos.status','!=',0)
+                                ->where('contratos.status','!=',2) 
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->paginate(10);
                         }
                         if($buscar!='' && $buscar2 !='' && $buscar3 != ''){
-                            $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
-                            ->where($criterio,'=',$buscar)
-                            ->where('creditos.etapa','=',$buscar2)
-                            ->where('creditos.manzana','=',$buscar3)
-                            ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2) 
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->paginate(10);
+                            $pagares = $query
+                                ->where($criterio,'=',$buscar)
+                                ->where('creditos.etapa','=',$buscar2)
+                                ->where('creditos.manzana','=',$buscar3)
+                                ->where('contratos.status','!=',0)
+                                ->where('contratos.status','!=',2) 
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->paginate(10);
                         }
                         break;
                     }
                     default:{
-                        $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa','contratos.colonia_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                        $pagares = $query
                             ->where($criterio,'=',$buscar)
                             ->where('contratos.status','!=',0)
                             ->where('contratos.status','!=',2) 
@@ -744,28 +386,30 @@ class DepositoController extends Controller
         $buscar2 = $request->buscar2;
         $buscar3 = $request->buscar3;
         $criterio =  $request->criterio;
+        
+        $query = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
+            ->join('creditos','creditos.id','=','contratos.id')
+            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+            ->join('personal','clientes.id','=','personal.id')
+            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
+            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
+            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
+                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
+                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
+                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
+                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
+                    'personal.telefono','personal.email','creditos.num_dep_economicos',
+                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
+                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                    'contratos.ext_empresa','contratos.colonia_empresa',
+                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
+                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"));
 
         if($vencido == 1){ //VENCIDOS
             if($buscar == ''){
-                $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                    ->join('creditos','creditos.id','=','contratos.id')
-                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                    ->join('personal','clientes.id','=','personal.id')
-                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                    ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                    ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                            'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                            'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                            'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                            'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                            'personal.telefono','personal.email','creditos.num_dep_economicos',
-                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                            'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa',
-                            DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                            DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                $pagares = $query
                     ->where('pagos_contratos.pagado','!=',2)
                     ->where('pagos_contratos.pagado','!=',3)
                     ->where('contratos.status','!=',0)
@@ -779,25 +423,7 @@ class DepositoController extends Controller
             else{
                 switch($criterio){
                     case 'personal.nombre':{
-                        $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa','contratos.colonia_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                        $pagares = $query
                             ->where('pagos_contratos.pagado','!=',2)
                             ->where('pagos_contratos.pagado','!=',3)
                             ->where('contratos.status','!=',0)
@@ -817,25 +443,7 @@ class DepositoController extends Controller
                         break;
                     }
                     case 'pagos_contratos.fecha_pago':{
-                        $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa','contratos.colonia_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                        $pagares = $query
                             ->where('pagos_contratos.pagado','!=',2)
                             ->where('pagos_contratos.pagado','!=',3)
                             ->where('contratos.status','!=',0)
@@ -850,123 +458,51 @@ class DepositoController extends Controller
                     }
                     case 'creditos.fraccionamiento':{
                         if($buscar2=='' && $buscar3==''){
-                            $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa','contratos.colonia_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
-                            ->where('pagos_contratos.pagado','!=',2)
-                            ->where('pagos_contratos.pagado','!=',3)
-                            ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2)
-                            ->where('pagos_contratos.fecha_pago','<',$hoy)
-                            ->where($criterio,'=',$buscar)
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->get();
+                            $pagares = $query
+                                ->where('pagos_contratos.pagado','!=',2)
+                                ->where('pagos_contratos.pagado','!=',3)
+                                ->where('contratos.status','!=',0)
+                                ->where('contratos.status','!=',2)
+                                ->where('pagos_contratos.fecha_pago','<',$hoy)
+                                ->where($criterio,'=',$buscar)
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->get();
                         }
                         if($buscar!='' && $buscar2 !='' && $buscar3 == ''){
-                            $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
-                            ->where('pagos_contratos.pagado','!=',2)
-                            ->where('pagos_contratos.pagado','!=',3)
-                            ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2)
-                            ->where('pagos_contratos.fecha_pago','<',$hoy)
-                            ->where($criterio,'=',$buscar)
-                            ->where('creditos.etapa','=',$buscar2)
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->get();
+                            $pagares = $query
+                                ->where('pagos_contratos.pagado','!=',2)
+                                ->where('pagos_contratos.pagado','!=',3)
+                                ->where('contratos.status','!=',0)
+                                ->where('contratos.status','!=',2)
+                                ->where('pagos_contratos.fecha_pago','<',$hoy)
+                                ->where($criterio,'=',$buscar)
+                                ->where('creditos.etapa','=',$buscar2)
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->get();
                         }
                         if($buscar!='' && $buscar2 !='' && $buscar3 != ''){
-                            $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
-                            ->where('pagos_contratos.pagado','!=',2)
-                            ->where('pagos_contratos.pagado','!=',3)
-                            ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2)
-                            ->where('pagos_contratos.fecha_pago','<',$hoy)
-                            ->where($criterio,'=',$buscar)
-                            ->where('creditos.etapa','=',$buscar2)
-                            ->where('creditos.manzana','=',$buscar3)
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->get();
+                            $pagares = $query
+                                ->where('pagos_contratos.pagado','!=',2)
+                                ->where('pagos_contratos.pagado','!=',3)
+                                ->where('contratos.status','!=',0)
+                                ->where('contratos.status','!=',2)
+                                ->where('pagos_contratos.fecha_pago','<',$hoy)
+                                ->where($criterio,'=',$buscar)
+                                ->where('creditos.etapa','=',$buscar2)
+                                ->where('creditos.manzana','=',$buscar3)
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->get();
                         }
                         break;
                     }
                     default:{
-                        $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa','contratos.colonia_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                        $pagares = $query
                             ->where('pagos_contratos.pagado','!=',2)
                             ->where('pagos_contratos.pagado','!=',3)
                             ->where('contratos.status','!=',0)
@@ -985,25 +521,7 @@ class DepositoController extends Controller
         } 
         elseif($vencido == 2){ //CANCELADOS
             if($buscar == ''){
-                $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                    ->join('creditos','creditos.id','=','contratos.id')
-                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                    ->join('personal','clientes.id','=','personal.id')
-                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                    ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                    ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                            'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                            'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                            'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                            'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                            'personal.telefono','personal.email','creditos.num_dep_economicos',
-                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                            'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa',
-                            DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                            DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                $pagares = $query
                     //
                 
                     ->where('contratos.status','=',0)
@@ -1017,25 +535,7 @@ class DepositoController extends Controller
             else{
                 switch($criterio){
                     case 'personal.nombre':{
-                        $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa','contratos.colonia_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                        $pagares = $query
                             //
                         
                             ->where('contratos.status','=',0)
@@ -1058,25 +558,7 @@ class DepositoController extends Controller
                         break;
                     }
                     case 'pagos_contratos.fecha_pago':{
-                        $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa','contratos.colonia_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                        $pagares = $query
                             
                             ->where('contratos.status','=',0)
                             ->whereBetween($criterio, [$buscar,$buscar2])
@@ -1091,123 +573,51 @@ class DepositoController extends Controller
                     }
                     case 'creditos.fraccionamiento':{
                         if($buscar2=='' && $buscar3==''){
-                            $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa','contratos.colonia_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                            $pagares = $query
                             
-                            ->where('contratos.status','=',0)
-                            ->where($criterio,'=',$buscar)
-                            ->orWhere('contratos.status','=',2)
-                            ->where($criterio,'=',$buscar)
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->get();
+                                ->where('contratos.status','=',0)
+                                ->where($criterio,'=',$buscar)
+                                ->orWhere('contratos.status','=',2)
+                                ->where($criterio,'=',$buscar)
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->get();
                         }
                         if($buscar!='' && $buscar2 !='' && $buscar3 == ''){
-                            $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                            $pagares = $query
                             
-                            ->where('contratos.status','=',0)
-                            ->where($criterio,'=',$buscar)
-                            ->where('creditos.etapa','=',$buscar2)
-                            ->orWhere('contratos.status','=',2)
-                            ->where($criterio,'=',$buscar)
-                            ->where('creditos.etapa','=',$buscar2)
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->get();
+                                ->where('contratos.status','=',0)
+                                ->where($criterio,'=',$buscar)
+                                ->where('creditos.etapa','=',$buscar2)
+                                ->orWhere('contratos.status','=',2)
+                                ->where($criterio,'=',$buscar)
+                                ->where('creditos.etapa','=',$buscar2)
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->get();
                         }
                         if($buscar!='' && $buscar2 !='' && $buscar3 != ''){
-                            $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                            $pagares = $query
                             
-                            ->where('contratos.status','=',0)
-                            ->where($criterio,'=',$buscar)
-                            ->where('creditos.etapa','=',$buscar2)
-                            ->where('creditos.manzana','=',$buscar3)
-                            ->orWhere('contratos.status','=',2)
-                            ->where($criterio,'=',$buscar)
-                            ->where('creditos.etapa','=',$buscar2)
-                            ->where('creditos.manzana','=',$buscar3)
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->get();
+                                ->where('contratos.status','=',0)
+                                ->where($criterio,'=',$buscar)
+                                ->where('creditos.etapa','=',$buscar2)
+                                ->where('creditos.manzana','=',$buscar3)
+                                ->orWhere('contratos.status','=',2)
+                                ->where($criterio,'=',$buscar)
+                                ->where('creditos.etapa','=',$buscar2)
+                                ->where('creditos.manzana','=',$buscar3)
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->get();
                         }
                         break;
                     }
                     default:{
-                        $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa','contratos.colonia_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                        $pagares = $query
                             
                             ->where('contratos.status','=',0)
                             ->where($criterio,'=',$buscar)
@@ -1225,25 +635,7 @@ class DepositoController extends Controller
         }
         else{ //TODOS
             if($buscar==''){
-                $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                    ->join('creditos','creditos.id','=','contratos.id')
-                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                    ->join('personal','clientes.id','=','personal.id')
-                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                    ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                    ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                            'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                            'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                            'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                            'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                            'personal.telefono','personal.email','creditos.num_dep_economicos',
-                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                            'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa',
-                            DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                            DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                $pagares = $query
                             ->where('contratos.status','!=',0)
                             ->where('contratos.status','!=',2) 
                             ->orderBy('pagos_contratos.pagado', 'asc')
@@ -1254,25 +646,7 @@ class DepositoController extends Controller
             else{
                 switch($criterio){
                     case 'personal.nombre':{
-                        $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa','contratos.colonia_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                        $pagares = $query
                             ->where('personal.nombre','like', '%'. $buscar . '%')
                             ->where('contratos.status','!=',0)
                             ->where('contratos.status','!=',2)
@@ -1286,25 +660,7 @@ class DepositoController extends Controller
                         break;
                     }
                     case 'pagos_contratos.fecha_pago':{
-                        $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa','contratos.colonia_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                        $pagares = $query
                             ->whereBetween($criterio, [$buscar,$buscar2])
                             ->where('contratos.status','!=',0)
                             ->where('contratos.status','!=',2) 
@@ -1316,114 +672,42 @@ class DepositoController extends Controller
                     }
                     case 'creditos.fraccionamiento':{
                         if($buscar2=='' && $buscar3==''){
-                            $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa','contratos.colonia_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
-                            ->where($criterio,'=',$buscar)
-                            ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2) 
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->get();
+                            $pagares = $query
+                                ->where($criterio,'=',$buscar)
+                                ->where('contratos.status','!=',0)
+                                ->where('contratos.status','!=',2) 
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->get();
                         }
                         if($buscar!='' && $buscar2 !='' && $buscar3 == ''){
-                            $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
-                            ->where($criterio,'=',$buscar)
-                            ->where('creditos.etapa','=',$buscar2)
-                            ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2) 
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->get();
+                            $pagares = $query
+                                ->where($criterio,'=',$buscar)
+                                ->where('creditos.etapa','=',$buscar2)
+                                ->where('contratos.status','!=',0)
+                                ->where('contratos.status','!=',2) 
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->get();
                         }
                         if($buscar!='' && $buscar2 !='' && $buscar3 != ''){
-                            $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
-                            ->where($criterio,'=',$buscar)
-                            ->where('creditos.etapa','=',$buscar2)
-                            ->where('creditos.manzana','=',$buscar3)
-                            ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2) 
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->get();
+                            $pagares = $query
+                                ->where($criterio,'=',$buscar)
+                                ->where('creditos.etapa','=',$buscar2)
+                                ->where('creditos.manzana','=',$buscar3)
+                                ->where('contratos.status','!=',0)
+                                ->where('contratos.status','!=',2) 
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                                ->orderBy('pagos_contratos.pagado', 'asc')
+                                ->get();
                         }
                         break;
                     }
                     default:{
-                        $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
-                            ->join('creditos','creditos.id','=','contratos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
-                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
-                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
-                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
-                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
-                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
-                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
-                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
-                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa','contratos.colonia_empresa',
-                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                        $pagares = $query
                             ->where($criterio,'=',$buscar)
                             ->where('contratos.status','!=',0)
                             ->where('contratos.status','!=',2) 
@@ -1504,8 +788,8 @@ class DepositoController extends Controller
                 $num='A1:J' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
-        }
-    )->download('xls');
+            }
+        )->download('xls');
     }
 
     public function indexDepositos(Request $request){
@@ -1527,61 +811,36 @@ class DepositoController extends Controller
         $banco = $request->banco;
         $monto = $request->monto;
 
+        $query = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+            ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+            ->join('creditos','creditos.id','=','contratos.id')
+            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+            ->join('personal','clientes.id','=','personal.id')
+            ->select('contratos.id', 
+                    'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
+                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
+                    'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
+                    'depositos.banco','depositos.concepto','depositos.fecha_pago');
+
         if($fecha1 == '' && $fecha2 == ''){
             if($banco == '' && $monto == ''){
-                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
-                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                ->join('creditos','creditos.id','=','contratos.id')
-                ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                ->join('personal','clientes.id','=','personal.id')
-                ->select('contratos.id', 
-                        'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
-                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
-                        'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
-                        'depositos.banco','depositos.concepto','depositos.fecha_pago')
+                $depositos = $query
                         ->orderBy('depositos.fecha_pago','desc')->paginate(8);
             }
             elseif($banco != '' && $monto == ''){
-                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
-                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                ->join('creditos','creditos.id','=','contratos.id')
-                ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                ->join('personal','clientes.id','=','personal.id')
-                ->select('contratos.id', 
-                        'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
-                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
-                        'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
-                        'depositos.banco','depositos.concepto','depositos.fecha_pago')
+                $depositos = $query
                         ->where('depositos.banco','=',$banco)
                         ->orderBy('depositos.fecha_pago','desc')->paginate(8);
             }
             elseif($banco != '' && $monto != ''){
-                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
-                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                ->join('creditos','creditos.id','=','contratos.id')
-                ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                ->join('personal','clientes.id','=','personal.id')
-                ->select('contratos.id', 
-                        'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
-                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
-                        'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
-                        'depositos.banco','depositos.concepto','depositos.fecha_pago')
+                $depositos = $query
                         ->where('depositos.banco','=',$banco)
                         ->where('depositos.cant_depo','=',$monto)
                         ->orderBy('depositos.fecha_pago','desc')->paginate(8);
 
             }
             elseif($banco == '' && $monto != ''){
-                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
-                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                ->join('creditos','creditos.id','=','contratos.id')
-                ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                ->join('personal','clientes.id','=','personal.id')
-                ->select('contratos.id', 
-                        'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
-                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
-                        'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
-                        'depositos.banco','depositos.concepto','depositos.fecha_pago')
+                $depositos = $query
                         ->where('depositos.cant_depo','=',$monto)
                         ->orderBy('depositos.fecha_pago','desc')->paginate(8);
 
@@ -1589,45 +848,18 @@ class DepositoController extends Controller
         }
         elseif($fecha1 != '' && $fecha2 != ''){
             if($banco == '' && $monto == ''){
-                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
-                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                ->join('creditos','creditos.id','=','contratos.id')
-                ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                ->join('personal','clientes.id','=','personal.id')
-                ->select('contratos.id', 
-                        'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
-                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
-                        'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
-                        'depositos.banco','depositos.concepto','depositos.fecha_pago')
+                $depositos = $query
                         ->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2])
                         ->orderBy('depositos.fecha_pago','desc')->paginate(8);
             }
             elseif($banco != '' && $monto == ''){
-                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
-                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                ->join('creditos','creditos.id','=','contratos.id')
-                ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                ->join('personal','clientes.id','=','personal.id')
-                ->select('contratos.id', 
-                        'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
-                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
-                        'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
-                        'depositos.banco','depositos.concepto','depositos.fecha_pago')
+                $depositos = $query
                         ->where('depositos.banco','=',$banco)
                         ->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2])
                         ->orderBy('depositos.fecha_pago','desc')->paginate(8);
             }
             elseif($banco != '' && $monto != ''){
-                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
-                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                ->join('creditos','creditos.id','=','contratos.id')
-                ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                ->join('personal','clientes.id','=','personal.id')
-                ->select('contratos.id', 
-                        'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
-                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
-                        'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
-                        'depositos.banco','depositos.concepto','depositos.fecha_pago')
+                $depositos = $query
                         ->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2])
                         ->where('depositos.banco','=',$banco)
                         ->where('depositos.cant_depo','=',$monto)
@@ -1635,16 +867,7 @@ class DepositoController extends Controller
 
             }
             elseif($banco == '' && $monto != ''){
-                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
-                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                ->join('creditos','creditos.id','=','contratos.id')
-                ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                ->join('personal','clientes.id','=','personal.id')
-                ->select('contratos.id', 
-                        'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
-                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
-                        'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
-                        'depositos.banco','depositos.concepto','depositos.fecha_pago')
+                $depositos = $query
                         ->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2])
                         ->where('depositos.cant_depo','=',$monto)
                         ->orderBy('depositos.fecha_pago','desc')->paginate(8);
@@ -1674,61 +897,36 @@ class DepositoController extends Controller
         $banco = $request->banco;
         $monto = $request->monto;
 
+        $query = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+            ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+            ->join('creditos','creditos.id','=','contratos.id')
+            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+            ->join('personal','clientes.id','=','personal.id')
+            ->select('contratos.id', 
+                    'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
+                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
+                    'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
+                    'depositos.banco','depositos.concepto','depositos.fecha_pago');
+
         if($fecha1 == '' && $fecha2 == ''){
             if($banco == '' && $monto == ''){
-                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
-                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                ->join('creditos','creditos.id','=','contratos.id')
-                ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                ->join('personal','clientes.id','=','personal.id')
-                ->select('contratos.id', 
-                        'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
-                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
-                        'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
-                        'depositos.banco','depositos.concepto','depositos.fecha_pago')
+                $depositos = $query
                         ->orderBy('depositos.fecha_pago','desc')->get();
             }
             elseif($banco != '' && $monto == ''){
-                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
-                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                ->join('creditos','creditos.id','=','contratos.id')
-                ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                ->join('personal','clientes.id','=','personal.id')
-                ->select('contratos.id', 
-                        'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
-                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
-                        'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
-                        'depositos.banco','depositos.concepto','depositos.fecha_pago')
+                $depositos = $query
                         ->where('depositos.banco','=',$banco)
                         ->orderBy('depositos.fecha_pago','desc')->get();
             }
             elseif($banco != '' && $monto != ''){
-                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
-                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                ->join('creditos','creditos.id','=','contratos.id')
-                ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                ->join('personal','clientes.id','=','personal.id')
-                ->select('contratos.id', 
-                        'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
-                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
-                        'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
-                        'depositos.banco','depositos.concepto','depositos.fecha_pago')
+                $depositos = $query
                         ->where('depositos.banco','=',$banco)
                         ->where('depositos.cant_depo','=',$monto)
                         ->orderBy('depositos.fecha_pago','desc')->get();
 
             }
             elseif($banco == '' && $monto != ''){
-                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
-                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                ->join('creditos','creditos.id','=','contratos.id')
-                ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                ->join('personal','clientes.id','=','personal.id')
-                ->select('contratos.id', 
-                        'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
-                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
-                        'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
-                        'depositos.banco','depositos.concepto','depositos.fecha_pago')
+                $depositos = $query
                         ->where('depositos.cant_depo','=',$monto)
                         ->orderBy('depositos.fecha_pago','desc')->get();
 
@@ -1736,45 +934,18 @@ class DepositoController extends Controller
         }
         elseif($fecha1 != '' && $fecha2 != ''){
             if($banco == '' && $monto == ''){
-                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
-                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                ->join('creditos','creditos.id','=','contratos.id')
-                ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                ->join('personal','clientes.id','=','personal.id')
-                ->select('contratos.id', 
-                        'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
-                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
-                        'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
-                        'depositos.banco','depositos.concepto','depositos.fecha_pago')
+                $depositos = $query
                         ->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2])
                         ->orderBy('depositos.fecha_pago','desc')->get();
             }
             elseif($banco != '' && $monto == ''){
-                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
-                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                ->join('creditos','creditos.id','=','contratos.id')
-                ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                ->join('personal','clientes.id','=','personal.id')
-                ->select('contratos.id', 
-                        'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
-                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
-                        'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
-                        'depositos.banco','depositos.concepto','depositos.fecha_pago')
+                $depositos = $query
                         ->where('depositos.banco','=',$banco)
                         ->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2])
                         ->orderBy('depositos.fecha_pago','desc')->get();
             }
             elseif($banco != '' && $monto != ''){
-                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
-                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                ->join('creditos','creditos.id','=','contratos.id')
-                ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                ->join('personal','clientes.id','=','personal.id')
-                ->select('contratos.id', 
-                        'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
-                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
-                        'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
-                        'depositos.banco','depositos.concepto','depositos.fecha_pago')
+                $depositos = $query
                         ->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2])
                         ->where('depositos.banco','=',$banco)
                         ->where('depositos.cant_depo','=',$monto)
@@ -1782,16 +953,7 @@ class DepositoController extends Controller
 
             }
             elseif($banco == '' && $monto != ''){
-                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
-                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                ->join('creditos','creditos.id','=','contratos.id')
-                ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                ->join('personal','clientes.id','=','personal.id')
-                ->select('contratos.id', 
-                        'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
-                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
-                        'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
-                        'depositos.banco','depositos.concepto','depositos.fecha_pago')
+                $depositos = $query
                         ->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2])
                         ->where('depositos.cant_depo','=',$monto)
                         ->orderBy('depositos.fecha_pago','desc')->get();
@@ -1852,29 +1014,26 @@ class DepositoController extends Controller
                 $sheet->setBorder($num, 'thin');
             });
             }
-    )->download('xls');
+        )->download('xls');
 
     }
 
     public function excelDepositos(Request $request){
+
+        $query = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+            ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+            ->join('creditos','contratos.id','=','creditos.id')
+            ->select('pagos_contratos.contrato_id','depositos.cant_depo','depositos.num_recibo',
+                    'depositos.banco', 'depositos.fecha_pago', 'depositos.concepto',
+                    'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.num_lote');
         
         if($request->desde == ''){
             if($request->banco == ''){
-                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
-                            ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->select('pagos_contratos.contrato_id','depositos.cant_depo','depositos.num_recibo',
-                                    'depositos.banco', 'depositos.fecha_pago', 'depositos.concepto',
-                                    'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.num_lote')
+                $depositos = $query
                             ->get();
             }
             else{
-                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
-                            ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->select('pagos_contratos.contrato_id','depositos.cant_depo','depositos.num_recibo',
-                                    'depositos.banco', 'depositos.fecha_pago', 'depositos.concepto',
-                                    'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.num_lote')
+                $depositos = $query
                             ->where('depositos.banco','=',$request->banco)
                             ->get();
 
@@ -1882,22 +1041,12 @@ class DepositoController extends Controller
         }
         else{
             if($request->banco == ''){
-                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
-                            ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->select('pagos_contratos.contrato_id','depositos.cant_depo','depositos.num_recibo',
-                                    'depositos.banco', 'depositos.fecha_pago', 'depositos.concepto',
-                                    'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.num_lote')
+                $depositos = $query
                             ->whereBetween('depositos.fecha_pago', [$request->desde, $request->hasta])
                             ->get();
             }
             else{
-                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
-                            ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->select('pagos_contratos.contrato_id','depositos.cant_depo','depositos.num_recibo',
-                                    'depositos.banco', 'depositos.fecha_pago', 'depositos.concepto',
-                                    'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.num_lote')
+                $depositos = $query
                             ->where('depositos.banco','=',$request->banco)
                             ->whereBetween('depositos.fecha_pago', [$request->desde, $request->hasta])
                             ->get();
@@ -2009,7 +1158,8 @@ class DepositoController extends Controller
             }
 
             $contrato = Contrato::findOrFail($pago_contrato->contrato_id);
-            $contrato->saldo = $contrato->saldo - $pago;
+            $contrato->saldo = round($contrato->saldo - $pago,2);
+            
             $contrato->save(); 
 
             $pago_contrato->save();
@@ -2120,7 +1270,7 @@ class DepositoController extends Controller
             }
 
             $contrato = Contrato::findOrFail($pago_contrato->contrato_id);
-            $contrato->saldo = $contrato->saldo + $pagoAnt - $pago;
+            $contrato->saldo = round($contrato->saldo + $pagoAnt - $pago,2);
             $contrato->save(); 
 
             $pago_contrato->save();
@@ -2146,7 +1296,7 @@ class DepositoController extends Controller
             $pago_contrato->restante = $pago_contrato->restante + $pago;
 
             $contrato = Contrato::findOrFail($pago_contrato->contrato_id);
-            $contrato->saldo = $contrato->saldo + $pagoAnt;
+            $contrato->saldo = round($contrato->saldo + $pagoAnt, 2);
 
             if($deposito->interes_ord != 0){
                 $b_gasto = Gasto_admin::select('id')
@@ -2198,97 +1348,101 @@ class DepositoController extends Controller
         $b_status = $request->b_status;
         $credito = $request->credito;
 
+        $query = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
+            ->leftJoin('creditos','contratos.id','=','creditos.id')
+            ->join('lotes','creditos.lote_id','=','lotes.id')
+            ->join('licencias','lotes.id','=','licencias.id')
+            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+            ->join('personal as c', 'clientes.id', '=', 'c.id')
+            ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+            
+            ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
+                        'licencias.avance',
+                        'creditos.manzana','creditos.num_lote',
+                        'creditos.precio_venta',
+                        'expedientes.valor_escrituras', 
+                        'expedientes.descuento', 'expedientes.liquidado',
+                        'contratos.enganche_total',
+                        'contratos.saldo',
+                        'i.monto_credito as credito_solic',
+                        'i.cobrado',
+                        'i.segundo_credito',
+                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                        'c.f_nacimiento','c.rfc',
+                        'c.homoclave','c.direccion','c.colonia','c.cp',
+                        'c.telefono','c.email','creditos.num_dep_economicos',
+                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                        'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
+                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                        'contratos.ext_empresa','contratos.colonia_empresa',
+
+                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                            WHERE pagos_contratos.contrato_id = contratos.id AND 
+                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
+                            GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
+
+                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                            WHERE pagos_contratos.contrato_id = contratos.id 
+                            GROUP BY pagos_contratos.contrato_id) as totalRestante"),
+                        
+                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                            WHERE pagos_contratos.contrato_id = contratos.id 
+                            GROUP BY pagos_contratos.contrato_id) as totalPagares"),
+
+                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                            WHERE pagos_contratos.contrato_id = contratos.id AND 
+                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
+                            GROUP BY pagos_contratos.contrato_id) as pagares"),
+
+                        DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
+                            WHERE gastos_admin.contrato_id = contratos.id 
+                            GROUP BY gastos_admin.contrato_id) as gastos")
+
+                );
+
+        $queryCont = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
+            ->leftJoin('creditos','contratos.id','=','creditos.id')
+            ->join('lotes','creditos.lote_id','=','lotes.id')
+            ->join('licencias','lotes.id','=','licencias.id')
+            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+            ->join('personal as c', 'clientes.id', '=', 'c.id')
+            ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+            
+            ->select(
+                    DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                        WHERE pagos_contratos.contrato_id = contratos.id AND 
+                        (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
+                        GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
+
+                    DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                        WHERE pagos_contratos.contrato_id = contratos.id 
+                        GROUP BY pagos_contratos.contrato_id) as totalRestante"),
+                    
+                    DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                        WHERE pagos_contratos.contrato_id = contratos.id 
+                        GROUP BY pagos_contratos.contrato_id) as totalPagares"),
+
+                    DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                        WHERE pagos_contratos.contrato_id = contratos.id AND 
+                        (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
+                        GROUP BY pagos_contratos.contrato_id) as pagares"),
+
+                    DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
+                        WHERE gastos_admin.contrato_id = contratos.id 
+                        GROUP BY gastos_admin.contrato_id) as gastos")
+            );
+
 
         if($b_status == ""){
             if($buscar == '' && $criterio!='c.nombre'){
-                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                        'licencias.avance',
-                                        'creditos.manzana','creditos.num_lote',
-                                        'creditos.precio_venta',
-                                        'expedientes.valor_escrituras', 
-                                        'expedientes.descuento', 'expedientes.liquidado',
-                                        'contratos.enganche_total',
-                                        'contratos.saldo',
-                                        'i.monto_credito as credito_solic',
-                                        'i.cobrado',
-                                        'i.segundo_credito',
-                                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                        'c.f_nacimiento','c.rfc',
-                                        'c.homoclave','c.direccion','c.colonia','c.cp',
-                                        'c.telefono','c.email','creditos.num_dep_economicos',
-                                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                        'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                        'contratos.ext_empresa','contratos.colonia_empresa',
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                        
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pagares"),
-
-                                        DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                            WHERE gastos_admin.contrato_id = contratos.id 
-                                            GROUP BY gastos_admin.contrato_id) as gastos")
-
-                                        )
+                $contratos = $query
                                 ->where('i.elegido', '=', 1)
                                 ->orderBy('contratos.saldo','desc')
                                 ->orderBy('contratos.id','asc')
                                 ->paginate(15);
 
-                $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                    ->join('licencias','lotes.id','=','licencias.id')
-                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                    
-                    ->select(
-                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-
-                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                            
-                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-
-                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-
-                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                WHERE gastos_admin.contrato_id = contratos.id 
-                                GROUP BY gastos_admin.contrato_id) as gastos")
-                            )
+                $contador = $queryCont
                     ->where('i.elegido', '=', 1)
                     ->orderBy('contratos.saldo','desc')
                     ->orderBy('contratos.id','asc')
@@ -2298,95 +1452,14 @@ class DepositoController extends Controller
                 switch($criterio){
                     case 'c.nombre':{
                         if($buscar2 == ''){
-                            $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                        'creditos.manzana','creditos.num_lote',
-                                        'licencias.avance',
-                                        'creditos.precio_venta',
-                                        'expedientes.valor_escrituras', 
-                                        'expedientes.descuento', 'expedientes.liquidado',
-                                        'contratos.enganche_total',
-                                        'contratos.saldo',
-                                        'i.monto_credito as credito_solic',
-                                        'i.cobrado',
-                                        'i.segundo_credito',
-                                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                        'c.f_nacimiento','c.rfc',
-                                        'c.homoclave','c.direccion','c.colonia','c.cp',
-                                        'c.telefono','c.email','creditos.num_dep_economicos',
-                                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                        'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                        'contratos.ext_empresa','contratos.colonia_empresa',
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                        
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pagares"),
-
-                                        DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                            WHERE gastos_admin.contrato_id = contratos.id 
-                                            GROUP BY gastos_admin.contrato_id) as gastos")
-
-                                        )
+                            $contratos = $query
                                 ->where('i.elegido', '=', 1)
                                 ->where('c.nombre','like','%'. $buscar . '%')
                                 ->orderBy('contratos.saldo','desc')
                                 ->orderBy('contratos.id','asc')
                                 ->paginate(15);
 
-                            $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                ->select(
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-            
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                        
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-            
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pagares"),
-            
-                                        DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                            WHERE gastos_admin.contrato_id = contratos.id 
-                                            GROUP BY gastos_admin.contrato_id) as gastos")
-                                        )
+                            $contador = $queryCont
                                 ->where('i.elegido', '=', 1)
                                 ->where('c.nombre','like','%'. $buscar . '%')
                                 ->orderBy('contratos.saldo','desc')
@@ -2394,50 +1467,7 @@ class DepositoController extends Controller
                                 ->count();
                         }
                         else{
-                            $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                        'creditos.manzana','creditos.num_lote',
-                                        'licencias.avance',
-                                        'creditos.precio_venta',
-                                        'expedientes.valor_escrituras', 
-                                        'expedientes.descuento', 'expedientes.liquidado',
-                                        'contratos.enganche_total',
-                                        'contratos.saldo',
-                                        'i.monto_credito as credito_solic',
-                                        'i.cobrado',
-                                        'i.segundo_credito',
-                                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                        
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pagares"),
-
-                                        DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                            WHERE gastos_admin.contrato_id = contratos.id 
-                                            GROUP BY gastos_admin.contrato_id) as gastos")
-
-                                        )
+                            $contratos = $query
                                 ->where('i.elegido', '=', 1)
                                 ->where('c.nombre','like','%'. $buscar . '%')
                                 ->where('c.apellidos','like','%'. $buscar2 . '%')
@@ -2445,37 +1475,7 @@ class DepositoController extends Controller
                                 ->orderBy('contratos.id','asc')
                                 ->paginate(15);
 
-                            $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                ->select(
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-            
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                        
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-            
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pagares"),
-            
-                                        DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                            WHERE gastos_admin.contrato_id = contratos.id 
-                                            GROUP BY gastos_admin.contrato_id) as gastos")
-                                        )
+                            $contador = $queryCont
                                 ->where('i.elegido', '=', 1)
                                 ->where('c.nombre','like','%'. $buscar . '%')
                                 ->where('c.apellidos','like','%'. $buscar2 . '%')
@@ -2487,95 +1487,14 @@ class DepositoController extends Controller
                     }
 
                     case 'contratos.id':{
-                        $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                        'creditos.manzana','creditos.num_lote',
-                                        'licencias.avance',
-                                        'creditos.precio_venta',
-                                        'expedientes.valor_escrituras', 
-                                        'expedientes.descuento', 'expedientes.liquidado',
-                                        'contratos.enganche_total',
-                                        'contratos.saldo',
-                                        'i.monto_credito as credito_solic',
-                                        'i.cobrado',
-                                        'i.segundo_credito',
-                                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                        'c.f_nacimiento','c.rfc',
-                                        'c.homoclave','c.direccion','c.colonia','c.cp',
-                                        'c.telefono','c.email','creditos.num_dep_economicos',
-                                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                        'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                        'contratos.ext_empresa','contratos.colonia_empresa',
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                        
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pagares"),
-
-                                        DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                            WHERE gastos_admin.contrato_id = contratos.id 
-                                            GROUP BY gastos_admin.contrato_id) as gastos")
-
-                                        )
+                        $contratos = $query
                                 ->where('i.elegido', '=', 1)
                                 ->where('contratos.id','=', $buscar )
                                 ->orderBy('contratos.saldo','desc')
                                 ->orderBy('contratos.id','asc')
                                 ->paginate(15);
 
-                        $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                ->select(
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-            
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                        
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-            
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pagares"),
-            
-                                        DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                            WHERE gastos_admin.contrato_id = contratos.id 
-                                            GROUP BY gastos_admin.contrato_id) as gastos")
-                                        )
+                        $contador = $queryCont
                                 ->where('i.elegido', '=', 1)
                                 ->where('contratos.id','=', $buscar )
                                 ->orderBy('contratos.saldo','desc')
@@ -2589,97 +1508,14 @@ class DepositoController extends Controller
                         if($credito == ''){
                             if($buscar != '' && $buscar2 == '' && $b_manzana == '' && $b_lote == ''){
 
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 'expedientes.liquidado',
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'c.f_nacimiento','c.rfc',
-                                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                                            'c.telefono','c.email','creditos.num_dep_economicos',
-                                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                            'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                            'contratos.ext_empresa','contratos.colonia_empresa',
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->orderBy('contratos.saldo','desc')
                                     ->orderBy('contratos.id','asc')
                                     ->paginate(15);
     
-                                $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    ->select(
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-                
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-                                            )
+                                $contador = $queryCont
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->orderBy('contratos.saldo','desc')
@@ -2688,60 +1524,7 @@ class DepositoController extends Controller
                             }
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote == ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                   
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 'expedientes.liquidado',
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'c.f_nacimiento','c.rfc',
-                                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                                            'c.telefono','c.email','creditos.num_dep_economicos',
-                                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                            'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                            'contratos.ext_empresa','contratos.colonia_empresa',
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
@@ -2749,37 +1532,7 @@ class DepositoController extends Controller
                                     ->orderBy('contratos.id','asc')
                                     ->paginate(15);
     
-                                $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    ->select(
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-                
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-                                            )
+                                $contador = $queryCont
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
@@ -2790,60 +1543,7 @@ class DepositoController extends Controller
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote == ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 'expedientes.liquidado',
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'c.f_nacimiento','c.rfc',
-                                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                                            'c.telefono','c.email','creditos.num_dep_economicos',
-                                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                            'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                            'contratos.ext_empresa','contratos.colonia_empresa',
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
@@ -2852,37 +1552,7 @@ class DepositoController extends Controller
                                     ->orderBy('contratos.id','asc')
                                     ->paginate(15);
     
-                                $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    ->select(
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-                
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-                                            )
+                                $contador = $queryCont
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
@@ -2894,60 +1564,7 @@ class DepositoController extends Controller
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote != ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 'expedientes.liquidado',
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'c.f_nacimiento','c.rfc',
-                                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                                            'c.telefono','c.email','creditos.num_dep_economicos',
-                                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                            'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                            'contratos.ext_empresa','contratos.colonia_empresa',
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
@@ -2957,37 +1574,7 @@ class DepositoController extends Controller
                                     ->orderBy('contratos.id','asc')
                                     ->paginate(15);
     
-                                $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    ->select(
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-                
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-                                            )
+                                $contador = $queryCont
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
@@ -3000,60 +1587,7 @@ class DepositoController extends Controller
     
                             elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote != ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 'expedientes.liquidado',
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'c.f_nacimiento','c.rfc',
-                                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                                            'c.telefono','c.email','creditos.num_dep_economicos',
-                                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                            'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                            'contratos.ext_empresa','contratos.colonia_empresa',
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     //->where('lotes.etapa_id', '=', $buscar2)
@@ -3063,37 +1597,7 @@ class DepositoController extends Controller
                                     ->orderBy('contratos.id','asc')
                                     ->paginate(15);
     
-                                $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    ->select(
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-                
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-                                            )
+                                $contador = $queryCont
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     //->where('lotes.etapa_id', '=', $buscar2)
@@ -3106,60 +1610,7 @@ class DepositoController extends Controller
                             
                             elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote == ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                   
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 'expedientes.liquidado',
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'c.f_nacimiento','c.rfc',
-                                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                                            'c.telefono','c.email','creditos.num_dep_economicos',
-                                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                            'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                            'contratos.ext_empresa','contratos.colonia_empresa',
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     //->where('lotes.etapa_id', '=', $buscar2)
@@ -3169,37 +1620,7 @@ class DepositoController extends Controller
                                     ->orderBy('contratos.id','asc')
                                     ->paginate(15);
     
-                                $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    ->select(
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-                
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-                                            )
+                                $contador = $queryCont
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     //->where('lotes.etapa_id', '=', $buscar2)
@@ -3212,60 +1633,7 @@ class DepositoController extends Controller
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote != ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 'expedientes.liquidado',
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'c.f_nacimiento','c.rfc',
-                                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                                            'c.telefono','c.email','creditos.num_dep_economicos',
-                                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                            'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                            'contratos.ext_empresa','contratos.colonia_empresa',
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
@@ -3275,37 +1643,7 @@ class DepositoController extends Controller
                                     ->orderBy('contratos.id','asc')
                                     ->paginate(15);
     
-                                $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    ->select(
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-                
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-                                            )
+                                $contador = $queryCont
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
@@ -3319,60 +1657,7 @@ class DepositoController extends Controller
                         else{
                             if($buscar != '' && $buscar2 == '' && $b_manzana == '' && $b_lote == ''){
 
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 'expedientes.liquidado',
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'c.f_nacimiento','c.rfc',
-                                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                                            'c.telefono','c.email','creditos.num_dep_economicos',
-                                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                            'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                            'contratos.ext_empresa','contratos.colonia_empresa',
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -3380,37 +1665,7 @@ class DepositoController extends Controller
                                     ->orderBy('contratos.id','asc')
                                     ->paginate(15);
     
-                                $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    ->select(
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-                
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-                                            )
+                                $contador = $queryCont
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -3420,60 +1675,7 @@ class DepositoController extends Controller
                             }
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote == ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                   
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 'expedientes.liquidado',
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'c.f_nacimiento','c.rfc',
-                                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                                            'c.telefono','c.email','creditos.num_dep_economicos',
-                                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                            'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                            'contratos.ext_empresa','contratos.colonia_empresa',
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -3482,37 +1684,7 @@ class DepositoController extends Controller
                                     ->orderBy('contratos.id','asc')
                                     ->paginate(15);
     
-                                $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    ->select(
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-                
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-                                            )
+                                $contador = $queryCont
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -3524,60 +1696,7 @@ class DepositoController extends Controller
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote == ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 'expedientes.liquidado',
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'c.f_nacimiento','c.rfc',
-                                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                                            'c.telefono','c.email','creditos.num_dep_economicos',
-                                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                            'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                            'contratos.ext_empresa','contratos.colonia_empresa',
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -3587,37 +1706,7 @@ class DepositoController extends Controller
                                     ->orderBy('contratos.id','asc')
                                     ->paginate(15);
     
-                                $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    ->select(
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-                
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-                                            )
+                                $contador = $queryCont
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -3630,60 +1719,7 @@ class DepositoController extends Controller
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote != ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 'expedientes.liquidado',
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'c.f_nacimiento','c.rfc',
-                                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                                            'c.telefono','c.email','creditos.num_dep_economicos',
-                                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                            'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                            'contratos.ext_empresa','contratos.colonia_empresa',
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -3694,37 +1730,7 @@ class DepositoController extends Controller
                                     ->orderBy('contratos.id','asc')
                                     ->paginate(15);
     
-                                $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    ->select(
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-                
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-                                            )
+                                $contador = $queryCont
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -3738,60 +1744,7 @@ class DepositoController extends Controller
     
                             elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote != ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 'expedientes.liquidado',
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'c.f_nacimiento','c.rfc',
-                                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                                            'c.telefono','c.email','creditos.num_dep_economicos',
-                                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                            'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                            'contratos.ext_empresa','contratos.colonia_empresa',
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -3802,37 +1755,7 @@ class DepositoController extends Controller
                                     ->orderBy('contratos.id','asc')
                                     ->paginate(15);
     
-                                $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    ->select(
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-                
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-                                            )
+                                $contador = $queryCont
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -3846,60 +1769,7 @@ class DepositoController extends Controller
                             
                             elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote == ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                   
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 'expedientes.liquidado',
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'c.f_nacimiento','c.rfc',
-                                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                                            'c.telefono','c.email','creditos.num_dep_economicos',
-                                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                            'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                            'contratos.ext_empresa','contratos.colonia_empresa',
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -3910,37 +1780,7 @@ class DepositoController extends Controller
                                     ->orderBy('contratos.id','asc')
                                     ->paginate(15);
     
-                                $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    ->select(
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-                
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-                                            )
+                                $contador = $queryCont
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -3954,60 +1794,7 @@ class DepositoController extends Controller
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote != ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 'expedientes.liquidado',
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'c.f_nacimiento','c.rfc',
-                                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                                            'c.telefono','c.email','creditos.num_dep_economicos',
-                                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                            'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                            'contratos.ext_empresa','contratos.colonia_empresa',
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -4018,37 +1805,7 @@ class DepositoController extends Controller
                                     ->orderBy('contratos.id','asc')
                                     ->paginate(15);
     
-                                $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    ->select(
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-                
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-                                            )
+                                $contador = $queryCont
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -4069,95 +1826,14 @@ class DepositoController extends Controller
 
         }else{
             if($buscar == '' && $criterio!='c.nombre'){
-                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                        'creditos.manzana','creditos.num_lote',
-                                        'licencias.avance',
-                                        'creditos.precio_venta',
-                                        'expedientes.valor_escrituras','expedientes.fecha_firma_esc' ,
-                                        'expedientes.descuento', 'expedientes.liquidado',
-                                        'contratos.enganche_total',
-                                        'contratos.saldo',
-                                        'i.monto_credito as credito_solic',
-                                        'i.cobrado',
-                                        'i.segundo_credito',
-                                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                        'c.f_nacimiento','c.rfc',
-                                        'c.homoclave','c.direccion','c.colonia','c.cp',
-                                        'c.telefono','c.email','creditos.num_dep_economicos',
-                                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                        'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                        'contratos.ext_empresa','contratos.colonia_empresa',
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                        
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pagares"),
-
-                                        DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                            WHERE gastos_admin.contrato_id = contratos.id 
-                                            GROUP BY gastos_admin.contrato_id) as gastos")
-
-                                        )
+                $contratos = $query
                                 ->where('i.elegido', '=', 1)
                                 ->where('contratos.status','=',$b_status)
                                 ->orderBy('contratos.saldo','desc')
                                 ->orderBy('contratos.id','asc')
                                 ->paginate(15);
 
-                $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                ->select(
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-            
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                        
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-            
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pagares"),
-            
-                                        DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                            WHERE gastos_admin.contrato_id = contratos.id 
-                                            GROUP BY gastos_admin.contrato_id) as gastos")
-                                        )
+                $contador = $queryCont
                                 ->where('i.elegido', '=', 1)
                                 ->where('contratos.status','=',$b_status)
                                 ->orderBy('contratos.saldo','desc')
@@ -4169,58 +1845,7 @@ class DepositoController extends Controller
                 switch($criterio){
                     case 'c.nombre':{
                         if($buscar2 == ''){
-                            $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                        'creditos.manzana','creditos.num_lote',
-                                        'licencias.avance',
-                                        'creditos.precio_venta',
-                                        'expedientes.valor_escrituras','expedientes.fecha_firma_esc' ,
-                                        'expedientes.descuento', 'expedientes.liquidado',
-                                        'contratos.enganche_total',
-                                        'contratos.saldo',
-                                        'i.monto_credito as credito_solic',
-                                        'i.cobrado',
-                                        'i.segundo_credito',
-                                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                        'c.f_nacimiento','c.rfc',
-                                        'c.homoclave','c.direccion','c.colonia','c.cp',
-                                        'c.telefono','c.email','creditos.num_dep_economicos',
-                                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                        'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                        'contratos.ext_empresa','contratos.colonia_empresa',
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                        
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pagares"),
-
-                                        DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                            WHERE gastos_admin.contrato_id = contratos.id 
-                                            GROUP BY gastos_admin.contrato_id) as gastos")
-
-                                        )
+                            $contratos = $query
                                 ->where('i.elegido', '=', 1)
                                 ->where('c.nombre','like','%'. $buscar . '%')
                                 ->where('contratos.status','=',$b_status)
@@ -4228,37 +1853,7 @@ class DepositoController extends Controller
                                 ->orderBy('contratos.id','asc')
                                 ->paginate(15);
 
-                            $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                ->select(
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-            
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                        
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-            
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pagares"),
-            
-                                        DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                            WHERE gastos_admin.contrato_id = contratos.id 
-                                            GROUP BY gastos_admin.contrato_id) as gastos")
-                                        )
+                            $contador = $queryCont
                                 ->where('i.elegido', '=', 1)
                                 ->where('c.nombre','like','%'. $buscar . '%')
                                 ->where('contratos.status','=',$b_status)
@@ -4267,50 +1862,7 @@ class DepositoController extends Controller
                                 ->count();
                         }
                         else{
-                            $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                        'creditos.manzana','creditos.num_lote',
-                                        'licencias.avance',
-                                        'creditos.precio_venta',
-                                        'expedientes.valor_escrituras','expedientes.fecha_firma_esc' ,
-                                        'expedientes.descuento', 'expedientes.liquidado',
-                                        'contratos.enganche_total',
-                                        'contratos.saldo',
-                                        'i.monto_credito as credito_solic',
-                                        'i.cobrado',
-                                        'i.segundo_credito',
-                                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                        
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pagares"),
-
-                                        DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                            WHERE gastos_admin.contrato_id = contratos.id 
-                                            GROUP BY gastos_admin.contrato_id) as gastos")
-
-                                        )
+                            $contratos = $query
                                 ->where('i.elegido', '=', 1)
                                 ->where('c.nombre','like','%'. $buscar . '%')
                                 ->where('c.apellidos','like','%'. $buscar2 . '%')
@@ -4319,37 +1871,7 @@ class DepositoController extends Controller
                                 ->orderBy('contratos.id','asc')
                                 ->paginate(15);
 
-                            $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                ->select(
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-            
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                        
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-            
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pagares"),
-            
-                                        DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                            WHERE gastos_admin.contrato_id = contratos.id 
-                                            GROUP BY gastos_admin.contrato_id) as gastos")
-                                        )
+                            $contador = $queryCont
                                 ->where('i.elegido', '=', 1)
                                 ->where('c.nombre','like','%'. $buscar . '%')
                                 ->where('c.apellidos','like','%'. $buscar2 . '%')
@@ -4362,58 +1884,7 @@ class DepositoController extends Controller
                     }
 
                     case 'contratos.id':{
-                        $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                        'creditos.manzana','creditos.num_lote',
-                                        'licencias.avance',
-                                        'creditos.precio_venta',
-                                        'expedientes.valor_escrituras','expedientes.fecha_firma_esc' ,
-                                        'expedientes.descuento', 'expedientes.liquidado',
-                                        'contratos.enganche_total',
-                                        'contratos.saldo',
-                                        'i.monto_credito as credito_solic',
-                                        'i.cobrado',
-                                        'i.segundo_credito',
-                                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                        'c.f_nacimiento','c.rfc',
-                                        'c.homoclave','c.direccion','c.colonia','c.cp',
-                                        'c.telefono','c.email','creditos.num_dep_economicos',
-                                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                        'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                        'contratos.ext_empresa','contratos.colonia_empresa',
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                        
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pagares"),
-
-                                        DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                            WHERE gastos_admin.contrato_id = contratos.id 
-                                            GROUP BY gastos_admin.contrato_id) as gastos")
-
-                                        )
+                        $contratos = $query
                                 ->where('i.elegido', '=', 1)
                                 ->where('contratos.id','=', $buscar )
                                 ->where('contratos.status','=',$b_status)
@@ -4421,37 +1892,7 @@ class DepositoController extends Controller
                                 ->orderBy('contratos.id','asc')
                                 ->paginate(15);
 
-                        $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                ->select(
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-            
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                        
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-            
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pagares"),
-            
-                                        DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                            WHERE gastos_admin.contrato_id = contratos.id 
-                                            GROUP BY gastos_admin.contrato_id) as gastos")
-                                        )
+                        $contador = $queryCont
                                 ->where('i.elegido', '=', 1)
                                 ->where('contratos.id','=', $buscar )
                                 ->where('contratos.status','=',$b_status)
@@ -4466,60 +1907,7 @@ class DepositoController extends Controller
                         if($credito == ''){
                             if($buscar != '' && $buscar2 == '' && $b_manzana == '' && $b_lote == ''){
 
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras','expedientes.fecha_firma_esc' ,
-                                            'expedientes.descuento', 'expedientes.liquidado',
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'c.f_nacimiento','c.rfc',
-                                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                                            'c.telefono','c.email','creditos.num_dep_economicos',
-                                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                            'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                            'contratos.ext_empresa','contratos.colonia_empresa',
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->where('contratos.status','=',$b_status)
@@ -4527,37 +1915,7 @@ class DepositoController extends Controller
                                     ->orderBy('contratos.id','asc')
                                     ->paginate(15);
     
-                                $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    ->select(
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-                
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-                                            )
+                                $contador = $queryCont
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->where('contratos.status','=',$b_status)
@@ -4567,60 +1925,7 @@ class DepositoController extends Controller
                             }
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote == ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras','expedientes.fecha_firma_esc' ,
-                                            'expedientes.descuento', 'expedientes.liquidado',
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'c.f_nacimiento','c.rfc',
-                                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                                            'c.telefono','c.email','creditos.num_dep_economicos',
-                                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                            'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                            'contratos.ext_empresa','contratos.colonia_empresa',
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
@@ -4629,37 +1934,7 @@ class DepositoController extends Controller
                                     ->orderBy('contratos.id','asc')
                                     ->paginate(15);
     
-                                $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    ->select(
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-                
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-                                            )
+                                $contador = $queryCont
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
@@ -4671,60 +1946,7 @@ class DepositoController extends Controller
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote == ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras','expedientes.fecha_firma_esc' ,
-                                            'expedientes.descuento', 'expedientes.liquidado',
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'c.f_nacimiento','c.rfc',
-                                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                                            'c.telefono','c.email','creditos.num_dep_economicos',
-                                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                            'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                            'contratos.ext_empresa','contratos.colonia_empresa',
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
@@ -4734,37 +1956,7 @@ class DepositoController extends Controller
                                     ->orderBy('contratos.id','asc')
                                     ->paginate(15);
     
-                                $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    ->select(
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-                
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-                                            )
+                                $contador = $queryCont
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
@@ -4777,60 +1969,7 @@ class DepositoController extends Controller
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote != ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras','expedientes.fecha_firma_esc' ,
-                                            'expedientes.descuento', 'expedientes.liquidado',
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'c.f_nacimiento','c.rfc',
-                                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                                            'c.telefono','c.email','creditos.num_dep_economicos',
-                                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                            'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                            'contratos.ext_empresa','contratos.colonia_empresa',
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
@@ -4841,37 +1980,7 @@ class DepositoController extends Controller
                                     ->orderBy('contratos.id','asc')
                                     ->paginate(15);
     
-                                $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    ->select(
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-                
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-                                            )
+                                $contador = $queryCont
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
@@ -4885,60 +1994,7 @@ class DepositoController extends Controller
     
                             elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote != ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                            
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras','expedientes.fecha_firma_esc' ,
-                                            'expedientes.descuento', 'expedientes.liquidado',
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'c.f_nacimiento','c.rfc',
-                                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                                            'c.telefono','c.email','creditos.num_dep_economicos',
-                                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                            'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                            'contratos.ext_empresa','contratos.colonia_empresa',
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     //->where('lotes.etapa_id', '=', $buscar2)
@@ -4949,37 +2005,7 @@ class DepositoController extends Controller
                                     ->orderBy('contratos.id','asc')
                                     ->paginate(15);
     
-                                $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    ->select(
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-                
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-                                            )
+                                $contador = $queryCont
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     //->where('lotes.etapa_id', '=', $buscar2)
@@ -4993,59 +2019,7 @@ class DepositoController extends Controller
                             
                             elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote == ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras','expedientes.fecha_firma_esc' ,
-                                            'expedientes.descuento', 'expedientes.liquidado',
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'c.f_nacimiento','c.rfc',
-                                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                                            'c.telefono','c.email','creditos.num_dep_economicos',
-                                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                            'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                            'contratos.ext_empresa','contratos.colonia_empresa',
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     //->where('lotes.etapa_id', '=', $buscar2)
@@ -5056,37 +2030,7 @@ class DepositoController extends Controller
                                     ->orderBy('contratos.id','asc')
                                     ->paginate(15);
     
-                                $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    ->select(
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-                
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-                                            )
+                                $contador = $queryCont
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     //->where('lotes.etapa_id', '=', $buscar2)
@@ -5100,60 +2044,7 @@ class DepositoController extends Controller
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote != ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras','expedientes.fecha_firma_esc' ,
-                                            'expedientes.descuento', 'expedientes.liquidado',
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'c.f_nacimiento','c.rfc',
-                                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                                            'c.telefono','c.email','creditos.num_dep_economicos',
-                                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                            'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                            'contratos.ext_empresa','contratos.colonia_empresa',
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
@@ -5164,37 +2055,7 @@ class DepositoController extends Controller
                                     ->orderBy('contratos.id','asc')
                                     ->paginate(15);
     
-                                $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    ->select(
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-                
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-                                            )
+                                $contador = $queryCont
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
@@ -5209,60 +2070,7 @@ class DepositoController extends Controller
                         else{
                             if($buscar != '' && $buscar2 == '' && $b_manzana == '' && $b_lote == ''){
 
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras','expedientes.fecha_firma_esc' ,
-                                            'expedientes.descuento', 'expedientes.liquidado',
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'c.f_nacimiento','c.rfc',
-                                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                                            'c.telefono','c.email','creditos.num_dep_economicos',
-                                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                            'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                            'contratos.ext_empresa','contratos.colonia_empresa',
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -5271,37 +2079,7 @@ class DepositoController extends Controller
                                     ->orderBy('contratos.id','asc')
                                     ->paginate(15);
     
-                                $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    ->select(
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-                
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-                                            )
+                                $contador = $queryCont
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -5312,60 +2090,7 @@ class DepositoController extends Controller
                             }
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote == ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras','expedientes.fecha_firma_esc' ,
-                                            'expedientes.descuento', 'expedientes.liquidado',
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'c.f_nacimiento','c.rfc',
-                                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                                            'c.telefono','c.email','creditos.num_dep_economicos',
-                                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                            'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                            'contratos.ext_empresa','contratos.colonia_empresa',
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -5375,37 +2100,7 @@ class DepositoController extends Controller
                                     ->orderBy('contratos.id','asc')
                                     ->paginate(15);
     
-                                $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    ->select(
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-                
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-                                            )
+                                $contador = $queryCont
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -5418,60 +2113,7 @@ class DepositoController extends Controller
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote == ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras','expedientes.fecha_firma_esc' ,
-                                            'expedientes.descuento', 'expedientes.liquidado',
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'c.f_nacimiento','c.rfc',
-                                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                                            'c.telefono','c.email','creditos.num_dep_economicos',
-                                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                            'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                            'contratos.ext_empresa','contratos.colonia_empresa',
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -5482,37 +2124,7 @@ class DepositoController extends Controller
                                     ->orderBy('contratos.id','asc')
                                     ->paginate(15);
     
-                                $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    ->select(
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-                
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-                                            )
+                                $contador = $queryCont
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -5526,60 +2138,7 @@ class DepositoController extends Controller
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote != ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras','expedientes.fecha_firma_esc' ,
-                                            'expedientes.descuento', 'expedientes.liquidado',
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'c.f_nacimiento','c.rfc',
-                                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                                            'c.telefono','c.email','creditos.num_dep_economicos',
-                                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                            'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                            'contratos.ext_empresa','contratos.colonia_empresa',
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -5591,37 +2150,7 @@ class DepositoController extends Controller
                                     ->orderBy('contratos.id','asc')
                                     ->paginate(15);
     
-                                $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    ->select(
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-                
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-                                            )
+                                $contador = $queryCont
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -5636,60 +2165,7 @@ class DepositoController extends Controller
     
                             elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote != ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                            
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras','expedientes.fecha_firma_esc' ,
-                                            'expedientes.descuento', 'expedientes.liquidado',
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'c.f_nacimiento','c.rfc',
-                                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                                            'c.telefono','c.email','creditos.num_dep_economicos',
-                                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                            'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                            'contratos.ext_empresa','contratos.colonia_empresa',
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -5701,37 +2177,7 @@ class DepositoController extends Controller
                                     ->orderBy('contratos.id','asc')
                                     ->paginate(15);
     
-                                $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    ->select(
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-                
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-                                            )
+                                $contador = $queryCont
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -5746,59 +2192,7 @@ class DepositoController extends Controller
                             
                             elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote == ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras','expedientes.fecha_firma_esc' ,
-                                            'expedientes.descuento', 'expedientes.liquidado',
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'c.f_nacimiento','c.rfc',
-                                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                                            'c.telefono','c.email','creditos.num_dep_economicos',
-                                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                            'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                            'contratos.ext_empresa','contratos.colonia_empresa',
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -5810,37 +2204,7 @@ class DepositoController extends Controller
                                     ->orderBy('contratos.id','asc')
                                     ->paginate(15);
     
-                                $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    ->select(
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-                
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-                                            )
+                                $contador = $queryCont
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -5855,60 +2219,7 @@ class DepositoController extends Controller
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote != ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras','expedientes.fecha_firma_esc' ,
-                                            'expedientes.descuento', 'expedientes.liquidado',
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'c.f_nacimiento','c.rfc',
-                                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                                            'c.telefono','c.email','creditos.num_dep_economicos',
-                                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                            'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                            'contratos.ext_empresa','contratos.colonia_empresa',
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -5920,37 +2231,7 @@ class DepositoController extends Controller
                                     ->orderBy('contratos.id','asc')
                                     ->paginate(15);
     
-                                $contador = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    ->select(
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-                
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-                
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-                                            )
+                                $contador = $queryCont
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -5993,60 +2274,62 @@ class DepositoController extends Controller
         $b_status = $request->b_status;
         $credito = $request->credito;
 
+        $query = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
+            ->leftJoin('creditos','contratos.id','=','creditos.id')
+            ->join('lotes','creditos.lote_id','=','lotes.id')
+            ->join('licencias','lotes.id','=','licencias.id')
+            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+            ->join('personal as c', 'clientes.id', '=', 'c.id')
+            ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+            
+            ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
+                    'licencias.avance',
+                    'creditos.manzana','creditos.num_lote',
+                    'creditos.precio_venta',
+                    'expedientes.valor_escrituras', 
+                    'expedientes.descuento', 
+                    'contratos.enganche_total',
+                    'contratos.saldo',
+                    'i.monto_credito as credito_solic',
+                    'i.cobrado',
+                    'i.segundo_credito',
+                    DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                    'c.f_nacimiento','c.rfc',
+                    'c.homoclave','c.direccion','c.colonia','c.cp',
+                    'c.telefono','c.email','creditos.num_dep_economicos',
+                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                    'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
+                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                    'contratos.ext_empresa','contratos.colonia_empresa',
+
+                    DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                        WHERE pagos_contratos.contrato_id = contratos.id AND 
+                        (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
+                        GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
+
+                    DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                        WHERE pagos_contratos.contrato_id = contratos.id 
+                        GROUP BY pagos_contratos.contrato_id) as totalRestante"),
+                    
+                    DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                        WHERE pagos_contratos.contrato_id = contratos.id 
+                        GROUP BY pagos_contratos.contrato_id) as totalPagares"),
+
+                    DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                        WHERE pagos_contratos.contrato_id = contratos.id AND 
+                        (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
+                        GROUP BY pagos_contratos.contrato_id) as pagares"),
+
+                    DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
+                        WHERE gastos_admin.contrato_id = contratos.id 
+                        GROUP BY gastos_admin.contrato_id) as gastos")
+
+        );
+
         if($b_status == ""){
             if($buscar == '' && $criterio!='c.nombre'){
-                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                        'licencias.avance',
-                                        'creditos.manzana','creditos.num_lote',
-                                        'creditos.precio_venta',
-                                        'expedientes.valor_escrituras', 
-                                        'expedientes.descuento', 
-                                        'contratos.enganche_total',
-                                        'contratos.saldo',
-                                        'i.monto_credito as credito_solic',
-                                        'i.cobrado',
-                                        'i.segundo_credito',
-                                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                        'c.f_nacimiento','c.rfc',
-                                        'c.homoclave','c.direccion','c.colonia','c.cp',
-                                        'c.telefono','c.email','creditos.num_dep_economicos',
-                                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                        'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                        'contratos.ext_empresa','contratos.colonia_empresa',
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                        
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pagares"),
-
-                                        DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                            WHERE gastos_admin.contrato_id = contratos.id 
-                                            GROUP BY gastos_admin.contrato_id) as gastos")
-
-                                        )
+                $contratos = $query
                                 ->where('i.elegido', '=', 1)
                                 ->orderBy('contratos.saldo','desc')
                                 ->orderBy('contratos.id','asc')
@@ -6057,58 +2340,7 @@ class DepositoController extends Controller
                 switch($criterio){
                     case 'c.nombre':{
                         if($buscar2 == ''){
-                            $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                        'creditos.manzana','creditos.num_lote',
-                                        'licencias.avance',
-                                        'creditos.precio_venta',
-                                        'expedientes.valor_escrituras', 
-                                        'expedientes.descuento', 
-                                        'contratos.enganche_total',
-                                        'contratos.saldo',
-                                        'i.monto_credito as credito_solic',
-                                        'i.cobrado',
-                                        'i.segundo_credito',
-                                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                        'c.f_nacimiento','c.rfc',
-                                        'c.homoclave','c.direccion','c.colonia','c.cp',
-                                        'c.telefono','c.email','creditos.num_dep_economicos',
-                                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                        'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                        'contratos.ext_empresa','contratos.colonia_empresa',
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                        
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pagares"),
-
-                                        DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                            WHERE gastos_admin.contrato_id = contratos.id 
-                                            GROUP BY gastos_admin.contrato_id) as gastos")
-
-                                        )
+                            $contratos = $query
                                 ->where('i.elegido', '=', 1)
                                 ->where('c.nombre','like','%'. $buscar . '%')
                                 ->orderBy('contratos.saldo','desc')
@@ -6116,50 +2348,7 @@ class DepositoController extends Controller
                                 ->get();
                         }
                         else{
-                            $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                        'creditos.manzana','creditos.num_lote',
-                                        'licencias.avance',
-                                        'creditos.precio_venta',
-                                        'expedientes.valor_escrituras', 
-                                        'expedientes.descuento', 
-                                        'contratos.enganche_total',
-                                        'contratos.saldo',
-                                        'i.monto_credito as credito_solic',
-                                        'i.cobrado',
-                                        'i.segundo_credito',
-                                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                        
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pagares"),
-
-                                        DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                            WHERE gastos_admin.contrato_id = contratos.id 
-                                            GROUP BY gastos_admin.contrato_id) as gastos")
-
-                                        )
+                            $contratos = $query
                                 ->where('i.elegido', '=', 1)
                                 ->where('c.nombre','like','%'. $buscar . '%')
                                 ->where('c.apellidos','like','%'. $buscar2 . '%')
@@ -6171,58 +2360,7 @@ class DepositoController extends Controller
                     }
 
                     case 'contratos.id':{
-                        $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                        'creditos.manzana','creditos.num_lote',
-                                        'licencias.avance',
-                                        'creditos.precio_venta',
-                                        'expedientes.valor_escrituras', 
-                                        'expedientes.descuento', 
-                                        'contratos.enganche_total',
-                                        'contratos.saldo',
-                                        'i.monto_credito as credito_solic',
-                                        'i.cobrado',
-                                        'i.segundo_credito',
-                                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                        'c.f_nacimiento','c.rfc',
-                                        'c.homoclave','c.direccion','c.colonia','c.cp',
-                                        'c.telefono','c.email','creditos.num_dep_economicos',
-                                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                        'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                        'contratos.ext_empresa','contratos.colonia_empresa',
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                        
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pagares"),
-
-                                        DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                            WHERE gastos_admin.contrato_id = contratos.id 
-                                            GROUP BY gastos_admin.contrato_id) as gastos")
-
-                                        )
+                        $contratos = $query
                                 ->where('i.elegido', '=', 1)
                                 ->where('contratos.id','=', $buscar )
                                 ->orderBy('contratos.saldo','desc')
@@ -6236,60 +2374,7 @@ class DepositoController extends Controller
                         if($credito==''){
                             if($buscar != '' && $buscar2 == '' && $b_manzana == '' && $b_lote == ''){
 
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'c.f_nacimiento','c.rfc',
-                                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                                            'c.telefono','c.email','creditos.num_dep_economicos',
-                                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                            'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                            'contratos.ext_empresa','contratos.colonia_empresa',
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->orderBy('contratos.saldo','desc')
@@ -6298,52 +2383,7 @@ class DepositoController extends Controller
                             }
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote == ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
@@ -6354,52 +2394,7 @@ class DepositoController extends Controller
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote == ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
@@ -6411,52 +2406,7 @@ class DepositoController extends Controller
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote != ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
@@ -6469,52 +2419,7 @@ class DepositoController extends Controller
     
                             elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote != ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     //->where('lotes.etapa_id', '=', $buscar2)
@@ -6527,52 +2432,7 @@ class DepositoController extends Controller
                             
                             elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote == ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     //->where('lotes.etapa_id', '=', $buscar2)
@@ -6585,52 +2445,7 @@ class DepositoController extends Controller
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote != ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
@@ -6644,60 +2459,7 @@ class DepositoController extends Controller
                         else{
                             if($buscar != '' && $buscar2 == '' && $b_manzana == '' && $b_lote == ''){
 
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'c.f_nacimiento','c.rfc',
-                                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                                            'c.telefono','c.email','creditos.num_dep_economicos',
-                                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                            'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                            'contratos.ext_empresa','contratos.colonia_empresa',
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -6707,52 +2469,7 @@ class DepositoController extends Controller
                             }
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote == ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -6764,52 +2481,7 @@ class DepositoController extends Controller
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote == ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -6822,52 +2494,7 @@ class DepositoController extends Controller
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote != ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -6881,52 +2508,7 @@ class DepositoController extends Controller
     
                             elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote != ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -6940,52 +2522,7 @@ class DepositoController extends Controller
                             
                             elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote == ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -6999,52 +2536,7 @@ class DepositoController extends Controller
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote != ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -7057,7 +2549,6 @@ class DepositoController extends Controller
                             }
                         }
                         
-
                         break;
                     }
                 }
@@ -7065,58 +2556,7 @@ class DepositoController extends Controller
 
         }else{
             if($buscar == '' && $criterio!='c.nombre'){
-                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                        'creditos.manzana','creditos.num_lote',
-                                        'licencias.avance',
-                                        'creditos.precio_venta',
-                                        'expedientes.valor_escrituras', 
-                                        'expedientes.descuento', 
-                                        'contratos.enganche_total',
-                                        'contratos.saldo',
-                                        'i.monto_credito as credito_solic',
-                                        'i.cobrado',
-                                        'i.segundo_credito',
-                                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                        'c.f_nacimiento','c.rfc',
-                                        'c.homoclave','c.direccion','c.colonia','c.cp',
-                                        'c.telefono','c.email','creditos.num_dep_economicos',
-                                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                        'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                        'contratos.ext_empresa','contratos.colonia_empresa',
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                        
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pagares"),
-
-                                        DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                            WHERE gastos_admin.contrato_id = contratos.id 
-                                            GROUP BY gastos_admin.contrato_id) as gastos")
-
-                                        )
+                $contratos = $query
                                 ->where('i.elegido', '=', 1)
                                 ->where('contratos.status','=',$b_status)
                                 ->orderBy('contratos.saldo','desc')
@@ -7128,58 +2568,7 @@ class DepositoController extends Controller
                 switch($criterio){
                     case 'c.nombre':{
                         if($buscar2 == ''){
-                            $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                        'creditos.manzana','creditos.num_lote',
-                                        'licencias.avance',
-                                        'creditos.precio_venta',
-                                        'expedientes.valor_escrituras', 
-                                        'expedientes.descuento', 
-                                        'contratos.enganche_total',
-                                        'contratos.saldo',
-                                        'i.monto_credito as credito_solic',
-                                        'i.cobrado',
-                                        'i.segundo_credito',
-                                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                        'c.f_nacimiento','c.rfc',
-                                        'c.homoclave','c.direccion','c.colonia','c.cp',
-                                        'c.telefono','c.email','creditos.num_dep_economicos',
-                                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                        'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                        'contratos.ext_empresa','contratos.colonia_empresa',
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                        
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pagares"),
-
-                                        DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                            WHERE gastos_admin.contrato_id = contratos.id 
-                                            GROUP BY gastos_admin.contrato_id) as gastos")
-
-                                        )
+                            $contratos = $query
                                 ->where('i.elegido', '=', 1)
                                 ->where('c.nombre','like','%'. $buscar . '%')
                                 ->where('contratos.status','=',$b_status)
@@ -7188,50 +2577,7 @@ class DepositoController extends Controller
                                 ->get();
                         }
                         else{
-                            $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                        'creditos.manzana','creditos.num_lote',
-                                        'licencias.avance',
-                                        'creditos.precio_venta',
-                                        'expedientes.valor_escrituras', 
-                                        'expedientes.descuento', 
-                                        'contratos.enganche_total',
-                                        'contratos.saldo',
-                                        'i.monto_credito as credito_solic',
-                                        'i.cobrado',
-                                        'i.segundo_credito',
-                                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                        
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pagares"),
-
-                                        DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                            WHERE gastos_admin.contrato_id = contratos.id 
-                                            GROUP BY gastos_admin.contrato_id) as gastos")
-
-                                        )
+                            $contratos = $query
                                 ->where('i.elegido', '=', 1)
                                 ->where('c.nombre','like','%'. $buscar . '%')
                                 ->where('c.apellidos','like','%'. $buscar2 . '%')
@@ -7244,58 +2590,7 @@ class DepositoController extends Controller
                     }
 
                     case 'contratos.id':{
-                        $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                        'creditos.manzana','creditos.num_lote',
-                                        'licencias.avance',
-                                        'creditos.precio_venta',
-                                        'expedientes.valor_escrituras', 
-                                        'expedientes.descuento', 
-                                        'contratos.enganche_total',
-                                        'contratos.saldo',
-                                        'i.monto_credito as credito_solic',
-                                        'i.cobrado',
-                                        'i.segundo_credito',
-                                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                        'c.f_nacimiento','c.rfc',
-                                        'c.homoclave','c.direccion','c.colonia','c.cp',
-                                        'c.telefono','c.email','creditos.num_dep_economicos',
-                                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                        'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                        'contratos.ext_empresa','contratos.colonia_empresa',
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                        
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id 
-                                            GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-
-                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                            WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                            (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                            GROUP BY pagos_contratos.contrato_id) as pagares"),
-
-                                        DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                            WHERE gastos_admin.contrato_id = contratos.id 
-                                            GROUP BY gastos_admin.contrato_id) as gastos")
-
-                                        )
+                        $contratos = $query
                                 ->where('i.elegido', '=', 1)
                                 ->where('contratos.id','=', $buscar )
                                 ->where('contratos.status','=',$b_status)
@@ -7310,60 +2605,7 @@ class DepositoController extends Controller
                         if($credito==''){
                             if($buscar != '' && $buscar2 == '' && $b_manzana == '' && $b_lote == ''){
 
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'c.f_nacimiento','c.rfc',
-                                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                                            'c.telefono','c.email','creditos.num_dep_economicos',
-                                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                            'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                            'contratos.ext_empresa','contratos.colonia_empresa',
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->where('contratos.status','=',$b_status)
@@ -7373,52 +2615,7 @@ class DepositoController extends Controller
                             }
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote == ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
@@ -7430,52 +2627,7 @@ class DepositoController extends Controller
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote == ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
@@ -7488,52 +2640,7 @@ class DepositoController extends Controller
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote != ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
@@ -7547,52 +2654,7 @@ class DepositoController extends Controller
     
                             elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote != ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                            
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     //->where('lotes.etapa_id', '=', $buscar2)
@@ -7606,51 +2668,7 @@ class DepositoController extends Controller
                             
                             elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote == ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     //->where('lotes.etapa_id', '=', $buscar2)
@@ -7664,52 +2682,7 @@ class DepositoController extends Controller
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote != ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
@@ -7724,60 +2697,7 @@ class DepositoController extends Controller
                         else{
                             if($buscar != '' && $buscar2 == '' && $b_manzana == '' && $b_lote == ''){
 
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                    
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'c.f_nacimiento','c.rfc',
-                                            'c.homoclave','c.direccion','c.colonia','c.cp',
-                                            'c.telefono','c.email','creditos.num_dep_economicos',
-                                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
-                                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                                            'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
-                                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                            'contratos.ext_empresa','contratos.colonia_empresa',
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -7788,52 +2708,7 @@ class DepositoController extends Controller
                             }
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote == ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -7846,52 +2721,7 @@ class DepositoController extends Controller
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote == ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -7905,52 +2735,7 @@ class DepositoController extends Controller
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote != ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -7965,52 +2750,7 @@ class DepositoController extends Controller
     
                             elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote != ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                            
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -8025,51 +2765,7 @@ class DepositoController extends Controller
                             
                             elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote == ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
@@ -8084,52 +2780,7 @@ class DepositoController extends Controller
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote != ''){
     
-                                $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                    ->leftJoin('creditos','contratos.id','=','creditos.id')
-                                    ->join('lotes','creditos.lote_id','=','lotes.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
-                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                
-                                    
-                                    ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote',
-                                            'licencias.avance',
-                                            'creditos.precio_venta',
-                                            'expedientes.valor_escrituras', 
-                                            'expedientes.descuento', 
-                                            'contratos.enganche_total',
-                                            'contratos.saldo',
-                                            'i.monto_credito as credito_solic',
-                                            'i.cobrado',
-                                            'i.segundo_credito',
-                                            'lotes.etapa_id',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                                            
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id 
-                                                GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-    
-                                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                                                WHERE pagos_contratos.contrato_id = contratos.id AND 
-                                                (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                                                GROUP BY pagos_contratos.contrato_id) as pagares"),
-    
-                                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                                                WHERE gastos_admin.contrato_id = contratos.id 
-                                                GROUP BY gastos_admin.contrato_id) as gastos")
-    
-                                            )
+                                $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)

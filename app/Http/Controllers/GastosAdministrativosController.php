@@ -20,40 +20,30 @@ class GastosAdministrativosController extends Controller
         $buscar3 = $request->buscar3;
         $criterio = $request->criterio;
 
+        $query = Gasto_admin::join('contratos','gastos_admin.contrato_id','=','contratos.id')
+            ->join('creditos','contratos.id','=','creditos.id')
+            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+            ->join('personal','clientes.id','=','personal.id')
+            ->select('contratos.id as folio','personal.nombre', 'personal.apellidos','creditos.fraccionamiento',
+                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','gastos_admin.id as gastoId',
+                    'gastos_admin.concepto','gastos_admin.costo','gastos_admin.observacion','gastos_admin.fecha');
+
         if($buscar==''){
-            $gastos = Gasto_admin::join('contratos','gastos_admin.contrato_id','=','contratos.id')
-                    ->join('creditos','contratos.id','=','creditos.id')
-                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                    ->join('personal','clientes.id','=','personal.id')
-                    ->select('contratos.id as folio','personal.nombre', 'personal.apellidos','creditos.fraccionamiento',
-                            'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','gastos_admin.id as gastoId',
-                            'gastos_admin.concepto','gastos_admin.costo','gastos_admin.observacion','gastos_admin.fecha')
+            $gastos = $query
                     ->orderBy('contratos.id','asc')
                     ->paginate(8);
         }
         else{
             switch($criterio){
                 case 'gastos_admin.fecha':{
-                    $gastos = Gasto_admin::join('contratos','gastos_admin.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('personal','clientes.id','=','personal.id')
-                        ->select('contratos.id as folio','personal.nombre', 'personal.apellidos','creditos.fraccionamiento',
-                                'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','gastos_admin.id as gastoId',
-                                'gastos_admin.concepto','gastos_admin.costo','gastos_admin.observacion','gastos_admin.fecha')
+                    $gastos = $query
                         ->orderBy('contratos.id','asc')
                         ->whereBetween($criterio, [$buscar,$buscar2])
                         ->paginate(8);
                     break;
                 }
                 case 'personal.nombre':{
-                    $gastos = Gasto_admin::join('contratos','gastos_admin.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('personal','clientes.id','=','personal.id')
-                        ->select('contratos.id as folio','personal.nombre', 'personal.apellidos','creditos.fraccionamiento',
-                                'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','gastos_admin.id as gastoId',
-                                'gastos_admin.concepto','gastos_admin.costo','gastos_admin.observacion','gastos_admin.fecha')
+                    $gastos = $query
                         ->orderBy('contratos.id','asc')
                         ->where($criterio, 'like', '%'.$buscar . '%')
                         ->orWhere('personal.apellidos','like', '%'.$buscar .'%')
@@ -62,26 +52,14 @@ class GastosAdministrativosController extends Controller
                 }
                 case 'creditos.fraccionamiento':{
                     if($buscar2 == '' && $buscar3 == ''){
-                        $gastos = Gasto_admin::join('contratos','gastos_admin.contrato_id','=','contratos.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->select('contratos.id as folio','personal.nombre', 'personal.apellidos','creditos.fraccionamiento',
-                                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','gastos_admin.id as gastoId',
-                                    'gastos_admin.concepto','gastos_admin.costo','gastos_admin.observacion','gastos_admin.fecha')
+                        $gastos = $query
                             ->orderBy('contratos.id','asc')
                             ->where($criterio, '=', $buscar)
                             ->paginate(8);
                         break;
                     }
                     elseif($buscar2 != '' && $buscar3 == ''){
-                        $gastos = Gasto_admin::join('contratos','gastos_admin.contrato_id','=','contratos.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->select('contratos.id as folio','personal.nombre', 'personal.apellidos','creditos.fraccionamiento',
-                                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','gastos_admin.id as gastoId',
-                                    'gastos_admin.concepto','gastos_admin.costo','gastos_admin.observacion','gastos_admin.fecha')
+                        $gastos = $query
                             ->orderBy('contratos.id','asc')
                             ->where($criterio, '=', $buscar)
                             ->where('creditos.etapa', '=', $buscar2)
@@ -89,13 +67,7 @@ class GastosAdministrativosController extends Controller
                         break;
                     }
                     elseif($buscar2 == '' && $buscar3 != ''){
-                        $gastos = Gasto_admin::join('contratos','gastos_admin.contrato_id','=','contratos.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->select('contratos.id as folio','personal.nombre', 'personal.apellidos','creditos.fraccionamiento',
-                                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','gastos_admin.id as gastoId',
-                                    'gastos_admin.concepto','gastos_admin.costo','gastos_admin.observacion','gastos_admin.fecha')
+                        $gastos =$query
                             ->orderBy('contratos.id','asc')
                             ->where($criterio, '=', $buscar)
                             ->where('creditos.manzana', '=', $buscar3)
@@ -103,13 +75,7 @@ class GastosAdministrativosController extends Controller
                         break;
                     }
                     else{
-                        $gastos = Gasto_admin::join('contratos','gastos_admin.contrato_id','=','contratos.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->select('contratos.id as folio','personal.nombre', 'personal.apellidos','creditos.fraccionamiento',
-                                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','gastos_admin.id as gastoId',
-                                    'gastos_admin.concepto','gastos_admin.costo','gastos_admin.observacion','gastos_admin.fecha')
+                        $gastos = $query
                             ->orderBy('contratos.id','asc')
                             ->where($criterio, '=', $buscar)
                             ->where('creditos.etapa', '=', $buscar2)
@@ -119,13 +85,7 @@ class GastosAdministrativosController extends Controller
                     }
                 }
                 default:{
-                    $gastos = Gasto_admin::join('contratos','gastos_admin.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('personal','clientes.id','=','personal.id')
-                        ->select('contratos.id as folio','personal.nombre', 'personal.apellidos','creditos.fraccionamiento',
-                                'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','gastos_admin.id as gastoId',
-                                'gastos_admin.concepto','gastos_admin.costo','gastos_admin.observacion','gastos_admin.fecha')
+                    $gastos = $query
                         ->orderBy('contratos.id','asc')
                         ->where($criterio, '=', $buscar)
                         ->paginate(8);
@@ -153,40 +113,30 @@ class GastosAdministrativosController extends Controller
         $buscar3 = $request->buscar3;
         $criterio = $request->criterio;
 
+        $query = Gasto_admin::join('contratos','gastos_admin.contrato_id','=','contratos.id')
+            ->join('creditos','contratos.id','=','creditos.id')
+            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+            ->join('personal','clientes.id','=','personal.id')
+            ->select('contratos.id as folio','personal.nombre', 'personal.apellidos','creditos.fraccionamiento',
+                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','gastos_admin.id as gastoId',
+                    'gastos_admin.concepto','gastos_admin.costo','gastos_admin.observacion','gastos_admin.fecha');
+
         if($buscar==''){
-            $gastos = Gasto_admin::join('contratos','gastos_admin.contrato_id','=','contratos.id')
-                    ->join('creditos','contratos.id','=','creditos.id')
-                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                    ->join('personal','clientes.id','=','personal.id')
-                    ->select('contratos.id as folio','personal.nombre', 'personal.apellidos','creditos.fraccionamiento',
-                            'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','gastos_admin.id as gastoId',
-                            'gastos_admin.concepto','gastos_admin.costo','gastos_admin.observacion','gastos_admin.fecha')
+            $gastos = $query
                     ->orderBy('contratos.id','asc')
                     ->get();
         }
         else{
             switch($criterio){
                 case 'gastos_admin.fecha':{
-                    $gastos = Gasto_admin::join('contratos','gastos_admin.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('personal','clientes.id','=','personal.id')
-                        ->select('contratos.id as folio','personal.nombre', 'personal.apellidos','creditos.fraccionamiento',
-                                'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','gastos_admin.id as gastoId',
-                                'gastos_admin.concepto','gastos_admin.costo','gastos_admin.observacion','gastos_admin.fecha')
+                    $gastos = $query
                         ->orderBy('contratos.id','asc')
                         ->whereBetween($criterio, [$buscar,$buscar2])
                         ->get();
                     break;
                 }
                 case 'personal.nombre':{
-                    $gastos = Gasto_admin::join('contratos','gastos_admin.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('personal','clientes.id','=','personal.id')
-                        ->select('contratos.id as folio','personal.nombre', 'personal.apellidos','creditos.fraccionamiento',
-                                'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','gastos_admin.id as gastoId',
-                                'gastos_admin.concepto','gastos_admin.costo','gastos_admin.observacion','gastos_admin.fecha')
+                    $gastos = $query
                         ->orderBy('contratos.id','asc')
                         ->where($criterio, 'like', '%'.$buscar . '%')
                         ->orWhere('personal.apellidos','like', '%'.$buscar .'%')
@@ -195,26 +145,14 @@ class GastosAdministrativosController extends Controller
                 }
                 case 'creditos.fraccionamiento':{
                     if($buscar2 == '' && $buscar3 == ''){
-                        $gastos = Gasto_admin::join('contratos','gastos_admin.contrato_id','=','contratos.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->select('contratos.id as folio','personal.nombre', 'personal.apellidos','creditos.fraccionamiento',
-                                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','gastos_admin.id as gastoId',
-                                    'gastos_admin.concepto','gastos_admin.costo','gastos_admin.observacion','gastos_admin.fecha')
+                        $gastos = $query
                             ->orderBy('contratos.id','asc')
                             ->where($criterio, '=', $buscar)
                             ->get();
                         break;
                     }
                     elseif($buscar2 != '' && $buscar3 == ''){
-                        $gastos = Gasto_admin::join('contratos','gastos_admin.contrato_id','=','contratos.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->select('contratos.id as folio','personal.nombre', 'personal.apellidos','creditos.fraccionamiento',
-                                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','gastos_admin.id as gastoId',
-                                    'gastos_admin.concepto','gastos_admin.costo','gastos_admin.observacion','gastos_admin.fecha')
+                        $gastos = $query
                             ->orderBy('contratos.id','asc')
                             ->where($criterio, '=', $buscar)
                             ->where('creditos.etapa', '=', $buscar2)
@@ -222,13 +160,7 @@ class GastosAdministrativosController extends Controller
                         break;
                     }
                     elseif($buscar2 == '' && $buscar3 != ''){
-                        $gastos = Gasto_admin::join('contratos','gastos_admin.contrato_id','=','contratos.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->select('contratos.id as folio','personal.nombre', 'personal.apellidos','creditos.fraccionamiento',
-                                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','gastos_admin.id as gastoId',
-                                    'gastos_admin.concepto','gastos_admin.costo','gastos_admin.observacion','gastos_admin.fecha')
+                        $gastos = $query
                             ->orderBy('contratos.id','asc')
                             ->where($criterio, '=', $buscar)
                             ->where('creditos.manzana', '=', $buscar3)
@@ -236,13 +168,7 @@ class GastosAdministrativosController extends Controller
                         break;
                     }
                     else{
-                        $gastos = Gasto_admin::join('contratos','gastos_admin.contrato_id','=','contratos.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->join('personal','clientes.id','=','personal.id')
-                            ->select('contratos.id as folio','personal.nombre', 'personal.apellidos','creditos.fraccionamiento',
-                                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','gastos_admin.id as gastoId',
-                                    'gastos_admin.concepto','gastos_admin.costo','gastos_admin.observacion','gastos_admin.fecha')
+                        $gastos = $query
                             ->orderBy('contratos.id','asc')
                             ->where($criterio, '=', $buscar)
                             ->where('creditos.etapa', '=', $buscar2)
@@ -252,13 +178,7 @@ class GastosAdministrativosController extends Controller
                     }
                 }
                 default:{
-                    $gastos = Gasto_admin::join('contratos','gastos_admin.contrato_id','=','contratos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('personal','clientes.id','=','personal.id')
-                        ->select('contratos.id as folio','personal.nombre', 'personal.apellidos','creditos.fraccionamiento',
-                                'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','gastos_admin.id as gastoId',
-                                'gastos_admin.concepto','gastos_admin.costo','gastos_admin.observacion','gastos_admin.fecha')
+                    $gastos = $query
                         ->orderBy('contratos.id','asc')
                         ->where($criterio, '=', $buscar)
                         ->get();
@@ -342,7 +262,7 @@ class GastosAdministrativosController extends Controller
             $avaluo->save();
 
             $contrato = Contrato::findOrFail($request->id);
-            $contrato->saldo = $contrato->saldo + $request->costo;
+            $contrato->saldo = round($contrato->saldo + $request->costo, 2);
             $contrato->save(); 
             DB::commit();
         } catch (Exception $e){
@@ -387,7 +307,7 @@ class GastosAdministrativosController extends Controller
             $avaluo->save();
 
             $contrato = Contrato::findOrFail($contrato_id);
-            $contrato->saldo = $contrato->saldo - $costo_ant + $request->costo;
+            $contrato->saldo = round($contrato->saldo - $costo_ant + $request->costo,2);
             $contrato->save(); 
             DB::commit();
         } catch (Exception $e){
@@ -402,23 +322,21 @@ class GastosAdministrativosController extends Controller
         $b3 = $request->b3;
         $criterio2 = $request->criterio2;
 
-        if($b == ''){
-            $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
+        $query = Contrato::join('creditos','contratos.id','=','creditos.id')
             ->join('clientes','creditos.prospecto_id','=','clientes.id')
             ->join('personal','clientes.id','=','personal.id')
             ->select(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),'contratos.id as folio',
-                       'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.num_lote')
+                    'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.num_lote');
+
+        if($b == ''){
+            $contratos = $query
            ->where('contratos.status','!=',0)
            ->orderBy('contratos.id','asc')
            ->paginate(8);
         }else{
             switch($criterio2){
                 case 'contratos.id': {
-                    $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
-                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                    ->join('personal','clientes.id','=','personal.id')
-                    ->select(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),'contratos.id as folio',
-                                'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.num_lote')
+                    $contratos = $query
                     ->where('contratos.status','!=',0)
                     ->where('contratos.id','=',$b)
                     ->orderBy('contratos.id','asc')
@@ -426,11 +344,7 @@ class GastosAdministrativosController extends Controller
                     break;
                 }
                 case 'personal.nombre': {
-                    $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
-                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                    ->join('personal','clientes.id','=','personal.id')
-                    ->select(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),'contratos.id as folio',
-                                'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.num_lote')
+                    $contratos = $query
                     ->where('contratos.status','!=',0)
                     ->where('personal.nombre','LIKE','%'.$b.'%')
                     ->orwhere('contratos.status','!=',0)
@@ -442,22 +356,14 @@ class GastosAdministrativosController extends Controller
 
                 case 'creditos.fraccionamiento': {
                     if($b2 == '' && $b3 == ''){
-                    $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
-                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                    ->join('personal','clientes.id','=','personal.id')
-                    ->select(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),'contratos.id as folio',
-                                'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.num_lote')
+                    $contratos = $query
                     ->where('contratos.status','!=',0)
                     ->where($criterio2,'=',$b)
                     ->orderBy('contratos.id','asc')
                     ->paginate(8);
                     break;
                     }elseif($b2 != '' && $b3 == ''){
-                        $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('personal','clientes.id','=','personal.id')
-                        ->select(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),'contratos.id as folio',
-                                    'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.num_lote')
+                        $contratos = $query
                         ->where('contratos.status','!=',0)
                         ->where($criterio2,'=',$b)
                         ->where('creditos.etapa','=',$b2)
@@ -465,11 +371,7 @@ class GastosAdministrativosController extends Controller
                         ->paginate(8);
                         break;
                     }elseif ($b2 == '' && $b3 != '') {
-                        $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('personal','clientes.id','=','personal.id')
-                        ->select(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),'contratos.id as folio',
-                                    'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.num_lote')
+                        $contratos = $query
                         ->where('contratos.status','!=',0)
                         ->where($criterio2,'=',$b)
                         ->where('creditos.manzana','=',$b3)
@@ -477,11 +379,7 @@ class GastosAdministrativosController extends Controller
                         ->paginate(8);
                         break;
                     }else {
-                        $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('personal','clientes.id','=','personal.id')
-                        ->select(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),'contratos.id as folio',
-                                    'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.num_lote')
+                        $contratos = $query
                         ->where('contratos.status','!=',0)
                         ->where($criterio2,'=',$b)
                         ->where('creditos.etapa','=',$b2)
@@ -492,11 +390,7 @@ class GastosAdministrativosController extends Controller
                     }
                 }
                 default: {
-                    $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
-                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                    ->join('personal','clientes.id','=','personal.id')
-                    ->select(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),'contratos.id as folio',
-                                'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.num_lote')
+                    $contratos = $query
                     ->where('contratos.status','!=',0)
                     ->where($criterio2,'=',$b)
                     ->orderBy('contratos.id','asc')
@@ -533,7 +427,7 @@ class GastosAdministrativosController extends Controller
             $gastos->save();
 
             $contrato = Contrato::findOrFail($request->contrato_id);
-            $contrato->saldo = $contrato->saldo + $request->costo;
+            $contrato->saldo = round($contrato->saldo + $request->costo,2);
             $contrato->save(); 
             DB::commit();
         } catch (Exception $e){
@@ -555,7 +449,7 @@ class GastosAdministrativosController extends Controller
             $gastos->save();
 
             $contrato = Contrato::findOrFail($contrato_id);
-            $contrato->saldo = $contrato->saldo - $costo_ant + $request->costo;
+            $contrato->saldo = round($contrato->saldo - $costo_ant + $request->costo,2);
             $contrato->save(); 
             DB::commit();
         } catch (Exception $e){
@@ -573,7 +467,7 @@ class GastosAdministrativosController extends Controller
             $gastos->delete();
 
             $contrato = Contrato::findOrFail($contrato_id);
-            $contrato->saldo = $contrato->saldo - $costo_ant;
+            $contrato->saldo = round($contrato->saldo - $costo_ant,2);
             $contrato->save(); 
             DB::commit();
         } catch (Exception $e){

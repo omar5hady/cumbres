@@ -13,11 +13,7 @@ use App\Version_modelo;
 
 class ModeloController extends Controller
 {
-     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+     
     public function index(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
@@ -57,22 +53,6 @@ class ModeloController extends Controller
         ];
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     //funcion para insertar en la tabla
     public function store(Request $request)
     {
@@ -289,14 +269,6 @@ class ModeloController extends Controller
         }
     }
 
- 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     //funcion para actualizar los datos
     public function update(Request $request)
     {
@@ -312,12 +284,6 @@ class ModeloController extends Controller
         $modelo->save();
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -398,24 +364,21 @@ class ModeloController extends Controller
         $b_etapa = $request->b_etapa;
         $b_modelo = $request->b_modelo;
 
-        if($b_fraccionamiento == '' && $b_etapa == '' && $b_modelo == ''){
-            $archivos = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
+        $query = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
             ->join('etapas','fraccionamientos.id','=','etapas.fraccionamiento_id')
             ->select('modelos.archivo','modelos.nombre as modelo','etapas.num_etapa','etapas.archivo_reglamento',
             'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','fraccionamientos.plantilla_telecom',
             'fraccionamientos.nombre as proyecto','fraccionamientos.empresas_telecom','fraccionamientos.empresas_telecom_satelital',
-            'modelos.id as modeloID','etapas.id as etapaID','fraccionamientos.id as fraccionamientoID')
+            'modelos.id as modeloID','etapas.id as etapaID','fraccionamientos.id as fraccionamientoID');
+
+        if($b_fraccionamiento == '' && $b_etapa == '' && $b_modelo == ''){
+            $archivos = $query
             ->where('modelos.nombre','!=','Por Asignar')
             ->where('etapas.num_etapa','!=','Sin Asignar')
             ->orderBy('modelos.nombre','asc')->distinct()->paginate(10);
         }else{
             if($b_fraccionamiento != '' && $b_etapa != '' && $b_modelo != ''){
-                $archivos = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
-                ->join('etapas','fraccionamientos.id','=','etapas.fraccionamiento_id')
-                ->select('modelos.archivo','modelos.nombre as modelo','etapas.num_etapa','etapas.archivo_reglamento',
-                'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','fraccionamientos.plantilla_telecom',
-                'fraccionamientos.nombre as proyecto','fraccionamientos.empresas_telecom','fraccionamientos.empresas_telecom_satelital',
-                'modelos.id as modeloID','etapas.id as etapaID','fraccionamientos.id as fraccionamientoID')
+                $archivos = $query
                 ->where('modelos.nombre','!=','Por Asignar')
                 ->where('etapas.num_etapa','!=','Sin Asignar')
                 ->where($criterio,'=',$b_fraccionamiento)
@@ -424,12 +387,7 @@ class ModeloController extends Controller
                 ->orderBy('modelos.nombre','asc')->distinct()->paginate(10);
             }else{
                 if($b_fraccionamiento != '' && $b_etapa != '' && $b_modelo == ''){
-                    $archivos = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
-                    ->join('etapas','fraccionamientos.id','=','etapas.fraccionamiento_id')
-                    ->select('modelos.archivo','modelos.nombre as modelo','etapas.num_etapa','etapas.archivo_reglamento',
-                    'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','fraccionamientos.plantilla_telecom',
-                    'fraccionamientos.nombre as proyecto','fraccionamientos.empresas_telecom','fraccionamientos.empresas_telecom_satelital',
-                    'modelos.id as modeloID','etapas.id as etapaID','fraccionamientos.id as fraccionamientoID')
+                    $archivos = $query
                     ->where('modelos.nombre','!=','Por Asignar')
                     ->where('etapas.num_etapa','!=','Sin Asignar')
                     ->where($criterio,'=',$b_fraccionamiento)
@@ -437,31 +395,21 @@ class ModeloController extends Controller
                     ->orderBy('modelos.nombre','asc')->distinct()->paginate(10);
                 }else{
                     if($b_fraccionamiento != '' && $b_etapa == '' && $b_modelo != ''){
-                        $archivos = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
-                        ->join('etapas','fraccionamientos.id','=','etapas.fraccionamiento_id')
-                        ->select('modelos.archivo','modelos.nombre as modelo','etapas.num_etapa','etapas.archivo_reglamento',
-                        'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','fraccionamientos.plantilla_telecom',
-                        'fraccionamientos.nombre as proyecto','fraccionamientos.empresas_telecom','fraccionamientos.empresas_telecom_satelital',
-                        'modelos.id as modeloID','etapas.id as etapaID','fraccionamientos.id as fraccionamientoID')
+                        $archivos = $query
                         ->where('modelos.nombre','!=','Por Asignar')
                         ->where('etapas.num_etapa','!=','Sin Asignar')
                         ->where($criterio,'=',$b_fraccionamiento)
                         ->where('modelos.id','=',$b_modelo)
                         ->orderBy('modelos.nombre','asc')->distinct()->paginate(10);
-                }else{
-                    if($b_fraccionamiento != '' && $b_etapa == '' && $b_modelo == ''){
-                        $archivos = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
-                        ->join('etapas','fraccionamientos.id','=','etapas.fraccionamiento_id')
-                        ->select('modelos.archivo','modelos.nombre as modelo','etapas.num_etapa','etapas.archivo_reglamento',
-                        'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','fraccionamientos.plantilla_telecom',
-                        'fraccionamientos.nombre as proyecto','fraccionamientos.empresas_telecom','fraccionamientos.empresas_telecom_satelital',
-                        'modelos.id as modeloID','etapas.id as etapaID','fraccionamientos.id as fraccionamientoID')
-                        ->where('modelos.nombre','!=','Por Asignar')
-                        ->where('etapas.num_etapa','!=','Sin Asignar')
-                        ->where($criterio,'=',$b_fraccionamiento)
-                        ->orderBy('modelos.nombre','asc')->distinct()->paginate(10);
+                    }else{
+                        if($b_fraccionamiento != '' && $b_etapa == '' && $b_modelo == ''){
+                            $archivos = $query
+                            ->where('modelos.nombre','!=','Por Asignar')
+                            ->where('etapas.num_etapa','!=','Sin Asignar')
+                            ->where($criterio,'=',$b_fraccionamiento)
+                            ->orderBy('modelos.nombre','asc')->distinct()->paginate(10);
+                        }
                     }
-                }
                 }
             }
         }  

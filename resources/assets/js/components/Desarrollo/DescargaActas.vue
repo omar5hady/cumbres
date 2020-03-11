@@ -45,7 +45,7 @@
                                     </select>
                                     <select class="form-control" @keyup.enter="listarDescargas(1)" v-model="b_lote" >
                                         <option value="">Lote</option>
-                                        <option v-for="lotes in arrayLotes" :key="lotes.id" :value="lotes.num_lote" v-text="lotes.num_lote"></option>
+                                        <option v-for="lotes in arrayAllLotes" :key="lotes.id" :value="lotes.num_lote" v-text="lotes.num_lote"></option>
                                     </select>
                                 </div>
                             </div>
@@ -62,7 +62,7 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-sm">
+                            <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
                                         <th>Fraccionamiento</th>
@@ -70,19 +70,23 @@
                                         <th>Manzana</th>
                                         <th>Lote</th>
                                         <th>Modelo</th>
+                                        <th>Dirección</th>
+                                        <th>Precio venta</th>
                                         <th>Fecha de subida </th>
                                         <th>Archivo</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="lote in arrayLotes" :key="lote.id">
-                                        <td v-text="lote.proyecto"></td>
-                                        <td v-text="lote.num_etapa"></td>
-                                        <td v-text="lote.manzana"></td>
-                                        <td v-text="lote.num_lote"></td>
-                                        <td v-text="lote.modelo"></td>
-                                        <td v-text="lote.fecha"></td>
-                                        <td>
+                                        <td class="td2" v-text="lote.proyecto"></td>
+                                        <td class="td2" v-text="lote.num_etapa"></td>
+                                        <td class="td2" v-text="lote.manzana"></td>
+                                        <td class="td2" v-text="lote.num_lote"></td>
+                                        <td class="td2" v-text="lote.modelo"></td>
+                                        <td class="td2" v-text="lote.calle + ' #' + lote.numero"></td>
+                                        <td class="td2" v-text="'$'+formatNumber(lote.precio_base+lote.ajuste+lote.obra_extra+lote.excedente_terreno+lote.sobreprecio)"></td>
+                                        <td class="td2" v-text="this.moment(lote.fecha).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <td class="td2">
                                             <a v-if="criterio == 'licencias.fecha_predial' " title="Descargar predial" class="btn btn-success btn-sm" v-bind:href="'/downloadPredial/'+lote.archivo">
                                                 <i class="fa fa-arrow-circle-down fa-lg"></i>
                                             </a>
@@ -142,6 +146,7 @@
                 arrayFraccionamientos : [],
                 arrayManzanas : [],
                 arrayLotes : [],
+                arrayAllLotes : [],
                 b_proyecto: '',
                 b_etapa : '',
                 b_manzana : '',
@@ -248,15 +253,19 @@
                 let me = this;
                 me.b_lote="";
 
-                me.arrayLotes=[];
+                me.arrayAllLotes=[];
                 var url = '/select_lotes_manzana?buscar=' + buscar1 + '&buscar1='+ buscar2 + '&buscar2='+ buscar3;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                    me.arrayLotes = respuesta.lote_manzana;
+                    me.arrayAllLotes = respuesta.lote_manzana;
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+            formatNumber(value) {
+                let val = (value/1).toFixed(2)
+                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
             
             cambiarPagina(page){
@@ -303,4 +312,32 @@
         color: red !important;
         font-weight: bold;
     }
+    .table2 {
+    margin: auto;
+    border-collapse: collapse;
+    overflow-x: auto;
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+    }
+
+    .td2, .th2 {
+    border: solid rgb(200, 200, 200) 1px;
+    padding: .5rem;
+    }
+
+    .td2 {
+    white-space: nowrap;
+    border-bottom: none;
+    color: rgb(20, 20, 20);
+    }
+
+    .td2:first-of-type, th:first-of-type {
+    border-left: none;
+    }
+
+    .td2:last-of-type, th:last-of-type {
+    border-right: none;
+    } 
 </style>

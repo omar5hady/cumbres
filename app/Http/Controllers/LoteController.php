@@ -44,19 +44,27 @@ class LoteController extends Controller
         $criterio = $request->criterio;
         $b_puente = $request->b_puente;
 
+        $query = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+            ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
+            ->join('modelos','lotes.modelo_id','=','modelos.id')
+            ->join('empresas','lotes.empresa_id','=','empresas.id')
+            ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
+                  'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
+                  'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
+                  'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
+                  'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios',
+                  'lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
+                  'lotes.fecha_termino_ventas');
+
+        $queryCont =  Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                          ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
+                          ->join('modelos','lotes.modelo_id','=','modelos.id')
+                          ->join('empresas','lotes.empresa_id','=','empresas.id')
+                          ->select('lotes.id');
+
         if($b_habilitado != ''){
             if($buscar==''){
-                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                          'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                          'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                          'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                          'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios',
-                          'lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                          'lotes.fecha_termino_ventas')
+                $lotes = $query
                           ->where('lotes.habilitado','=', $b_habilitado)
                           ->orderBy('fraccionamientos.nombre','ASC')
                           ->orderBy('etapas.num_etapa','ASC')
@@ -64,11 +72,7 @@ class LoteController extends Controller
                           ->orderBy('lotes.num_lote','ASC')
                           ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
     
-                          $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                          ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                          ->join('modelos','lotes.modelo_id','=','modelos.id')
-                          ->join('empresas','lotes.empresa_id','=','empresas.id')
-                          ->select('lotes.id')
+                          $contadorLotes = $queryCont
                                     ->where('lotes.habilitado','=', $b_habilitado)
                                     ->orderBy('fraccionamientos.nombre','ASC')
                                     ->orderBy('etapas.num_etapa','ASC')
@@ -80,16 +84,7 @@ class LoteController extends Controller
                 if($buscar2=='' && $buscar3=='' && $b_modelo=='' && $b_lote=='')
                 {
                     if($b_puente == ''){
-                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                        ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                'lotes.fecha_termino_ventas')
+                        $lotes = $query
                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                 ->where('lotes.habilitado','=', $b_habilitado)
                                 ->orderBy('fraccionamientos.nombre','ASC')
@@ -98,30 +93,17 @@ class LoteController extends Controller
                                 ->orderBy('lotes.num_lote','ASC')
                                 ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                            $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                            ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                            ->select('lotes.id')
-                            ->where($criterio, 'like', '%'. $buscar . '%')
-                            ->where('lotes.habilitado','=', $b_habilitado)
-                            ->orderBy('fraccionamientos.nombre','ASC')
-                            ->orderBy('etapas.num_etapa','ASC')
-                            ->orderBy('lotes.manzana','ASC')
-                            ->orderBy('lotes.num_lote','ASC')
-                            ->orderBy('lotes.etapa_servicios','ASC')->count();
+                            $contadorLotes = $queryCont
+                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                ->where('lotes.habilitado','=', $b_habilitado)
+                                ->orderBy('fraccionamientos.nombre','ASC')
+                                ->orderBy('etapas.num_etapa','ASC')
+                                ->orderBy('lotes.manzana','ASC')
+                                ->orderBy('lotes.num_lote','ASC')
+                                ->orderBy('lotes.etapa_servicios','ASC')->count();
                     }
                     else{
-                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                        ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                'lotes.fecha_termino_ventas')
+                        $lotes = $query
                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                 ->where('lotes.habilitado','=', $b_habilitado)
                                 ->where('lotes.credito_puente','=',$b_puente)
@@ -131,11 +113,7 @@ class LoteController extends Controller
                                 ->orderBy('lotes.num_lote','ASC')
                                 ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
     
-                        $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                            ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                            ->select('lotes.id')
+                        $contadorLotes = $queryCont
                             ->where($criterio, 'like', '%'. $buscar . '%')
                             ->where('lotes.habilitado','=', $b_habilitado)
                             ->where('lotes.credito_puente','=',$b_puente)
@@ -150,51 +128,29 @@ class LoteController extends Controller
                 else{
                     if($b_puente == ''){
                         if($buscar2!='' && $b_lote=='' && $buscar3=='' && $b_modelo==''){
-                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                            ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                            ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                    'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                    'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                    'lotes.fecha_termino_ventas')
-                            ->where($criterio, 'like', '%'. $buscar . '%')
-                            ->where('lotes.etapa_id','=',  $buscar2 )
-                            ->where('lotes.habilitado','=', $b_habilitado)
-                            ->orderBy('fraccionamientos.nombre','ASC')
-                            ->orderBy('etapas.num_etapa','ASC')
-                            ->orderBy('lotes.manzana','ASC')
-                            ->orderBy('lotes.num_lote','ASC')
-                            ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
+                            $lotes = $query
+                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                ->where('lotes.etapa_id','=',  $buscar2 )
+                                ->where('lotes.habilitado','=', $b_habilitado)
+                                ->orderBy('fraccionamientos.nombre','ASC')
+                                ->orderBy('etapas.num_etapa','ASC')
+                                ->orderBy('lotes.manzana','ASC')
+                                ->orderBy('lotes.num_lote','ASC')
+                                ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                            $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                            ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                            ->select('lotes.id')
-                            ->where($criterio, 'like', '%'. $buscar . '%')
-                            ->where('lotes.etapa_id','=',  $buscar2 )
-                            ->where('lotes.habilitado','=', $b_habilitado)
-                            ->orderBy('fraccionamientos.nombre','ASC')
-                            ->orderBy('etapas.num_etapa','ASC')
-                            ->orderBy('lotes.manzana','ASC')
-                            ->orderBy('lotes.num_lote','ASC')
-                            ->orderBy('lotes.etapa_servicios','ASC')->count();
+                            $contadorLotes = $queryCont
+                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                ->where('lotes.etapa_id','=',  $buscar2 )
+                                ->where('lotes.habilitado','=', $b_habilitado)
+                                ->orderBy('fraccionamientos.nombre','ASC')
+                                ->orderBy('etapas.num_etapa','ASC')
+                                ->orderBy('lotes.manzana','ASC')
+                                ->orderBy('lotes.num_lote','ASC')
+                                ->orderBy('lotes.etapa_servicios','ASC')->count();
                         }else {
                             if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' )
                             {
-                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                        'lotes.fecha_termino_ventas')
+                                $lotes = $query
                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                 ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                 ->where('modelos.id', '=', $b_modelo )
@@ -206,11 +162,7 @@ class LoteController extends Controller
                                 ->orderBy('lotes.num_lote','ASC')
                                 ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                    ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                    ->select('lotes.id')
+                                    $contadorLotes = $queryCont
                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                     ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                     ->where('modelos.id', '=', $b_modelo )
@@ -224,16 +176,7 @@ class LoteController extends Controller
                             } else{
                                 if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
                                 {
-                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                    ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                    ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                            'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                            'lotes.fecha_termino_ventas')
+                                    $lotes = $query
                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                         ->where('modelos.id', '=', $b_modelo )
@@ -245,11 +188,7 @@ class LoteController extends Controller
                                         ->orderBy('lotes.num_lote','ASC')
                                         ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                        ->select('lotes.id')
+                                    $contadorLotes = $queryCont
                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                         ->where('modelos.id', '=', $b_modelo )
@@ -264,16 +203,7 @@ class LoteController extends Controller
                                 else{
                                     if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
                 
-                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                        ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                'lotes.fecha_termino_ventas')
+                                        $lotes = $query
                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                             ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                             ->where('lotes.habilitado','=', $b_habilitado)
@@ -284,33 +214,20 @@ class LoteController extends Controller
                                             ->orderBy('lotes.num_lote','ASC')
                                             ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                            $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                        ->select('lotes.id')
-                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                        ->where('lotes.habilitado','=', $b_habilitado)
-                                        ->where('modelos.id', '=', $b_modelo )
-                                        ->orderBy('fraccionamientos.nombre','ASC')
-                                        ->orderBy('etapas.num_etapa','ASC')
-                                        ->orderBy('lotes.manzana','ASC')
-                                        ->orderBy('lotes.num_lote','ASC')
-                                        ->orderBy('lotes.etapa_servicios','ASC')->count();
+                                            $contadorLotes = $queryCont
+                                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                                ->where('lotes.habilitado','=', $b_habilitado)
+                                                ->where('modelos.id', '=', $b_modelo )
+                                                ->orderBy('fraccionamientos.nombre','ASC')
+                                                ->orderBy('etapas.num_etapa','ASC')
+                                                ->orderBy('lotes.manzana','ASC')
+                                                ->orderBy('lotes.num_lote','ASC')
+                                                ->orderBy('lotes.etapa_servicios','ASC')->count();
                                     }else{
                                         if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
                 
-                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                            ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                            ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                    'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                    'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                    'lotes.fecha_termino_ventas')
+                                            $lotes = $query
                                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                                 ->where('lotes.manzana', '=',$buscar3)
                                                 ->where('lotes.habilitado','=', $b_habilitado)
@@ -320,11 +237,7 @@ class LoteController extends Controller
                                                 ->orderBy('lotes.num_lote','ASC')
                                                 ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                            $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                            ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                            ->select('lotes.id')
+                                            $contadorLotes = $queryCont
                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                             ->where('lotes.manzana', '=',$buscar3)
                                             ->where('lotes.habilitado','=', $b_habilitado)
@@ -335,16 +248,7 @@ class LoteController extends Controller
                                             ->orderBy('lotes.etapa_servicios','ASC')->count();
                                         }else{
                                             if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
-                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                        'lotes.fecha_termino_ventas')
+                                                $lotes = $query
                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                     ->where('lotes.manzana', '=',$buscar3)
                                                     ->where('lotes.habilitado','=', $b_habilitado)
@@ -355,11 +259,7 @@ class LoteController extends Controller
                                                     ->orderBy('lotes.num_lote','ASC')
                                                     ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                        ->select('lotes.id')
+                                                    $contadorLotes = $queryCont
                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                         ->where('lotes.manzana', '=',$buscar3)
                                                         ->where('lotes.habilitado','=', $b_habilitado)
@@ -371,16 +271,7 @@ class LoteController extends Controller
                                                         ->orderBy('lotes.etapa_servicios','ASC')->count();
                                             }else{
                                                 if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
-                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                    ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                            'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                            'lotes.fecha_termino_ventas')
+                                                    $lotes = $query
                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                         ->where('lotes.manzana', '=',$buscar3)
                                                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -391,11 +282,7 @@ class LoteController extends Controller
                                                         ->orderBy('lotes.num_lote','ASC')
                                                         ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                                        $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                        ->select('lotes.id')
+                                                        $contadorLotes = $queryCont
                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                         ->where('lotes.manzana', '=',$buscar3)
                                                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -407,16 +294,7 @@ class LoteController extends Controller
                                                         ->orderBy('lotes.etapa_servicios','ASC')->count();
                                                 }else{
                                                     if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !=''  ){
-                                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                        ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                                'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                                'lotes.fecha_termino_ventas')
+                                                        $lotes = $query
                                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                                             ->where('modelos.id', '=', $b_modelo )
                                                             ->where('lotes.habilitado','=', $b_habilitado)
@@ -426,31 +304,18 @@ class LoteController extends Controller
                                                             ->orderBy('lotes.num_lote','ASC')
                                                             ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                                            $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                        ->select('lotes.id')
-                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                        ->where('modelos.id', '=', $b_modelo )
-                                                        ->where('lotes.habilitado','=', $b_habilitado)
-                                                        ->orderBy('fraccionamientos.nombre','ASC')
-                                                        ->orderBy('etapas.num_etapa','ASC')
-                                                        ->orderBy('lotes.manzana','ASC')
-                                                        ->orderBy('lotes.num_lote','ASC')
-                                                        ->orderBy('lotes.etapa_servicios','ASC')->count();
+                                                            $contadorLotes = $queryCont
+                                                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                ->where('modelos.id', '=', $b_modelo )
+                                                                ->where('lotes.habilitado','=', $b_habilitado)
+                                                                ->orderBy('fraccionamientos.nombre','ASC')
+                                                                ->orderBy('etapas.num_etapa','ASC')
+                                                                ->orderBy('lotes.manzana','ASC')
+                                                                ->orderBy('lotes.num_lote','ASC')
+                                                                ->orderBy('lotes.etapa_servicios','ASC')->count();
                                                     }else{
                                                         if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                            ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                            ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                    'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                                    'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                                    'lotes.fecha_termino_ventas')
+                                                            $lotes = $query
                                                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                                                 ->where('modelos.id', '=', $b_modelo )
                                                                 ->where('lotes.manzana', '=',$buscar3)
@@ -462,11 +327,7 @@ class LoteController extends Controller
                                                                 ->orderBy('lotes.num_lote','ASC')
                                                                 ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                                                $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                    ->select('lotes.id')
+                                                                $contadorLotes = $queryCont
                                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                                     ->where('modelos.id', '=', $b_modelo )
                                                                     ->where('lotes.manzana', '=',$buscar3)
@@ -479,16 +340,7 @@ class LoteController extends Controller
                                                                     ->orderBy('lotes.etapa_servicios','ASC')->count();
                                                         }else{
                                                             if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
-                                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                                        'lotes.fecha_termino_ventas')
+                                                                $lotes = $query
                                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                                     ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                                                     ->where('lotes.manzana', '=',$buscar3)
@@ -500,11 +352,7 @@ class LoteController extends Controller
                                                                     ->orderBy('lotes.num_lote','ASC')
                                                                     ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                        ->select('lotes.id')
+                                                                    $contadorLotes = $queryCont
                                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                                                         ->where('lotes.manzana', '=',$buscar3)
@@ -517,16 +365,7 @@ class LoteController extends Controller
                                                                         ->orderBy('lotes.etapa_servicios','ASC')->count();
                                                             }else{
                                                                 if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                    ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                            'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                                            'lotes.fecha_termino_ventas')
+                                                                    $lotes = $query
                                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                                         ->where('modelos.id', '=', $b_modelo )
                                                                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -539,11 +378,7 @@ class LoteController extends Controller
                                                                         ->orderBy('lotes.num_lote','ASC')
                                                                         ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                        ->select('lotes.id')
+                                                                    $contadorLotes = $queryCont
                                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                                         ->where('modelos.id', '=', $b_modelo )
                                                                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -557,16 +392,7 @@ class LoteController extends Controller
                                                                         ->orderBy('lotes.etapa_servicios','ASC')->count();
                                                                 }
                                                                 elseif($buscar2!='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
-                                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                    ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                            'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                                            'lotes.fecha_termino_ventas')
+                                                                    $lotes = $query
                                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                                                         ->where('lotes.num_lote', '=',$b_lote)
@@ -577,11 +403,7 @@ class LoteController extends Controller
                                                                         ->orderBy('lotes.num_lote','ASC')
                                                                         ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
                 
-                                                                        $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                            ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                            ->select('lotes.id')
+                                                                        $contadorLotes = $queryCont
                                                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                                                             ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                                                             ->where('lotes.num_lote', '=',$b_lote)
@@ -608,16 +430,7 @@ class LoteController extends Controller
                     }
                     else{
                         if($buscar2!='' && $b_lote=='' && $buscar3=='' && $b_modelo==''){
-                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                            ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                            ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                    'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                    'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                    'lotes.fecha_termino_ventas')
+                            $lotes = $query
                             ->where($criterio, 'like', '%'. $buscar . '%')
                             ->where('lotes.credito_puente','=',$b_puente)
                             ->where('lotes.etapa_id','=',  $buscar2 )
@@ -628,11 +441,7 @@ class LoteController extends Controller
                             ->orderBy('lotes.num_lote','ASC')
                             ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                            $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                            ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                            ->select('lotes.id')
+                            $contadorLotes = $queryCont
                             ->where($criterio, 'like', '%'. $buscar . '%')
                             ->where('lotes.credito_puente','=',$b_puente)
                             ->where('lotes.etapa_id','=',  $buscar2 )
@@ -645,16 +454,7 @@ class LoteController extends Controller
                         }else {
                             if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' )
                             {
-                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                        'lotes.fecha_termino_ventas')
+                                $lotes = $query
                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                 ->where('lotes.credito_puente','=',$b_puente)
                                 ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -667,11 +467,7 @@ class LoteController extends Controller
                                 ->orderBy('lotes.num_lote','ASC')
                                 ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                    ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                    ->select('lotes.id')
+                                    $contadorLotes = $queryCont
                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                     ->where('lotes.credito_puente','=',$b_puente)
                                     ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -686,16 +482,7 @@ class LoteController extends Controller
                             } else{
                                 if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
                                 {
-                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                    ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                    ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                            'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                            'lotes.fecha_termino_ventas')
+                                    $lotes = $query
                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                         ->where('lotes.credito_puente','=',$b_puente)
                                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -708,11 +495,7 @@ class LoteController extends Controller
                                         ->orderBy('lotes.num_lote','ASC')
                                         ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                        ->select('lotes.id')
+                                    $contadorLotes = $queryCont
                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                         ->where('lotes.credito_puente','=',$b_puente)
                                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -728,16 +511,7 @@ class LoteController extends Controller
                                 else{
                                     if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
                 
-                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                        ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                'lotes.fecha_termino_ventas')
+                                        $lotes = $query
                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                             ->where('lotes.credito_puente','=',$b_puente)
                                             ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -749,34 +523,21 @@ class LoteController extends Controller
                                             ->orderBy('lotes.num_lote','ASC')
                                             ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                            $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                        ->select('lotes.id')
-                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                        ->where('lotes.credito_puente','=',$b_puente)
-                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                        ->where('lotes.habilitado','=', $b_habilitado)
-                                        ->where('modelos.id', '=', $b_modelo )
-                                        ->orderBy('fraccionamientos.nombre','ASC')
-                                        ->orderBy('etapas.num_etapa','ASC')
-                                        ->orderBy('lotes.manzana','ASC')
-                                        ->orderBy('lotes.num_lote','ASC')
-                                        ->orderBy('lotes.etapa_servicios','ASC')->count();
+                                            $contadorLotes = $queryCont
+                                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                                ->where('lotes.credito_puente','=',$b_puente)
+                                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                                ->where('lotes.habilitado','=', $b_habilitado)
+                                                ->where('modelos.id', '=', $b_modelo )
+                                                ->orderBy('fraccionamientos.nombre','ASC')
+                                                ->orderBy('etapas.num_etapa','ASC')
+                                                ->orderBy('lotes.manzana','ASC')
+                                                ->orderBy('lotes.num_lote','ASC')
+                                                ->orderBy('lotes.etapa_servicios','ASC')->count();
                                     }else{
                                         if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
                 
-                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                            ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                            ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                    'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                    'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                    'lotes.fecha_termino_ventas')
+                                            $lotes = $query
                                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                                 ->where('lotes.credito_puente','=',$b_puente)
                                                 ->where('lotes.manzana', '=',$buscar3)
@@ -787,32 +548,19 @@ class LoteController extends Controller
                                                 ->orderBy('lotes.num_lote','ASC')
                                                 ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                            $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                            ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                            ->select('lotes.id')
-                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                            ->where('lotes.credito_puente','=',$b_puente)
-                                            ->where('lotes.manzana', '=',$buscar3)
-                                            ->where('lotes.habilitado','=', $b_habilitado)
-                                            ->orderBy('fraccionamientos.nombre','ASC')
-                                            ->orderBy('etapas.num_etapa','ASC')
-                                            ->orderBy('lotes.manzana','ASC')
-                                            ->orderBy('lotes.num_lote','ASC')
-                                            ->orderBy('lotes.etapa_servicios','ASC')->count();
+                                            $contadorLotes = $queryCont
+                                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                                ->where('lotes.credito_puente','=',$b_puente)
+                                                ->where('lotes.manzana', '=',$buscar3)
+                                                ->where('lotes.habilitado','=', $b_habilitado)
+                                                ->orderBy('fraccionamientos.nombre','ASC')
+                                                ->orderBy('etapas.num_etapa','ASC')
+                                                ->orderBy('lotes.manzana','ASC')
+                                                ->orderBy('lotes.num_lote','ASC')
+                                                ->orderBy('lotes.etapa_servicios','ASC')->count();
                                         }else{
                                             if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
-                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                        'lotes.fecha_termino_ventas')
+                                                $lotes = $query
                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                     ->where('lotes.credito_puente','=',$b_puente)
                                                     ->where('lotes.manzana', '=',$buscar3)
@@ -824,11 +572,7 @@ class LoteController extends Controller
                                                     ->orderBy('lotes.num_lote','ASC')
                                                     ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                        ->select('lotes.id')
+                                                    $contadorLotes = $queryCont
                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                         ->where('lotes.credito_puente','=',$b_puente)
                                                         ->where('lotes.manzana', '=',$buscar3)
@@ -841,16 +585,7 @@ class LoteController extends Controller
                                                         ->orderBy('lotes.etapa_servicios','ASC')->count();
                                             }else{
                                                 if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
-                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                    ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                            'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                            'lotes.fecha_termino_ventas')
+                                                    $lotes = $query
                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                         ->where('lotes.credito_puente','=',$b_puente)
                                                         ->where('lotes.manzana', '=',$buscar3)
@@ -862,11 +597,7 @@ class LoteController extends Controller
                                                         ->orderBy('lotes.num_lote','ASC')
                                                         ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                                        $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                        ->select('lotes.id')
+                                                        $contadorLotes = $queryCont
                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                         ->where('lotes.credito_puente','=',$b_puente)
                                                         ->where('lotes.manzana', '=',$buscar3)
@@ -879,16 +610,7 @@ class LoteController extends Controller
                                                         ->orderBy('lotes.etapa_servicios','ASC')->count();
                                                 }else{
                                                     if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !=''  ){
-                                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                        ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                                'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                                'lotes.fecha_termino_ventas')
+                                                        $lotes = $query
                                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                                             ->where('lotes.credito_puente','=',$b_puente)
                                                             ->where('modelos.id', '=', $b_modelo )
@@ -899,32 +621,19 @@ class LoteController extends Controller
                                                             ->orderBy('lotes.num_lote','ASC')
                                                             ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                                            $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                        ->select('lotes.id')
-                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                        ->where('lotes.credito_puente','=',$b_puente)
-                                                        ->where('modelos.id', '=', $b_modelo )
-                                                        ->where('lotes.habilitado','=', $b_habilitado)
-                                                        ->orderBy('fraccionamientos.nombre','ASC')
-                                                        ->orderBy('etapas.num_etapa','ASC')
-                                                        ->orderBy('lotes.manzana','ASC')
-                                                        ->orderBy('lotes.num_lote','ASC')
-                                                        ->orderBy('lotes.etapa_servicios','ASC')->count();
+                                                            $contadorLotes = $queryCont
+                                                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                ->where('lotes.credito_puente','=',$b_puente)
+                                                                ->where('modelos.id', '=', $b_modelo )
+                                                                ->where('lotes.habilitado','=', $b_habilitado)
+                                                                ->orderBy('fraccionamientos.nombre','ASC')
+                                                                ->orderBy('etapas.num_etapa','ASC')
+                                                                ->orderBy('lotes.manzana','ASC')
+                                                                ->orderBy('lotes.num_lote','ASC')
+                                                                ->orderBy('lotes.etapa_servicios','ASC')->count();
                                                     }else{
                                                         if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                            ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                            ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                    'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                                    'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                                    'lotes.fecha_termino_ventas')
+                                                            $lotes = $query
                                                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                                                 ->where('lotes.credito_puente','=',$b_puente)
                                                                 ->where('modelos.id', '=', $b_modelo )
@@ -937,11 +646,7 @@ class LoteController extends Controller
                                                                 ->orderBy('lotes.num_lote','ASC')
                                                                 ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                                                $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                    ->select('lotes.id')
+                                                                $contadorLotes = $queryCont
                                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                                     ->where('lotes.credito_puente','=',$b_puente)
                                                                     ->where('modelos.id', '=', $b_modelo )
@@ -955,16 +660,7 @@ class LoteController extends Controller
                                                                     ->orderBy('lotes.etapa_servicios','ASC')->count();
                                                         }else{
                                                             if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
-                                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                                        'lotes.fecha_termino_ventas')
+                                                                $lotes = $query
                                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                                     ->where('lotes.credito_puente','=',$b_puente)
                                                                     ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -977,11 +673,7 @@ class LoteController extends Controller
                                                                     ->orderBy('lotes.num_lote','ASC')
                                                                     ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                        ->select('lotes.id')
+                                                                    $contadorLotes = $queryCont
                                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                                         ->where('lotes.credito_puente','=',$b_puente)
                                                                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -995,16 +687,7 @@ class LoteController extends Controller
                                                                         ->orderBy('lotes.etapa_servicios','ASC')->count();
                                                             }else{
                                                                 if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                    ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                            'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                                            'lotes.fecha_termino_ventas')
+                                                                    $lotes = $query
                                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                                         ->where('lotes.credito_puente','=',$b_puente)
                                                                         ->where('modelos.id', '=', $b_modelo )
@@ -1018,11 +701,7 @@ class LoteController extends Controller
                                                                         ->orderBy('lotes.num_lote','ASC')
                                                                         ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                        ->select('lotes.id')
+                                                                    $contadorLotes = $queryCont
                                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                                         ->where('lotes.credito_puente','=',$b_puente)
                                                                         ->where('modelos.id', '=', $b_modelo )
@@ -1037,16 +716,7 @@ class LoteController extends Controller
                                                                         ->orderBy('lotes.etapa_servicios','ASC')->count();
                                                                 }
                                                                 elseif($buscar2!='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
-                                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                    ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                            'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                                            'lotes.fecha_termino_ventas')
+                                                                    $lotes = $query
                                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                                         ->where('lotes.credito_puente','=',$b_puente)
                                                                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -1058,11 +728,7 @@ class LoteController extends Controller
                                                                         ->orderBy('lotes.num_lote','ASC')
                                                                         ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
                 
-                                                                        $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                            ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                            ->select('lotes.id')
+                                                                        $contadorLotes = $queryCont
                                                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                                                             ->where('lotes.credito_puente','=',$b_puente)
                                                                             ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -1095,17 +761,7 @@ class LoteController extends Controller
         }
         else{
             if($buscar==''){
-                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                          'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                          'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                          'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                          'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios',
-                          'lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                          'lotes.fecha_termino_ventas')
+                $lotes = $query
 
                           ->orderBy('fraccionamientos.nombre','ASC')
                           ->orderBy('etapas.num_etapa','ASC')
@@ -1113,11 +769,7 @@ class LoteController extends Controller
                           ->orderBy('lotes.num_lote','ASC')
                           ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
     
-                          $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                          ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                          ->join('modelos','lotes.modelo_id','=','modelos.id')
-                          ->join('empresas','lotes.empresa_id','=','empresas.id')
-                          ->select('lotes.id')
+                          $queryCont
           
                                     ->orderBy('fraccionamientos.nombre','ASC')
                                     ->orderBy('etapas.num_etapa','ASC')
@@ -1129,16 +781,7 @@ class LoteController extends Controller
                 if($buscar2=='' && $buscar3=='' && $b_modelo=='' && $b_lote=='')
                 {
                     if($b_puente == ''){
-                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                        ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                'lotes.fecha_termino_ventas')
+                        $lotes = $query
                                 ->where($criterio, 'like', '%'. $buscar . '%')
       
                                 ->orderBy('fraccionamientos.nombre','ASC')
@@ -1147,11 +790,7 @@ class LoteController extends Controller
                                 ->orderBy('lotes.num_lote','ASC')
                                 ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                            $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                            ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                            ->select('lotes.id')
+                            $contadorLotes = $queryCont
                             ->where($criterio, 'like', '%'. $buscar . '%')
                             ->orderBy('fraccionamientos.nombre','ASC')
                             ->orderBy('etapas.num_etapa','ASC')
@@ -1160,16 +799,7 @@ class LoteController extends Controller
                             ->orderBy('lotes.etapa_servicios','ASC')->count();
                     }
                     else{
-                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                        ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                'lotes.fecha_termino_ventas')
+                        $lotes = $query
                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                 ->where('lotes.credito_puente','=',$b_puente)
     
@@ -1179,90 +809,59 @@ class LoteController extends Controller
                                 ->orderBy('lotes.num_lote','ASC')
                                 ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
     
-                        $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                        ->select('lotes.id')
-                        ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('lotes.credito_puente','=',$b_puente)
-                        ->orderBy('fraccionamientos.nombre','ASC')
-                        ->orderBy('etapas.num_etapa','ASC')
-                        ->orderBy('lotes.manzana','ASC')
-                        ->orderBy('lotes.num_lote','ASC')
-                        ->orderBy('lotes.etapa_servicios','ASC')->count();
-                    }
-                    
-                }
-                else{
-                    if($b_puente == ''){
-                        if($buscar2!='' && $b_lote=='' && $buscar3=='' && $b_modelo==''){
-                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                            ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                            ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                    'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                    'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                    'lotes.fecha_termino_ventas')
+                        $contadorLotes = $queryCont
                             ->where($criterio, 'like', '%'. $buscar . '%')
-                            ->where('lotes.etapa_id','=',  $buscar2 )
-  
-                            ->orderBy('fraccionamientos.nombre','ASC')
-                            ->orderBy('etapas.num_etapa','ASC')
-                            ->orderBy('lotes.manzana','ASC')
-                            ->orderBy('lotes.num_lote','ASC')
-                            ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
-        
-                            $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                            ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                            ->select('lotes.id')
-                            ->where($criterio, 'like', '%'. $buscar . '%')
-                            ->where('lotes.etapa_id','=',  $buscar2 )
-  
+                            ->where('lotes.credito_puente','=',$b_puente)
                             ->orderBy('fraccionamientos.nombre','ASC')
                             ->orderBy('etapas.num_etapa','ASC')
                             ->orderBy('lotes.manzana','ASC')
                             ->orderBy('lotes.num_lote','ASC')
                             ->orderBy('lotes.etapa_servicios','ASC')->count();
-                        }else {
-                            if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' )
-                            {
-                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                        'lotes.fecha_termino_ventas')
+                    }
+                }
+                else{
+                    if($b_puente == ''){
+                        if($buscar2!='' && $b_lote=='' && $buscar3=='' && $b_modelo==''){
+                            $lotes = $query
                                 ->where($criterio, 'like', '%'. $buscar . '%')
-                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                ->where('modelos.id', '=', $b_modelo )
-                                ->where('lotes.manzana', '=',  $buscar3)
-      
+                                ->where('lotes.etapa_id','=',  $buscar2 )
+    
                                 ->orderBy('fraccionamientos.nombre','ASC')
                                 ->orderBy('etapas.num_etapa','ASC')
                                 ->orderBy('lotes.manzana','ASC')
                                 ->orderBy('lotes.num_lote','ASC')
                                 ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                    ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                    ->select('lotes.id')
+                            $contadorLotes = $queryCont
+                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                ->where('lotes.etapa_id','=',  $buscar2 )
+  
+                                ->orderBy('fraccionamientos.nombre','ASC')
+                                ->orderBy('etapas.num_etapa','ASC')
+                                ->orderBy('lotes.manzana','ASC')
+                                ->orderBy('lotes.num_lote','ASC')
+                                ->orderBy('lotes.etapa_servicios','ASC')->count();
+                        }else {
+                            if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' )
+                            {
+                                $lotes = $query
+                                    ->where($criterio, 'like', '%'. $buscar . '%')
+                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                    ->where('modelos.id', '=', $b_modelo )
+                                    ->where('lotes.manzana', '=',  $buscar3)
+        
+                                    ->orderBy('fraccionamientos.nombre','ASC')
+                                    ->orderBy('etapas.num_etapa','ASC')
+                                    ->orderBy('lotes.manzana','ASC')
+                                    ->orderBy('lotes.num_lote','ASC')
+                                    ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
+        
+                                $contadorLotes = $queryCont
                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                     ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                     ->where('modelos.id', '=', $b_modelo )
                                     ->where('lotes.manzana', '=', $buscar3)
-          
+        
                                     ->orderBy('fraccionamientos.nombre','ASC')
                                     ->orderBy('etapas.num_etapa','ASC')
                                     ->orderBy('lotes.manzana','ASC')
@@ -1271,16 +870,7 @@ class LoteController extends Controller
                             } else{
                                 if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
                                 {
-                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                    ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                    ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                            'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                            'lotes.fecha_termino_ventas')
+                                    $lotes = $query
                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                         ->where('modelos.id', '=', $b_modelo )
@@ -1292,11 +882,7 @@ class LoteController extends Controller
                                         ->orderBy('lotes.num_lote','ASC')
                                         ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                        ->select('lotes.id')
+                                    $contadorLotes = $queryCont
                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                         ->where('modelos.id', '=', $b_modelo )
@@ -1311,16 +897,7 @@ class LoteController extends Controller
                                 else{
                                     if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
                 
-                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                        ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                'lotes.fecha_termino_ventas')
+                                        $lotes = $query
                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                             ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                   
@@ -1331,33 +908,20 @@ class LoteController extends Controller
                                             ->orderBy('lotes.num_lote','ASC')
                                             ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                            $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                        ->select('lotes.id')
-                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-              
-                                        ->where('modelos.id', '=', $b_modelo )
-                                        ->orderBy('fraccionamientos.nombre','ASC')
-                                        ->orderBy('etapas.num_etapa','ASC')
-                                        ->orderBy('lotes.manzana','ASC')
-                                        ->orderBy('lotes.num_lote','ASC')
-                                        ->orderBy('lotes.etapa_servicios','ASC')->count();
+                                        $contadorLotes = $queryCont
+                                            ->where($criterio, 'like', '%'. $buscar . '%')
+                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                
+                                            ->where('modelos.id', '=', $b_modelo )
+                                            ->orderBy('fraccionamientos.nombre','ASC')
+                                            ->orderBy('etapas.num_etapa','ASC')
+                                            ->orderBy('lotes.manzana','ASC')
+                                            ->orderBy('lotes.num_lote','ASC')
+                                            ->orderBy('lotes.etapa_servicios','ASC')->count();
                                     }else{
                                         if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
                 
-                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                            ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                            ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                    'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                    'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                    'lotes.fecha_termino_ventas')
+                                            $lotes = $query
                                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                                 ->where('lotes.manzana', '=',$buscar3)
                       
@@ -1367,31 +931,18 @@ class LoteController extends Controller
                                                 ->orderBy('lotes.num_lote','ASC')
                                                 ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                            $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                            ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                            ->select('lotes.id')
-                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                            ->where('lotes.manzana', '=',$buscar3)
-                  
-                                            ->orderBy('fraccionamientos.nombre','ASC')
-                                            ->orderBy('etapas.num_etapa','ASC')
-                                            ->orderBy('lotes.manzana','ASC')
-                                            ->orderBy('lotes.num_lote','ASC')
-                                            ->orderBy('lotes.etapa_servicios','ASC')->count();
+                                            $contadorLotes = $queryCont
+                                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                                ->where('lotes.manzana', '=',$buscar3)
+                    
+                                                ->orderBy('fraccionamientos.nombre','ASC')
+                                                ->orderBy('etapas.num_etapa','ASC')
+                                                ->orderBy('lotes.manzana','ASC')
+                                                ->orderBy('lotes.num_lote','ASC')
+                                                ->orderBy('lotes.etapa_servicios','ASC')->count();
                                         }else{
                                             if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
-                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                        'lotes.fecha_termino_ventas')
+                                                $lotes = $query
                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                     ->where('lotes.manzana', '=',$buscar3)
                           
@@ -1402,32 +953,19 @@ class LoteController extends Controller
                                                     ->orderBy('lotes.num_lote','ASC')
                                                     ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                        ->select('lotes.id')
-                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                        ->where('lotes.manzana', '=',$buscar3)
-                              
-                                                        ->where('modelos.id', '=', $b_modelo )
-                                                        ->orderBy('fraccionamientos.nombre','ASC')
-                                                        ->orderBy('etapas.num_etapa','ASC')
-                                                        ->orderBy('lotes.manzana','ASC')
-                                                        ->orderBy('lotes.num_lote','ASC')
-                                                        ->orderBy('lotes.etapa_servicios','ASC')->count();
+                                                $contadorLotes = $queryCont
+                                                    ->where($criterio, 'like', '%'. $buscar . '%')
+                                                    ->where('lotes.manzana', '=',$buscar3)
+                            
+                                                    ->where('modelos.id', '=', $b_modelo )
+                                                    ->orderBy('fraccionamientos.nombre','ASC')
+                                                    ->orderBy('etapas.num_etapa','ASC')
+                                                    ->orderBy('lotes.manzana','ASC')
+                                                    ->orderBy('lotes.num_lote','ASC')
+                                                    ->orderBy('lotes.etapa_servicios','ASC')->count();
                                             }else{
                                                 if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
-                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                    ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                            'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                            'lotes.fecha_termino_ventas')
+                                                    $lotes = $query
                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                         ->where('lotes.manzana', '=',$buscar3)
                                                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -1438,11 +976,7 @@ class LoteController extends Controller
                                                         ->orderBy('lotes.num_lote','ASC')
                                                         ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                                        $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                        ->select('lotes.id')
+                                                    $contadorLotes = $queryCont
                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                         ->where('lotes.manzana', '=',$buscar3)
                                                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -1454,16 +988,7 @@ class LoteController extends Controller
                                                         ->orderBy('lotes.etapa_servicios','ASC')->count();
                                                 }else{
                                                     if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !=''  ){
-                                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                        ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                                'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                                'lotes.fecha_termino_ventas')
+                                                        $lotes = $query
                                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                                             ->where('modelos.id', '=', $b_modelo )
                                   
@@ -1473,31 +998,18 @@ class LoteController extends Controller
                                                             ->orderBy('lotes.num_lote','ASC')
                                                             ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                                            $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                        ->select('lotes.id')
-                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                        ->where('modelos.id', '=', $b_modelo )
+                                                        $contadorLotes = $queryCont
+                                                            ->where($criterio, 'like', '%'. $buscar . '%')
+                                                            ->where('modelos.id', '=', $b_modelo )
                               
-                                                        ->orderBy('fraccionamientos.nombre','ASC')
-                                                        ->orderBy('etapas.num_etapa','ASC')
-                                                        ->orderBy('lotes.manzana','ASC')
-                                                        ->orderBy('lotes.num_lote','ASC')
-                                                        ->orderBy('lotes.etapa_servicios','ASC')->count();
+                                                            ->orderBy('fraccionamientos.nombre','ASC')
+                                                            ->orderBy('etapas.num_etapa','ASC')
+                                                            ->orderBy('lotes.manzana','ASC')
+                                                            ->orderBy('lotes.num_lote','ASC')
+                                                            ->orderBy('lotes.etapa_servicios','ASC')->count();
                                                     }else{
                                                         if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                            ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                            ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                    'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                                    'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                                    'lotes.fecha_termino_ventas')
+                                                            $lotes = $query
                                                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                                                 ->where('modelos.id', '=', $b_modelo )
                                                                 ->where('lotes.manzana', '=',$buscar3)
@@ -1509,33 +1021,20 @@ class LoteController extends Controller
                                                                 ->orderBy('lotes.num_lote','ASC')
                                                                 ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                                                $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                    ->select('lotes.id')
-                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                    ->where('modelos.id', '=', $b_modelo )
-                                                                    ->where('lotes.manzana', '=',$buscar3)
-                                                                    ->where('lotes.num_lote', '=',$b_lote)
-                                          
-                                                                    ->orderBy('fraccionamientos.nombre','ASC')
-                                                                    ->orderBy('etapas.num_etapa','ASC')
-                                                                    ->orderBy('lotes.manzana','ASC')
-                                                                    ->orderBy('lotes.num_lote','ASC')
-                                                                    ->orderBy('lotes.etapa_servicios','ASC')->count();
+                                                            $contadorLotes = $queryCont
+                                                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                ->where('modelos.id', '=', $b_modelo )
+                                                                ->where('lotes.manzana', '=',$buscar3)
+                                                                ->where('lotes.num_lote', '=',$b_lote)
+                                        
+                                                                ->orderBy('fraccionamientos.nombre','ASC')
+                                                                ->orderBy('etapas.num_etapa','ASC')
+                                                                ->orderBy('lotes.manzana','ASC')
+                                                                ->orderBy('lotes.num_lote','ASC')
+                                                                ->orderBy('lotes.etapa_servicios','ASC')->count();
                                                         }else{
                                                             if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
-                                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                                        'lotes.fecha_termino_ventas')
+                                                                $lotes = $query
                                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                                     ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                                                     ->where('lotes.manzana', '=',$buscar3)
@@ -1546,34 +1045,21 @@ class LoteController extends Controller
                                                                     ->orderBy('lotes.manzana','ASC')
                                                                     ->orderBy('lotes.num_lote','ASC')
                                                                     ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
-        
-                                                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                        ->select('lotes.id')
-                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                        ->where('lotes.manzana', '=',$buscar3)
-                                                                        ->where('lotes.num_lote', '=',$b_lote)
-                                              
-                                                                        ->orderBy('fraccionamientos.nombre','ASC')
-                                                                        ->orderBy('etapas.num_etapa','ASC')
-                                                                        ->orderBy('lotes.manzana','ASC')
-                                                                        ->orderBy('lotes.num_lote','ASC')
-                                                                        ->orderBy('lotes.etapa_servicios','ASC')->count();
+    
+                                                                $contadorLotes = $queryCont
+                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                                                    ->where('lotes.manzana', '=',$buscar3)
+                                                                    ->where('lotes.num_lote', '=',$b_lote)
+                                            
+                                                                    ->orderBy('fraccionamientos.nombre','ASC')
+                                                                    ->orderBy('etapas.num_etapa','ASC')
+                                                                    ->orderBy('lotes.manzana','ASC')
+                                                                    ->orderBy('lotes.num_lote','ASC')
+                                                                    ->orderBy('lotes.etapa_servicios','ASC')->count();
                                                             }else{
                                                                 if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                    ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                            'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                                            'lotes.fecha_termino_ventas')
+                                                                    $lotes = $query
                                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                                         ->where('modelos.id', '=', $b_modelo )
                                                                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -1586,11 +1072,7 @@ class LoteController extends Controller
                                                                         ->orderBy('lotes.num_lote','ASC')
                                                                         ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                        ->select('lotes.id')
+                                                                    $contadorLotes = $queryCont
                                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                                         ->where('modelos.id', '=', $b_modelo )
                                                                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -1604,16 +1086,7 @@ class LoteController extends Controller
                                                                         ->orderBy('lotes.etapa_servicios','ASC')->count();
                                                                 }
                                                                 elseif($buscar2!='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
-                                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                    ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                            'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                                            'lotes.fecha_termino_ventas')
+                                                                    $lotes = $query
                                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                                                         ->where('lotes.num_lote', '=',$b_lote)
@@ -1624,20 +1097,16 @@ class LoteController extends Controller
                                                                         ->orderBy('lotes.num_lote','ASC')
                                                                         ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
                 
-                                                                        $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                            ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                            ->select('lotes.id')
-                                                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                            ->where('lotes.num_lote', '=',$b_lote)
-                                                  
-                                                                            ->orderBy('fraccionamientos.nombre','ASC')
-                                                                            ->orderBy('etapas.num_etapa','ASC')
-                                                                            ->orderBy('lotes.manzana','ASC')
-                                                                            ->orderBy('lotes.num_lote','ASC')
-                                                                            ->orderBy('lotes.etapa_servicios','ASC')->count();
+                                                                    $contadorLotes = $queryCont
+                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                                                        ->where('lotes.num_lote', '=',$b_lote)
+                                                
+                                                                        ->orderBy('fraccionamientos.nombre','ASC')
+                                                                        ->orderBy('etapas.num_etapa','ASC')
+                                                                        ->orderBy('lotes.manzana','ASC')
+                                                                        ->orderBy('lotes.num_lote','ASC')
+                                                                        ->orderBy('lotes.etapa_servicios','ASC')->count();
                                                                 }
                                                             }
                                                         }
@@ -1655,70 +1124,44 @@ class LoteController extends Controller
                     }
                     else{
                         if($buscar2!='' && $b_lote=='' && $buscar3=='' && $b_modelo==''){
-                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                            ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                            ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                    'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                    'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                    'lotes.fecha_termino_ventas')
-                            ->where($criterio, 'like', '%'. $buscar . '%')
-                            ->where('lotes.credito_puente','=',$b_puente)
-                            ->where('lotes.etapa_id','=',  $buscar2 )
-  
-                            ->orderBy('fraccionamientos.nombre','ASC')
-                            ->orderBy('etapas.num_etapa','ASC')
-                            ->orderBy('lotes.manzana','ASC')
-                            ->orderBy('lotes.num_lote','ASC')
-                            ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
-        
-                            $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                            ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                            ->select('lotes.id')
-                            ->where($criterio, 'like', '%'. $buscar . '%')
-                            ->where('lotes.credito_puente','=',$b_puente)
-                            ->where('lotes.etapa_id','=',  $buscar2 )
-  
-                            ->orderBy('fraccionamientos.nombre','ASC')
-                            ->orderBy('etapas.num_etapa','ASC')
-                            ->orderBy('lotes.manzana','ASC')
-                            ->orderBy('lotes.num_lote','ASC')
-                            ->orderBy('lotes.etapa_servicios','ASC')->count();
-                        }else {
-                            if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' )
-                            {
-                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                        'lotes.fecha_termino_ventas')
+                            $lotes = $query
                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                 ->where('lotes.credito_puente','=',$b_puente)
-                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                ->where('modelos.id', '=', $b_modelo )
-                                ->where('lotes.manzana', '=',  $buscar3)
-      
+                                ->where('lotes.etapa_id','=',  $buscar2 )
+    
                                 ->orderBy('fraccionamientos.nombre','ASC')
                                 ->orderBy('etapas.num_etapa','ASC')
                                 ->orderBy('lotes.manzana','ASC')
                                 ->orderBy('lotes.num_lote','ASC')
                                 ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                    ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                    ->select('lotes.id')
+                            $contadorLotes = $queryCont
+                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                ->where('lotes.credito_puente','=',$b_puente)
+                                ->where('lotes.etapa_id','=',  $buscar2 )
+    
+                                ->orderBy('fraccionamientos.nombre','ASC')
+                                ->orderBy('etapas.num_etapa','ASC')
+                                ->orderBy('lotes.manzana','ASC')
+                                ->orderBy('lotes.num_lote','ASC')
+                                ->orderBy('lotes.etapa_servicios','ASC')->count();
+                        }else {
+                            if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' )
+                            {
+                                $lotes = $query
+                                    ->where($criterio, 'like', '%'. $buscar . '%')
+                                    ->where('lotes.credito_puente','=',$b_puente)
+                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                    ->where('modelos.id', '=', $b_modelo )
+                                    ->where('lotes.manzana', '=',  $buscar3)
+        
+                                    ->orderBy('fraccionamientos.nombre','ASC')
+                                    ->orderBy('etapas.num_etapa','ASC')
+                                    ->orderBy('lotes.manzana','ASC')
+                                    ->orderBy('lotes.num_lote','ASC')
+                                    ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
+        
+                                $contadorLotes = $queryCont
                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                     ->where('lotes.credito_puente','=',$b_puente)
                                     ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -1733,16 +1176,7 @@ class LoteController extends Controller
                             } else{
                                 if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
                                 {
-                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                    ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                    ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                            'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                            'lotes.fecha_termino_ventas')
+                                    $lotes = $query
                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                         ->where('lotes.credito_puente','=',$b_puente)
                                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -1755,11 +1189,7 @@ class LoteController extends Controller
                                         ->orderBy('lotes.num_lote','ASC')
                                         ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                        ->select('lotes.id')
+                                    $contadorLotes = $queryCont
                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                         ->where('lotes.credito_puente','=',$b_puente)
                                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -1775,16 +1205,7 @@ class LoteController extends Controller
                                 else{
                                     if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
                 
-                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                        ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                'lotes.fecha_termino_ventas')
+                                        $lotes = $query
                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                             ->where('lotes.credito_puente','=',$b_puente)
                                             ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -1796,34 +1217,21 @@ class LoteController extends Controller
                                             ->orderBy('lotes.num_lote','ASC')
                                             ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                            $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                        ->select('lotes.id')
-                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                        ->where('lotes.credito_puente','=',$b_puente)
-                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-              
-                                        ->where('modelos.id', '=', $b_modelo )
-                                        ->orderBy('fraccionamientos.nombre','ASC')
-                                        ->orderBy('etapas.num_etapa','ASC')
-                                        ->orderBy('lotes.manzana','ASC')
-                                        ->orderBy('lotes.num_lote','ASC')
-                                        ->orderBy('lotes.etapa_servicios','ASC')->count();
+                                        $contadorLotes = $queryCont
+                                            ->where($criterio, 'like', '%'. $buscar . '%')
+                                            ->where('lotes.credito_puente','=',$b_puente)
+                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                
+                                            ->where('modelos.id', '=', $b_modelo )
+                                            ->orderBy('fraccionamientos.nombre','ASC')
+                                            ->orderBy('etapas.num_etapa','ASC')
+                                            ->orderBy('lotes.manzana','ASC')
+                                            ->orderBy('lotes.num_lote','ASC')
+                                            ->orderBy('lotes.etapa_servicios','ASC')->count();
                                     }else{
                                         if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
                 
-                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                            ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                            ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                    'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                    'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                    'lotes.fecha_termino_ventas')
+                                            $lotes = $query
                                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                                 ->where('lotes.credito_puente','=',$b_puente)
                                                 ->where('lotes.manzana', '=',$buscar3)
@@ -1834,32 +1242,19 @@ class LoteController extends Controller
                                                 ->orderBy('lotes.num_lote','ASC')
                                                 ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                            $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                            ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                            ->select('lotes.id')
-                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                            ->where('lotes.credito_puente','=',$b_puente)
-                                            ->where('lotes.manzana', '=',$buscar3)
-                  
-                                            ->orderBy('fraccionamientos.nombre','ASC')
-                                            ->orderBy('etapas.num_etapa','ASC')
-                                            ->orderBy('lotes.manzana','ASC')
-                                            ->orderBy('lotes.num_lote','ASC')
-                                            ->orderBy('lotes.etapa_servicios','ASC')->count();
+                                            $contadorLotes = $queryCont
+                                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                                ->where('lotes.credito_puente','=',$b_puente)
+                                                ->where('lotes.manzana', '=',$buscar3)
+                    
+                                                ->orderBy('fraccionamientos.nombre','ASC')
+                                                ->orderBy('etapas.num_etapa','ASC')
+                                                ->orderBy('lotes.manzana','ASC')
+                                                ->orderBy('lotes.num_lote','ASC')
+                                                ->orderBy('lotes.etapa_servicios','ASC')->count();
                                         }else{
                                             if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
-                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                        'lotes.fecha_termino_ventas')
+                                                $lotes = $query
                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                     ->where('lotes.credito_puente','=',$b_puente)
                                                     ->where('lotes.manzana', '=',$buscar3)
@@ -1871,33 +1266,20 @@ class LoteController extends Controller
                                                     ->orderBy('lotes.num_lote','ASC')
                                                     ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                        ->select('lotes.id')
-                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                        ->where('lotes.credito_puente','=',$b_puente)
-                                                        ->where('lotes.manzana', '=',$buscar3)
-                              
-                                                        ->where('modelos.id', '=', $b_modelo )
-                                                        ->orderBy('fraccionamientos.nombre','ASC')
-                                                        ->orderBy('etapas.num_etapa','ASC')
-                                                        ->orderBy('lotes.manzana','ASC')
-                                                        ->orderBy('lotes.num_lote','ASC')
-                                                        ->orderBy('lotes.etapa_servicios','ASC')->count();
+                                                $contadorLotes = $queryCont
+                                                    ->where($criterio, 'like', '%'. $buscar . '%')
+                                                    ->where('lotes.credito_puente','=',$b_puente)
+                                                    ->where('lotes.manzana', '=',$buscar3)
+                            
+                                                    ->where('modelos.id', '=', $b_modelo )
+                                                    ->orderBy('fraccionamientos.nombre','ASC')
+                                                    ->orderBy('etapas.num_etapa','ASC')
+                                                    ->orderBy('lotes.manzana','ASC')
+                                                    ->orderBy('lotes.num_lote','ASC')
+                                                    ->orderBy('lotes.etapa_servicios','ASC')->count();
                                             }else{
                                                 if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
-                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                    ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                            'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                            'lotes.fecha_termino_ventas')
+                                                    $lotes = $query
                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                         ->where('lotes.credito_puente','=',$b_puente)
                                                         ->where('lotes.manzana', '=',$buscar3)
@@ -1909,11 +1291,7 @@ class LoteController extends Controller
                                                         ->orderBy('lotes.num_lote','ASC')
                                                         ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                                        $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                        ->select('lotes.id')
+                                                    $contadorLotes = $queryCont
                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                         ->where('lotes.credito_puente','=',$b_puente)
                                                         ->where('lotes.manzana', '=',$buscar3)
@@ -1926,16 +1304,7 @@ class LoteController extends Controller
                                                         ->orderBy('lotes.etapa_servicios','ASC')->count();
                                                 }else{
                                                     if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !=''  ){
-                                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                        ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                                'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                                'lotes.fecha_termino_ventas')
+                                                        $lotes = $query
                                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                                             ->where('lotes.credito_puente','=',$b_puente)
                                                             ->where('modelos.id', '=', $b_modelo )
@@ -1946,32 +1315,19 @@ class LoteController extends Controller
                                                             ->orderBy('lotes.num_lote','ASC')
                                                             ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                                            $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                        ->select('lotes.id')
-                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                        ->where('lotes.credito_puente','=',$b_puente)
-                                                        ->where('modelos.id', '=', $b_modelo )
-                              
-                                                        ->orderBy('fraccionamientos.nombre','ASC')
-                                                        ->orderBy('etapas.num_etapa','ASC')
-                                                        ->orderBy('lotes.manzana','ASC')
-                                                        ->orderBy('lotes.num_lote','ASC')
-                                                        ->orderBy('lotes.etapa_servicios','ASC')->count();
+                                                        $contadorLotes = $queryCont
+                                                            ->where($criterio, 'like', '%'. $buscar . '%')
+                                                            ->where('lotes.credito_puente','=',$b_puente)
+                                                            ->where('modelos.id', '=', $b_modelo )
+                                
+                                                            ->orderBy('fraccionamientos.nombre','ASC')
+                                                            ->orderBy('etapas.num_etapa','ASC')
+                                                            ->orderBy('lotes.manzana','ASC')
+                                                            ->orderBy('lotes.num_lote','ASC')
+                                                            ->orderBy('lotes.etapa_servicios','ASC')->count();
                                                     }else{
                                                         if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                            ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                            ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                    'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                                    'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                                    'lotes.fecha_termino_ventas')
+                                                            $lotes = $query
                                                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                                                 ->where('lotes.credito_puente','=',$b_puente)
                                                                 ->where('modelos.id', '=', $b_modelo )
@@ -1984,34 +1340,21 @@ class LoteController extends Controller
                                                                 ->orderBy('lotes.num_lote','ASC')
                                                                 ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                                                $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                    ->select('lotes.id')
-                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                    ->where('lotes.credito_puente','=',$b_puente)
-                                                                    ->where('modelos.id', '=', $b_modelo )
-                                                                    ->where('lotes.manzana', '=',$buscar3)
-                                                                    ->where('lotes.num_lote', '=',$b_lote)
-                                          
-                                                                    ->orderBy('fraccionamientos.nombre','ASC')
-                                                                    ->orderBy('etapas.num_etapa','ASC')
-                                                                    ->orderBy('lotes.manzana','ASC')
-                                                                    ->orderBy('lotes.num_lote','ASC')
-                                                                    ->orderBy('lotes.etapa_servicios','ASC')->count();
+                                                            $contadorLotes = $queryCont
+                                                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                ->where('lotes.credito_puente','=',$b_puente)
+                                                                ->where('modelos.id', '=', $b_modelo )
+                                                                ->where('lotes.manzana', '=',$buscar3)
+                                                                ->where('lotes.num_lote', '=',$b_lote)
+                                        
+                                                                ->orderBy('fraccionamientos.nombre','ASC')
+                                                                ->orderBy('etapas.num_etapa','ASC')
+                                                                ->orderBy('lotes.manzana','ASC')
+                                                                ->orderBy('lotes.num_lote','ASC')
+                                                                ->orderBy('lotes.etapa_servicios','ASC')->count();
                                                         }else{
                                                             if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
-                                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                                        'lotes.fecha_termino_ventas')
+                                                                $lotes = $query
                                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                                     ->where('lotes.credito_puente','=',$b_puente)
                                                                     ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -2024,34 +1367,21 @@ class LoteController extends Controller
                                                                     ->orderBy('lotes.num_lote','ASC')
                                                                     ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                        ->select('lotes.id')
-                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                        ->where('lotes.credito_puente','=',$b_puente)
-                                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                        ->where('lotes.manzana', '=',$buscar3)
-                                                                        ->where('lotes.num_lote', '=',$b_lote)
-                                              
-                                                                        ->orderBy('fraccionamientos.nombre','ASC')
-                                                                        ->orderBy('etapas.num_etapa','ASC')
-                                                                        ->orderBy('lotes.manzana','ASC')
-                                                                        ->orderBy('lotes.num_lote','ASC')
-                                                                        ->orderBy('lotes.etapa_servicios','ASC')->count();
+                                                                $contadorLotes = $queryCont
+                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                    ->where('lotes.credito_puente','=',$b_puente)
+                                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                                                    ->where('lotes.manzana', '=',$buscar3)
+                                                                    ->where('lotes.num_lote', '=',$b_lote)
+                                            
+                                                                    ->orderBy('fraccionamientos.nombre','ASC')
+                                                                    ->orderBy('etapas.num_etapa','ASC')
+                                                                    ->orderBy('lotes.manzana','ASC')
+                                                                    ->orderBy('lotes.num_lote','ASC')
+                                                                    ->orderBy('lotes.etapa_servicios','ASC')->count();
                                                             }else{
                                                                 if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                    ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                            'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                                            'lotes.fecha_termino_ventas')
+                                                                    $lotes = $query
                                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                                         ->where('lotes.credito_puente','=',$b_puente)
                                                                         ->where('modelos.id', '=', $b_modelo )
@@ -2065,11 +1395,7 @@ class LoteController extends Controller
                                                                         ->orderBy('lotes.num_lote','ASC')
                                                                         ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         
-                                                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                        ->select('lotes.id')
+                                                                    $contadorLotes = $queryCont
                                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                                         ->where('lotes.credito_puente','=',$b_puente)
                                                                         ->where('modelos.id', '=', $b_modelo )
@@ -2084,16 +1410,7 @@ class LoteController extends Controller
                                                                         ->orderBy('lotes.etapa_servicios','ASC')->count();
                                                                 }
                                                                 elseif($buscar2!='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
-                                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                    ->select('fraccionamientos.nombre as proyecto','licencias.avance','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                            'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
-                                                                            'lotes.fecha_termino_ventas')
+                                                                    $lotes = $query
                                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                                         ->where('lotes.credito_puente','=',$b_puente)
                                                                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -2105,21 +1422,17 @@ class LoteController extends Controller
                                                                         ->orderBy('lotes.num_lote','ASC')
                                                                         ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
                 
-                                                                        $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                            ->join('etapas','lotes.etapa_id','=','etapas.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                            ->select('lotes.id')
-                                                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                            ->where('lotes.credito_puente','=',$b_puente)
-                                                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                            ->where('lotes.num_lote', '=',$b_lote)
-                                                  
-                                                                            ->orderBy('fraccionamientos.nombre','ASC')
-                                                                            ->orderBy('etapas.num_etapa','ASC')
-                                                                            ->orderBy('lotes.manzana','ASC')
-                                                                            ->orderBy('lotes.num_lote','ASC')
-                                                                            ->orderBy('lotes.etapa_servicios','ASC')->count();
+                                                                    $contadorLotes = $queryCont
+                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                        ->where('lotes.credito_puente','=',$b_puente)
+                                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                                                        ->where('lotes.num_lote', '=',$b_lote)
+                                                
+                                                                        ->orderBy('fraccionamientos.nombre','ASC')
+                                                                        ->orderBy('etapas.num_etapa','ASC')
+                                                                        ->orderBy('lotes.manzana','ASC')
+                                                                        ->orderBy('lotes.num_lote','ASC')
+                                                                        ->orderBy('lotes.etapa_servicios','ASC')->count();
                                                                 }
                                                             }
                                                         }
@@ -2135,8 +1448,6 @@ class LoteController extends Controller
                         
                         }
                     }
-                    
-             
                 }
             }
         }
@@ -2166,17 +1477,19 @@ class LoteController extends Controller
         $buscar2 = $request->buscar2;
         $buscar3 = $request->buscar3;
         $criterio = $request->criterio;
-        
-        if($buscar==''){
-            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+
+        $query = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
             ->join('etapas','lotes.etapa_id','=','etapas.id')
             ->join('modelos','lotes.modelo_id','=','modelos.id')
             ->join('empresas','lotes.empresa_id','=','empresas.id')
             ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                      'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                      'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
-                      'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                      'lotes.clv_catastral','lotes.etapa_servicios')
+                    'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
+                    'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
+                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
+                    'lotes.clv_catastral','lotes.etapa_servicios');
+        
+        if($buscar==''){
+            $lotes = $query
                       ->orderBy('fraccionamientos.nombre','DESC')
                       ->orderBy('lotes.manzana','ASC')
                       ->orderBy('lotes.num_lote','ASC')->paginate(25);
@@ -2184,15 +1497,7 @@ class LoteController extends Controller
         else{
             if($buscar2=='' &&$buscar3=='')
             {
-                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                        'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
-                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                        'lotes.clv_catastral','lotes.etapa_servicios')
+                $lotes = $query
                     ->where($criterio, 'like', '%'. $buscar . '%')
                     ->orderBy('fraccionamientos.nombre','DESC')
                     ->orderBy('lotes.manzana','ASC')
@@ -2201,15 +1506,7 @@ class LoteController extends Controller
             else{
                 if($buscar3=='')
                 {
-                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                    ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                            'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                            'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
-                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                            'lotes.clv_catastral','lotes.etapa_servicios')
+                    $lotes = $query
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('lotes.etapa_servicios', 'like', '%'. $buscar2 . '%')
                         ->orderBy('fraccionamientos.nombre','DESC')
@@ -2218,15 +1515,7 @@ class LoteController extends Controller
                 }
                 else{
                     if($buscar2!=''){
-                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
-                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                'lotes.clv_catastral','lotes.etapa_servicios')
+                        $lotes = $query
                             ->where($criterio, 'like', '%'. $buscar . '%')
                             ->where('lotes.etapa_servicios', 'like', '%'. $buscar2 . '%')
                             ->where('lotes.manzana', '=', $buscar3)
@@ -2235,15 +1524,7 @@ class LoteController extends Controller
                             ->orderBy('lotes.num_lote','ASC')->paginate(25);
                     }
                     else{
-                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
-                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                'lotes.clv_catastral','lotes.etapa_servicios')
+                        $lotes = $query
                             ->where($criterio, 'like', '%'. $buscar . '%')
                             ->where('lotes.manzana','like', '%'. $buscar3 . '%')
                             ->orderBy('fraccionamientos.nombre','DESC')
@@ -2739,16 +2020,18 @@ class LoteController extends Controller
         $buscar2 = $request->buscar2;
         $buscar3 = $request->buscar3;
         $criterio = $request->criterio;
-        
-        if($buscar==''){
-            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+
+        $query = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
             ->join('etapas','lotes.etapa_id','=','etapas.id')
             ->join('modelos','lotes.modelo_id','=','modelos.id')
             ->join('empresas','lotes.empresa_id','=','empresas.id')
             ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                      'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                      'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
-                      'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','lotes.fecha_termino_ventas')
+                  'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
+                  'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
+                  'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','lotes.fecha_termino_ventas');
+        
+        if($buscar==''){
+            $lotes = $query
                 ->where('lotes.ini_obra', '=', '0')
                 ->where('modelos.nombre','!=','Por Asignar')
                 ->orderBy('fraccionamientos.nombre','lotes.id')->paginate(15);
@@ -2756,14 +2039,7 @@ class LoteController extends Controller
         }
 
         elseif($buscar2 == '' && $buscar3 == ''){
-            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-            ->join('etapas','lotes.etapa_id','=','etapas.id')
-            ->join('modelos','lotes.modelo_id','=','modelos.id')
-            ->join('empresas','lotes.empresa_id','=','empresas.id')
-            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                    'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                    'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
-                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','lotes.fecha_termino_ventas')
+            $lotes = $query
                 ->where($criterio, '=',$buscar)
                 ->where('lotes.ini_obra', '=', '0')
                 ->where('modelos.nombre','!=','Por Asignar')
@@ -2771,14 +2047,7 @@ class LoteController extends Controller
         }
 
         elseif($buscar2 != '' && $buscar3 == ''){
-            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-            ->join('etapas','lotes.etapa_id','=','etapas.id')
-            ->join('modelos','lotes.modelo_id','=','modelos.id')
-            ->join('empresas','lotes.empresa_id','=','empresas.id')
-            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                    'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                    'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
-                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','lotes.fecha_termino_ventas')
+            $lotes = $query
                 ->where($criterio, '=',$buscar)
                 ->where('lotes.etapa_id', '=',$buscar2 )
                 ->where('lotes.ini_obra', '=', '0')
@@ -2787,14 +2056,7 @@ class LoteController extends Controller
         }
 
         elseif($buscar2 == '' && $buscar3 != ''){
-            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-            ->join('etapas','lotes.etapa_id','=','etapas.id')
-            ->join('modelos','lotes.modelo_id','=','modelos.id')
-            ->join('empresas','lotes.empresa_id','=','empresas.id')
-            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                    'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                    'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
-                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','lotes.fecha_termino_ventas')
+            $lotes = $query
                 ->where($criterio, '=',$buscar)
                 ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                 ->where('lotes.ini_obra', '=', '0')
@@ -2803,14 +2065,7 @@ class LoteController extends Controller
         }
                 
         elseif($buscar2 != '' && $buscar3 != ''){
-            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-            ->join('etapas','lotes.etapa_id','=','etapas.id')
-            ->join('modelos','lotes.modelo_id','=','modelos.id')
-            ->join('empresas','lotes.empresa_id','=','empresas.id')
-            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                    'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                    'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
-                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','lotes.fecha_termino_ventas')
+            $lotes = $query
                 ->where($criterio, '=',$buscar)
                 ->where('lotes.etapa_id', '=',$buscar2 )
                 ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
@@ -2845,17 +2100,20 @@ class LoteController extends Controller
         $fecha = $request->fecha;
         $fecha2 = $request->fecha2;
         $criterio = $request->criterio;
+
+        $query = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+            ->join('etapas','lotes.etapa_id','=','etapas.id')
+            ->join('modelos','lotes.modelo_id','=','modelos.id')
+            ->join('empresas','lotes.empresa_id','=','empresas.id')
+            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
+                  'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
+                  'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
+                  'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
+                  'lotes.fecha_termino_ventas', 'lotes.ehl_solicitado');
         
         if($fecha == '' && $fecha2 == ''){
             if($buscar==''){
-                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                          'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                          'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
-                          'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','lotes.fecha_termino_ventas', 'lotes.ehl_solicitado')
+                $lotes = $query
                     ->where('lotes.ehl_solicitado','!=',NULL)
                     ->where('modelos.nombre','!=','Por Asignar')
                     ->orderBy('lotes.ehl_solicitado','desc')
@@ -2864,14 +2122,7 @@ class LoteController extends Controller
             }
     
             elseif($buscar2 == '' && $buscar3 == ''){
-                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                        'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
-                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','lotes.fecha_termino_ventas', 'lotes.ehl_solicitado')
+                $lotes = $query
                     ->where($criterio, '=',$buscar)
                     ->where('lotes.ehl_solicitado','!=',NULL)
                     ->where('modelos.nombre','!=','Por Asignar')
@@ -2880,14 +2131,7 @@ class LoteController extends Controller
             }
     
             elseif($buscar2 != '' && $buscar3 == ''){
-                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                        'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
-                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','lotes.fecha_termino_ventas', 'lotes.ehl_solicitado')
+                $lotes = $query
                     ->where($criterio, '=',$buscar)
                     ->where('lotes.etapa_id', '=',$buscar2 )
                     ->where('lotes.ehl_solicitado','!=',NULL)
@@ -2897,14 +2141,7 @@ class LoteController extends Controller
             }
     
             elseif($buscar2 == '' && $buscar3 != ''){
-                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                        'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
-                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','lotes.fecha_termino_ventas', 'lotes.ehl_solicitado')
+                $lotes = $query
                     ->where($criterio, '=',$buscar)
                     ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                     ->where('lotes.ehl_solicitado','!=',NULL)
@@ -2914,14 +2151,7 @@ class LoteController extends Controller
             }
                     
             elseif($buscar2 != '' && $buscar3 != ''){
-                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                        'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
-                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','lotes.fecha_termino_ventas', 'lotes.ehl_solicitado')
+                $lotes = $query
                     ->where($criterio, '=',$buscar)
                     ->where('lotes.etapa_id', '=',$buscar2 )
                     ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
@@ -2933,14 +2163,7 @@ class LoteController extends Controller
         }
         else{
             if($buscar==''){
-                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                          'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                          'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
-                          'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','lotes.fecha_termino_ventas', 'lotes.ehl_solicitado')
+                $lotes = $query
                     ->whereBetween('lotes.ehl_solicitado', [$fecha, $fecha2])
                     ->where('modelos.nombre','!=','Por Asignar')
                     ->orderBy('lotes.ehl_solicitado','desc')
@@ -2949,14 +2172,7 @@ class LoteController extends Controller
             }
     
             elseif($buscar2 == '' && $buscar3 == ''){
-                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                        'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
-                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','lotes.fecha_termino_ventas', 'lotes.ehl_solicitado')
+                $lotes = $query
                     ->where($criterio, '=',$buscar)
                     ->whereBetween('lotes.ehl_solicitado', [$fecha, $fecha2])
                     ->where('modelos.nombre','!=','Por Asignar')
@@ -2965,14 +2181,7 @@ class LoteController extends Controller
             }
     
             elseif($buscar2 != '' && $buscar3 == ''){
-                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                        'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
-                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','lotes.fecha_termino_ventas', 'lotes.ehl_solicitado')
+                $lotes = $query
                     ->where($criterio, '=',$buscar)
                     ->where('lotes.etapa_id', '=',$buscar2 )
                     ->whereBetween('lotes.ehl_solicitado', [$fecha, $fecha2])
@@ -2982,14 +2191,7 @@ class LoteController extends Controller
             }
     
             elseif($buscar2 == '' && $buscar3 != ''){
-                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                        'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
-                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','lotes.fecha_termino_ventas', 'lotes.ehl_solicitado')
+                $lotes = $query
                     ->where($criterio, '=',$buscar)
                     ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                     ->whereBetween('lotes.ehl_solicitado', [$fecha, $fecha2])
@@ -2999,14 +2201,7 @@ class LoteController extends Controller
             }
                     
             elseif($buscar2 != '' && $buscar3 != ''){
-                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                        'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
-                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','lotes.fecha_termino_ventas', 'lotes.ehl_solicitado')
+                $lotes = $query
                     ->where($criterio, '=',$buscar)
                     ->where('lotes.etapa_id', '=',$buscar2 )
                     ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
@@ -3113,25 +2308,58 @@ class LoteController extends Controller
         $b_lote = $request->b_lote;
         $b_apartado = $request->b_apartado;
 
+        $query = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+            ->join('licencias','lotes.id','=','licencias.id')
+            ->join('etapas','lotes.etapa_id','=','etapas.id')
+            ->join('modelos','lotes.modelo_id','=','modelos.id')
+            ->leftJoin('apartados','lotes.id','apartados.lote_id')
+            ->leftJoin('clientes','apartados.cliente_id','clientes.id')
+            ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
+            ->leftJoin('personal','clientes.id','personal.id')
+            ->leftJoin('personal as v','vendedores.id','v.id')
+            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
+                        'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
+                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
+                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
+                        'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
+                        'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 
+                        'v.nombre as v_nombre', 'apartados.fecha_apartado');
+
+        $queryCont = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                    ->join('licencias','lotes.id','=','licencias.id')
+                    ->join('etapas','lotes.etapa_id','=','etapas.id')
+                    ->join('modelos','lotes.modelo_id','=','modelos.id')
+                    ->leftJoin('apartados','lotes.id','apartados.lote_id')
+                    ->leftJoin('clientes','apartados.cliente_id','clientes.id')
+                    ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
+                    ->leftJoin('personal','clientes.id','personal.id')
+                    ->leftJoin('personal as v','vendedores.id','v.id')
+                    ->select('lotes.id');
+
+        $queryVendedores = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+            ->join('licencias','lotes.id','=','licencias.id')
+            ->join('etapas','lotes.etapa_id','=','etapas.id')
+            ->join('modelos','lotes.modelo_id','=','modelos.id')
+            ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
+            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
+                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
+                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
+                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
+                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste',
+                    'lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas');
+
+        $queryVendedoresCont = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                ->join('licencias','lotes.id','=','licencias.id')
+                ->join('etapas','lotes.etapa_id','=','etapas.id')
+                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
+                ->select('lotes.id');
+
         if($rolId == 1 || $rolId == 4 || $rolId == 6 || $rolId == 8 ){
             switch($b_apartado){
                 case '':{
                     if($buscar==''){
-                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                        ->join('licencias','lotes.id','=','licencias.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                        ->leftJoin('personal','clientes.id','personal.id')
-                        ->leftJoin('personal as v','vendedores.id','v.id')
-                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                        $lotes = $query
                                     ->where('lotes.habilitado','=',1)
                                     ->where('lotes.contrato','=',0)
                                     ->orderBy('fraccionamientos.nombre','DESC')
@@ -3139,16 +2367,7 @@ class LoteController extends Controller
                                     ->orderBy('lotes.manzana','ASC')
                                     ->orderBy('lotes.num_lote','ASC')->paginate(25);  
         
-                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                    ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                    ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                    ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                    ->leftJoin('personal','clientes.id','personal.id')
-                                    ->leftJoin('personal as v','vendedores.id','v.id')
-                                    ->select('lotes.id')
+                        $contadorLotes = $queryCont
                                     ->where('lotes.habilitado','=',1)
                                     ->where('lotes.contrato','=',0)
                                     ->orderBy('fraccionamientos.nombre','DESC')
@@ -3159,21 +2378,7 @@ class LoteController extends Controller
                     else{
                         if($buscar2=='' && $buscar3=='' && $b_modelo=='' && $b_lote=='')
                         {
-                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                            ->join('licencias','lotes.id','=','licencias.id')
-                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                            ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                            ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                            ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                            ->leftJoin('personal','clientes.id','personal.id')
-                            ->leftJoin('personal as v','vendedores.id','v.id')
-                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                            $lotes = $query
                                         ->where('lotes.habilitado','=',1)
                                         ->where('lotes.contrato','=',0)
                                         ->where($criterio, 'like', '%'. $buscar . '%')
@@ -3182,16 +2387,7 @@ class LoteController extends Controller
                                         ->orderBy('lotes.manzana','ASC')
                                         ->orderBy('lotes.num_lote','ASC')->paginate(25);
         
-                                        $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('licencias','lotes.id','=','licencias.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                        ->leftJoin('personal','clientes.id','personal.id')
-                                        ->leftJoin('personal as v','vendedores.id','v.id')
-                                        ->select('lotes.id')
+                            $contadorLotes = $queryCont
                                         ->where('lotes.habilitado','=',1)
                                         ->where('lotes.contrato','=',0)
                                         ->where($criterio, 'like', '%'. $buscar . '%')
@@ -3203,21 +2399,7 @@ class LoteController extends Controller
                         else{
                             if($b_lote=='' && $buscar3=='' && $b_modelo=='' && $buscar2 !='')
                             {
-                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                ->leftJoin('personal','clientes.id','personal.id')
-                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                $lotes = $query
                                     ->where('lotes.habilitado','=',1)
                                     ->where('lotes.contrato','=',0)
                                     ->where($criterio, 'like', '%'. $buscar . '%')
@@ -3227,42 +2409,19 @@ class LoteController extends Controller
                                     ->orderBy('lotes.manzana','ASC')
                                     ->orderBy('lotes.num_lote','ASC')->paginate(25);
         
-                                     $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('licencias','lotes.id','=','licencias.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                        ->leftJoin('personal','clientes.id','personal.id')
-                                        ->leftJoin('personal as v','vendedores.id','v.id')
-                                        ->select('lotes.id')
-                                        ->where('lotes.habilitado','=',1)
-                                        ->where('lotes.contrato','=',0)
-                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                        ->where('etapas.id', 'like', '%'. $buscar2 . '%')
-                                        ->orderBy('fraccionamientos.nombre','DESC')
-                                        ->orderBy('etapas.num_etapa','ASC')
-                                        ->orderBy('lotes.manzana','ASC')
-                                        ->orderBy('lotes.num_lote','ASC')->count();
+                                $contadorLotes = $queryCont
+                                    ->where('lotes.habilitado','=',1)
+                                    ->where('lotes.contrato','=',0)
+                                    ->where($criterio, 'like', '%'. $buscar . '%')
+                                    ->where('etapas.id', 'like', '%'. $buscar2 . '%')
+                                    ->orderBy('fraccionamientos.nombre','DESC')
+                                    ->orderBy('etapas.num_etapa','ASC')
+                                    ->orderBy('lotes.manzana','ASC')
+                                    ->orderBy('lotes.num_lote','ASC')->count();
                             }
                             else{
                             if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' ){
-                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                ->leftJoin('personal','clientes.id','personal.id')
-                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                $lotes = $query
                                     ->where('lotes.habilitado','=',1)
                                     ->where('lotes.contrato','=',0)
                                     ->where($criterio, 'like', '%'. $buscar . '%')
@@ -3274,115 +2433,105 @@ class LoteController extends Controller
                                     ->orderBy('lotes.manzana','ASC')
                                     ->orderBy('lotes.num_lote','ASC')->paginate(25);
         
-                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('licencias','lotes.id','=','licencias.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                        ->leftJoin('personal','clientes.id','personal.id')
-                                        ->leftJoin('personal as v','vendedores.id','v.id')
-                                        ->select('lotes.id')
+                                $contadorLotes = $queryCont
+                                    ->where('lotes.habilitado','=',1)
+                                    ->where('lotes.contrato','=',0)
+                                    ->where($criterio, 'like', '%'. $buscar . '%')
+                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                    ->where('modelos.id', '=', $b_modelo )
+                                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                    ->orderBy('fraccionamientos.nombre','DESC')
+                                    ->orderBy('etapas.num_etapa','ASC')
+                                    ->orderBy('lotes.manzana','ASC')
+                                    ->orderBy('lotes.num_lote','ASC')->count();
+                            }else{
+                                if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
+                                {
+                                    $lotes = $query
+                                        ->where($criterio, 'like', '%'. $buscar . '%')
                                         ->where('lotes.habilitado','=',1)
                                         ->where('lotes.contrato','=',0)
-                                        ->where($criterio, 'like', '%'. $buscar . '%')
                                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                         ->where('modelos.id', '=', $b_modelo )
-                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                        ->orderBy('fraccionamientos.nombre','DESC')
+                                        ->orderBy('etapas.num_etapa','ASC')
+                                        ->orderBy('lotes.manzana','ASC')
+                                        ->orderBy('lotes.num_lote','ASC')->paginate(25);
+
+                                    $contadorLotes = $queryCont
+                                        ->where($criterio, 'like', '%'. $buscar . '%')
+                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                        ->where('lotes.habilitado','=',1)
+                                        ->where('lotes.contrato','=',0)
+                                        ->where('modelos.id', '=', $b_modelo )
+                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
                                         ->orderBy('fraccionamientos.nombre','DESC')
                                         ->orderBy('etapas.num_etapa','ASC')
                                         ->orderBy('lotes.manzana','ASC')
                                         ->orderBy('lotes.num_lote','ASC')->count();
-                            }else{
-                                        if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
-                                        {
-                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                            ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                            ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                            ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                            ->leftJoin('personal','clientes.id','personal.id')
-                                            ->leftJoin('personal as v','vendedores.id','v.id')
-                                            ->join('licencias','lotes.id','=','licencias.id')
-                                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                }else{
+                                    if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
+    
+                                        $lotes = $query
+                                            ->where($criterio, 'like', '%'. $buscar . '%')
+                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                            ->where('modelos.id', '=', $b_modelo )
+                                            ->where('lotes.habilitado','=',1)
+                                            ->where('lotes.contrato','=',0)
+                                            ->orderBy('fraccionamientos.nombre','DESC')
+                                            ->orderBy('etapas.num_etapa','ASC')
+                                            ->orderBy('lotes.manzana','ASC')
+                                            ->orderBy('lotes.num_lote','ASC')->paginate(25);
+
+                                        $contadorLotes = $queryCont
+                                            ->where($criterio, 'like', '%'. $buscar . '%')
+                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                            ->where('modelos.id', '=', $b_modelo )
+                                            ->where('lotes.habilitado','=',1)
+                                            ->where('lotes.contrato','=',0)
+                                            ->orderBy('fraccionamientos.nombre','DESC')
+                                            ->orderBy('etapas.num_etapa','ASC')
+                                            ->orderBy('lotes.manzana','ASC')
+                                            ->orderBy('lotes.num_lote','ASC')->count();
+                                    }else{
+                                        if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
+    
+                                            $lotes = $query
                                                 ->where($criterio, 'like', '%'. $buscar . '%')
+                                                ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                                                 ->where('lotes.habilitado','=',1)
                                                 ->where('lotes.contrato','=',0)
-                                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                ->where('modelos.id', '=', $b_modelo )
-                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
                                                 ->orderBy('fraccionamientos.nombre','DESC')
                                                 ->orderBy('etapas.num_etapa','ASC')
                                                 ->orderBy('lotes.manzana','ASC')
                                                 ->orderBy('lotes.num_lote','ASC')->paginate(25);
-        
-                                                $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                ->leftJoin('personal','clientes.id','personal.id')
-                                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                                ->select('lotes.id')
+
+                                            $contadorLotes = $queryCont
                                                 ->where($criterio, 'like', '%'. $buscar . '%')
-                                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                                ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                                                 ->where('lotes.habilitado','=',1)
                                                 ->where('lotes.contrato','=',0)
-                                                ->where('modelos.id', '=', $b_modelo )
-                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
                                                 ->orderBy('fraccionamientos.nombre','DESC')
                                                 ->orderBy('etapas.num_etapa','ASC')
                                                 ->orderBy('lotes.manzana','ASC')
                                                 ->orderBy('lotes.num_lote','ASC')->count();
                                         }else{
-                                            if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
-            
-                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                ->leftJoin('personal','clientes.id','personal.id')
-                                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                            if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
+                                                $lotes = $query
                                                     ->where($criterio, 'like', '%'. $buscar . '%')
-                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                    ->where('modelos.id', '=', $b_modelo )
+                                                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                                                     ->where('lotes.habilitado','=',1)
                                                     ->where('lotes.contrato','=',0)
+                                                    ->where('modelos.id', '=', $b_modelo )
                                                     ->orderBy('fraccionamientos.nombre','DESC')
                                                     ->orderBy('etapas.num_etapa','ASC')
                                                     ->orderBy('lotes.manzana','ASC')
                                                     ->orderBy('lotes.num_lote','ASC')->paginate(25);
-        
-                                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                    ->join('licencias','lotes.id','=','licencias.id')
-                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                    ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                    ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                    ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                    ->leftJoin('personal','clientes.id','personal.id')
-                                                    ->leftJoin('personal as v','vendedores.id','v.id')
-                                                    ->select('lotes.id')
+
+                                                $contadorLotes = $queryCont
                                                     ->where($criterio, 'like', '%'. $buscar . '%')
-                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                                                     ->where('modelos.id', '=', $b_modelo )
                                                     ->where('lotes.habilitado','=',1)
                                                     ->where('lotes.contrato','=',0)
@@ -3391,44 +2540,22 @@ class LoteController extends Controller
                                                     ->orderBy('lotes.manzana','ASC')
                                                     ->orderBy('lotes.num_lote','ASC')->count();
                                             }else{
-                                                if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
-            
-                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                    ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                    ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                    ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                    ->leftJoin('personal','clientes.id','personal.id')
-                                                    ->leftJoin('personal as v','vendedores.id','v.id')
-                                                    ->join('licencias','lotes.id','=','licencias.id')
-                                                    ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                            'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
+                                                    $lotes = $query
                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                         ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                                         ->where('lotes.habilitado','=',1)
                                                         ->where('lotes.contrato','=',0)
                                                         ->orderBy('fraccionamientos.nombre','DESC')
                                                         ->orderBy('etapas.num_etapa','ASC')
                                                         ->orderBy('lotes.manzana','ASC')
                                                         ->orderBy('lotes.num_lote','ASC')->paginate(25);
-        
-                                                        $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('licencias','lotes.id','=','licencias.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                        ->leftJoin('personal','clientes.id','personal.id')
-                                                        ->leftJoin('personal as v','vendedores.id','v.id')
-                                                        ->select('lotes.id')
+
+                                                    $contadorLotes = $queryCont
                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                         ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                                         ->where('lotes.habilitado','=',1)
                                                         ->where('lotes.contrato','=',0)
                                                         ->orderBy('fraccionamientos.nombre','DESC')
@@ -3436,181 +2563,68 @@ class LoteController extends Controller
                                                         ->orderBy('lotes.manzana','ASC')
                                                         ->orderBy('lotes.num_lote','ASC')->count();
                                                 }else{
-                                                    if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
-                                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                        ->leftJoin('personal','clientes.id','personal.id')
-                                                        ->leftJoin('personal as v','vendedores.id','v.id')
-                                                        ->join('licencias','lotes.id','=','licencias.id')
-                                                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                            'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                    if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !='' ){
+                                                        $lotes = $query
                                                             ->where($criterio, 'like', '%'. $buscar . '%')
-                                                            ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                                            ->where('modelos.id', '=', $b_modelo )
                                                             ->where('lotes.habilitado','=',1)
                                                             ->where('lotes.contrato','=',0)
-                                                            ->where('modelos.id', '=', $b_modelo )
                                                             ->orderBy('fraccionamientos.nombre','DESC')
                                                             ->orderBy('etapas.num_etapa','ASC')
                                                             ->orderBy('lotes.manzana','ASC')
                                                             ->orderBy('lotes.num_lote','ASC')->paginate(25);
-        
-                                                        $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('licencias','lotes.id','=','licencias.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                        ->leftJoin('personal','clientes.id','personal.id')
-                                                        ->leftJoin('personal as v','vendedores.id','v.id')
-                                                        ->select('lotes.id')
-                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                        ->where('modelos.id', '=', $b_modelo )
-                                                        ->where('lotes.habilitado','=',1)
-                                                        ->where('lotes.contrato','=',0)
-                                                        ->orderBy('fraccionamientos.nombre','DESC')
-                                                        ->orderBy('etapas.num_etapa','ASC')
-                                                        ->orderBy('lotes.manzana','ASC')
-                                                        ->orderBy('lotes.num_lote','ASC')->count();
-                                                    }else{
-                                                        if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
-                                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                            ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                            ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                            ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                            ->leftJoin('personal','clientes.id','personal.id')
-                                                            ->leftJoin('personal as v','vendedores.id','v.id')
-                                                            ->join('licencias','lotes.id','=','licencias.id')
-                                                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
-                                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                ->where('lotes.habilitado','=',1)
-                                                                ->where('lotes.contrato','=',0)
-                                                                ->orderBy('fraccionamientos.nombre','DESC')
-                                                                ->orderBy('etapas.num_etapa','ASC')
-                                                                ->orderBy('lotes.manzana','ASC')
-                                                                ->orderBy('lotes.num_lote','ASC')->paginate(25);
-        
-                                                            $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                            ->join('licencias','lotes.id','=','licencias.id')
-                                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                            ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                            ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                            ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                            ->leftJoin('personal','clientes.id','personal.id')
-                                                            ->leftJoin('personal as v','vendedores.id','v.id')
-                                                            ->select('lotes.id')
+
+                                                        $contadorLotes = $queryCont
                                                             ->where($criterio, 'like', '%'. $buscar . '%')
-                                                            ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                                            ->where('modelos.id', '=', $b_modelo )
                                                             ->where('lotes.habilitado','=',1)
                                                             ->where('lotes.contrato','=',0)
                                                             ->orderBy('fraccionamientos.nombre','DESC')
                                                             ->orderBy('etapas.num_etapa','ASC')
                                                             ->orderBy('lotes.manzana','ASC')
                                                             ->orderBy('lotes.num_lote','ASC')->count();
+                                                    }else{
+                                                        if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
+                                                            $lotes = $query
+                                                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                ->where('modelos.id', '=', $b_modelo )
+                                                                ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                                                ->where('lotes.habilitado','=',1)
+                                                                ->where('lotes.contrato','=',0)
+                                                                ->orderBy('fraccionamientos.nombre','DESC')
+                                                                ->orderBy('etapas.num_etapa','ASC')
+                                                                ->orderBy('lotes.manzana','ASC')
+                                                                ->orderBy('lotes.num_lote','ASC')->paginate(25);
+
+                                                            $contadorLotes = $queryCont
+                                                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                ->where('modelos.id', '=', $b_modelo )
+                                                                ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                                                ->where('lotes.habilitado','=',1)
+                                                                ->where('lotes.contrato','=',0)
+                                                                ->orderBy('fraccionamientos.nombre','DESC')
+                                                                ->orderBy('etapas.num_etapa','ASC')
+                                                                ->orderBy('lotes.manzana','ASC')
+                                                                ->orderBy('lotes.num_lote','ASC')->count();
                                                         }else{
-                                                            if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !='' ){
-                                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                ->leftJoin('personal','clientes.id','personal.id')
-                                                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                            if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
+                                                                $lotes = $query
                                                                     ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                    ->where('modelos.id', '=', $b_modelo )
+                                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                                                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
                                                                     ->where('lotes.habilitado','=',1)
                                                                     ->where('lotes.contrato','=',0)
                                                                     ->orderBy('fraccionamientos.nombre','DESC')
                                                                     ->orderBy('etapas.num_etapa','ASC')
                                                                     ->orderBy('lotes.manzana','ASC')
                                                                     ->orderBy('lotes.num_lote','ASC')->paginate(25);
-        
-                                                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                    ->join('licencias','lotes.id','=','licencias.id')
-                                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                    ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                    ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                    ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                    ->leftJoin('personal','clientes.id','personal.id')
-                                                                    ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                    ->select('lotes.id')
+
+                                                                $contadorLotes = $queryCont
                                                                     ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                    ->where('modelos.id', '=', $b_modelo )
-                                                                    ->where('lotes.habilitado','=',1)
-                                                                    ->where('lotes.contrato','=',0)
-                                                                    ->orderBy('fraccionamientos.nombre','DESC')
-                                                                    ->orderBy('etapas.num_etapa','ASC')
-                                                                    ->orderBy('lotes.manzana','ASC')
-                                                                    ->orderBy('lotes.num_lote','ASC')->count();
-                                                            }else{
-                                                                if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                    ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                    ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                    ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                    ->leftJoin('personal','clientes.id','personal.id')
-                                                                    ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                    ->join('licencias','lotes.id','=','licencias.id')
-                                                                    ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                        'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                                        'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                        'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
-                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                        ->where('modelos.id', '=', $b_modelo )
-                                                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                        ->where('lotes.habilitado','=',1)
-                                                                        ->where('lotes.contrato','=',0)
-                                                                        ->orderBy('fraccionamientos.nombre','DESC')
-                                                                        ->orderBy('etapas.num_etapa','ASC')
-                                                                        ->orderBy('lotes.manzana','ASC')
-                                                                        ->orderBy('lotes.num_lote','ASC')->paginate(25);
-        
-                                                                        $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                    ->join('licencias','lotes.id','=','licencias.id')
-                                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                    ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                    ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                    ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                    ->leftJoin('personal','clientes.id','personal.id')
-                                                                    ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                    ->select('lotes.id')
-                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                    ->where('modelos.id', '=', $b_modelo )
+                                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                                                     ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                                                                     ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
                                                                     ->where('lotes.habilitado','=',1)
@@ -3619,26 +2633,38 @@ class LoteController extends Controller
                                                                     ->orderBy('etapas.num_etapa','ASC')
                                                                     ->orderBy('lotes.manzana','ASC')
                                                                     ->orderBy('lotes.num_lote','ASC')->count();
+                                                            }else{
+                                                                if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
+                                                                    $lotes = $query
+                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                        ->where('modelos.id', '=', $b_modelo )
+                                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                                                        ->where('lotes.habilitado','=',1)
+                                                                        ->where('lotes.contrato','=',0)
+                                                                        ->orderBy('fraccionamientos.nombre','DESC')
+                                                                        ->orderBy('etapas.num_etapa','ASC')
+                                                                        ->orderBy('lotes.manzana','ASC')
+                                                                        ->orderBy('lotes.num_lote','ASC')->paginate(25);
+
+                                                                    $contadorLotes = $queryCont
+                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                        ->where('modelos.id', '=', $b_modelo )
+                                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                                                        ->where('lotes.habilitado','=',1)
+                                                                        ->where('lotes.contrato','=',0)
+                                                                        ->orderBy('fraccionamientos.nombre','DESC')
+                                                                        ->orderBy('etapas.num_etapa','ASC')
+                                                                        ->orderBy('lotes.manzana','ASC')
+                                                                        ->orderBy('lotes.num_lote','ASC')->count();
                                                                 }else{
-                                                                    if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
-                                                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                        ->leftJoin('personal','clientes.id','personal.id')
-                                                                        ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                        ->join('licencias','lotes.id','=','licencias.id')
-                                                                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                            'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                                    if($buscar2!='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
+                                                                        $lotes = $query
                                                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                                                             ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                            ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                                                                             ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
                                                                             ->where('lotes.habilitado','=',1)
                                                                             ->where('lotes.contrato','=',0)
@@ -3646,20 +2672,10 @@ class LoteController extends Controller
                                                                             ->orderBy('etapas.num_etapa','ASC')
                                                                             ->orderBy('lotes.manzana','ASC')
                                                                             ->orderBy('lotes.num_lote','ASC')->paginate(25);
-        
-                                                                            $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                            ->join('licencias','lotes.id','=','licencias.id')
-                                                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                            ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                            ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                            ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                            ->leftJoin('personal','clientes.id','personal.id')
-                                                                            ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                            ->select('lotes.id')
+    
+                                                                        $contadorLotes = $queryCont
                                                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                                                             ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                            ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                                                                             ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
                                                                             ->where('lotes.habilitado','=',1)
                                                                             ->where('lotes.contrato','=',0)
@@ -3667,148 +2683,27 @@ class LoteController extends Controller
                                                                             ->orderBy('etapas.num_etapa','ASC')
                                                                             ->orderBy('lotes.manzana','ASC')
                                                                             ->orderBy('lotes.num_lote','ASC')->count();
-                                                                    }else{
-                                                                        if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                            ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                            ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                            ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                            ->leftJoin('personal','clientes.id','personal.id')
-                                                                            ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                            ->join('licencias','lotes.id','=','licencias.id')
-                                                                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                            'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
-                                                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                                ->where('modelos.id', '=', $b_modelo )
-                                                                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                                ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                                ->where('lotes.habilitado','=',1)
-                                                                                ->where('lotes.contrato','=',0)
-                                                                                ->orderBy('fraccionamientos.nombre','DESC')
-                                                                                ->orderBy('etapas.num_etapa','ASC')
-                                                                                ->orderBy('lotes.manzana','ASC')
-                                                                                ->orderBy('lotes.num_lote','ASC')->paginate(25);
-        
-                                                                                $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                                ->leftJoin('personal','clientes.id','personal.id')
-                                                                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                                ->select('lotes.id')
-                                                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                                ->where('modelos.id', '=', $b_modelo )
-                                                                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                                ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                                ->where('lotes.habilitado','=',1)
-                                                                                ->where('lotes.contrato','=',0)
-                                                                                ->orderBy('fraccionamientos.nombre','DESC')
-                                                                                ->orderBy('etapas.num_etapa','ASC')
-                                                                                ->orderBy('lotes.manzana','ASC')
-                                                                                ->orderBy('lotes.num_lote','ASC')->count();
-                                                                        }else{
-                                                                            if($buscar2!='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
-                                                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                                ->leftJoin('personal','clientes.id','personal.id')
-                                                                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                                'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                                                'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                                'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
-                                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                                    ->where('lotes.habilitado','=',1)
-                                                                                    ->where('lotes.contrato','=',0)
-                                                                                    ->orderBy('fraccionamientos.nombre','DESC')
-                                                                                    ->orderBy('etapas.num_etapa','ASC')
-                                                                                    ->orderBy('lotes.manzana','ASC')
-                                                                                    ->orderBy('lotes.num_lote','ASC')->paginate(25);
-            
-                                                                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                                    ->join('licencias','lotes.id','=','licencias.id')
-                                                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                                    ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                                    ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                                    ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                                    ->leftJoin('personal','clientes.id','personal.id')
-                                                                                    ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                                    ->select('lotes.id')
-                                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                                    ->where('lotes.habilitado','=',1)
-                                                                                    ->where('lotes.contrato','=',0)
-                                                                                    ->orderBy('fraccionamientos.nombre','DESC')
-                                                                                    ->orderBy('etapas.num_etapa','ASC')
-                                                                                    ->orderBy('lotes.manzana','ASC')
-                                                                                    ->orderBy('lotes.num_lote','ASC')->count();
-                                                                            }
-                                                                            elseif($buscar2=='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
-                                                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                                ->leftJoin('personal','clientes.id','personal.id')
-                                                                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                                'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                                                'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                                'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
-                                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                                    ->where('lotes.habilitado','=',1)
-                                                                                    ->where('lotes.contrato','=',0)
-                                                                                    ->orderBy('fraccionamientos.nombre','DESC')
-                                                                                    ->orderBy('etapas.num_etapa','ASC')
-                                                                                    ->orderBy('lotes.manzana','ASC')
-                                                                                    ->orderBy('lotes.num_lote','ASC')->paginate(25);
-            
-                                                                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                                    ->join('licencias','lotes.id','=','licencias.id')
-                                                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                                    ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                                    ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                                    ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                                    ->leftJoin('personal','clientes.id','personal.id')
-                                                                                    ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                                    ->select('lotes.id')
-                                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                                    ->where('lotes.habilitado','=',1)
-                                                                                    ->where('lotes.contrato','=',0)
-                                                                                    ->orderBy('fraccionamientos.nombre','DESC')
-                                                                                    ->orderBy('etapas.num_etapa','ASC')
-                                                                                    ->orderBy('lotes.manzana','ASC')
-                                                                                    ->orderBy('lotes.num_lote','ASC')->count();
-                                                                            }
-                                                                        }
+                                                                    }
+                                                                    elseif($buscar2=='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
+                                                                        $lotes = $query
+                                                                            ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                            ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                                                            ->where('lotes.habilitado','=',1)
+                                                                            ->where('lotes.contrato','=',0)
+                                                                            ->orderBy('fraccionamientos.nombre','DESC')
+                                                                            ->orderBy('etapas.num_etapa','ASC')
+                                                                            ->orderBy('lotes.manzana','ASC')
+                                                                            ->orderBy('lotes.num_lote','ASC')->paginate(25);
+    
+                                                                        $contadorLotes = $queryCont
+                                                                            ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                            ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                                                            ->where('lotes.habilitado','=',1)
+                                                                            ->where('lotes.contrato','=',0)
+                                                                            ->orderBy('fraccionamientos.nombre','DESC')
+                                                                            ->orderBy('etapas.num_etapa','ASC')
+                                                                            ->orderBy('lotes.manzana','ASC')
+                                                                            ->orderBy('lotes.num_lote','ASC')->count();
                                                                     }
                                                                 }
                                                             }
@@ -3818,6 +2713,8 @@ class LoteController extends Controller
                                             }
                                         }
                                     }
+                                }
+                                }
                             }
                         }
                     }
@@ -3825,21 +2722,7 @@ class LoteController extends Controller
                 }
                 case '0':{
                     if($buscar==''){
-                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                        ->join('licencias','lotes.id','=','licencias.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                        ->leftJoin('personal','clientes.id','personal.id')
-                        ->leftJoin('personal as v','vendedores.id','v.id')
-                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                        $lotes = $query
                                     ->where('lotes.habilitado','=',1)
                                     ->where('lotes.contrato','=',0)
                                     ->where('lotes.apartado','=',0)
@@ -3848,16 +2731,7 @@ class LoteController extends Controller
                                     ->orderBy('lotes.manzana','ASC')
                                     ->orderBy('lotes.num_lote','ASC')->paginate(25);  
         
-                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                    ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                    ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                    ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                    ->leftJoin('personal','clientes.id','personal.id')
-                                    ->leftJoin('personal as v','vendedores.id','v.id')
-                                    ->select('lotes.id')
+                        $contadorLotes = $queryCont
                                     ->where('lotes.habilitado','=',1)
                                     ->where('lotes.contrato','=',0)
                                     ->where('lotes.apartado','=',0)
@@ -3869,21 +2743,7 @@ class LoteController extends Controller
                     else{
                         if($buscar2=='' && $buscar3=='' && $b_modelo=='' && $b_lote=='')
                         {
-                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                            ->join('licencias','lotes.id','=','licencias.id')
-                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                            ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                            ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                            ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                            ->leftJoin('personal','clientes.id','personal.id')
-                            ->leftJoin('personal as v','vendedores.id','v.id')
-                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                            $lotes = $query
                                         ->where('lotes.habilitado','=',1)
                                         ->where('lotes.contrato','=',0)
                                         ->where('lotes.apartado','=',0)
@@ -3893,16 +2753,7 @@ class LoteController extends Controller
                                         ->orderBy('lotes.manzana','ASC')
                                         ->orderBy('lotes.num_lote','ASC')->paginate(25);
         
-                                        $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('licencias','lotes.id','=','licencias.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                        ->leftJoin('personal','clientes.id','personal.id')
-                                        ->leftJoin('personal as v','vendedores.id','v.id')
-                                        ->select('lotes.id')
+                            $contadorLotes = $queryCont
                                         ->where('lotes.habilitado','=',1)
                                         ->where('lotes.contrato','=',0)
                                         ->where('lotes.apartado','=',0)
@@ -3915,21 +2766,7 @@ class LoteController extends Controller
                         else{
                             if($b_lote=='' && $buscar3=='' && $b_modelo=='' && $buscar2 !='')
                             {
-                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                ->leftJoin('personal','clientes.id','personal.id')
-                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                $lotes = $query
                                     ->where('lotes.habilitado','=',1)
                                     ->where('lotes.contrato','=',0)
                                     ->where('lotes.apartado','=',0)
@@ -3940,43 +2777,20 @@ class LoteController extends Controller
                                     ->orderBy('lotes.manzana','ASC')
                                     ->orderBy('lotes.num_lote','ASC')->paginate(25);
         
-                                     $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('licencias','lotes.id','=','licencias.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                        ->leftJoin('personal','clientes.id','personal.id')
-                                        ->leftJoin('personal as v','vendedores.id','v.id')
-                                        ->select('lotes.id')
-                                        ->where('lotes.habilitado','=',1)
-                                        ->where('lotes.contrato','=',0)
-                                        ->where('lotes.apartado','=',0)
-                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                        ->where('etapas.id', 'like', '%'. $buscar2 . '%')
-                                        ->orderBy('fraccionamientos.nombre','DESC')
-                                        ->orderBy('etapas.num_etapa','ASC')
-                                        ->orderBy('lotes.manzana','ASC')
-                                        ->orderBy('lotes.num_lote','ASC')->count();
+                                $contadorLotes = $queryCont
+                                    ->where('lotes.habilitado','=',1)
+                                    ->where('lotes.contrato','=',0)
+                                    ->where('lotes.apartado','=',0)
+                                    ->where($criterio, 'like', '%'. $buscar . '%')
+                                    ->where('etapas.id', 'like', '%'. $buscar2 . '%')
+                                    ->orderBy('fraccionamientos.nombre','DESC')
+                                    ->orderBy('etapas.num_etapa','ASC')
+                                    ->orderBy('lotes.manzana','ASC')
+                                    ->orderBy('lotes.num_lote','ASC')->count();
                             }
                             else{
                             if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' ){
-                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                ->leftJoin('personal','clientes.id','personal.id')
-                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                $lotes = $query
                                     ->where('lotes.habilitado','=',1)
                                     ->where('lotes.contrato','=',0)
                                     ->where('lotes.apartado','=',0)
@@ -3989,45 +2803,22 @@ class LoteController extends Controller
                                     ->orderBy('lotes.manzana','ASC')
                                     ->orderBy('lotes.num_lote','ASC')->paginate(25);
         
-                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('licencias','lotes.id','=','licencias.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                        ->leftJoin('personal','clientes.id','personal.id')
-                                        ->leftJoin('personal as v','vendedores.id','v.id')
-                                        ->select('lotes.id')
-                                        ->where('lotes.habilitado','=',1)
-                                        ->where('lotes.contrato','=',0)
-                                        ->where('lotes.apartado','=',0)
-                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                        ->where('modelos.id', '=', $b_modelo )
-                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                        ->orderBy('fraccionamientos.nombre','DESC')
-                                        ->orderBy('etapas.num_etapa','ASC')
-                                        ->orderBy('lotes.manzana','ASC')
-                                        ->orderBy('lotes.num_lote','ASC')->count();
+                                $contadorLotes = $queryCont
+                                    ->where('lotes.habilitado','=',1)
+                                    ->where('lotes.contrato','=',0)
+                                    ->where('lotes.apartado','=',0)
+                                    ->where($criterio, 'like', '%'. $buscar . '%')
+                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                    ->where('modelos.id', '=', $b_modelo )
+                                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                    ->orderBy('fraccionamientos.nombre','DESC')
+                                    ->orderBy('etapas.num_etapa','ASC')
+                                    ->orderBy('lotes.manzana','ASC')
+                                    ->orderBy('lotes.num_lote','ASC')->count();
                             }else{
                                         if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
                                         {
-                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                            ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                            ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                            ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                            ->leftJoin('personal','clientes.id','personal.id')
-                                            ->leftJoin('personal as v','vendedores.id','v.id')
-                                            ->join('licencias','lotes.id','=','licencias.id')
-                                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                            $lotes = $query
                                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                                 ->where('lotes.habilitado','=',1)
                                                 ->where('lotes.contrato','=',0)
@@ -4040,16 +2831,7 @@ class LoteController extends Controller
                                                 ->orderBy('lotes.manzana','ASC')
                                                 ->orderBy('lotes.num_lote','ASC')->paginate(25);
         
-                                                $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                ->leftJoin('personal','clientes.id','personal.id')
-                                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                                ->select('lotes.id')
+                                            $contadorLotes = $queryCont
                                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                                 ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                                 ->where('lotes.habilitado','=',1)
@@ -4064,21 +2846,7 @@ class LoteController extends Controller
                                         }else{
                                             if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
             
-                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                ->leftJoin('personal','clientes.id','personal.id')
-                                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                $lotes = $query
                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                     ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                                     ->where('modelos.id', '=', $b_modelo )
@@ -4090,16 +2858,7 @@ class LoteController extends Controller
                                                     ->orderBy('lotes.manzana','ASC')
                                                     ->orderBy('lotes.num_lote','ASC')->paginate(25);
         
-                                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                    ->join('licencias','lotes.id','=','licencias.id')
-                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                    ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                    ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                    ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                    ->leftJoin('personal','clientes.id','personal.id')
-                                                    ->leftJoin('personal as v','vendedores.id','v.id')
-                                                    ->select('lotes.id')
+                                                $contadorLotes = $queryCont
                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                     ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                                     ->where('modelos.id', '=', $b_modelo )
@@ -4113,21 +2872,7 @@ class LoteController extends Controller
                                             }else{
                                                 if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
             
-                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                    ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                    ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                    ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                    ->leftJoin('personal','clientes.id','personal.id')
-                                                    ->leftJoin('personal as v','vendedores.id','v.id')
-                                                    ->join('licencias','lotes.id','=','licencias.id')
-                                                    ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                            'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                    $lotes = $query
                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                         ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                                                         ->where('lotes.habilitado','=',1)
@@ -4138,16 +2883,7 @@ class LoteController extends Controller
                                                         ->orderBy('lotes.manzana','ASC')
                                                         ->orderBy('lotes.num_lote','ASC')->paginate(25);
         
-                                                        $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('licencias','lotes.id','=','licencias.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                        ->leftJoin('personal','clientes.id','personal.id')
-                                                        ->leftJoin('personal as v','vendedores.id','v.id')
-                                                        ->select('lotes.id')
+                                                    $contadorLotes = $queryCont
                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                         ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                                                         ->where('lotes.habilitado','=',1)
@@ -4159,21 +2895,7 @@ class LoteController extends Controller
                                                         ->orderBy('lotes.num_lote','ASC')->count();
                                                 }else{
                                                     if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
-                                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                        ->leftJoin('personal','clientes.id','personal.id')
-                                                        ->leftJoin('personal as v','vendedores.id','v.id')
-                                                        ->join('licencias','lotes.id','=','licencias.id')
-                                                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                            'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                        $lotes = $query
                                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                                             ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                                                             ->where('lotes.habilitado','=',1)
@@ -4185,43 +2907,20 @@ class LoteController extends Controller
                                                             ->orderBy('lotes.manzana','ASC')
                                                             ->orderBy('lotes.num_lote','ASC')->paginate(25);
         
-                                                        $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('licencias','lotes.id','=','licencias.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                        ->leftJoin('personal','clientes.id','personal.id')
-                                                        ->leftJoin('personal as v','vendedores.id','v.id')
-                                                        ->select('lotes.id')
-                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                        ->where('modelos.id', '=', $b_modelo )
-                                                        ->where('lotes.habilitado','=',1)
-                                                        ->where('lotes.contrato','=',0)
-                                                        ->where('lotes.apartado','=',0)
-                                                        ->orderBy('fraccionamientos.nombre','DESC')
-                                                        ->orderBy('etapas.num_etapa','ASC')
-                                                        ->orderBy('lotes.manzana','ASC')
-                                                        ->orderBy('lotes.num_lote','ASC')->count();
+                                                        $contadorLotes = $queryCont
+                                                            ->where($criterio, 'like', '%'. $buscar . '%')
+                                                            ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                                            ->where('modelos.id', '=', $b_modelo )
+                                                            ->where('lotes.habilitado','=',1)
+                                                            ->where('lotes.contrato','=',0)
+                                                            ->where('lotes.apartado','=',0)
+                                                            ->orderBy('fraccionamientos.nombre','DESC')
+                                                            ->orderBy('etapas.num_etapa','ASC')
+                                                            ->orderBy('lotes.manzana','ASC')
+                                                            ->orderBy('lotes.num_lote','ASC')->count();
                                                     }else{
                                                         if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
-                                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                            ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                            ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                            ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                            ->leftJoin('personal','clientes.id','personal.id')
-                                                            ->leftJoin('personal as v','vendedores.id','v.id')
-                                                            ->join('licencias','lotes.id','=','licencias.id')
-                                                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                            $lotes = $query
                                                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                                                 ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                                                                 ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -4233,16 +2932,7 @@ class LoteController extends Controller
                                                                 ->orderBy('lotes.manzana','ASC')
                                                                 ->orderBy('lotes.num_lote','ASC')->paginate(25);
         
-                                                                $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                ->leftJoin('personal','clientes.id','personal.id')
-                                                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                ->select('lotes.id')
+                                                            $contadorLotes = $queryCont
                                                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                                                 ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                                                                 ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -4255,21 +2945,7 @@ class LoteController extends Controller
                                                                 ->orderBy('lotes.num_lote','ASC')->count();
                                                         }else{
                                                             if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !='' ){
-                                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                ->leftJoin('personal','clientes.id','personal.id')
-                                                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                                $lotes = $query
                                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                                     ->where('modelos.id', '=', $b_modelo )
                                                                     ->where('lotes.habilitado','=',1)
@@ -4280,16 +2956,7 @@ class LoteController extends Controller
                                                                     ->orderBy('lotes.manzana','ASC')
                                                                     ->orderBy('lotes.num_lote','ASC')->paginate(25);
         
-                                                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                    ->join('licencias','lotes.id','=','licencias.id')
-                                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                    ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                    ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                    ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                    ->leftJoin('personal','clientes.id','personal.id')
-                                                                    ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                    ->select('lotes.id')
+                                                                $contadorLotes = $queryCont
                                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                                     ->where('modelos.id', '=', $b_modelo )
                                                                     ->where('lotes.habilitado','=',1)
@@ -4301,21 +2968,7 @@ class LoteController extends Controller
                                                                     ->orderBy('lotes.num_lote','ASC')->count();
                                                             }else{
                                                                 if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                    ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                    ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                    ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                    ->leftJoin('personal','clientes.id','personal.id')
-                                                                    ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                    ->join('licencias','lotes.id','=','licencias.id')
-                                                                    ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                        'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                                        'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                        'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                                    $lotes = $query
                                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                                         ->where('modelos.id', '=', $b_modelo )
                                                                         ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
@@ -4328,44 +2981,21 @@ class LoteController extends Controller
                                                                         ->orderBy('lotes.manzana','ASC')
                                                                         ->orderBy('lotes.num_lote','ASC')->paginate(25);
         
-                                                                        $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                    ->join('licencias','lotes.id','=','licencias.id')
-                                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                    ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                    ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                    ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                    ->leftJoin('personal','clientes.id','personal.id')
-                                                                    ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                    ->select('lotes.id')
-                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                    ->where('modelos.id', '=', $b_modelo )
-                                                                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                    ->where('lotes.habilitado','=',1)
-                                                                    ->where('lotes.contrato','=',0)
-                                                                    ->where('lotes.apartado','=',0)
-                                                                    ->orderBy('fraccionamientos.nombre','DESC')
-                                                                    ->orderBy('etapas.num_etapa','ASC')
-                                                                    ->orderBy('lotes.manzana','ASC')
-                                                                    ->orderBy('lotes.num_lote','ASC')->count();
+                                                                    $contadorLotes = $queryCont
+                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                        ->where('modelos.id', '=', $b_modelo )
+                                                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                                                        ->where('lotes.habilitado','=',1)
+                                                                        ->where('lotes.contrato','=',0)
+                                                                        ->where('lotes.apartado','=',0)
+                                                                        ->orderBy('fraccionamientos.nombre','DESC')
+                                                                        ->orderBy('etapas.num_etapa','ASC')
+                                                                        ->orderBy('lotes.manzana','ASC')
+                                                                        ->orderBy('lotes.num_lote','ASC')->count();
                                                                 }else{
                                                                     if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
-                                                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                        ->leftJoin('personal','clientes.id','personal.id')
-                                                                        ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                        ->join('licencias','lotes.id','=','licencias.id')
-                                                                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                            'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                                        $lotes = $query
                                                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                                                             ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                                                             ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
@@ -4378,16 +3008,7 @@ class LoteController extends Controller
                                                                             ->orderBy('lotes.manzana','ASC')
                                                                             ->orderBy('lotes.num_lote','ASC')->paginate(25);
         
-                                                                            $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                            ->join('licencias','lotes.id','=','licencias.id')
-                                                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                            ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                            ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                            ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                            ->leftJoin('personal','clientes.id','personal.id')
-                                                                            ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                            ->select('lotes.id')
+                                                                        $contadorLotes = $queryCont
                                                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                                                             ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                                                             ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
@@ -4401,21 +3022,7 @@ class LoteController extends Controller
                                                                             ->orderBy('lotes.num_lote','ASC')->count();
                                                                     }else{
                                                                         if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                            ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                            ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                            ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                            ->leftJoin('personal','clientes.id','personal.id')
-                                                                            ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                            ->join('licencias','lotes.id','=','licencias.id')
-                                                                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                            'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                                            $lotes = $query
                                                                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                                                                 ->where('modelos.id', '=', $b_modelo )
                                                                                 ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -4429,16 +3036,7 @@ class LoteController extends Controller
                                                                                 ->orderBy('lotes.manzana','ASC')
                                                                                 ->orderBy('lotes.num_lote','ASC')->paginate(25);
         
-                                                                                $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                                ->leftJoin('personal','clientes.id','personal.id')
-                                                                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                                ->select('lotes.id')
+                                                                            $contadorLotes = $queryCont
                                                                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                                                                 ->where('modelos.id', '=', $b_modelo )
                                                                                 ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -4453,21 +3051,7 @@ class LoteController extends Controller
                                                                                 ->orderBy('lotes.num_lote','ASC')->count();
                                                                         }else{
                                                                             if($buscar2!='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
-                                                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                                ->leftJoin('personal','clientes.id','personal.id')
-                                                                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                                'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                                                'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                                'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                                                $lotes = $query
                                                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                                                     ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                                                                     ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
@@ -4479,43 +3063,20 @@ class LoteController extends Controller
                                                                                     ->orderBy('lotes.manzana','ASC')
                                                                                     ->orderBy('lotes.num_lote','ASC')->paginate(25);
             
-                                                                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                                ->leftJoin('personal','clientes.id','personal.id')
-                                                                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                                ->select('lotes.id')
-                                                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                                ->where('lotes.habilitado','=',1)
-                                                                                ->where('lotes.contrato','=',0)
-                                                                                ->where('lotes.apartado','=',0)
-                                                                                ->orderBy('fraccionamientos.nombre','DESC')
-                                                                                ->orderBy('etapas.num_etapa','ASC')
-                                                                                ->orderBy('lotes.manzana','ASC')
-                                                                                ->orderBy('lotes.num_lote','ASC')->count();
+                                                                                $contadorLotes = $queryCont
+                                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                                                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                                                                    ->where('lotes.habilitado','=',1)
+                                                                                    ->where('lotes.contrato','=',0)
+                                                                                    ->where('lotes.apartado','=',0)
+                                                                                    ->orderBy('fraccionamientos.nombre','DESC')
+                                                                                    ->orderBy('etapas.num_etapa','ASC')
+                                                                                    ->orderBy('lotes.manzana','ASC')
+                                                                                    ->orderBy('lotes.num_lote','ASC')->count();
                                                                             }
                                                                             elseif($buscar2=='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
-                                                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                                ->leftJoin('personal','clientes.id','personal.id')
-                                                                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                                'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                                                'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                                'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                                                $lotes = $query
                                                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                                                     ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
                                                                                     ->where('lotes.habilitado','=',1)
@@ -4526,25 +3087,16 @@ class LoteController extends Controller
                                                                                     ->orderBy('lotes.manzana','ASC')
                                                                                     ->orderBy('lotes.num_lote','ASC')->paginate(25);
             
-                                                                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                                ->leftJoin('personal','clientes.id','personal.id')
-                                                                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                                ->select('lotes.id')
-                                                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                                ->where('lotes.habilitado','=',1)
-                                                                                ->where('lotes.contrato','=',0)
-                                                                                ->where('lotes.apartado','=',0)
-                                                                                ->orderBy('fraccionamientos.nombre','DESC')
-                                                                                ->orderBy('etapas.num_etapa','ASC')
-                                                                                ->orderBy('lotes.manzana','ASC')
-                                                                                ->orderBy('lotes.num_lote','ASC')->count();
+                                                                                $contadorLotes = $queryCont
+                                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                                                                    ->where('lotes.habilitado','=',1)
+                                                                                    ->where('lotes.contrato','=',0)
+                                                                                    ->where('lotes.apartado','=',0)
+                                                                                    ->orderBy('fraccionamientos.nombre','DESC')
+                                                                                    ->orderBy('etapas.num_etapa','ASC')
+                                                                                    ->orderBy('lotes.manzana','ASC')
+                                                                                    ->orderBy('lotes.num_lote','ASC')->count();
                                                                             }
                                                                             
                                                                         }
@@ -4564,111 +3116,51 @@ class LoteController extends Controller
                 }
                 default:{
                     if($buscar==''){
-                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                        ->join('licencias','lotes.id','=','licencias.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                        ->leftJoin('personal','clientes.id','personal.id')
-                        ->leftJoin('personal as v','vendedores.id','v.id')
-                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
-                                    ->where('lotes.habilitado','=',1)
-                                    ->where('lotes.contrato','=',0)
-                                    ->where('lotes.apartado','!=',0)
-                                    ->orderBy('fraccionamientos.nombre','DESC')
-                                    ->orderBy('etapas.num_etapa','ASC')
-                                    ->orderBy('lotes.manzana','ASC')
-                                    ->orderBy('lotes.num_lote','ASC')->paginate(25);  
+                        $lotes = $query
+                            ->where('lotes.habilitado','=',1)
+                            ->where('lotes.contrato','=',0)
+                            ->where('lotes.apartado','!=',0)
+                            ->orderBy('fraccionamientos.nombre','DESC')
+                            ->orderBy('etapas.num_etapa','ASC')
+                            ->orderBy('lotes.manzana','ASC')
+                            ->orderBy('lotes.num_lote','ASC')->paginate(25);  
         
-                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                    ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                    ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                    ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                    ->leftJoin('personal','clientes.id','personal.id')
-                                    ->leftJoin('personal as v','vendedores.id','v.id')
-                                    ->select('lotes.id')
-                                    ->where('lotes.habilitado','=',1)
-                                    ->where('lotes.contrato','=',0)
-                                    ->where('lotes.apartado','!=',0)
-                                    ->orderBy('fraccionamientos.nombre','DESC')
-                                    ->orderBy('etapas.num_etapa','ASC')
-                                    ->orderBy('lotes.manzana','ASC')
-                                    ->orderBy('lotes.num_lote','ASC')->count();
+                        $contadorLotes = $queryCont
+                            ->where('lotes.habilitado','=',1)
+                            ->where('lotes.contrato','=',0)
+                            ->where('lotes.apartado','!=',0)
+                            ->orderBy('fraccionamientos.nombre','DESC')
+                            ->orderBy('etapas.num_etapa','ASC')
+                            ->orderBy('lotes.manzana','ASC')
+                            ->orderBy('lotes.num_lote','ASC')->count();
                     }
                     else{
                         if($buscar2=='' && $buscar3=='' && $b_modelo=='' && $b_lote=='')
                         {
-                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                            ->join('licencias','lotes.id','=','licencias.id')
-                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                            ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                            ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                            ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                            ->leftJoin('personal','clientes.id','personal.id')
-                            ->leftJoin('personal as v','vendedores.id','v.id')
-                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
-                                        ->where('lotes.habilitado','=',1)
-                                        ->where('lotes.contrato','=',0)
-                                        ->where('lotes.apartado','!=',0)
-                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                        ->orderBy('fraccionamientos.nombre','DESC')
-                                        ->orderBy('etapas.num_etapa','ASC')
-                                        ->orderBy('lotes.manzana','ASC')
-                                        ->orderBy('lotes.num_lote','ASC')->paginate(25);
+                            $lotes = $query
+                                ->where('lotes.habilitado','=',1)
+                                ->where('lotes.contrato','=',0)
+                                ->where('lotes.apartado','!=',0)
+                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                ->orderBy('fraccionamientos.nombre','DESC')
+                                ->orderBy('etapas.num_etapa','ASC')
+                                ->orderBy('lotes.manzana','ASC')
+                                ->orderBy('lotes.num_lote','ASC')->paginate(25);
         
-                                        $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('licencias','lotes.id','=','licencias.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                        ->leftJoin('personal','clientes.id','personal.id')
-                                        ->leftJoin('personal as v','vendedores.id','v.id')
-                                        ->select('lotes.id')
-                                        ->where('lotes.habilitado','=',1)
-                                        ->where('lotes.contrato','=',0)
-                                        ->where('lotes.apartado','!=',0)
-                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                        ->orderBy('fraccionamientos.nombre','DESC')
-                                        ->orderBy('etapas.num_etapa','ASC')
-                                        ->orderBy('lotes.manzana','ASC')
-                                        ->orderBy('lotes.num_lote','ASC')->count();
+                            $contadorLotes = $queryCont
+                                ->where('lotes.habilitado','=',1)
+                                ->where('lotes.contrato','=',0)
+                                ->where('lotes.apartado','!=',0)
+                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                ->orderBy('fraccionamientos.nombre','DESC')
+                                ->orderBy('etapas.num_etapa','ASC')
+                                ->orderBy('lotes.manzana','ASC')
+                                ->orderBy('lotes.num_lote','ASC')->count();
                         }
                         else{
                             if($b_lote=='' && $buscar3=='' && $b_modelo=='' && $buscar2 !='')
                             {
-                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                ->leftJoin('personal','clientes.id','personal.id')
-                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                $lotes = $query
                                     ->where('lotes.habilitado','=',1)
                                     ->where('lotes.contrato','=',0)
                                     ->where('lotes.apartado','!=',0)
@@ -4679,43 +3171,20 @@ class LoteController extends Controller
                                     ->orderBy('lotes.manzana','ASC')
                                     ->orderBy('lotes.num_lote','ASC')->paginate(25);
         
-                                     $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('licencias','lotes.id','=','licencias.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                        ->leftJoin('personal','clientes.id','personal.id')
-                                        ->leftJoin('personal as v','vendedores.id','v.id')
-                                        ->select('lotes.id')
-                                        ->where('lotes.habilitado','=',1)
-                                        ->where('lotes.contrato','=',0)
-                                        ->where('lotes.apartado','!=',0)
-                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                        ->where('etapas.id', 'like', '%'. $buscar2 . '%')
-                                        ->orderBy('fraccionamientos.nombre','DESC')
-                                        ->orderBy('etapas.num_etapa','ASC')
-                                        ->orderBy('lotes.manzana','ASC')
-                                        ->orderBy('lotes.num_lote','ASC')->count();
+                                $contadorLotes = $queryCont
+                                    ->where('lotes.habilitado','=',1)
+                                    ->where('lotes.contrato','=',0)
+                                    ->where('lotes.apartado','!=',0)
+                                    ->where($criterio, 'like', '%'. $buscar . '%')
+                                    ->where('etapas.id', 'like', '%'. $buscar2 . '%')
+                                    ->orderBy('fraccionamientos.nombre','DESC')
+                                    ->orderBy('etapas.num_etapa','ASC')
+                                    ->orderBy('lotes.manzana','ASC')
+                                    ->orderBy('lotes.num_lote','ASC')->count();
                             }
                             else{
                             if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' ){
-                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                ->leftJoin('personal','clientes.id','personal.id')
-                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                $lotes = $query
                                     ->where('lotes.habilitado','=',1)
                                     ->where('lotes.contrato','=',0)
                                     ->where('lotes.apartado','!=',0)
@@ -4728,99 +3197,78 @@ class LoteController extends Controller
                                     ->orderBy('lotes.manzana','ASC')
                                     ->orderBy('lotes.num_lote','ASC')->paginate(25);
         
-                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('licencias','lotes.id','=','licencias.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                        ->leftJoin('personal','clientes.id','personal.id')
-                                        ->leftJoin('personal as v','vendedores.id','v.id')
-                                        ->select('lotes.id')
-                                        ->where('lotes.habilitado','=',1)
-                                        ->where('lotes.contrato','=',0)
-                                        ->where('lotes.apartado','!=',0)
-                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                        ->where('modelos.id', '=', $b_modelo )
-                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                        ->orderBy('fraccionamientos.nombre','DESC')
-                                        ->orderBy('etapas.num_etapa','ASC')
-                                        ->orderBy('lotes.manzana','ASC')
-                                        ->orderBy('lotes.num_lote','ASC')->count();
+                                $contadorLotes = $queryCont
+                                    ->where('lotes.habilitado','=',1)
+                                    ->where('lotes.contrato','=',0)
+                                    ->where('lotes.apartado','!=',0)
+                                    ->where($criterio, 'like', '%'. $buscar . '%')
+                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                    ->where('modelos.id', '=', $b_modelo )
+                                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                    ->orderBy('fraccionamientos.nombre','DESC')
+                                    ->orderBy('etapas.num_etapa','ASC')
+                                    ->orderBy('lotes.manzana','ASC')
+                                    ->orderBy('lotes.num_lote','ASC')->count();
                             }else{
-                                        if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
-                                        {
-                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                            ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                            ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                            ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                            ->leftJoin('personal','clientes.id','personal.id')
-                                            ->leftJoin('personal as v','vendedores.id','v.id')
-                                            ->join('licencias','lotes.id','=','licencias.id')
-                                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                    if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
+                                    {
+                                        $lotes = $query
+                                            ->where($criterio, 'like', '%'. $buscar . '%')
+                                            ->where('lotes.habilitado','=',1)
+                                            ->where('lotes.contrato','=',0)
+                                            ->where('lotes.apartado','!=',0)
+                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                            ->where('modelos.id', '=', $b_modelo )
+                                            ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                            ->orderBy('fraccionamientos.nombre','DESC')
+                                            ->orderBy('etapas.num_etapa','ASC')
+                                            ->orderBy('lotes.manzana','ASC')
+                                            ->orderBy('lotes.num_lote','ASC')->paginate(25);
+    
+                                        $contadorLotes = $queryCont
+                                            ->where($criterio, 'like', '%'. $buscar . '%')
+                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                            ->where('lotes.habilitado','=',1)
+                                            ->where('lotes.contrato','=',0)
+                                            ->where('lotes.apartado','!=',0)
+                                            ->where('modelos.id', '=', $b_modelo )
+                                            ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                            ->orderBy('fraccionamientos.nombre','DESC')
+                                            ->orderBy('etapas.num_etapa','ASC')
+                                            ->orderBy('lotes.manzana','ASC')
+                                            ->orderBy('lotes.num_lote','ASC')->count();
+                                    }else{
+                                        if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
+        
+                                            $lotes = $query
                                                 ->where($criterio, 'like', '%'. $buscar . '%')
+                                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                                ->where('modelos.id', '=', $b_modelo )
                                                 ->where('lotes.habilitado','=',1)
                                                 ->where('lotes.contrato','=',0)
                                                 ->where('lotes.apartado','!=',0)
-                                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                ->where('modelos.id', '=', $b_modelo )
-                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
                                                 ->orderBy('fraccionamientos.nombre','DESC')
                                                 ->orderBy('etapas.num_etapa','ASC')
                                                 ->orderBy('lotes.manzana','ASC')
                                                 ->orderBy('lotes.num_lote','ASC')->paginate(25);
-        
-                                                $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                ->leftJoin('personal','clientes.id','personal.id')
-                                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                                ->select('lotes.id')
+    
+                                            $contadorLotes = $queryCont
                                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                                 ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                                ->where('modelos.id', '=', $b_modelo )
                                                 ->where('lotes.habilitado','=',1)
                                                 ->where('lotes.contrato','=',0)
                                                 ->where('lotes.apartado','!=',0)
-                                                ->where('modelos.id', '=', $b_modelo )
-                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
                                                 ->orderBy('fraccionamientos.nombre','DESC')
                                                 ->orderBy('etapas.num_etapa','ASC')
                                                 ->orderBy('lotes.manzana','ASC')
                                                 ->orderBy('lotes.num_lote','ASC')->count();
                                         }else{
-                                            if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
-            
-                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                ->leftJoin('personal','clientes.id','personal.id')
-                                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                            if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
+        
+                                                $lotes = $query
                                                     ->where($criterio, 'like', '%'. $buscar . '%')
-                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                    ->where('modelos.id', '=', $b_modelo )
+                                                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                                                     ->where('lotes.habilitado','=',1)
                                                     ->where('lotes.contrato','=',0)
                                                     ->where('lotes.apartado','!=',0)
@@ -4828,20 +3276,10 @@ class LoteController extends Controller
                                                     ->orderBy('etapas.num_etapa','ASC')
                                                     ->orderBy('lotes.manzana','ASC')
                                                     ->orderBy('lotes.num_lote','ASC')->paginate(25);
-        
-                                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                    ->join('licencias','lotes.id','=','licencias.id')
-                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                    ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                    ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                    ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                    ->leftJoin('personal','clientes.id','personal.id')
-                                                    ->leftJoin('personal as v','vendedores.id','v.id')
-                                                    ->select('lotes.id')
+    
+                                                $contadorLotes = $queryCont
                                                     ->where($criterio, 'like', '%'. $buscar . '%')
-                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                    ->where('modelos.id', '=', $b_modelo )
+                                                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                                                     ->where('lotes.habilitado','=',1)
                                                     ->where('lotes.contrato','=',0)
                                                     ->where('lotes.apartado','!=',0)
@@ -4850,90 +3288,20 @@ class LoteController extends Controller
                                                     ->orderBy('lotes.manzana','ASC')
                                                     ->orderBy('lotes.num_lote','ASC')->count();
                                             }else{
-                                                if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
-            
-                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                    ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                    ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                    ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                    ->leftJoin('personal','clientes.id','personal.id')
-                                                    ->leftJoin('personal as v','vendedores.id','v.id')
-                                                    ->join('licencias','lotes.id','=','licencias.id')
-                                                    ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                            'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
+                                                    $lotes = $query
                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                         ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                                                         ->where('lotes.habilitado','=',1)
                                                         ->where('lotes.contrato','=',0)
                                                         ->where('lotes.apartado','!=',0)
+                                                        ->where('modelos.id', '=', $b_modelo )
                                                         ->orderBy('fraccionamientos.nombre','DESC')
                                                         ->orderBy('etapas.num_etapa','ASC')
                                                         ->orderBy('lotes.manzana','ASC')
                                                         ->orderBy('lotes.num_lote','ASC')->paginate(25);
-        
-                                                        $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('licencias','lotes.id','=','licencias.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                        ->leftJoin('personal','clientes.id','personal.id')
-                                                        ->leftJoin('personal as v','vendedores.id','v.id')
-                                                        ->select('lotes.id')
-                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                        ->where('lotes.habilitado','=',1)
-                                                        ->where('lotes.contrato','=',0)
-                                                        ->where('lotes.apartado','!=',0)
-                                                        ->orderBy('fraccionamientos.nombre','DESC')
-                                                        ->orderBy('etapas.num_etapa','ASC')
-                                                        ->orderBy('lotes.manzana','ASC')
-                                                        ->orderBy('lotes.num_lote','ASC')->count();
-                                                }else{
-                                                    if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
-                                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                        ->leftJoin('personal','clientes.id','personal.id')
-                                                        ->leftJoin('personal as v','vendedores.id','v.id')
-                                                        ->join('licencias','lotes.id','=','licencias.id')
-                                                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                            'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
-                                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                                            ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                            ->where('lotes.habilitado','=',1)
-                                                            ->where('lotes.contrato','=',0)
-                                                            ->where('lotes.apartado','!=',0)
-                                                            ->where('modelos.id', '=', $b_modelo )
-                                                            ->orderBy('fraccionamientos.nombre','DESC')
-                                                            ->orderBy('etapas.num_etapa','ASC')
-                                                            ->orderBy('lotes.manzana','ASC')
-                                                            ->orderBy('lotes.num_lote','ASC')->paginate(25);
-        
-                                                        $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('licencias','lotes.id','=','licencias.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                        ->leftJoin('personal','clientes.id','personal.id')
-                                                        ->leftJoin('personal as v','vendedores.id','v.id')
-                                                        ->select('lotes.id')
+    
+                                                    $contadorLotes = $queryCont
                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                         ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                                                         ->where('modelos.id', '=', $b_modelo )
@@ -4944,44 +3312,21 @@ class LoteController extends Controller
                                                         ->orderBy('etapas.num_etapa','ASC')
                                                         ->orderBy('lotes.manzana','ASC')
                                                         ->orderBy('lotes.num_lote','ASC')->count();
-                                                    }else{
-                                                        if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
-                                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                            ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                            ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                            ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                            ->leftJoin('personal','clientes.id','personal.id')
-                                                            ->leftJoin('personal as v','vendedores.id','v.id')
-                                                            ->join('licencias','lotes.id','=','licencias.id')
-                                                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
-                                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                ->where('lotes.habilitado','=',1)
-                                                                ->where('lotes.contrato','=',0)
-                                                                ->where('lotes.apartado','!=',0)
-                                                                ->orderBy('fraccionamientos.nombre','DESC')
-                                                                ->orderBy('etapas.num_etapa','ASC')
-                                                                ->orderBy('lotes.manzana','ASC')
-                                                                ->orderBy('lotes.num_lote','ASC')->paginate(25);
-        
-                                                            $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                            ->join('licencias','lotes.id','=','licencias.id')
-                                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                            ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                            ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                            ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                            ->leftJoin('personal','clientes.id','personal.id')
-                                                            ->leftJoin('personal as v','vendedores.id','v.id')
-                                                            ->select('lotes.id')
+                                                }else{
+                                                    if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
+                                                        $lotes = $query
+                                                            ->where($criterio, 'like', '%'. $buscar . '%')
+                                                            ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                                            ->where('lotes.habilitado','=',1)
+                                                            ->where('lotes.contrato','=',0)
+                                                            ->where('lotes.apartado','!=',0)
+                                                            ->orderBy('fraccionamientos.nombre','DESC')
+                                                            ->orderBy('etapas.num_etapa','ASC')
+                                                            ->orderBy('lotes.manzana','ASC')
+                                                            ->orderBy('lotes.num_lote','ASC')->paginate(25);
+    
+                                                        $contadorLotes = $queryCont
                                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                                             ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                                                             ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -4992,25 +3337,36 @@ class LoteController extends Controller
                                                             ->orderBy('etapas.num_etapa','ASC')
                                                             ->orderBy('lotes.manzana','ASC')
                                                             ->orderBy('lotes.num_lote','ASC')->count();
+                                                    }else{
+                                                        if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !='' ){
+                                                            $lotes = $query
+                                                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                ->where('modelos.id', '=', $b_modelo )
+                                                                ->where('lotes.habilitado','=',1)
+                                                                ->where('lotes.contrato','=',0)
+                                                                ->where('lotes.apartado','!=',0)
+                                                                ->orderBy('fraccionamientos.nombre','DESC')
+                                                                ->orderBy('etapas.num_etapa','ASC')
+                                                                ->orderBy('lotes.manzana','ASC')
+                                                                ->orderBy('lotes.num_lote','ASC')->paginate(25);
+    
+                                                            $contadorLotes = $queryCont
+                                                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                ->where('modelos.id', '=', $b_modelo )
+                                                                ->where('lotes.habilitado','=',1)
+                                                                ->where('lotes.contrato','=',0)
+                                                                ->where('lotes.apartado','!=',0)
+                                                                ->orderBy('fraccionamientos.nombre','DESC')
+                                                                ->orderBy('etapas.num_etapa','ASC')
+                                                                ->orderBy('lotes.manzana','ASC')
+                                                                ->orderBy('lotes.num_lote','ASC')->count();
                                                         }else{
-                                                            if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !='' ){
-                                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                ->leftJoin('personal','clientes.id','personal.id')
-                                                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                            if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
+                                                                $lotes = $query
                                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                                     ->where('modelos.id', '=', $b_modelo )
+                                                                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
                                                                     ->where('lotes.habilitado','=',1)
                                                                     ->where('lotes.contrato','=',0)
                                                                     ->where('lotes.apartado','!=',0)
@@ -5018,65 +3374,8 @@ class LoteController extends Controller
                                                                     ->orderBy('etapas.num_etapa','ASC')
                                                                     ->orderBy('lotes.manzana','ASC')
                                                                     ->orderBy('lotes.num_lote','ASC')->paginate(25);
-        
-                                                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                    ->join('licencias','lotes.id','=','licencias.id')
-                                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                    ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                    ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                    ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                    ->leftJoin('personal','clientes.id','personal.id')
-                                                                    ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                    ->select('lotes.id')
-                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                    ->where('modelos.id', '=', $b_modelo )
-                                                                    ->where('lotes.habilitado','=',1)
-                                                                    ->where('lotes.contrato','=',0)
-                                                                    ->where('lotes.apartado','!=',0)
-                                                                    ->orderBy('fraccionamientos.nombre','DESC')
-                                                                    ->orderBy('etapas.num_etapa','ASC')
-                                                                    ->orderBy('lotes.manzana','ASC')
-                                                                    ->orderBy('lotes.num_lote','ASC')->count();
-                                                            }else{
-                                                                if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                    ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                    ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                    ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                    ->leftJoin('personal','clientes.id','personal.id')
-                                                                    ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                    ->join('licencias','lotes.id','=','licencias.id')
-                                                                    ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                        'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                                        'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                        'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
-                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                        ->where('modelos.id', '=', $b_modelo )
-                                                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                        ->where('lotes.habilitado','=',1)
-                                                                        ->where('lotes.contrato','=',0)
-                                                                        ->where('lotes.apartado','!=',0)
-                                                                        ->orderBy('fraccionamientos.nombre','DESC')
-                                                                        ->orderBy('etapas.num_etapa','ASC')
-                                                                        ->orderBy('lotes.manzana','ASC')
-                                                                        ->orderBy('lotes.num_lote','ASC')->paginate(25);
-        
-                                                                        $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                    ->join('licencias','lotes.id','=','licencias.id')
-                                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                    ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                    ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                    ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                    ->leftJoin('personal','clientes.id','personal.id')
-                                                                    ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                    ->select('lotes.id')
+    
+                                                                $contadorLotes = $queryCont
                                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                                     ->where('modelos.id', '=', $b_modelo )
                                                                     ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
@@ -5088,24 +3387,38 @@ class LoteController extends Controller
                                                                     ->orderBy('etapas.num_etapa','ASC')
                                                                     ->orderBy('lotes.manzana','ASC')
                                                                     ->orderBy('lotes.num_lote','ASC')->count();
+                                                            }else{
+                                                                if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
+                                                                    $lotes = $query
+                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                                                        ->where('lotes.habilitado','=',1)
+                                                                        ->where('lotes.contrato','=',0)
+                                                                        ->where('lotes.apartado','!=',0)
+                                                                        ->orderBy('fraccionamientos.nombre','DESC')
+                                                                        ->orderBy('etapas.num_etapa','ASC')
+                                                                        ->orderBy('lotes.manzana','ASC')
+                                                                        ->orderBy('lotes.num_lote','ASC')->paginate(25);
+    
+                                                                    $contadorLotes = $queryCont
+                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                                                        ->where('lotes.habilitado','=',1)
+                                                                        ->where('lotes.contrato','=',0)
+                                                                        ->where('lotes.apartado','!=',0)
+                                                                        ->orderBy('fraccionamientos.nombre','DESC')
+                                                                        ->orderBy('etapas.num_etapa','ASC')
+                                                                        ->orderBy('lotes.manzana','ASC')
+                                                                        ->orderBy('lotes.num_lote','ASC')->count();
                                                                 }else{
-                                                                    if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
-                                                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                        ->leftJoin('personal','clientes.id','personal.id')
-                                                                        ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                        ->join('licencias','lotes.id','=','licencias.id')
-                                                                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                            'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                                    if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
+                                                                        $lotes = $query
                                                                             ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                            ->where('modelos.id', '=', $b_modelo )
                                                                             ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                                                             ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                                                                             ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
@@ -5116,49 +3429,25 @@ class LoteController extends Controller
                                                                             ->orderBy('etapas.num_etapa','ASC')
                                                                             ->orderBy('lotes.manzana','ASC')
                                                                             ->orderBy('lotes.num_lote','ASC')->paginate(25);
-        
-                                                                            $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                                ->leftJoin('personal','clientes.id','personal.id')
-                                                                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                                ->select('lotes.id')
-                                                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                                ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                                ->where('lotes.habilitado','=',1)
-                                                                                ->where('lotes.contrato','=',0)
-                                                                                ->where('lotes.apartado','!=',0)
-                                                                                ->orderBy('fraccionamientos.nombre','DESC')
-                                                                                ->orderBy('etapas.num_etapa','ASC')
-                                                                                ->orderBy('lotes.manzana','ASC')
-                                                                                ->orderBy('lotes.num_lote','ASC')->count();
+    
+                                                                        $contadorLotes = $queryCont
+                                                                            ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                            ->where('modelos.id', '=', $b_modelo )
+                                                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                                                            ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                                                            ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                                                            ->where('lotes.habilitado','=',1)
+                                                                            ->where('lotes.contrato','=',0)
+                                                                            ->where('lotes.apartado','!=',0)
+                                                                            ->orderBy('fraccionamientos.nombre','DESC')
+                                                                            ->orderBy('etapas.num_etapa','ASC')
+                                                                            ->orderBy('lotes.manzana','ASC')
+                                                                            ->orderBy('lotes.num_lote','ASC')->count();
                                                                     }else{
-                                                                        if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                            ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                            ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                            ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                            ->leftJoin('personal','clientes.id','personal.id')
-                                                                            ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                            ->join('licencias','lotes.id','=','licencias.id')
-                                                                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                            'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                                        if($buscar2!='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
+                                                                            $lotes = $query
                                                                                 ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                                ->where('modelos.id', '=', $b_modelo )
                                                                                 ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                                ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                                                                                 ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
                                                                                 ->where('lotes.habilitado','=',1)
                                                                                 ->where('lotes.contrato','=',0)
@@ -5168,123 +3457,40 @@ class LoteController extends Controller
                                                                                 ->orderBy('lotes.manzana','ASC')
                                                                                 ->orderBy('lotes.num_lote','ASC')->paginate(25);
         
-                                                                                $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                                    ->join('licencias','lotes.id','=','licencias.id')
-                                                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                                    ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                                    ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                                    ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                                    ->leftJoin('personal','clientes.id','personal.id')
-                                                                                    ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                                    ->select('lotes.id')
-                                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                                    ->where('modelos.id', '=', $b_modelo )
-                                                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                                    ->where('lotes.habilitado','=',1)
-                                                                                    ->where('lotes.contrato','=',0)
-                                                                                    ->where('lotes.apartado','!=',0)
-                                                                                    ->orderBy('fraccionamientos.nombre','DESC')
-                                                                                    ->orderBy('etapas.num_etapa','ASC')
-                                                                                    ->orderBy('lotes.manzana','ASC')
-                                                                                    ->orderBy('lotes.num_lote','ASC')->count();
-                                                                        }else{
-                                                                            if($buscar2!='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
-                                                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                                ->leftJoin('personal','clientes.id','personal.id')
-                                                                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                                'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                                                'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                                'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
-                                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                                    ->where('lotes.habilitado','=',1)
-                                                                                    ->where('lotes.contrato','=',0)
-                                                                                    ->where('lotes.apartado','!=',0)
-                                                                                    ->orderBy('fraccionamientos.nombre','DESC')
-                                                                                    ->orderBy('etapas.num_etapa','ASC')
-                                                                                    ->orderBy('lotes.manzana','ASC')
-                                                                                    ->orderBy('lotes.num_lote','ASC')->paginate(25);
-            
-                                                                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                                        ->join('licencias','lotes.id','=','licencias.id')
-                                                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                                        ->leftJoin('personal','clientes.id','personal.id')
-                                                                                        ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                                        ->select('lotes.id')
-                                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                                        ->where('lotes.habilitado','=',1)
-                                                                                        ->where('lotes.contrato','=',0)
-                                                                                        ->where('lotes.apartado','!=',0)
-                                                                                        ->orderBy('fraccionamientos.nombre','DESC')
-                                                                                        ->orderBy('etapas.num_etapa','ASC')
-                                                                                        ->orderBy('lotes.manzana','ASC')
-                                                                                        ->orderBy('lotes.num_lote','ASC')->count();
-                                                                            }
-                                                                            elseif($buscar2=='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
-                                                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                                ->leftJoin('personal','clientes.id','personal.id')
-                                                                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                                'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                                                'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                                'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
-                                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                                    ->where('lotes.habilitado','=',1)
-                                                                                    ->where('lotes.contrato','=',0)
-                                                                                    ->where('lotes.apartado','!=',0)
-                                                                                    ->orderBy('fraccionamientos.nombre','DESC')
-                                                                                    ->orderBy('etapas.num_etapa','ASC')
-                                                                                    ->orderBy('lotes.manzana','ASC')
-                                                                                    ->orderBy('lotes.num_lote','ASC')->paginate(25);
-            
-                                                                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                                        ->join('licencias','lotes.id','=','licencias.id')
-                                                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                                        ->leftJoin('personal','clientes.id','personal.id')
-                                                                                        ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                                        ->select('lotes.id')
-                                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                                        ->where('lotes.habilitado','=',1)
-                                                                                        ->where('lotes.contrato','=',0)
-                                                                                        ->where('lotes.apartado','!=',0)
-                                                                                        ->orderBy('fraccionamientos.nombre','DESC')
-                                                                                        ->orderBy('etapas.num_etapa','ASC')
-                                                                                        ->orderBy('lotes.manzana','ASC')
-                                                                                        ->orderBy('lotes.num_lote','ASC')->count();
-                                                                            }
+                                                                            $contadorLotes = $queryCont
+                                                                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                                                                ->where('lotes.habilitado','=',1)
+                                                                                ->where('lotes.contrato','=',0)
+                                                                                ->where('lotes.apartado','!=',0)
+                                                                                ->orderBy('fraccionamientos.nombre','DESC')
+                                                                                ->orderBy('etapas.num_etapa','ASC')
+                                                                                ->orderBy('lotes.manzana','ASC')
+                                                                                ->orderBy('lotes.num_lote','ASC')->count();
+                                                                        }
+                                                                        elseif($buscar2=='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
+                                                                            $lotes = $query
+                                                                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                                                                ->where('lotes.habilitado','=',1)
+                                                                                ->where('lotes.contrato','=',0)
+                                                                                ->where('lotes.apartado','!=',0)
+                                                                                ->orderBy('fraccionamientos.nombre','DESC')
+                                                                                ->orderBy('etapas.num_etapa','ASC')
+                                                                                ->orderBy('lotes.manzana','ASC')
+                                                                                ->orderBy('lotes.num_lote','ASC')->paginate(25);
+        
+                                                                            $contadorLotes = $queryCont
+                                                                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                                                                ->where('lotes.habilitado','=',1)
+                                                                                ->where('lotes.contrato','=',0)
+                                                                                ->where('lotes.apartado','!=',0)
+                                                                                ->orderBy('fraccionamientos.nombre','DESC')
+                                                                                ->orderBy('etapas.num_etapa','ASC')
+                                                                                ->orderBy('lotes.manzana','ASC')
+                                                                                ->orderBy('lotes.num_lote','ASC')->count();
                                                                         }
                                                                     }
                                                                 }
@@ -5295,6 +3501,7 @@ class LoteController extends Controller
                                             }
                                         }
                                     }
+                                }
                             }
                         }
                     }
@@ -5305,16 +3512,7 @@ class LoteController extends Controller
         }
         else{
             if($buscar==''){
-                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                ->join('licencias','lotes.id','=','licencias.id')
-                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
+                $lotes = $queryVendedores
                             ->where('lotes.habilitado','=',1)
                             ->where('lotes.apartado','=',0)
                             ->where('lotes.contrato','=',0)
@@ -5323,33 +3521,19 @@ class LoteController extends Controller
                             ->orderBy('lotes.manzana','ASC')
                             ->orderBy('lotes.num_lote','ASC')->paginate(25);  
 
-                            $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                ->join('licencias','lotes.id','=','licencias.id')
-                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                ->select('lotes.id')
-                ->where('lotes.habilitado','=',1)
-                ->where('lotes.apartado','=',0)
-                ->where('lotes.contrato','=',0)
-                ->orderBy('fraccionamientos.nombre','DESC')
-                ->orderBy('etapas.num_etapa','ASC')
-                ->orderBy('lotes.manzana','ASC')
-                ->orderBy('lotes.num_lote','ASC')->count();
+                $contadorLotes = $queryVendedoresCont
+                    ->where('lotes.habilitado','=',1)
+                    ->where('lotes.apartado','=',0)
+                    ->where('lotes.contrato','=',0)
+                    ->orderBy('fraccionamientos.nombre','DESC')
+                    ->orderBy('etapas.num_etapa','ASC')
+                    ->orderBy('lotes.manzana','ASC')
+                    ->orderBy('lotes.num_lote','ASC')->count();
             }
             else{
                 if($buscar2=='' && $buscar3=='' && $b_modelo=='' && $b_lote=='')
                 {
-                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                    ->join('licencias','lotes.id','=','licencias.id')
-                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                    ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                    ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
+                    $lotes = $queryVendedores
                             ->where('lotes.habilitado','=',1)
                             ->where('lotes.apartado','=',0)
                             ->where('lotes.contrato','=',0)
@@ -5359,13 +3543,8 @@ class LoteController extends Controller
                             ->orderBy('lotes.manzana','ASC')
                             ->orderBy('lotes.num_lote','ASC')->paginate(25);
 
-                                $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                                ->select('lotes.id')
-                                ->where('lotes.habilitado','=',1)
+                    $contadorLotes = $queryVendedoresCont
+                            ->where('lotes.habilitado','=',1)
                             ->where('lotes.apartado','=',0)
                             ->where('lotes.contrato','=',0)
                             ->where($criterio, 'like', '%'. $buscar . '%')
@@ -5377,32 +3556,18 @@ class LoteController extends Controller
                 else{
                     if($b_lote=='' && $buscar3=='' && $b_modelo=='' && $buscar2 !='')
                     {
-                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                            ->join('licencias','lotes.id','=','licencias.id')
-                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                            ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                        'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                        'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
-                                        ->where('lotes.habilitado','=',1)
-                                        ->where('lotes.apartado','=',0)
-                                        ->where('lotes.contrato','=',0)
-                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                        ->where('etapas.id', 'like', '%'. $buscar2 . '%')
-                                        ->orderBy('fraccionamientos.nombre','DESC')
-                                        ->orderBy('etapas.num_etapa','ASC')
-                                        ->orderBy('lotes.manzana','ASC')
-                                    ->orderBy('lotes.num_lote','ASC')->paginate(25);
+                        $lotes = $queryVendedores
+                                ->where('lotes.habilitado','=',1)
+                                ->where('lotes.apartado','=',0)
+                                ->where('lotes.contrato','=',0)
+                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                ->where('etapas.id', 'like', '%'. $buscar2 . '%')
+                                ->orderBy('fraccionamientos.nombre','DESC')
+                                ->orderBy('etapas.num_etapa','ASC')
+                                ->orderBy('lotes.manzana','ASC')
+                                ->orderBy('lotes.num_lote','ASC')->paginate(25);
 
-                             $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                                ->select('lotes.id')
+                        $contadorLotes = $queryVendedoresCont
                                 ->where('lotes.habilitado','=',1)
                                 ->where('lotes.apartado','=',0)
                                 ->where('lotes.contrato','=',0)
@@ -5415,16 +3580,7 @@ class LoteController extends Controller
                     }
                     else{
                     if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' ){
-                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                            ->join('licencias','lotes.id','=','licencias.id')
-                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                            ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                        'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                        'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
+                            $lotes = $queryVendedores
                                         ->where('lotes.habilitado','=',1)
                                         ->where('lotes.apartado','=',0)
                                         ->where('lotes.contrato','=',0)
@@ -5437,12 +3593,7 @@ class LoteController extends Controller
                                         ->orderBy('lotes.manzana','ASC')
                                         ->orderBy('lotes.num_lote','ASC')->paginate(25);
 
-                            $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                                ->select('lotes.id')
+                            $contadorLotes = $queryVendedoresCont
                                 ->where('lotes.habilitado','=',1)
                                 ->where('lotes.apartado','=',0)
                                 ->where('lotes.contrato','=',0)
@@ -5457,16 +3608,7 @@ class LoteController extends Controller
                     }else{
                                 if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
                                 {
-                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                                    ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                        'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                        'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
+                                    $lotes = $queryVendedores
                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                         ->where('lotes.habilitado','=',1)
                                         ->where('lotes.apartado','=',0)
@@ -5479,12 +3621,7 @@ class LoteController extends Controller
                                         ->orderBy('lotes.manzana','ASC')
                                         ->orderBy('lotes.num_lote','ASC')->paginate(25);
 
-                                        $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('licencias','lotes.id','=','licencias.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                        ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                                        ->select('lotes.id')
+                                    $contadorLotes = $queryVendedoresCont
                                         ->where('lotes.habilitado','=',1)
                                         ->where('lotes.apartado','=',0)
                                         ->where('lotes.contrato','=',0)
@@ -5498,16 +3635,7 @@ class LoteController extends Controller
                                 }else{
                                     if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
     
-                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                        ->join('licencias','lotes.id','=','licencias.id')
-                                        ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
+                                        $lotes = $queryVendedores
                                           
                                             ->where('lotes.habilitado','=',1)
                                             ->where('lotes.apartado','=',0)
@@ -5520,12 +3648,7 @@ class LoteController extends Controller
                                             ->orderBy('lotes.manzana','ASC')
                                             ->orderBy('lotes.num_lote','ASC')->paginate(25);
 
-                                            $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                            ->join('licencias','lotes.id','=','licencias.id')
-                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                            ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                                            ->select('lotes.id')
+                                        $contadorLotes = $queryVendedoresCont
                                            
                                             ->where('lotes.habilitado','=',1)
                                             ->where('lotes.apartado','=',0)
@@ -5540,16 +3663,7 @@ class LoteController extends Controller
                                     }else{
                                         if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
     
-                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                            ->join('licencias','lotes.id','=','licencias.id')
-                                            ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
+                                            $lotes = $queryVendedores
                                               
                                                 ->where('lotes.habilitado','=',1)
                                                 ->where('lotes.apartado','=',0)
@@ -5561,12 +3675,7 @@ class LoteController extends Controller
                                                 ->orderBy('lotes.manzana','ASC')
                                                 ->orderBy('lotes.num_lote','ASC')->paginate(25);
 
-                                                $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                                                ->select('lotes.id')
+                                            $contadorLotes = $queryVendedoresCont
                                                
                                                 ->where('lotes.habilitado','=',1)
                                                 ->where('lotes.apartado','=',0)
@@ -5579,16 +3688,7 @@ class LoteController extends Controller
                                                 ->orderBy('lotes.num_lote','ASC')->count();
                                         }else{
                                             if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
-                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
+                                                $lotes = $queryVendedores
                                                
                                                     ->where('lotes.habilitado','=',1)
                                                     ->where('lotes.apartado','=',0)
@@ -5601,35 +3701,21 @@ class LoteController extends Controller
                                                     ->orderBy('lotes.manzana','ASC')
                                                     ->orderBy('lotes.num_lote','ASC')->paginate(25);
 
-                                                $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                                                ->select('lotes.id')
+                                                $contadorLotes = $queryVendedoresCont
                                               
-                                                ->where('lotes.habilitado','=',1)
-                                                ->where('lotes.apartado','=',0)
-                                                ->where('lotes.contrato','=',0)
-                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                ->where('modelos.id', '=', $b_modelo )
-                                                ->orderBy('fraccionamientos.nombre','DESC')
-                                                ->orderBy('etapas.num_etapa','ASC')
-                                                ->orderBy('lotes.manzana','ASC')
-                                                ->orderBy('lotes.num_lote','ASC')->count();
+                                                    ->where('lotes.habilitado','=',1)
+                                                    ->where('lotes.apartado','=',0)
+                                                    ->where('lotes.contrato','=',0)
+                                                    ->where($criterio, 'like', '%'. $buscar . '%')
+                                                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                                    ->where('modelos.id', '=', $b_modelo )
+                                                    ->orderBy('fraccionamientos.nombre','DESC')
+                                                    ->orderBy('etapas.num_etapa','ASC')
+                                                    ->orderBy('lotes.manzana','ASC')
+                                                    ->orderBy('lotes.num_lote','ASC')->count();
                                             }else{
                                                 if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
-                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                    ->join('licencias','lotes.id','=','licencias.id')
-                                                    ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                                                    ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
+                                                    $lotes = $queryVendedores
                                                      
                                                         ->where('lotes.habilitado','=',1)
                                                         ->where('lotes.apartado','=',0)
@@ -5642,35 +3728,21 @@ class LoteController extends Controller
                                                         ->orderBy('lotes.manzana','ASC')
                                                         ->orderBy('lotes.num_lote','ASC')->paginate(25);
 
-                                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                    ->join('licencias','lotes.id','=','licencias.id')
-                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                    ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                                                    ->select('lotes.id')
+                                                    $contadorLotes = $queryVendedoresCont
                                                 
-                                                    ->where('lotes.habilitado','=',1)
-                                                    ->where('lotes.apartado','=',0)
-                                                    ->where('lotes.contrato','=',0)
-                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                    ->orderBy('fraccionamientos.nombre','DESC')
-                                                    ->orderBy('etapas.num_etapa','ASC')
-                                                    ->orderBy('lotes.manzana','ASC')
-                                                    ->orderBy('lotes.num_lote','ASC')->count();
+                                                        ->where('lotes.habilitado','=',1)
+                                                        ->where('lotes.apartado','=',0)
+                                                        ->where('lotes.contrato','=',0)
+                                                        ->where($criterio, 'like', '%'. $buscar . '%')
+                                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                                        ->orderBy('fraccionamientos.nombre','DESC')
+                                                        ->orderBy('etapas.num_etapa','ASC')
+                                                        ->orderBy('lotes.manzana','ASC')
+                                                        ->orderBy('lotes.num_lote','ASC')->count();
                                                 }else{
                                                     if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !='' ){
-                                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                        ->join('licencias','lotes.id','=','licencias.id')
-                                                        ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                                                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
+                                                        $lotes = $queryVendedores
                                                            
                                                             ->where('lotes.habilitado','=',1)
                                                             ->where('lotes.apartado','=',0)
@@ -5682,12 +3754,7 @@ class LoteController extends Controller
                                                             ->orderBy('lotes.manzana','ASC')
                                                             ->orderBy('lotes.num_lote','ASC')->paginate(25);
 
-                                                            $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                            ->join('licencias','lotes.id','=','licencias.id')
-                                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                            ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                                                            ->select('lotes.id')
+                                                        $contadorLotes = $queryVendedoresCont
                                                             
                                                             ->where('lotes.habilitado','=',1)
                                                             ->where('lotes.apartado','=',0)
@@ -5700,16 +3767,7 @@ class LoteController extends Controller
                                                             ->orderBy('lotes.num_lote','ASC')->count();
                                                     }else{
                                                         if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                            ->join('licencias','lotes.id','=','licencias.id')
-                                                            ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                                                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                                'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
+                                                            $lotes = $queryVendedores
                                                                
                                                                 ->where('lotes.habilitado','=',1)
                                                                 ->where('lotes.apartado','=',0)
@@ -5723,36 +3781,22 @@ class LoteController extends Controller
                                                                 ->orderBy('lotes.manzana','ASC')
                                                                 ->orderBy('lotes.num_lote','ASC')->paginate(25);
 
-                                                                $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                            ->join('licencias','lotes.id','=','licencias.id')
-                                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                            ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                                                            ->select('lotes.id')
-                                                            
-                                                            ->where('lotes.habilitado','=',1)
-                                                            ->where('lotes.apartado','=',0)
-                                                            ->where('lotes.contrato','=',0)
-                                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                                            ->where('modelos.id', '=', $b_modelo )
-                                                            ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                            ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                            ->orderBy('fraccionamientos.nombre','DESC')
-                                                            ->orderBy('etapas.num_etapa','ASC')
-                                                            ->orderBy('lotes.manzana','ASC')
-                                                            ->orderBy('lotes.num_lote','ASC')->count();
+                                                            $contadorLotes = $queryVendedoresCont
+                                                                
+                                                                ->where('lotes.habilitado','=',1)
+                                                                ->where('lotes.apartado','=',0)
+                                                                ->where('lotes.contrato','=',0)
+                                                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                ->where('modelos.id', '=', $b_modelo )
+                                                                ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                                                ->orderBy('fraccionamientos.nombre','DESC')
+                                                                ->orderBy('etapas.num_etapa','ASC')
+                                                                ->orderBy('lotes.manzana','ASC')
+                                                                ->orderBy('lotes.num_lote','ASC')->count();
                                                         }else{
                                                             if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
-                                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                                ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                                                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
+                                                                $lotes = $queryVendedores
                                                                   
                                                                     ->where('lotes.habilitado','=',1)
                                                                     ->where('lotes.apartado','=',0)
@@ -5766,36 +3810,22 @@ class LoteController extends Controller
                                                                     ->orderBy('lotes.manzana','ASC')
                                                                     ->orderBy('lotes.num_lote','ASC')->paginate(25);
 
-                                                                    $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                                                                ->select('lotes.id')
-                                                                
-                                                                ->where('lotes.habilitado','=',1)
-                                                                ->where('lotes.apartado','=',0)
-                                                                ->where('lotes.contrato','=',0)
-                                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                ->orderBy('fraccionamientos.nombre','DESC')
-                                                                ->orderBy('etapas.num_etapa','ASC')
-                                                                ->orderBy('lotes.manzana','ASC')
-                                                                ->orderBy('lotes.num_lote','ASC')->count();
+                                                                $contadorLotes = $queryVendedoresCont
+                                                                    
+                                                                    ->where('lotes.habilitado','=',1)
+                                                                    ->where('lotes.apartado','=',0)
+                                                                    ->where('lotes.contrato','=',0)
+                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                                                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                                                    ->orderBy('fraccionamientos.nombre','DESC')
+                                                                    ->orderBy('etapas.num_etapa','ASC')
+                                                                    ->orderBy('lotes.manzana','ASC')
+                                                                    ->orderBy('lotes.num_lote','ASC')->count();
                                                             }else{
                                                                 if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                    ->join('licencias','lotes.id','=','licencias.id')
-                                                                    ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                                                                    ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
+                                                                    $lotes = $queryVendedores
                                                                      
                                                                         ->where('lotes.habilitado','=',1)
                                                                         ->where('lotes.apartado','=',0)
@@ -5810,36 +3840,23 @@ class LoteController extends Controller
                                                                         ->orderBy('lotes.manzana','ASC')
                                                                         ->orderBy('lotes.num_lote','ASC')->paginate(25);
 
-                                                                        $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                    ->join('licencias','lotes.id','=','licencias.id')
-                                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                    ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                                                                    ->select('lotes.id')
-                                                                
-                                                                    ->where('lotes.habilitado','=',1)
-                                                                    ->where('lotes.apartado','=',0)
-                                                                    ->where('lotes.contrato','=',0)
-                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                    ->where('modelos.id', '=', $b_modelo )
-                                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                    ->orderBy('fraccionamientos.nombre','DESC')
-                                                                    ->orderBy('etapas.num_etapa','ASC')
-                                                                    ->orderBy('lotes.manzana','ASC')
-                                                                    ->orderBy('lotes.num_lote','ASC')->count();
+                                                                    $contadorLotes = $queryVendedoresCont
+                                                                    
+                                                                        ->where('lotes.habilitado','=',1)
+                                                                        ->where('lotes.apartado','=',0)
+                                                                        ->where('lotes.contrato','=',0)
+                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                        ->where('modelos.id', '=', $b_modelo )
+                                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                                                        ->orderBy('fraccionamientos.nombre','DESC')
+                                                                        ->orderBy('etapas.num_etapa','ASC')
+                                                                        ->orderBy('lotes.manzana','ASC')
+                                                                        ->orderBy('lotes.num_lote','ASC')->count();
                                                                 }else{
                                                                     if($buscar2!='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
-                                                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                        ->join('licencias','lotes.id','=','licencias.id')
-                                                                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                        'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                                        'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
+                                                                        $lotes = $queryVendedores
                                                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                                                             ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                                                             ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
@@ -5850,31 +3867,19 @@ class LoteController extends Controller
                                                                             ->orderBy('lotes.manzana','ASC')
                                                                             ->orderBy('lotes.num_lote','ASC')->paginate(25);
     
-                                                                            $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                        ->join('licencias','lotes.id','=','licencias.id')
-                                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                        ->select('lotes.id')
-                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                        ->where('lotes.habilitado','=',1)
-                                                                        ->where('lotes.contrato','=',0)
-                                                                        ->orderBy('fraccionamientos.nombre','DESC')
-                                                                        ->orderBy('etapas.num_etapa','ASC')
-                                                                        ->orderBy('lotes.manzana','ASC')
-                                                                        ->orderBy('lotes.num_lote','ASC')->count();
+                                                                        $contadorLotes = $queryVendedoresCont
+                                                                            ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                                                            ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                                                            ->where('lotes.habilitado','=',1)
+                                                                            ->where('lotes.contrato','=',0)
+                                                                            ->orderBy('fraccionamientos.nombre','DESC')
+                                                                            ->orderBy('etapas.num_etapa','ASC')
+                                                                            ->orderBy('lotes.manzana','ASC')
+                                                                            ->orderBy('lotes.num_lote','ASC')->count();
                                                                     }
                                                                     elseif($buscar2=='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
-                                                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                        ->join('licencias','lotes.id','=','licencias.id')
-                                                                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                        'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                                                                        'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
+                                                                        $lotes = $queryVendedor
                                                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                                                             ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
                                                                             ->where('lotes.habilitado','=',1)
@@ -5884,19 +3889,15 @@ class LoteController extends Controller
                                                                             ->orderBy('lotes.manzana','ASC')
                                                                             ->orderBy('lotes.num_lote','ASC')->paginate(25);
     
-                                                                            $contadorLotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                        ->join('licencias','lotes.id','=','licencias.id')
-                                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                        ->select('lotes.id')
-                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                        ->where('lotes.habilitado','=',1)
-                                                                        ->where('lotes.contrato','=',0)
-                                                                        ->orderBy('fraccionamientos.nombre','DESC')
-                                                                        ->orderBy('etapas.num_etapa','ASC')
-                                                                        ->orderBy('lotes.manzana','ASC')
-                                                                        ->orderBy('lotes.num_lote','ASC')->count();
+                                                                        $contadorLotes = $queryVendedoresCont
+                                                                            ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                            ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                                                            ->where('lotes.habilitado','=',1)
+                                                                            ->where('lotes.contrato','=',0)
+                                                                            ->orderBy('fraccionamientos.nombre','DESC')
+                                                                            ->orderBy('etapas.num_etapa','ASC')
+                                                                            ->orderBy('lotes.manzana','ASC')
+                                                                            ->orderBy('lotes.num_lote','ASC')->count();
                                                                     }
                                                                 }
                                                             }
@@ -6102,80 +4103,63 @@ class LoteController extends Controller
         $b_lote = $request->b_lote;
         $b_apartado = $request->b_apartado;
 
+        $query = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+            ->join('licencias','lotes.id','=','licencias.id')
+            ->join('etapas','lotes.etapa_id','=','etapas.id')
+            ->join('modelos','lotes.modelo_id','=','modelos.id')
+            ->leftJoin('apartados','lotes.id','apartados.lote_id')
+            ->leftJoin('clientes','apartados.cliente_id','clientes.id')
+            ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
+            ->leftJoin('personal','clientes.id','personal.id')
+            ->leftJoin('personal as v','vendedores.id','v.id')
+            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
+                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
+                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
+                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
+                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
+                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado');
+
+        $queryVendedores = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+            ->join('licencias','lotes.id','=','licencias.id')
+            ->join('etapas','lotes.etapa_id','=','etapas.id')
+            ->join('modelos','lotes.modelo_id','=','modelos.id')
+            ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
+            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
+                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
+                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
+                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
+                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas');
+
         if($rolId == 1 || $rolId == 4 || $rolId == 6 || $rolId == 8 ){
             switch($b_apartado){
                 case '':{
                     if($buscar==''){
-                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                        ->join('licencias','lotes.id','=','licencias.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                        ->leftJoin('personal','clientes.id','personal.id')
-                        ->leftJoin('personal as v','vendedores.id','v.id')
-                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
-                                    ->where('lotes.habilitado','=',1)
-                                    ->where('lotes.contrato','=',0)
-                                    ->orderBy('fraccionamientos.nombre','DESC')
-                                    ->orderBy('etapas.num_etapa','ASC')
-                                    ->orderBy('lotes.manzana','ASC')
-                                    ->orderBy('lotes.num_lote','ASC')->get();  
-        
-                                   
+                        $lotes = $query
+                            ->where('lotes.habilitado','=',1)
+                            ->where('lotes.contrato','=',0)
+                            ->orderBy('fraccionamientos.nombre','DESC')
+                            ->orderBy('etapas.num_etapa','ASC')
+                            ->orderBy('lotes.manzana','ASC')
+                            ->orderBy('lotes.num_lote','ASC')->get();           
                     }
                     else{
                         if($buscar2=='' && $buscar3=='' && $b_modelo=='' && $b_lote=='')
                         {
-                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                            ->join('licencias','lotes.id','=','licencias.id')
-                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                            ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                            ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                            ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                            ->leftJoin('personal','clientes.id','personal.id')
-                            ->leftJoin('personal as v','vendedores.id','v.id')
-                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
-                                        ->where('lotes.habilitado','=',1)
-                                        ->where('lotes.contrato','=',0)
-                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                        ->orderBy('fraccionamientos.nombre','DESC')
-                                        ->orderBy('etapas.num_etapa','ASC')
-                                        ->orderBy('lotes.manzana','ASC')
-                                        ->orderBy('lotes.num_lote','ASC')->get();
+                            $lotes = $query
+                                ->where('lotes.habilitado','=',1)
+                                ->where('lotes.contrato','=',0)
+                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                ->orderBy('fraccionamientos.nombre','DESC')
+                                ->orderBy('etapas.num_etapa','ASC')
+                                ->orderBy('lotes.manzana','ASC')
+                                ->orderBy('lotes.num_lote','ASC')->get();
         
                                       
                         }
                         else{
                             if($b_lote=='' && $buscar3=='' && $b_modelo=='' && $buscar2 !='')
                             {
-                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                ->leftJoin('personal','clientes.id','personal.id')
-                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                $lotes = $query
                                     ->where('lotes.habilitado','=',1)
                                     ->where('lotes.contrato','=',0)
                                     ->where($criterio, 'like', '%'. $buscar . '%')
@@ -6188,21 +4172,7 @@ class LoteController extends Controller
                             }
                             else{
                             if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' ){
-                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                ->leftJoin('personal','clientes.id','personal.id')
-                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                $lotes = $query
                                     ->where('lotes.habilitado','=',1)
                                     ->where('lotes.contrato','=',0)
                                     ->where($criterio, 'like', '%'. $buscar . '%')
@@ -6218,21 +4188,7 @@ class LoteController extends Controller
                                     }else{
                                         if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
                                         {
-                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                            ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                            ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                            ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                            ->leftJoin('personal','clientes.id','personal.id')
-                                            ->leftJoin('personal as v','vendedores.id','v.id')
-                                            ->join('licencias','lotes.id','=','licencias.id')
-                                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                            $lotes = $query
                                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                                 ->where('lotes.habilitado','=',1)
                                                 ->where('lotes.contrato','=',0)
@@ -6248,21 +4204,7 @@ class LoteController extends Controller
                                         }else{
                                             if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
             
-                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                ->leftJoin('personal','clientes.id','personal.id')
-                                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                $lotes = $query
                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                     ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                                     ->where('modelos.id', '=', $b_modelo )
@@ -6277,21 +4219,7 @@ class LoteController extends Controller
                                             }else{
                                                 if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
             
-                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                    ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                    ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                    ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                    ->leftJoin('personal','clientes.id','personal.id')
-                                                    ->leftJoin('personal as v','vendedores.id','v.id')
-                                                    ->join('licencias','lotes.id','=','licencias.id')
-                                                    ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                            'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                    $lotes = $query
                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                         ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                                                         ->where('lotes.habilitado','=',1)
@@ -6304,21 +4232,7 @@ class LoteController extends Controller
                                                        
                                                 }else{
                                                     if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
-                                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                        ->leftJoin('personal','clientes.id','personal.id')
-                                                        ->leftJoin('personal as v','vendedores.id','v.id')
-                                                        ->join('licencias','lotes.id','=','licencias.id')
-                                                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                            'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                        $lotes = $query
                                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                                             ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                                                             ->where('lotes.habilitado','=',1)
@@ -6332,21 +4246,7 @@ class LoteController extends Controller
                                                        
                                                     }else{
                                                         if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
-                                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                            ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                            ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                            ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                            ->leftJoin('personal','clientes.id','personal.id')
-                                                            ->leftJoin('personal as v','vendedores.id','v.id')
-                                                            ->join('licencias','lotes.id','=','licencias.id')
-                                                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                            $lotes = $query
                                                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                                                 ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                                                                 ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -6360,21 +4260,7 @@ class LoteController extends Controller
                                                        
                                                         }else{
                                                             if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !='' ){
-                                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                ->leftJoin('personal','clientes.id','personal.id')
-                                                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                                $lotes = $query
                                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                                     ->where('modelos.id', '=', $b_modelo )
                                                                     ->where('lotes.habilitado','=',1)
@@ -6386,21 +4272,7 @@ class LoteController extends Controller
         
                                                             }else{
                                                                 if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                    ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                    ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                    ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                    ->leftJoin('personal','clientes.id','personal.id')
-                                                                    ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                    ->join('licencias','lotes.id','=','licencias.id')
-                                                                    ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                        'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                                        'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                        'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                                    $lotes = $query
                                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                                         ->where('modelos.id', '=', $b_modelo )
                                                                         ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
@@ -6415,21 +4287,7 @@ class LoteController extends Controller
                                                                       
                                                                 }else{
                                                                     if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
-                                                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                        ->leftJoin('personal','clientes.id','personal.id')
-                                                                        ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                        ->join('licencias','lotes.id','=','licencias.id')
-                                                                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                            'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                                        $lotes = $query
                                                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                                                             ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                                                             ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
@@ -6444,21 +4302,7 @@ class LoteController extends Controller
                                                                        
                                                                     }else{
                                                                         if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                            ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                            ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                            ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                            ->leftJoin('personal','clientes.id','personal.id')
-                                                                            ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                            ->join('licencias','lotes.id','=','licencias.id')
-                                                                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                            'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                                            $lotes = $query
                                                                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                                                                 ->where('modelos.id', '=', $b_modelo )
                                                                                 ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -6473,21 +4317,7 @@ class LoteController extends Controller
         
                                                                         }else{
                                                                             if($buscar2!='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
-                                                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                                ->leftJoin('personal','clientes.id','personal.id')
-                                                                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                                'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                                                'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                                'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                                                $lotes = $query
                                                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                                                     ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                                                                     ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
@@ -6516,21 +4346,7 @@ class LoteController extends Controller
                 }
                 case '0':{
                     if($buscar==''){
-                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                        ->join('licencias','lotes.id','=','licencias.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                        ->leftJoin('personal','clientes.id','personal.id')
-                        ->leftJoin('personal as v','vendedores.id','v.id')
-                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                        $lotes = $query
                                     ->where('lotes.habilitado','=',1)
                                     ->where('lotes.contrato','=',0)
                                     ->where('lotes.apartado','=',0)
@@ -6544,21 +4360,7 @@ class LoteController extends Controller
                     else{
                         if($buscar2=='' && $buscar3=='' && $b_modelo=='' && $b_lote=='')
                         {
-                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                            ->join('licencias','lotes.id','=','licencias.id')
-                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                            ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                            ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                            ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                            ->leftJoin('personal','clientes.id','personal.id')
-                            ->leftJoin('personal as v','vendedores.id','v.id')
-                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                            $lotes = $query
                                         ->where('lotes.habilitado','=',1)
                                         ->where('lotes.contrato','=',0)
                                         ->where('lotes.apartado','=',0)
@@ -6572,21 +4374,7 @@ class LoteController extends Controller
                         else{
                             if($b_lote=='' && $buscar3=='' && $b_modelo=='' && $buscar2 !='')
                             {
-                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                ->leftJoin('personal','clientes.id','personal.id')
-                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                $lotes = $query
                                     ->where('lotes.habilitado','=',1)
                                     ->where('lotes.contrato','=',0)
                                     ->where('lotes.apartado','=',0)
@@ -6600,21 +4388,7 @@ class LoteController extends Controller
                             }
                             else{
                             if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' ){
-                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                ->leftJoin('personal','clientes.id','personal.id')
-                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                $lotes = $query
                                     ->where('lotes.habilitado','=',1)
                                     ->where('lotes.contrato','=',0)
                                     ->where('lotes.apartado','=',0)
@@ -6631,21 +4405,7 @@ class LoteController extends Controller
                                     }else{
                                         if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
                                         {
-                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                            ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                            ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                            ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                            ->leftJoin('personal','clientes.id','personal.id')
-                                            ->leftJoin('personal as v','vendedores.id','v.id')
-                                            ->join('licencias','lotes.id','=','licencias.id')
-                                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                            $lotes = $query
                                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                                 ->where('lotes.habilitado','=',1)
                                                 ->where('lotes.contrato','=',0)
@@ -6661,21 +4421,7 @@ class LoteController extends Controller
                                         }else{
                                             if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
             
-                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                ->leftJoin('personal','clientes.id','personal.id')
-                                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                $lotes = $query
                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                     ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                                     ->where('modelos.id', '=', $b_modelo )
@@ -6690,21 +4436,7 @@ class LoteController extends Controller
                                             }else{
                                                 if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
             
-                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                    ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                    ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                    ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                    ->leftJoin('personal','clientes.id','personal.id')
-                                                    ->leftJoin('personal as v','vendedores.id','v.id')
-                                                    ->join('licencias','lotes.id','=','licencias.id')
-                                                    ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                            'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                    $lotes = $query
                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                         ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                                                         ->where('lotes.habilitado','=',1)
@@ -6718,21 +4450,7 @@ class LoteController extends Controller
                                                       
                                                 }else{
                                                     if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
-                                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                        ->leftJoin('personal','clientes.id','personal.id')
-                                                        ->leftJoin('personal as v','vendedores.id','v.id')
-                                                        ->join('licencias','lotes.id','=','licencias.id')
-                                                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                            'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                        $lotes = $query
                                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                                             ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                                                             ->where('lotes.habilitado','=',1)
@@ -6746,21 +4464,7 @@ class LoteController extends Controller
         
                                                     }else{
                                                         if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
-                                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                            ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                            ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                            ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                            ->leftJoin('personal','clientes.id','personal.id')
-                                                            ->leftJoin('personal as v','vendedores.id','v.id')
-                                                            ->join('licencias','lotes.id','=','licencias.id')
-                                                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                            $lotes = $query
                                                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                                                 ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                                                                 ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -6775,21 +4479,7 @@ class LoteController extends Controller
                                                        
                                                         }else{
                                                             if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !='' ){
-                                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                ->leftJoin('personal','clientes.id','personal.id')
-                                                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                                $lotes = $query
                                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                                     ->where('modelos.id', '=', $b_modelo )
                                                                     ->where('lotes.habilitado','=',1)
@@ -6803,21 +4493,7 @@ class LoteController extends Controller
                                                                    
                                                             }else{
                                                                 if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                    ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                    ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                    ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                    ->leftJoin('personal','clientes.id','personal.id')
-                                                                    ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                    ->join('licencias','lotes.id','=','licencias.id')
-                                                                    ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                        'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                                        'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                        'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                                    $lotes = $query
                                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                                         ->where('modelos.id', '=', $b_modelo )
                                                                         ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
@@ -6833,21 +4509,7 @@ class LoteController extends Controller
                                                                      
                                                                 }else{
                                                                     if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
-                                                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                        ->leftJoin('personal','clientes.id','personal.id')
-                                                                        ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                        ->join('licencias','lotes.id','=','licencias.id')
-                                                                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                            'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                                        $lotes = $query
                                                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                                                             ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                                                             ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
@@ -6863,21 +4525,7 @@ class LoteController extends Controller
                                                                      
                                                                     }else{
                                                                         if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                            ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                            ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                            ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                            ->leftJoin('personal','clientes.id','personal.id')
-                                                                            ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                            ->join('licencias','lotes.id','=','licencias.id')
-                                                                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                            'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                                            $lotes = $query
                                                                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                                                                 ->where('modelos.id', '=', $b_modelo )
                                                                                 ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -6894,21 +4542,7 @@ class LoteController extends Controller
                                                                            
                                                                         }else{
                                                                             if($buscar2!='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
-                                                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                                ->leftJoin('personal','clientes.id','personal.id')
-                                                                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                                'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                                                'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                                'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                                                $lotes = $query
                                                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                                                     ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                                                                     ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
@@ -6938,21 +4572,7 @@ class LoteController extends Controller
                 }
                 default:{
                     if($buscar==''){
-                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                        ->join('licencias','lotes.id','=','licencias.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                        ->leftJoin('personal','clientes.id','personal.id')
-                        ->leftJoin('personal as v','vendedores.id','v.id')
-                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                        $lotes = $query
                                     ->where('lotes.habilitado','=',1)
                                     ->where('lotes.contrato','=',0)
                                     ->where('lotes.apartado','!=',0)
@@ -6965,21 +4585,7 @@ class LoteController extends Controller
                     else{
                         if($buscar2=='' && $buscar3=='' && $b_modelo=='' && $b_lote=='')
                         {
-                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                            ->join('licencias','lotes.id','=','licencias.id')
-                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                            ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                            ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                            ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                            ->leftJoin('personal','clientes.id','personal.id')
-                            ->leftJoin('personal as v','vendedores.id','v.id')
-                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                            $lotes = $query
                                         ->where('lotes.habilitado','=',1)
                                         ->where('lotes.contrato','=',0)
                                         ->where('lotes.apartado','!=',0)
@@ -6993,21 +4599,7 @@ class LoteController extends Controller
                         else{
                             if($b_lote=='' && $buscar3=='' && $b_modelo=='' && $buscar2 !='')
                             {
-                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                ->leftJoin('personal','clientes.id','personal.id')
-                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                $lotes = $query
                                     ->where('lotes.habilitado','=',1)
                                     ->where('lotes.contrato','=',0)
                                     ->where('lotes.apartado','!=',0)
@@ -7021,21 +4613,7 @@ class LoteController extends Controller
                             }
                             else{
                             if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' ){
-                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                ->join('licencias','lotes.id','=','licencias.id')
-                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                ->leftJoin('personal','clientes.id','personal.id')
-                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                $lotes = $query
                                     ->where('lotes.habilitado','=',1)
                                     ->where('lotes.contrato','=',0)
                                     ->where('lotes.apartado','!=',0)
@@ -7051,21 +4629,7 @@ class LoteController extends Controller
                                     }else{
                                         if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
                                         {
-                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                            ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                            ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                            ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                            ->leftJoin('personal','clientes.id','personal.id')
-                                            ->leftJoin('personal as v','vendedores.id','v.id')
-                                            ->join('licencias','lotes.id','=','licencias.id')
-                                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                            $lotes = $query
                                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                                 ->where('lotes.habilitado','=',1)
                                                 ->where('lotes.contrato','=',0)
@@ -7081,21 +4645,7 @@ class LoteController extends Controller
                                         }else{
                                             if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
             
-                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                ->leftJoin('personal','clientes.id','personal.id')
-                                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                $lotes = $query
                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                     ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                                     ->where('modelos.id', '=', $b_modelo )
@@ -7110,21 +4660,7 @@ class LoteController extends Controller
                                             }else{
                                                 if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
             
-                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                    ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                    ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                    ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                    ->leftJoin('personal','clientes.id','personal.id')
-                                                    ->leftJoin('personal as v','vendedores.id','v.id')
-                                                    ->join('licencias','lotes.id','=','licencias.id')
-                                                    ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                            'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                    $lotes = $query
                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                         ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                                                         ->where('lotes.habilitado','=',1)
@@ -7137,21 +4673,7 @@ class LoteController extends Controller
         
                                                 }else{
                                                     if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
-                                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                        ->leftJoin('personal','clientes.id','personal.id')
-                                                        ->leftJoin('personal as v','vendedores.id','v.id')
-                                                        ->join('licencias','lotes.id','=','licencias.id')
-                                                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                            'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                        $lotes = $query
                                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                                             ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                                                             ->where('lotes.habilitado','=',1)
@@ -7165,21 +4687,7 @@ class LoteController extends Controller
         
                                                     }else{
                                                         if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
-                                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                            ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                            ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                            ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                            ->leftJoin('personal','clientes.id','personal.id')
-                                                            ->leftJoin('personal as v','vendedores.id','v.id')
-                                                            ->join('licencias','lotes.id','=','licencias.id')
-                                                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                            $lotes = $query
                                                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                                                 ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                                                                 ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -7193,21 +4701,7 @@ class LoteController extends Controller
         
                                                         }else{
                                                             if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !='' ){
-                                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                ->leftJoin('personal','clientes.id','personal.id')
-                                                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                                $lotes = $query
                                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                                     ->where('modelos.id', '=', $b_modelo )
                                                                     ->where('lotes.habilitado','=',1)
@@ -7220,21 +4714,7 @@ class LoteController extends Controller
         
                                                             }else{
                                                                 if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                    ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                    ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                    ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                    ->leftJoin('personal','clientes.id','personal.id')
-                                                                    ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                    ->join('licencias','lotes.id','=','licencias.id')
-                                                                    ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                        'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                                        'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                        'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                                    $lotes = $query
                                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                                         ->where('modelos.id', '=', $b_modelo )
                                                                         ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
@@ -7249,21 +4729,7 @@ class LoteController extends Controller
         
                                                                 }else{
                                                                     if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
-                                                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                        ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                        ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                        ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                        ->leftJoin('personal','clientes.id','personal.id')
-                                                                        ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                        ->join('licencias','lotes.id','=','licencias.id')
-                                                                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                            'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                                        $lotes = $query
                                                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                                                             ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                                                             ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
@@ -7278,21 +4744,7 @@ class LoteController extends Controller
         
                                                                     }else{
                                                                         if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                            ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                            ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                            ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                            ->leftJoin('personal','clientes.id','personal.id')
-                                                                            ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                            ->join('licencias','lotes.id','=','licencias.id')
-                                                                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                            'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                                            $lotes = $query
                                                                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                                                                 ->where('modelos.id', '=', $b_modelo )
                                                                                 ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -7308,21 +4760,7 @@ class LoteController extends Controller
         
                                                                         }else{
                                                                             if($buscar2!='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
-                                                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                                ->leftJoin('apartados','lotes.id','apartados.lote_id')
-                                                                                ->leftJoin('clientes','apartados.cliente_id','clientes.id')
-                                                                                ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
-                                                                                ->leftJoin('personal','clientes.id','personal.id')
-                                                                                ->leftJoin('personal as v','vendedores.id','v.id')
-                                                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                                'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                                                'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                                                                                'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                                                                                $lotes = $query
                                                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                                                     ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                                                                     ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
@@ -7355,16 +4793,7 @@ class LoteController extends Controller
         }
         else{
             if($buscar==''){
-                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                ->join('licencias','lotes.id','=','licencias.id')
-                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
+                $lotes = $queryVendedores
                             ->where('lotes.habilitado','=',1)
                             ->where('lotes.apartado','=',0)
                             ->where('lotes.contrato','=',0)
@@ -7377,16 +4806,7 @@ class LoteController extends Controller
             else{
                 if($buscar2=='' && $buscar3=='' && $b_modelo=='' && $b_lote=='')
                 {
-                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                    ->join('licencias','lotes.id','=','licencias.id')
-                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                    ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                    ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
+                    $lotes = $queryVendedores
                             ->where('lotes.habilitado','=',1)
                             ->where('lotes.apartado','=',0)
                             ->where('lotes.contrato','=',0)
@@ -7401,16 +4821,7 @@ class LoteController extends Controller
                 else{
                     if($b_lote=='' && $buscar3=='' && $b_modelo=='' && $buscar2 !='')
                     {
-                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                ->join('licencias','lotes.id','=','licencias.id')
-                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
+                        $lotes = $queryVendedores
                             ->where('lotes.habilitado','=',1)
                             ->where('lotes.apartado','=',0)
                             ->where('lotes.contrato','=',0)
@@ -7424,196 +4835,141 @@ class LoteController extends Controller
                            
                     }
                     else{
-                    if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' ){
-                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                        ->join('licencias','lotes.id','=','licencias.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                        ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
-                                    ->where('lotes.habilitado','=',1)
-                                    ->where('lotes.apartado','=',0)
-                                    ->where('lotes.contrato','=',0)
-                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                    ->where('modelos.id', '=', $b_modelo )
-                                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                    ->orderBy('fraccionamientos.nombre','DESC')
-                                    ->orderBy('etapas.num_etapa','ASC')
-                                    ->orderBy('lotes.manzana','ASC')
-                                    ->orderBy('lotes.num_lote','ASC')->get();
-
-                           
-                            }else{
-                                if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
-                                {
-                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                    ->join('licencias','lotes.id','=','licencias.id')
-                                    ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                                    ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
-                                        ->where($criterio, 'like', '%'. $buscar . '%')
+                        if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' ){
+                            $lotes = $queryVendedores
                                         ->where('lotes.habilitado','=',1)
                                         ->where('lotes.apartado','=',0)
                                         ->where('lotes.contrato','=',0)
+                                        ->where($criterio, 'like', '%'. $buscar . '%')
                                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                         ->where('modelos.id', '=', $b_modelo )
-                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                                         ->orderBy('fraccionamientos.nombre','DESC')
                                         ->orderBy('etapas.num_etapa','ASC')
                                         ->orderBy('lotes.manzana','ASC')
                                         ->orderBy('lotes.num_lote','ASC')->get();
 
-                                       
+                            
+                        }else{
+                            if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
+                            {
+                                $lotes = $queryVendedores
+                                    ->where($criterio, 'like', '%'. $buscar . '%')
+                                    ->where('lotes.habilitado','=',1)
+                                    ->where('lotes.apartado','=',0)
+                                    ->where('lotes.contrato','=',0)
+                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                    ->where('modelos.id', '=', $b_modelo )
+                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                    ->orderBy('fraccionamientos.nombre','DESC')
+                                    ->orderBy('etapas.num_etapa','ASC')
+                                    ->orderBy('lotes.manzana','ASC')
+                                    ->orderBy('lotes.num_lote','ASC')->get();
+
+                                    
+                            }else{
+                                if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
+
+                                    $lotes = $queryVendedores
+                                                            
+                                        ->where('lotes.habilitado','=',1)
+                                        ->where('lotes.apartado','=',0)
+                                        ->where('lotes.contrato','=',0)
+                                        ->where($criterio, 'like', '%'. $buscar . '%')
+                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                        ->where('modelos.id', '=', $b_modelo )
+                                        ->orderBy('fraccionamientos.nombre','DESC')
+                                        ->orderBy('etapas.num_etapa','ASC')
+                                        ->orderBy('lotes.manzana','ASC')
+                                        ->orderBy('lotes.num_lote','ASC')->get();
+                                        
                                 }else{
-                                    if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
-    
-                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                        ->join('licencias','lotes.id','=','licencias.id')
-                                        ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
-                                                                
+                                    if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
+
+                                        $lotes = $queryVendedores
+                                            
                                             ->where('lotes.habilitado','=',1)
                                             ->where('lotes.apartado','=',0)
                                             ->where('lotes.contrato','=',0)
                                             ->where($criterio, 'like', '%'. $buscar . '%')
-                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                            ->where('modelos.id', '=', $b_modelo )
+                                            ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                                             ->orderBy('fraccionamientos.nombre','DESC')
                                             ->orderBy('etapas.num_etapa','ASC')
                                             ->orderBy('lotes.manzana','ASC')
                                             ->orderBy('lotes.num_lote','ASC')->get();
-                                           
+
+                                            
                                     }else{
-                                        if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
-    
-                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                            ->join('licencias','lotes.id','=','licencias.id')
-                                            ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
-                                              
+                                        if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
+                                            $lotes = $queryVendedores
+                                            
                                                 ->where('lotes.habilitado','=',1)
                                                 ->where('lotes.apartado','=',0)
                                                 ->where('lotes.contrato','=',0)
                                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                                 ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                                ->where('modelos.id', '=', $b_modelo )
                                                 ->orderBy('fraccionamientos.nombre','DESC')
                                                 ->orderBy('etapas.num_etapa','ASC')
                                                 ->orderBy('lotes.manzana','ASC')
                                                 ->orderBy('lotes.num_lote','ASC')->get();
 
-                                               
                                         }else{
-                                            if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
-                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
-                                               
+                                            if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
+                                                $lotes = $queryVendedores
+                                                    
                                                     ->where('lotes.habilitado','=',1)
                                                     ->where('lotes.apartado','=',0)
                                                     ->where('lotes.contrato','=',0)
                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                     ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                    ->where('modelos.id', '=', $b_modelo )
+                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                                     ->orderBy('fraccionamientos.nombre','DESC')
                                                     ->orderBy('etapas.num_etapa','ASC')
                                                     ->orderBy('lotes.manzana','ASC')
                                                     ->orderBy('lotes.num_lote','ASC')->get();
-
+                                            
                                             }else{
-                                                if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
-                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                    ->join('licencias','lotes.id','=','licencias.id')
-                                                    ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                                                    ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
-                                                     
+                                                if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !='' ){
+                                                    $lotes = $queryVendedores
+                                                        
                                                         ->where('lotes.habilitado','=',1)
                                                         ->where('lotes.apartado','=',0)
                                                         ->where('lotes.contrato','=',0)
                                                         ->where($criterio, 'like', '%'. $buscar . '%')
-                                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                                        ->where('modelos.id', '=', $b_modelo )
                                                         ->orderBy('fraccionamientos.nombre','DESC')
                                                         ->orderBy('etapas.num_etapa','ASC')
                                                         ->orderBy('lotes.manzana','ASC')
                                                         ->orderBy('lotes.num_lote','ASC')->get();
-                                              
+
+                                                    
                                                 }else{
-                                                    if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !='' ){
-                                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                        ->join('licencias','lotes.id','=','licencias.id')
-                                                        ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                                                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                            'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
-                                                           
+                                                    if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
+                                                        $lotes = $queryVendedores
+                                                            
                                                             ->where('lotes.habilitado','=',1)
                                                             ->where('lotes.apartado','=',0)
                                                             ->where('lotes.contrato','=',0)
                                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                                             ->where('modelos.id', '=', $b_modelo )
+                                                            ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                                            ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
                                                             ->orderBy('fraccionamientos.nombre','DESC')
                                                             ->orderBy('etapas.num_etapa','ASC')
                                                             ->orderBy('lotes.manzana','ASC')
                                                             ->orderBy('lotes.num_lote','ASC')->get();
 
-                                                        
+                                                            
                                                     }else{
-                                                        if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                            ->join('licencias','lotes.id','=','licencias.id')
-                                                            ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                                                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                                'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
-                                                               
+                                                        if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
+                                                            $lotes = $queryVendedores
+                                                                
                                                                 ->where('lotes.habilitado','=',1)
                                                                 ->where('lotes.apartado','=',0)
                                                                 ->where('lotes.contrato','=',0)
                                                                 ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                ->where('modelos.id', '=', $b_modelo )
+                                                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                                                 ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                                                                 ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
                                                                 ->orderBy('fraccionamientos.nombre','DESC')
@@ -7621,24 +4977,16 @@ class LoteController extends Controller
                                                                 ->orderBy('lotes.manzana','ASC')
                                                                 ->orderBy('lotes.num_lote','ASC')->get();
 
-                                                             
+                                                            
                                                         }else{
-                                                            if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
-                                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                ->join('licencias','lotes.id','=','licencias.id')
-                                                                ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                                                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
-                                                                  
+                                                            if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
+                                                                $lotes = $queryVendedores
+                                                                    
                                                                     ->where('lotes.habilitado','=',1)
                                                                     ->where('lotes.apartado','=',0)
                                                                     ->where('lotes.contrato','=',0)
                                                                     ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                    ->where('modelos.id', '=', $b_modelo )
                                                                     ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                                                     ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                                                                     ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
@@ -7647,56 +4995,20 @@ class LoteController extends Controller
                                                                     ->orderBy('lotes.manzana','ASC')
                                                                     ->orderBy('lotes.num_lote','ASC')->get();
 
-                                                                
+                                                        
                                                             }else{
-                                                                if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                    ->join('licencias','lotes.id','=','licencias.id')
-                                                                    ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
-                                                                    ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
-                                                                     
+                                                                if($buscar2!='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
+                                                                    $lotes = $queryVendedores
+                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
                                                                         ->where('lotes.habilitado','=',1)
                                                                         ->where('lotes.apartado','=',0)
                                                                         ->where('lotes.contrato','=',0)
-                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                        ->where('modelos.id', '=', $b_modelo )
-                                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
                                                                         ->orderBy('fraccionamientos.nombre','DESC')
                                                                         ->orderBy('etapas.num_etapa','ASC')
                                                                         ->orderBy('lotes.manzana','ASC')
                                                                         ->orderBy('lotes.num_lote','ASC')->get();
-
-                                                            
-                                                                }else{
-                                                                    if($buscar2!='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
-                                                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                                                        ->join('licencias','lotes.id','=','licencias.id')
-                                                                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                        'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
-                                                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                                                        'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
-                                                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                            ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                            ->where('lotes.habilitado','=',1)
-                                                                            ->where('lotes.apartado','=',0)
-                                                                            ->where('lotes.contrato','=',0)
-                                                                            ->orderBy('fraccionamientos.nombre','DESC')
-                                                                            ->orderBy('etapas.num_etapa','ASC')
-                                                                            ->orderBy('lotes.manzana','ASC')
-                                                                            ->orderBy('lotes.num_lote','ASC')->get();
-                                                                    }
                                                                 }
                                                             }
                                                         }
@@ -7707,6 +5019,7 @@ class LoteController extends Controller
                                     }
                                 }
                             }
+                        }
                     }
                 }
             }
@@ -7845,12 +5158,14 @@ class LoteController extends Controller
         $b_lote = $request->b_lote;
         $criterio = $request->criterio;
 
-        if($buscar==''){
-            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+        $query = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
             ->join('etapas','lotes.etapa_id','=','etapas.id')
             ->join('modelos','lotes.modelo_id','=','modelos.id')
             ->select('lotes.id','lotes.num_lote','lotes.sublote','lotes.precio_base','lotes.manzana',
-            'lotes.ajuste','fraccionamientos.nombre as proyecto','etapas.num_etapa','modelos.nombre as modelo')
+            'lotes.ajuste','fraccionamientos.nombre as proyecto','etapas.num_etapa','modelos.nombre as modelo');
+
+        if($buscar==''){
+            $lotes = $query
             ->where('lotes.precio_base','>','0')
             ->orderBy('fraccionamientos.nombre','ASC')
             ->orderBy('etapas.num_etapa','ASC')
@@ -7860,11 +5175,7 @@ class LoteController extends Controller
         else{
             if($b_etapa=='' && $b_manzana=='' && $b_lote=='')
             {
-                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                ->select('lotes.id','lotes.num_lote','lotes.sublote','lotes.precio_base','lotes.manzana',
-                'lotes.ajuste','fraccionamientos.nombre as proyecto','etapas.num_etapa','modelos.nombre as modelo')
+                $lotes = $query
                 ->where('lotes.precio_base','>','0')
                 //->where('lotes.contrato','=','0')
                 ->where($criterio, 'like', '%'. $buscar . '%')
@@ -7876,11 +5187,7 @@ class LoteController extends Controller
             else{
                 if($b_manzana=='' && $b_lote=='' && $b_etapa != '')
                 {
-                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                    ->select('lotes.id','lotes.num_lote','lotes.sublote','lotes.precio_base','lotes.manzana',
-                    'lotes.ajuste','fraccionamientos.nombre as proyecto','etapas.num_etapa','modelos.nombre as modelo')
+                    $lotes = $query
                     ->where('lotes.precio_base','>','0')
                     //->where('lotes.contrato','=','0')
                     ->where($criterio, 'like', '%'. $buscar . '%')
@@ -7892,11 +5199,7 @@ class LoteController extends Controller
                 }
                 else{
                     if($b_manzana !='' && $b_lote=='' && $b_etapa != ''){
-                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                        ->select('lotes.id','lotes.num_lote','lotes.sublote','lotes.precio_base','lotes.manzana',
-                        'lotes.ajuste','fraccionamientos.nombre as proyecto','etapas.num_etapa','modelos.nombre as modelo')
+                        $lotes = $query
                         ->where('lotes.precio_base','>','0')
                         //->where('lotes.contrato','=','0')
                         ->where($criterio, 'like', '%'. $buscar . '%')
@@ -7908,11 +5211,7 @@ class LoteController extends Controller
                         ->paginate(8);
                     }else{
                         if($b_manzana !='' && $b_lote !='' && $b_etapa != ''){
-                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                            ->select('lotes.id','lotes.num_lote','lotes.sublote','lotes.precio_base','lotes.manzana',
-                            'lotes.ajuste','fraccionamientos.nombre as proyecto','etapas.num_etapa','modelos.nombre as modelo')
+                            $lotes = $query
                             ->where('lotes.precio_base','>','0')
                             //->where('lotes.contrato','=','0')
                             ->where($criterio, 'like', '%'. $buscar . '%')
@@ -7925,11 +5224,7 @@ class LoteController extends Controller
                             ->paginate(8);
                         }else {
                             if($buscar !='' && $b_lote !='' && $b_etapa == '' && $b_manzana == ''){
-                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                ->select('lotes.id','lotes.num_lote','lotes.sublote','lotes.precio_base','lotes.manzana',
-                                'lotes.ajuste','fraccionamientos.nombre as proyecto','etapas.num_etapa','modelos.nombre as modelo')
+                                $lotes = $query
                                 ->where('lotes.precio_base','>','0')
                                 //->where('lotes.contrato','=','0')
                                 ->where($criterio, 'like', '%'. $buscar . '%')
@@ -7940,11 +5235,7 @@ class LoteController extends Controller
                                 ->paginate(8);
                             }else{
                                 if($buscar !='' && $b_lote !='' && $b_etapa != '' && $b_manzana == ''){
-                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                    ->select('lotes.id','lotes.num_lote','lotes.sublote','lotes.precio_base','lotes.manzana',
-                                    'lotes.ajuste','fraccionamientos.nombre as proyecto','etapas.num_etapa','modelos.nombre as modelo')
+                                    $lotes = $query
                                     ->where('lotes.precio_base','>','0')
                                     //->where('lotes.contrato','=','0')
                                     ->where($criterio, 'like', '%'. $buscar . '%')
@@ -7956,11 +5247,7 @@ class LoteController extends Controller
                                     ->paginate(8);
                                 }else{
                                     if($buscar !='' && $b_lote !='' && $b_etapa == '' && $b_manzana != ''){
-                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                        ->select('lotes.id','lotes.num_lote','lotes.sublote','lotes.precio_base','lotes.manzana',
-                                        'lotes.ajuste','fraccionamientos.nombre as proyecto','etapas.num_etapa','modelos.nombre as modelo')
+                                        $lotes = $query
                                         ->where('lotes.precio_base','>','0')
                                         //->where('lotes.contrato','=','0')
                                         ->where($criterio, 'like', '%'. $buscar . '%')
@@ -7972,11 +5259,7 @@ class LoteController extends Controller
                                         ->paginate(8);
                                     }else{
                                         if($buscar !='' && $b_lote =='' && $b_etapa == '' && $b_manzana != ''){
-                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                            ->select('lotes.id','lotes.num_lote','lotes.sublote','lotes.precio_base','lotes.manzana',
-                                            'lotes.ajuste','fraccionamientos.nombre as proyecto','etapas.num_etapa','modelos.nombre as modelo')
+                                            $lotes = $query
                                             ->where('lotes.precio_base','>','0')
                                             //->where('lotes.contrato','=','0')
                                             ->where($criterio, 'like', '%'. $buscar . '%')
@@ -8037,41 +5320,33 @@ class LoteController extends Controller
         $b_habilitado = $request->b_habilitado;
         $criterio = $request->criterio;
         $b_puente = $request->b_puente;
+
+        $query = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+            ->join('etapas','lotes.etapa_id','=','etapas.id')
+            ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
+            ->join('empresas','lotes.empresa_id','=','empresas.id')
+            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
+                  'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
+                  'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
+                  'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
+                  'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios',
+                  'lotes.regimen_condom','licencias.avance');
         
         if($b_habilitado != ''){
             if($buscar==''){
-                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                          'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                          'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                          'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                          'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios',
-                          'lotes.regimen_condom','licencias.avance')
+                $lotes = $query
                           ->where('lotes.habilitado','=', $b_habilitado)
                           ->orderBy('fraccionamientos.nombre','ASC')
                           ->orderBy('etapas.num_etapa','ASC')
                           ->orderBy('lotes.manzana','ASC')
                           ->orderBy('lotes.num_lote','ASC')
                           ->orderBy('lotes.etapa_servicios','ASC')->get();
-    
-                          
             }
             else{
                 if($b_puente == ''){
                     if($buscar2=='' && $buscar3=='' && $b_modelo=='' && $b_lote=='')
                     {
-                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                        ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
+                        $lotes = $query
                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                 ->where('lotes.habilitado','=', $b_habilitado)
                                 ->orderBy('fraccionamientos.nombre','ASC')
@@ -8082,15 +5357,7 @@ class LoteController extends Controller
                     }
                     else{
                         if($b_lote=='' && $buscar3=='' && $b_modelo==''){
-                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                            ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                    'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                    'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
+                            $lotes = $query
                             ->where($criterio, 'like', '%'. $buscar . '%')
                             ->where('lotes.etapa_id','=',  $buscar2 )
                             ->where('lotes.habilitado','=', $b_habilitado)
@@ -8104,15 +5371,7 @@ class LoteController extends Controller
                         }else {
                             if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' )
                             {
-                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
+                                $lotes = $query
                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                 ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                 ->where('modelos.id', '=', $b_modelo )
@@ -8127,637 +5386,27 @@ class LoteController extends Controller
                                     
                             } else{
                                 if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
-                            {
-                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
-                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                    ->where('modelos.id', '=', $b_modelo )
-                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                    ->where('lotes.habilitado','=', $b_habilitado)
-                                    ->orderBy('fraccionamientos.nombre','ASC')
-                                    ->orderBy('etapas.num_etapa','ASC')
-                                    ->orderBy('lotes.manzana','ASC')
-                                    ->orderBy('lotes.num_lote','ASC')
-                                    ->orderBy('lotes.etapa_servicios','ASC')->get();
-        
-                                    
-                            }  else{
-                                if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
-            
-                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                    ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                    ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                            'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
+                                {
+                                    $lotes = $query
                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                        ->where('modelos.id', '=', $b_modelo )
+                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
                                         ->where('lotes.habilitado','=', $b_habilitado)
-                                        ->where('modelos.id', '=', $b_modelo )
                                         ->orderBy('fraccionamientos.nombre','ASC')
                                         ->orderBy('etapas.num_etapa','ASC')
                                         ->orderBy('lotes.manzana','ASC')
                                         ->orderBy('lotes.num_lote','ASC')
                                         ->orderBy('lotes.etapa_servicios','ASC')->get();
-        
+            
                                         
-                                }else{
-                                    if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
-            
-                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                        ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                                'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
-                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                            ->where('lotes.manzana', '=',$buscar3)
-                                            ->where('lotes.habilitado','=', $b_habilitado)
-                                            ->orderBy('fraccionamientos.nombre','ASC')
-                                            ->orderBy('etapas.num_etapa','ASC')
-                                            ->orderBy('lotes.manzana','ASC')
-                                            ->orderBy('lotes.num_lote','ASC')
-                                            ->orderBy('lotes.etapa_servicios','ASC')->get();
-        
-                                    
-                                    }else{
-                                        if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
-                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                            ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                    'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                                    'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
-                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                ->where('lotes.manzana', '=',$buscar3)
-                                                ->where('lotes.habilitado','=', $b_habilitado)
-                                                ->where('modelos.id', '=', $b_modelo )
-                                                ->orderBy('fraccionamientos.nombre','ASC')
-                                                ->orderBy('etapas.num_etapa','ASC')
-                                                ->orderBy('lotes.manzana','ASC')
-                                                ->orderBy('lotes.num_lote','ASC')
-                                                ->orderBy('lotes.etapa_servicios','ASC')->get();
-        
-                                                
-                                        }else{
-                                            if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
-                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
-                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                    ->where('lotes.manzana', '=',$buscar3)
-                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                    ->where('lotes.habilitado','=', $b_habilitado)
-                                                    ->orderBy('fraccionamientos.nombre','ASC')
-                                                    ->orderBy('etapas.num_etapa','ASC')
-                                                    ->orderBy('lotes.manzana','ASC')
-                                                    ->orderBy('lotes.num_lote','ASC')
-                                                    ->orderBy('lotes.etapa_servicios','ASC')->get();
-        
-                                                    
-                                            }else{
-                                                if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !=''  ){
-                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                    ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                            'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
-                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                        ->where('modelos.id', '=', $b_modelo )
-                                                        ->where('lotes.habilitado','=', $b_habilitado)
-                                                        ->orderBy('fraccionamientos.nombre','ASC')
-                                                        ->orderBy('etapas.num_etapa','ASC')
-                                                        ->orderBy('lotes.manzana','ASC')
-                                                        ->orderBy('lotes.num_lote','ASC')
-                                                        ->orderBy('lotes.etapa_servicios','ASC')->get();
-        
-                                                        
-                                                }else{
-                                                    if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                                                'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
-                                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                                            ->where('modelos.id', '=', $b_modelo )
-                                                            ->where('lotes.manzana', '=',$buscar3)
-                                                            ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                            ->where('lotes.habilitado','=', $b_habilitado)
-                                                            ->orderBy('fraccionamientos.nombre','ASC')
-                                                            ->orderBy('etapas.num_etapa','ASC')
-                                                            ->orderBy('lotes.manzana','ASC')
-                                                            ->orderBy('lotes.num_lote','ASC')
-                                                            ->orderBy('lotes.etapa_servicios','ASC')->get();
-        
-                                                            
-                                                    }else{
-                                                        if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
-                                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                            ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                    'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                                                    'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
-                                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                ->where('lotes.manzana', '=',$buscar3)
-                                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                ->where('lotes.habilitado','=', $b_habilitado)
-                                                                ->orderBy('fraccionamientos.nombre','ASC')
-                                                                ->orderBy('etapas.num_etapa','ASC')
-                                                                ->orderBy('lotes.manzana','ASC')
-                                                                ->orderBy('lotes.num_lote','ASC')
-                                                                ->orderBy('lotes.etapa_servicios','ASC')->get();
-        
-                                                                
-                                                        }else{
-                                                            if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                                                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
-                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                    ->where('modelos.id', '=', $b_modelo )
-                                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                    ->where('lotes.manzana', '=',$buscar3)
-                                                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                    ->where('lotes.habilitado','=', $b_habilitado)
-                                                                    ->orderBy('fraccionamientos.nombre','ASC')
-                                                                    ->orderBy('etapas.num_etapa','ASC')
-                                                                    ->orderBy('lotes.manzana','ASC')
-                                                                    ->orderBy('lotes.num_lote','ASC')
-                                                                    ->orderBy('lotes.etapa_servicios','ASC')->get();
-        
-                                                                    
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-        
-                                }
-                            }
-                            }              
-        
-                        
-                        }
-                 
-                    }
-                }
-                else{
-                    if($buscar2=='' && $buscar3=='' && $b_modelo=='' && $b_lote=='')
-                    {
-                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                        ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
-                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente)
-                                ->orderBy('fraccionamientos.nombre','ASC')
-                                ->orderBy('etapas.num_etapa','ASC')
-                                ->orderBy('lotes.manzana','ASC')
-                                ->orderBy('lotes.num_lote','ASC')
-                                ->orderBy('lotes.etapa_servicios','ASC')->get();
-        
-                        
-                    }
-                    else{
-                        if($b_lote=='' && $buscar3=='' && $b_modelo==''){
-                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                            ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                    'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                    'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
-                            ->where($criterio, 'like', '%'. $buscar . '%')
-                            ->where('lotes.etapa_id','=',  $buscar2 )
-                            ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente)
-                            ->orderBy('fraccionamientos.nombre','ASC')
-                            ->orderBy('etapas.num_etapa','ASC')
-                            ->orderBy('lotes.manzana','ASC')
-                            ->orderBy('lotes.num_lote','ASC')
-                            ->orderBy('lotes.etapa_servicios','ASC')->get();
-        
-                            
-                        }else {
-                            if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' )
-                            {
-                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
-                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                ->where('modelos.id', '=', $b_modelo )
-                                ->where('lotes.manzana', '=',  $buscar3)
-                                ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente)
-                                ->orderBy('fraccionamientos.nombre','ASC')
-                                ->orderBy('etapas.num_etapa','ASC')
-                                ->orderBy('lotes.manzana','ASC')
-                                ->orderBy('lotes.num_lote','ASC')
-                                ->orderBy('lotes.etapa_servicios','ASC')->get();
-        
-                                    
-                            } else{
-                                if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
-                            {
-                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
-                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                    ->where('modelos.id', '=', $b_modelo )
-                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                    ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente)
-                                    ->orderBy('fraccionamientos.nombre','ASC')
-                                    ->orderBy('etapas.num_etapa','ASC')
-                                    ->orderBy('lotes.manzana','ASC')
-                                    ->orderBy('lotes.num_lote','ASC')
-                                    ->orderBy('lotes.etapa_servicios','ASC')->get();
-        
-                                    
-                            }  else{
-                                if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
-            
-                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                    ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                    ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                            'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
-                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                        ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente)
-                                        ->where('modelos.id', '=', $b_modelo )
-                                        ->orderBy('fraccionamientos.nombre','ASC')
-                                        ->orderBy('etapas.num_etapa','ASC')
-                                        ->orderBy('lotes.manzana','ASC')
-                                        ->orderBy('lotes.num_lote','ASC')
-                                        ->orderBy('lotes.etapa_servicios','ASC')->get();
-        
-                                        
-                                }else{
-                                    if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
-            
-                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                        ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                                'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
-                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                            ->where('lotes.manzana', '=',$buscar3)
-                                            ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente)
-                                            ->orderBy('fraccionamientos.nombre','ASC')
-                                            ->orderBy('etapas.num_etapa','ASC')
-                                            ->orderBy('lotes.manzana','ASC')
-                                            ->orderBy('lotes.num_lote','ASC')
-                                            ->orderBy('lotes.etapa_servicios','ASC')->get();
-        
-                                    
-                                    }else{
-                                        if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
-                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                            ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                    'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                                    'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
-                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                ->where('lotes.manzana', '=',$buscar3)
-                                                ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente)
-                                                ->where('modelos.id', '=', $b_modelo )
-                                                ->orderBy('fraccionamientos.nombre','ASC')
-                                                ->orderBy('etapas.num_etapa','ASC')
-                                                ->orderBy('lotes.manzana','ASC')
-                                                ->orderBy('lotes.num_lote','ASC')
-                                                ->orderBy('lotes.etapa_servicios','ASC')->get();
-        
-                                                
-                                        }else{
-                                            if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
-                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
-                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                    ->where('lotes.manzana', '=',$buscar3)
-                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                    ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente)
-                                                    ->orderBy('fraccionamientos.nombre','ASC')
-                                                    ->orderBy('etapas.num_etapa','ASC')
-                                                    ->orderBy('lotes.manzana','ASC')
-                                                    ->orderBy('lotes.num_lote','ASC')
-                                                    ->orderBy('lotes.etapa_servicios','ASC')->get();
-        
-                                                    
-                                            }else{
-                                                if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !=''  ){
-                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                    ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                            'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
-                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                        ->where('modelos.id', '=', $b_modelo )
-                                                        ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente)
-                                                        ->orderBy('fraccionamientos.nombre','ASC')
-                                                        ->orderBy('etapas.num_etapa','ASC')
-                                                        ->orderBy('lotes.manzana','ASC')
-                                                        ->orderBy('lotes.num_lote','ASC')
-                                                        ->orderBy('lotes.etapa_servicios','ASC')->get();
-        
-                                                        
-                                                }else{
-                                                    if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                                                'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
-                                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                                            ->where('modelos.id', '=', $b_modelo )
-                                                            ->where('lotes.manzana', '=',$buscar3)
-                                                            ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                            ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente)
-                                                            ->orderBy('fraccionamientos.nombre','ASC')
-                                                            ->orderBy('etapas.num_etapa','ASC')
-                                                            ->orderBy('lotes.manzana','ASC')
-                                                            ->orderBy('lotes.num_lote','ASC')
-                                                            ->orderBy('lotes.etapa_servicios','ASC')->get();
-        
-                                                            
-                                                    }else{
-                                                        if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
-                                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                            ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                    'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                                                    'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
-                                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                ->where('lotes.manzana', '=',$buscar3)
-                                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente)
-                                                                ->orderBy('fraccionamientos.nombre','ASC')
-                                                                ->orderBy('etapas.num_etapa','ASC')
-                                                                ->orderBy('lotes.manzana','ASC')
-                                                                ->orderBy('lotes.num_lote','ASC')
-                                                                ->orderBy('lotes.etapa_servicios','ASC')->get();
-        
-                                                                
-                                                        }else{
-                                                            if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                                                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
-                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                    ->where('modelos.id', '=', $b_modelo )
-                                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                    ->where('lotes.manzana', '=',$buscar3)
-                                                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                    ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente)
-                                                                    ->orderBy('fraccionamientos.nombre','ASC')
-                                                                    ->orderBy('etapas.num_etapa','ASC')
-                                                                    ->orderBy('lotes.manzana','ASC')
-                                                                    ->orderBy('lotes.num_lote','ASC')
-                                                                    ->orderBy('lotes.etapa_servicios','ASC')->get();
-        
-                                                                    
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-        
-                                }
-                            }
-                            }              
-        
-                        
-                        }
-                
-                    }
-                } 
-            }
-        }
-        else{
-            if($buscar==''){
-                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                          'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                          'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                          'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                          'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios',
-                          'lotes.regimen_condom','licencias.avance')
-                          ->orderBy('fraccionamientos.nombre','ASC')
-                          ->orderBy('etapas.num_etapa','ASC')
-                          ->orderBy('lotes.manzana','ASC')
-                          ->orderBy('lotes.num_lote','ASC')
-                          ->orderBy('lotes.etapa_servicios','ASC')->get();
-    
-                          
-            }
-            else{
-                if($b_puente == ''){
-                    if($buscar2=='' && $buscar3=='' && $b_modelo=='' && $b_lote=='')
-                    {
-                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                        ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
-                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                ->orderBy('fraccionamientos.nombre','ASC')
-                                ->orderBy('etapas.num_etapa','ASC')
-                                ->orderBy('lotes.manzana','ASC')
-                                ->orderBy('lotes.num_lote','ASC')
-                                ->orderBy('lotes.etapa_servicios','ASC')->get();
-        
-                           
-                    }
-                    else{
-                        if($b_lote=='' && $buscar3=='' && $b_modelo==''){
-                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                            ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                    'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                    'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
-                            ->where($criterio, 'like', '%'. $buscar . '%')
-                            ->where('lotes.etapa_id','=',  $buscar2 )
-                            ->orderBy('fraccionamientos.nombre','ASC')
-                            ->orderBy('etapas.num_etapa','ASC')
-                            ->orderBy('lotes.manzana','ASC')
-                            ->orderBy('lotes.num_lote','ASC')
-                            ->orderBy('lotes.etapa_servicios','ASC')->get();
-        
-                            
-                        }else {
-                            if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' )
-                            {
-                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
-                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                ->where('modelos.id', '=', $b_modelo )
-                                ->where('lotes.manzana', '=',  $buscar3)
-                                ->orderBy('fraccionamientos.nombre','ASC')
-                                ->orderBy('etapas.num_etapa','ASC')
-                                ->orderBy('lotes.manzana','ASC')
-                                ->orderBy('lotes.num_lote','ASC')
-                                ->orderBy('lotes.etapa_servicios','ASC')->get();
-        
-                                    
-                            } else{
-                                if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
-                            {
-                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
-                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                    ->where('modelos.id', '=', $b_modelo )
-                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                    ->orderBy('fraccionamientos.nombre','ASC')
-                                    ->orderBy('etapas.num_etapa','ASC')
-                                    ->orderBy('lotes.manzana','ASC')
-                                    ->orderBy('lotes.num_lote','ASC')
-                                    ->orderBy('lotes.etapa_servicios','ASC')->get();
-        
-                                    
-                            }  else{
+                                }  else{
                                     if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
                 
-                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                        ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                                'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
+                                        $lotes = $query
                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                             ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                            ->where('lotes.habilitado','=', $b_habilitado)
                                             ->where('modelos.id', '=', $b_modelo )
                                             ->orderBy('fraccionamientos.nombre','ASC')
                                             ->orderBy('etapas.num_etapa','ASC')
@@ -8769,17 +5418,10 @@ class LoteController extends Controller
                                     }else{
                                         if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
                 
-                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                            ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                    'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                                    'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
+                                            $lotes = $query
                                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                                 ->where('lotes.manzana', '=',$buscar3)
+                                                ->where('lotes.habilitado','=', $b_habilitado)
                                                 ->orderBy('fraccionamientos.nombre','ASC')
                                                 ->orderBy('etapas.num_etapa','ASC')
                                                 ->orderBy('lotes.manzana','ASC')
@@ -8789,17 +5431,10 @@ class LoteController extends Controller
                                         
                                         }else{
                                             if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
-                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
+                                                $lotes = $query
                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                     ->where('lotes.manzana', '=',$buscar3)
+                                                    ->where('lotes.habilitado','=', $b_habilitado)
                                                     ->where('modelos.id', '=', $b_modelo )
                                                     ->orderBy('fraccionamientos.nombre','ASC')
                                                     ->orderBy('etapas.num_etapa','ASC')
@@ -8810,18 +5445,11 @@ class LoteController extends Controller
                                                     
                                             }else{
                                                 if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
-                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                    ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                            'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
+                                                    $lotes = $query
                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                         ->where('lotes.manzana', '=',$buscar3)
                                                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                                        ->where('lotes.habilitado','=', $b_habilitado)
                                                         ->orderBy('fraccionamientos.nombre','ASC')
                                                         ->orderBy('etapas.num_etapa','ASC')
                                                         ->orderBy('lotes.manzana','ASC')
@@ -8831,17 +5459,10 @@ class LoteController extends Controller
                                                         
                                                 }else{
                                                     if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !=''  ){
-                                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                                                'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
+                                                        $lotes = $query
                                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                                             ->where('modelos.id', '=', $b_modelo )
+                                                            ->where('lotes.habilitado','=', $b_habilitado)
                                                             ->orderBy('fraccionamientos.nombre','ASC')
                                                             ->orderBy('etapas.num_etapa','ASC')
                                                             ->orderBy('lotes.manzana','ASC')
@@ -8851,19 +5472,12 @@ class LoteController extends Controller
                                                             
                                                     }else{
                                                         if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                            ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                    'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                                                    'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
+                                                            $lotes = $query
                                                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                                                 ->where('modelos.id', '=', $b_modelo )
                                                                 ->where('lotes.manzana', '=',$buscar3)
                                                                 ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                                                ->where('lotes.habilitado','=', $b_habilitado)
                                                                 ->orderBy('fraccionamientos.nombre','ASC')
                                                                 ->orderBy('etapas.num_etapa','ASC')
                                                                 ->orderBy('lotes.manzana','ASC')
@@ -8873,19 +5487,12 @@ class LoteController extends Controller
                                                                 
                                                         }else{
                                                             if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
-                                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                                                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
+                                                                $lotes = $query
                                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                                     ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                                                     ->where('lotes.manzana', '=',$buscar3)
                                                                     ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                                                    ->where('lotes.habilitado','=', $b_habilitado)
                                                                     ->orderBy('fraccionamientos.nombre','ASC')
                                                                     ->orderBy('etapas.num_etapa','ASC')
                                                                     ->orderBy('lotes.manzana','ASC')
@@ -8895,20 +5502,13 @@ class LoteController extends Controller
                                                                     
                                                             }else{
                                                                 if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                    ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                            'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                                                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
+                                                                    $lotes = $query
                                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                                         ->where('modelos.id', '=', $b_modelo )
                                                                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                                                         ->where('lotes.manzana', '=',$buscar3)
                                                                         ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                                                        ->where('lotes.habilitado','=', $b_habilitado)
                                                                         ->orderBy('fraccionamientos.nombre','ASC')
                                                                         ->orderBy('etapas.num_etapa','ASC')
                                                                         ->orderBy('lotes.manzana','ASC')
@@ -8926,9 +5526,7 @@ class LoteController extends Controller
             
                                     }
                                 }
-                            }           
-        
-                        
+                            }              
                         }
                  
                     }
@@ -8936,15 +5534,384 @@ class LoteController extends Controller
                 else{
                     if($buscar2=='' && $buscar3=='' && $b_modelo=='' && $b_lote=='')
                     {
-                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                        ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
+                        $lotes = $query
+                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente)
+                                ->orderBy('fraccionamientos.nombre','ASC')
+                                ->orderBy('etapas.num_etapa','ASC')
+                                ->orderBy('lotes.manzana','ASC')
+                                ->orderBy('lotes.num_lote','ASC')
+                                ->orderBy('lotes.etapa_servicios','ASC')->get();
+        
+                        
+                    }
+                    else{
+                        if($b_lote=='' && $buscar3=='' && $b_modelo==''){
+                            $lotes = $query
+                            ->where($criterio, 'like', '%'. $buscar . '%')
+                            ->where('lotes.etapa_id','=',  $buscar2 )
+                            ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente)
+                            ->orderBy('fraccionamientos.nombre','ASC')
+                            ->orderBy('etapas.num_etapa','ASC')
+                            ->orderBy('lotes.manzana','ASC')
+                            ->orderBy('lotes.num_lote','ASC')
+                            ->orderBy('lotes.etapa_servicios','ASC')->get();
+        
+                            
+                        }else {
+                            if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' )
+                            {
+                                $lotes = $query
+                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                ->where('modelos.id', '=', $b_modelo )
+                                ->where('lotes.manzana', '=',  $buscar3)
+                                ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente)
+                                ->orderBy('fraccionamientos.nombre','ASC')
+                                ->orderBy('etapas.num_etapa','ASC')
+                                ->orderBy('lotes.manzana','ASC')
+                                ->orderBy('lotes.num_lote','ASC')
+                                ->orderBy('lotes.etapa_servicios','ASC')->get();
+        
+                                    
+                            } else{
+                                if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
+                                {
+                                    $lotes = $query
+                                        ->where($criterio, 'like', '%'. $buscar . '%')
+                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                        ->where('modelos.id', '=', $b_modelo )
+                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                        ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente)
+                                        ->orderBy('fraccionamientos.nombre','ASC')
+                                        ->orderBy('etapas.num_etapa','ASC')
+                                        ->orderBy('lotes.manzana','ASC')
+                                        ->orderBy('lotes.num_lote','ASC')
+                                        ->orderBy('lotes.etapa_servicios','ASC')->get();
+            
+                                        
+                                }  else{
+                                    if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
+                
+                                        $lotes = $query
+                                            ->where($criterio, 'like', '%'. $buscar . '%')
+                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                            ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente)
+                                            ->where('modelos.id', '=', $b_modelo )
+                                            ->orderBy('fraccionamientos.nombre','ASC')
+                                            ->orderBy('etapas.num_etapa','ASC')
+                                            ->orderBy('lotes.manzana','ASC')
+                                            ->orderBy('lotes.num_lote','ASC')
+                                            ->orderBy('lotes.etapa_servicios','ASC')->get();
+            
+                                            
+                                    }else{
+                                        if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
+                
+                                            $lotes = $query
+                                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                                ->where('lotes.manzana', '=',$buscar3)
+                                                ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente)
+                                                ->orderBy('fraccionamientos.nombre','ASC')
+                                                ->orderBy('etapas.num_etapa','ASC')
+                                                ->orderBy('lotes.manzana','ASC')
+                                                ->orderBy('lotes.num_lote','ASC')
+                                                ->orderBy('lotes.etapa_servicios','ASC')->get();
+            
+                                        
+                                        }else{
+                                            if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
+                                                $lotes = $query
+                                                    ->where($criterio, 'like', '%'. $buscar . '%')
+                                                    ->where('lotes.manzana', '=',$buscar3)
+                                                    ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente)
+                                                    ->where('modelos.id', '=', $b_modelo )
+                                                    ->orderBy('fraccionamientos.nombre','ASC')
+                                                    ->orderBy('etapas.num_etapa','ASC')
+                                                    ->orderBy('lotes.manzana','ASC')
+                                                    ->orderBy('lotes.num_lote','ASC')
+                                                    ->orderBy('lotes.etapa_servicios','ASC')->get();
+            
+                                                    
+                                            }else{
+                                                if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
+                                                    $lotes = $query
+                                                        ->where($criterio, 'like', '%'. $buscar . '%')
+                                                        ->where('lotes.manzana', '=',$buscar3)
+                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                                        ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente)
+                                                        ->orderBy('fraccionamientos.nombre','ASC')
+                                                        ->orderBy('etapas.num_etapa','ASC')
+                                                        ->orderBy('lotes.manzana','ASC')
+                                                        ->orderBy('lotes.num_lote','ASC')
+                                                        ->orderBy('lotes.etapa_servicios','ASC')->get();
+            
+                                                        
+                                                }else{
+                                                    if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !=''  ){
+                                                        $lotes = $query
+                                                            ->where($criterio, 'like', '%'. $buscar . '%')
+                                                            ->where('modelos.id', '=', $b_modelo )
+                                                            ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente)
+                                                            ->orderBy('fraccionamientos.nombre','ASC')
+                                                            ->orderBy('etapas.num_etapa','ASC')
+                                                            ->orderBy('lotes.manzana','ASC')
+                                                            ->orderBy('lotes.num_lote','ASC')
+                                                            ->orderBy('lotes.etapa_servicios','ASC')->get();
+            
+                                                            
+                                                    }else{
+                                                        if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
+                                                            $lotes = $query
+                                                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                ->where('modelos.id', '=', $b_modelo )
+                                                                ->where('lotes.manzana', '=',$buscar3)
+                                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                                                ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente)
+                                                                ->orderBy('fraccionamientos.nombre','ASC')
+                                                                ->orderBy('etapas.num_etapa','ASC')
+                                                                ->orderBy('lotes.manzana','ASC')
+                                                                ->orderBy('lotes.num_lote','ASC')
+                                                                ->orderBy('lotes.etapa_servicios','ASC')->get();
+            
+                                                                
+                                                        }else{
+                                                            if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
+                                                                $lotes = $query
+                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                                                    ->where('lotes.manzana', '=',$buscar3)
+                                                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                                                    ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente)
+                                                                    ->orderBy('fraccionamientos.nombre','ASC')
+                                                                    ->orderBy('etapas.num_etapa','ASC')
+                                                                    ->orderBy('lotes.manzana','ASC')
+                                                                    ->orderBy('lotes.num_lote','ASC')
+                                                                    ->orderBy('lotes.etapa_servicios','ASC')->get();
+            
+                                                                    
+                                                            }else{
+                                                                if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
+                                                                    $lotes = $query
+                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                        ->where('modelos.id', '=', $b_modelo )
+                                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                                                        ->where('lotes.manzana', '=',$buscar3)
+                                                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                                                        ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente)
+                                                                        ->orderBy('fraccionamientos.nombre','ASC')
+                                                                        ->orderBy('etapas.num_etapa','ASC')
+                                                                        ->orderBy('lotes.manzana','ASC')
+                                                                        ->orderBy('lotes.num_lote','ASC')
+                                                                        ->orderBy('lotes.etapa_servicios','ASC')->get();
+            
+                                                                        
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+            
+                                    }
+                                }
+                            }              
+                        }
+                    }
+                } 
+            }
+        }
+        else{
+            if($buscar==''){
+                $lotes = $query
+                          ->orderBy('fraccionamientos.nombre','ASC')
+                          ->orderBy('etapas.num_etapa','ASC')
+                          ->orderBy('lotes.manzana','ASC')
+                          ->orderBy('lotes.num_lote','ASC')
+                          ->orderBy('lotes.etapa_servicios','ASC')->get();
+    
+                          
+            }
+            else{
+                if($b_puente == ''){
+                    if($buscar2=='' && $buscar3=='' && $b_modelo=='' && $b_lote=='')
+                    {
+                        $lotes = $query
+                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                ->orderBy('fraccionamientos.nombre','ASC')
+                                ->orderBy('etapas.num_etapa','ASC')
+                                ->orderBy('lotes.manzana','ASC')
+                                ->orderBy('lotes.num_lote','ASC')
+                                ->orderBy('lotes.etapa_servicios','ASC')->get();
+        
+                           
+                    }
+                    else{
+                        if($b_lote=='' && $buscar3=='' && $b_modelo==''){
+                            $lotes = $query
+                            ->where($criterio, 'like', '%'. $buscar . '%')
+                            ->where('lotes.etapa_id','=',  $buscar2 )
+                            ->orderBy('fraccionamientos.nombre','ASC')
+                            ->orderBy('etapas.num_etapa','ASC')
+                            ->orderBy('lotes.manzana','ASC')
+                            ->orderBy('lotes.num_lote','ASC')
+                            ->orderBy('lotes.etapa_servicios','ASC')->get();
+        
+                            
+                        }else {
+                            if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' )
+                            {
+                                $lotes = $query
+                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                ->where('modelos.id', '=', $b_modelo )
+                                ->where('lotes.manzana', '=',  $buscar3)
+                                ->orderBy('fraccionamientos.nombre','ASC')
+                                ->orderBy('etapas.num_etapa','ASC')
+                                ->orderBy('lotes.manzana','ASC')
+                                ->orderBy('lotes.num_lote','ASC')
+                                ->orderBy('lotes.etapa_servicios','ASC')->get();
+        
+                                    
+                            } else{
+                                if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
+                                {
+                                    $lotes = $query
+                                        ->where($criterio, 'like', '%'. $buscar . '%')
+                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                        ->where('modelos.id', '=', $b_modelo )
+                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                        ->orderBy('fraccionamientos.nombre','ASC')
+                                        ->orderBy('etapas.num_etapa','ASC')
+                                        ->orderBy('lotes.manzana','ASC')
+                                        ->orderBy('lotes.num_lote','ASC')
+                                        ->orderBy('lotes.etapa_servicios','ASC')->get();
+            
+                                        
+                                }  else{
+                                    if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
+                
+                                        $lotes = $query
+                                            ->where($criterio, 'like', '%'. $buscar . '%')
+                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                            ->where('modelos.id', '=', $b_modelo )
+                                            ->orderBy('fraccionamientos.nombre','ASC')
+                                            ->orderBy('etapas.num_etapa','ASC')
+                                            ->orderBy('lotes.manzana','ASC')
+                                            ->orderBy('lotes.num_lote','ASC')
+                                            ->orderBy('lotes.etapa_servicios','ASC')->get();
+            
+                                            
+                                    }else{
+                                        if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
+                
+                                            $lotes = $query
+                                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                                ->where('lotes.manzana', '=',$buscar3)
+                                                ->orderBy('fraccionamientos.nombre','ASC')
+                                                ->orderBy('etapas.num_etapa','ASC')
+                                                ->orderBy('lotes.manzana','ASC')
+                                                ->orderBy('lotes.num_lote','ASC')
+                                                ->orderBy('lotes.etapa_servicios','ASC')->get();
+            
+                                        
+                                        }else{
+                                            if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
+                                                $lotes = $query
+                                                    ->where($criterio, 'like', '%'. $buscar . '%')
+                                                    ->where('lotes.manzana', '=',$buscar3)
+                                                    ->where('modelos.id', '=', $b_modelo )
+                                                    ->orderBy('fraccionamientos.nombre','ASC')
+                                                    ->orderBy('etapas.num_etapa','ASC')
+                                                    ->orderBy('lotes.manzana','ASC')
+                                                    ->orderBy('lotes.num_lote','ASC')
+                                                    ->orderBy('lotes.etapa_servicios','ASC')->get();
+            
+                                                    
+                                            }else{
+                                                if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
+                                                    $lotes = $query
+                                                        ->where($criterio, 'like', '%'. $buscar . '%')
+                                                        ->where('lotes.manzana', '=',$buscar3)
+                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                                        ->orderBy('fraccionamientos.nombre','ASC')
+                                                        ->orderBy('etapas.num_etapa','ASC')
+                                                        ->orderBy('lotes.manzana','ASC')
+                                                        ->orderBy('lotes.num_lote','ASC')
+                                                        ->orderBy('lotes.etapa_servicios','ASC')->get();
+            
+                                                        
+                                                }else{
+                                                    if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !=''  ){
+                                                        $lotes = $query
+                                                            ->where($criterio, 'like', '%'. $buscar . '%')
+                                                            ->where('modelos.id', '=', $b_modelo )
+                                                            ->orderBy('fraccionamientos.nombre','ASC')
+                                                            ->orderBy('etapas.num_etapa','ASC')
+                                                            ->orderBy('lotes.manzana','ASC')
+                                                            ->orderBy('lotes.num_lote','ASC')
+                                                            ->orderBy('lotes.etapa_servicios','ASC')->get();
+            
+                                                            
+                                                    }else{
+                                                        if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
+                                                            $lotes = $query
+                                                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                ->where('modelos.id', '=', $b_modelo )
+                                                                ->where('lotes.manzana', '=',$buscar3)
+                                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                                                ->orderBy('fraccionamientos.nombre','ASC')
+                                                                ->orderBy('etapas.num_etapa','ASC')
+                                                                ->orderBy('lotes.manzana','ASC')
+                                                                ->orderBy('lotes.num_lote','ASC')
+                                                                ->orderBy('lotes.etapa_servicios','ASC')->get();
+            
+                                                                
+                                                        }else{
+                                                            if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
+                                                                $lotes = $query
+                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                                                    ->where('lotes.manzana', '=',$buscar3)
+                                                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                                                    ->orderBy('fraccionamientos.nombre','ASC')
+                                                                    ->orderBy('etapas.num_etapa','ASC')
+                                                                    ->orderBy('lotes.manzana','ASC')
+                                                                    ->orderBy('lotes.num_lote','ASC')
+                                                                    ->orderBy('lotes.etapa_servicios','ASC')->get();
+            
+                                                                    
+                                                            }else{
+                                                                if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
+                                                                    $lotes = $query
+                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
+                                                                        ->where('modelos.id', '=', $b_modelo )
+                                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                                                        ->where('lotes.manzana', '=',$buscar3)
+                                                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                                                        ->orderBy('fraccionamientos.nombre','ASC')
+                                                                        ->orderBy('etapas.num_etapa','ASC')
+                                                                        ->orderBy('lotes.manzana','ASC')
+                                                                        ->orderBy('lotes.num_lote','ASC')
+                                                                        ->orderBy('lotes.etapa_servicios','ASC')->get();    
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }           
+                        }
+                    }
+                }
+                else{
+                    if($buscar2=='' && $buscar3=='' && $b_modelo=='' && $b_lote=='')
+                    {
+                        $lotes = $query
                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                 ->where('lotes.credito_puente','=',$b_puente)
                                 ->orderBy('fraccionamientos.nombre','ASC')
@@ -8957,15 +5924,7 @@ class LoteController extends Controller
                     }
                     else{
                         if($b_lote=='' && $buscar3=='' && $b_modelo==''){
-                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                            ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                    'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                    'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
+                            $lotes = $query
                             ->where($criterio, 'like', '%'. $buscar . '%')
                             ->where('lotes.credito_puente','=',$b_puente)
                             ->where('lotes.etapa_id','=',  $buscar2 )
@@ -8979,15 +5938,7 @@ class LoteController extends Controller
                         }else {
                             if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' )
                             {
-                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
+                                $lotes = $query
                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                 ->where('lotes.credito_puente','=',$b_puente)
                                 ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -9002,40 +5953,24 @@ class LoteController extends Controller
                                     
                             } else{
                                 if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
-                            {
-                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
-                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                    ->where('lotes.credito_puente','=',$b_puente)
-                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                    ->where('modelos.id', '=', $b_modelo )
-                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                    ->orderBy('fraccionamientos.nombre','ASC')
-                                    ->orderBy('etapas.num_etapa','ASC')
-                                    ->orderBy('lotes.manzana','ASC')
-                                    ->orderBy('lotes.num_lote','ASC')
-                                    ->orderBy('lotes.etapa_servicios','ASC')->get();
+                                {
+                                    $lotes = $query
+                                        ->where($criterio, 'like', '%'. $buscar . '%')
+                                        ->where('lotes.credito_puente','=',$b_puente)
+                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                                        ->where('modelos.id', '=', $b_modelo )
+                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                        ->orderBy('fraccionamientos.nombre','ASC')
+                                        ->orderBy('etapas.num_etapa','ASC')
+                                        ->orderBy('lotes.manzana','ASC')
+                                        ->orderBy('lotes.num_lote','ASC')
+                                        ->orderBy('lotes.etapa_servicios','ASC')->get();
         
                                     
-                            }  else{
+                                }  else{
                                     if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
                 
-                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                        ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                                'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
+                                        $lotes = $query
                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                             ->where('lotes.credito_puente','=',$b_puente)
                                             ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -9050,15 +5985,7 @@ class LoteController extends Controller
                                     }else{
                                         if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
                 
-                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                            ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                    'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                                    'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
+                                            $lotes = $query
                                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                                 ->where('lotes.credito_puente','=',$b_puente)
                                                 ->where('lotes.manzana', '=',$buscar3)
@@ -9071,15 +5998,7 @@ class LoteController extends Controller
                                         
                                         }else{
                                             if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
-                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
+                                                $lotes = $query
                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                     ->where('lotes.credito_puente','=',$b_puente)
                                                     ->where('lotes.manzana', '=',$buscar3)
@@ -9093,15 +6012,7 @@ class LoteController extends Controller
                                                     
                                             }else{
                                                 if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
-                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                    ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                            'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
+                                                    $lotes = $query
                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                         ->where('lotes.credito_puente','=',$b_puente)
                                                         ->where('lotes.manzana', '=',$buscar3)
@@ -9115,15 +6026,7 @@ class LoteController extends Controller
                                                         
                                                 }else{
                                                     if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !=''  ){
-                                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                        ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                                        ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                                                'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
+                                                        $lotes = $query
                                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                                             ->where('lotes.credito_puente','=',$b_puente)
                                                             ->where('modelos.id', '=', $b_modelo )
@@ -9136,15 +6039,7 @@ class LoteController extends Controller
                                                             
                                                     }else{
                                                         if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                            ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                                            ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                    'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                                                    'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
+                                                            $lotes = $query
                                                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                                                 ->where('lotes.credito_puente','=',$b_puente)
                                                                 ->where('modelos.id', '=', $b_modelo )
@@ -9159,15 +6054,7 @@ class LoteController extends Controller
                                                                 
                                                         }else{
                                                             if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
-                                                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                                                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
+                                                                $lotes = $query
                                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                                     ->where('lotes.credito_puente','=',$b_puente)
                                                                     ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -9182,15 +6069,7 @@ class LoteController extends Controller
                                                                     
                                                             }else{
                                                                 if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                                                    ->join('modelos','lotes.modelo_id','=','modelos.id')->join('licencias','lotes.id','=','licencias.id')
-                                                                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                                                                    ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                                                                            'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                                                                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
-                                                                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 'lotes.contrato', 'lotes.firmado',
-                                                                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','licencias.avance')
+                                                                    $lotes = $query
                                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                                         ->where('lotes.credito_puente','=',$b_puente)
                                                                         ->where('modelos.id', '=', $b_modelo )
@@ -9211,17 +6090,12 @@ class LoteController extends Controller
                                                 }
                                             }
                                         }
-            
                                     }
                                 }
                             }           
-        
-                        
                         }
-                
                     }
                 }
-                
             }
         }
         
