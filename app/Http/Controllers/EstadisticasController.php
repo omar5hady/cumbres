@@ -2062,7 +2062,7 @@ class EstadisticasController extends Controller
                                                 'contratos.saldo',
                                                 'contratos.monto_total_credito',
                                                 'lotes.calle','lotes.numero','expedientes.fecha_firma_esc',
-                                                'modelos.nombre as modelo'
+                                                'modelos.nombre as modelo','contratos.fecha_audit','contratos.id'
                                         )
                                 ->where('lotes.fraccionamiento_id','=',$proyecto)
                                 ->where('lotes.etapa_id','=',$etapa)
@@ -2188,7 +2188,7 @@ class EstadisticasController extends Controller
                                                 'contratos.saldo',
                                                 'contratos.monto_total_credito',
                                                 'lotes.calle','lotes.numero','expedientes.fecha_firma_esc',
-                                                'modelos.nombre as modelo'
+                                                'modelos.nombre as modelo','contratos.fecha_audit','contratos.id'
                                         )
                                 ->where('lotes.fraccionamiento_id','=',$proyecto)
                                 ->where('contratos.status','=',3)

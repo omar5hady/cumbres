@@ -344,6 +344,11 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/observacion/registrar','ObservacionController@store');
         Route::get('/observacion/select_ultima','ObservacionController@select_ultima'); 
         Route::get('/observacion','ObservacionController@index');
+
+    /**********************************RUTAS OBSERVACION LOTES*************************** */
+        Route::post('/auditar/registrarObservacion','ObsAuditoriaController@store');
+        Route::get('/auditar/indexObservacion','ObsAuditoriaController@index');
+
     /***************************************************************************** */
     ////////////////////        RUTAS ENTREGA    //////////////////////////////
         Route::post('/entrega/registrar','EntregaController@store');
@@ -437,6 +442,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/contrato/status/fecha','ContratoController@statusContrato');
         Route::get('/contratos/excel','ContratoController@excelContratos');
         Route::get('/contratos/validarLotes','ContratoController@validarLoteEnContrato');
+
+        Route::post('/contratos/auditar','ObsAuditoriaController@auditar');
 
     /************************** RUTAS Depositos y Pagares ***************************/
         Route::get('/pagares','DepositoController@indexPagares');

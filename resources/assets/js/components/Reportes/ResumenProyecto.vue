@@ -148,6 +148,7 @@
                                     <th>Enganche</th>
                                     <th>Crédito</th>
                                     <th>Saldo</th>
+                                    <th v-if="rolId == 1 || rolId == 9">Auditoria</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -166,6 +167,10 @@
                                     <td class="td2" v-text="'$'+formatNumber(contrato.total_pagar)"></td>
                                     <td class="td2" v-text="'$'+formatNumber(contrato.monto_total_credito)"></td>
                                     <td class="td2" v-text="'$'+formatNumber(contrato.saldo)"></td>
+                                    <td v-if="rolId == 1 || rolId == 9" class="td2">
+                                        <button class="btn btn-dark" @click="abrirModal('auditar',contrato.id)" v-if="contrato.fecha_audit == null">Auditar</button>
+                                        <button class="btn btn-success" @click="abrirModal('observaciones',contrato.id),listarObservacion(contrato.id)" v-else>{{'Auditado el: ' + this.moment(contrato.fecha_audit).locale('es').format('DD/MMM/YYYY')}}</button>
+                                    </td>
                                 </tr>                                
                             </tbody>
                         </table>
@@ -187,17 +192,82 @@
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
+
+            <!--Inicio del modal avaluo-->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="titulo"></h4>
+                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- form para solicitud de avaluo -->
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
+                                    <div class="col-md-6">
+                                         <textarea rows="3" cols="40" v-model="comentario" class="form-control" placeholder="Observacion"></textarea>
+                                    </div>
+                                    <div class="col-md-2" v-if="tipoAccion == 1">
+                                        <button type="button" class="btn btn-primary" @click="agregarComentario()">Guardar</button>
+                                    </div>
+
+                                </div>
+
+                                <table v-if="tipoAccion == 1" class="table table-bordered table-striped table-sm" >
+                                    <thead>
+                                        <tr>
+                                            <th>Usuario</th>
+                                            <th>Observacion</th>
+                                            <th>Fecha</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="observacion in arrayObservacion" :key="observacion.id">
+                                            
+                                            <td v-text="observacion.usuario" ></td>
+                                            <td v-text="observacion.comentario" ></td>
+                                            <td v-text="observacion.created_at"></td>
+                                        </tr>                               
+                                    </tbody>
+                                </table>
+
+                            </form>
+                            <!-- fin del form solicitud de avaluo -->
+
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                            <button type="button" v-if="tipoAccion == 0" class="btn btn-primary" @click="auditar()">Aceptar</button>
+                        </div>
+                    </div>
+                      <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal consulta-->
+
+
         </main>
 </template>
 
 <script>
     export default {
+        props:{
+            rolId:{type: String}
+        },
         data (){
             return {
                 proceso:false,
                 arrayResProyecto : [],
                 arrayFraccionamientos: [],
                 arrayAllEtapas:[],
+                arrayObservacion:[],
                 pagination : {
                     'total' : 0,
                     'current_page' : 0,
@@ -223,6 +293,11 @@
                 mostrar : 0,
                 fecha_inicio:'',
                 excedente:0,
+                modal:0,
+                comentario:'',
+                id:'',
+                tipoAccion : 0,
+                titulo : '',
             }
         },
         computed:{
@@ -303,6 +378,47 @@
                     console.log(error);
                 });
             },
+            listarObservacion(buscar){
+                let me = this;
+                var url = '/auditar/indexObservacion?id=' + buscar;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayObservacion = respuesta.observacion;
+                    console.log(url);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+                
+            },
+
+            agregarComentario(){
+                let me = this;
+                //Con axios se llama el metodo store de DepartamentoController
+                axios.post('/auditar/registrarObservacion',{
+                    'id': this.id,
+                    'comentario': this.comentario
+                }).then(function (response){
+                    me.listarObservacion(me.id);
+                    me.observacion = '';
+                    //me.cerrarModal3(); //al guardar el registro se cierra el modal
+                    
+                    const toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                    });
+
+                    toast({
+                    type: 'success',
+                    title: 'Observación Agregada Correctamente'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
             selectEtapas(buscar){
                 let me = this;
                 
@@ -315,6 +431,75 @@
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+
+            auditar(){
+                 
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                
+                 Swal({
+                    title: 'Estas seguro?',
+                    animation: false,
+                    customClass: 'animated bounceInDown',
+                    text: "El contrato quedara auditado",
+                    type: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Cancelar',
+                    
+                    confirmButtonText: 'Si, auditar!'
+                    }).then((result) => {
+
+                    if (result.value) {
+                       
+                        axios.post('/contratos/auditar',{
+                            'id':this.id,
+                            'comentario' : this.comentario,
+                        }); 
+                        
+                        me.cerrarModal();
+                        me.listarResumen(me.pagination.current_page,me.b_proyecto,me.b_etapa);
+                        Swal({
+                            title: 'Hecho!',
+                            text: 'Contrato auditado',
+                            type: 'success',
+                            animation: false,
+                            customClass: 'animated bounceInRight'
+                        })
+                    }
+                })
+              
+            },
+
+            abrirModal(accion,id){
+                switch(accion){
+                    case 'auditar':{
+                        this.modal = 1;
+                        this.comentario = '';
+                        this.id = id;
+                        this.titulo = 'Auditar';
+                        this.tipoAccion = 0;
+                        break;
+                    }
+                    case 'observaciones':{
+                        this.modal = 1;
+                        this.comentario = '';
+                        this.titulo = 'Observaciones';
+                        this.id = id;
+                        this.tipoAccion = 1;
+                        //this.listarObservacion(this.id);
+                        break;
+                    }
+                }
+                
+            },
+            cerrarModal(){
+                this.modal = 0;
+                this.comentario = '';
+                this.listarResumen(this.pagination.current_page,this.b_proyecto,this.b_etapa);
+                this.id = '';
             },
             cambiarPagina(page,proyecto,etapa){
                 let me = this;

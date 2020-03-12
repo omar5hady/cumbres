@@ -16,7 +16,7 @@ use Carbon\Carbon;
 class ReportesController extends Controller
 {
     public function reporteInventario(Request $request){
-
+        if(!$request->ajax())return redirect('/');
         $fecha1 = $request->fecha1;
         $fecha2 = $request->fecha2;
         $proyecto = $request->proyecto;

@@ -1979,17 +1979,17 @@
                     lote_id:'',
 
                     /// Credito datos extra //
-                        comision_apertura:'0',
-                        investigacion:'0',
-                        avaluo:'0',
-                        prima_unica:'0',
-                        escrituras:'0',
-                        credito_neto:'0',
-                        avaluo_cliente:'0',
+                        comision_apertura:0,
+                        investigacion:0,
+                        avaluo:0,
+                        prima_unica:0,
+                        escrituras:0,
+                        credito_neto:0,
+                        avaluo_cliente:0,
                         total_pagar:0,
                         enganche_total:0,
-                        infonavit:'0',
-                        fovissste:'0',
+                        infonavit:0,
+                        fovissste:0,
                         monto_total_credito:0,
                         observacion:'',
                         publicidad_id:0,
@@ -3525,17 +3525,17 @@
                     me.monto_credito='';
 
                     /// Credito datos extra //
-                        me.comision_apertura='0';
-                        me.investigacion='0';
-                        me.avaluo='0';
-                        me.prima_unica='0';
-                        me.escrituras='0';
-                        me.credito_neto='0';
-                        me.avaluo_cliente='0';
+                        me.comision_apertura=0;
+                        me.investigacion=0;
+                        me.avaluo=0;
+                        me.prima_unica=0;
+                        me.escrituras=0;
+                        me.credito_neto=0;
+                        me.avaluo_cliente=0;
                         me.total_pagar=0;
                         me.enganche_total=0;
-                        me.infonavit='0';
-                        me.fovissste='0';
+                        me.infonavit=0;
+                        me.fovissste=0;
                         me.monto_total_credito=0;
             
                 me.prospecto_id=0;

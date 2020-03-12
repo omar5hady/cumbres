@@ -24,7 +24,7 @@
             <datos-extra></datos-extra>
         </template>
         <template v-if="menu==91">
-            <res-proyecto></res-proyecto>
+            <res-proyecto rol-id="{{Auth::user()->rol_id}}"></res-proyecto>
         </template>
 
         @if(Auth::user()->fraccionamiento == 1)
