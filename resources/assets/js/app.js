@@ -115,9 +115,14 @@ Vue.component('revision-previa', require('./components/Postventa/RevisionPrevia.
 Vue.component('notification', require('./components/Notification.vue'));
 Vue.component('perfil-user', require('./components/Perfil.vue'));
 Vue.component('listar-notifications', require('./components/ListarNotifications.vue'));
+
+// REPORTES
 Vue.component('datos-extra', require('./components/Reportes/EstaditicaDatosExtra.vue'));
 Vue.component('res-proyecto', require('./components/Reportes/ResumenProyecto.vue'));
 Vue.component('res-puplicidad', require('./components/Reportes/ReportePublicidad.vue'));
+Vue.component('rep-inventario', require('./components/Reportes/Inventario.vue'));
+
+
 Vue.component('avaluos', require('./components/Avaluos.vue'));
 Vue.component('gastos-admin', require('./components/GastosAdministrativos.vue'));
 Vue.component('estado-cuenta', require('./components/EstadoCuenta.vue'));

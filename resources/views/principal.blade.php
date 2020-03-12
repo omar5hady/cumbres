@@ -552,6 +552,11 @@
                                         <a class="nav-link" href="#"><i class="icon-chart"></i> Estadisticas Publicidad</a>
                                     </li>
                                 @endif
+                                @if(Auth::user()->rol_id == 1)
+                                    <li @click="menu=232" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="icon-chart"></i> Inventario Contable</a>
+                                    </li>
+                                @endif
                             </ul>
                         </li>
                     @endif

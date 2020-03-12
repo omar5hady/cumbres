@@ -397,6 +397,9 @@
         <template v-if="menu==231">
             <prediales-descarga></prediales-descarga>
         </template>
+        <template v-if="menu==232">
+            <rep-inventario></rep-inventario>
+        </template>
 
         
 
