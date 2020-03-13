@@ -503,7 +503,7 @@ class LicenciasController extends Controller
 
     public function AsigFechaVisita(Request $request)
     {
-        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11 || Auth::user()->rol_id == 9)return redirect('/');
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $licencia = Licencia::findOrFail($request->id);
         $licencia->visita_avaluo = $request->visita_avaluo;

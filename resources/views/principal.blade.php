@@ -219,7 +219,7 @@
                                         <a class="nav-link" href="#"><i class="icon-bag"></i> Asignar Modelo</a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->rol_id == 1)
+                                @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 6)
                                     <li @click="menu=230" class="nav-item">
                                         <a class="nav-link" href="#"><i class="icon-bag"></i> Especificaciones de modelo</a>
                                     </li>
@@ -309,7 +309,7 @@
                                         <a class="nav-link" href="#"><i class="fa fa-star-half-o"></i> Avance</a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->avance == 1)
+                                @if(Auth::user()->avance == 1 || Auth::user()->rol_id == 9)
                                     <li @click="menu=55 "class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-star-half-o"></i> Visita para avaluo</a>
                                     </li>
@@ -552,7 +552,7 @@
                                         <a class="nav-link" href="#"><i class="icon-chart"></i> Estadisticas Publicidad</a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->rol_id == 1)
+                                @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 6)
                                     <li @click="menu=232" class="nav-item">
                                         <a class="nav-link" href="#"><i class="icon-chart"></i> Inventario Contable</a>
                                     </li>

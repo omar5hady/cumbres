@@ -60,7 +60,7 @@ class PrecioModeloController extends Controller
     //funcion para insertar en la tabla
     public function store(Request $request)
     {
-        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11 || Auth::user()->rol_id == 9)return redirect('/');
         $precio_modelo = new Precio_modelo();
         $precio_modelo->precio_etapa_id = $request->precio_etapa_id;
         $precio_modelo->modelo_id = $request->modelo_id;
@@ -70,7 +70,7 @@ class PrecioModeloController extends Controller
 
     public function update(Request $request)
     {
-        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11 || Auth::user()->rol_id == 9)return redirect('/');
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $precio_modelo = Precio_modelo::findOrFail($request->id);
         $precio_modelo->precio_etapa_id = $request->precio_etapa_id;
@@ -103,7 +103,7 @@ class PrecioModeloController extends Controller
 
     public function destroy(Request $request)
     {
-        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11 || Auth::user()->rol_id == 9)return redirect('/');
         $precio_modelo = Precio_modelo::findOrFail($request->id);
         $precio_modelo->delete();
     }

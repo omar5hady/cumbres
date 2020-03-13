@@ -10,7 +10,7 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Precios por etapa
                         <!--   Boton Nuevo    -->
-                        <button type="button" @click="abrirModal('precio_etapa','registrar')" class="btn btn-secondary">
+                        <button v-if="rolId != 9" type="button" @click="abrirModal('precio_etapa','registrar')" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Nuevo
                         </button>
                         <!---->
@@ -32,7 +32,7 @@
                                     
                                     <input type="text"  class="form-control" disabled placeholder='Precio mt2 excedente:'>
                                     <input type="number" v-model="precio_excedente"  class="form-control" placeholder="Precio excedente">
-                                    <button type="button"  class="btn btn-primary" @click="actualizarPrecioEtapa(),listarPrecioModelo(1,id)">Guardar</button>
+                                    <button type="button" v-if="rolId != 9"  class="btn btn-primary" @click="actualizarPrecioEtapa(),listarPrecioModelo(1,id)">Guardar</button>
                                 </div>
 
                                 <div class="input-group">
@@ -44,14 +44,14 @@
                             <table class="table bg-light text-dark table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
-                                        <th>Opciones</th>
+                                        <th v-if="rolId != 9">Opciones</th>
                                         <th>Modelo</th>
                                         <th>Precio Modelo</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="precioModelo in arrayPrecioModelos" :key="precioModelo.id">
-                                        <td style="width:10%">
+                                        <td style="width:10%" v-if="rolId != 9">
                                             <button type="button" @click="abrirModal('precio_etapa','actualizar',precioModelo)" class="btn btn-warning btn-sm">
                                             <i class="icon-pencil"></i>
                                             </button>
@@ -172,6 +172,9 @@
 
 <script>
     export default {
+        props:{
+            rolId:{type: String}
+        },
         data(){
             return{
                 proceso:false,

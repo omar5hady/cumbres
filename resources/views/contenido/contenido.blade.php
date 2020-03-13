@@ -145,7 +145,7 @@
 
         @if(Auth::user()->precios_etapas == 1)
             <template v-if="menu==21">
-                <precio-etapa></precio-etapa>
+                <precio-etapa rol-id="{{Auth::user()->rol_id}}"></precio-etapa>
             </template>
         @endif
 
@@ -193,11 +193,11 @@
 
         @if(Auth::user()->aviso_obra == 1)
             <template v-if="menu==54">
-                <aviso-obra></aviso-obra>
+                <aviso-obra rol-id="{{Auth::user()->rol_id}}"></aviso-obra>
             </template>
         @endif
 
-        @if(Auth::user()->avance == 1)
+        @if(Auth::user()->avance == 1 || Auth::user()->rol_id == 9)
             <template v-if="menu==55">
                 <visita-avaluo></visita-avaluo>
             </template>

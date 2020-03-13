@@ -10,7 +10,7 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Aviso de obra
                         <!--   Boton Nuevo    -->
-                        <button type="button" @click="mostrarDetalle()" class="btn btn-secondary" v-if="listado==1">
+                        <button type="button" v-if="rolId!=9 && listado == 1" @click="mostrarDetalle()" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Nuevo
                         </button>
                         <!---->
@@ -56,17 +56,17 @@
                                     <tbody>
                                         <tr v-on:dblclick="verAviso(avisoObra.id)" v-for="avisoObra in arrayAvisoObra" :key="avisoObra.id">
                                             <td>
-                                                <button type="button" class="btn btn-danger btn-sm" @click="eliminarContrato(avisoObra)">
+                                                <button type="button" v-if="rolId!=9 && rolId != 11" class="btn btn-danger btn-sm" @click="eliminarContrato(avisoObra)">
                                                     <i class="icon-trash"></i>
                                                 </button>
-                                                <button type="button" class="btn btn-warning btn-sm" @click="actualizarContrato(avisoObra.id)">
+                                                <button type="button" v-if="rolId!=9 && rolId != 11" class="btn btn-warning btn-sm" @click="actualizarContrato(avisoObra.id)">
                                                     <i class="icon-pencil"></i>
                                                 </button>
 
-                                                <button title="Subir contrato" type="button" @click="abrirModal('subirArchivo',avisoObra)" class="btn btn-default btn-sm">
+                                                <button title="Subir contrato" v-if="rolId!=9 && rolId != 11" type="button" @click="abrirModal('subirArchivo',avisoObra)" class="btn btn-default btn-sm">
                                                     <i class="icon-cloud-upload"></i>
                                                 </button>
-                                                <a title="Descargar contrato" class="btn btn-default btn-sm" v-if="avisoObra.documento != '' && avisoObra.documento != NULL"  v-bind:href="'/downloadContratoObra/'+avisoObra.documento">
+                                                <a title="Descargar contrato" class="btn btn-default btn-sm" v-if="avisoObra.documento != '' && avisoObra.documento != null"  v-bind:href="'/downloadContratoObra/'+avisoObra.documento">
                                                     <i class="fa fa-download"></i>
                                                 </a>
                                             </td>
@@ -729,6 +729,9 @@
 <script>
     import vSelect from 'vue-select';
     export default {
+        props:{
+            rolId:{type: String}
+        },
         data(){
             return{
                 proceso:false,

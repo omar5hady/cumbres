@@ -70,7 +70,7 @@ class VersionModeloController extends Controller
         if($manzana == '' && $lote == ''){
             $lotes = $query
             ->where('lotes.habilitado','=',1)
-            ->where('lotes.contrato','=',0)
+            // ->where('lotes.contrato','=',0)
             ->where('lotes.fraccionamiento_id','=',$proyecto)
             ->where('lotes.etapa_id','=',$etapa)
             ->where('lotes.modelo_id','=',$modelo)
@@ -82,7 +82,7 @@ class VersionModeloController extends Controller
         elseif($manzana != '' && $lote == ''){
             $lotes = $query
             ->where('lotes.habilitado','=',1)
-            ->where('lotes.contrato','=',0)
+            // ->where('lotes.contrato','=',0)
             ->where('lotes.fraccionamiento_id','=',$proyecto)
             ->where('lotes.etapa_id','=',$etapa)
             ->where('lotes.modelo_id','=',$modelo)
@@ -95,7 +95,7 @@ class VersionModeloController extends Controller
         elseif($manzana != '' && $lote != ''){
             $lotes = $query
             ->where('lotes.habilitado','=',1)
-            ->where('lotes.contrato','=',0)
+            // ->where('lotes.contrato','=',0)
             ->where('lotes.fraccionamiento_id','=',$proyecto)
             ->where('lotes.etapa_id','=',$etapa)
             ->where('lotes.modelo_id','=',$modelo)
@@ -109,7 +109,7 @@ class VersionModeloController extends Controller
         elseif($manzana == '' && $lote != ''){
             $lotes = $query
             ->where('lotes.habilitado','=',1)
-            ->where('lotes.contrato','=',0)
+            // ->where('lotes.contrato','=',0)
             ->where('lotes.fraccionamiento_id','=',$proyecto)
             ->where('lotes.etapa_id','=',$etapa)
             ->where('lotes.modelo_id','=',$modelo)

@@ -291,29 +291,29 @@
                                 </div> 
 
                                 <!-- listado para privilegios del menu Obra -->
-                                <div class="col-md-4" v-if="rol_id==1 || rol_id==6 || rol_id==5 || rol_id == 11">
+                                <div class="col-md-4" v-if="rol_id==1 || rol_id==6 || rol_id==5 || rol_id == 9 || rol_id == 11">
                                     <div class="form-group row border">
                                             <a class="nav-link nav-dropdown-toggle"><i class="fa fa-plug"></i> <input @click="limpiarObra()" v-model="obra" type="checkbox" value="1"/> Modulo Obra</a>
                                                 <ul class="nav-dropdown-items" v-if="obra==1">
-                                                    <li class="nav-item">
+                                                    <li class="nav-item"  v-if="rol_id!=9">
                                                         <a class="nav-link" ><i class="fa fa-handshake-o"></i> <input v-model="contratistas" type="checkbox" value="1"/> Contratistas</a>
                                                     </li>
-                                                    <li class="nav-item">
+                                                    <li class="nav-item" v-if="rol_id!=9">
                                                         <a class="nav-link" ><i class="fa fa-play-circle"></i> <input v-model="ini_obra" type="checkbox" value="1"/> Inicio de obra</a>
                                                     </li>
                                                     <li class="nav-item">
                                                         <a class="nav-link" ><i class="fa fa-newspaper-o"></i> <input v-model="aviso_obra" type="checkbox" value="1"/> Aviso de obra</a>
                                                     </li>
-                                                    <li class="nav-item">
+                                                    <li class="nav-item" v-if="rol_id!=9">
                                                         <a class="nav-link" ><i class="fa fa-star-half"></i> <input v-model="partidas" type="checkbox" value="1"/> Partidas</a>
                                                     </li>
-                                                    <li class="nav-item">
+                                                    <li class="nav-item" v-if="rol_id!=9">
                                                         <a class="nav-link" ><i class="fa fa-star-half-o"></i> <input v-model="avance" type="checkbox" value="1"/> Avance</a>
                                                     </li>
-                                                    <li class="nav-item">
+                                                    <li class="nav-item" v-if="rol_id!=9">
                                                         <a class="nav-link"><i class="fa fa-archive"></i> <input v-model="equipamientos" type="checkbox" value="1"/> Equipamientos</a>
                                                     </li>
-                                                    <li class="nav-item">
+                                                    <li class="nav-item" v-if="rol_id!=9">
                                                         <a class="nav-link"><i class="fa fa-home"></i> <input v-model="entregas" type="checkbox" value="1"/> Viviendas por entregar</a>
                                                     </li>
                                                 </ul>
@@ -339,26 +339,26 @@
                                 </div> 
 
                                  <!-- listado para privilegios del menu Precios -->
-                                <div class="col-md-4" v-if="rol_id==1 || rol_id==6 || rol_id==4 || rol_id==8 || rol_id == 11">
+                                <div class="col-md-4" v-if="rol_id==1 || rol_id==6 || rol_id==4 || rol_id==8 || rol_id==9 || rol_id == 11">
                                     <div class="form-group row border">
                                             <a class="nav-link nav-dropdown-toggle"><i class="fa fa-money"></i> <input @click="limpiarPrecios()" v-model="precios" type="checkbox" value="1"/> Modulo Precios</a>
                                                 <ul class="nav-dropdown-items" v-if="precios==1">
-                                                     <li class="nav-item">
+                                                     <li class="nav-item" v-if="rol_id!=9">
                                                         <a class="nav-link"><i class="fa fa-usd"></i> <input v-model="agregar_sobreprecios" type="checkbox" value="1"/>Agregar sobreprecios</a>
                                                     </li>
                                                     <li class="nav-item">
                                                         <a class="nav-link"><i class="fa fa-usd"></i> <input v-model="precios_etapas" type="checkbox" value="1"/> Precios de etapa</a>
                                                     </li>
-                                                    <li class="nav-item">
+                                                    <li class="nav-item" v-if="rol_id!=9">
                                                         <a class="nav-link"><i class="fa fa-usd"></i> <input v-model="precios_viviendas" type="checkbox" value="1"/> Precios de viviendas</a>
                                                     </li>
-                                                    <li class="nav-item">
+                                                    <li class="nav-item" v-if="rol_id!=9">
                                                         <a class="nav-link"><i class="fa fa-plus-square-o"></i> <input v-model="sobreprecios" type="checkbox" value="1"/> Sobreprecios</a>
                                                     </li>
-                                                    <li class="nav-item">
+                                                    <li class="nav-item" v-if="rol_id!=9">
                                                         <a class="nav-link"><i class="fa fa-shopping-bag"></i> <input v-model="paquetes" type="checkbox" value="1"/> Paquetes</a>
                                                     </li>
-                                                    <li class="nav-item">
+                                                    <li class="nav-item" v-if="rol_id!=9">
                                                         <a class="nav-link"><i class="fa fa-percent"></i> <input v-model="promociones" type="checkbox" value="1"/> Promociones</a>
                                                     </li>
                                                 </ul>

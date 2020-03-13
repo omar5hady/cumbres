@@ -97,7 +97,7 @@ class IniObraController extends Controller
  
     public function store(Request $request)
     {
-        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11 || Auth::user()->rol_id == 9)return redirect('/');
         $fecha_ini = $request->f_ini;
         $fecha_fin = $request->f_fin;
  
@@ -225,7 +225,7 @@ class IniObraController extends Controller
     }
 
      public function eliminarContrato(Request $request){
-        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11 || Auth::user()->rol_id == 9)return redirect('/');
         $lotes = Ini_obra_lote::select('lote_id')
                                 ->where('ini_obra_id','=',$request->id)->get();
         foreach($lotes as $ep=>$det){
@@ -243,7 +243,7 @@ class IniObraController extends Controller
 
     public function ActualizarIniObra(Request $request)
     {
-        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11 || Auth::user()->rol_id == 9)return redirect('/');
         $fecha_ini = $request->f_ini;
         $fecha_fin = $request->f_fin;
 
@@ -320,7 +320,7 @@ class IniObraController extends Controller
 
     public function eliminarIniObraLotes(Request $request)
     {
-        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11 || Auth::user()->rol_id == 9)return redirect('/');
 
         $loteIni = Ini_obra_lote::findOrFail($request->id);
             
@@ -339,7 +339,7 @@ class IniObraController extends Controller
 
     public function agregarIniObraLotes(Request $request)
     {
-        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11 || Auth::user()->rol_id == 9)return redirect('/');
         $lotes = new Ini_obra_lote();
         $lotes->ini_obra_id = $request->id;
         $lotes->lote = $request->lote;
@@ -630,7 +630,7 @@ class IniObraController extends Controller
 
     public function formSubmitContratoObra(Request $request, $id)
     {
-        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11 || Auth::user()->rol_id == 9)return redirect('/');
         $pdfAnterior = Ini_obra::select('documento', 'id')
             ->where('id', '=', $id)
             ->get();
