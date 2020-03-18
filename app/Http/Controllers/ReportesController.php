@@ -13,6 +13,9 @@ use App\Lote;
 use Excel;
 use Carbon\Carbon;
 
+use App\Cliente;
+use App\Vendedor;
+
 class ReportesController extends Controller
 {
     public function reporteInventario(Request $request){
@@ -81,7 +84,6 @@ class ReportesController extends Controller
                             ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
                             ->join('lotes','creditos.lote_id','=','lotes.id')->select('expedientes.id')
                             ->where('contratos.status','=',3)
-                            ->where('contratos.saldo','<=',0)
                             ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
                             ->where('inst_seleccionadas.elegido','=',1)
                             ->where('lotes.fraccionamiento_id','=',$proyecto->fraccionamiento_id)
@@ -92,7 +94,6 @@ class ReportesController extends Controller
                             ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
                             ->join('lotes','creditos.lote_id','=','lotes.id')->select('expedientes.id')
                             ->where('contratos.status','=',3)
-                            ->where('contratos.saldo','<=',0)
                             ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
                             ->where('inst_seleccionadas.elegido','=',1)
                             ->where('lotes.fraccionamiento_id','=',$proyecto->fraccionamiento_id)
@@ -109,6 +110,49 @@ class ReportesController extends Controller
 
 
         return ['resumen'=>$proyectos];
+    }
+
+    public function reporteVendedores(Request $request){
+
+        $fecha1 = $request->fecha1;
+        $fecha2 = $request->fecha2;
+
+        $vendedores = Vendedor::join('personal','vendedores.id','=','personal.id')
+                    ->join('users','personal.id','=','users.id')
+                    ->select('vendedores.id','personal.nombre','personal.apellidos')
+                    ->where('users.condicion','=',1)
+                    ->get();
+
+        
+        foreach($vendedores as $index => $vendedor){
+
+            if($fecha1==''){
+                $vendedor->clientes = Cliente::where('vendedor_id','=',$vendedor->id)->where('clasificacion','!=',7)->count();
+                $vendedor->tipoA = Cliente::where('vendedor_id','=',$vendedor->id)->where('clasificacion','=',2)->count();
+                $vendedor->tipoB = Cliente::where('vendedor_id','=',$vendedor->id)->where('clasificacion','=',3)->count();
+                $vendedor->tipoC = Cliente::where('vendedor_id','=',$vendedor->id)->where('clasificacion','=',4)->count();
+                $vendedor->noViable = Cliente::where('vendedor_id','=',$vendedor->id)->where('clasificacion','=',1)->count();
+            }
+            else{
+                $vendedor->clientes = Cliente::where('vendedor_id','=',$vendedor->id)->where('clasificacion','!=',7)->
+                    whereBetween('created_at', [$fecha1, $fecha2])->count();
+                $vendedor->tipoA = Cliente::where('vendedor_id','=',$vendedor->id)->where('clasificacion','=',2)->
+                    whereBetween('created_at', [$fecha1, $fecha2])->count();
+                $vendedor->tipoB = Cliente::where('vendedor_id','=',$vendedor->id)->where('clasificacion','=',3)->
+                    whereBetween('created_at', [$fecha1, $fecha2])->count();
+                $vendedor->tipoC = Cliente::where('vendedor_id','=',$vendedor->id)->where('clasificacion','=',4)->
+                    whereBetween('created_at', [$fecha1, $fecha2])->count();
+                $vendedor->noViable = Cliente::where('vendedor_id','=',$vendedor->id)->where('clasificacion','=',1)->
+                    whereBetween('created_at', [$fecha1, $fecha2])->count();
+
+            }
+            
+
+        }
+
+        
+
+        return ['vendedores' => $vendedores];
     }
     
 }

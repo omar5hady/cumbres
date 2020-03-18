@@ -334,6 +334,9 @@
                                                     <li class="nav-item">
                                                         <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_publi" type="checkbox" value="1"/> Estadisticas de Publicidad</a>
                                                     </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="inventario" type="checkbox" value="1"/> Inventario contable</a>
+                                                    </li>
                                                 </ul>
                                     </div>
                                 </div> 
@@ -375,6 +378,24 @@
                                                     </li>
                                                     <li class="nav-item">
                                                         <a class="nav-link"><i class="fa fa-wrench"></i> <input v-model="solic_detalles" type="checkbox" value="1"/> Solicitud de detalles</a>
+                                                    </li>
+                                                </ul>
+                                    </div>
+                                </div>
+
+                                <!-- listado para privilegios del menu Comisiones -->
+                                <div class="col-md-4" v-if="rol_id==1 || rol_id==6 || rol_id==8">
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-handshake-o"></i> <input @click="limpiarComisiones()" v-model="comisiones" type="checkbox" value="1"/> Modulo Comisiones</a>
+                                                <ul class="nav-dropdown-items" v-if="comisiones==1">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="fa fa-key"></i> <input v-model="exp_comision" type="checkbox" value="1"/> Expediente</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="fa fa-wrench"></i> <input v-model="gen_comision" type="checkbox" value="1"/> Comisiones</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="fa fa-wrench"></i> <input v-model="bono_com" type="checkbox" value="1"/> Bonos</a>
                                                     </li>
                                                 </ul>
                                     </div>
@@ -687,6 +708,7 @@
                 saldo:0,
                 gestoria:0,
                 postventa:0,
+                comisiones:0,
 
                     //Administracion
                     departamentos:0,
@@ -759,6 +781,11 @@
                     entregas:0,
                     solic_detalles:0,
 
+                    //Comisiones
+                    exp_comision:0,
+                    gen_comision:0,
+                    bono_com:0,
+
                     //Acceso
                     usuarios:0,
                     roles:0,
@@ -767,6 +794,7 @@
                     mejora:0,
                     rep_proy:0,
                     rep_publi:0,
+                    inventario:0,
 
                 pagination : {
                     'total' : 0,         
@@ -934,6 +962,11 @@
                 this.docs=0;
                 this.equipamientos=0;
             },
+            limpiarComisiones(){
+                this.bono_com=0;
+                this.exp_comision=0;
+                this.gen_comision=0;
+            },
 
             limpiarGestoria(){
                 //Gestoria
@@ -965,6 +998,9 @@
             limpiarReportes(){
                  //Reportes
                 this.mejora=0;
+                this.rep_proy=0;
+                this.rep_publi=0;
+                this.inventario=0;
             },
 
             selectPersonas(){
@@ -1000,6 +1036,7 @@
                     me.saldo = usuarios[0].saldo;
                     me.gestoria = usuarios[0].gestoria;
                     me.postventa = usuarios[0].postventa;
+                    me.comisiones = usuarios[0].comisiones;
 
                     //Administracion
                     me.departamentos=usuarios[0].departamentos;
@@ -1070,6 +1107,11 @@
                     me.entregas = usuarios[0].entregas;
                     me.solic_detalles = usuarios[0].solic_detalles;
 
+                    //Comisiones
+                    me.bono_com = usuarios[0].bono_com;
+                    me.exp_comision = usuarios[0].exp_comision;
+                    me.gen_comision = usuarios[0].gen_comision;
+
                     //Acceso
                     me.usuarios=usuarios[0].usuarios;
                     me.roles=usuarios[0].roles;
@@ -1078,6 +1120,7 @@
                     me.mejora=usuarios[0].mejora;
                     me.rep_proy = usuarios[0].rep_proy;
                     me.rep_publi = usuarios[0].rep_publi;
+                    me.inventario = usuarios[0].inventario;
 
                     me.rol_id = usuarios[0].rol_id;
 
@@ -1286,6 +1329,7 @@
                     'saldo':this.saldo,
                     'gestoria':this.gestoria,
                     'postventa':this.postventa,
+                    'comisiones':this.comisiones,
                         //Administracion
                     'departamentos':this.departamentos,
                     'personas':this.personas,
@@ -1348,6 +1392,10 @@
                         //Postventa
                     'entregas':this.entregas,
                     'solic_detalles':this.solic_detalles,
+                        //Comisiones
+                    'gen_comision':this.gen_comision,
+                    'bono_com':this.bono_com,
+                    'exp_comision':this.exp_comision,
                         //Acceso
                     'usuarios':this.usuarios,
                     'roles':this.roles,
@@ -1355,6 +1403,7 @@
                     'mejora':this.mejora,
                     'rep_proy':this.rep_proy,
                     'rep_publi':this.rep_publi,
+                    'inventario':this.inventario
 
                 }).then(function (response){
                     me.listarPersonal(1,'','nombre');

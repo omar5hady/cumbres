@@ -27,6 +27,7 @@ class User extends Authenticatable
        'saldo',
        'gestoria',
        'postventa',
+       'comisiones',
 
         //Administracion
         'departamentos',
@@ -96,6 +97,11 @@ class User extends Authenticatable
         'entregas',
         'solic_detalles',
 
+        //Comisiones
+        'exp_comision',
+        'gen_comision',
+        'bono_com',
+
         //Acceso
         'usuarios',
         'roles',
@@ -103,7 +109,8 @@ class User extends Authenticatable
         //Reportes
         'mejora',
         'rep_publi',
-        'rep_proy'
+        'rep_proy',
+        'inventario'
     ];
 
     /**

@@ -463,7 +463,7 @@
                                         <label style="font-weight: bold;" class="col-md-12">+ Individualizadas: &nbsp;$ {{formatNumber(this.totalIndividualizadas)}} </label>
                                         <label v-if="totalAnticipo != 0" style="font-weight: bold;" class="col-md-12">- Cancelaciones: &nbsp;$ {{formatNumber(this.totalAnticipo)}}</label>
                                         <label v-if="totalBono != 0" style="font-weight: bold;" class="col-md-12">- Bonos cancelados: &nbsp;$ {{formatNumber(this.totalBono)}}</label>
-                                        <label style="font-weight: bold;" class="col-md-12">- Apoyo mensual: &nbsp;$ {{formatNumber(this.apoyo)}}</label>
+                                        <label v-if="sueldoBand" style="font-weight: bold;" class="col-md-4">- Apoyo mensual: &nbsp;</label><input type="text" v-if="sueldoBand" pattern="\d*" v-model="apoyo"  v-on:keypress="isNumber($event)" class="col-md-4" ><label style="font-weight: bold;" v-if="sueldoBand" class="col-md-4"> &nbsp; $ {{formatNumber(this.apoyo)}}</label>
                                         <label v-if="restante != 0" style="font-weight: bold;" class="col-md-12">- Restante anterior: &nbsp;$ {{formatNumber(this.restante)}}</label>
                                         <div class="form-group row line-separator"></div>
                                         <label style="font-weight: bold; color: blue;" class="col-md-12">= A pagar: &nbsp;$ {{formatNumber( this.aPagar = porPagar)}}</label>
@@ -779,6 +779,7 @@
                 anticipo:0,
                 comisionMes:0,
                 anticipoMes:0,
+                sueldoBand:true,
                 
                 pagination2 : {
                     'total' : 0,         
@@ -929,9 +930,14 @@
                     me.apoyo = 0;
                     me.aPagar = 0;
                     me.restante = respuesta.restante;
+                    me.sueldoBand = respuesta.sueldo;
 
                     if(me.tipoVendedor == 0){
-                        me.apoyo = 10500;
+                        if(me.sueldoBand)
+                            me.apoyo = 10500;
+                        else{
+                            me.apoyo = 0;
+                        }
                         if(me.numVentas>=3 && me.numPasadas>=2 && me.numQuincena>=1){
                             me.bono =2000;
                         }

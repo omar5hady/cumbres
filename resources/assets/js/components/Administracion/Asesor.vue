@@ -55,6 +55,7 @@
                                         <th>Rol</th>
                                         <th>Tipo</th>
                                         <th>Inmobiliaria</th>
+                                        <th>Esquema</th>
                                         <th>Status</th>
                                     </tr>
                                 </thead>
@@ -83,6 +84,7 @@
                                         <td v-if="Personal.tipo==0" v-text="'Interno'"></td>
                                         <td v-else v-text="'Externo'"></td>
                                         <td v-text="Personal.inmobiliaria"></td>
+                                        <td v-text="Personal.esquema+'%'"></td>
                                         <td>
                                             <span v-if = "Personal.condicion==1" class="badge badge-success">Activo</span>
                                             <span v-if = "Personal.condicion==0" class="badge badge-danger">Inactivo</span>

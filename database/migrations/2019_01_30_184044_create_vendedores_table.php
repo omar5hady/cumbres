@@ -21,6 +21,7 @@ class CreateVendedoresTable extends Migration
             $table->string('inmobiliaria',50)->nullable();
             $table->boolean('tipo')->default(0);
             $table->integer('esquema')->default(2);
+            $table->date('fecha_sueldo')->nullable();
             $table->timestamps();
         });
     }

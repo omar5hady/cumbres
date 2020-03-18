@@ -516,20 +516,25 @@
                             </ul>
                         </li>
                     @endif
-                    @if(Auth::user()->rol_id == 1)
+                    @if(Auth::user()->comisiones == 1)
                         <li class="nav-item nav-dropdown">
                             <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-pie-chart"></i> Comisiones</a>
                             <ul class="nav-dropdown-items">
-                                <li @click="menu=226" class="nav-item">
-                                    <a class="nav-link" href="#"><i class="icon-layers"></i> Expediente</a>
-                                </li>
-                                <li @click="menu=227" class="nav-item">
-                                    <a class="nav-link" href="#"><i class="icon-calculator"></i> Comisiones</a>
-                                </li>
-
-                                <li @click="menu=229" class="nav-item">
-                                    <a class="nav-link" href="#"><i class="icon-calculator"></i> Bonos</a>
-                                </li>
+                                @if(Auth::user()->exp_comision == 1)
+                                    <li @click="menu=226" class="nav-item" >
+                                        <a class="nav-link" href="#"><i class="icon-layers"></i> Expediente</a>
+                                    </li>
+                                @endif
+                                @if(Auth::user()->gen_comision == 1)
+                                    <li @click="menu=227" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="icon-calculator"></i> Comisiones</a>
+                                    </li>
+                                @endif
+                                @if(Auth::user()->bono_com == 1)
+                                    <li @click="menu=229" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="icon-calculator"></i> Bonos</a>
+                                    </li>
+                                @endif
                             </ul>
                         </li>
                     @endif
@@ -552,9 +557,14 @@
                                         <a class="nav-link" href="#"><i class="icon-chart"></i> Estadisticas Publicidad</a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 6)
+                                @if(Auth::user()->inventario == 1)
                                     <li @click="menu=232" class="nav-item">
                                         <a class="nav-link" href="#"><i class="icon-chart"></i> Inventario Contable</a>
+                                    </li>
+                                @endif
+                                @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 6)
+                                    <li @click="menu=233" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de asesores</a>
                                     </li>
                                 @endif
                             </ul>

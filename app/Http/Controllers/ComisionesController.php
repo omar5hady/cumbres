@@ -195,6 +195,180 @@ class ComisionesController extends Controller
             ],'contratos'=>$contratos,'hoy'=>$hoy];
     }
 
+    public function historialExpedientes(Request $request){
+
+        $buscar = $request->buscar;
+        $vendedor = $request->vendedor;
+        $etapa = $request->etapa;
+        $manzana = $request->manzana;
+        $lote = $request->lote;
+        $criterio = $request->criterio;
+
+        $query = Contrato::join('creditos','contratos.id','=','creditos.id')
+                ->join('lotes','creditos.lote_id','=','lotes.id')
+                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                ->join('personal as c', 'clientes.id', '=', 'c.id')
+                ->select('contratos.id',
+                        'contratos.fecha',
+                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                        'contratos.avance_lote',
+                        'creditos.fraccionamiento as proyecto',
+                        'contratos.fecha_exp','contratos.porcentaje_exp',
+                        'creditos.etapa',
+                        'creditos.manzana',
+                        'creditos.num_lote',
+                        'creditos.vendedor_id',
+                        'creditos.precio_venta');
+
+        if($vendedor == ''){
+            $vendedores = Vendedor::join('personal','vendedores.id','=','personal.id')
+                ->select(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_comp"),'personal.id','vendedores.tipo')->get();
+
+            if($buscar == ''){
+                $contratos = $query
+                ->where('contratos.status','=',3)
+                ->where('contratos.fecha_exp','!=',NULL)->paginate(8);
+            }
+            else{
+                if($buscar!='' && $etapa == '' && $manzana == '' && $lote == ''){
+                    $contratos = $query
+                    ->where('contratos.status','=',3)
+                    ->where('lotes.fraccionamiento_id','=',$buscar)
+                    ->where('contratos.fecha_exp','!=',NULL)->paginate(8);
+                }
+                if($buscar!='' && $etapa == '' && $manzana == '' && $lote != ''){
+                    $contratos = $query
+                    ->where('contratos.status','=',3)
+                    ->where('lotes.fraccionamiento_id','=',$buscar)
+                    ->whree('lotes.num_lote','=',$lote)
+                    ->where('contratos.fecha_exp','!=',NULL)->paginate(8);
+                }
+                elseif($buscar!='' && $etapa != '' && $manzana == '' && $lote == ''){
+                    $contratos = $query
+                    ->where('contratos.status','=',3)
+                    ->where('lotes.fraccionamiento_id','=',$buscar)
+                    ->where('lotes.etapa_id','=',$etapa)
+                    ->where('contratos.fecha_exp','!=',NULL)->paginate(8);
+                }
+                elseif($buscar!='' && $etapa != '' && $manzana == '' && $lote != ''){
+                    $contratos = $query
+                    ->where('contratos.status','=',3)
+                    ->where('lotes.fraccionamiento_id','=',$buscar)
+                    ->where('lotes.etapa_id','=',$etapa)
+                    ->where('lotes.num_lote','=',$lote)
+                    ->where('contratos.fecha_exp','!=',NULL)->paginate(8);
+                }
+                elseif($buscar!='' && $etapa != '' && $manzana != '' && $lote == ''){
+                    $contratos = $query
+                    ->where('contratos.status','=',3)
+                    ->where('lotes.fraccionamiento_id','=',$buscar)
+                    ->where('lotes.etapa_id','=',$etapa)
+                    ->where('lotes.manzana','=',$manzana)
+                    ->where('contratos.fecha_exp','!=',NULL)->paginate(8);
+                }
+                elseif($buscar!='' && $etapa != '' && $manzana != '' && $lote != ''){
+                    $contratos = $query
+                    ->where('contratos.status','=',3)
+                    ->where('lotes.fraccionamiento_id','=',$buscar)
+                    ->where('lotes.etapa_id','=',$etapa)
+                    ->where('lotes.manzana','=',$manzana)
+                    ->where('lotes.num_lote','=',$lote)
+                    ->where('contratos.fecha_exp','!=',NULL)->paginate(8);
+                }
+                
+            }
+        }
+        else{
+            $vendedores = Vendedor::join('personal','vendedores.id','=','personal.id')
+                ->select(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_comp"),'personal.id','vendedores.tipo')
+                ->where('vendedores.id','=',$vendedor)->get();
+
+            if($buscar == ''){
+                $contratos = $query
+                ->where('creditos.vendedor_id','=',$vendedor)
+                ->where('contratos.status','=',3)
+                ->where('contratos.fecha_exp','!=',NULL)->paginate(8);
+            }
+            else{
+                if($buscar!='' && $etapa == '' && $manzana == '' && $lote == ''){
+                    $contratos = $query
+                    ->where('creditos.vendedor_id','=',$vendedor)
+                    ->where('contratos.status','=',3)
+                    ->where('lotes.fraccionamiento_id','=',$buscar)
+                    ->where('contratos.fecha_exp','!=',NULL)->paginate(8);
+                }
+                if($buscar!='' && $etapa == '' && $manzana == '' && $lote != ''){
+                    $contratos = $query
+                    ->where('creditos.vendedor_id','=',$vendedor)
+                    ->where('contratos.status','=',3)
+                    ->where('lotes.fraccionamiento_id','=',$buscar)
+                    ->whree('lotes.num_lote','=',$lote)
+                    ->where('contratos.fecha_exp','!=',NULL)->paginate(8);
+                }
+                elseif($buscar!='' && $etapa != '' && $manzana == '' && $lote == ''){
+                    $contratos = $query
+                    ->where('creditos.vendedor_id','=',$vendedor)
+                    ->where('contratos.status','=',3)
+                    ->where('lotes.fraccionamiento_id','=',$buscar)
+                    ->where('lotes.etapa_id','=',$etapa)
+                    ->where('contratos.fecha_exp','!=',NULL)->paginate(8);
+                }
+                elseif($buscar!='' && $etapa != '' && $manzana == '' && $lote != ''){
+                    $contratos = $query
+                    ->where('creditos.vendedor_id','=',$vendedor)
+                    ->where('contratos.status','=',3)
+                    ->where('lotes.fraccionamiento_id','=',$buscar)
+                    ->where('lotes.etapa_id','=',$etapa)
+                    ->where('lotes.num_lote','=',$lote)
+                    ->where('contratos.fecha_exp','!=',NULL)->paginate(8);
+                }
+                elseif($buscar!='' && $etapa != '' && $manzana != '' && $lote == ''){
+                    $contratos = $query
+                    ->where('creditos.vendedor_id','=',$vendedor)
+                    ->where('contratos.status','=',3)
+                    ->where('lotes.fraccionamiento_id','=',$buscar)
+                    ->where('lotes.etapa_id','=',$etapa)
+                    ->where('lotes.manzana','=',$manzana)
+                    ->where('contratos.fecha_exp','!=',NULL)->paginate(8);
+                }
+                elseif($buscar!='' && $etapa != '' && $manzana != '' && $lote != ''){
+                    $contratos = $query
+                    ->where('creditos.vendedor_id','=',$vendedor)
+                    ->where('contratos.status','=',3)
+                    ->where('lotes.fraccionamiento_id','=',$buscar)
+                    ->where('lotes.etapa_id','=',$etapa)
+                    ->where('lotes.manzana','=',$manzana)
+                    ->where('lotes.num_lote','=',$lote)
+                    ->where('contratos.fecha_exp','!=',NULL)->paginate(8);
+                }
+                
+            }
+        }
+
+        
+
+        if(sizeof($contratos)){
+            foreach($contratos as $et=>$contrato){
+                $contrato->nom_vendedor='';
+                foreach($vendedores as $index=>$vendedor){
+                    if($contrato->vendedor_id == $vendedor->id)
+                    $contrato->nom_vendedor=$vendedor->nombre_comp;
+                    $contrato->tipoVendedor=$vendedor->tipo;
+                }
+            }
+        }
+
+        return [ 
+            'pagination' => [
+            'total'         => $contratos->total(),
+            'current_page'  => $contratos->currentPage(),
+            'per_page'      => $contratos->perPage(),
+            'last_page'     => $contratos->lastPage(),
+            'from'          => $contratos->firstItem(),
+            'to'            => $contratos->lastItem(),
+            ],'contratos'=>$contratos];
+    }
+
     public function agregarExpediente(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $contrato = Contrato::findOrFail($request->id);
@@ -208,6 +382,25 @@ class ComisionesController extends Controller
         $fechaFin = $request->anio.'-'.$request->mes.'-15';
 
         $ventas = Contrato::join('creditos','contratos.id','=','creditos.id')
+                    ->join('lotes','creditos.lote_id','lotes.id')
+                    ->join('pagos_contratos','contratos.id','=','pagos_contratos.contrato_id')
+                    ->join('depositos','pagos_contratos.id','=','depositos.pago_id')
+                    ->select('contratos.id','creditos.precio_venta','contratos.avance_lote',
+                            'creditos.fraccionamiento as proyecto',
+                            'creditos.etapa','creditos.manzana','creditos.num_lote','contratos.porcentaje_exp',
+                            'contratos.fecha_exp','contratos.fecha','lotes.extra','lotes.extra_ext')
+                    ->where('contratos.status','=',3)
+                    ->where('contratos.comision','=',0)
+                    ->where('vendedor_id','=',$request->vendedor)
+                    ->whereMonth('depositos.fecha_pago',$request->mes)
+                    ->whereYear('depositos.fecha_pago',$request->anio)
+                    ->where('pagos_contratos.num_pago','=',0)
+                    ->where('pagos_contratos.pagado','=',2)
+                    ->groupBy('contratos.id')
+                    ->orderBy('contratos.id','asc')
+                    ->get();
+
+        $ventasMes = Contrato::join('creditos','contratos.id','=','creditos.id')
                     ->join('lotes','creditos.lote_id','lotes.id')
                     ->select('contratos.id','creditos.precio_venta','contratos.avance_lote',
                             'creditos.fraccionamiento as proyecto',
@@ -230,7 +423,7 @@ class ComisionesController extends Controller
                     ->whereBetween('contratos.fecha', [$fechaIni, $fechaFin])
                     ->count();
 
-        $numVentas = $ventas->count();
+        $numVentas = $ventasMes->count();
 
         if($request->mes == '01'){
             $mesAnt = 12;
@@ -260,6 +453,8 @@ class ComisionesController extends Controller
         $vendedor = Vendedor::findOrFail($request->vendedor);
         $tipo = $vendedor->tipo;
         $esquema = $vendedor->esquema;
+
+        $sueldo = !Carbon::parse($vendedor->fecha_sueldo)->gt(Carbon::now());
 
         $anticiposCancelados = Contrato::join('creditos','contratos.id','=','creditos.id')
             ->join('det_comisiones','contratos.id','=','det_comisiones.id')
@@ -354,6 +549,7 @@ class ComisionesController extends Controller
                 'totalBono' => $totalBono,
                 'esquema'=>$esquema,
                 'restante'=>$acum,
+                'sueldo'=>$sueldo
             ];
     }
 
@@ -375,6 +571,7 @@ class ComisionesController extends Controller
                 $comision->totalAnticipo = $request->anticipo;
                 if($comision->aPagar < 0)
                     $comision->acumulado = ($comision->aPagar * -1);
+                    
             $comision->save();
 
             $id = $comision->id;

@@ -2008,7 +2008,7 @@ class EstadisticasController extends Controller
                                 ->where('lotes.etapa_id','=',$etapa)
                                 ->where('contratos.status','=',3)
                                 ->where('contratos.integracion','=',1)
-                                ->where('contratos.saldo','=',0)
+                                ->where('contratos.saldo','<=',0)
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.tipo_credito', '=', 'Crédito Directo')
                                 ->count();
@@ -2136,7 +2136,7 @@ class EstadisticasController extends Controller
                                 ->where('lotes.fraccionamiento_id','=',$proyecto)
                                 ->where('contratos.status','=',3)
                                 ->where('contratos.integracion','=',1)
-                                ->where('contratos.saldo','=',0)
+                                ->where('contratos.saldo','<=',0)
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.tipo_credito', '=', 'Crédito Directo')
                                 ->count();

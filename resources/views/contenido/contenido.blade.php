@@ -400,6 +400,9 @@
         <template v-if="menu==232">
             <rep-inventario></rep-inventario>
         </template>
+        <template v-if="menu==233">
+            <rep-vendedores></rep-vendedores>
+        </template>
 
         
 

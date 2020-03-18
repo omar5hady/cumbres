@@ -729,6 +729,7 @@ class ExpedienteController extends Controller
                 'contratos.avaluo_preventivo',
                 'contratos.aviso_prev',
                 'contratos.aviso_prev_venc',
+                'contratos.saldo',
                 'lotes.regimen_condom',
                 'lotes.credito_puente',
                 DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
@@ -1088,6 +1089,7 @@ class ExpedienteController extends Controller
             ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
             ->select(
                 'contratos.id as folio',
+                'contratos.saldo',
                 DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                 DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
                 'creditos.fraccionamiento as proyecto',
@@ -1572,6 +1574,7 @@ class ExpedienteController extends Controller
                 ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
                 ->select(
                     'contratos.id as folio',
+                    'contratos.saldo',
                     DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                     DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
                     'creditos.fraccionamiento as proyecto',
@@ -2247,6 +2250,7 @@ class ExpedienteController extends Controller
             ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
             ->select(
                 'contratos.id as folio',
+                'contratos.saldo',
                 DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                 DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
                 'creditos.fraccionamiento as proyecto',
@@ -2769,6 +2773,7 @@ class ExpedienteController extends Controller
             ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
             ->select(
                 'contratos.id as folio',
+                'contratos.saldo',
                 DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                 DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
                 'creditos.fraccionamiento as proyecto',
@@ -2839,7 +2844,7 @@ class ExpedienteController extends Controller
                     ->where('expedientes.liquidado','=',1)
                     ->where('expedientes.postventa','=',1)
                     ->orderBy('contratos.id','asc')
-                    ->get();
+                    ->paginate(10);
             }
             else{
                 switch($criterio){
@@ -2867,7 +2872,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.postventa','=',1)
                             ->where('c.apellidos','like','%'. $buscar . '%')
                             ->orderBy('contratos.id','asc')
-                            ->get();
+                            ->paginate(10);
                         break;
                     }
                     case 'contratos.id':{
@@ -2884,7 +2889,7 @@ class ExpedienteController extends Controller
                             
                             ->where($criterio,'=',$buscar)
                             ->orderBy('contratos.id','asc')
-                            ->get();
+                            ->paginate(10);
                         break;
                     }
                     case 'lotes.fraccionamiento_id':{
@@ -2902,7 +2907,7 @@ class ExpedienteController extends Controller
                                 
                                 ->where($criterio, '=', $buscar)
                                 ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->paginate(10);
                         }
                         elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
                             $contratos = $query
@@ -2919,7 +2924,7 @@ class ExpedienteController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->paginate(10);
                         }
                         elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
                             $contratos = $query
@@ -2937,7 +2942,7 @@ class ExpedienteController extends Controller
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->where('lotes.manzana', '=', $b_manzana)
                                 ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->paginate(10);
                         }
                         elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
                             $contratos = $query
@@ -2956,7 +2961,7 @@ class ExpedienteController extends Controller
                                 ->where('lotes.manzana', '=', $b_manzana)
                                 ->where('lotes.num_lote', '=', $b_lote)
                                 ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->paginate(10);
                         }
                         elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
                             $contratos = $query
@@ -2974,7 +2979,7 @@ class ExpedienteController extends Controller
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->where('lotes.num_lote', '=', $b_lote)
                                 ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->paginate(10);
                         }
                         elseif($b_etapa == '' && $b_manzana !='' && $b_lote == ''){
                             $contratos = $query
@@ -2991,7 +2996,7 @@ class ExpedienteController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.manzana', '=', $b_manzana)
                                 ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->paginate(10);
                         }
                         elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
                             $contratos = $query
@@ -3008,7 +3013,7 @@ class ExpedienteController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.num_lote', '=', $b_lote)
                                 ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->paginate(10);
                         }
                         elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
                             $contratos = $query
@@ -3026,7 +3031,7 @@ class ExpedienteController extends Controller
                                 ->where('lotes.num_lote', '=', $b_lote)
                                 ->where('lotes.manzana', '=', $b_manzana)
                                 ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->paginate(10);
                         }
                     }
                     case 'expedientes.gestor_id':{
@@ -3043,7 +3048,7 @@ class ExpedienteController extends Controller
                             
                             ->where($criterio,'=',$buscar)
                             ->orderBy('contratos.id','asc')
-                            ->get();
+                            ->paginate(10);
                         break;
                     }
                 }
@@ -3063,7 +3068,7 @@ class ExpedienteController extends Controller
                     ->where('expedientes.postventa','=',1)
                     ->where('expedientes.gestor_id','=',Auth::user()->id)
                     ->orderBy('contratos.id','asc')
-                    ->get();
+                    ->paginate(10);
             }
             else{
                 switch($criterio){
@@ -3093,7 +3098,7 @@ class ExpedienteController extends Controller
                             ->where('c.apellidos','like','%'. $buscar . '%')
                             ->where('expedientes.gestor_id','=',Auth::user()->id)
                             ->orderBy('contratos.id','asc')
-                            ->get();
+                            ->paginate(10);
                         break;
                     }
                     case 'contratos.id':{
@@ -3110,7 +3115,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.gestor_id','=',Auth::user()->id)
                             ->where($criterio,'=',$buscar)
                             ->orderBy('contratos.id','asc')
-                            ->get();
+                            ->paginate(10);
                         break;
                     }
                     case 'lotes.fraccionamiento_id':{
@@ -3128,7 +3133,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.gestor_id','=',Auth::user()->id)
                                 ->where($criterio, '=', $buscar)
                                 ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->paginate(10);
                         }
                         elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
                             $contratos = $query
@@ -3145,7 +3150,7 @@ class ExpedienteController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->paginate(10);
                         }
                         elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
                             $contratos = $query
@@ -3163,7 +3168,7 @@ class ExpedienteController extends Controller
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->where('lotes.manzana', '=', $b_manzana)
                                 ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->paginate(10);
                         }
                         elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
                             $contratos = $query
@@ -3182,7 +3187,7 @@ class ExpedienteController extends Controller
                                 ->where('lotes.manzana', '=', $b_manzana)
                                 ->where('lotes.num_lote', '=', $b_lote)
                                 ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->paginate(10);
                         }
                         elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
                             $contratos = $query
@@ -3200,7 +3205,7 @@ class ExpedienteController extends Controller
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->where('lotes.num_lote', '=', $b_lote)
                                 ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->paginate(10);
                         }
                         elseif($b_etapa == '' && $b_manzana !='' && $b_lote == ''){
                             $contratos = $query
@@ -3217,7 +3222,7 @@ class ExpedienteController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.manzana', '=', $b_manzana)
                                 ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->paginate(10);
                         }
                         elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
                             $contratos = $query
@@ -3234,7 +3239,7 @@ class ExpedienteController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.num_lote', '=', $b_lote)
                                 ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->paginate(10);
                         }
                         elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
                             $contratos = $query
@@ -3252,7 +3257,7 @@ class ExpedienteController extends Controller
                                 ->where('lotes.num_lote', '=', $b_lote)
                                 ->where('lotes.manzana', '=', $b_manzana)
                                 ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->paginate(10);
                         }
                     }
                 }
@@ -3264,7 +3269,15 @@ class ExpedienteController extends Controller
 
         return [
             'contratos' => $contratos,
-            'contador' => $contador
+            'contador' => $contador,
+                'pagination' => [
+                    'total'         => $contratos->total(),
+                    'current_page'  => $contratos->currentPage(),
+                    'per_page'      => $contratos->perPage(),
+                    'last_page'     => $contratos->lastPage(),
+                    'from'          => $contratos->firstItem(),
+                    'to'            => $contratos->lastItem(),
+            ],
         ];
     }
    
@@ -3489,6 +3502,2165 @@ class ExpedienteController extends Controller
         } catch (Exception $e){
             DB::rollBack();
         }  
+    }
+
+    public function excelIngresarExp(Request $request){
+        $buscar = $request->buscar;
+        $b_etapa = $request->b_etapa;
+        $b_manzana = $request->b_manzana;
+        $b_lote = $request->b_lote;
+        $criterio = $request->criterio;
+        $rolId = Auth::user()->rol_id;
+
+        $query = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+            ->leftJoin('avaluos','contratos.id','=','avaluos.contrato_id')
+            ->join('expedientes','contratos.id','=','expedientes.id')
+            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+            ->join('personal as c', 'clientes.id', '=', 'c.id')
+            ->join('personal as v', 'vendedores.id', '=', 'v.id')
+            ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+            ->select(
+                'contratos.id as folio',
+                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
+                'creditos.fraccionamiento as proyecto',
+                'creditos.etapa',
+                'creditos.manzana',
+                'creditos.num_lote',
+                'creditos.precio_venta',
+                'licencias.avance as avance_lote',
+                'licencias.foto_predial',
+                'licencias.foto_lic',
+                'licencias.num_licencia',
+                'licencias.foto_acta',
+                'contratos.fecha_status',
+                'i.tipo_credito',
+                'i.institucion',
+                'contratos.avaluo_preventivo',
+                'contratos.aviso_prev',
+                'contratos.aviso_prev_venc',
+                'contratos.saldo',
+                'lotes.regimen_condom',
+                'lotes.credito_puente',
+                DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
+                DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                'clientes.coacreditado',
+                'contratos.integracion',
+                'lotes.fraccionamiento_id',
+                'expedientes.valor_escrituras',
+                'expedientes.fecha_ingreso',
+                'expedientes.fecha_integracion',
+                'lotes.calle','lotes.numero','lotes.interior',
+                'avaluos.resultado','avaluos.fecha_recibido',
+                'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                'avaluos.pdf'
+            );
+
+        if($rolId == 1 || $rolId == 4 || $rolId == 6 || Auth::user()->id == 24701){
+            if ($buscar == ''){
+                $contratos = $query
+                    ->where('i.elegido', '=', 1)
+                    ->where('contratos.status', '!=', 0)
+                    ->where('contratos.status', '!=', 2)
+                    ->where('expedientes.fecha_ingreso','=',NULL)
+                    ->orderBy('contratos.id','asc')
+                    ->get();
+            }
+            else{
+                switch($criterio){
+                    case 'c.nombre':{
+                        $contratos = $query
+                            ->where('i.elegido', '=', 1)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','=',NULL)
+                            ->where('c.nombre','like','%'. $buscar . '%')
+                            ->orWhere('i.elegido', '=', 1)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','=',NULL)
+                            ->where('c.apellidos','like','%'. $buscar . '%')
+                            ->orderBy('contratos.id','asc')
+                            ->get();
+                        break;
+                    }
+                    case 'contratos.id':{
+                        $contratos = $query
+                            ->where('i.elegido', '=', 1)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','=',NULL)
+                            ->where($criterio,'=',$buscar)
+                            ->orderBy('contratos.id','asc')
+                            ->get();
+                        break;
+                    }
+                    case 'lotes.fraccionamiento_id':{
+                        if($b_etapa == '' && $b_manzana =='' && $b_lote == '' ){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','=',NULL)
+                                ->where($criterio, '=', $buscar)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','=',NULL)
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','=',NULL)
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','=',NULL)
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->where('lotes.num_lote', '=', $b_lote)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','=',NULL)
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->where('lotes.num_lote', '=', $b_lote)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa == '' && $b_manzana !='' && $b_lote == ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','=',NULL)
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','=',NULL)
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.num_lote', '=', $b_lote)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','=',NULL)
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.num_lote', '=', $b_lote)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                    }
+                    case 'expedientes.gestor_id':{
+                        $contratos = $query
+                            ->where('i.elegido', '=', 1)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','=',NULL)
+                            ->where($criterio,'=',$buscar)
+                            ->orderBy('contratos.id','asc')
+                            ->get();
+                        break;
+                    }
+                }
+    
+            }
+        }else{
+            if ($buscar == ''){
+                $contratos = $query
+                    ->where('i.elegido', '=', 1)
+                    ->where('contratos.status', '!=', 0)
+                    ->where('contratos.status', '!=', 2)
+                    ->where('expedientes.fecha_ingreso','=',NULL)
+                    ->where('expedientes.gestor_id','=',Auth::user()->id)
+                    ->orderBy('contratos.id','asc')
+                    ->get();
+            }
+            else{
+                switch($criterio){
+                    case 'c.nombre':{
+                        $contratos = $query
+                            ->where('i.elegido', '=', 1)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','=',NULL)
+                            ->where('c.nombre','like','%'. $buscar . '%')
+                            ->where('expedientes.gestor_id','=',Auth::user()->id)
+                            ->orWhere('i.elegido', '=', 1)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','=',NULL)
+                            ->where('c.apellidos','like','%'. $buscar . '%')
+                            ->where('expedientes.gestor_id','=',Auth::user()->id)
+                            ->orderBy('contratos.id','asc')
+                            ->get();
+                        break;
+                    }
+                    case 'contratos.id':{
+                        $contratos = $query
+                            ->where('i.elegido', '=', 1)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','=',NULL)
+                            ->where($criterio,'=',$buscar)
+                            ->where('expedientes.gestor_id','=',Auth::user()->id)
+                            ->orderBy('contratos.id','asc')
+                            ->get();
+                        break;
+                    }
+                    case 'lotes.fraccionamiento_id':{
+                        if($b_etapa == '' && $b_manzana =='' && $b_lote == '' ){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','=',NULL)
+                                ->where($criterio, '=', $buscar)
+                                ->where('expedientes.gestor_id','=',Auth::user()->id)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','=',NULL)
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->where('expedientes.gestor_id','=',Auth::user()->id)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','=',NULL)
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->where('expedientes.gestor_id','=',Auth::user()->id)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','=',NULL)
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->where('lotes.num_lote', '=', $b_lote)
+                                ->where('expedientes.gestor_id','=',Auth::user()->id)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','=',NULL)
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->where('lotes.num_lote', '=', $b_lote)
+                                ->where('expedientes.gestor_id','=',Auth::user()->id)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa == '' && $b_manzana !='' && $b_lote == ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','=',NULL)
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->where('expedientes.gestor_id','=',Auth::user()->id)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','=',NULL)
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.num_lote', '=', $b_lote)
+                                ->where('expedientes.gestor_id','=',Auth::user()->id)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','=',NULL)
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.num_lote', '=', $b_lote)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->where('expedientes.gestor_id','=',Auth::user()->id)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                    }
+                }
+    
+            }
+        }
+
+        return Excel::create('Expediente por Ingresar', function($excel) use ($contratos){
+            $excel->sheet('Por Ingresar', function($sheet) use ($contratos){
+                
+                $sheet->row(1, [
+                    '# Ref', 'Cliente', 'Asesor', 'Proyecto', 'Etapa', 'Manzana', '# Lote', 'Dirección',
+                    'Avance obra', 'Firma contrato', 'Resultado avaluo', 'Aviso preventivo',
+                    'Tipo de crédito', 'Institución de financiamiento', 'Valor de la vivienda', 'Crédito puente', 'Saldo'
+                ]);
+                $sheet->cells('A1:Q1', function ($cells) {
+                    $cells->setBackground('#052154');
+                    $cells->setFontColor('#ffffff');
+                    // Set font family
+                    $cells->setFontFamily('Calibri');
+
+                    // Set font size
+                    $cells->setFontSize(13);
+
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+                $sheet->setColumnFormat(array(
+                    'J' => '$#,##0.00',
+                    'O' => '$#,##0.00',
+                    'Q' => '$#,##0.00',
+                ));
+                $cont=1;
+                foreach($contratos as $index => $contrato) {
+                    $cont++;
+
+                    if($contrato->avaluo_preventivo=='0000-01-01' || $contrato->avaluo_preventivo == NULL){
+                        $contrato->resultado = 'No aplica';
+                    }
+                    if($contrato->aviso_prev=='0000-01-01' || $contrato->aviso_prev == NULL){
+                        $contrato->aviso_prev = 'No aplica';
+                    }
+                    else{
+                        $fecha2 = new Carbon($contrato->aviso_prev);
+                        $contrato->aviso_prev = $fecha2->formatLocalized('%d de %B de %Y');
+                    }
+                    
+                    setlocale(LC_TIME, 'es_MX.utf8');
+                    $fecha1 = new Carbon($contrato->fecha_status);
+                    $contrato->fecha_status = $fecha1->formatLocalized('%d de %B de %Y');
+
+                    $sheet->row($index+2, [
+                        $contrato->folio, 
+                        $contrato->nombre_cliente,
+                        $contrato->nombre_vendedor,
+                        $contrato->proyecto,
+                        $contrato->etapa,
+                        $contrato->manzana,
+                        $contrato->num_lote,
+                        $contrato->calle.' '.$contrato->numero,
+                        $contrato->avance_lote,
+                        $contrato->fecha_status,
+                        $contrato->resultado,
+                        $contrato->aviso_prev,
+                        $contrato->tipo_credito,
+                        $contrato->institucion,
+                        $contrato->precio_venta,
+                        $contrato->credito_puente,
+                        $contrato->saldo,
+
+                    ]);	
+                }
+                $num='A1:Q' . $cont;
+                $sheet->setBorder($num, 'thin');
+            });
+            }
+        )->download('xls');
+    }
+
+    public function excelAutorizados(Request $request)
+    {
+        $buscar = $request->buscar;
+        $b_etapa = $request->b_etapa;
+        $b_manzana = $request->b_manzana;
+        $b_lote = $request->b_lote;
+        $criterio = $request->criterio;
+        $contador = 0;
+        $rolId = Auth::user()->rol_id;
+
+        $query = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+            ->leftJoin('avaluos','contratos.id','=','avaluos.contrato_id')
+            ->join('expedientes','contratos.id','=','expedientes.id')
+            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+            ->join('personal as c', 'clientes.id', '=', 'c.id')
+            ->join('personal as v', 'vendedores.id', '=', 'v.id')
+            ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+            ->select(
+                'contratos.id as folio',
+                'contratos.saldo',
+                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
+                'creditos.fraccionamiento as proyecto',
+                'creditos.etapa',
+                'creditos.manzana',
+                'creditos.num_lote',
+                'creditos.precio_venta',
+                'licencias.avance as avance_lote',
+                'licencias.foto_predial',
+                'licencias.foto_lic',
+                'licencias.num_licencia',
+                'licencias.foto_acta',
+                'contratos.fecha_status',
+                'i.tipo_credito',
+                'i.institucion',
+                'i.fecha_vigencia',
+                'creditos.credito_solic',
+                'contratos.avaluo_preventivo',
+                'contratos.aviso_prev',
+                'contratos.aviso_prev_venc',
+                'lotes.regimen_condom',
+                'lotes.credito_puente',
+                DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
+                DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
+                'clientes.coacreditado',
+                'contratos.integracion',
+                'lotes.fraccionamiento_id',
+                'expedientes.valor_escrituras',
+                'expedientes.fecha_ingreso',
+                'expedientes.fecha_integracion',
+                'expedientes.fecha_infonavit',
+                'lotes.calle','lotes.numero','lotes.interior',
+                'avaluos.resultado','avaluos.fecha_recibido',
+                'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                'avaluos.pdf'
+            );
+
+        if($rolId == 1 || $rolId == 4 || $rolId == 6 || Auth::user()->id == 24701){
+            if ($buscar == ''){
+                $contratos = $query
+                    ->where('i.elegido', '=', 1)
+                    ->where('i.status','=',2)
+                    ->where('contratos.status', '!=', 0)
+                    ->where('contratos.status', '!=', 2)
+                    ->where('expedientes.fecha_ingreso','!=',NULL)
+                    ->where('expedientes.valor_escrituras','!=',0)
+                    ->where('expedientes.fecha_infonavit','=',NULL)
+                    
+                    
+                    ->orderBy('contratos.id','asc')
+                    ->get();
+            }
+            else{
+                switch($criterio){
+                    case 'c.nombre':{
+                        $contratos = $query
+                            ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','!=',NULL)
+                            ->where('expedientes.valor_escrituras','!=',0)
+                            ->where('expedientes.fecha_infonavit','=',NULL)
+                            
+                            
+                            ->where('c.nombre','like','%'. $buscar . '%')
+                            ->orWhere('i.elegido', '=', 1)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','!=',NULL)
+                            ->where('expedientes.valor_escrituras','!=',0)
+                            ->where('expedientes.fecha_infonavit','=',NULL)
+                            
+                            
+                            ->where('c.apellidos','like','%'. $buscar . '%')
+                            ->orderBy('contratos.id','asc')
+                            ->get();
+                        break;
+                    }
+                    case 'contratos.id':{
+                        $contratos = $query
+                            ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','!=',NULL)
+                            ->where('expedientes.valor_escrituras','!=',0)
+                            ->where('expedientes.fecha_infonavit','=',NULL)
+                            
+                            
+                            ->where($criterio,'=',$buscar)
+                            ->orderBy('contratos.id','asc')
+                            ->get();
+                        break;
+                    }
+                    case 'lotes.fraccionamiento_id':{
+                        if($b_etapa == '' && $b_manzana =='' && $b_lote == '' ){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','=',NULL)
+                                
+                                
+                                ->where($criterio, '=', $buscar)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','=',NULL)
+                                
+                                
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','=',NULL)
+                                
+                                
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','=',NULL)
+                                
+                                
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->where('lotes.num_lote', '=', $b_lote)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','=',NULL)
+                                
+                                
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->where('lotes.num_lote', '=', $b_lote)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa == '' && $b_manzana !='' && $b_lote == ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','=',NULL)
+                                
+                                
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','=',NULL)
+                                
+                                
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.num_lote', '=', $b_lote)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','=',NULL)
+                                
+                                
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.num_lote', '=', $b_lote)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                    }
+                    case 'expedientes.gestor_id':{
+                        $contratos = $query
+                            ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','!=',NULL)
+                            ->where('expedientes.valor_escrituras','!=',0)
+                            ->where('expedientes.fecha_infonavit','=',NULL)
+                            
+                            
+                            ->where($criterio,'=',$buscar)
+                            ->orderBy('contratos.id','asc')
+                            ->get();
+                        break;
+                    }
+                }
+    
+            }
+        }else{
+            if ($buscar == ''){
+                $contratos = $query
+                    ->where('i.elegido', '=', 1)
+                    ->where('i.status','=',2)
+                    ->where('contratos.status', '!=', 0)
+                    ->where('contratos.status', '!=', 2)
+                    ->where('expedientes.fecha_ingreso','!=',NULL)
+                    ->where('expedientes.valor_escrituras','!=',0)
+                    ->where('expedientes.fecha_infonavit','=',NULL)
+                    ->where('expedientes.gestor_id','=',Auth::user()->id)
+                    
+                    ->orderBy('contratos.id','asc')
+                    ->get();
+            }
+            else{
+                switch($criterio){
+                    case 'c.nombre':{
+                        $contratos = $query
+                            ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','!=',NULL)
+                            ->where('expedientes.valor_escrituras','!=',0)
+                            ->where('expedientes.fecha_infonavit','=',NULL)
+                            ->where('expedientes.gestor_id','=',Auth::user()->id)
+                            
+                            ->where('c.nombre','like','%'. $buscar . '%')
+                            ->orWhere('i.elegido', '=', 1)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','!=',NULL)
+                            ->where('expedientes.valor_escrituras','!=',0)
+                            ->where('expedientes.fecha_infonavit','=',NULL)
+                            ->where('expedientes.gestor_id','=',Auth::user()->id)
+                            
+                            ->where('c.apellidos','like','%'. $buscar . '%')
+                            ->orderBy('contratos.id','asc')
+                            ->get();
+                        break;
+                    }
+                    case 'contratos.id':{
+                        $contratos = $query
+                            ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','!=',NULL)
+                            ->where('expedientes.valor_escrituras','!=',0)
+                            ->where('expedientes.fecha_infonavit','=',NULL)
+                            ->where('expedientes.gestor_id','=',Auth::user()->id)
+                            
+                            ->where($criterio,'=',$buscar)
+                            ->orderBy('contratos.id','asc')
+                            ->get();
+                        break;
+                    }
+                    case 'lotes.fraccionamiento_id':{
+                        if($b_etapa == '' && $b_manzana =='' && $b_lote == '' ){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','=',NULL)
+                                ->where('expedientes.gestor_id','=',Auth::user()->id)
+                                
+                                ->where($criterio, '=', $buscar)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','=',NULL)
+                                ->where('expedientes.gestor_id','=',Auth::user()->id)
+                                
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','=',NULL)
+                                ->where('expedientes.gestor_id','=',Auth::user()->id)
+                                
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','=',NULL)
+                                ->where('expedientes.gestor_id','=',Auth::user()->id)
+                                
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->where('lotes.num_lote', '=', $b_lote)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','=',NULL)
+                                ->where('expedientes.gestor_id','=',Auth::user()->id)
+                                
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->where('lotes.num_lote', '=', $b_lote)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa == '' && $b_manzana !='' && $b_lote == ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','=',NULL)
+                                ->where('expedientes.gestor_id','=',Auth::user()->id)
+                                
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','=',NULL)
+                                ->where('expedientes.gestor_id','=',Auth::user()->id)
+                                
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.num_lote', '=', $b_lote)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','=',NULL)
+                                ->where('expedientes.gestor_id','=',Auth::user()->id)
+                                
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.num_lote', '=', $b_lote)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                    }
+                }
+    
+            }
+        }
+
+        $contador = $contratos->count();
+
+        return Excel::create('Expediente', function($excel) use ($contratos){
+            $excel->sheet('Autorizados', function($sheet) use ($contratos){
+                
+                $sheet->row(1, [
+                    '# Ref', 'Cliente', 'Asesor', 'Proyecto', 'Etapa', 'Manzana', '# Lote', 'Dirección',
+                    'Avance obra', 'Firma contrato', 'Resultado avaluo', 'Aviso preventivo',
+                    'Tipo de crédito', 'Institución de financiamiento', 'Monto autorizado', 'Fecha vigencia',
+                    'Valor de la vivienda', 'Valor a escriturar','Crédito puente', 'Saldo'
+                ]);
+
+                $sheet->cells('A1:T1', function ($cells) {
+                    $cells->setBackground('#052154');
+                    $cells->setFontColor('#ffffff');
+                    // Set font family
+                    $cells->setFontFamily('Calibri');
+                    // Set font size
+                    $cells->setFontSize(13);
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+
+                $sheet->setColumnFormat(array(
+                    'K' => '$#,##0.00',
+                    'O' => '$#,##0.00',
+                    'Q' => '$#,##0.00',
+                    'R' => '$#,##0.00',
+                    'T' => '$#,##0.00',
+                ));
+
+                $cont=1;
+
+                foreach($contratos as $index => $contrato) {
+                    $cont++;
+
+                    if($contrato->avaluo_preventivo=='0000-01-01' || $contrato->avaluo_preventivo == NULL){
+                        $contrato->resultado = 'No aplica';
+                    }
+                    if($contrato->aviso_prev=='0000-01-01' || $contrato->aviso_prev == NULL){
+                        $contrato->aviso_prev = 'No aplica';
+                    }
+                    else{
+                        $fecha2 = new Carbon($contrato->aviso_prev);
+                        $contrato->aviso_prev = $fecha2->formatLocalized('%d de %B de %Y');
+                    }
+                    
+                    setlocale(LC_TIME, 'es_MX.utf8');
+                    $fecha1 = new Carbon($contrato->fecha_status);
+                    $contrato->fecha_status = $fecha1->formatLocalized('%d de %B de %Y');
+
+                    $sheet->row($index+2, [
+                        $contrato->folio, 
+                        $contrato->nombre_cliente,
+                        $contrato->nombre_vendedor,
+                        $contrato->proyecto,
+                        $contrato->etapa,
+                        $contrato->manzana,
+                        $contrato->num_lote,
+                        $contrato->calle.' '.$contrato->numero,
+                        $contrato->avance_lote,
+                        $contrato->fecha_status,
+                        $contrato->resultado,
+                        $contrato->aviso_prev,
+                        $contrato->tipo_credito,
+                        $contrato->institucion,
+                        $contrato->credito_solic,
+                        $contrato->fecha_vigencia,
+                        $contrato->precio_venta,
+                        $contrato->valor_escrituras,
+                        $contrato->credito_puente,
+                        $contrato->saldo,
+                    ]);	
+                }
+                $num='A1:T' . $cont;
+                $sheet->setBorder($num, 'thin');
+            });
+            }
+        )->download('xls');
+    }
+
+    public function excelLiquidacion(Request $request)
+    {
+        $buscar = $request->buscar;
+        $b_etapa = $request->b_etapa;
+        $b_manzana = $request->b_manzana;
+        $b_lote = $request->b_lote;
+        $criterio = $request->criterio;
+        $contador = 0;
+        $rolId = Auth::user()->rol_id;
+
+        $query = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                ->leftJoin('avaluos','contratos.id','=','avaluos.contrato_id')
+                ->join('expedientes','contratos.id','=','expedientes.id')
+                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                ->join('personal as c', 'clientes.id', '=', 'c.id')
+                ->join('personal as v', 'vendedores.id', '=', 'v.id')
+                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                ->select(
+                    'contratos.id as folio',
+                    'contratos.saldo',
+                    DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                    DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
+                    'creditos.fraccionamiento as proyecto',
+                    'creditos.etapa',
+                    'creditos.manzana',
+                    'creditos.num_lote',
+                    'creditos.precio_venta',
+                    'licencias.avance as avance_lote',
+                    'licencias.foto_predial',
+                    'licencias.foto_lic',
+                    'licencias.num_licencia',
+                    'licencias.foto_acta',
+                    'contratos.fecha_status',
+                    'i.tipo_credito',
+                    'i.institucion',
+                    'i.fecha_vigencia',
+                    'creditos.credito_solic',
+                    'contratos.avaluo_preventivo',
+                    'contratos.aviso_prev',
+                    'contratos.aviso_prev_venc',
+                    'lotes.regimen_condom',
+                    'lotes.credito_puente',
+                    DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
+                    DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                    DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
+                    'clientes.coacreditado',
+                    'contratos.integracion',
+                    'lotes.fraccionamiento_id',
+                    'expedientes.valor_escrituras',
+                    'expedientes.fecha_ingreso',
+                    'expedientes.fecha_integracion',
+                    'expedientes.fecha_liquidacion',
+                    'expedientes.liquidado',
+                    'expedientes.infonavit',
+                    'expedientes.fovissste',
+                    'expedientes.total_liquidar',
+                    'expedientes.fecha_infonavit',
+                    'lotes.calle','lotes.numero','lotes.interior',
+                    'avaluos.resultado','avaluos.fecha_recibido',
+                    'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                    'avaluos.pdf'
+                );
+
+        if($rolId == 1 || $rolId == 4 || $rolId == 6 || Auth::user()->id == 24701){
+            if ($buscar == ''){
+                $contratos = $query
+                    ->where('i.elegido', '=', 1)
+                    ->where('i.status','=',2)
+                    ->where('contratos.status', '!=', 0)
+                    ->where('contratos.status', '!=', 2)
+                    ->where('expedientes.fecha_ingreso','!=',NULL)
+                    ->where('expedientes.valor_escrituras','!=',0)
+                    ->where('expedientes.fecha_infonavit','!=',NULL)
+                    ->where('expedientes.liquidado','=',0)
+                    
+                    
+                    ->orderBy('contratos.id','asc')
+                    ->get();
+            }
+            else{
+                switch($criterio){
+                    case 'c.nombre':{
+                        $contratos = $query
+                            ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','!=',NULL)
+                            ->where('expedientes.valor_escrituras','!=',0)
+                            ->where('expedientes.fecha_infonavit','!=',NULL)
+                            ->where('expedientes.liquidado','=',0)
+                            ->where('c.nombre','like','%'. $buscar . '%')
+    
+                            ->orWhere('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','!=',NULL)
+                            ->where('expedientes.valor_escrituras','!=',0)
+                            ->where('expedientes.fecha_infonavit','!=',NULL)
+                            ->where('expedientes.liquidado','=',0)
+                            ->where('c.apellidos','like','%'. $buscar . '%')
+                            ->orderBy('contratos.id','asc')
+                            ->get();
+                        break;
+                    }
+                    case 'contratos.id':{
+                        $contratos = $query
+                            ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','!=',NULL)
+                            ->where('expedientes.valor_escrituras','!=',0)
+                            ->where('expedientes.fecha_infonavit','!=',NULL)
+                            ->where('expedientes.liquidado','=',0)
+                            
+                            ->where($criterio,'=',$buscar)
+                            ->orderBy('contratos.id','asc')
+                            ->get();
+                        break;
+                    }
+                    case 'lotes.fraccionamiento_id':{
+                        if($b_etapa == '' && $b_manzana =='' && $b_lote == '' ){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','!=',NULL)
+                                ->where('expedientes.liquidado','=',0)
+                                
+                                ->where($criterio, '=', $buscar)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','!=',NULL)
+                                ->where('expedientes.liquidado','=',0)
+                                
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','!=',NULL)
+                                ->where('expedientes.liquidado','=',0)
+                                
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','!=',NULL)
+                                ->where('expedientes.liquidado','=',0)
+                                
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->where('lotes.num_lote', '=', $b_lote)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','!=',NULL)
+                                ->where('expedientes.liquidado','=',0)
+                                
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->where('lotes.num_lote', '=', $b_lote)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa == '' && $b_manzana !='' && $b_lote == ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','!=',NULL)
+                                ->where('expedientes.liquidado','=',0)
+                                
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','!=',NULL)
+                                ->where('expedientes.liquidado','=',0)
+                                
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.num_lote', '=', $b_lote)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','!=',NULL)
+                                ->where('expedientes.liquidado','=',0)
+                                
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.num_lote', '=', $b_lote)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                    }
+                    case 'expedientes.gestor_id':{
+                        $contratos = $query
+                            ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','!=',NULL)
+                            ->where('expedientes.valor_escrituras','!=',0)
+                            ->where('expedientes.fecha_infonavit','!=',NULL)
+                            ->where('expedientes.liquidado','=',0)
+                            
+                            ->where($criterio,'=',$buscar)
+                            ->orderBy('contratos.id','asc')
+                            ->get();
+                        break;
+                    }
+                }
+            }
+        }else{
+            if ($buscar == ''){
+                $contratos = $query
+                    ->where('i.elegido', '=', 1)
+                    ->where('i.status','=',2)
+                    ->where('contratos.status', '!=', 0)
+                    ->where('contratos.status', '!=', 2)
+                    ->where('expedientes.fecha_ingreso','!=',NULL)
+                    ->where('expedientes.valor_escrituras','!=',0)
+                    ->where('expedientes.fecha_infonavit','!=',NULL)
+                    ->where('expedientes.liquidado','=',0)
+                    ->where('expedientes.gestor_id','=',Auth::user()->id)
+                    
+                    ->orderBy('contratos.id','asc')
+                    ->get();
+            }
+            else{
+                switch($criterio){
+                    case 'c.nombre':{
+                        $contratos = $query
+                            ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','!=',NULL)
+                            ->where('expedientes.valor_escrituras','!=',0)
+                            ->where('expedientes.fecha_infonavit','!=',NULL)
+                            ->where('expedientes.liquidado','=',0)
+                            ->where('c.nombre','like','%'. $buscar . '%')
+                            ->where('expedientes.gestor_id','=',Auth::user()->id)
+    
+                            ->orWhere('i.elegido', '=', 1)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','!=',NULL)
+                            ->where('expedientes.valor_escrituras','!=',0)
+                            ->where('expedientes.fecha_infonavit','!=',NULL)
+                            ->where('expedientes.liquidado','=',0)
+                            ->where('c.apellidos','like','%'. $buscar . '%')
+                            ->where('expedientes.gestor_id','=',Auth::user()->id)
+                            ->orderBy('contratos.id','asc')
+                            ->get();
+                        break;
+                    }
+                    case 'contratos.id':{
+                        $contratos = $query
+                            ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','!=',NULL)
+                            ->where('expedientes.valor_escrituras','!=',0)
+                            ->where('expedientes.fecha_infonavit','!=',NULL)
+                            ->where('expedientes.liquidado','=',0)
+                            ->where($criterio,'=',$buscar)
+                            ->where('expedientes.gestor_id','=',Auth::user()->id)
+                            ->orderBy('contratos.id','asc')
+                            ->get();
+                        break;
+                    }
+                    case 'lotes.fraccionamiento_id':{
+                        if($b_etapa == '' && $b_manzana =='' && $b_lote == '' ){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','!=',NULL)
+                                ->where('expedientes.liquidado','=',0)
+                                ->where($criterio, '=', $buscar)
+                                ->where('expedientes.gestor_id','=',Auth::user()->id)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','!=',NULL)
+                                ->where('expedientes.liquidado','=',0)      
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->where('expedientes.gestor_id','=',Auth::user()->id)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','!=',NULL)
+                                ->where('expedientes.liquidado','=',0)  
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->where('expedientes.gestor_id','=',Auth::user()->id)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','!=',NULL)
+                                ->where('expedientes.liquidado','=',0)
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->where('lotes.num_lote', '=', $b_lote)
+                                ->where('expedientes.gestor_id','=',Auth::user()->id)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','!=',NULL)
+                                ->where('expedientes.liquidado','=',0)
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->where('lotes.num_lote', '=', $b_lote)
+                                ->where('expedientes.gestor_id','=',Auth::user()->id)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa == '' && $b_manzana !='' && $b_lote == ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','!=',NULL)
+                                ->where('expedientes.liquidado','=',0)
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->where('expedientes.gestor_id','=',Auth::user()->id)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','!=',NULL)
+                                ->where('expedientes.liquidado','=',0)
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.num_lote', '=', $b_lote)
+                                ->where('expedientes.gestor_id','=',Auth::user()->id)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','!=',NULL)
+                                ->where('expedientes.liquidado','=',0)  
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.num_lote', '=', $b_lote)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->where('expedientes.gestor_id','=',Auth::user()->id)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                    }
+                }
+            }
+        }
+        
+        return Excel::create('Expediente', function($excel) use ($contratos){
+            $excel->sheet('Liquidacion', function($sheet) use ($contratos){
+                
+                $sheet->row(1, [
+                    '# Ref', 'Cliente', 'Asesor', 'Proyecto', 'Etapa', 'Manzana', '# Lote', 'Dirección',
+                    'Avance obra', 'Firma contrato', 'Resultado avaluo', 'Aviso preventivo',
+                    'Tipo de crédito', 'Institución de financiamiento', 'Monto autorizado', 'Fecha vigencia',
+                    'Valor de la vivienda', 'Valor a escriturar','Crédito puente', 'Saldo','Inscripción Infonavit'
+                ]);
+
+                $sheet->cells('A1:T1', function ($cells) {
+                    $cells->setBackground('#052154');
+                    $cells->setFontColor('#ffffff');
+                    // Set font family
+                    $cells->setFontFamily('Calibri');
+                    // Set font size
+                    $cells->setFontSize(13);
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+
+                $sheet->setColumnFormat(array(
+                    'K' => '$#,##0.00',
+                    'O' => '$#,##0.00',
+                    'Q' => '$#,##0.00',
+                    'R' => '$#,##0.00',
+                    'T' => '$#,##0.00',
+                ));
+
+                $cont=1;
+
+                foreach($contratos as $index => $contrato) {
+                    $cont++;
+
+                    setlocale(LC_TIME, 'es_MX.utf8');
+                    if($contrato->avaluo_preventivo=='0000-01-01' || $contrato->avaluo_preventivo == NULL){
+                        $contrato->resultado = 'No aplica';
+                    }
+
+                    if($contrato->aviso_prev=='0000-01-01' || $contrato->aviso_prev == NULL){
+                        $contrato->aviso_prev = 'No aplica';
+                    }
+                    else{
+                        $fecha2 = new Carbon($contrato->aviso_prev);
+                        $contrato->aviso_prev = $fecha2->formatLocalized('%d de %B de %Y');
+                    }
+
+                    if($contrato->fecha_infonavit=='0000-01-01' || $contrato->fecha_infonavit == NULL){
+                        $contrato->fecha_infonavit='No aplica';
+                    }
+                    else{
+                        $fecha3 = new Carbon($contrato->fecha_infonavit);
+                        $contrato->fecha_infonavit = $fecha3->formatLocalized('%d de %B de %Y');
+                    }
+                    
+                    $fecha1 = new Carbon($contrato->fecha_status);
+                    $contrato->fecha_status = $fecha1->formatLocalized('%d de %B de %Y');
+                   
+                    $sheet->row($index+2, [
+                        $contrato->folio, 
+                        $contrato->nombre_cliente,
+                        $contrato->nombre_vendedor,
+                        $contrato->proyecto,
+                        $contrato->etapa,
+                        $contrato->manzana,
+                        $contrato->num_lote,
+                        $contrato->calle.' '.$contrato->numero,
+                        $contrato->avance_lote,
+                        $contrato->fecha_status,
+                        $contrato->resultado,
+                        $contrato->aviso_prev,
+                        $contrato->tipo_credito,
+                        $contrato->institucion,
+                        $contrato->credito_solic,
+                        $contrato->fecha_vigencia,
+                        $contrato->precio_venta,
+                        $contrato->valor_escrituras,
+                        $contrato->credito_puente,
+                        $contrato->saldo,
+                        $contrato->fecha_infonavit,
+                    ]);	
+                }
+                $num='A1:T' . $cont;
+                $sheet->setBorder($num, 'thin');
+            });
+            }
+        )->download('xls');
+    }
+
+    public function excelProgramacion(Request $request)
+    {
+        $buscar = $request->buscar;
+        $b_etapa = $request->b_etapa;
+        $b_manzana = $request->b_manzana;
+        $b_lote = $request->b_lote;
+        $criterio = $request->criterio;
+        $contador = 0;
+        $rolId = Auth::user()->rol_id;
+
+        $query = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+            ->leftJoin('avaluos','contratos.id','=','avaluos.contrato_id')
+            ->join('expedientes','contratos.id','=','expedientes.id')
+            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+            ->join('personal as c', 'clientes.id', '=', 'c.id')
+            ->join('personal as v', 'vendedores.id', '=', 'v.id')
+            ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+            ->select(
+                'contratos.id as folio',
+                'contratos.saldo',
+                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
+                'creditos.fraccionamiento as proyecto',
+                'creditos.etapa',
+                'creditos.manzana',
+                'creditos.num_lote',
+                'creditos.precio_venta',
+                'licencias.avance as avance_lote',
+                'licencias.foto_predial',
+                'licencias.foto_lic',
+                'licencias.num_licencia',
+                'licencias.foto_acta',
+                'contratos.fecha_status',
+                'i.tipo_credito',
+                'i.institucion',
+                'i.fecha_vigencia',
+                'i.monto_credito as credito_solic',
+                'i.cobrado',
+                'i.segundo_credito',
+                'contratos.avaluo_preventivo',
+                'contratos.aviso_prev',
+                'contratos.aviso_prev_venc',
+                'contratos.saldo',
+                'lotes.regimen_condom',
+                'lotes.credito_puente',
+                DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
+                DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
+                'clientes.coacreditado',
+                'contratos.integracion',
+                'lotes.fraccionamiento_id',
+                'expedientes.valor_escrituras',
+                'expedientes.fecha_ingreso',
+                'expedientes.fecha_integracion',
+                'expedientes.fecha_liquidacion',
+                'expedientes.liquidado',
+                'expedientes.infonavit',
+                'expedientes.fovissste',
+                'expedientes.total_liquidar',
+                'expedientes.fecha_infonavit',
+                'expedientes.fecha_firma_esc',
+                'expedientes.notaria_id',
+                'expedientes.notario',
+                'expedientes.notaria',
+                'expedientes.hora_firma',
+                'expedientes.direccion_firma',
+                'expedientes.notaria_id',
+                'expedientes.notario',
+                'expedientes.notaria',
+                'expedientes.hora_firma',
+                'expedientes.direccion_firma',
+                'lotes.calle','lotes.numero','lotes.interior',
+                'avaluos.resultado','avaluos.fecha_recibido',
+                'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                'avaluos.pdf'
+            );
+       
+        if($rolId == 1 || $rolId == 4 || $rolId == 6 || Auth::user()->id == 24701){
+            if ($buscar == ''){
+                $contratos = $query
+                    ->where('i.elegido', '=', 1)
+                    ->where('i.status','=',2)
+                    ->where('contratos.status', '!=', 0)
+                    ->where('contratos.status', '!=', 2)
+                    ->where('expedientes.fecha_ingreso','!=',NULL)
+                    ->where('expedientes.valor_escrituras','!=',0)
+                    ->where('expedientes.fecha_infonavit','!=',NULL)
+                    ->where('expedientes.liquidado','=',1)
+                    ->where('expedientes.postventa','=',0)
+                    ->orderBy('contratos.id','asc')
+                    ->get();
+            }
+            else{
+                switch($criterio){
+                    case 'c.nombre':{
+                        $contratos = $query
+                            ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','!=',NULL)
+                            ->where('expedientes.valor_escrituras','!=',0)
+                            ->where('expedientes.fecha_infonavit','!=',NULL)
+                            ->where('expedientes.liquidado','=',1)
+                            ->where('expedientes.postventa','=',0)
+                            ->where('c.nombre','like','%'. $buscar . '%')
+    
+                            ->orWhere('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','!=',NULL)
+                            ->where('expedientes.valor_escrituras','!=',0)
+                            ->where('expedientes.fecha_infonavit','!=',NULL)
+                            ->where('expedientes.liquidado','=',1)
+                            ->where('expedientes.postventa','=',0)
+                            ->where('c.apellidos','like','%'. $buscar . '%')
+                            ->orderBy('contratos.id','asc')
+                            ->get();
+                        break;
+                    }
+                    case 'contratos.id':{
+                        $contratos = $query
+                            ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','!=',NULL)
+                            ->where('expedientes.valor_escrituras','!=',0)
+                            ->where('expedientes.fecha_infonavit','!=',NULL)
+                            ->where('expedientes.liquidado','=',1)
+                            ->where('expedientes.postventa','=',0)
+                            
+                            ->where($criterio,'=',$buscar)
+                            ->orderBy('contratos.id','asc')
+                            ->get();
+                        break;
+                    }
+                    case 'lotes.fraccionamiento_id':{
+                        if($b_etapa == '' && $b_manzana =='' && $b_lote == '' ){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','!=',NULL)
+                                ->where('expedientes.liquidado','=',1)
+                                ->where('expedientes.postventa','=',0)
+                                
+                                ->where($criterio, '=', $buscar)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','!=',NULL)
+                                ->where('expedientes.liquidado','=',1)
+                                ->where('expedientes.postventa','=',0)
+                                
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','!=',NULL)
+                                ->where('expedientes.liquidado','=',1)
+                                ->where('expedientes.postventa','=',0)
+                                
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','!=',NULL)
+                                ->where('expedientes.liquidado','=',1)
+                                ->where('expedientes.postventa','=',0)
+                                
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->where('lotes.num_lote', '=', $b_lote)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','!=',NULL)
+                                ->where('expedientes.liquidado','=',1)
+                                ->where('expedientes.postventa','=',0)
+                                
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->where('lotes.num_lote', '=', $b_lote)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa == '' && $b_manzana !='' && $b_lote == ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','!=',NULL)
+                                ->where('expedientes.liquidado','=',1)
+                                ->where('expedientes.postventa','=',0)
+                                
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','!=',NULL)
+                                ->where('expedientes.liquidado','=',1)
+                                ->where('expedientes.postventa','=',0)
+                                
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.num_lote', '=', $b_lote)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','!=',NULL)
+                                ->where('expedientes.liquidado','=',1)
+                                ->where('expedientes.postventa','=',0)
+                                
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.num_lote', '=', $b_lote)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                    }
+                    case 'expedientes.gestor_id':{
+                        $contratos = $query
+                            ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','!=',NULL)
+                            ->where('expedientes.valor_escrituras','!=',0)
+                            ->where('expedientes.fecha_infonavit','!=',NULL)
+                            ->where('expedientes.liquidado','=',1)
+                            ->where('expedientes.postventa','=',0)
+                            
+                            ->where($criterio,'=',$buscar)
+                            ->orderBy('contratos.id','asc')
+                            ->get();
+                        break;
+                    }
+                }
+    
+            }
+        }else{
+            if ($buscar == ''){
+                $contratos = $query
+                    ->where('i.elegido', '=', 1)
+                    ->where('i.status','=',2)
+                    ->where('contratos.status', '!=', 0)
+                    ->where('contratos.status', '!=', 2)
+                    ->where('expedientes.fecha_ingreso','!=',NULL)
+                    ->where('expedientes.valor_escrituras','!=',0)
+                    ->where('expedientes.fecha_infonavit','!=',NULL)
+                    ->where('expedientes.liquidado','=',1)
+                    ->where('expedientes.postventa','=',0)
+                    ->where('expedientes.gestor_id','=',Auth::user()->id)
+                    ->orderBy('contratos.id','asc')
+                    ->get();
+            }
+            else{
+                switch($criterio){
+                    case 'c.nombre':{
+                        $contratos = $query
+                            ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','!=',NULL)
+                            ->where('expedientes.valor_escrituras','!=',0)
+                            ->where('expedientes.fecha_infonavit','!=',NULL)
+                            ->where('expedientes.liquidado','=',1)
+                            ->where('expedientes.postventa','=',0)
+                            ->where('c.nombre','like','%'. $buscar . '%')
+                            ->where('expedientes.gestor_id','=',Auth::user()->id)
+    
+                            ->orWhere('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','!=',NULL)
+                            ->where('expedientes.valor_escrituras','!=',0)
+                            ->where('expedientes.fecha_infonavit','!=',NULL)
+                            ->where('expedientes.liquidado','=',1)
+                            ->where('expedientes.postventa','=',0)
+                            ->where('c.apellidos','like','%'. $buscar . '%')
+                            ->where('expedientes.gestor_id','=',Auth::user()->id)
+                            ->orderBy('contratos.id','asc')
+                            ->get();
+                        break;
+                    }
+                    case 'contratos.id':{
+                        $contratos = $query
+                            ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','!=',NULL)
+                            ->where('expedientes.valor_escrituras','!=',0)
+                            ->where('expedientes.fecha_infonavit','!=',NULL)
+                            ->where('expedientes.liquidado','=',1)
+                            ->where('expedientes.postventa','=',0)
+                            ->where('expedientes.gestor_id','=',Auth::user()->id)
+                            ->where($criterio,'=',$buscar)
+                            ->orderBy('contratos.id','asc')
+                            ->get();
+                        break;
+                    }
+                    case 'lotes.fraccionamiento_id':{
+                        if($b_etapa == '' && $b_manzana =='' && $b_lote == '' ){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','!=',NULL)
+                                ->where('expedientes.liquidado','=',1)
+                                ->where('expedientes.postventa','=',0)
+                                ->where('expedientes.gestor_id','=',Auth::user()->id)
+                                ->where($criterio, '=', $buscar)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','!=',NULL)
+                                ->where('expedientes.liquidado','=',1)
+                                ->where('expedientes.postventa','=',0)
+                                ->where('expedientes.gestor_id','=',Auth::user()->id)
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','!=',NULL)
+                                ->where('expedientes.liquidado','=',1)
+                                ->where('expedientes.postventa','=',0)
+                                ->where('expedientes.gestor_id','=',Auth::user()->id)
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
+                            $contratos =$query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','!=',NULL)
+                                ->where('expedientes.liquidado','=',1)
+                                ->where('expedientes.postventa','=',0)
+                                ->where('expedientes.gestor_id','=',Auth::user()->id)
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->where('lotes.num_lote', '=', $b_lote)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','!=',NULL)
+                                ->where('expedientes.liquidado','=',1)
+                                ->where('expedientes.postventa','=',0)
+                                ->where('expedientes.gestor_id','=',Auth::user()->id)
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->where('lotes.num_lote', '=', $b_lote)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa == '' && $b_manzana !='' && $b_lote == ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','!=',NULL)
+                                ->where('expedientes.liquidado','=',1)
+                                ->where('expedientes.postventa','=',0)
+                                ->where('expedientes.gestor_id','=',Auth::user()->id)
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','!=',NULL)
+                                ->where('expedientes.liquidado','=',1)
+                                ->where('expedientes.postventa','=',0)
+                                ->where('expedientes.gestor_id','=',Auth::user()->id)
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.num_lote', '=', $b_lote)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                        elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
+                            $contratos = $query
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.status','=',2)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where('expedientes.fecha_ingreso','!=',NULL)
+                                ->where('expedientes.valor_escrituras','!=',0)
+                                ->where('expedientes.fecha_infonavit','!=',NULL)
+                                ->where('expedientes.liquidado','=',1)
+                                ->where('expedientes.postventa','=',0)
+                                ->where('expedientes.gestor_id','=',Auth::user()->id)
+                                ->where($criterio, '=', $buscar)
+                                ->where('lotes.num_lote', '=', $b_lote)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->orderBy('contratos.id','asc')
+                                ->get();
+                        }
+                    }
+                }
+    
+            }
+        }
+
+        return Excel::create('Expediente', function($excel) use ($contratos){
+            $excel->sheet('Programación de firma', function($sheet) use ($contratos){
+                
+                $sheet->row(1, [
+                    '# Ref', 'Cliente', 'Asesor', 'Proyecto', 'Etapa', 'Manzana', '# Lote', 'Dirección',
+                    'Avance obra', 'Firma contrato', 'Resultado avaluo', 'Aviso preventivo',
+                    'Tipo de crédito', 'Institución de financiamiento', 'Monto autorizado', 'Fecha vigencia',
+                    'Valor de la vivienda', 'Valor a escriturar','Crédito puente', 'Saldo','Inscripción Infonavit','Liquidación',
+                    'Firma de escrituras'
+                ]);
+
+                $sheet->cells('A1:W1', function ($cells) {
+                    $cells->setBackground('#052154');
+                    $cells->setFontColor('#ffffff');
+                    // Set font family
+                    $cells->setFontFamily('Calibri');
+                    // Set font size
+                    $cells->setFontSize(13);
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+
+                $sheet->setColumnFormat(array(
+                    'K' => '$#,##0.00',
+                    'O' => '$#,##0.00',
+                    'Q' => '$#,##0.00',
+                    'R' => '$#,##0.00',
+                    'T' => '$#,##0.00',
+                ));
+
+                $cont=1;
+
+                foreach($contratos as $index => $contrato) {
+                    $cont++;
+
+                    setlocale(LC_TIME, 'es_MX.utf8');
+                    if($contrato->avaluo_preventivo=='0000-01-01' || $contrato->avaluo_preventivo == NULL){
+                        $contrato->resultado = 'No aplica';
+                    }
+
+                    if($contrato->aviso_prev=='0000-01-01' || $contrato->aviso_prev == NULL){
+                        $contrato->aviso_prev = 'No aplica';
+                    }
+                    else{
+                        $fecha2 = new Carbon($contrato->aviso_prev);
+                        $contrato->aviso_prev = $fecha2->formatLocalized('%d de %B de %Y');
+                    }
+
+                    if($contrato->fecha_infonavit=='0000-01-01' || $contrato->fecha_infonavit == NULL){
+                        $contrato->fecha_infonavit='No aplica';
+                    }
+                    else{
+                        $fecha3 = new Carbon($contrato->fecha_infonavit);
+                        $contrato->fecha_infonavit = $fecha3->formatLocalized('%d de %B de %Y');
+                    }
+                    if($contrato->fecha_firma_esc==null){
+                        $contrato->fecha_firma_esc = 'Sin firmar';
+                    }
+                    else{
+                        $fecha5 = new Carbon($contrato->fecha_firma_esc);
+                        $contrato->fecha_firma_esc = $fecha5->formatLocalized('%d de %B de %Y');
+                    }
+                    
+                    $fecha1 = new Carbon($contrato->fecha_status);
+                    $contrato->fecha_status = $fecha1->formatLocalized('%d de %B de %Y');
+
+                    $fecha4 = new Carbon($contrato->fecha_liquidacion);
+                    $contrato->fecha_liquidacion = $fecha4->formatLocalized('%d de %B de %Y');
+                   
+                    $sheet->row($index+2, [
+                        $contrato->folio, 
+                        $contrato->nombre_cliente,
+                        $contrato->nombre_vendedor,
+                        $contrato->proyecto,
+                        $contrato->etapa,
+                        $contrato->manzana,
+                        $contrato->num_lote,
+                        $contrato->calle.' '.$contrato->numero,
+                        $contrato->avance_lote,
+                        $contrato->fecha_status,
+                        $contrato->resultado,
+                        $contrato->aviso_prev,
+                        $contrato->tipo_credito,
+                        $contrato->institucion,
+                        $contrato->credito_solic,
+                        $contrato->fecha_vigencia,
+                        $contrato->precio_venta,
+                        $contrato->valor_escrituras,
+                        $contrato->credito_puente,
+                        $contrato->saldo,
+                        $contrato->fecha_infonavit,
+                        $contrato->fecha_liquidacion,
+                        $contrato->fecha_firma_esc,
+                    ]);	
+                }
+                $num='A1:W' . $cont;
+                $sheet->setBorder($num, 'thin');
+            });
+            }
+        )->download('xls');
+       
     }
 
 }

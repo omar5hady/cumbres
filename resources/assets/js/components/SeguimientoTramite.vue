@@ -57,17 +57,22 @@
                                                 <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                             </select>
 
-                                            
-                                            <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
-                                            <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
-
                                             <select class="form-control" v-else-if="criterio=='expedientes.gestor_id'" v-model="buscar"> 
                                                 <option value="">Gestor</option>
                                                 <option v-for="gestor in arrayGestores" :key="gestor.id" :value="gestor.id" v-text="gestor.nombre_gestor"></option>
                                             </select>
 
                                             <input v-else type="text"  v-model="buscar" @keyup.enter="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
+                                        
+                                        </div>
+                                        <div class="input-group">
+                                            <!--Criterios para el listado de busqueda -->
+
+                                            <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
+                                            <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
+
                                             <button type="submit" @click="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                            <a :href="'/expediente/excelIngresarExp?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
                                         
                                         </div>
                                     </div>
@@ -94,6 +99,7 @@
                                                 <th>Institución de Fin.</th>
                                                 <th>Valor de la vivienda</th>
                                                 <th>Crédito Puente</th>
+                                                <th>Saldo</th>
                                                 <th>Observaciones</th>
                                             </tr>
                                         </thead>
@@ -170,6 +176,7 @@
                                             <td class="td2" v-text="ingresar.institucion"></td>
                                             <td class="td2" v-text="'$'+formatNumber(ingresar.precio_venta)"></td>
                                             <td class="td2" v-text="ingresar.credito_puente"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(ingresar.saldo)"></td>
                                             <td class="td2">
                                                 <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
                                                     @click="abrirModal3(ingresar.folio)">Ver Observaciones</button>
@@ -204,9 +211,6 @@
                                                 <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                             </select>
 
-                                            
-                                            <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
-                                            <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
 
                                             <select class="form-control" v-else-if="criterio=='expedientes.gestor_id'" v-model="buscar"> 
                                                 <option value="">Gestor</option>
@@ -214,7 +218,16 @@
                                             </select>
 
                                             <input v-else type="text"  v-model="buscar" @keyup.enter="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
+                                        
+                                        </div>
+                                        <div class="input-group">
+                                            <!--Criterios para el listado de busqueda -->
+                                                                                        
+                                            <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
+                                            <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">                                           
+
                                             <button type="submit" @click="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                            <a :href="'/expediente/excelAutorizados?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
                                         
                                         </div>
                                     </div>
@@ -243,6 +256,7 @@
                                                 <th>Valor de la vivienda</th>
                                                 <th>Valor escriturar</th>
                                                 <th>Crédito Puente</th>
+                                                <th>Saldo</th>
                                                 <th>Inscripción Infonavit</th>
                                                 <th>Observaciones</th>
                                             </tr>
@@ -333,6 +347,7 @@
                                                 <td class="td2" v-text="'$'+formatNumber(preautorizados.precio_venta)"></td>
                                                 <td class="td2" v-text="'$'+formatNumber(preautorizados.valor_escrituras)"></td>
                                                 <td class="td2" v-text="preautorizados.credito_puente"></td>
+                                                <td class="td2" v-text="'$'+formatNumber(preautorizados.saldo)"></td>
                                                
                                                <template v-if="preautorizados.fecha_infonavit">
                                                     <td v-if="preautorizados.fecha_infonavit!='0000-01-01'" class="td2" v-text="this.moment(preautorizados.fecha_infonavit).locale('es').format('DD/MMM/YYYY')"></td>
@@ -384,15 +399,22 @@
                                             </select>
 
                                             
-                                            <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
-                                            <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
                                             <select class="form-control" v-else-if="criterio=='expedientes.gestor_id'" v-model="buscar"> 
                                                 <option value="">Gestor</option>
                                                 <option v-for="gestor in arrayGestores" :key="gestor.id" :value="gestor.id" v-text="gestor.nombre_gestor"></option>
                                             </select>
 
                                             <input v-else type="text"  v-model="buscar" @keyup.enter="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
+                                        
+                                        </div>
+                                        <div class="input-group">
+                                            <!--Criterios para el listado de busqueda -->
+                                            
+                                            <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
+                                            <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
+
                                             <button type="submit" @click="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                            <a :href="'/expediente/excelLiquidacion?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
                                         
                                         </div>
                                     </div>
@@ -413,7 +435,6 @@
                                                 <th>Avance obra</th>
                                                 <th>Firma Contrato</th>
                                                 <th>Resultado avaluo</th>
-                                                <th>Avaluo preventivo</th>
                                                 <th>Aviso preventivo</th>
                                                 <th>Tipo de Crédito</th>
                                                 <th>Institución de Fin.</th>
@@ -422,6 +443,7 @@
                                                 <th>Valor de la vivienda</th>
                                                 <th>Valor escriturar</th>
                                                 <th>Crédito Puente</th>
+                                                <th>Saldo</th>
                                                 <th>Inscripción Infonavit</th>
                                                 <th>Liquidación</th>
                                                 <th>Observaciones</th>
@@ -429,7 +451,7 @@
                                         </thead>
                                         <tbody>
                                             <tr v-for="liquidacion in arrayLiquidados" :key="liquidacion.id"> 
-                                                 <td class="td2">
+                                                <td class="td2">
                                                     <button v-if="!liquidacion.fecha_liquidacion" type="button" class="btn btn-danger btn-sm" @click="regresarExpediente(liquidacion.folio)">
                                                         <i class="fa fa-exclamation-triangle"></i>
                                                     </button>
@@ -465,18 +487,18 @@
                                                 <td class="td2" v-text="liquidacion.avance_lote+ '%'"></td>
                                                 <td class="td2" v-text="liquidacion.fecha_status"></td>
 
-                                                <td v-if="liquidacion.avaluo_preventivo!='0000-01-01'" class="td2">
+                                                <td v-if="liquidacion.avaluo_preventivo!='0000-01-01' && liquidacion.avaluo_preventivo!=null" class="td2">
                                                     <span v-text="'$'+formatNumber(liquidacion.resultado)"></span>
-                                                        <!-- <button type="button" @click="abrirModal('avaluo',liquidacion)" class="btn btn-success btn-sm" title="Actualizar avaluo">
-                                                            <i class="fa fa-calendar-check-o"></i>
-                                                        </button> -->
                                                 </td>
-                                                <td v-if="liquidacion.avaluo_preventivo=='0000-01-01' || liquidacion.avaluo_preventivo==null" class="td2" v-text="'No aplica'"></td>
+                                                <td v-else class="td2" v-text="'No aplica'"></td>
 
-                                                <td @dblclick="abrirModal('fecha_recibido',liquidacion)" v-if="liquidacion.aviso_prev!='0000-01-01' && !liquidacion.aviso_prev_venc" class="td2" v-text="'Fecha solicitud: ' 
+                                                <td v-if="liquidacion.aviso_prev=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
+
+                                                <td @dblclick="abrirModal('fecha_recibido',liquidacion)" v-else-if="liquidacion.aviso_prev!='0000-01-01' && !liquidacion.aviso_prev_venc" class="td2" v-text="'Fecha solicitud: ' 
                                                 + this.moment(liquidacion.aviso_prev).locale('es').format('DD/MMM/YYYY')"></td>
+                                                
 
-                                                <td  @dblclick="abrirModal('fecha_recibido',liquidacion)" v-if="liquidacion.aviso_prev!='0000-01-01' && liquidacion.aviso_prev_venc" class="td2">
+                                                <td @dblclick="abrirModal('fecha_recibido',liquidacion)" v-else-if="liquidacion.aviso_prev!='0000-01-01' && liquidacion.aviso_prev_venc" class="td2">
                                                     
                                                     <span v-if = "liquidacion.diferencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: ' 
                                                     + this.moment(liquidacion.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
@@ -489,7 +511,6 @@
                                                     
                                                 </td>
 
-                                                <td v-if="liquidacion.aviso_prev=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
                                                 <td class="td2" v-text="liquidacion.tipo_credito"></td>
                                                 <td class="td2" v-text="liquidacion.institucion"></td>
                                                 <td class="td2" v-text="'$'+formatNumber(liquidacion.credito_solic)"></td>
@@ -513,6 +534,7 @@
                                                 <td class="td2" v-text="'$'+formatNumber(liquidacion.precio_venta)"></td>
                                                 <td class="td2" v-text="'$'+formatNumber(liquidacion.valor_escrituras)"></td>
                                                 <td class="td2" v-text="liquidacion.credito_puente"></td>
+                                                <td class="td2" v-text="'$'+formatNumber(liquidacion.saldo)"></td>
                                                
                                                <template v-if="liquidacion.fecha_infonavit">
                                                     <td v-if="liquidacion.fecha_infonavit!='0000-01-01'" class="td2" v-text="this.moment(liquidacion.fecha_infonavit).locale('es').format('DD/MMM/YYYY')"></td>
@@ -564,17 +586,22 @@
                                                 <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                             </select>
 
-                                            
-                                            <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
-                                            <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
-
                                             <select class="form-control" v-else-if="criterio=='expedientes.gestor_id'" v-model="buscar"> 
                                                 <option value="">Gestor</option>
                                                 <option v-for="gestor in arrayGestores" :key="gestor.id" :value="gestor.id" v-text="gestor.nombre_gestor"></option>
                                             </select>
 
                                             <input v-else type="text"  v-model="buscar" @keyup.enter="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
+                                        
+                                        </div>
+                                        <div class="input-group">
+                                            <!--Criterios para el listado de busqueda -->
+                                            
+                                            <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
+                                            <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
+
                                             <button type="submit" @click="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                            <a :href="'/expediente/excelProgramacion?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
                                         
                                         </div>
                                     </div>
@@ -736,8 +763,6 @@
                                 </nav>
                             </div>
 
-
-
                             <!-- Listado de Historial -->
                             <div class="tab-pane fade" id="enviados" role="tabpanel" aria-labelledby="enviados-tab">
                                 <div class="form-group row">
@@ -762,16 +787,21 @@
                                                 <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                             </select>
 
-                                            
-                                            <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
-                                            <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
-
                                             <select class="form-control" v-else-if="criterio=='expedientes.gestor_id'" v-model="buscar"> 
                                                 <option value="">Gestor</option>
                                                 <option v-for="gestor in arrayGestores" :key="gestor.id" :value="gestor.id" v-text="gestor.nombre_gestor"></option>
                                             </select>
 
                                             <input v-else type="text"  v-model="buscar" @keyup.enter="listarEnviados(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
+                                        
+                                        </div>
+                                        <div class="input-group">
+                                            <!--Criterios para el listado de busqueda -->
+                                            
+                                            <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
+                                            <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
+
+
                                             <button type="submit" @click="listarEnviados(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                         
                                         </div>
@@ -917,7 +947,24 @@
                                     </table>  
                                 </div>
                                 <nav>
-                                
+                                    <!--Botones de paginacion -->
+                                    <ul class="pagination">
+                                        <li class="page-item" v-if="pagination.last_page > 7 && pagination.current_page > 7">
+                                            <a class="page-link" href="#" @click.prevent="cambiarPagina(1,buscar,b_etapa,b_manzana,b_lote,criterio)">Inicio</a>
+                                        </li>
+                                        <li class="page-item" v-if="pagination.current_page > 1">
+                                            <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,b_etapa,b_manzana,b_lote,criterio)">Ant</a>
+                                        </li>
+                                        <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
+                                            <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,b_etapa,b_manzana,b_lote,criterio)" v-text="page"></a>
+                                        </li>
+                                        <li class="page-item" v-if="pagination.current_page < pagination.last_page">
+                                            <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,b_etapa,b_manzana,b_lote,criterio)">Sig</a>
+                                        </li>
+                                        <li class="page-item" v-if="pagination.last_page > 7 && pagination.current_page<pagination.last_page">
+                                            <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.last_page,buscar,b_etapa,b_manzana,b_lote,criterio)">Ultimo</a>
+                                        </li>
+                                    </ul>
                                 </nav>
                             </div>
 
@@ -1933,11 +1980,47 @@
                 contadorLiquidacion : 0,
                 contadorProgramacion : 0,
                 contadorEnviados: 0,
+
+                pagination : {
+                    'total' : 0,         
+                    'current_page' : 0,
+                    'per_page' : 0,
+                    'last_page' : 0,
+                    'from' : 0,
+                    'to' : 0,
+                },
+                offset : 3,
                 
                
             }
         },
         computed:{
+             isActived: function(){
+                return this.pagination.current_page;
+            },
+            //Calcula los elementos de la paginación
+            pagesNumber:function(){
+                if(!this.pagination.to){
+                    return [];
+                }
+
+                var from = this.pagination.current_page - this.offset;
+                if(from < 1){
+                    from = 1;
+                }
+
+                var to = from + (this.offset * 2);
+                if(to >= this.pagination.last_page){
+                    to = this.pagination.last_page;
+                }
+
+                var pagesArray = [];
+                while(from <= to){
+                    pagesArray.push(from);
+                    from++;
+                }
+                return pagesArray;
+            },
             totalLiquidar: function(){
                 var neto_credito =0;
                     neto_credito = parseFloat(this.valor_venta) - parseFloat(this.descuento) + parseFloat(this.totalGastos) - parseFloat(this.monto_credito) - 
@@ -2624,12 +2707,21 @@
                 
             },
 
+            cambiarPagina(page,buscar,b_etapa,b_manzana,b_lote,criterio){
+                let me = this;
+                //Actualiza la pagina actual
+                me.pagination.current_page = page;
+                //Envia la petición para visualizar la data de esta pagina
+                me.listarEnviados(page,buscar, b_etapa, b_manzana, b_lote, criterio);
+            },
+
             listarEnviados(page, buscar, b_etapa, b_manzana, b_lote, criterio){
                 let me = this;
                 var url = '/expediente/enviadosIndex?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                    me.arrayEnviados = respuesta.contratos;
+                    me.arrayEnviados = respuesta.contratos.data;
+                    me.pagination = respuesta.pagination;
                     me.contadorEnviados = respuesta.contador;
                 })
                 .catch(function (error) {

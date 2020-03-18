@@ -4,32 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Contrato;
-use App\Obs_auditoria;
+use App\Obs_comision;
 use Auth;
 use Carbon\Carbon;
 
-class ObsAuditoriaController extends Controller
+class ObsComisionController extends Controller
 {
-    public function auditar(Request $request){
-        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-        $fecha = Carbon::now();
-
-        $observacion = new Obs_auditoria();
-        $observacion->contrato_id = $request->id;
-        $observacion->comentario = $request->comentario;
-        $observacion->usuario = Auth::user()->usuario;
-        $observacion->save();
-
-        $contrato = Contrato::findOrFail($request->id);
-        $contrato->fecha_audit = $fecha;
-        $contrato->save();
-        
-    }
 
     public function store(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-        $observacion = new Obs_auditoria();
+        $observacion = new Obs_comision();
         $observacion->contrato_id = $request->id;
         $observacion->comentario = $request->comentario;
         $observacion->usuario = Auth::user()->usuario;
@@ -40,7 +25,7 @@ class ObsAuditoriaController extends Controller
     public function index(Request $request){
         if(!$request->ajax())return redirect('/');
         $id = $request->id;
-        $observacion = Obs_auditoria::select('comentario','usuario','created_at','id')
+        $observacion = Obs_comision::select('comentario','usuario','created_at','id')
                     ->where('contrato_id','=', $id)->orderBy('created_at','desc')->get();
 
         return [

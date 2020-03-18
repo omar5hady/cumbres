@@ -345,9 +345,13 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/observacion/select_ultima','ObservacionController@select_ultima'); 
         Route::get('/observacion','ObservacionController@index');
 
-    /**********************************RUTAS OBSERVACION LOTES*************************** */
+    /**********************************RUTAS OBSERVACION AUDITORIA*************************** */
         Route::post('/auditar/registrarObservacion','ObsAuditoriaController@store');
         Route::get('/auditar/indexObservacion','ObsAuditoriaController@index');
+
+    /**********************************RUTAS OBSERVACION COMISIÓN*************************** */
+        Route::post('/comision/registrarObservacion','ObsComisionController@store');
+        Route::get('/comision/indexObservacion','ObsComisionController@index');
 
     /***************************************************************************** */
     ////////////////////        RUTAS ENTREGA    //////////////////////////////
@@ -471,6 +475,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         /////////// REPORTES ////////////////
             Route::get('/reprotes/inventario','ReportesController@reporteInventario');
+            Route::get('/reprotes/reporteVendedores','ReportesController@reporteVendedores');
 
 
     ///////////////////        RUTAS NOTARIA     //////////////////////////////////
@@ -496,6 +501,7 @@ Route::group(['middleware' => ['auth']],function(){
 
     ////////////////////////// RUTAS COMISIONES //////////////////////////////
         Route::get('/comision/listarContratos','ComisionesController@indexContratos');
+        Route::get('/comision/historialExpedientes','ComisionesController@historialExpedientes');
         Route::get('/comision/ventasAsesor','ComisionesController@ventasAsesor');
         Route::put('/comision/agregarExpediente','ComisionesController@agregarExpediente');
         Route::post('/comision/storeComision','ComisionesController@storeComision');
@@ -541,9 +547,13 @@ Route::group(['middleware' => ['auth']],function(){
 
     //////////////////// RUTAS SEGUIMIENTO TRAMITE /////////////////////////////////
         Route::get('/expediente/ingresarIndex','ExpedienteController@indexIngresarExp');
+        Route::get('/expediente/excelIngresarExp','ExpedienteController@excelIngresarExp');
         Route::get('/expediente/autorizadosIndex','ExpedienteController@indexAutorizados');
+        Route::get('/expediente/excelAutorizados','ExpedienteController@excelAutorizados');
         Route::get('/expediente/liquidacionIndex','ExpedienteController@indexLiquidacion');
+        Route::get('/expediente/excelLiquidacion','ExpedienteController@excelLiquidacion');
         Route::get('/expediente/ProgramacionIndex','ExpedienteController@indexProgramacion');
+        Route::get('/expediente/excelProgramacion','ExpedienteController@excelProgramacion');
         Route::get('/expediente/enviadosIndex','ExpedienteController@indexEnviados');
         Route::put('/expediente/ingresarExp','ExpedienteController@ingresarExp');
         Route::put('/expediente/inscInfonavit','ExpedienteController@inscribirInfonavit');

@@ -10,6 +10,7 @@ use Auth;
 use Illuminate\Support\Facades\DB;
 use File;
 use Excel;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -124,6 +125,7 @@ class UserController extends Controller
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
         $rol = $request->rol_id;
+        $inicioSueldo = Carbon::now()->addMonth(3);
          
         try{
             DB::beginTransaction();
@@ -407,6 +409,7 @@ class UserController extends Controller
                 $vendedor->inmobiliaria = $request->inmobiliaria;
                 $vendedor->supervisor_id = Auth::user()->id;
                 $vendedor->esquema = $request->esquema;
+                $vendedor->fecha_sueldo = $inicioSueldo;
                 $vendedor->save();
             }
 
@@ -1018,7 +1021,7 @@ class UserController extends Controller
         $privilegios=User::join('roles','users.rol_id','=','roles.id')
                         ->select( 'users.administracion','users.desarrollo','users.precios','users.obra','users.ventas',
                                 'users.acceso','users.reportes','users.rol_id','users.saldo','users.gestoria',
-                                'users.postventa',
+                                'users.postventa','users.comisiones',
                                 //Administracion
                                 'users.departamentos','users.personas','users.empresas','users.medios_public','users.lugares_contacto','users.servicios',
                                 'users.inst_financiamiento','users.tipos_credito','users.asig_servicios','users.mis_asesores','users.cuenta','users.notaria',
@@ -1041,10 +1044,12 @@ class UserController extends Controller
                                 'users.expediente','users.asig_gestor','users.seg_tramite','users.avaluos',
                                 //Postventa
                                 'users.entregas', 'users.solic_detalles',
+                                //Comisiones
+                                'users.exp_comision','users.gen_comision','users.bono_com',
                                 //Acceso
                                 'users.usuarios','users.roles',
                                 //Reportes
-                                'users.mejora','users.rep_proy','users.rep_publi'
+                                'users.mejora','users.rep_proy','users.rep_publi','users.inventario'
                         )->where('users.id','=',$request->id)->get();
             
             return['privilegios' => $privilegios];
@@ -1064,6 +1069,7 @@ class UserController extends Controller
         $user->saldo = $request->saldo;
         $user->gestoria = $request->gestoria;
         $user->postventa = $request->postventa;
+        $user->comisiones = $request->comisiones;
         //Administracion
         $user->departamentos = $request->departamentos;
         $user->personas = $request->personas;
@@ -1125,6 +1131,10 @@ class UserController extends Controller
         //Postventa
         $user->entregas = $request->entregas;
         $user->solic_detalles = $request->solic_detalles;
+        //Comisiones
+        $user->exp_comision = $request->exp_comision;
+        $user->gen_comision = $request->gen_comision;
+        $user->bono_com = $request->bono_com;
         //Acceso
         $user->usuarios = $request->usuarios;
         $user->roles = $request->roles;
@@ -1132,6 +1142,7 @@ class UserController extends Controller
         $user->mejora = $request->mejora;
         $user->rep_publi = $request->rep_publi;
         $user->rep_proy = $request->rep_proy;
+        $user->inventario = $request->inventario;
         $user->save();
 
     }

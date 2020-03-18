@@ -36,6 +36,7 @@ class CreateUsersTable extends Migration
             
             $table->boolean('saldo')->default(0);
             $table->boolean('gestoria')->default(0);
+            $table->boolean('comisiones')->default(0);
 
 
             //Administracion
@@ -107,8 +108,12 @@ class CreateUsersTable extends Migration
 
             //Postventa
             $table->boolean('entregas')->default(0);
-            
 
+            //Comisiones
+            $table->boolean('exp_comision')->default(0);
+            $table->boolean('gen_comision')->default(0);
+            $table->boolean('bono_com')->default(0);
+        
 
             //Acceso
             $table->boolean('usuarios')->default(0);
@@ -118,6 +123,7 @@ class CreateUsersTable extends Migration
             $table->boolean('mejora')->default(0);
             $table->boolean('rep_publi')->default(0);
             $table->boolean('rep_proy')->default(0);
+            $table->boolean('inventario')->default(0);
 
 
             
