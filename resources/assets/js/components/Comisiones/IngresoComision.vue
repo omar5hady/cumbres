@@ -176,7 +176,6 @@
                                 <table class="table2 table-bordered table-striped table-sm">
                                     <thead>
                                         <tr>
-                                          
                                             <th># Contrato</th>
                                             <th>Cliente</th>
                                             <th>Vendedor</th>
@@ -189,6 +188,7 @@
                                             <th>Expediente</th>
                                             <th>% Obtenido</th>
                                             <th>Observación</th>
+                                            <th>Aplica comisión</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -212,8 +212,14 @@
                                             <td class="td2" v-text="this.moment(contrato.fecha_exp).locale('es').format('DD/MMM/YYYY')"></td>
                                             <td class="td2" v-text="contrato.porcentaje_exp+'%'"></td>
                                             <td>
-                                                <button type="button" @click="abrirModal('observaciones',contrato)" class="btn btn-danger btn-sm">
+                                                <button type="button" @click="abrirModal('observaciones',contrato)" class="btn btn-warning btn-sm">
                                                     Observaciones
+                                                </button>
+                                            </td>
+                                            <td class="td2" v-if="contrato.comision == 2">No aplica</td>
+                                            <td class="td2" v-else>Si aplica &nbsp;
+                                                <button v-if="contrato.comision == 0" type="button" @click="noAplica(contrato.id)" class="btn btn-danger btn-sm" title="No aplica">
+                                                     <i class="fa fa-window-close-o"></i>
                                                 </button>
                                             </td>
                                         </tr>                               
@@ -226,7 +232,7 @@
                                     <li class="page-item" v-if="pagination.current_page > 1">
                                         <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1)">Ant</a>
                                     </li>
-                                    <li class="page-item" v-for="page2 in pagesNumber" :key="page2" :class="[page2 == isActived2 ? 'active' : '']">
+                                    <li class="page-item" v-for="page2 in pagesNumber" :key="page2" :class="[page2 == isActived ? 'active' : '']">
                                         <a class="page-link" href="#" @click.prevent="cambiarPagina(page2)" v-text="page2"></a>
                                     </li>
                                     <li class="page-item" v-if="pagination.current_page < pagination.last_page">
@@ -591,6 +597,44 @@
                 var a = this.fecha;
                 var b = this.fechaContrato;
                 this.diferencia = a.diff(b,'days');
+            },
+
+            noAplica(id){
+                 
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                
+                 Swal({
+                    title: 'Estas seguro?',
+                    animation: false,
+                    customClass: 'animated bounceInDown',
+                    text: "El contrato quedara sin comisión",
+                    type: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Cancelar',
+                    
+                    confirmButtonText: 'Si!'
+                    }).then((result) => {
+
+                    if (result.value) {
+                       
+                        axios.put('/comision/noAplica',{
+                            'id':id,
+                        }); 
+                        
+                        me.listarHistorial(me.pagination.current_page)
+                        Swal({
+                            title: 'Hecho!',
+                            text: 'Contrato no aplicable para comisión',
+                            type: 'success',
+                            animation: false,
+                            customClass: 'animated bounceInRight'
+                        })
+                    }
+                })
+              
             },
 
             newDiferencia(){

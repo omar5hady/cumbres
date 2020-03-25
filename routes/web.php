@@ -511,6 +511,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/comision/bonosPorPagar','ComisionesController@bonosPorPagar');
         Route::get('/comision/bonos','ComisionesController@bonos');
         Route::put('/comision/generarBono','ComisionesController@generarBono');
+        Route::put('/comision/noAplica','ComisionesController@noAplicaComision');
 
     ////////////////////////// RUTAS ASIGNAR GESTOR /////////////////////////////
 

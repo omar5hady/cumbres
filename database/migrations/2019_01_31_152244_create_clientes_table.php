@@ -63,6 +63,11 @@ class CreateClientesTable extends Migration
             $table->string('email_coa',40)->nullable();
             $table->string('parentesco_coa',20)->nullable();
 
+            $table->integer('user_alta')->nullable();
+            $table->integer('ultimo_vendedor')->nullable();
+            $table->integer('penultimo_vendedor')->nullable();
+            $table->integer('contador')->default(0);
+
             $table->timestamps();
 
             $table->foreign('id')->references('id')->on('personal')->onDelete('cascade');

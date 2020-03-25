@@ -34,6 +34,7 @@ class ComisionesController extends Controller
                 ->join('personal as c', 'clientes.id', '=', 'c.id')
                 ->select('contratos.id',
                         'contratos.fecha',
+                        'contratos.comision',
                         DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                         'contratos.avance_lote',
                         'creditos.fraccionamiento as proyecto',
@@ -210,6 +211,7 @@ class ComisionesController extends Controller
                 ->join('personal as c', 'clientes.id', '=', 'c.id')
                 ->select('contratos.id',
                         'contratos.fecha',
+                        'contratos.comision',
                         DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                         'contratos.avance_lote',
                         'creditos.fraccionamiento as proyecto',
@@ -1115,6 +1117,13 @@ class ComisionesController extends Controller
         $detalle_comision = Det_comision::findOrFail($request->id);
         $detalle_comision->fecha_bono = $request->fecha_bono;
         $detalle_comision->save();
+    }
+
+    public function noAplicaComision(Request $request){
+
+        $contrato = Contrato::findOrFail($request->id);
+        $contrato->comision = 2;
+        $contrato->save();
     }
 
 

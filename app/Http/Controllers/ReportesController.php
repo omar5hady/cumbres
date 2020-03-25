@@ -117,33 +117,109 @@ class ReportesController extends Controller
         $fecha1 = $request->fecha1;
         $fecha2 = $request->fecha2;
 
+        $fecha30 = Carbon::parse($fecha2)->addDays(30)->format('Y-m-d');
+        $fecha60 = Carbon::parse($fecha2)->addDays(60)->format('Y-m-d');
+        $fecha90 = Carbon::parse($fecha2)->addDays(90)->format('Y-m-d');
+
         $vendedores = Vendedor::join('personal','vendedores.id','=','personal.id')
                     ->join('users','personal.id','=','users.id')
                     ->select('vendedores.id','personal.nombre','personal.apellidos')
                     ->where('users.condicion','=',1)
+                    ->orderBy('personal.nombre','asc')
                     ->get();
+
+        $mostrar = 0;
 
         
         foreach($vendedores as $index => $vendedor){
 
             if($fecha1==''){
-                $vendedor->clientes = Cliente::where('vendedor_id','=',$vendedor->id)->where('clasificacion','!=',7)->count();
-                $vendedor->tipoA = Cliente::where('vendedor_id','=',$vendedor->id)->where('clasificacion','=',2)->count();
-                $vendedor->tipoB = Cliente::where('vendedor_id','=',$vendedor->id)->where('clasificacion','=',3)->count();
-                $vendedor->tipoC = Cliente::where('vendedor_id','=',$vendedor->id)->where('clasificacion','=',4)->count();
-                $vendedor->noViable = Cliente::where('vendedor_id','=',$vendedor->id)->where('clasificacion','=',1)->count();
+                $vendedor->clientes = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','!=',7)->count();
+                $vendedor->tipoA = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','=',2)->count();
+                $vendedor->tipoB = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','=',3)->count();
+                $vendedor->tipoC = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','=',4)->count();
+                $vendedor->noViable = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','=',1)->count();
+
+                $vendedor->ventas = Contrato::join('creditos','contratos.id','=','creditos.id')
+                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                    ->where('creditos.vendedor_id','=',$vendedor->id)
+                    ->where('contratos.status','=',3)
+                    ->where('clientes.user_alta','=',$vendedor->id)
+                    ->where('clientes.clasificacion','!=',7)
+                    ->count();
+                
+                $vendedor->canceladas = Contrato::join('creditos','contratos.id','=','creditos.id')
+                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                    ->where('creditos.vendedor_id','=',$vendedor->id)
+                    ->where('contratos.status','=',0)
+                    ->where('clientes.user_alta','=',$vendedor->id)
+                    ->where('clientes.clasificacion','!=',7)
+                    ->count();
+
             }
             else{
-                $vendedor->clientes = Cliente::where('vendedor_id','=',$vendedor->id)->where('clasificacion','!=',7)->
+                $mostrar = 1;
+                $vendedor->clientes = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','!=',7)->
                     whereBetween('created_at', [$fecha1, $fecha2])->count();
-                $vendedor->tipoA = Cliente::where('vendedor_id','=',$vendedor->id)->where('clasificacion','=',2)->
+                $vendedor->tipoA = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','=',2)->
                     whereBetween('created_at', [$fecha1, $fecha2])->count();
-                $vendedor->tipoB = Cliente::where('vendedor_id','=',$vendedor->id)->where('clasificacion','=',3)->
+                $vendedor->tipoB = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','=',3)->
                     whereBetween('created_at', [$fecha1, $fecha2])->count();
-                $vendedor->tipoC = Cliente::where('vendedor_id','=',$vendedor->id)->where('clasificacion','=',4)->
+                $vendedor->tipoC = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','=',4)->
                     whereBetween('created_at', [$fecha1, $fecha2])->count();
-                $vendedor->noViable = Cliente::where('vendedor_id','=',$vendedor->id)->where('clasificacion','=',1)->
+                $vendedor->noViable = Cliente::where('user_alta','=',$vendedor->id)->where('clasificacion','=',1)->
                     whereBetween('created_at', [$fecha1, $fecha2])->count();
+
+                $vendedor->ventas = Contrato::join('creditos','contratos.id','=','creditos.id')
+                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                    ->where('creditos.vendedor_id','=',$vendedor->id)
+                    ->where('contratos.status','=',3)
+                    ->where('clientes.user_alta','=',$vendedor->id)
+                    ->whereBetween('clientes.created_at', [$fecha1,$fecha2])
+                    ->where('clientes.clasificacion','!=',7)
+                    ->whereBetween('contratos.fecha', [$fecha1,$fecha2])
+                    ->count();
+
+                $vendedor->ventas30 = Contrato::join('creditos','contratos.id','=','creditos.id')
+                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                    ->where('creditos.vendedor_id','=',$vendedor->id)
+                    ->where('contratos.status','=',3)
+                    ->where('clientes.user_alta','=',$vendedor->id)
+                    ->whereBetween('clientes.created_at', [$fecha1,$fecha2])
+                    ->where('clientes.clasificacion','!=',7)
+                    ->whereBetween('contratos.fecha', [$fecha2,$fecha30])
+                    ->count();
+                
+                $vendedor->ventas60 = Contrato::join('creditos','contratos.id','=','creditos.id')
+                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                    ->where('creditos.vendedor_id','=',$vendedor->id)
+                    ->where('contratos.status','=',3)
+                    ->where('clientes.user_alta','=',$vendedor->id)
+                    ->whereBetween('clientes.created_at', [$fecha1,$fecha2])
+                    ->where('clientes.clasificacion','!=',7)
+                    ->whereBetween('contratos.fecha', [$fecha30,$fecha60])
+                    ->count();
+
+                $vendedor->ventas90 = Contrato::join('creditos','contratos.id','=','creditos.id')
+                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                    ->where('creditos.vendedor_id','=',$vendedor->id)
+                    ->where('contratos.status','=',3)
+                    ->where('clientes.user_alta','=',$vendedor->id)
+                    ->whereBetween('clientes.created_at', [$fecha1,$fecha2])
+                    ->where('clientes.clasificacion','!=',7)
+                    ->whereBetween('contratos.fecha', [$fecha60,$fecha90])
+                    ->count();
+
+
+                $vendedor->canceladas = Contrato::join('creditos','contratos.id','=','creditos.id')
+                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                    ->where('creditos.vendedor_id','=',$vendedor->id)
+                    ->where('contratos.status','=',0)
+                    ->where('clientes.user_alta','=',$vendedor->id)
+                    ->whereBetween('clientes.created_at', [$fecha1,$fecha2])
+                    ->where('clientes.clasificacion','!=',7)
+                    ->whereBetween('contratos.fecha', [$fecha1,$fecha90])
+                    ->count();
 
             }
             
@@ -152,7 +228,9 @@ class ReportesController extends Controller
 
         
 
-        return ['vendedores' => $vendedores];
+        return ['vendedores' => $vendedores,
+            'mostrar' => $mostrar
+        ];
     }
     
 }

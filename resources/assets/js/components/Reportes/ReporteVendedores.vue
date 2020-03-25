@@ -36,7 +36,7 @@
                             </div>
                         </div>
 
-                        <div class="table-responsive" v-if="vista == 1">
+                        <div class="table-responsive" v-if="vista == 1 && mostrar == 0">
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
@@ -60,8 +60,57 @@
                                     <tr v-for="vendedor in arrayVendedores" :key="vendedor.id">
                                         <td class="td2" v-text="vendedor.nombre + ' ' + vendedor.apellidos"></td>
                                         <td class="td2" v-text="vendedor.clientes"></td>
+                                        <td class="td2" v-text="vendedor.ventas"></td>
+                                        <td class="td2" v-text="vendedor.canceladas"></td>
+                                        <td class="td2" v-text="vendedor.tipoA"></td>
+                                        <td class="td2" v-text="vendedor.tipoB"></td>
+                                        <td class="td2" v-text="vendedor.tipoC"></td>
+                                        <td class="td2" v-text="vendedor.noViable"></td>
+                                        <td class="td2" >% V</td>
+                                        <td class="td2" >% C</td>
+                                        <td class="td2" >% B</td>
+                                    </tr>                               
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="table-responsive" v-if="vista == 1 && mostrar == 1">
+                            <table class="table2 table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th colspan="11" class="text-center">Periodo del {{fecha1}}  al  {{fecha2}}</th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="2"></th>
+                                        <th colspan="4" class="text-center">Ventas</th>
+                                        <th colspan="8"></th>
+                                    </tr>
+                                    <tr>
+                                        <th>Vendedor</th>
+                                        <th>Atendio</th>
+                                        <th>Ventas en el periodo</th>
+                                        <th>Ventas en 30 dias</th>
+                                        <th>Ventas en 60 dias</th>
+                                        <th>Ventas en 90 dias</th>
+                                        <th>Cancelaciones</th>
+                                        <th>A</th>
+                                        <th>B</th>
+                                        <th>C</th>
+                                        <th>N/V</th>
+                                        <th>% Venta</th>
+                                        <th>% Cancelación</th>
+                                        <th>% Bateo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="vendedor in arrayVendedores" :key="vendedor.id">
+                                        <td class="td2" v-text="vendedor.nombre + ' ' + vendedor.apellidos"></td>
                                         <td class="td2" v-text="vendedor.clientes"></td>
-                                        <td class="td2" v-text="vendedor.clientes"></td>
+                                        <td class="td2" v-text="vendedor.ventas"></td>
+                                        <td class="td2" v-text="vendedor.ventas30"></td>
+                                        <td class="td2" v-text="vendedor.ventas60"></td>
+                                        <td class="td2" v-text="vendedor.ventas90"></td>
+                                        <td class="td2" v-text="vendedor.canceladas"></td>
                                         <td class="td2" v-text="vendedor.tipoA"></td>
                                         <td class="td2" v-text="vendedor.tipoB"></td>
                                         <td class="td2" v-text="vendedor.tipoC"></td>
@@ -101,6 +150,7 @@
                 arrayFraccionamientos:[],
                 criterio : '',
                 vista:0,
+                mostrar:0
             }
         },
         computed:{
@@ -113,6 +163,7 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayVendedores = respuesta.vendedores;
+                    me.mostrar = respuesta.mostrar;
                     me.vista = 1;
 
                     var startdate = moment(me.b_fecha1);

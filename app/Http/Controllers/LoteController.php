@@ -2355,7 +2355,7 @@ class LoteController extends Controller
                 ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
                 ->select('lotes.id');
 
-        if($rolId == 1 || $rolId == 4 || $rolId == 6 || $rolId == 8 ){
+        if($rolId == 1 || $rolId == 4 || $rolId == 6 || $rolId == 8 || $rolId == 11 ){
             switch($b_apartado){
                 case '':{
                     if($buscar==''){
@@ -4130,7 +4130,7 @@ class LoteController extends Controller
                     'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
                     'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas');
 
-        if($rolId == 1 || $rolId == 4 || $rolId == 6 || $rolId == 8 ){
+        if($rolId == 1 || $rolId == 4 || $rolId == 6 || $rolId == 8 || $rolId == 11 ){
             switch($b_apartado){
                 case '':{
                     if($buscar==''){
