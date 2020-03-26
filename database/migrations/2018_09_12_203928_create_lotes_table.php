@@ -55,6 +55,8 @@ class CreateLotesTable extends Migration
             $table->string('nombre_archivo')->nullable();
 
             $table->date('fecha_entrega_obra')->nullable();
+
+            $table->integer('num_inicio')->default(0);
             
 
             ///////// Datos para precio //////////////////

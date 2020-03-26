@@ -39,23 +39,49 @@
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
-                                    <input v-if="criterio=='lotes.fraccionamiento_id'" type="text"  v-model="b_manzana" @keyup.enter="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="form-control" placeholder="Manzana">
-                                    <input v-if="criterio=='lotes.fraccionamiento_id'" type="text"  v-model="b_lote" @keyup.enter="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="form-control" placeholder="# Lote">
-                                   
+                                    
                                     <input type="date" v-if="criterio=='licencias.term_ingreso' || criterio== 'licencias.term_salida'" v-model="buscar" @keyup.enter="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="form-control col-md-6" placeholder="Desde" >
                                     <input type="date" v-if="criterio=='licencias.term_ingreso' || criterio== 'licencias.term_salida'" v-model="buscar2"  @keyup.enter="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="form-control col-md-6" placeholder="Hasta" >
 
                                     <input v-if="criterio!='lotes.fraccionamiento_id' && criterio!='licencias.term_ingreso' && criterio!='licencias.term_salida' && criterio!='licencias.perito_dro'" type="text"  v-model="buscar" @keyup.enter="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="form-control" placeholder="Texto a buscar">
+                                   
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row" v-if="criterio=='lotes.fraccionamiento_id'">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <!--Criterios para el listado de busqueda -->
+                                   
+                                    <input v-if="criterio=='lotes.fraccionamiento_id'" type="text"  v-model="b_manzana" @keyup.enter="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="form-control" placeholder="Manzana">
+                                    <input v-if="criterio=='lotes.fraccionamiento_id'" type="text"  v-model="b_lote" @keyup.enter="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="form-control" placeholder="# Lote">
+                                   
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_puente" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)"> 
+                                        <option value="">Credito Puente</option>
+                                        <option v-for="puente in arrayPuentes" :key="puente.credito_puente" :value="puente.credito_puente" v-text="puente.credito_puente"></option>
+                                    </select>
+                                    <input v-if="criterio=='lotes.fraccionamiento_id'" type="text"  v-model="b_num_inicio" @keyup.enter="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="form-control" placeholder="# inicio de obra">
                                     <button type="submit" @click="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                    <a class="btn btn-success" v-bind:href="'/acta_terminacion/excel?buscar=' + buscar + '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + '&criterio=' + criterio + '&buscar2=' + buscar2" >
+                                    <a class="btn btn-success" v-bind:href="'/acta_terminacion/excel?buscar=' + buscar + '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + '&criterio=' + criterio + '&buscar2=' + buscar2 + '&b_puente=' + b_puente + '&b_num_inicio=' + b_num_inicio" >
                                         <i class="icon-pencil"></i>&nbsp;Excel
                                     </a>
                                 </div>
                             </div>
                         </div>
                         <div class="table-responsive">
-                            <table class="table 2 table-bordered table-striped table-sm">
+                            <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
+                                    <tr>
+                                        <th colspan="9"></th>
+                                        <th colspan="2" class="text-center">Inicio</th>
+                                        <th colspan="5"></th>
+                                    </tr>
                                     <tr>
                                         <th>
                                             <input type="checkbox" @click="selectAll" v-model="allSelected">
@@ -68,10 +94,13 @@
                                         <th>Construcción mts&sup2;</th>
                                         <th>DRO</th>
                                         <th>Modelo</th>
+                                        <th>No. </th>
+                                        <th>Fecha</th>
                                         <th>Avance</th>
                                         <th>Ingreso Act. terminacion</th>
                                         <th>Salida Act. terminacion</th>  
                                         <th>No. Acta</th>
+                                        <th>Credito puente</th>
 
                                     </tr>
                                 </thead>
@@ -97,13 +126,20 @@
                                             <span v-if = "act_terminacion.perito!='Sin Asignar  '" class="badge badge-success" v-text="act_terminacion.perito"></span>
                                             <span v-else class="badge badge-danger"> Por Asignar </span>
                                         </td>
-                                        
                                         <!--Modelo-->
                                         <td class="td2">
                                             <span v-if = "act_terminacion.modelo!='Por Asignar' && act_terminacion.cambios==0" class="badge badge-success" v-text="act_terminacion.modelo"></span>
                                             <span v-if = "act_terminacion.modelo=='Por Asignar'" class="badge badge-danger">Por Asignar</span>
                                             <span v-if = "act_terminacion.cambios==1" class="badge badge-warning" v-text="act_terminacion.modelo"></span>
                                         </td>
+                                        
+                                             <td class="td2" v-if="!act_terminacion.siembra" v-text="''"></td>
+                                             <td class="td2" v-else v-text="act_terminacion.num_inicio"></td>
+
+                                        
+                                             <td class="td2" v-if="!act_terminacion.siembra" v-text="''"></td>
+                                             <td class="td2" v-else v-text="this.moment(act_terminacion.siembra).locale('es').format('DD/MMM/YYYY')"></td>
+
 
                                         <!--Avance-->
                                         <td class="td2" v-text="act_terminacion.avance + '%'"></td>
@@ -117,6 +153,7 @@
                                         
                                         <td class="td2"  v-if="!act_terminacion.foto_acta" v-text="act_terminacion.num_acta"></td>
                                         <td class="td2" v-else style="width:7%"><a class="btn btn-default btn-sm"  v-text="act_terminacion.num_acta" v-bind:href="'/downloadActa/'+act_terminacion.foto_acta"></a></td>
+                                        <td class="td2" v-text="act_terminacion.credito_puente"></td>
                                     </tr>                               
                                 </tbody>
                             </table>
@@ -551,6 +588,7 @@
                 arrayArquitectos:[],
                 arrayFraccionamientos:[],
                 arrayObservacion:[],
+                arrayPuentes: [],
                 modal : 0,
                 modal2 : 0,
                 modal3 : 0,
@@ -575,7 +613,9 @@
                 buscar : '',
                 buscar2 : '',
                 b_manzana : '',
-                b_lote : ''
+                b_lote : '',
+                b_puente : '',
+                b_num_inicio : ''
                 
             }
         },
@@ -722,7 +762,7 @@
             /**Metodo para mostrar los registros */
             listarActa(page, buscar,b_manzana,b_lote,criterio,buscar2){
                 let me = this;
-                var url = '/acta_terminacion?page=' + page + '&buscar=' + buscar + '&b_manzana=' + b_manzana + '&b_lote='+ b_lote  + '&criterio=' + criterio + '&buscar2=' + buscar2;
+                var url = '/acta_terminacion?page=' + page + '&buscar=' + buscar + '&b_manzana=' + b_manzana + '&b_lote='+ b_lote  + '&criterio=' + criterio + '&buscar2=' + buscar2 + '&b_puente=' + me.b_puente + '&b_num_inicio=' + me.b_num_inicio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayActaDeTerminacion = respuesta.actas.data;
@@ -825,6 +865,20 @@
                     console.log(error);
                 });
                 
+            },
+
+            selectPuente(){
+                let me = this;
+
+                me.arrayPuentes=[];
+                var url = '/selectCreditoPuente';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayPuentes = respuesta.creditos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
             },
 
             cambiarPagina(page,buscar,b_manzana,b_lote,criterio,buscar2){
@@ -1061,6 +1115,7 @@
                 }this.selectArquitectos();
                 this.listarObservacion(1, data['id']);
                 this.selectUltimoComentario(data['id']);
+                
 
             }
         
@@ -1070,6 +1125,7 @@
         mounted() {
             this.listarActa(1,this.buscar,this.b_manzana,this.b_lote,this.criterio,this.buscar2);
             this.selectFraccionamientos();
+            this.selectPuente();
         }
     }
 </script>

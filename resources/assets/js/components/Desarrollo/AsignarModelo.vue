@@ -62,7 +62,7 @@
                                 <div class="input-group">
                                    
                                     <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,b_habilitado,criterio)" class="form-control" placeholder="Lote a buscar">
-                                     <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_puente" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,b_habilitado,criterio)"> 
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_puente" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,b_habilitado,criterio)"> 
                                         <option value="">Credito Puente</option>
                                         <option v-for="puente in arrayPuentes" :key="puente.credito_puente" :value="puente.credito_puente" v-text="puente.credito_puente"></option>
                                     </select>

@@ -1823,6 +1823,8 @@ class LoteController extends Controller
         $lote->ini_obra = 1;
         $lote->arquitecto_id = $request ->arquitecto_id;
         $lote->ehl_solicitado = Carbon::today()->format('ymd');
+
+        $lote->num_inicio = $request->num_inicio;
         
         $lote->save();
 
@@ -5293,7 +5295,6 @@ class LoteController extends Controller
         ];
     }
 
-
     public function updateAjuste(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $ajuste = Lote::findOrFail($request->id);
@@ -6196,7 +6197,6 @@ class LoteController extends Controller
                     ->get();
         return ['lotes_etapas' => $lotes_etapas];
     }
-
 
     public function select_manzanas_entregados(Request $request)
     {

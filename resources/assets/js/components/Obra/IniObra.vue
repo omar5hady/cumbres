@@ -188,6 +188,12 @@
                         <div class="modal-body">
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
                                 <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Numero de inicio</label>
+                                    <div class="col-md-3">
+                                        <input type="number" v-model="num_inicio" class="form-control" placeholder="Numero de inicio">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Fecha de inicio</label>
                                     <div class="col-md-6">
                                         <input type="date" v-model="f_ini" class="form-control" placeholder="Fecha de inicio">
@@ -291,7 +297,8 @@
                 buscar2:'',
                 buscar3:'',
                 b_fecha:'',
-                b_fecha2:''
+                b_fecha2:'',
+                num_inicio:''
             }
         },
         computed:{
@@ -484,7 +491,8 @@
                     'fecha_ini' : this.f_ini,
                     'fecha_fin' : this.f_fin,
                     'fecha_termino_ventas' : this.fecha_termino_ventas,
-                    'aviso' : aviso
+                    'aviso' : aviso,
+                    'num_inicio' : this.num_inicio
                     }); 
                     i++;
                 });
