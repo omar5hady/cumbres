@@ -28,7 +28,7 @@
                                         <option value="lotes.credito_puente">Credito Puente</option>
                                     </select>
 
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @click="selectEtapa(buscar), selectModelo(buscar)" >
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @click="selectEtapa(buscar), selectModelo(buscar), selectPuente(buscar)" >
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
@@ -650,11 +650,11 @@
                 });
             },
 
-            selectPuente(){
+            selectPuente(id){
                 let me = this;
 
                 me.arrayPuentes=[];
-                var url = '/selectCreditoPuente';
+                var url = '/selectCreditoPuente?fraccionamiento=' + id;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayPuentes = respuesta.creditos;
@@ -996,7 +996,6 @@
         },
         mounted() {
             this.listarLote(1,this.buscar,this.buscar2,this.buscar3,this.b_modelo,this.b_lote,this.b_habilitado, this.criterio);
-            this.selectPuente();
             this.selectFraccionamientos();
         }
     }

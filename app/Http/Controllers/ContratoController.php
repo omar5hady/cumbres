@@ -4750,7 +4750,7 @@ class ContratoController extends Controller
             ->where('contratos.id', '=', $id)
             ->orderBy('id', 'desc')->get();
 
-            if($contratos[0]->institucion == 'Crea Más' || $contratos[0]->institucion == 'Gamu'){
+            if($contratos[0]->institucion == 'Gamu' && $contratos[0]->tipo_credito == 'INFONAVIT-FOVISSSTE' || $contratos[0]->institucion == 'Crea Más' && $contratos[0]->tipo_credito == 'INFONAVIT-FOVISSSTE'){
                 $contratos[0]->institucion = 'INFONAVIT';
             }
 
@@ -5095,7 +5095,7 @@ class ContratoController extends Controller
         ->where('tipo_pagare', '=', 0)->where('contrato_id', '=', $id)->orderBy('fecha_pago', 'asc')->get();
 
 
-        if($contratoPromesa[0]->institucion == 'Gamu' || $contratoPromesa[0]->institucion == 'Crea Más'){
+        if($contratoPromesa[0]->institucion == 'Gamu' && $contratoPromesa[0]->tipo_credito == 'INFONAVIT-FOVISSSTE' || $contratoPromesa[0]->institucion == 'Crea Más' && $contratoPromesa[0]->tipo_credito == 'INFONAVIT-FOVISSSTE'){
             $contratoPromesa[0]->institucion = 'INFONAVIT';
         }
         

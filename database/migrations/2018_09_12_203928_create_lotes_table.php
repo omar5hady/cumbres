@@ -57,6 +57,8 @@ class CreateLotesTable extends Migration
             $table->date('fecha_entrega_obra')->nullable();
 
             $table->integer('num_inicio')->default(0);
+
+            $table->string('paq_ruv',50)->nullable();
             
 
             ///////// Datos para precio //////////////////

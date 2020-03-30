@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Empresa; //Importar el modelo
 use Auth;
+use App\Empresa_verificadora;
 
 class EmpresaController extends Controller
 {
@@ -36,6 +37,33 @@ class EmpresaController extends Controller
         ];
     }
 
+    public function indexVerificadoras(Request $request)
+    {
+        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
+        if(!$request->ajax())return redirect('/');
+
+        $buscar = $request->buscar;
+        
+        if($buscar==''){
+            $empresas = Empresa_verificadora::orderBy('empresa','ASC')->paginate(10);
+        }
+        else{
+            $empresas = Empresa_verificadora::where('empresa', 'like', '%'. $buscar . '%')->orderBy('empresa','ASC')->paginate(10);
+        }
+
+        return [
+            'pagination' => [
+                'total'         => $empresas->total(),
+                'current_page'  => $empresas->currentPage(),
+                'per_page'      => $empresas->perPage(),
+                'last_page'     => $empresas->lastPage(),
+                'from'          => $empresas->firstItem(),
+                'to'            => $empresas->lastItem(),
+            ],
+            'empresas' => $empresas
+        ];
+    }
+
     //funcion para insertar en la tabla
     public function store(Request $request)
     {
@@ -49,6 +77,17 @@ class EmpresaController extends Controller
         $empresa->ciudad = $request->ciudad;
         $empresa->telefono = $request->telefono;
         $empresa->ext = $request->ext;
+        $empresa->save();
+    }
+
+    //funcion para insertar en la tabla
+    public function storeVerificadora(Request $request)
+    {
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $empresa = new Empresa_verificadora();
+        $empresa->empresa = $request->nombre;
+        $empresa->contacto = $request->contacto;
+        $empresa->telefono = $request->telefono;
         $empresa->save();
     }
 
@@ -69,6 +108,25 @@ class EmpresaController extends Controller
         $empresa->save();
     }
 
+    //funcion para actualizar los datos
+    public function updateVerificadora(Request $request)
+    {
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        //FindOrFail se utiliza para buscar lo que recibe de argumento
+        $empresa = Empresa_verificadora::findOrFail($request->id);
+        $empresa->empresa = $request->nombre;
+        $empresa->contacto = $request->contacto;
+        $empresa->telefono = $request->telefono;
+        $empresa->save();
+    }
+
+
+    public function destroyVerificadora(Request $request)
+    {
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $empresa = Empresa_verificadora::findOrFail($request->id);
+        $empresa->delete();
+    }
 
     public function destroy(Request $request)
     {
@@ -84,6 +142,14 @@ class EmpresaController extends Controller
         $empresas = Empresa::select('nombre','id')
                              ->where('nombre','like','%'.$filtro.'%')
                              ->orderBy('nombre','asc')->get();
+        return['empresas' => $empresas];
+    }
+
+    public function selectEmpresaVerificadora(Request $request){
+        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
+        if(!$request->ajax())return redirect('/');
+        $empresas = Empresa::select('empresa','id')
+                             ->orderBy('empresa','asc')->get();
         return['empresas' => $empresas];
     }
 

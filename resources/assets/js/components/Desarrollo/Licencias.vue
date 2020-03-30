@@ -1,4 +1,4 @@
-<template >
+<template>
     <main class="main" >
             <!-- Breadcrumb -->
             <ol class="breadcrumb">
@@ -41,7 +41,7 @@
                                         <option value="licencias.perito_dro">DRO</option>
                                     </select>
 
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" >
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @click="selectPuente(buscar)" >
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
@@ -632,58 +632,55 @@
             
             <!-- Modal para la carga de foto de licencia -->
             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal4}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                        <div class="modal-dialog modal-primary modal-lg" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title" v-text="tituloModal4"></h4>
-                                    <button type="button" class="close" @click="cerrarModal4()" aria-label="Close">
-                                        <span aria-hidden="true">×</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                <div style="float:left;">
-                                    <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
-
-                                            <strong>Licencia:</strong>
-
-                                            <input disabled type="text" class="form-control" v-model="num_licencia" >
-
-                                            <strong>Sube aqui foto de licencia</strong>
-
-                                            <input type="file" class="form-control" v-on:change="onImageChange">
-                                            <br/>
-                                            <button type="submit" class="btn btn-success">Cargar</button>
-                                    </form>
-                                </div>
-
-                                <div style="float:right;">
-                                        <form  method="post" @submit="formSubmitPredial" enctype="multipart/form-data">
-
-                                            <strong>Sube aqui foto del predial</strong>
-
-                                            <input type="file" class="form-control" v-on:change="onImageChangePredial">
-                                            <br/>
-                                            <button type="submit" class="btn btn-success">Cargar</button>
-                                    </form>
-                                </div>
-
-                                </div>
-                                <!-- Botones del modal -->
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" @click="cerrarModal4()">Cerrar</button>
-                                    </div>
-                            </div> 
-                            <!-- /.modal-content -->
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal4"></h4>
+                            <button type="button" class="close" @click="cerrarModal4()" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
                         </div>
-                        <!-- /.modal-dialog -->
-                    </div>
-                    <!--Fin del modal-->
+                        <div class="modal-body">
+                        <div style="float:left;">
+                            <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
 
+                                    <strong>Licencia:</strong>
 
+                                    <input disabled type="text" class="form-control" v-model="num_licencia" >
 
+                                    <strong>Sube aqui foto de licencia</strong>
+
+                                    <input type="file" class="form-control" v-on:change="onImageChange">
+                                    <br/>
+                                    <button type="submit" class="btn btn-success">Cargar</button>
+                            </form>
+                        </div>
+
+                        <div style="float:right;">
+                                <form  method="post" @submit="formSubmitPredial" enctype="multipart/form-data">
+
+                                    <strong>Sube aqui foto del predial</strong>
+
+                                    <input type="file" class="form-control" v-on:change="onImageChangePredial">
+                                    <br/>
+                                    <button type="submit" class="btn btn-success">Cargar</button>
+                            </form>
+                        </div>
+
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal4()">Cerrar</button>
+                            </div>
+                    </div> 
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal-->
                             
-                </main>
-            </template>
+    </main>
+</template>
 
 <!-- ************************************************************************************************************************************  -->
 <!-- *********************************************************** CODIGO JAVASCRIPT *************************************************************************  -->
@@ -951,11 +948,11 @@
                     console.log(error);
                 });
             },
-            selectPuente(){
+            selectPuente(id){
                 let me = this;
 
                 me.arrayPuentes=[];
-                var url = '/selectCreditoPuente';
+                var url = '/selectCreditoPuente?fraccionamiento=' + id;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayPuentes = respuesta.creditos;
@@ -1400,7 +1397,6 @@
         mounted() {
             this.listarLicencias(1,this.buscar,this.b_manzana,this.b_lote,this.b_modelo,this.b_arquitecto,this.criterio,this.buscar2);
             this.selectFraccionamientos();
-            this.selectPuente();
         }
     }
 </script>

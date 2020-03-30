@@ -35,7 +35,7 @@
                                             <option value="23679">Raúl Palos López</option>
                                     </select>
 
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" >
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @click="selectPuente(buscar)">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
@@ -867,11 +867,11 @@
                 
             },
 
-            selectPuente(){
+            selectPuente(id){
                 let me = this;
 
                 me.arrayPuentes=[];
-                var url = '/selectCreditoPuente';
+                var url = '/selectCreditoPuente?fraccionamiento=' + id;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayPuentes = respuesta.creditos;
@@ -1115,8 +1115,6 @@
                 }this.selectArquitectos();
                 this.listarObservacion(1, data['id']);
                 this.selectUltimoComentario(data['id']);
-                
-
             }
         
         },
@@ -1125,7 +1123,6 @@
         mounted() {
             this.listarActa(1,this.buscar,this.b_manzana,this.b_lote,this.criterio,this.buscar2);
             this.selectFraccionamientos();
-            this.selectPuente();
         }
     }
 </script>

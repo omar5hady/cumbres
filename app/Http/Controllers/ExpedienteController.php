@@ -207,6 +207,18 @@ class ExpedienteController extends Controller
             }
         }
 
+        if(sizeof($contratos)){
+            foreach($contratos as $index => $contrato){
+                $lastPagare = Pago_contrato::select('fecha_pago')->where('contrato_id','=',$contrato->folio)->orderBy('fecha_pago','desc')->get();
+                if(sizeof($lastPagare)){
+                    $contrato->ultimo_pagare = $lastPagare[0]->fecha_pago;
+                }
+                else{
+                    $contrato->ultimo_pagare = '';
+                }
+            }
+        }
+
         return [
             'pagination' => [
                 'total'        => $contratos->total(),
@@ -1043,6 +1055,18 @@ class ExpedienteController extends Controller
             }
         }
 
+        if(sizeof($contratos)){
+            foreach($contratos as $index => $contrato){
+                $lastPagare = Pago_contrato::select('fecha_pago')->where('contrato_id','=',$contrato->folio)->orderBy('fecha_pago','desc')->get();
+                if(sizeof($lastPagare)){
+                    $contrato->ultimo_pagare = $lastPagare[0]->fecha_pago;
+                }
+                else{
+                    $contrato->ultimo_pagare = '';
+                }
+            }
+        }
+
         $contador = $contratos->count();
 
         return [
@@ -1538,6 +1562,18 @@ class ExpedienteController extends Controller
 
         $contador = $contratos->count();
 
+        if(sizeof($contratos)){
+            foreach($contratos as $index => $contrato){
+                $lastPagare = Pago_contrato::select('fecha_pago')->where('contrato_id','=',$contrato->folio)->orderBy('fecha_pago','desc')->get();
+                if(sizeof($lastPagare)){
+                    $contrato->ultimo_pagare = $lastPagare[0]->fecha_pago;
+                }
+                else{
+                    $contrato->ultimo_pagare = '';
+                }
+            }
+        }
+
         return [   
             'contratos' => $contratos,
             'contador' => $contador
@@ -2026,7 +2062,19 @@ class ExpedienteController extends Controller
                 }
             }
         }
-        
+
+        if(sizeof($contratos)){
+            foreach($contratos as $index => $contrato){
+                $lastPagare = Pago_contrato::select('fecha_pago')->where('contrato_id','=',$contrato->folio)->orderBy('fecha_pago','desc')->get();
+                if(sizeof($lastPagare)){
+                    $contrato->ultimo_pagare = $lastPagare[0]->fecha_pago;
+                }
+                else{
+                    $contrato->ultimo_pagare = '';
+                }
+            }
+        }
+
         $contador = $contratos->count();
         return [
             'contratos' => $contratos,
@@ -2741,6 +2789,18 @@ class ExpedienteController extends Controller
     
             }
         }
+
+        if(sizeof($contratos)){
+            foreach($contratos as $index => $contrato){
+                $lastPagare = Pago_contrato::select('fecha_pago')->where('contrato_id','=',$contrato->folio)->orderBy('fecha_pago','desc')->get();
+                if(sizeof($lastPagare)){
+                    $contrato->ultimo_pagare = $lastPagare[0]->fecha_pago;
+                }
+                else{
+                    $contrato->ultimo_pagare = '';
+                }
+            }
+        }
        
         $contador = $contratos->count();
         
@@ -3262,6 +3322,18 @@ class ExpedienteController extends Controller
                     }
                 }
     
+            }
+        }
+
+        if(sizeof($contratos)){
+            foreach($contratos as $index => $contrato){
+                $lastPagare = Pago_contrato::select('fecha_pago')->where('contrato_id','=',$contrato->folio)->orderBy('fecha_pago','desc')->get();
+                if(sizeof($lastPagare)){
+                    $contrato->ultimo_pagare = $lastPagare[0]->fecha_pago;
+                }
+                else{
+                    $contrato->ultimo_pagare = '';
+                }
             }
         }
        

@@ -33,6 +33,10 @@ class Personal extends Model
         return $this->hasMany('App\Expediente');
     }
 
+    public function ruv(){
+        return $this->hasMany('App\Ruv');
+    }
+
     public function user(){
         return $this->hasOne('App\User');
     }

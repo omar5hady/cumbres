@@ -65,6 +65,7 @@
                                         <th>Institucion de Fin.</th>
                                         <th>Solicitud de avaluo</th>
                                         <th>Depositado</th>
+                                        <th>Fecha ultimo pagare</th>
                                         <th>Aviso preventivo</th>
                                         <th>Crédito puente</th>
                                         <th>Conyuge</th>
@@ -79,7 +80,7 @@
                                         <td class="td2">
                                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{contratos.folio}}</a>
                                             <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
-                                                <a class="dropdown-item" v-if="contratos.pdf != '' && contratos.pdf != NULL"  v-bind:href="'/downloadAvaluo/'+contratos.pdf">Avaluo</a>
+                                                <a class="dropdown-item" v-if="contratos.pdf != '' && contratos.pdf != null"  v-bind:href="'/downloadAvaluo/'+contratos.pdf">Avaluo</a>
                                                 <a class="dropdown-item" @click="abrirPDF(contratos.folio)">Estado de cuenta</a>
                                                 <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ contratos.folio">Contrato de compra venta</a>
                                                 <a class="dropdown-item" target="_blank" v-bind:href="'/cartaServicios/pdf/'+ contratos.folio">Carta de servicios</a>
@@ -124,6 +125,7 @@
                                             </td>
                                         </template> 
                                         <td v-text="'$'+formatNumber(contratos.totPagare - contratos.totRest)"></td>
+                                        <td class="td2" v-text="this.moment(contratos.ultimo_pagare).locale('es').format('DD/MMM/YYYY')"></td>
                                          <template v-if="contratos.aviso_prev">
                                             <td @dblclick="abrirModal('fecha_recibido',contratos)" v-if="contratos.aviso_prev!='0000-01-01' && !contratos.aviso_prev_venc" class="td2" v-text="'Fecha solicitud: ' 
                                                 + this.moment(contratos.aviso_prev).locale('es').format('DD/MMM/YYYY')"></td>

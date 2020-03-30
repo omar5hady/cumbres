@@ -39,7 +39,10 @@ class CuentasController extends Controller
 
     public function selectCreditoPuente(Request $request){
 
-        $creditos = Lote::select('credito_puente')->where('credito_puente','!=',NULL)->orderBy('credito_puente','asc')->distinct()->get();
+        $fraccionamiento = $request->fraccionamiento;
+
+        $creditos = Lote::select('credito_puente')->where('fraccionamiento_id','=',$fraccionamiento)
+        ->where('credito_puente','!=',NULL)->orderBy('credito_puente','asc')->distinct()->get();
 
         return['creditos'=>$creditos];
     }

@@ -99,6 +99,7 @@
                                                 <th>Institución de Fin.</th>
                                                 <th>Valor de la vivienda</th>
                                                 <th>Crédito Puente</th>
+                                                <th>Fecha ultimo pagare</th>
                                                 <th>Saldo</th>
                                                 <th>Observaciones</th>
                                             </tr>
@@ -176,7 +177,9 @@
                                             <td class="td2" v-text="ingresar.institucion"></td>
                                             <td class="td2" v-text="'$'+formatNumber(ingresar.precio_venta)"></td>
                                             <td class="td2" v-text="ingresar.credito_puente"></td>
+                                            <td class="td2" v-text="this.moment(ingresar.ultimo_pagare).locale('es').format('DD/MMM/YYYY')"></td>
                                             <td class="td2" v-text="'$'+formatNumber(ingresar.saldo)"></td>
+                                            
                                             <td class="td2">
                                                 <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
                                                     @click="abrirModal3(ingresar.folio)">Ver Observaciones</button>
@@ -256,6 +259,7 @@
                                                 <th>Valor de la vivienda</th>
                                                 <th>Valor escriturar</th>
                                                 <th>Crédito Puente</th>
+                                                <th>Fecha ultimo pagare</th>
                                                 <th>Saldo</th>
                                                 <th>Inscripción Infonavit</th>
                                                 <th>Observaciones</th>
@@ -347,6 +351,7 @@
                                                 <td class="td2" v-text="'$'+formatNumber(preautorizados.precio_venta)"></td>
                                                 <td class="td2" v-text="'$'+formatNumber(preautorizados.valor_escrituras)"></td>
                                                 <td class="td2" v-text="preautorizados.credito_puente"></td>
+                                                <td class="td2" v-text="this.moment(preautorizados.ultimo_pagare).locale('es').format('DD/MMM/YYYY')"></td>
                                                 <td class="td2" v-text="'$'+formatNumber(preautorizados.saldo)"></td>
                                                
                                                <template v-if="preautorizados.fecha_infonavit">
@@ -443,6 +448,7 @@
                                                 <th>Valor de la vivienda</th>
                                                 <th>Valor escriturar</th>
                                                 <th>Crédito Puente</th>
+                                                <th>Fecha ultimo pagare</th>
                                                 <th>Saldo</th>
                                                 <th>Inscripción Infonavit</th>
                                                 <th>Liquidación</th>
@@ -534,7 +540,9 @@
                                                 <td class="td2" v-text="'$'+formatNumber(liquidacion.precio_venta)"></td>
                                                 <td class="td2" v-text="'$'+formatNumber(liquidacion.valor_escrituras)"></td>
                                                 <td class="td2" v-text="liquidacion.credito_puente"></td>
+                                                <td class="td2" v-text="this.moment(liquidacion.ultimo_pagare).locale('es').format('DD/MMM/YYYY')"></td>
                                                 <td class="td2" v-text="'$'+formatNumber(liquidacion.saldo)"></td>
+                                                
                                                
                                                <template v-if="liquidacion.fecha_infonavit">
                                                     <td v-if="liquidacion.fecha_infonavit!='0000-01-01'" class="td2" v-text="this.moment(liquidacion.fecha_infonavit).locale('es').format('DD/MMM/YYYY')"></td>
@@ -633,6 +641,7 @@
                                                 <th>Inscripción Infonavit</th>
                                                 <th>Liquidación</th>
                                                 <th>Firma de Escrituras</th>
+                                                <th>Fecha ultimo pagare</th>
                                                 <th>Saldo</th>
                                                 <th>Entrega de vivienda</th>
                                                 <th>Proceso concluido</th>
@@ -738,6 +747,7 @@
                                                     @click="abrirModal('firma_esc',programacion)">Generar</button>
                                                 </td>
 
+                                                <td class="td2" v-text="this.moment(programacion.ultimo_pagare).locale('es').format('DD/MMM/YYYY')"></td>
                                                 <td class="td2" v-text="'$'+formatNumber(programacion.saldo)"></td>
 
                                                 <td class="td2" v-if="programacion.fecha_firma_esc">
@@ -833,6 +843,7 @@
                                                 <th>Inscripción Infonavit</th>
                                                 <th>Liquidación</th>
                                                 <th>Firma de Escrituras</th>
+                                                <th>Fecha ultimo pagare</th>
                                                 <th>Saldo</th>
                                                 <th>Observaciones</th>
                                             </tr>
@@ -935,7 +946,7 @@
                                                     <button title="Programar Firma" type="button" class="btn btn-warning pull-right" 
                                                     @click="abrirModal('firma_esc',programacion)">Generar</button>
                                                 </td>
-
+                                                <td class="td2" v-text="this.moment(programacion.ultimo_pagare).locale('es').format('DD/MMM/YYYY')"></td>
                                                 <td class="td2" v-text="'$'+formatNumber(programacion.saldo)"></td>
 
                                                 <td class="td2">

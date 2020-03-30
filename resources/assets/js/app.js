@@ -51,6 +51,8 @@ Vue.component('lote', require('./components/Desarrollo/Lote.vue'));
 Vue.component('asignar-modelo', require('./components/Desarrollo/AsignarModelo.vue'));
 Vue.component('asignar-especificaciones', require('./components/Desarrollo/EspecificacionModelo.vue'));
 Vue.component('licencias', require('./components/Desarrollo/Licencias.vue'));
+Vue.component('lotes-ruv', require('./components/Desarrollo/LotesRuv.vue'));
+Vue.component('seguimiento-ruv', require('./components/Desarrollo/Ruvs.vue'));
 Vue.component('actadeterminacion', require('./components/Desarrollo/ActaDeTerminacion.vue'));
 Vue.component('publicidad-etapa', require('./components/Desarrollo/PublicidadEtapa.vue'));
 Vue.component('publicidad-fraccionamiento', require('./components/Desarrollo/PublicidadFraccionamiento.vue'));

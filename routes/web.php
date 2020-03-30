@@ -186,7 +186,14 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/empresa/registrar','EmpresaController@store');
         Route::put('/empresa/actualizar','EmpresaController@update');
         Route::delete('/empresa/eliminar','EmpresaController@destroy');
-        
+
+
+    ////////////////////        RUTAS EMPRESA VERIFICADORA     /////////////////////////////////
+        Route::get('/empresa/indexVerificadoras','EmpresaController@indexVerificadoras');
+        Route::post('/empresa/storeVerificadora','EmpresaController@storeVerificadora');
+        Route::put('/empresa/updateVerificadora','EmpresaController@updateVerificadora');
+        Route::delete('/empresa/destroyVerificadora','EmpresaController@destroyVerificadora');
+        Route::get('/empresa/selectEmpresaVerificadora','EmpresaController@selectEmpresaVerificadora');
     ////////////////////        RUTAS MODELOS     /////////////////////////////////
         Route::get('/modelo','ModeloController@index'); 
         Route::post('/modelo/registrar','ModeloController@store');
@@ -234,7 +241,16 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/licencias/excel','LicenciasController@exportExcelLicencias'); //excel de las licencias
 
         Route::get('/licencias/indexDescargas','LicenciasController@indexDescargas');
-        
+
+    ///////////////////       RUTAS RUV   ////////////////////////////////////
+        Route::get('/ruv/indexLotes','RuvController@indexLotes');
+        Route::get('/ruv/historialSolicitudes','RuvController@historialSolicitudes');
+        Route::post('/ruv/solicitar','RuvController@solicitarRuv');
+
+        Route::get('/ruv/indexRuv','RuvController@indexRuv');
+        Route::put('/ruv/cargaInfo','RuvController@cargaInfo');
+        Route::put('/ruv/obtenerCuv','RuvController@obtenerCuv');
+
     ///////////////////       RUTAS LICENCIA-ACTA  ////////////////////////////////////
         Route::get('/acta_terminacion','LicenciasController@indexActa');
         Route::put('/acta_terminacion/actualizar','LicenciasController@updateActas');

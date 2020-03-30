@@ -404,6 +404,13 @@
             <rep-vendedores></rep-vendedores>
         </template>
 
+        <template v-if="menu==234">
+            <lotes-ruv></lotes-ruv>
+        </template>
+        <template v-if="menu==235">
+            <seguimiento-ruv></seguimiento-ruv>
+        </template>
+
         
 
         

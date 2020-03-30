@@ -239,6 +239,14 @@
                                         <a class="nav-link" href="#"><i class="icon-bag"></i> Prediales y actas</a>
                                     </li>
                                 @endif
+                                @if(Auth::user()->rol_id == 1)
+                                    <li @click="menu=234" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="icon-bag"></i> Solicitud de RUV</a>
+                                    </li>
+                                    <li @click="menu=235" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="icon-bag"></i> Seguimiento de RUV</a>
+                                    </li>
+                                @endif
                                 
                                 </ul>
                             </li>
