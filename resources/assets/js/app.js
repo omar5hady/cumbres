@@ -140,6 +140,10 @@ Vue.component('comision-expediente', require('./components/Comisiones/IngresoCom
 Vue.component('comision-asesores', require('./components/Comisiones/Comisiones.vue'));
 Vue.component('comision-anticipos', require('./components/Comisiones/Anticipos.vue'));
 
+//Pagos Internos
+Vue.component('solicitud-pagos', require('./components/PagosInternos/SolicPago.vue'));
+Vue.component('generar-solipago', require('./components/PagosInternos/GenerarSolicitud.vue'));
+
 
 const app = new Vue({
     el: '#app',

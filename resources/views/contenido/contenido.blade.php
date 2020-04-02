@@ -410,6 +410,12 @@
         <template v-if="menu==235">
             <seguimiento-ruv></seguimiento-ruv>
         </template>
+        <template v-if="menu==236">
+            <generar-solipago></generar-solipago>
+        </template>
+        <template v-if="menu==237">
+            <solicitud-pagos></solicitud-pagos>
+        </template>
 
         
 

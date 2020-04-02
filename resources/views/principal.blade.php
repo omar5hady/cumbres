@@ -441,7 +441,7 @@
         <!----------     FIN SALDOS      --->
 
         <!----------      GESTORIA      --->
-             @if(Auth::user()->gestoria == 1)
+                    @if(Auth::user()->gestoria == 1)
                         <li class="nav-item nav-dropdown">
                             <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-bank"></i> Gestoria</a>
                             <ul class="nav-dropdown-items">
@@ -505,7 +505,24 @@
                     </ul>
                 </li>
             @endif
-        <!----------     FIN SALDOS      --->
+
+        <!----------     FIN Postventa      --->
+
+        <!-- Modulo pagos internos --->
+            @if(Auth::user()->rol_id == 1)
+                <li class="nav-item nav-dropdown">
+                    <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-laptop"></i> Pagos Internos</a>
+                    <ul class="nav-dropdown-items">
+                        <li @click="menu=236" class="nav-item">
+                            <a class="nav-link" href="#"><i class="fa fa-plus-square "></i> Generar Solicitud</a>
+                        </li>
+                        <li @click="menu=237" class="nav-item">
+                            <a class="nav-link" href="#"><i class="icon-user-following"></i> Seg de solicitud</a>
+                        </li>
+                    </ul>
+                </li>
+            @endif
+        <!-- Fin pago internos -->
 
                     @if(Auth::user()->acceso == 1)
                         <li class="nav-item nav-dropdown">

@@ -127,8 +127,13 @@ class User extends Authenticatable
     }
  
     public function persona(){
-        return $this->belongsTo('App\Persona');
+        return $this->belongsTo('App\Personal');
     }
+
+    public function solicitudes_pagos(){
+        return $this->hasMany('App\Solicitudes_pago');
+    }
+
 
 
 }
