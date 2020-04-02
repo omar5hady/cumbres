@@ -18,6 +18,7 @@ class CreateSolicitudesPagosTable extends Migration
 
             $table->string('concepto', 191)->comment('Concepto para identificar la orden de pago');
             $table->boolean('orden_compra')->nullable(true)->comment('permite identificar si el registro tiene o no orden de compra 0= no 1 = si ');
+            $table->date('orden_vistoBueno')->nullable(true);
             $table->date('autorizacion_orden')->nullable(true);
             $table->string('doc_orden')->nullable(true);
             $table->string('solic_cheque')->nullable(true);

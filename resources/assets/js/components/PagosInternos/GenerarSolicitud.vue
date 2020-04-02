@@ -107,10 +107,13 @@
                                             <td class="td2" v-else-if="orden.autorizacion_orden && orden.solic_cheque == null || orden.solic_cheque == null && orden.orden_compra == 0">
                                                 Sin solicitud de cheque
                                             </td>
-                                            <td class="td2 text-center" v-else-if="orden.autorizacion_orden && orden.solic_cheque && orden.cotizacion == null || orden.solic_cheque && orden.cotizacion == null && orden.orden_compra == 0">
+                                            <td class="td2 text-center" v-else-if="orden.autorizacion_orden && orden.solic_cheque && orden.cotizacion == null && orden.check2 == null || orden.solic_cheque && orden.cotizacion == null && orden.orden_compra == 0 && orden.check2 == null">
                                                 <button type="button" @click="abrirModal('cotizacion',orden)" class="btn btn-success btn-sm" title="Cotización">
                                                     <i class="icon-plus"></i> Subir cotización
                                                 </button>
+                                            </td>
+                                            <td class="td2 text-center" v-else-if="orden.autorizacion_orden && orden.solic_cheque && orden.cotizacion == null && orden.check2 || orden.solic_cheque && orden.cotizacion == null && orden.orden_compra == 0 && orden.check2">
+                                                Sin archivo
                                             </td>
                                             <td class="td2 text-center" v-else>
                                                 <button type="button" @click="verCotizacion(orden.cotizacion)" class="btn btn-success btn-sm" title="Cotización">
@@ -128,10 +131,13 @@
                                             <td class="td2" v-else-if="orden.autorizacion_orden && orden.solic_cheque == null || orden.solic_cheque == null && orden.orden_compra == 0">
                                                 Sin solicitud de cheque
                                             </td>
-                                            <td class="td2 text-center" v-else-if="orden.autorizacion_orden && orden.solic_cheque && orden.pago_partes == null || orden.solic_cheque && orden.pago_partes == null && orden.orden_compra == 0">
+                                            <td class="td2 text-center" v-else-if="orden.autorizacion_orden && orden.solic_cheque && orden.pago_partes == null && orden.check2 == null || orden.solic_cheque && orden.pago_partes == null && orden.orden_compra == 0 && orden.check2 == null">
                                                 <button type="button" @click="abrirModal('pago_partes',orden)" class="btn btn-primary btn-sm" title="Pago en partes">
                                                     <i class="icon-plus"></i> Subir pago en partes
                                                 </button>
+                                            </td>
+                                            <td class="td2 text-center" v-else-if="orden.autorizacion_orden && orden.solic_cheque && orden.pago_partes == null && orden.check2 || orden.solic_cheque && orden.pago_partes == null && orden.orden_compra == 0 && orden.check2">
+                                                Sin archivo
                                             </td>
                                             <td class="td2 text-center" v-else>
                                                 <button type="button" @click="verPagoPartes(orden.pago_partes)" class="btn btn-primary btn-sm" title="Pago en partes">
@@ -149,10 +155,13 @@
                                             <td class="td2" v-else-if="orden.autorizacion_orden && orden.solic_cheque == null || orden.solic_cheque == null && orden.orden_compra == 0">
                                                 Sin solicitud de cheque
                                             </td>
-                                            <td class="td2 text-center" v-else-if="orden.autorizacion_orden && orden.solic_cheque && orden.factura == null || orden.solic_cheque && orden.factura == null && orden.orden_compra == 0">
+                                            <td class="td2 text-center" v-else-if="orden.autorizacion_orden && orden.solic_cheque && orden.factura == null && orden.check2 == null  || orden.solic_cheque && orden.factura == null && orden.orden_compra == 0 && orden.check2 == null">
                                                 <button type="button" @click="abrirModal('factura',orden)" class="btn btn-success btn-sm" title="Pago en partes">
                                                     <i class="icon-plus"></i> Subir factura
                                                 </button>
+                                            </td>
+                                            <td class="td2 text-center" v-else-if="orden.autorizacion_orden && orden.solic_cheque && orden.factura == null && orden.check2 || orden.solic_cheque && orden.factura == null && orden.orden_compra == 0 && orden.check2">
+                                                Sin archivo
                                             </td>
                                             <td class="td2 text-center" v-else>
                                                 <button type="button" @click="verFactura(orden.factura)" class="btn btn-success btn-sm" title="Pago en partes">
@@ -176,7 +185,7 @@
                                                     <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
                                                         <a v-for="archivo in arrayDocumentos" :key="archivo.id" class="dropdown-item" href="#" v-on:click="verDocumento(archivo.archivo)">{{archivo.nombre}}</a>
                                                     </div>
-                                                    <button v-if="orden.check1 == null" type="button" @click="abrirModal('otroDocumento',orden)" class="btn btn-success btn-sm" title="Agregar otro documento">
+                                                    <button v-if="orden.check2 == null" type="button" @click="abrirModal('otroDocumento',orden)" class="btn btn-success btn-sm" title="Agregar otro documento">
                                                         <i class="icon-plus"></i>
                                                     </button>
                                                 </div>
@@ -184,8 +193,12 @@
                                         
                                         <td class="td2">
                                             <span v-if="orden.status == null" class="badge badge-warning">Pendiente</span>
-                                            <span v-if="orden.status == 0" class="badge badge-warning">Orden de compra autorizada</span>
-                                            <span v-if="orden.status == 1" class="badge badge-primary">Solicitud de cheque sin autorizar</span>
+                                            <span v-if="orden.status == 0" class="badge badge-warning">Orden de compra en proceso</span>
+                                            <span v-if="orden.status == 1" class="badge badge-primary">Orden de compra autorizada</span>
+                                            <span v-if="orden.status == 2" class="badge badge-primary">Solicitud de cheque en proceso</span>
+                                            <span v-if="orden.status == 3" class="badge badge-primary">Solicitud de cheque autorizado</span>
+                                            <span v-if="orden.status == 4" class="badge badge-success">Solicitud pagada</span>
+                                            <span v-if="orden.status == 5" class="badge badge-danger">Cancelado</span>
                                         </td>
                                         <td>
                                             <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 

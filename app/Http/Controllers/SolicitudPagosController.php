@@ -17,6 +17,7 @@ class SolicitudPagosController extends Controller
         $buscar = $request->buscar;
         $fecha1 = $request->fecha1;
         $fecha2 = $request->fecha2;
+        $fecha2 = $fecha2.' 23:59:59';
 
         $query = Solicitudes_pago::join('users','solicitudes_pagos.user_id','=','users.id')
                                     ->join('personal','users.id','=','personal.id')
@@ -28,6 +29,8 @@ class SolicitudPagosController extends Controller
                                             'solicitudes_pagos.factura',
                                             'solicitudes_pagos.check1',
                                             'solicitudes_pagos.check2',
+                                            'solicitudes_pagos.check3',
+                                            'solicitudes_pagos.orden_vistoBueno',
                                             'solicitudes_pagos.solic_cheque','solicitudes_pagos.user_id');
 
 
@@ -46,7 +49,7 @@ class SolicitudPagosController extends Controller
             $solicitudes = $solicitudes->whereBetween('solicitudes_pagos.created_at', [$fecha1, $fecha2]);
         }
 
-        $solicitudes = $solicitudes->orderBy('solicitudes_pagos.created_at','asc')->paginate(10);
+        $solicitudes = $solicitudes->orderBy('solicitudes_pagos.created_at','desc')->paginate(10);
 
         return [
             'pagination' => [
@@ -73,7 +76,6 @@ class SolicitudPagosController extends Controller
             $solicitud->concepto = $concepto;
             $solicitud->orden_compra = 0;
             $solicitud->user_id = Auth::user()->id;
-            $solicitud->status = 1;
             $solicitud->save(); //Insert
     
         }
@@ -288,6 +290,7 @@ class SolicitudPagosController extends Controller
 
         $solicitud = Solicitudes_pago::findOrFail($request->id);
         $solicitud->autorizacion_orden = $fecha;
+        $solicitud->status = 1;
         $solicitud->save(); //Insert
 
         $observacion = new Obs_orden_pago();
@@ -303,6 +306,7 @@ class SolicitudPagosController extends Controller
 
         $solicitud = Solicitudes_pago::findOrFail($request->id);
         $solicitud->check2 = $fecha;
+        $solicitud->status = 3;
         $solicitud->save(); //Insert
 
         $observacion = new Obs_orden_pago();
@@ -318,6 +322,7 @@ class SolicitudPagosController extends Controller
 
         $solicitud = Solicitudes_pago::findOrFail($request->id);
         $solicitud->check1 = $fecha;
+        $solicitud->status = 2;
         $solicitud->save(); //Insert
 
         $observacion = new Obs_orden_pago();
@@ -326,5 +331,38 @@ class SolicitudPagosController extends Controller
         $observacion->usuario = Auth::user()->usuario;
         $observacion->save();
     }
+
+    public function vistoBuenoOrden(Request $request){
+        if(!$request->ajax())return redirect('/');
+        $fecha = Carbon::now();
+
+        $solicitud = Solicitudes_pago::findOrFail($request->id);
+        $solicitud->orden_vistoBueno = $fecha;
+        $solicitud->status = 0;
+        $solicitud->save(); //Insert
+
+        $observacion = new Obs_orden_pago();
+        $observacion->solicitud_id = $request->id;
+        $observacion->observacion = 'La orden de compra ha pasado a proceso de autorizacion.';
+        $observacion->usuario = Auth::user()->usuario;
+        $observacion->save();
+    }
+
+    public function pagarSolicitud(Request $request){
+        if(!$request->ajax())return redirect('/');
+        $fecha = Carbon::now();
+
+        $solicitud = Solicitudes_pago::findOrFail($request->id);
+        $solicitud->check3 = $fecha;
+        $solicitud->status = 4;
+        $solicitud->save(); //Insert
+
+        $observacion = new Obs_orden_pago();
+        $observacion->solicitud_id = $request->id;
+        $observacion->observacion = 'La solicitud ha sido pagada';
+        $observacion->usuario = Auth::user()->usuario;
+        $observacion->save();
+    }
+
 
 }

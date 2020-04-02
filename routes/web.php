@@ -270,6 +270,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/solic_pago/autorizarOrden','SolicitudPagosController@autorizarOrden');
         Route::post('/solic_pago/autorizarSolicitud','SolicitudPagosController@autorizarSolicitud');
         Route::post('/solic_pago/vistoBuenoSolicitud','SolicitudPagosController@vistoBuenoSolicitud');
+        Route::post('/solic_pago/vistoBuenoOrden','SolicitudPagosController@vistoBuenoOrden');
+        Route::post('/solic_pago/pagarSolicitud','SolicitudPagosController@pagarSolicitud');
 
     ///////////////////       RUTAS LICENCIA-ACTA  ////////////////////////////////////
         Route::get('/acta_terminacion','LicenciasController@indexActa');

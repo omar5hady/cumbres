@@ -55,6 +55,7 @@
                                         <th>Orden compra</th>
                                         <th class="td2">Solicitud de Cheque</th>
                                         <th>Otros</th>
+                                        <th>Pago</th>
                                         <th>Status</th>
                                         <th>Observaciones</th>
                                     </tr>
@@ -75,10 +76,10 @@
                                                 <button v-if="orden.check1 == null" type="button" @click="vistoBuenoSolicitud(orden.id)" class="btn btn-light btn-sm" title=" Visto bueno de cheque">
                                                     <i class="fa fa-check"></i>
                                                 </button>
-                                                <button v-if="orden.check2 == null" type="button" @click="autorizarSolicitud(orden.id)" class="btn btn-dark btn-sm" title=" Autorizar solicitud de cheque">
+                                                <button v-if="orden.check2 == null && orden.check1" type="button" @click="autorizarSolicitud(orden.id)" class="btn btn-dark btn-sm" title=" Autorizar solicitud de cheque">
                                                     <i class="fa fa-check"></i>
                                                 </button>
-                                                <span v-else style="font-size: 0.85em; text-align:center;" class="badge badge-dark" v-text="'  Autorizado el: ' + this.moment(orden.check2).locale('es').format('DD/MMM/YYYY')"></span>
+                                                <span v-if="orden.check2" style="font-size: 0.85em; text-align:center;" class="badge badge-dark" v-text="'  Autorizado el: ' + this.moment(orden.check2).locale('es').format('DD/MMM/YYYY')"></span>
                                             </td>
                                         </template>
 
@@ -87,10 +88,13 @@
                                                 <button type="button" @click="verOrdenCompra(orden.doc_orden)" class="btn btn-success btn-sm" title="Orden de compra">
                                                     <i class="icon-eye"></i>
                                                 </button>
-                                                <button v-if="orden.autorizacion_orden == null" type="button" @click="autorizarOrden(orden.id)" class="btn btn-dark btn-sm" title=" Autorizar orden de compra">
+                                                <button v-if="orden.orden_vistoBueno == null && orden.autorizacion_orden == null" type="button" @click="vistoBuenoOrden(orden.id)" class="btn btn-default btn-sm" title=" Visto bueno orden de compra">
                                                     <i class="fa fa-check"></i>
                                                 </button>
-                                                <span v-if="orden.check2" style="font-size: 0.85em; text-align:center;" class="badge badge-dark" v-text="'  Autorizado el: ' + this.moment(orden.autorizacion_orden).locale('es').format('DD/MMM/YYYY')"></span>
+                                                <button v-if="orden.autorizacion_orden == null && orden.orden_vistoBueno" type="button" @click="autorizarOrden(orden.id)" class="btn btn-dark btn-sm" title=" Autorizar orden de compra">
+                                                    <i class="fa fa-check"></i>
+                                                </button>
+                                                <span v-if="orden.autorizacion_orden" style="font-size: 0.85em; text-align:center;" class="badge badge-dark" v-text="'  Autorizado el: ' + this.moment(orden.autorizacion_orden).locale('es').format('DD/MMM/YYYY')"></span>
                                             </td>
                                             <td v-if="orden.autorizacion_orden == null">
                                                 Orden de compra sin autorizacion
@@ -105,7 +109,7 @@
                                                 <button v-if="orden.check1 == null" type="button" @click="vistoBuenoSolicitud(orden.id)" class="btn btn-light btn-sm" title=" Visto bueno de cheque">
                                                     <i class="fa fa-check"></i>
                                                 </button>
-                                                <button v-if="orden.check2 == null" type="button" @click="autorizarSolicitud(orden.id)" class="btn btn-dark btn-sm" title=" Autorizar solicitud de cheque">
+                                                <button v-if="orden.check2 == null && orden.check1" type="button" @click="autorizarSolicitud(orden.id)" class="btn btn-dark btn-sm" title=" Autorizar solicitud de cheque">
                                                     <i class="fa fa-check"></i>
                                                 </button>
                                                 <span v-if="orden.check2" style="font-size: 0.85em; text-align:center;" class="badge badge-dark" v-text="'  Autorizado el: ' + this.moment(orden.check2).locale('es').format('DD/MMM/YYYY')"></span>
@@ -129,10 +133,22 @@
                                                 </div>
                                             </td>
                                         
+                                        <td class="td2 text-center">
+                                            <label v-if="orden.check2 == null"> Solicitud sin autorizar</label>
+                                            <button v-else-if="orden.check3 == null" type="button" @click="pagarSolicitud(orden.id)" class="btn btn-success btn-sm" title=" Guardar pago">
+                                                <i class="fa fa-money"></i>
+                                            </button>
+                                            <span v-else class="badge badge-success">Pagado el: {{this.moment(orden.check3).locale('es').format('DD/MMM/YYYY')}}</span>
+                                        </td>
+                                        
                                         <td class="td2">
                                             <span v-if="orden.status == null" class="badge badge-warning">Pendiente</span>
-                                            <span v-if="orden.status == 0" class="badge badge-warning">Orden de compra autorizada</span>
-                                            <span v-if="orden.status == 1" class="badge badge-primary">Solicitud de cheque sin autorizar</span>
+                                            <span v-if="orden.status == 0" class="badge badge-warning">Orden de compra en proceso</span>
+                                            <span v-if="orden.status == 1" class="badge badge-primary">Orden de compra autorizada</span>
+                                            <span v-if="orden.status == 2" class="badge badge-primary">Solicitud de cheque en proceso</span>
+                                            <span v-if="orden.status == 3" class="badge badge-primary">Solicitud de cheque autorizado</span>
+                                            <span v-if="orden.status == 4" class="badge badge-success">Solicitud pagada</span>
+                                            <span v-if="orden.status == 5" class="badge badge-danger">Cancelado</span>
                                         </td>
                                         <td>
                                             <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
@@ -446,6 +462,44 @@
               
             },
 
+            pagarSolicitud(id){
+                 
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                
+                 Swal({
+                    title: 'Estas seguro?',
+                    animation: false,
+                    customClass: 'animated bounceInDown',
+                    text: "Se registrara el pago de esta solicitud",
+                    type: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Cancelar',
+                    
+                    confirmButtonText: 'Si, guardar!'
+                    }).then((result) => {
+
+                    if (result.value) {
+                       
+                        axios.post('/solic_pago/pagarSolicitud',{
+                            'id':id
+                        }); 
+                        
+                        me.listarOrdenes(me.pagination.current_page);
+                        Swal({
+                            title: 'Hecho!',
+                            text: 'Solicitud pagada',
+                            type: 'success',
+                            animation: false,
+                            customClass: 'animated bounceInRight'
+                        })
+                    }
+                })
+              
+            },
+
             abrirModal(accion,data =[]){
                 switch(accion){
                     
@@ -498,9 +552,70 @@
               
             },
 
+            vistoBuenoOrden(id){
+                 
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                
+                 Swal({
+                    title: 'Estas seguro?',
+                    animation: false,
+                    customClass: 'animated bounceInDown',
+                    text: "La orden de compra pasara a proceso de autorización",
+                    type: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Cancelar',
+                    
+                    confirmButtonText: 'Si, continuar!'
+                    }).then((result) => {
+
+                    if (result.value) {
+                       
+                        axios.post('/solic_pago/vistoBuenoOrden',{
+                            'id':id
+                        }); 
+                        
+                        me.listarOrdenes(me.pagination.current_page);
+                        Swal({
+                            title: 'Hecho!',
+                            text: 'Orden de compra en proceso de autorización',
+                            type: 'success',
+                            animation: false,
+                            customClass: 'animated bounceInRight'
+                        })
+                    }
+                })
+              
+            },
+
+            verSoliCheque(nombre){
+                window.open('/files/solicPago/solicCheque/'+ nombre, '_blank')
+            },
+
+            verCotizacion(nombre){
+                window.open('/files/solicPago/cotizacion/'+ nombre, '_blank')
+            },
+
+            verPagoPartes(nombre){
+                window.open('/files/solicPago/pagoPartes/'+ nombre, '_blank')
+            },
+
+            verFactura(nombre){
+                window.open('/files/solicPago/factura/'+ nombre, '_blank')
+            },
+
+            verDocumento(nombre){
+                window.open('/files/solicPago/documentos/'+ nombre, '_blank')
+            },
+
+            verOrdenCompra(nombre){
+                window.open('/files/solicPago/ordenCompra/'+ nombre, '_blank')
+            },
+
             
         },
-        
         
         mounted() {
             this.listarOrdenes(1);

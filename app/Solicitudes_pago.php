@@ -21,7 +21,8 @@ class Solicitudes_pago extends Model
                             'check3',
                             'status',
                             'fecha_status',
-                            'user_id'
+                            'user_id',
+                            'orden_vistoBueno'
                         ];
     
 
