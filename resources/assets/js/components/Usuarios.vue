@@ -174,7 +174,7 @@
                                 </div> 
 
                                 <!-- listado para privilegios del menu Desarrollo -->
-                                <div class="col-md-4" v-if="rol_id==1 || rol_id==3 || rol_id==4 || rol_id==6 || rol_id==8 || rol_id == 9 ||  rol_id==7 || rol_id == 11">
+                                <div class="col-md-4" v-if="rol_id==1 || rol_id==3 || rol_id==4 || rol_id==5 || rol_id==6 || rol_id==8 || rol_id == 9 ||  rol_id==7 || rol_id == 11">
                                     <div class="form-group row border">
                                             <a class="nav-link nav-dropdown-toggle"><i class="icon-home"></i> <input @click="limpiarDesarrollo()" v-model="desarrollo" type="checkbox" value="1"/> Modulo Desarrollo</a>
                                                 <ul class="nav-dropdown-items" v-if="desarrollo==1">
@@ -204,6 +204,12 @@
                                                     </li>
                                                     <li class="nav-item" v-if="rol_id==1 || rol_id==6 || rol_id == 9">
                                                         <a class="nav-link"><i class="icon-bag"></i> <input v-model="descarga_actas" type="checkbox" value="1"/> Prediales y actas</a>
+                                                    </li>
+                                                    <li class="nav-item" v-if="rol_id==1 || rol_id==4 || rol_id==6 || rol_id == 9">
+                                                        <a class="nav-link"><i class="icon-bag"></i> <input v-model="ruv" type="checkbox" value="1"/> Solicitud de RUV</a>
+                                                    </li>
+                                                    <li class="nav-item" v-if="rol_id==1 || rol_id==6 || rol_id == 9 || rol_id==3 || rol_id==5">
+                                                        <a class="nav-link"><i class="icon-bag"></i> <input v-model="seg_ruv" type="checkbox" value="1"/> Seguimiento de RUV</a>
                                                     </li>
                                                 </ul>
                                     </div>
@@ -341,7 +347,19 @@
                                     </div>
                                 </div> 
 
-                                 <!-- listado para privilegios del menu Precios -->
+                                 <!-- listado para seguimiento de pagos -->
+                                <div class="col-md-4">
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-laptop"></i> <input v-model="seg_pago" type="checkbox" value="1"/> Pagos Internos</a>
+                                                <ul class="nav-dropdown-items" v-if="seg_pago==1">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" ><i class="icon-user-following"></i> <input v-model="seg_pago" type="checkbox" value="1"/> Seguimiento de pago</a>
+                                                    </li>
+                                                </ul>
+                                    </div>
+                                </div> 
+
+                                <!-- listado para privilegios del menu Precios -->
                                 <div class="col-md-4" v-if="rol_id==1 || rol_id==6 || rol_id==4 || rol_id==8 || rol_id==9 || rol_id == 11">
                                     <div class="form-group row border">
                                             <a class="nav-link nav-dropdown-toggle"><i class="fa fa-money"></i> <input @click="limpiarPrecios()" v-model="precios" type="checkbox" value="1"/> Modulo Precios</a>
@@ -736,7 +754,11 @@
                     acta_terminacion:0,
                     p_etapa:0,
                     descarga_actas:0,
+                    seg_ruv:0,
+                    ruv:0,
                    
+                    //Pago interno
+                    seg_pago:0,
 
                     //Precios
                     agregar_sobreprecios: 0,
@@ -930,6 +952,8 @@
                 this.acta_terminacion=0;
                 this.p_etapa=0;
                 this.descarga_actas = 0;
+                this.seg_ruv = 0;
+                this.ruv = 0;
                
             },
             limpiarPrecios(){
@@ -1063,6 +1087,8 @@
                     me.acta_terminacion=usuarios[0].acta_terminacion;
                     me.p_etapa=usuarios[0].p_etapa;
                     me.descarga_actas = usuarios[0].descarga_actas;
+                    me.ruv = usuarios[0].ruv;
+                    me.seg_ruv = usuarios[0].seg_ruv;
 
                     //Precios
                     me.agregar_sobreprecios = usuarios[0].agregar_sobreprecios;
@@ -1115,6 +1141,7 @@
                     //Acceso
                     me.usuarios=usuarios[0].usuarios;
                     me.roles=usuarios[0].roles;
+                    me.seg_pago = usuarios[0].seg_pago;
 
                     //Reportes
                     me.mejora=usuarios[0].mejora;
@@ -1354,6 +1381,8 @@
                     'acta_terminacion':this.acta_terminacion,
                     'p_etapa':this.p_etapa,
                     'descarga_actas':this.descarga_actas,
+                    'ruv':this.ruv,
+                    'seg_ruv':this.seg_ruv,
                    
                         //Precios
                     'agregar_sobreprecios':this.agregar_sobreprecios,
@@ -1399,6 +1428,7 @@
                         //Acceso
                     'usuarios':this.usuarios,
                     'roles':this.roles,
+                    'seg_pago':this.seg_pago,
                         //Reportes
                     'mejora':this.mejora,
                     'rep_proy':this.rep_proy,

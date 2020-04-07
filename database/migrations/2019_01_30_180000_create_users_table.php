@@ -66,6 +66,8 @@ class CreateUsersTable extends Migration
             $table->boolean('p_fraccionamiento')->default(0);
             $table->boolean('p_etapa')->default(0);
             $table->boolean('descarga_actas')->default(0);
+            $table->boolean('ruv')->default(0);
+            $table->boolean('seg_ruv')->default(0);
 
             //Precios
             $table->boolean('agregar_sobreprecios')->default(0);
@@ -124,6 +126,9 @@ class CreateUsersTable extends Migration
             $table->boolean('rep_publi')->default(0);
             $table->boolean('rep_proy')->default(0);
             $table->boolean('inventario')->default(0);
+
+            //Pagos internos
+            $table->boolean('seg_pago')->default(0);
 
 
             

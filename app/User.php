@@ -54,6 +54,8 @@ class User extends Authenticatable
         'p_etapa',
         'p_fraccionamiento',
         'descarga_actas',
+        'ruv',
+        'seg_ruv',
 
         //Precios
         'agregar_sobreprecios',
@@ -110,7 +112,10 @@ class User extends Authenticatable
         'mejora',
         'rep_publi',
         'rep_proy',
-        'inventario'
+        'inventario',
+
+        //Pagos Internos
+        'seg_pago'
     ];
 
     /**

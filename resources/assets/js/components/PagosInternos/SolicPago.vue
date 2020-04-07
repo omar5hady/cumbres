@@ -273,6 +273,9 @@
 
 <script>
     export default {
+        props:{
+            rolId:{type: String}
+        },
         data(){
             return{
 
@@ -408,116 +411,140 @@
             },
 
             autorizarOrden(id){
-                 
-                let me = this;
-                //Con axios se llama el metodo update de LoteController
+                if( this.rolId == 11 || this.rolId == 1 || this.rolId == 5){ 
+                    let me = this;
+                    //Con axios se llama el metodo update de LoteController
                 
-                 Swal({
-                    title: 'Estas seguro?',
-                    animation: false,
-                    customClass: 'animated bounceInDown',
-                    text: "La orden de compra quedara autorizada",
-                    type: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    cancelButtonText: 'Cancelar',
-                    
-                    confirmButtonText: 'Si, autorizar!'
-                    }).then((result) => {
-
-                    if (result.value) {
-                       
-                        axios.post('/solic_pago/autorizarOrden',{
-                            'id':id
-                        }); 
+                    Swal({
+                        title: 'Estas seguro?',
+                        animation: false,
+                        customClass: 'animated bounceInDown',
+                        text: "La orden de compra quedara autorizada",
+                        type: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        cancelButtonText: 'Cancelar',
                         
-                        me.listarOrdenes(me.pagination.current_page);
-                        Swal({
-                            title: 'Hecho!',
-                            text: 'Orden de compra autorizada',
-                            type: 'success',
-                            animation: false,
-                            customClass: 'animated bounceInRight'
+                        confirmButtonText: 'Si, autorizar!'
+                        }).then((result) => {
+
+                        if (result.value) {
+                        
+                            axios.post('/solic_pago/autorizarOrden',{
+                                'id':id
+                            }); 
+                            
+                            me.listarOrdenes(me.pagination.current_page);
+                            Swal({
+                                title: 'Hecho!',
+                                text: 'Orden de compra autorizada',
+                                type: 'success',
+                                animation: false,
+                                customClass: 'animated bounceInRight'
+                            })
+                        }
+                    })
+                }
+                else{
+                    Swal.fire({
+                        type:'warning',
+                        title: 'Sin permisos...',
+                        text: 'No tiene permisos para realizar esta accion!',
                         })
-                    }
-                })
+                }
               
             },
 
             autorizarSolicitud(id){
-                 
-                let me = this;
-                //Con axios se llama el metodo update de LoteController
-                
-                 Swal({
-                    title: 'Estas seguro?',
-                    animation: false,
-                    customClass: 'animated bounceInDown',
-                    text: "La solicitud de cheque quedara autorizado",
-                    type: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    cancelButtonText: 'Cancelar',
+                if( this.rolId == 11 || this.rolId == 1 || this.rolId == 5){ 
+                    let me = this;
+                    //Con axios se llama el metodo update de LoteController
                     
-                    confirmButtonText: 'Si, autorizar!'
-                    }).then((result) => {
-
-                    if (result.value) {
-                       
-                        axios.post('/solic_pago/autorizarSolicitud',{
-                            'id':id
-                        }); 
+                    Swal({
+                        title: 'Estas seguro?',
+                        animation: false,
+                        customClass: 'animated bounceInDown',
+                        text: "La solicitud de cheque quedara autorizado",
+                        type: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        cancelButtonText: 'Cancelar',
                         
-                        me.listarOrdenes(me.pagination.current_page);
-                        Swal({
-                            title: 'Hecho!',
-                            text: 'Solicitud de cheque autorizado',
-                            type: 'success',
-                            animation: false,
-                            customClass: 'animated bounceInRight'
+                        confirmButtonText: 'Si, autorizar!'
+                        }).then((result) => {
+
+                        if (result.value) {
+                        
+                            axios.post('/solic_pago/autorizarSolicitud',{
+                                'id':id
+                            }); 
+                            
+                            me.listarOrdenes(me.pagination.current_page);
+                            Swal({
+                                title: 'Hecho!',
+                                text: 'Solicitud de cheque autorizado',
+                                type: 'success',
+                                animation: false,
+                                customClass: 'animated bounceInRight'
+                            })
+                        }
+                    })
+                }
+                else{
+                    Swal.fire({
+                        type:'warning',
+                        title: 'Sin permisos...',
+                        text: 'No tiene permisos para realizar esta accion!',
                         })
-                    }
-                })
+                }
               
             },
 
             pagarSolicitud(id){
-                 
-                let me = this;
-                //Con axios se llama el metodo update de LoteController
-                
-                 Swal({
-                    title: 'Estas seguro?',
-                    animation: false,
-                    customClass: 'animated bounceInDown',
-                    text: "Se registrara el pago de esta solicitud",
-                    type: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    cancelButtonText: 'Cancelar',
+                if( this.rolId == 9 || this.rolId == 1){
+                    let me = this;
+                    //Con axios se llama el metodo update de LoteController
                     
-                    confirmButtonText: 'Si, guardar!'
-                    }).then((result) => {
-
-                    if (result.value) {
-                       
-                        axios.post('/solic_pago/pagarSolicitud',{
-                            'id':id
-                        }); 
+                    Swal({
+                        title: 'Estas seguro?',
+                        animation: false,
+                        customClass: 'animated bounceInDown',
+                        text: "Se registrara el pago de esta solicitud",
+                        type: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        cancelButtonText: 'Cancelar',
                         
-                        me.listarOrdenes(me.pagination.current_page);
-                        Swal({
-                            title: 'Hecho!',
-                            text: 'Solicitud pagada',
-                            type: 'success',
-                            animation: false,
-                            customClass: 'animated bounceInRight'
+                        confirmButtonText: 'Si, guardar!'
+                        }).then((result) => {
+
+                        if (result.value) {
+                        
+                            axios.post('/solic_pago/pagarSolicitud',{
+                                'id':id
+                            }); 
+                            
+                            me.listarOrdenes(me.pagination.current_page);
+                            Swal({
+                                title: 'Hecho!',
+                                text: 'Solicitud pagada',
+                                type: 'success',
+                                animation: false,
+                                customClass: 'animated bounceInRight'
+                            })
+                        }
+                    })
+                }
+                else{
+                    Swal.fire({
+                        type:'warning',
+                        title: 'Sin permisos...',
+                        text: 'No tiene permisos para realizar esta accion!',
                         })
-                    }
-                })
+                }
               
             },
 
@@ -536,78 +563,95 @@
             },
 
             vistoBuenoSolicitud(id){
-                 
-                let me = this;
-                //Con axios se llama el metodo update de LoteController
-                
-                 Swal({
-                    title: 'Estas seguro?',
-                    animation: false,
-                    customClass: 'animated bounceInDown',
-                    text: "La solicitud de cheque pasara a proceso de autorización",
-                    type: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    cancelButtonText: 'Cancelar',
+                if( this.rolId == 11 || this.rolId == 1 || this.rolId == 5){ 
+                    let me = this;
+                    //Con axios se llama el metodo update de LoteController
                     
-                    confirmButtonText: 'Si, continuar!'
-                    }).then((result) => {
-
-                    if (result.value) {
-                       
-                        axios.post('/solic_pago/vistoBuenoSolicitud',{
-                            'id':id
-                        }); 
+                    Swal({
+                        title: 'Estas seguro?',
+                        animation: false,
+                        customClass: 'animated bounceInDown',
+                        text: "La solicitud de cheque pasara a proceso de autorización",
+                        type: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        cancelButtonText: 'Cancelar',
                         
-                        me.listarOrdenes(me.pagination.current_page);
-                        Swal({
-                            title: 'Hecho!',
-                            text: 'Solicitud en proceso de autorización',
-                            type: 'success',
-                            animation: false,
-                            customClass: 'animated bounceInRight'
+                        confirmButtonText: 'Si, continuar!'
+                        }).then((result) => {
+
+                        if (result.value) {
+                        
+                            axios.post('/solic_pago/vistoBuenoSolicitud',{
+                                'id':id
+                            }); 
+                            
+                            me.listarOrdenes(me.pagination.current_page);
+                            Swal({
+                                title: 'Hecho!',
+                                text: 'Solicitud en proceso de autorización',
+                                type: 'success',
+                                animation: false,
+                                customClass: 'animated bounceInRight'
+                            })
+                        }
+                    })
+                }
+                else{
+                    Swal.fire({
+                        type:'warning',
+                        title: 'Sin permisos...',
+                        text: 'No tiene permisos para realizar esta accion!',
                         })
-                    }
-                })
+                }
               
             },
 
             vistoBuenoOrden(id){
-                 
-                let me = this;
-                //Con axios se llama el metodo update de LoteController
-                
-                 Swal({
-                    title: 'Estas seguro?',
-                    animation: false,
-                    customClass: 'animated bounceInDown',
-                    text: "La orden de compra pasara a proceso de autorización",
-                    type: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    cancelButtonText: 'Cancelar',
+                if( this.rolId == 11 || this.rolId == 1 || this.rolId == 5){ 
+                    let me = this;
+                    //Con axios se llama el metodo update de LoteController
                     
-                    confirmButtonText: 'Si, continuar!'
-                    }).then((result) => {
-
-                    if (result.value) {
-                       
-                        axios.post('/solic_pago/vistoBuenoOrden',{
-                            'id':id
-                        }); 
+                    Swal({
+                        title: 'Estas seguro?',
+                        animation: false,
+                        customClass: 'animated bounceInDown',
+                        text: "La orden de compra pasara a proceso de autorización",
+                        type: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        cancelButtonText: 'Cancelar',
                         
-                        me.listarOrdenes(me.pagination.current_page);
-                        Swal({
-                            title: 'Hecho!',
-                            text: 'Orden de compra en proceso de autorización',
-                            type: 'success',
-                            animation: false,
-                            customClass: 'animated bounceInRight'
+                        confirmButtonText: 'Si, continuar!'
+                        }).then((result) => {
+
+                        if (result.value) {
+                        
+                            axios.post('/solic_pago/vistoBuenoOrden',{
+                                'id':id
+                            }); 
+                            
+                            me.listarOrdenes(me.pagination.current_page);
+                            Swal({
+                                title: 'Hecho!',
+                                text: 'Orden de compra en proceso de autorización',
+                                type: 'success',
+                                animation: false,
+                                customClass: 'animated bounceInRight'
+                            })
+                        }
+                    })
+                }
+                else{
+                    Swal.fire({
+                        type:'warning',
+                        title: 'Sin permisos...',
+                        text: 'No tiene permisos para realizar esta accion!',
                         })
-                    }
-                })
+                }
+                
               
             },
 

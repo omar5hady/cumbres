@@ -274,6 +274,9 @@
 
 <script>
     export default {
+        props:{
+            rolId:{type: String}
+        },
         data(){
             return{
                 allLic: [],
@@ -439,151 +442,193 @@
             },
 
             cargarInformacion(){
-
-                let me = this;
-                //Con axios se llama el metodo update de FraccionaminetoController
-                axios.put('/ruv/cargaInfo',{
-                    'id' : this.id,
-                    'fecha': this.fecha
-                }).then(function (response){
-                    me.cerrarModal();
-                    me.listarRuvs(1);
-                    //window.alert("Cambios guardados correctamente");
-                    swal({
-                        position: 'top-end',
-                        type: 'success',
-                        title: 'Cambios guardados correctamente',
-                        showConfirmButton: false,
-                        timer: 1500
+                if(this.rolId == 1 || this.rolId == 3){ 
+                    let me = this;
+                    //Con axios se llama el metodo update de FraccionaminetoController
+                    axios.put('/ruv/cargaInfo',{
+                        'id' : this.id,
+                        'fecha': this.fecha
+                    }).then(function (response){
+                        me.cerrarModal();
+                        me.listarRuvs(1);
+                        //window.alert("Cambios guardados correctamente");
+                        swal({
+                            position: 'top-end',
+                            type: 'success',
+                            title: 'Cambios guardados correctamente',
+                            showConfirmButton: false,
+                            timer: 1500
+                            })
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+                }
+                else{
+                    Swal.fire({
+                        type:'warning',
+                        title: 'Sin permisos...',
+                        text: 'No tiene permisos para realizar esta accion!',
                         })
-                }).catch(function (error){
-                    console.log(error);
-                });
+                }
             },
 
             asignarVerificador(){
-                let me = this;
-                //Con axios se llama el metodo update de FraccionaminetoController
-                axios.put('/ruv/asignarVerificador',{
-                    'id' : this.id,
-                    'empresa': this.empresa
-                }).then(function (response){
-                    me.cerrarModal();
-                    me.listarRuvs(1);
-                    //window.alert("Cambios guardados correctamente");
-                    swal({
-                        position: 'top-end',
-                        type: 'success',
-                        title: 'Cambios guardados correctamente',
-                        showConfirmButton: false,
-                        timer: 1500
+                if(this.rolId == 1 || this.rolId == 3){ 
+                    let me = this;
+                    //Con axios se llama el metodo update de FraccionaminetoController
+                    axios.put('/ruv/asignarVerificador',{
+                        'id' : this.id,
+                        'empresa': this.empresa
+                    }).then(function (response){
+                        me.cerrarModal();
+                        me.listarRuvs(1);
+                        //window.alert("Cambios guardados correctamente");
+                        swal({
+                            position: 'top-end',
+                            type: 'success',
+                            title: 'Cambios guardados correctamente',
+                            showConfirmButton: false,
+                            timer: 1500
+                            })
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+                }
+                else{
+                    Swal.fire({
+                        type:'warning',
+                        title: 'Sin permisos...',
+                        text: 'No tiene permisos para realizar esta accion!',
                         })
-                }).catch(function (error){
-                    console.log(error);
-                });
+                }
             },
 
             obtenerDTU(){
-                let me = this;
-                //Con axios se llama el metodo update de FraccionaminetoController
-                axios.put('/ruv/dtu',{
-                    'id' : this.id,
-                    'fecha': this.fecha
-                }).then(function (response){
-                    me.cerrarModal();
-                    me.listarRuvs(1);
-                    //window.alert("Cambios guardados correctamente");
-                    swal({
-                        position: 'top-end',
-                        type: 'success',
-                        title: 'Cambios guardados correctamente',
-                        showConfirmButton: false,
-                        timer: 1500
+                if(this.rolId == 1 || this.rolId == 5){  
+                    let me = this;
+                    //Con axios se llama el metodo update de FraccionaminetoController
+                    axios.put('/ruv/dtu',{
+                        'id' : this.id,
+                        'fecha': this.fecha
+                    }).then(function (response){
+                        me.cerrarModal();
+                        me.listarRuvs(1);
+                        //window.alert("Cambios guardados correctamente");
+                        swal({
+                            position: 'top-end',
+                            type: 'success',
+                            title: 'Cambios guardados correctamente',
+                            showConfirmButton: false,
+                            timer: 1500
+                            })
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+                }
+                else{
+                    Swal.fire({
+                        type:'warning',
+                        title: 'Sin permisos...',
+                        text: 'No tiene permisos para realizar esta accion!',
                         })
-                }).catch(function (error){
-                    console.log(error);
-                });
+                }
             },
 
             obtenerCuv(id){
-
-                let me = this;
-                (async function getFruit () {
-                    const {value: numero} = await Swal({
-                    title: 'Obtención de #CUV',
-                    input: 'text',
-                    inputPlaceholder: 'Escribe el numero aqui...',
-                    showCancelButton: true,
-                    inputValidator: (value) => {
-                        return new Promise((resolve) => {
-                        if (value != '') {
-                            resolve()
-                        } else {
-                            resolve('Es necesario escribir el numero de CUV')
+                if(this.rolId == 1 || this.rolId == 3){ 
+                    let me = this;
+                    (async function getFruit () {
+                        const {value: numero} = await Swal({
+                        title: 'Obtención de #CUV',
+                        input: 'text',
+                        inputPlaceholder: 'Escribe el numero aqui...',
+                        showCancelButton: true,
+                        inputValidator: (value) => {
+                            return new Promise((resolve) => {
+                            if (value != '') {
+                                resolve()
+                            } else {
+                                resolve('Es necesario escribir el numero de CUV')
+                            }
+                            })
                         }
                         })
-                    }
-                    })
 
-                    if (numero) {
-                        //Con axios se llama el metodo update de LoteController
-                        axios.put('/ruv/obtenerCuv',{
-                            'id': id,
-                            'numeroCuv': numero
-                        }).then(function (response){
-                            me.cerrarModal();
-                            me.listarRuvs(1);
-                            //window.alert("Cambios guardados correctamente");
-                            swal({
-                                position: 'top-end',
-                                type: 'success',
-                                title: 'Cambios guardados correctamente',
-                                showConfirmButton: false,
-                                timer: 1500
-                                })
-                        }).catch(function (error){
-                            console.log(error);
-                        });
-                    }
+                        if (numero) {
+                            //Con axios se llama el metodo update de LoteController
+                            axios.put('/ruv/obtenerCuv',{
+                                'id': id,
+                                'numeroCuv': numero
+                            }).then(function (response){
+                                me.cerrarModal();
+                                me.listarRuvs(1);
+                                //window.alert("Cambios guardados correctamente");
+                                swal({
+                                    position: 'top-end',
+                                    type: 'success',
+                                    title: 'Cambios guardados correctamente',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                    })
+                            }).catch(function (error){
+                                console.log(error);
+                            });
+                        }
 
-                    })()
+                        })()
+                }
+                else{
+                    Swal.fire({
+                        type:'warning',
+                        title: 'Sin permisos...',
+                        text: 'No tiene permisos para realizar esta accion!',
+                        })
+                }
             },
 
             revDocumental(id){
-                 
-                let me = this;
-                //Con axios se llama el metodo update de LoteController
-                
-                 Swal({
-                    title: 'Estas seguro?',
-                    animation: false,
-                    customClass: 'animated bounceInDown',
-                    text: "La revisión documental esta completa",
-                    type: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    cancelButtonText: 'Cancelar',
+                if(this.rolId == 1 || this.rolId == 5){  
+                    let me = this;
+                    //Con axios se llama el metodo update de LoteController
                     
-                    confirmButtonText: 'Si!'
-                    }).then((result) => {
-
-                    if (result.value) {
-                       
-                        axios.put('/ruv/revDocumental',{
-                            'id':id
-                        }); 
+                    Swal({
+                        title: 'Estas seguro?',
+                        animation: false,
+                        customClass: 'animated bounceInDown',
+                        text: "La revisión documental esta completa",
+                        type: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        cancelButtonText: 'Cancelar',
                         
-                        me.listarRuvs(me.pagination.current_page);
-                        Swal({
-                            title: 'Hecho!',
-                            text: 'Revisión documental finalizada',
-                            type: 'success',
-                            animation: false,
-                            customClass: 'animated bounceInRight'
+                        confirmButtonText: 'Si!'
+                        }).then((result) => {
+
+                        if (result.value) {
+                        
+                            axios.put('/ruv/revDocumental',{
+                                'id':id
+                            }); 
+                            
+                            me.listarRuvs(me.pagination.current_page);
+                            Swal({
+                                title: 'Hecho!',
+                                text: 'Revisión documental finalizada',
+                                type: 'success',
+                                animation: false,
+                                customClass: 'animated bounceInRight'
+                            })
+                        }
+                    })
+                }
+                else{
+                    Swal.fire({
+                        type:'warning',
+                        title: 'Sin permisos...',
+                        text: 'No tiene permisos para realizar esta accion!',
                         })
-                    }
-                })
+                }
               
             },
 
@@ -610,30 +655,57 @@
                     
                     case 'cargaInfo':
                     {
-                        this.modal =1;
-                        this.tituloModal='Carga de Informacion RUV';
-                        this.fecha='';
-                        this.tipoAccion=1;
-                        this.id = data['id'];
+                        if(this.rolId == 1 || this.rolId == 3){  
+                            this.modal =1;
+                            this.tituloModal='Carga de Informacion RUV';
+                            this.fecha='';
+                            this.tipoAccion=1;
+                            this.id = data['id'];
+                        }
+                        else{
+                            Swal.fire({
+                                type:'warning',
+                                title: 'Sin permisos...',
+                                text: 'No tiene permisos para realizar esta accion!',
+                            })
+                        }
                         break;
                     }
                     case 'asignacion':
                     {
-                        this.modal =1;
-                        this.tituloModal='Asignación de verificador';
-                        this.fecha='';
-                        this.empresa = '';
-                        this.tipoAccion=2;
-                        this.id = data['id'];
-                        this.selectEmpresaVerif();
+                        if(this.rolId == 1 || this.rolId == 3){  
+                            this.modal =1;
+                            this.tituloModal='Asignación de verificador';
+                            this.fecha='';
+                            this.empresa = '';
+                            this.tipoAccion=2;
+                            this.id = data['id'];
+                            this.selectEmpresaVerif();
+                        }
+                        else{
+                            Swal.fire({
+                                type:'warning',
+                                title: 'Sin permisos...',
+                                text: 'No tiene permisos para realizar esta accion!',
+                            })
+                        }
                         break;
                     }
                     case 'dtu':{
-                        this.modal= 1;
-                        this.tituloModal='Obtención de DTU';
-                        this.fecha='';
-                        this.tipoAccion=3;
-                        this.id = data['id'];
+                        if(this.rolId == 1 || this.rolId == 5){  
+                            this.modal= 1;
+                            this.tituloModal='Obtención de DTU';
+                            this.fecha='';
+                            this.tipoAccion=3;
+                            this.id = data['id'];
+                        }
+                        else{
+                            Swal.fire({
+                                type:'warning',
+                                title: 'Sin permisos...',
+                                text: 'No tiene permisos para realizar esta accion!',
+                            })
+                        }
                         break;
                     }
                     case 'observaciones':{

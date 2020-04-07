@@ -239,10 +239,12 @@
                                         <a class="nav-link" href="#"><i class="icon-bag"></i> Prediales y actas</a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->rol_id == 1)
+                                @if(Auth::user()->ruv == 1)
                                     <li @click="menu=234" class="nav-item">
                                         <a class="nav-link" href="#"><i class="icon-bag"></i> Solicitud de RUV</a>
                                     </li>
+                                @endif
+                                @if(Auth::user()->seg_ruv == 1)
                                     <li @click="menu=235" class="nav-item">
                                         <a class="nav-link" href="#"><i class="icon-bag"></i> Seguimiento de RUV</a>
                                     </li>
@@ -509,19 +511,21 @@
         <!----------     FIN Postventa      --->
 
         <!-- Modulo pagos internos --->
-            @if(Auth::user()->rol_id == 1)
+            
                 <li class="nav-item nav-dropdown">
                     <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-laptop"></i> Pagos Internos</a>
                     <ul class="nav-dropdown-items">
                         <li @click="menu=236" class="nav-item">
                             <a class="nav-link" href="#"><i class="fa fa-plus-square "></i> Generar Solicitud</a>
                         </li>
-                        <li @click="menu=237" class="nav-item">
-                            <a class="nav-link" href="#"><i class="icon-user-following"></i> Seg de solicitud</a>
-                        </li>
+                        @if(Auth::user()->seg_pago == 1)
+                            <li @click="menu=237" class="nav-item">
+                                <a class="nav-link" href="#"><i class="icon-user-following"></i> Seg de solicitud</a>
+                            </li>
+                        @endif
                     </ul>
                 </li>
-            @endif
+            
         <!-- Fin pago internos -->
 
                     @if(Auth::user()->acceso == 1)

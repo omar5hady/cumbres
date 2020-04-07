@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Entrega;
 use App\Obs_entrega;
+use App\Obs_exp;
 use DB;
 use Auth;
 use App\Expediente;
@@ -32,7 +33,9 @@ class EntregaController extends Controller
             $entrega->save();
 
             $expediente = Expediente::findOrFail($request->id);
-            $expediente->postventa = 1;
+            if($expediente->fecha_firma_esc != NULL){
+                $expediente->postventa = 1;
+            }
             $expediente->save();
 
             $credito = Credito::findOrFail($request->id);
@@ -45,6 +48,12 @@ class EntregaController extends Controller
             $observacion->comentario = $request->comentario;
             $observacion->usuario = Auth::user()->usuario;
             $observacion->save();
+
+            $observacion_exp = new Obs_expediente();
+            $observacion_exp->contrato_id = $request->folio;
+            $observacion_exp->observacion = 'Se solicito la entrega de la vivienda';
+            $observacion_exp->usuario = Auth::user()->usuario;
+            $observacion_exp->save();
 
             $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', Auth::user()->id)->get();
                 $fecha = Carbon::now();
@@ -66,8 +75,8 @@ class EntregaController extends Controller
                 //     User::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloAceptado));
                 // }
 
-                User::findOrFail(25042)->notify(new NotifyAdmin($arregloAceptado));
-                User::findOrFail(25695)->notify(new NotifyAdmin($arregloAceptado));
+                //User::findOrFail(25042)->notify(new NotifyAdmin($arregloAceptado));
+                //User::findOrFail(25695)->notify(new NotifyAdmin($arregloAceptado));
 
             DB::commit();
         } catch (Exception $e){

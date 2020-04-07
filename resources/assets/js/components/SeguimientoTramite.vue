@@ -476,6 +476,7 @@
                                                 <th>Saldo</th>
                                                 <th>Inscripción Infonavit</th>
                                                 <th>Liquidación</th>
+                                                <th>Entrega de vivienda</th>
                                                 <th>Observaciones</th>
                                             </tr>
                                         </thead>
@@ -588,7 +589,13 @@
                                                     <label v-else> DETENIDO </label>
             
                                                 </td>
-                                                
+                                                <td class="td2">
+                                                    <button v-if="liquidacion.postventa == 0 && liquidacion.detenido == 0" title="Solicitar entrega de vivienda" type="button" class="btn btn-warning pull-right" 
+                                                        @click="abrirModal('solic_entrega',liquidacion)">Solicitar
+                                                    </button>
+                                                    <label v-else-if="liquidacion.postventa == 0 && liquidacion.detenido == 1">DETENIDO</label>
+                                                    <label v-else></label>
+                                                </td>
                                                 <td class="td2">
                                                     <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
                                                         @click="abrirModal3(liquidacion.folio)">Ver Observaciones</button>

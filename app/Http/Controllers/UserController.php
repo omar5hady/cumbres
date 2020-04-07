@@ -1028,7 +1028,9 @@ class UserController extends Controller
                                 'users.proveedores',
                                 //Desarrollo
                                 'users.fraccionamiento','users.etapas','users.modelos','users.lotes','users.asign_modelos','users.licencias',
-                                'users.acta_terminacion','users.p_etapa','users.descarga_actas',
+                                'users.acta_terminacion','users.p_etapa','users.descarga_actas', 'users.ruv', 'users.seg_ruv',
+                                //Pago Interno
+                                'users.seg_pago',
                                 //Precios
                                 'users.precios_etapas','users.precios_viviendas','users.sobreprecios','users.paquetes','users.promociones',
                                 'users.agregar_sobreprecios',
@@ -1093,6 +1095,11 @@ class UserController extends Controller
         $user->acta_terminacion = $request->acta_terminacion;
         $user->p_etapa = $request->p_etapa;
         $user->descarga_actas = $request->descarga_actas;
+        $user->ruv = $request->ruv;
+        $user->seg_ruv = $request->seg_ruv;
+
+        //Pago interno
+        $user->seg_pago = $request->seg_pago;
       
         //Precios
         $user->agregar_sobreprecios=$request->agregar_sobreprecios;
