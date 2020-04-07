@@ -175,6 +175,7 @@ class ContratoController extends Controller
                     'contratos.telefono_empresa_coa',
                     'contratos.ext_empresa_coa',
                     'contratos.total_pagar',
+                    'contratos.detenido',
                     'contratos.monto_total_credito',
                     'contratos.enganche_total',
                     'contratos.avance_lote',
@@ -6332,6 +6333,14 @@ class ContratoController extends Controller
                         ->count();
 
         return ['lote' => $lote];
+    }
+
+    public function cambiarProceso(Request $request){
+
+        $contrato = Contrato::findOrFail($request->id);
+        $contrato->detenido = $request->detenido;
+        $contrato->save();
+
     }
 
 }

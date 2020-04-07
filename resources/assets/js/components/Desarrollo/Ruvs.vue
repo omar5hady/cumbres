@@ -40,7 +40,7 @@
                                 <div class="input-group">
                                     <input type="text"  v-model="b_paquete" @keyup.enter="listarRuvs(1)" class="form-control" placeholder="Paquete Ruv">
                                     <button type="submit" @click="listarRuvs(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                    <a class="btn btn-success" v-bind:href="'/acta_terminacion/excel?buscar=' + buscar + '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + '&criterio=' + criterio + '&buscar2=' + buscar2" >
+                                    <a class="btn btn-success" v-bind:href="'/ruv/excelRuv?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote + '&b_paquete=' + b_paquete" >
                                         <i class="icon-pencil"></i>&nbsp;Excel
                                     </a>
                                 </div>
@@ -84,7 +84,7 @@
                                         <td class="td2" v-text="lote.paq_ruv"></td>
                                         <td class="td2" v-text="this.moment(lote.fecha_siembra).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2" v-text="lote.nombre + ' '+ lote.apellidos"></td>
-                                        <td class="td2" v-if="lote.fecha_carga == null">
+                                        <td class="td2 text-center" v-if="lote.fecha_carga == null">
                                             <button type="button" @click="abrirModal('cargaInfo',lote)" class="btn btn-primary btn-sm" title="Carga de informacion">
                                                 <i class="fa fa-check"></i>
                                             </button>
@@ -97,29 +97,29 @@
                                         </td>
                                         <td class="td2" v-else v-text="lote.num_cuv"></td>
                                         <template v-if="lote.empresa == null">
-                                            <td class="td2" colspan="2">
+                                            <td class="td2 text-center" colspan="2">
                                                 <button type="button" @click="abrirModal('asignacion',lote)" class="btn btn-primary btn-sm" title="Asignación de verificador">
                                                     <i class="fa fa-users">&nbsp;Asignar Verificador</i>
                                                 </button>
                                             </td>
                                         </template>
                                         <template v-else>
-                                            <td class="td2" v-text="lote.fecha_asignacion"></td>
+                                            <td class="td2" v-text="this.moment(lote.fecha_asignacion).locale('es').format('DD/MMM/YYYY')"></td>
                                             <td class="td2" v-text="lote.empresa"></td>
                                         </template>
                                         
-                                        <td class="td2" v-if="lote.fecha_revision == null">
-                                            <button type="button" @click="abrirModal('revision',lote)" class="btn btn-dark btn-sm" title="Revisión Documental">
+                                        <td class="td2 text-center" v-if="lote.fecha_revision == null">
+                                            <button type="button" @click="revDocumental(lote.id)" class="btn btn-dark btn-sm" title="Revisión Documental">
                                                 <i class="fa fa-check"></i>
                                             </button>
                                         </td>
-                                        <td class="td2" v-else v-text="lote.fecha_revision"></td>
+                                        <td class="td2" v-else v-text="this.moment(lote.fecha_revision).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2" v-if="lote.fecha_dtu == null">
                                             <button type="button" @click="abrirModal('dtu',lote)" class="btn btn-primary btn-sm" title="Obtención de DTU">
                                                 <i class="fa fa-check"></i>
                                             </button>
                                         </td>
-                                        <td class="td2" v-else v-text="lote.fecha_dtu"></td>
+                                        <td class="td2" v-else v-text="this.moment(lote.fecha_dtu).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2">
                                             <button type="button" @click="abrirModal('observaciones',lote)" class="btn btn-warning btn-sm" title="Observaciones">
                                                 <i class="fa fa-book">&nbsp;Observaciones</i>
@@ -172,6 +172,23 @@
                                        <input type="date" v-model="fecha" class="form-control" >
                                     </div>
                                 </div>
+
+                                 <div class="form-group row" v-if="tipoAccion == 2">
+                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de carga</label>
+                                    <div class="col-md-5">
+                                       <select class="form-control" v-model="empresa">
+                                            <option value="">Seleccione Proyecto</option>
+                                            <option v-for="empresa in arrayEmpresas" :key="empresa.id" :value="empresa.id" v-text="empresa.empresa"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                 <div class="form-group row" v-if="tipoAccion == 3">
+                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de obtención</label>
+                                    <div class="col-md-4">
+                                       <input type="date" v-model="fecha" class="form-control" >
+                                    </div>
+                                </div>
                               
                             </form>
                         </div>
@@ -180,6 +197,8 @@
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
                             <button type="button" v-if="tipoAccion == 1 && fecha != ''" class="btn btn-primary" @click="cargarInformacion()">Guardar</button>
+                            <button type="button" v-if="tipoAccion == 2 && empresa != ''" class="btn btn-primary" @click="asignarVerificador()">Guardar</button>
+                            <button type="button" v-if="tipoAccion == 3 && fecha != ''" class="btn btn-primary" @click="obtenerDTU()">Guardar</button>
                         </div>
                     </div>
                       <!-- /.modal-content -->
@@ -194,28 +213,22 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal3()" aria-label="Close">
+                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
                               <span aria-hidden="true">×</span>
                             </button>
                         </div>
                         <div class="modal-body">
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
 
-                                <div class="form-group row" v-if="tipoAccion==3">
+                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
                                     <div class="col-md-6">
-                                         <textarea rows="5" cols="30" v-model="observacion" class="form-control" placeholder="Observacion"></textarea>
+                                         <textarea rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observacion"></textarea>
 
                                     </div>
                                 </div>
-                                <div class="form-group row"  v-if="tipoAccion==3">
-                                    <label class="col-md-3 form-control-label" for="text-input">Usuario</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="usuario" class="form-control" placeholder="Usuario">
-                                    </div>
-                                </div>
                                 <!--//////////tabla de consulta de observaciones//////////////-->
-                                <table class="table table-bordered table-striped table-sm" v-if="tipoAccion == 4">
+                                <table class="table table-bordered table-striped table-sm">
                                     <thead>
                                         <tr>
                                             <th>Usuario</th>
@@ -227,7 +240,7 @@
                                         <tr v-for="observacion in arrayObservacion" :key="observacion.id">
                                             
                                             <td v-text="observacion.usuario" ></td>
-                                            <td v-text="observacion.comentario" ></td>
+                                            <td v-text="observacion.observacion" ></td>
                                             <td v-text="observacion.created_at"></td>
                                         </tr>                               
                                     </tbody>
@@ -237,9 +250,9 @@
                         </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal3()">Cerrar</button>
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button"  v-if="tipoAccion==3"  class="btn btn-primary" @click="agregarComentario()">Guardar</button>
+                            <button type="button" class="btn btn-primary" @click="agregarComentario()">Guardar</button>
                         </div>
                     </div>
                       <!-- /.modal-content -->
@@ -267,6 +280,7 @@
                 allSelected: false,
 
                 proceso:false,
+                usuario:'',
                 id: 0,
                 observacion:'',
                 arrayLotes : [],
@@ -276,7 +290,6 @@
                 modal : 0,
                 modal2 : 0,
                 tituloModal : '',
-                tituloModal2 : '',
                 tipoAccion: 0,
                 pagination : {
                     'total' : 0,         
@@ -350,6 +363,48 @@
                 
             },
 
+            listarObservacion(buscar){
+                let me = this;
+                var url = '/ruv/indexComentarios?id=' + buscar ;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayObservacion = respuesta.observacion;
+                    console.log(url);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+                
+            },
+
+            agregarComentario(){
+                
+                let me = this;
+                //Con axios se llama el metodo store de DepartamentoController
+                axios.post('/ruv/storeComentarios',{
+                    'id': this.id,
+                    'observacion': this.observacion
+                }).then(function (response){
+                    me.listarObservacion(me.id);
+                    me.observacion = '';
+                    //me.cerrarModal3(); //al guardar el registro se cierra el modal
+                    
+                    const toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                    });
+
+                    toast({
+                    type: 'success',
+                    title: 'Observación Agregada Correctamente'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
             selectFraccionamientos(){
                 let me = this;
                 me.buscar="";
@@ -376,40 +431,9 @@
                 var url = '/empresa/selectEmpresaVerificadora';
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                    me.arrayEmpresas = respuesta.fraccionamientos;
+                    me.arrayEmpresas = respuesta.empresas;
                 })
                 .catch(function (error) {
-                    console.log(error);
-                });
-            },
-            
-            agregarComentario(){
-                if (this.proceso === true) {
-                    return;
-                } 
-                this.proceso=true;
-                let me = this;
-                //Con axios se llama el metodo store de DepartamentoController
-                axios.post('/observacion/registrar',{
-                    'lote_id': this.lote_id,
-                    'comentario': this.observacion,
-                    'usuario': this.usuario
-                }).then(function (response){
-                    me.proceso=false;
-                    me.cerrarModal3(); //al guardar el registro se cierra el modal
-                    
-                    const toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000
-                    });
-
-                    toast({
-                    type: 'success',
-                    title: 'Observación Agregada Correctamente'
-                    })
-                }).catch(function (error){
                     console.log(error);
                 });
             },
@@ -419,6 +443,50 @@
                 let me = this;
                 //Con axios se llama el metodo update de FraccionaminetoController
                 axios.put('/ruv/cargaInfo',{
+                    'id' : this.id,
+                    'fecha': this.fecha
+                }).then(function (response){
+                    me.cerrarModal();
+                    me.listarRuvs(1);
+                    //window.alert("Cambios guardados correctamente");
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Cambios guardados correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            asignarVerificador(){
+                let me = this;
+                //Con axios se llama el metodo update de FraccionaminetoController
+                axios.put('/ruv/asignarVerificador',{
+                    'id' : this.id,
+                    'empresa': this.empresa
+                }).then(function (response){
+                    me.cerrarModal();
+                    me.listarRuvs(1);
+                    //window.alert("Cambios guardados correctamente");
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Cambios guardados correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            obtenerDTU(){
+                let me = this;
+                //Con axios se llama el metodo update de FraccionaminetoController
+                axios.put('/ruv/dtu',{
                     'id' : this.id,
                     'fecha': this.fecha
                 }).then(function (response){
@@ -479,22 +547,44 @@
                     }
 
                     })()
-
             },
 
-            listarObservacion(page, buscar){
+            revDocumental(id){
+                 
                 let me = this;
-                var url = '/observacion?page=' + page + '&buscar=' + buscar ;
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayObservacion = respuesta.observacion.data;
-                    me.pagination = respuesta.pagination;
-                    console.log(url);
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
+                //Con axios se llama el metodo update de LoteController
                 
+                 Swal({
+                    title: 'Estas seguro?',
+                    animation: false,
+                    customClass: 'animated bounceInDown',
+                    text: "La revisión documental esta completa",
+                    type: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Cancelar',
+                    
+                    confirmButtonText: 'Si!'
+                    }).then((result) => {
+
+                    if (result.value) {
+                       
+                        axios.put('/ruv/revDocumental',{
+                            'id':id
+                        }); 
+                        
+                        me.listarRuvs(me.pagination.current_page);
+                        Swal({
+                            title: 'Hecho!',
+                            text: 'Revisión documental finalizada',
+                            type: 'success',
+                            animation: false,
+                            customClass: 'animated bounceInRight'
+                        })
+                    }
+                })
+              
             },
 
             cambiarPagina(page){
@@ -507,14 +597,9 @@
 
             cerrarModal(){
                 this.modal = 0;
+                this.modal2 = 0;
+                this.observacion ='';
                 this.tituloModal = '';
-                this.avance = '';
-                this.term_ingreso = '';
-                this.term_salida = '';
-                this.num_acta='';
-                
-                this.errorActa = 0;
-                this.errorMostrarMsjActa = [];
 
             },
 
@@ -540,6 +625,23 @@
                         this.empresa = '';
                         this.tipoAccion=2;
                         this.id = data['id'];
+                        this.selectEmpresaVerif();
+                        break;
+                    }
+                    case 'dtu':{
+                        this.modal= 1;
+                        this.tituloModal='Obtención de DTU';
+                        this.fecha='';
+                        this.tipoAccion=3;
+                        this.id = data['id'];
+                        break;
+                    }
+                    case 'observaciones':{
+                        this.modal2= 1;
+                        this.tituloModal='Observaciones';
+                        this.observacion='';
+                        this.id = data['id'];
+                        this.listarObservacion(this.id);
                         break;
                     }
                 }

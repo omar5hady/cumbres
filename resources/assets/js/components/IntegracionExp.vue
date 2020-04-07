@@ -50,7 +50,7 @@
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr> 
-                                        
+                                        <th class="td2"> <i class="fa fa-hand-paper-o"></i> Detener</th>
                                         <th># Ref</th>
                                         <th>Cliente</th>
                                         <th>Asesor</th>
@@ -75,8 +75,15 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="contratos in arrayContratos" :key="contratos.id">
-                                        
+                                    <tr v-for="contratos in arrayContratos" :key="contratos.id" v-bind:style="{ backgroundColor : !contratos.detenido ? '#FFFFFF' : '#D23939'}">
+                                        <td class="td2">
+                                            <button v-if="contratos.detenido == 0" type="button" @click="detenerContrato(contratos.folio,1)" class="btn btn-danger btn-sm" title="Detener solicitud">
+                                                <i class="fa fa-hand-paper-o"></i>
+                                            </button>
+                                            <button v-if="contratos.detenido == 1" type="button" @click="continuarContrato(contratos.folio,0)" class="btn btn-success btn-sm" title="Reanudar solicitud">
+                                                <i class="fa fa-play"></i>
+                                            </button>
+                                        </td>
                                         <td class="td2">
                                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{contratos.folio}}</a>
                                             <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
@@ -115,13 +122,16 @@
                                             <td v-if="contratos.avaluo_preventivo=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
                                         </template>
                                         <template v-else>
-                                            <td class="td2">
+                                            <td class="td2" v-if="contratos.detenido == 0" >
                                                 <button type="button" @click="abrirModal('avaluo',contratos)" class="btn btn-warning btn-sm" title="Solicitar avaluo">
                                                     <i class="fa fa-file-text-o"></i>
                                                 </button>
                                                 <button type="button" @click="noAplicaAvaluo(contratos.folio)" class="btn btn-danger btn-sm" title="No aplica">
                                                     <i class="fa fa-times-circle"></i>
                                                 </button>
+                                            </td>
+                                            <td class="td2" v-else >
+                                                DETENIDO
                                             </td>
                                         </template> 
                                         <td v-text="'$'+formatNumber(contratos.totPagare - contratos.totRest)"></td>
@@ -146,7 +156,7 @@
                                             <td v-if="contratos.aviso_prev=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
                                         </template>
                                         <template v-else>
-                                            <td class="td2">
+                                            <td class="td2" v-if="contratos.detenido == 0">
                                                 <button type="button" @click="abrirModal('aviso_preventivo',contratos)" class="btn btn-warning btn-sm" title="Solicitar aviso">
                                                     <i class="fa fa-file-text-o"></i>
                                                 </button>
@@ -154,14 +164,18 @@
                                                     <i class="fa fa-times-circle"></i>
                                                 </button>
                                             </td>
+                                            <td class="td2" v-else >
+                                                DETENIDO
+                                            </td>
                                         </template>
                                         <td class="td2" v-text="contratos.credito_puente"></td>
                                         <td v-if="contratos.coacreditado == 1" class="td2" v-text="contratos.nombre_conyuge"></td>
                                         <td v-else class="td2">Sin conyuge</td>
                                         <td class="td2">
-                                            <button type="button" @click="abrirModal('integrar',contratos)" class="btn btn-primary btn-sm" title="Integrar">
+                                            <button type="button" v-if="contratos.detenido == 0" @click="abrirModal('integrar',contratos)" class="btn btn-primary btn-sm" title="Integrar">
                                                  <i class="fa fa-check-square-o"> Integrar</i>
                                             </button>
+                                            <label v-else>DETENIDO </label>
                                         </td>
                                          
                                         <td class="td2">
@@ -666,6 +680,57 @@
                 });
 
             },
+
+            detenerContrato(id,detenido){
+               
+                let me = this;
+                 
+                //Con axios se llama el metodo update de LoteController
+                axios.put('/contrato/cambiarProceso',{
+                    'id':id,
+                    'detenido' : detenido
+
+                }).then(function (response){
+                    me.listarContratos(1,me.buscar,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
+                    //window.alert("Cambios guardados correctamente");
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Contrato detenido correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+
+            },
+
+            continuarContrato(id,detenido){
+               
+                let me = this;
+                 
+                //Con axios se llama el metodo update de LoteController
+                axios.put('/contrato/cambiarProceso',{
+                    'id':id,
+                    'detenido' : detenido
+
+                }).then(function (response){
+                    me.listarContratos(1,me.buscar,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
+                    //window.alert("Cambios guardados correctamente");
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'El contrato continua correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+
+            },
+
 
             agregarComentario(){
                 if(this.proceso==true){

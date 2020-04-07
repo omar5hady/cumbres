@@ -148,7 +148,7 @@ class EmpresaController extends Controller
     public function selectEmpresaVerificadora(Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
-        $empresas = Empresa::select('empresa','id')
+        $empresas = Empresa_verificadora::select('empresa','id')
                              ->orderBy('empresa','asc')->get();
         return['empresas' => $empresas];
     }

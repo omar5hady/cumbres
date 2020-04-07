@@ -65,6 +65,8 @@ class CreateContratosTable extends Migration
             $table->float('porcentaje_exp')->default(65);
 
             $table->date('fecha_audit')->nullable();
+
+            $table->boolean('detenido')->default(0);
             
             
             $table->foreign('id')->references('id')->on('creditos');

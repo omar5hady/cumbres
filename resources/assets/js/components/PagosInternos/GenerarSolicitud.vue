@@ -67,19 +67,19 @@
                                             <td class="td2"> No aplica</td>
                                             <td class="td2 text-center" >
                                                 <button type="button" @click="verSoliCheque(orden.solic_cheque)" class="btn btn-primary btn-sm" title="Solicitud de Cheque">
-                                                    <i class="icon-eye"></i>
+                                                    <i class="fa fa-download"></i>
                                                 </button>
-                                                <button v-if="orden.check1 == null" type="button" @click="abrirModal('cheque',orden)" class="btn btn-warning btn-sm" title=" Actualizar solicitud de cheque">
+                                                <button v-if="orden.check1 == null && orden.status != 5" type="button" @click="abrirModal('cheque',orden)" class="btn btn-warning btn-sm" title=" Actualizar solicitud de cheque">
                                                     <i class="fa fa-cloud-upload"></i>
                                                 </button>
                                             </td>
                                         </template>
                                         <template v-if="orden.orden_compra == 1">
                                             <td class="td2 text-center"> 
-                                                <button type="button" @click="verOrdenCompra(orden.doc_orden)" class="btn btn-success btn-sm" title="Orden de compra">
-                                                    <i class="icon-eye"></i>
+                                                <button type="button" v-if="orden.status != 5" @click="verOrdenCompra(orden.doc_orden)" class="btn btn-success btn-sm" title="Orden de compra">
+                                                    <i class="fa fa-download"></i>
                                                 </button>
-                                                <button v-if="orden.autorizacion_orden == null" type="button" @click="abrirModal('ordenCompra',orden)" class="btn btn-warning btn-sm" title=" Actualizar orden de compra">
+                                                <button v-if="orden.autorizacion_orden == null && orden.status != 5" type="button" @click="abrirModal('ordenCompra',orden)" class="btn btn-warning btn-sm" title=" Actualizar orden de compra">
                                                     <i class="fa fa-cloud-upload"></i>
                                                 </button>
                                             </td>
@@ -87,15 +87,15 @@
                                                 Orden de compra sin autorizacion
                                             </td>
                                             <td v-if="orden.autorizacion_orden && orden.solic_cheque == null">
-                                                <button type="button" @click="abrirModal('solicitud_cheque',orden)" class="btn btn-primary btn-sm" title="Cargar solicitud de Cheque">
+                                                <button type="button" v-if="orden.status != 5" @click="abrirModal('solicitud_cheque',orden)" class="btn btn-primary btn-sm" title="Cargar solicitud de Cheque">
                                                     <i class="fa fa-pencil-square-o"></i>&nbsp;Solicitud de cheque
                                                 </button>
                                             </td>
                                             <td class="td2 text-center" v-if="orden.autorizacion_orden && orden.solic_cheque">
                                                 <button type="button" @click="verSoliCheque(orden.solic_cheque)" class="btn btn-primary btn-sm" title="Solicitud de Cheque">
-                                                    <i class="icon-eye"></i>
+                                                    <i class="fa fa-download"></i>
                                                 </button>
-                                                <button v-if="orden.check1 == null" type="button" @click="abrirModal('cheque',orden)" class="btn btn-warning btn-sm" title=" Actualizar solicitud de cheque">
+                                                <button v-if="orden.check1 == null && orden.status != 5" type="button" @click="abrirModal('cheque',orden)" class="btn btn-warning btn-sm" title=" Actualizar solicitud de cheque">
                                                     <i class="fa fa-cloud-upload"></i>
                                                 </button>
                                             </td>
@@ -108,7 +108,7 @@
                                                 Sin solicitud de cheque
                                             </td>
                                             <td class="td2 text-center" v-else-if="orden.autorizacion_orden && orden.solic_cheque && orden.cotizacion == null && orden.check2 == null || orden.solic_cheque && orden.cotizacion == null && orden.orden_compra == 0 && orden.check2 == null">
-                                                <button type="button" @click="abrirModal('cotizacion',orden)" class="btn btn-success btn-sm" title="Cotización">
+                                                <button type="button" v-if="orden.status != 5" @click="abrirModal('cotizacion',orden)" class="btn btn-success btn-sm" title="Cotización">
                                                     <i class="icon-plus"></i> Subir cotización
                                                 </button>
                                             </td>
@@ -117,9 +117,9 @@
                                             </td>
                                             <td class="td2 text-center" v-else>
                                                 <button type="button" @click="verCotizacion(orden.cotizacion)" class="btn btn-success btn-sm" title="Cotización">
-                                                    <i class="icon-eye"></i>
+                                                    <i class="fa fa-download"></i>
                                                 </button>
-                                                <button v-if="orden.check1 == null" type="button" @click="abrirModal('cotizacion',orden)" class="btn btn-warning btn-sm" title=" Actualizar cotización">
+                                                <button v-if="orden.check1 == null && orden.status != 5" type="button" @click="abrirModal('cotizacion',orden)" class="btn btn-warning btn-sm" title=" Actualizar cotización">
                                                     <i class="fa fa-cloud-upload"></i>
                                                 </button>
                                             </td>
@@ -132,7 +132,7 @@
                                                 Sin solicitud de cheque
                                             </td>
                                             <td class="td2 text-center" v-else-if="orden.autorizacion_orden && orden.solic_cheque && orden.pago_partes == null && orden.check2 == null || orden.solic_cheque && orden.pago_partes == null && orden.orden_compra == 0 && orden.check2 == null">
-                                                <button type="button" @click="abrirModal('pago_partes',orden)" class="btn btn-primary btn-sm" title="Pago en partes">
+                                                <button type="button" v-if="orden.status != 5" @click="abrirModal('pago_partes',orden)" class="btn btn-primary btn-sm" title="Pago en partes">
                                                     <i class="icon-plus"></i> Subir pago en partes
                                                 </button>
                                             </td>
@@ -141,9 +141,9 @@
                                             </td>
                                             <td class="td2 text-center" v-else>
                                                 <button type="button" @click="verPagoPartes(orden.pago_partes)" class="btn btn-primary btn-sm" title="Pago en partes">
-                                                    <i class="icon-eye"></i>
+                                                    <i class="fa fa-download"></i>
                                                 </button>
-                                                <button v-if="orden.check1 == null" type="button" @click="abrirModal('pago_partes',orden)" class="btn btn-warning btn-sm" title=" Actualizar pago en partes">
+                                                <button v-if="orden.check1 == null && orden.status != 5" type="button" @click="abrirModal('pago_partes',orden)" class="btn btn-warning btn-sm" title=" Actualizar pago en partes">
                                                     <i class="fa fa-cloud-upload"></i>
                                                 </button>
                                             </td>
@@ -156,7 +156,7 @@
                                                 Sin solicitud de cheque
                                             </td>
                                             <td class="td2 text-center" v-else-if="orden.autorizacion_orden && orden.solic_cheque && orden.factura == null && orden.check2 == null  || orden.solic_cheque && orden.factura == null && orden.orden_compra == 0 && orden.check2 == null">
-                                                <button type="button" @click="abrirModal('factura',orden)" class="btn btn-success btn-sm" title="Pago en partes">
+                                                <button type="button" v-if="orden.status != 5" @click="abrirModal('factura',orden)" class="btn btn-success btn-sm" title="Factura">
                                                     <i class="icon-plus"></i> Subir factura
                                                 </button>
                                             </td>
@@ -165,9 +165,9 @@
                                             </td>
                                             <td class="td2 text-center" v-else>
                                                 <button type="button" @click="verFactura(orden.factura)" class="btn btn-success btn-sm" title="Pago en partes">
-                                                    <i class="icon-eye"></i>
+                                                    <i class="fa fa-download"></i>
                                                 </button>
-                                                <button v-if="orden.check1 == null" type="button" @click="abrirModal('factura',orden)" class="btn btn-warning btn-sm" title=" Actualizar factura">
+                                                <button v-if="orden.check1 == null && orden.status != 5" type="button" @click="abrirModal('factura',orden)" class="btn btn-warning btn-sm" title=" Actualizar factura">
                                                     <i class="fa fa-cloud-upload"></i>
                                                 </button>
                                             </td>
@@ -185,7 +185,7 @@
                                                     <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
                                                         <a v-for="archivo in arrayDocumentos" :key="archivo.id" class="dropdown-item" href="#" v-on:click="verDocumento(archivo.archivo)">{{archivo.nombre}}</a>
                                                     </div>
-                                                    <button v-if="orden.check2 == null" type="button" @click="abrirModal('otroDocumento',orden)" class="btn btn-success btn-sm" title="Agregar otro documento">
+                                                    <button v-if="orden.check2 == null && orden.status != 5" type="button" @click="abrirModal('otroDocumento',orden)" class="btn btn-success btn-sm" title="Agregar otro documento">
                                                         <i class="icon-plus"></i>
                                                     </button>
                                                 </div>

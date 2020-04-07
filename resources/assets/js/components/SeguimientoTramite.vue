@@ -82,6 +82,7 @@
                                         <thead>
                                             <tr> 
                                                 <th></th>
+                                                <th class="td2"> <i class="fa fa-hand-paper-o"></i> Detener</th>
                                                 <th># Ref</th>
                                                 <th>Cliente</th>
                                                 <th>Asesor</th>
@@ -105,12 +106,23 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr v-for="ingresar in arrayPorIngresar" :key="ingresar.id"> 
+                                            <tr v-for="ingresar in arrayPorIngresar" :key="ingresar.id" v-bind:style="{ backgroundColor : !ingresar.detenido ? '#FFFFFF' : '#FF5F5F'}"> 
                                                 <td class="td2">
-                                                    <button type="button" class="btn btn-danger btn-sm" @click="regresarExpediente(ingresar.folio)">
+                                                    <button v-if="ingresar.detenidoo == 0" type="button" class="btn btn-danger btn-sm" @click="regresarExpediente(ingresar.folio)" title="Regresar expediente">
                                                         <i class="fa fa-exclamation-triangle"></i>
                                                     </button>
+                                                    <label v-else> DETENIDO </label>
                                                 </td>
+
+                                                <td class="td2">
+                                                    <button v-if="ingresar.detenido == 0" type="button" @click="detenerContrato(ingresar.folio,1)" class="btn btn-danger btn-sm" title="Detener solicitud">
+                                                        <i class="fa fa-hand-paper-o"></i>
+                                                    </button>
+                                                    <button v-if="ingresar.detenido == 1" type="button" @click="continuarContrato(ingresar.folio,0)" class="btn btn-success btn-sm" title="Reanudar solicitud">
+                                                        <i class="fa fa-play"></i>
+                                                    </button>
+                                                </td>
+
                                                 <td class="td2">
                                                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{ingresar.folio}}</a>
                                                     <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
@@ -169,9 +181,10 @@
 
                                             <td v-if="ingresar.aviso_prev=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
                                             <td>
-                                                <button type="button" @click="abrirModal('ingresar',ingresar)" class="btn btn-primary btn-sm" title="Ingresar">
+                                                <button v-if="ingresar.detenido == 0" type="button" @click="abrirModal('ingresar',ingresar)" class="btn btn-primary btn-sm" title="Ingresar">
                                                     <i class="fa fa-send-o"></i>
                                                 </button>
+                                                <label v-else> DETENIDO </label>
                                             </td>
                                             <td class="td2" v-text="ingresar.tipo_credito"></td>
                                             <td class="td2" v-text="ingresar.institucion"></td>
@@ -240,6 +253,7 @@
                                         <thead>
                                             <tr> 
                                                 <th></th>
+                                                <th class="td2"> <i class="fa fa-hand-paper-o"></i> Detener</th>
                                                 <th># Ref</th>
                                                 <th>Cliente</th>
                                                 <th>Asesor</th>
@@ -266,10 +280,18 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr v-for="preautorizados in arrayPreautorizados" :key="preautorizados.id"> 
+                                            <tr v-for="preautorizados in arrayPreautorizados" :key="preautorizados.id" v-bind:style="{ backgroundColor : !preautorizados.detenido ? '#FFFFFF' : '#FF5F5F'}"> 
                                                 <td class="td2">
-                                                    <button type="button" class="btn btn-danger btn-sm" @click="regresarExpediente(preautorizados.folio)">
+                                                    <button v-if="preautorizados.detenido == 0" type="button" class="btn btn-danger btn-sm" @click="regresarExpediente(preautorizados.folio)">
                                                         <i class="fa fa-exclamation-triangle"></i>
+                                                    </button>
+                                                </td>
+                                                <td class="td2">
+                                                    <button v-if="preautorizados.detenido == 0" type="button" @click="detenerContrato(preautorizados.folio,1)" class="btn btn-danger btn-sm" title="Detener solicitud">
+                                                        <i class="fa fa-hand-paper-o"></i>
+                                                    </button>
+                                                    <button v-if="preautorizados.detenido == 1" type="button" @click="continuarContrato(preautorizados.folio,0)" class="btn btn-success btn-sm" title="Reanudar solicitud">
+                                                        <i class="fa fa-play"></i>
                                                     </button>
                                                 </td>
                                                 <td class="td2">
@@ -360,12 +382,13 @@
                                                 </template>
                                                 <template v-else>
                                                     <td class="td2">
-                                                        <button type="button" @click="abrirModal('autorizado',preautorizados)" class="btn btn-success btn-sm" title="Inscribir Infonavit">
+                                                        <button v-if="preautorizados.detenido == 0" type="button" @click="abrirModal('autorizado',preautorizados)" class="btn btn-success btn-sm" title="Inscribir Infonavit">
                                                             <i class="fa fa-calendar-check-o"></i>
                                                         </button>
-                                                        <button type="button" @click="noAplicaInfonavit(preautorizados.folio)" class="btn btn-danger btn-sm" title="No aplica">
+                                                        <button v-if="preautorizados.detenido == 0" type="button" @click="noAplicaInfonavit(preautorizados.folio)" class="btn btn-danger btn-sm" title="No aplica">
                                                             <i class="fa fa-times-circle"></i>
                                                         </button>
+                                                        <label v-else> DETENIDO </label>
                                                     </td>
                                                 </template> 
 
@@ -429,6 +452,7 @@
                                         <thead>
                                             <tr> 
                                                 <th></th>
+                                                <th class="td2"> <i class="fa fa-hand-paper-o"></i> Detener</th>
                                                 <th># Ref</th>
                                                 <th>Cliente</th>
                                                 <th>Asesor</th>
@@ -456,10 +480,18 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr v-for="liquidacion in arrayLiquidados" :key="liquidacion.id"> 
+                                            <tr v-for="liquidacion in arrayLiquidados" :key="liquidacion.id" v-bind:style="{ backgroundColor : !liquidacion.detenido ? '#FFFFFF' : '#FF5F5F'}"> 
                                                 <td class="td2">
-                                                    <button v-if="!liquidacion.fecha_liquidacion" type="button" class="btn btn-danger btn-sm" @click="regresarExpediente(liquidacion.folio)">
+                                                    <button v-if="!liquidacion.fecha_liquidacion && liquidacion.detenido == 0" type="button" class="btn btn-danger btn-sm" @click="regresarExpediente(liquidacion.folio)">
                                                         <i class="fa fa-exclamation-triangle"></i>
+                                                    </button>
+                                                </td>
+                                                <td class="td2">
+                                                    <button v-if="liquidacion.detenido == 0" type="button" @click="detenerContrato(liquidacion.folio,1)" class="btn btn-danger btn-sm" title="Detener solicitud">
+                                                        <i class="fa fa-hand-paper-o"></i>
+                                                    </button>
+                                                    <button v-if="liquidacion.detenido == 1" type="button" @click="continuarContrato(liquidacion.folio,0)" class="btn btn-success btn-sm" title="Reanudar solicitud">
+                                                        <i class="fa fa-play"></i>
                                                     </button>
                                                 </td>
                                                 <td class="td2">
@@ -549,11 +581,11 @@
                                                     <td v-if="liquidacion.fecha_infonavit=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
                                                 </template>
                                                 <td class="td2">
-                                                    <button v-if="!liquidacion.fecha_liquidacion" title="Generar liquidación" type="button" class="btn btn-danger pull-right" 
+                                                    <button v-if="!liquidacion.fecha_liquidacion && liquidacion.detenido == 0" title="Generar liquidación" type="button" class="btn btn-danger pull-right" 
                                                         @click="abrirModal('liquidacion',liquidacion)">Generar</button>
-                                                    
-                                                    <button v-if="liquidacion.liquidado == 0 && liquidacion.fecha_liquidacion" title="Intereses" type="button" class="btn btn-danger pull-right" 
+                                                    <button v-else-if="liquidacion.liquidado == 0 && liquidacion.fecha_liquidacion && liquidacion.detenido == 0" title="Intereses" type="button" class="btn btn-danger pull-right" 
                                                         @click="abrirModal('intereses',liquidacion)">Generar intereses</button>
+                                                    <label v-else> DETENIDO </label>
             
                                                 </td>
                                                 
@@ -2215,6 +2247,62 @@
                 });
             },
 
+            detenerContrato(id,detenido){
+               
+                let me = this;
+                 
+                //Con axios se llama el metodo update de LoteController
+                axios.put('/contrato/cambiarProceso',{
+                    'id':id,
+                    'detenido' : detenido
+
+                }).then(function (response){
+                    me.listarIngresoExp(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarAutorizados(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarLiquidacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarProgramacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    //window.alert("Cambios guardados correctamente");
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Contrato detenido correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+
+            },
+
+            continuarContrato(id,detenido){
+               
+                let me = this;
+                 
+                //Con axios se llama el metodo update de LoteController
+                axios.put('/contrato/cambiarProceso',{
+                    'id':id,
+                    'detenido' : detenido
+
+                }).then(function (response){
+                    me.listarIngresoExp(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarAutorizados(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarLiquidacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarProgramacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    //window.alert("Cambios guardados correctamente");
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'El contrato continua correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+
+            },
+
             SolicitarEntrega(){
                 if(this.proceso==true){
                     return;
@@ -2886,6 +2974,8 @@
                         me.cerrarModal();
                         me.listarIngresoExp(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
                         me.listarAutorizados(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                        me.listarLiquidacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                        me.listarProgramacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
                         swal(
                         'Hecho!',
                         'No aplica.',

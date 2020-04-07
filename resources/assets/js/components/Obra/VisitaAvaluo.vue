@@ -27,24 +27,45 @@
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
 
+                                    <input v-else type="date"  v-model="buscar" @keyup.enter="listarLotes(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
+
                                     <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa" @click="selectManzanas(buscar,b_etapa)"> 
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
-
-                                    
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" @keyup.enter="listarLotes(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-model="b_manzana" >
-                                        <option value="">Manzana</option>
-                                        <option v-for="manzana in arrayAllManzanas" :key="manzana.manzana" :value="manzana.manzana" v-text="manzana.manzana"></option>
-                                    </select>
-                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
-
-                                    <input v-else type="date"  v-model="buscar" @keyup.enter="listarLotes(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarLotes(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                    
                                 </div>
                             </div>
                         </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                   
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" @keyup.enter="listarLotes(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-model="b_manzana" >
+                                        <option value="">Manzana</option>
+                                        <option v-for="manzana in arrayAllManzanas" :key="manzana.manzana" :value="manzana.manzana" v-text="manzana.manzana"></option>
+                                    </select>
+
+                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
+
+                                    <select class="form-control" @keyup.enter="listarLotes(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-model="b_status" >
+                                        <option value="">Status</option>
+                                        <option value="0"> Disponibles </option>
+                                        <option value="1"> Vendidas </option>
+                                        <option value="2"> Individualizadas </option>
+                                    </select>
+
+                                    <button type="submit" @click="listarLotes(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <a class="btn btn-success" v-bind:href="'/licencias/excelVisita?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio + '&status=' + b_status" >
+                                        <i class="icon-pencil"></i>&nbsp;Excel
+                                    </a>
+                                   
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
                         <div class="table-responsive">
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
@@ -214,7 +235,8 @@
                 buscar : '',
                 b_etapa: '',
                 b_manzana: '',
-                b_lote: ''
+                b_lote: '',
+                b_status : ''
                
             }
         },
@@ -255,7 +277,7 @@
             /**Metodo para mostrar los registros */
             listarLotes(page, buscar, b_etapa, b_manzana, b_lote, criterio){
                 let me = this;
-                var url = '/licencias/indexVisita?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio;
+                var url = '/licencias/indexVisita?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio + '&status=' + me.b_status;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLotes = respuesta.lotes.data;

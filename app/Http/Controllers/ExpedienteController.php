@@ -65,6 +65,7 @@ class ExpedienteController extends Controller
                 'contratos.integracion',
                 'lotes.fraccionamiento_id',
                 'avaluos.pdf',
+                'contratos.detenido',
                 DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
                             WHERE pagos_contratos.tipo_pagare = 0
                             and pagos_contratos.contrato_id = contratos.id
@@ -742,6 +743,7 @@ class ExpedienteController extends Controller
                 'contratos.aviso_prev',
                 'contratos.aviso_prev_venc',
                 'contratos.saldo',
+                'contratos.detenido',
                 'lotes.regimen_condom',
                 'lotes.credito_puente',
                 DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
@@ -1114,6 +1116,7 @@ class ExpedienteController extends Controller
             ->select(
                 'contratos.id as folio',
                 'contratos.saldo',
+                'contratos.detenido',
                 DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                 DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
                 'creditos.fraccionamiento as proyecto',
@@ -1611,6 +1614,7 @@ class ExpedienteController extends Controller
                 ->select(
                     'contratos.id as folio',
                     'contratos.saldo',
+                    'contratos.detenido',
                     DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                     DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
                     'creditos.fraccionamiento as proyecto',

@@ -244,12 +244,19 @@ Route::group(['middleware' => ['auth']],function(){
 
     ///////////////////       RUTAS RUV   ////////////////////////////////////
         Route::get('/ruv/indexLotes','RuvController@indexLotes');
+        Route::get('/ruv/excelRuv','RuvController@excelRuv');
         Route::get('/ruv/historialSolicitudes','RuvController@historialSolicitudes');
         Route::post('/ruv/solicitar','RuvController@solicitarRuv');
 
         Route::get('/ruv/indexRuv','RuvController@indexRuv');
         Route::put('/ruv/cargaInfo','RuvController@cargaInfo');
         Route::put('/ruv/obtenerCuv','RuvController@obtenerCuv');
+        Route::put('/ruv/asignarVerificador','RuvController@asignarVerificador');
+        Route::put('/ruv/revDocumental','RuvController@revDocumental');
+        Route::put('/ruv/dtu','RuvController@dtu');
+
+        Route::get('/ruv/indexComentarios','RuvController@indexComentarios');
+        Route::post('/ruv/storeComentarios','RuvController@storeComentarios');
 
     ///////////////// RUTAS SOLICITUDES DE PAGO ////////////////////
         Route::get('/solic_pago/indexSolicitudes','SolicitudPagosController@indexSolicitudes');
@@ -272,6 +279,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/solic_pago/vistoBuenoSolicitud','SolicitudPagosController@vistoBuenoSolicitud');
         Route::post('/solic_pago/vistoBuenoOrden','SolicitudPagosController@vistoBuenoOrden');
         Route::post('/solic_pago/pagarSolicitud','SolicitudPagosController@pagarSolicitud');
+        Route::post('/solic_pago/cancelarSolicitud','SolicitudPagosController@cancelarSolicitud');
 
     ///////////////////       RUTAS LICENCIA-ACTA  ////////////////////////////////////
         Route::get('/acta_terminacion','LicenciasController@indexActa');
@@ -365,6 +373,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/iniobra/pdf/{id}','IniObraController@contratoObraPDF')->name('contratos.pdf');
         Route::get('/iniobra/relacion/excel/{id}','IniObraController@exportExcel');
         Route::get('/licencias/indexVisita','LicenciasController@indexVisita');
+        Route::get('/licencias/excelVisita','LicenciasController@excelVisita');
         Route::put('/licencias/progFechaVisita','LicenciasController@AsigFechaVisita');
 
         Route::post('/formSubmitContratoObra/{id}','IniObraController@formSubmitContratoObra'); //carga de Avaluo
@@ -486,6 +495,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/contratos/validarLotes','ContratoController@validarLoteEnContrato');
 
         Route::post('/contratos/auditar','ObsAuditoriaController@auditar');
+
+        Route::put('/contrato/cambiarProceso','ContratoController@cambiarProceso');
 
     /************************** RUTAS Depositos y Pagares ***************************/
         Route::get('/pagares','DepositoController@indexPagares');

@@ -23,4 +23,8 @@ class Ruv extends Model
     {
         return $this->belongsTo('App\Personal');
     }
+
+    public function obs_ruv(){
+        return $this->hasMany('App\Obs_ruv');
+    }
 }

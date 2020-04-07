@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Auth;
+use DB;
+use App\User;
 use File;
+use App\Notifications\NotifyAdmin;
 use Carbon\Carbon;
 use App\Documentos_pago;
 use App\Solicitudes_pago;
@@ -28,6 +31,7 @@ class SolicitudPagosController extends Controller
                                             'solicitudes_pagos.pago_partes','solicitudes_pagos.created_at',
                                             'solicitudes_pagos.factura',
                                             'solicitudes_pagos.check1',
+                                            'solicitudes_pagos.fecha_status',
                                             'solicitudes_pagos.check2',
                                             'solicitudes_pagos.check3',
                                             'solicitudes_pagos.orden_vistoBueno',
@@ -298,6 +302,22 @@ class SolicitudPagosController extends Controller
         $observacion->observacion = 'Orden de compra autorizada.';
         $observacion->usuario = Auth::user()->usuario;
         $observacion->save();
+
+        $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', Auth::user()->id)->get();
+                $fecha = Carbon::now();
+                $msj = "La orden de compra #" . $request->id . ' ha sido autorizada';
+                $arreglo = [
+                    'notificacion' => [
+                        'usuario' => $imagenUsuario[0]->usuario,
+                        'foto' => $imagenUsuario[0]->foto_user,
+                        'fecha' => $fecha,
+                        'msj' => $msj,
+                        'titulo' => 'Orden de compra autorizada'
+                    ]
+                ];
+
+
+                User::findOrFail($solicitud->user_id)->notify(new NotifyAdmin($arreglo));
     }
 
     public function autorizarSolicitud(Request $request){
@@ -311,9 +331,25 @@ class SolicitudPagosController extends Controller
 
         $observacion = new Obs_orden_pago();
         $observacion->solicitud_id = $request->id;
-        $observacion->observacion = 'Solicitud de cheque autorizada.';
+        $observacion->observacion = 'Solicitud de cheque autorizado.';
         $observacion->usuario = Auth::user()->usuario;
         $observacion->save();
+
+        $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', Auth::user()->id)->get();
+                $fecha = Carbon::now();
+                $msj = "La solicitud de cheque #" . $request->id . ' ha sido autorizado';
+                $arreglo = [
+                    'notificacion' => [
+                        'usuario' => $imagenUsuario[0]->usuario,
+                        'foto' => $imagenUsuario[0]->foto_user,
+                        'fecha' => $fecha,
+                        'msj' => $msj,
+                        'titulo' => 'Solicitud de Cheque autorizado'
+                    ]
+                ];
+
+
+                User::findOrFail($solicitud->user_id)->notify(new NotifyAdmin($arreglo));
     }
 
     public function vistoBuenoSolicitud(Request $request){
@@ -362,6 +398,38 @@ class SolicitudPagosController extends Controller
         $observacion->observacion = 'La solicitud ha sido pagada';
         $observacion->usuario = Auth::user()->usuario;
         $observacion->save();
+    }
+
+    public function cancelarSolicitud(Request $request){
+        if(!$request->ajax())return redirect('/');
+        $fecha = Carbon::now();
+
+        $solicitud = Solicitudes_pago::findOrFail($request->id);
+        $solicitud->status = 5;
+        $solicitud->fecha_status = $fecha;
+        $solicitud->save(); //Insert
+
+        $observacion = new Obs_orden_pago();
+        $observacion->solicitud_id = $request->id;
+        $observacion->observacion = 'La solicitud ha sido cancelada. Motivo: '.$request->motivo;
+        $observacion->usuario = Auth::user()->usuario;
+        $observacion->save();
+
+        $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', Auth::user()->id)->get();
+                $fecha = Carbon::now();
+                $msj = "La solicitud #" . $request->id . ' ha sido cancelado';
+                $arreglo = [
+                    'notificacion' => [
+                        'usuario' => $imagenUsuario[0]->usuario,
+                        'foto' => $imagenUsuario[0]->foto_user,
+                        'fecha' => $fecha,
+                        'msj' => $msj,
+                        'titulo' => 'Solicitud Cancelada'
+                    ]
+                ];
+
+
+                User::findOrFail($solicitud->user_id)->notify(new NotifyAdmin($arreglo));
     }
 
 

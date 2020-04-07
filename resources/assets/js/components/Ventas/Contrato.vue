@@ -17,7 +17,7 @@
                             <i class="fa fa-mail-reply"></i>&nbsp;Regresar
                         </button>
                         <!-- boton para cambiar a modo de actualizar -->
-                         <button type="button" v-if="listado == 4 && btn_actualizar == 0 && status==1 && rolId != 2" @click="btn_actualizar = 1" class="btn btn-warning">
+                         <button type="button" v-if="listado == 4 && btn_actualizar == 0 && status==1 && rolId != 2 && detenido == 0" @click="btn_actualizar = 1" class="btn btn-warning">
                             <i class="icon-pencil"></i>&nbsp;Vista actualizar
                         </button>
                         <button type="button" v-if="listado == 4 && btn_actualizar == 1 && status==1 && rolId != 2" @click="btn_actualizar = 0" class="btn btn-warning">
@@ -25,7 +25,7 @@
                         </button>
                     <!-- form para cambiar el status de los contratos -->
                         <form action="" method="post" v-if="listado == 4 && status == 1 && liquidado != 1 && rolId != 2 || listado == 4 && status == 3 && liquidado != 1 && rolId != 2">
-                            <div style="text-align: right;">
+                            <div style="text-align: right;" v-if="detenido == 0">
                                     <div>
                                         <div>
                                             <label for="text-input"> <strong>Status</strong> </label>
@@ -290,7 +290,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="contrato in arrayContratos" :key="contrato.id" v-on:dblclick="verContrato(contrato)">
+                                        <tr v-for="contrato in arrayContratos" :key="contrato.id" v-on:dblclick="verContrato(contrato)" v-bind:style="{ backgroundColor : !contrato.detenido ? '#FFFFFF' : '#D23939'}">
                                             <td class="td2" v-text="contrato.id"></td>
                                             <td class="td2" v-text="contrato.nombre + ' ' + contrato.apellidos "></td>
                                             <td class="td2" v-text="contrato.vendedor_nombre + ' ' + contrato.vendedor_apellidos "></td>
@@ -1848,6 +1848,7 @@
                 id_contrato:0,
                 proceso:false,
                 change_credito:0,
+                detenido:0,
 
                 arraySimulaciones:[],
                 arrayContratos:[],
@@ -2881,6 +2882,7 @@
             },
 
             verContrato(data = []){
+                this.detenido = data['detenido'];
                 this.publicidad_id = data['publicidadId'];
                 this.nombre_recomendado = data['nombre_recomendado'];
                 this.prospecto_id = data['prospecto_id'];

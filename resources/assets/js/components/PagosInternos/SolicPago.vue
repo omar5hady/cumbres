@@ -45,7 +45,7 @@
                                     <tr>
                                         <th colspan="4"></th>
                                         <th colspan="3" class="text-center">Documentos</th>
-                                        <th colspan="2"></th>
+                                        <th colspan="3"></th>
                                     </tr>
                                     <tr>
                                         <th>#</th>
@@ -56,7 +56,7 @@
                                         <th class="td2">Solicitud de Cheque</th>
                                         <th>Otros</th>
                                         <th>Pago</th>
-                                        <th>Status</th>
+                                        <th colspan="2">Status</th>
                                         <th>Observaciones</th>
                                     </tr>
                                 </thead>
@@ -71,12 +71,12 @@
                                             <td class="td2"> No aplica</td>
                                             <td class="td2 text-center" >
                                                 <button type="button" @click="verSoliCheque(orden.solic_cheque)" class="btn btn-primary btn-sm" title="Solicitud de Cheque">
-                                                    <i class="icon-eye"></i>
+                                                    <i class="fa fa-download"></i>
                                                 </button>
-                                                <button v-if="orden.check1 == null" type="button" @click="vistoBuenoSolicitud(orden.id)" class="btn btn-light btn-sm" title=" Visto bueno de cheque">
+                                                <button v-if="orden.check1 == null && orden.status != 5" type="button" @click="vistoBuenoSolicitud(orden.id)" class="btn btn-light btn-sm" title=" Visto bueno de cheque">
                                                     <i class="fa fa-check"></i>
                                                 </button>
-                                                <button v-if="orden.check2 == null && orden.check1" type="button" @click="autorizarSolicitud(orden.id)" class="btn btn-dark btn-sm" title=" Autorizar solicitud de cheque">
+                                                <button v-if="orden.check2 == null && orden.check1 && orden.status != 5" type="button" @click="autorizarSolicitud(orden.id)" class="btn btn-dark btn-sm" title=" Autorizar solicitud de cheque">
                                                     <i class="fa fa-check"></i>
                                                 </button>
                                                 <span v-if="orden.check2" style="font-size: 0.85em; text-align:center;" class="badge badge-dark" v-text="'  Autorizado el: ' + this.moment(orden.check2).locale('es').format('DD/MMM/YYYY')"></span>
@@ -86,30 +86,36 @@
                                         <template v-if="orden.orden_compra == 1">
                                             <td class="td2 text-center"> 
                                                 <button type="button" @click="verOrdenCompra(orden.doc_orden)" class="btn btn-success btn-sm" title="Orden de compra">
-                                                    <i class="icon-eye"></i>
+                                                    <i class="fa fa-download"></i>
                                                 </button>
-                                                <button v-if="orden.orden_vistoBueno == null && orden.autorizacion_orden == null" type="button" @click="vistoBuenoOrden(orden.id)" class="btn btn-default btn-sm" title=" Visto bueno orden de compra">
+                                                <button v-if="orden.orden_vistoBueno == null && orden.autorizacion_orden == null && orden.status != 5" type="button" @click="vistoBuenoOrden(orden.id)" class="btn btn-default btn-sm" title=" Visto bueno orden de compra">
                                                     <i class="fa fa-check"></i>
                                                 </button>
-                                                <button v-if="orden.autorizacion_orden == null && orden.orden_vistoBueno" type="button" @click="autorizarOrden(orden.id)" class="btn btn-dark btn-sm" title=" Autorizar orden de compra">
+                                                <button v-if="orden.autorizacion_orden == null && orden.orden_vistoBueno && orden.status != 5" type="button" @click="autorizarOrden(orden.id)" class="btn btn-dark btn-sm" title=" Autorizar orden de compra">
                                                     <i class="fa fa-check"></i>
                                                 </button>
                                                 <span v-if="orden.autorizacion_orden" style="font-size: 0.85em; text-align:center;" class="badge badge-dark" v-text="'  Autorizado el: ' + this.moment(orden.autorizacion_orden).locale('es').format('DD/MMM/YYYY')"></span>
                                             </td>
-                                            <td v-if="orden.autorizacion_orden == null">
+                                            <td v-if="orden.autorizacion_orden == null && orden.status != 5">
                                                 Orden de compra sin autorizacion
                                             </td>
-                                            <td v-if="orden.autorizacion_orden && orden.solic_cheque == null">
+                                            <td v-if="orden.autorizacion_orden == null && orden.status == 5">
+                                                <span class="badge badge-danger">Cancelado</span>
+                                            </td>
+                                            <td v-if="orden.autorizacion_orden && orden.solic_cheque == null && orden.status != 5">
                                                 Sin solicitud de cheque
+                                            </td>
+                                            <td v-if="orden.autorizacion_orden && orden.solic_cheque == null && orden.status == 5">
+                                                <span class="badge badge-danger">Cancelado</span>
                                             </td>
                                             <td class="td2 text-center" v-if="orden.autorizacion_orden && orden.solic_cheque">
                                                 <button type="button" @click="verSoliCheque(orden.solic_cheque)" class="btn btn-primary btn-sm" title="Solicitud de Cheque">
-                                                    <i class="icon-eye"></i>
+                                                    <i class="fa fa-download"></i>
                                                 </button>
-                                                <button v-if="orden.check1 == null" type="button" @click="vistoBuenoSolicitud(orden.id)" class="btn btn-light btn-sm" title=" Visto bueno de cheque">
+                                                <button v-if="orden.check1 == null && orden.status != 5" type="button" @click="vistoBuenoSolicitud(orden.id)" class="btn btn-light btn-sm" title=" Visto bueno de cheque">
                                                     <i class="fa fa-check"></i>
                                                 </button>
-                                                <button v-if="orden.check2 == null && orden.check1" type="button" @click="autorizarSolicitud(orden.id)" class="btn btn-dark btn-sm" title=" Autorizar solicitud de cheque">
+                                                <button v-if="orden.check2 == null && orden.check1 && orden.status != 5" type="button" @click="autorizarSolicitud(orden.id)" class="btn btn-dark btn-sm" title=" Autorizar solicitud de cheque">
                                                     <i class="fa fa-check"></i>
                                                 </button>
                                                 <span v-if="orden.check2" style="font-size: 0.85em; text-align:center;" class="badge badge-dark" v-text="'  Autorizado el: ' + this.moment(orden.check2).locale('es').format('DD/MMM/YYYY')"></span>
@@ -118,11 +124,17 @@
                                         
 
                                         <!-- Otros documentos -->
-                                            <td class="td2" v-if="orden.autorizacion_orden == null && orden.orden_compra == 1">
+                                            <td class="td2" v-if="orden.autorizacion_orden == null && orden.orden_compra == 1 && orden.status != 5">
                                                 Orden de compra sin autorizacion
                                             </td>
-                                            <td class="td2" v-else-if="orden.autorizacion_orden && orden.solic_cheque == null || orden.solic_cheque == null && orden.orden_compra == 0">
+                                            <td class="td2" v-else-if="orden.autorizacion_orden == null && orden.orden_compra == 1 && orden.status == 5">
+                                                <span class="badge badge-danger">Cancelado</span>
+                                            </td>
+                                            <td class="td2" v-else-if="orden.autorizacion_orden && orden.solic_cheque == null && orden.status != 5|| orden.solic_cheque == null && orden.orden_compra == 0 && orden.status != 5">
                                                 Sin solicitud de cheque
+                                            </td>
+                                            <td class="td2" v-else-if="orden.autorizacion_orden && orden.solic_cheque == null && orden.status == 5|| orden.solic_cheque == null && orden.orden_compra == 0 && orden.status == 5">
+                                                <span class="badge badge-danger">Cancelado</span>
                                             </td>
                                             <td class="td2 text-center" v-else>
                                                 <div class="form-group row text-center">
@@ -133,23 +145,33 @@
                                                 </div>
                                             </td>
                                         
-                                        <td class="td2 text-center">
-                                            <label v-if="orden.check2 == null"> Solicitud sin autorizar</label>
-                                            <button v-else-if="orden.check3 == null" type="button" @click="pagarSolicitud(orden.id)" class="btn btn-success btn-sm" title=" Guardar pago">
-                                                <i class="fa fa-money"></i>
-                                            </button>
-                                            <span v-else class="badge badge-success">Pagado el: {{this.moment(orden.check3).locale('es').format('DD/MMM/YYYY')}}</span>
-                                        </td>
-                                        
-                                        <td class="td2">
-                                            <span v-if="orden.status == null" class="badge badge-warning">Pendiente</span>
-                                            <span v-if="orden.status == 0" class="badge badge-warning">Orden de compra en proceso</span>
-                                            <span v-if="orden.status == 1" class="badge badge-primary">Orden de compra autorizada</span>
-                                            <span v-if="orden.status == 2" class="badge badge-primary">Solicitud de cheque en proceso</span>
-                                            <span v-if="orden.status == 3" class="badge badge-primary">Solicitud de cheque autorizado</span>
-                                            <span v-if="orden.status == 4" class="badge badge-success">Solicitud pagada</span>
-                                            <span v-if="orden.status == 5" class="badge badge-danger">Cancelado</span>
-                                        </td>
+                                        <!-- Pagar -->
+                                            <td class="td2 text-center">
+                                                <label v-if="orden.check2 == null && orden.status != 5"> Solicitud sin autorizar</label>
+                                                <span v-else-if="orden.check2 == null && orden.status == 5" class="badge badge-danger">Cancelado</span>
+                                                <button v-else-if="orden.check3 == null && orden.status != 5" type="button" @click="pagarSolicitud(orden.id)" class="btn btn-success btn-sm" title=" Guardar pago">
+                                                    <i class="fa fa-money"></i>
+                                                </button>
+                                                <span v-else-if="orden.check3 == null && orden.status == 5" class="badge badge-danger">Cancelado</span>
+                                                <span v-else class="badge badge-success">Pagado el: {{this.moment(orden.check3).locale('es').format('DD/MMM/YYYY')}}</span>
+                                            </td>
+
+                                        <!--STATUS-->
+                                            <td class="td2 text-center">
+                                                <span v-if="orden.status == null" class="badge badge-warning">Pendiente</span>
+                                                <span v-if="orden.status == 0" class="badge badge-warning">Orden de compra en proceso</span>
+                                                <span v-if="orden.status == 1" class="badge badge-primary">Orden de compra autorizada</span>
+                                                <span v-if="orden.status == 2" class="badge badge-primary">Solicitud de cheque en proceso</span>
+                                                <span v-if="orden.status == 3" class="badge badge-primary">Solicitud de cheque autorizado</span>
+                                                <span v-if="orden.status == 4" class="badge badge-success">Solicitud pagada</span>
+                                                <span v-if="orden.status == 5" class="badge badge-danger">Cancelado</span>
+                                            </td>
+                                            <td class="td2 text-center">
+                                                <button v-if="orden.status < 4" type="button" @click="cancelarSolicitud(orden.id)" class="btn btn-danger btn-sm" title="Cancelar">
+                                                    <i class="fa fa-window-close"></i>
+                                                </button>
+                                                <span v-else-if="orden.status == 5" class="badge badge-danger">Cancelado el: {{this.moment(orden.fecha_status).locale('es').format('DD/MMM/YYYY')}}</span>
+                                            </td>
                                         <td>
                                             <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
                                                     @click="abrirModal('observaciones',orden)">Observaciones</button>
@@ -376,7 +398,6 @@
                     console.log(error);
                 });
             },
-
 
             cambiarPagina(page){
                 let me = this;
@@ -612,6 +633,50 @@
 
             verOrdenCompra(nombre){
                 window.open('/files/solicPago/ordenCompra/'+ nombre, '_blank')
+            },
+
+            cancelarSolicitud(id){
+
+                let me = this;
+                Swal.fire({
+                    type:'warning',
+                    title: 'Cancelar solicitud',
+                    text: "Este proceso no se puede revertir",
+                    showCancelButton : true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Aceptar',
+                    cancelButtonText: 'Cancelar',
+                    input:'text',
+                    inputAttributes:{
+                        maxlength:300,
+                        autocapitalize:'off'
+                    },
+                    inputValidator:(text)=>{
+                        if(!text) return "Escribir el motivo de cancelación";
+                    }
+                }).then((text)=>{
+                    if(text.value){
+                        axios.post('/solic_pago/cancelarSolicitud',{
+                            'id': id,
+                            'motivo': text.value
+                        }).then(function (response){
+                            me.cerrarModal();
+                            me.listarOrdenes(1);
+                            //window.alert("Cambios guardados correctamente");
+                            swal({
+                                position: 'top-end',
+                                type: 'success',
+                                title: 'Solcitud cancelada correctamente',
+                                showConfirmButton: false,
+                                timer: 1500
+                                })
+                        }).catch(function (error){
+                            console.log(error);
+                        });
+                    }
+                })
+                    
             },
 
             
