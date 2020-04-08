@@ -4526,7 +4526,6 @@ class ContratoController extends Controller
             ->where('id', '=', $request->lote_id)->get();
 
         
-
         try {
             DB::beginTransaction();
             $contrato = new Contrato();

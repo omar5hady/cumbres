@@ -12,6 +12,7 @@ use App\Expediente;
 use App\Lote;
 use Excel;
 use Carbon\Carbon;
+use App\Historial_descartado;
 
 use App\Cliente;
 use App\Vendedor;
@@ -156,6 +157,26 @@ class ReportesController extends Controller
                     ->where('clientes.clasificacion','!=',7)
                     ->count();
 
+                $vendedor->nv = Historial_descartado::where('vendedor_id','=',$vendedor->id)
+                                ->count();
+
+                if($vendedor->clientes != 0){
+                    $vendedor->por_venta=(($vendedor->ventas-$vendedor->canceladas)/$vendedor->clientes)*100;
+                    $vendedor->por_cancel=(($vendedor->canceladas)/$vendedor->clientes)*100;
+                }
+                else{
+                    $vendedor->por_venta=0;
+                    $vendedor->por_cancel=0;
+                }
+
+                if($vendedor->nv != 0){
+                    $vendedor->por_bat=($vendedor->nv/$vendedor->clientes)*100;
+                }
+                else{;
+                    $vendedor->por_bat=0;
+                }
+                
+
             }
             else{
                 $mostrar = 1;
@@ -221,6 +242,14 @@ class ReportesController extends Controller
                     ->whereBetween('contratos.fecha', [$fecha1,$fecha90])
                     ->count();
 
+                $vendedor->nv = Historial_descartado::where('vendedor_id','=',$vendedor->id)
+                                        ->whereBetween('created_at', [$fecha1,$fecha2])
+                                        ->count();
+
+                $vendedor->por_venta=(($vendedor->ventas-$vendedor->canceladas)/$vendedor->clientes)*100;
+                $vendedor->por_cancel=(($vendedor->canceladas)/$vendedor->clientes)*100;
+                $vendedor->por_bat=($vendedor->clientes/$vendedor->nv)*100;
+
             }
             
 
@@ -231,6 +260,276 @@ class ReportesController extends Controller
         return ['vendedores' => $vendedores,
             'mostrar' => $mostrar
         ];
+    }
+
+    public function reporteLotesVentas(Request $request){
+        if(!$request->ajax())return redirect('/');
+        $lotes = Etapa::join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
+                        ->select('fraccionamientos.id as proyectoId','etapas.id as etapaId',
+                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto')
+                        ->orderBy('proyecto','asc')->orderBy('num_etapa','asc')->get();
+
+        $total1= $total2= $total3= $total4= $total5= $total6= $total7= $total8= $total9 = 0;
+
+        foreach($lotes as $index => $lote){
+            $lote->lotes = Lote::where('fraccionamiento_id','=',$lote->proyectoId)
+                                ->where('etapa_id','=',$lote->etapaId)->count();
+
+            $lote->terminadaDisponible = Lote::join('licencias','lotes.id','=','licencias.id')
+                                ->where('licencias.avance','>',95)
+                                ->where('lotes.contrato','=',0)
+                                ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
+                                ->where('lotes.etapa_id','=',$lote->etapaId)->count();
+
+            $lote->procesoDisponible = Lote::join('licencias','lotes.id','=','licencias.id')
+                                ->whereBetween('licencias.avance', [25, 95])
+                                ->where('lotes.contrato','=',0)
+                                ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
+                                ->where('lotes.etapa_id','=',$lote->etapaId)->count();
+
+            $lote->sinAvanceDisponible = Lote::join('licencias','lotes.id','=','licencias.id')
+                                ->where('licencias.avance','<',25)
+                                ->where('lotes.contrato','=',0)
+                                ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
+                                ->where('lotes.etapa_id','=',$lote->etapaId)->count();
+
+            $lote->cobradas = Contrato::join('creditos','contratos.id', '=', 'creditos.id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->where('contratos.status','=',3)
+                                ->where('contratos.saldo','<=',0)
+                                ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
+                                ->where('lotes.etapa_id','=',$lote->etapaId)
+                                ->count();
+
+            $lote->procVendidaNoCobrada = Contrato::join('creditos','contratos.id', '=', 'creditos.id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->join('licencias','lotes.id','=','licencias.id')
+                                ->where('contratos.status','=',3)
+                                ->whereBetween('licencias.avance', [0, 95])
+                                ->where('contratos.saldo','>',0)
+                                ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
+                                ->where('lotes.etapa_id','=',$lote->etapaId)
+                                ->orWhere('contratos.status','=',1)
+                                ->whereBetween('licencias.avance', [0, 95])
+                                ->where('contratos.saldo','>',0)
+                                ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
+                                ->where('lotes.etapa_id','=',$lote->etapaId)
+                                ->count();
+
+            $lote->termVendidaNoCobrada = Contrato::join('creditos','contratos.id', '=', 'creditos.id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->join('licencias','lotes.id','=','licencias.id')
+                                ->where('contratos.status','=',3)
+                                ->where('licencias.avance','>',95)
+                                ->where('contratos.saldo','>',0)
+                                ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
+                                ->where('lotes.etapa_id','=',$lote->etapaId)
+                                ->orWhere('contratos.status','=',1)
+                                ->where('licencias.avance','>',95)
+                                ->where('contratos.saldo','>',0)
+                                ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
+                                ->where('lotes.etapa_id','=',$lote->etapaId)
+                                ->count();
+
+            $lote->terminadaNoCobrada = $lote->terminadaDisponible + $lote->termVendidaNoCobrada;
+            $lote->procesoNoCobrada = $lote->procVendidaNoCobrada + $lote->procesoDisponible;
+
+            $total1 += $lote->lotes;
+            $total2 += $lote->cobradas;
+            $total3 += $lote->terminadaNoCobrada;
+            $total4 += $lote->termVendidaNoCobrada;
+            $total5 += $lote->terminadaDisponible;
+            $total6 += $lote->procesoNoCobrada;
+            $total7 += $lote->procVendidaNoCobrada;
+            $total8 += $lote->procesoDisponible;
+            $total9 += $lote->sinAvanceDisponible;
+
+        }
+
+        return ['lotes'=>$lotes,
+                'total1'=>$total1,        
+                'total2'=>$total2,
+                'total3'=>$total3,
+                'total4'=>$total4,
+                'total5'=>$total5,
+                'total6'=>$total6,
+                'total7'=>$total7,
+                'total8'=>$total8,
+                'total9'=>$total9
+            ];
+    }
+
+    public function excelReporteLotesVentas(Request $request){
+
+        $lotes = Etapa::join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
+                        ->select('fraccionamientos.id as proyectoId','etapas.id as etapaId',
+                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto')
+                        ->orderBy('proyecto','asc')->orderBy('num_etapa','asc')->get();
+
+        $total1= $total2= $total3= $total4= $total5= $total6= $total7= $total8= $total9 = 0;
+
+        foreach($lotes as $index => $lote){
+            $lote->lotes = Lote::where('fraccionamiento_id','=',$lote->proyectoId)
+                                ->where('etapa_id','=',$lote->etapaId)->count();
+
+            $lote->terminadaDisponible = Lote::join('licencias','lotes.id','=','licencias.id')
+                                ->where('licencias.avance','>',95)
+                                ->where('lotes.contrato','=',0)
+                                ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
+                                ->where('lotes.etapa_id','=',$lote->etapaId)->count();
+
+            $lote->procesoDisponible = Lote::join('licencias','lotes.id','=','licencias.id')
+                                ->whereBetween('licencias.avance', [25, 95])
+                                ->where('lotes.contrato','=',0)
+                                ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
+                                ->where('lotes.etapa_id','=',$lote->etapaId)->count();
+
+            $lote->sinAvanceDisponible = Lote::join('licencias','lotes.id','=','licencias.id')
+                                ->where('licencias.avance','<',25)
+                                ->where('lotes.contrato','=',0)
+                                ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
+                                ->where('lotes.etapa_id','=',$lote->etapaId)->count();
+
+            $lote->cobradas = Contrato::join('creditos','contratos.id', '=', 'creditos.id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->where('contratos.status','=',3)
+                                ->where('contratos.saldo','<=',0)
+                                ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
+                                ->where('lotes.etapa_id','=',$lote->etapaId)
+                                ->count();
+
+            $lote->procVendidaNoCobrada = Contrato::join('creditos','contratos.id', '=', 'creditos.id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->join('licencias','lotes.id','=','licencias.id')
+                                ->where('contratos.status','=',3)
+                                ->whereBetween('licencias.avance', [0, 95])
+                                ->where('contratos.saldo','>',0)
+                                ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
+                                ->where('lotes.etapa_id','=',$lote->etapaId)
+                                ->orWhere('contratos.status','=',1)
+                                ->whereBetween('licencias.avance', [0, 95])
+                                ->where('contratos.saldo','>',0)
+                                ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
+                                ->where('lotes.etapa_id','=',$lote->etapaId)
+                                ->count();
+
+            $lote->termVendidaNoCobrada = Contrato::join('creditos','contratos.id', '=', 'creditos.id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->join('licencias','lotes.id','=','licencias.id')
+                                ->where('contratos.status','=',3)
+                                ->where('licencias.avance','>',95)
+                                ->where('contratos.saldo','>',0)
+                                ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
+                                ->where('lotes.etapa_id','=',$lote->etapaId)
+                                ->orWhere('contratos.status','=',1)
+                                ->where('licencias.avance','>',95)
+                                ->where('contratos.saldo','>',0)
+                                ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
+                                ->where('lotes.etapa_id','=',$lote->etapaId)
+                                ->count();
+
+            $lote->terminadaNoCobrada = $lote->terminadaDisponible + $lote->termVendidaNoCobrada;
+            $lote->procesoNoCobrada = $lote->procVendidaNoCobrada + $lote->procesoDisponible;
+
+            $total1 += $lote->lotes;
+            $total2 += $lote->cobradas;
+            $total3 += $lote->terminadaNoCobrada;
+            $total4 += $lote->termVendidaNoCobrada;
+            $total5 += $lote->terminadaDisponible;
+            $total6 += $lote->procesoNoCobrada;
+            $total7 += $lote->procVendidaNoCobrada;
+            $total8 += $lote->procesoDisponible;
+            $total9 += $lote->sinAvanceDisponible;
+
+        }
+
+        return Excel::create('Reporte', function($excel) use ($lotes, $total1, $total2, $total3, $total4, $total5, $total6, $total7, $total8, $total9){
+            $excel->sheet('Reoorte lotes', function($sheet) use ($lotes, $total1, $total2, $total3, $total4, $total5, $total6, $total7, $total8, $total9){
+
+                $sheet->row(1, [
+                    'Fraccionamiento',
+                    'Etapa',
+                    'Total Casas o Lotes',
+                    'Cobradas',
+                    'Terminadas No Cobradas',
+                    'Terminadas Vendidas No Cobradas',
+                    'Terminadas Disponibles',
+                    'En Proceso de Construccion No Cobradas',
+                    'En Proceso Vendidas No Cobradas',
+                    'En Proceso Disponible',
+                    'Disponibles Sin Avance'
+                ]);
+                
+
+                $sheet->cells('A1:K1', function ($cells) {
+                    // Set font family
+                    $cells->setFontFamily('Calibri');
+
+                    // Set font size
+                    $cells->setFontSize(12);
+
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+
+                $cont=3;
+
+                
+
+                foreach($lotes as $index => $lote) {
+                    $cont++;
+
+                    $sheet->row($index+2, [
+                        $lote->proyecto, 
+                        $lote->num_etapa,
+                        $lote->lotes,
+                        $lote->cobradas,
+                        $lote->terminadaNoCobrada,
+                        $lote->termVendidaNoCobrada,
+                        $lote->terminadaDisponible,
+                        $lote->procesoNoCobrada,
+                        $lote->procVendidaNoCobrada,
+                        $lote->procesoDisponible,
+                        $lote->sinAvanceDisponible,
+
+                    ]);	
+                }
+                $sheet->row($cont,[
+                    '',
+                    'Total',
+                    $total1,
+                    $total2,
+                    $total3,
+                    $total4,
+                    $total5,
+                    $total6,
+                    $total7,
+                    $total8,
+                    $total9,
+                    
+                ]);
+            
+                $num='A1:K' . $cont;
+                $sheet->setBorder($num, 'thin');
+
+                $sheet->cells('A'.$cont.':'.'K'.$cont, function ($cells) {
+                    // Set font family
+                    $cells->setFontFamily('Calibri');
+    
+                    // Set font size
+                    $cells->setFontSize(11);
+    
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                });
+            });
+
+            
+        }
+        
+        )->download('xls');
+
     }
     
 }

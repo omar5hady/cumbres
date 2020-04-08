@@ -596,6 +596,11 @@
                                         <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de asesores</a>
                                     </li>
                                 @endif
+                                @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 6)
+                                    <li @click="menu=238" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de inicio, termino, ventas y cobranza</a>
+                                    </li>
+                                @endif
                             </ul>
                         </li>
                     @endif
@@ -645,7 +650,7 @@
 
     <footer class="app-footer">
         
-        <span><a href="http://www.casascumbres.mx/" target="_blank">Grupo Constructor Cumbres</a> &copy; 2019</span>
+        <span><a href="http://www.casascumbres.mx/" target="_blank">Grupo Constructor Cumbres</a> &copy; 2020</span>
         
         <span class="ml-auto">Desarrollado por <a href="http://www.casascumbres.mx/" target="_blank">Grupo Cumbres</a></span>
     </footer>

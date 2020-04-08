@@ -416,6 +416,9 @@
         <template v-if="menu==237">
             <solicitud-pagos rol-id="{{Auth::user()->rol_id}}"></solicitud-pagos>
         </template>
+        <template v-if="menu==238">
+            <rep-lotes></rep-lotes>
+        </template>
 
         
 
