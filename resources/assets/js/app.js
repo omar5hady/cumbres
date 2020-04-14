@@ -125,6 +125,7 @@ Vue.component('res-puplicidad', require('./components/Reportes/ReportePublicidad
 Vue.component('rep-inventario', require('./components/Reportes/Inventario.vue'));
 Vue.component('rep-vendedores', require('./components/Reportes/ReporteVendedores.vue'));
 Vue.component('rep-lotes', require('./components/Reportes/ReporteIniTermVenta.vue'));
+Vue.component('rep-ventascanc', require('./components/Reportes/VentasCancelaciones.vue'));
 
 
 Vue.component('avaluos', require('./components/Avaluos.vue'));

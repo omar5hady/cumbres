@@ -527,6 +527,8 @@ Route::group(['middleware' => ['auth']],function(){
             Route::get('/reprotes/reporteVendedores','ReportesController@reporteVendedores');
             Route::get('/reprotes/reporteLotesVentas','ReportesController@reporteLotesVentas');
             Route::get('/reprotes/excelReporteLotesVentas','ReportesController@excelReporteLotesVentas');
+            Route::get('/reprotes/reporteVentas','ReportesController@reporteVentas');
+            Route::get('/reprotes/reporteVentasExcel','ReportesController@reporteVentasExcel');
 
 
     ///////////////////        RUTAS NOTARIA     //////////////////////////////////

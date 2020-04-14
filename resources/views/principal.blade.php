@@ -511,7 +511,7 @@
         <!----------     FIN Postventa      --->
 
         <!-- Modulo pagos internos --->
-            
+            @if(Auth::user()->rol_id != 2)
                 <li class="nav-item nav-dropdown">
                     <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-laptop"></i> Pagos Internos</a>
                     <ul class="nav-dropdown-items">
@@ -525,6 +525,7 @@
                         @endif
                     </ul>
                 </li>
+            @endif
             
         <!-- Fin pago internos -->
 
@@ -599,6 +600,11 @@
                                 @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 6)
                                     <li @click="menu=238" class="nav-item">
                                         <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de inicio, termino, ventas y cobranza</a>
+                                    </li>
+                                @endif
+                                @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 6)
+                                    <li @click="menu=239" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de ventas y cancelaciones</a>
                                     </li>
                                 @endif
                             </ul>

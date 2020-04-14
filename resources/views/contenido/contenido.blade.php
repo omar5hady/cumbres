@@ -419,6 +419,9 @@
         <template v-if="menu==238">
             <rep-lotes></rep-lotes>
         </template>
+        <template v-if="menu==239">
+            <rep-ventascanc></rep-ventascanc>
+        </template>
 
         
 

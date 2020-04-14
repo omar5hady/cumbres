@@ -214,10 +214,7 @@ class UserController extends Controller
                 }
                 case 2: //Asesor de ventas
                 {
-                    $user->administracion=1;
                     $user->ventas=1;
-                    //Administracion
-                    $user->empresas=1;
                     //Ventas
                     $user->lotes_disp=1;
                     $user->mis_prospectos=1;
@@ -541,10 +538,8 @@ class UserController extends Controller
                 }
                 case 2: //Asesor de ventas
                 {
-                    $user->administracion=1;
                     $user->ventas=1;
-                    //Administracion
-                    $user->empresas=1;
+                    
                     //Ventas
                     $user->lotes_disp=1;
                     $user->mis_prospectos=1;

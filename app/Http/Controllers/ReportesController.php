@@ -531,5 +531,306 @@ class ReportesController extends Controller
         )->download('xls');
 
     }
+
+    public function reporteVentas(Request $request){
+
+        $ventas = Contrato::join('creditos','contratos.id','=','creditos.id')
+                        ->join('inst_seleccionadas as ins', 'creditos.id', '=', 'ins.credito_id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('personal as p','creditos.prospecto_id','=','p.id')
+                        ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
+                        ->join('etapas as et','lotes.etapa_id','=','et.id')
+                        ->select('lotes.manzana','lotes.num_lote','f.nombre as proyecto','et.num_etapa','p.nombre', 'p.apellidos',
+                                'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta')
+                        ->where('ins.elegido','=',1)
+                        ->where('contratos.status','=',3)
+                        ->whereBetween('contratos.fecha', [$request->fecha, $request->fecha2])
+                        ->orderBy('contratos.fecha','asc')
+                        ->get();
+
+        $cancelaciones = Contrato::join('creditos','contratos.id','=','creditos.id')
+                        ->join('inst_seleccionadas as ins', 'creditos.id', '=', 'ins.credito_id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('personal as p','creditos.prospecto_id','=','p.id')
+                        ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
+                        ->join('etapas as et','lotes.etapa_id','=','et.id')
+                        ->select('lotes.manzana','lotes.num_lote','f.nombre as proyecto','et.num_etapa','p.nombre', 'p.apellidos',
+                                'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta',
+                                'contratos.fecha_status')
+                        ->where('ins.elegido','=',1)
+                        ->where('contratos.status','=',0)
+                        ->whereBetween('contratos.fecha_status', [$request->fecha, $request->fecha2])
+                        ->orderBy('contratos.fecha_status','asc')
+                        ->get();
+
+        
+        return[
+            'ventas'=>$ventas,
+            'cancelaciones'=>$cancelaciones,
+        ];
+    }
+
+    public function reporteVentasExcel(Request $request){
+
+        $ventas = Contrato::join('creditos','contratos.id','=','creditos.id')
+                        ->join('inst_seleccionadas as ins', 'creditos.id', '=', 'ins.credito_id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('personal as p','creditos.prospecto_id','=','p.id')
+                        ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
+                        ->join('etapas as et','lotes.etapa_id','=','et.id')
+                        ->select('lotes.manzana','lotes.num_lote','f.nombre as proyecto','et.num_etapa','p.nombre', 'p.apellidos',
+                                'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta')
+                        ->where('ins.elegido','=',1)
+                        ->where('contratos.status','=',3)
+                        ->whereBetween('contratos.fecha', [$request->fecha, $request->fecha2])
+                        ->orderBy('contratos.fecha','asc')
+                        ->get();
+
+        $cancelaciones = Contrato::join('creditos','contratos.id','=','creditos.id')
+                        ->join('inst_seleccionadas as ins', 'creditos.id', '=', 'ins.credito_id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('personal as p','creditos.prospecto_id','=','p.id')
+                        ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
+                        ->join('etapas as et','lotes.etapa_id','=','et.id')
+                        ->select('lotes.manzana','lotes.num_lote','f.nombre as proyecto','et.num_etapa','p.nombre', 'p.apellidos',
+                                'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta',
+                                'contratos.fecha_status')
+                        ->where('ins.elegido','=',1)
+                        ->where('contratos.status','=',0)
+                        ->whereBetween('contratos.fecha_status', [$request->fecha, $request->fecha2])
+                        ->orderBy('contratos.fecha','asc')
+                        ->get();
+
+                        setlocale(LC_TIME, 'es_MX.utf8');
+                        $fecha1 = new Carbon($request->fecha);
+                        $fecha1 = $fecha1->formatLocalized('%d de %B de %Y');
+
+                        $fecha2 = new Carbon($request->fecha2);
+                        $fecha2 = $fecha2->formatLocalized('%d de %B de %Y');
+
+                        $periodo = 'Del '.$fecha1.' al '.$fecha2;
+
+        
+        return Excel::create('Reporte de ventas y cancelaciones', function($excel) use ($ventas,$cancelaciones,$periodo){
+            $excel->sheet('Ventas', function($sheet) use ($ventas,$periodo){
+
+                $sheet->mergeCells('A1:J1');
+                $sheet->mergeCells('A2:J2');
+                $sheet->mergeCells('C4:G4');
+
+                $sheet->cell('A1', function($cell) {
+
+                    // manipulate the cell
+                    $cell->setValue(  'GRUPO CONSTRUCTOR CUMBRES, SA DE C.V.');
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(14);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                
+                });
+                $sheet->cell('A2', function($cell) {
+
+                    // manipulate the cell
+                    $cell->setValue(  'REPORTE DE VENTAS');
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(14);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                
+                });
+
+                $sheet->cell('B4', function($cell) {
+
+                    // manipulate the cell
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(12);
+                    $cell->setAlignment('center');
+                
+                });
+
+                $sheet->row(4,[
+                    '',
+                    'Periodo: ',
+                    $periodo
+                ]);
+
+                $sheet->cell('C4', function($cell) {
+
+                    // manipulate the cell
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(12);
+                    $cell->setAlignment('center');
+                });
+
+                $sheet->setColumnFormat(array(
+                    'J' => '$#,##0.00',
+                ));
+
+                $sheet->row(8, [
+                    'No.',
+                    'Fraccionamiento',
+                    'Etapa',
+                    'Manzana',
+                    'Lote',
+                    'Cliente',
+                    'Fecha de venta',
+                    'Crédito',
+                    'Institución',
+                    'Valor de escrituración'
+                ]);
+                
+
+                $sheet->cells('A8:J8', function ($cells) {
+                    // Set font family
+                    $cells->setFontFamily('Calibri');
+
+                    // Set font size
+                    $cells->setFontSize(12);
+
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+
+                $cont=9;
+
+                
+
+                foreach($ventas as $index => $lote) {
+                    $cont++;
+
+                    $sheet->row($index+9, [
+                        $index+1,
+                        $lote->proyecto, 
+                        $lote->num_etapa,
+                        $lote->manzana,
+                        $lote->num_lote,
+                        $lote->nombre.' '.$lote->apellidos,
+                        $lote->fecha,
+                        $lote->tipo_credito,
+                        $lote->institucion,
+                        $lote->precio_venta,
+                    ]);	
+                }
+            
+                $num='A8:J' . $cont;
+                $sheet->setBorder($num, 'thin');
+
+                
+            });
+
+            $excel->sheet('Cancelaciones', function($sheet) use ($cancelaciones,$periodo){
+
+                $sheet->mergeCells('A1:K1');
+                $sheet->mergeCells('A2:K2');
+                $sheet->mergeCells('C4:G4');
+
+                $sheet->cell('A1', function($cell) {
+
+                    // manipulate the cell
+                    $cell->setValue(  'GRUPO CONSTRUCTOR CUMBRES, SA DE C.V.');
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(14);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                
+                });
+                $sheet->cell('A2', function($cell) {
+
+                    // manipulate the cell
+                    $cell->setValue(  'REPORTE DE CANCELACIONES');
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(14);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                
+                });
+
+                $sheet->cell('B4', function($cell) {
+
+                    // manipulate the cell
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(12);
+                    $cell->setAlignment('center');
+                
+                });
+
+                $sheet->row(4,[
+                    '',
+                    'Periodo: ',
+                    $periodo
+                ]);
+
+                $sheet->cell('C4', function($cell) {
+
+                    // manipulate the cell
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(12);
+                    $cell->setAlignment('center');
+                });
+
+                $sheet->setColumnFormat(array(
+                    'K' => '$#,##0.00',
+                ));
+
+                $sheet->row(8, [
+                    'No.',
+                    'Fraccionamiento',
+                    'Etapa',
+                    'Manzana',
+                    'Lote',
+                    'Cliente',
+                    'Fecha de cancelación',
+                    'Fecha de venta',
+                    'Crédito',
+                    'Institución',
+                    'Valor de escrituración'
+                ]);
+                
+
+                $sheet->cells('A8:K8', function ($cells) {
+                    // Set font family
+                    $cells->setFontFamily('Calibri');
+
+                    // Set font size
+                    $cells->setFontSize(12);
+
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+
+                $cont=9;
+
+                
+
+                foreach($cancelaciones as $index => $lote) {
+                    $cont++;
+
+                    $sheet->row($index+9, [
+                        $index+1,
+                        $lote->proyecto, 
+                        $lote->num_etapa,
+                        $lote->manzana,
+                        $lote->num_lote,
+                        $lote->nombre.' '.$lote->apellidos,
+                        $lote->fecha_status,
+                        $lote->fecha,
+                        $lote->tipo_credito,
+                        $lote->institucion,
+                        $lote->precio_venta,
+                    ]);	
+                }
+            
+                $num='A8:K' . $cont;
+                $sheet->setBorder($num, 'thin');
+
+                
+            });
+            
+        }
+        
+        )->download('xls');
+    }
     
 }
