@@ -557,8 +557,7 @@ class ExpedienteController extends Controller
                 ->where('i.elegido', '=', 1)
                 ->where('contratos.integracion', '=', 1)
                 ->where('contratos.status', '!=', 0)
-                ->where('contratos.status', '!=', 2)
-                ->paginate(8);
+                ->where('contratos.status', '!=', 2);
         } else {
             if ($criterio != 'lotes.fraccionamiento_id' && $criterio != 'c.nombre' && $criterio != 'v.nombre') {
                 $contratos = $query
@@ -566,8 +565,7 @@ class ExpedienteController extends Controller
                     ->where('contratos.integracion', '=', 1)
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
-                    ->where($criterio, 'like', '%' . $buscar . '%')
-                    ->paginate(8);
+                    ->where($criterio, 'like', '%' . $buscar . '%');
             } else {
 
                 if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa == ''  && $b_manzana == '' && $b_lote == '') {
@@ -576,8 +574,7 @@ class ExpedienteController extends Controller
                         ->where('contratos.integracion', '=', 1)
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
-                        ->where($criterio, '=', $buscar)
-                        ->paginate(8);
+                        ->where($criterio, '=', $buscar);
                 } else {
                     if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa != ''  && $b_manzana == '' && $b_lote == '') {
                         $contratos = $query
@@ -586,8 +583,7 @@ class ExpedienteController extends Controller
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where($criterio, '=', $buscar)
-                            ->where('lotes.etapa_id', '=', $b_etapa)
-                            ->paginate(8);
+                            ->where('lotes.etapa_id', '=', $b_etapa);
                     } else {
                         if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa == ''  && $b_manzana != '' && $b_lote == '') {
                             $contratos = $query
@@ -596,8 +592,7 @@ class ExpedienteController extends Controller
                                 ->where('contratos.status', '!=', 0)
                                 ->where('contratos.status', '!=', 2)
                                 ->where($criterio, '=', $buscar)
-                                ->where('creditos.manzana', 'like', '%' . $b_manzana . '%')
-                                ->paginate(8);
+                                ->where('creditos.manzana', 'like', '%' . $b_manzana . '%');
                         } else {
                             if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa == ''  && $b_manzana == '' && $b_lote != '') {
                                 $contratos = $query
@@ -606,8 +601,7 @@ class ExpedienteController extends Controller
                                     ->where('contratos.status', '!=', 0)
                                     ->where('contratos.status', '!=', 2)
                                     ->where($criterio, '=', $buscar)
-                                    ->where('creditos.num_lote', 'like', '%' . $b_lote . '%')
-                                    ->paginate(8);
+                                    ->where('creditos.num_lote', 'like', '%' . $b_lote . '%');
                             } else {
                                 if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa != ''  && $b_manzana != '' && $b_lote == '') {
                                     $contratos = $query
@@ -617,8 +611,7 @@ class ExpedienteController extends Controller
                                         ->where('contratos.status', '!=', 2)
                                         ->where($criterio, '=', $buscar)
                                         ->where('lotes.etapa_id', '=', $b_etapa)
-                                        ->where('creditos.manzana', 'like', '%' . $b_manzana . '%')
-                                        ->paginate(8);
+                                        ->where('creditos.manzana', 'like', '%' . $b_manzana . '%');
                                 } else {
                                     if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa != ''  && $b_manzana != '' && $b_lote != '') {
                                         $contratos = $query
@@ -629,8 +622,7 @@ class ExpedienteController extends Controller
                                             ->where($criterio, '=', $buscar)
                                             ->where('lotes.etapa_id', '=', $b_etapa)
                                             ->where('creditos.manzana', 'like', '%' . $b_manzana . '%')
-                                            ->where('creditos.num_lote', 'like', '%' . $b_lote . '%')
-                                            ->paginate(8);
+                                            ->where('creditos.num_lote', 'like', '%' . $b_lote . '%');
                                     } else {
                                         if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa != ''  && $b_manzana == '' && $b_lote != '') {
                                             $contratos = $query
@@ -640,8 +632,7 @@ class ExpedienteController extends Controller
                                                 ->where('contratos.status', '!=', 2)
                                                 ->where($criterio, '=', $buscar)
                                                 ->where('lotes.etapa_id', '=', $b_etapa)
-                                                ->where('creditos.num_lote', 'like', '%' . $b_lote . '%')
-                                                ->paginate(8);
+                                                ->where('creditos.num_lote', 'like', '%' . $b_lote . '%');
                                         } else {
                                             if ($criterio == 'c.nombre' && $buscar != '') {
                                                 $contratos = $query
@@ -654,8 +645,7 @@ class ExpedienteController extends Controller
                                                     ->where('i.elegido', '=', 1)
                                                     ->where('contratos.integracion', '=', 1)
                                                     ->where('contratos.status', '!=', 0)
-                                                    ->where('contratos.status', '!=', 2)
-                                                    ->paginate(8);
+                                                    ->where('contratos.status', '!=', 2);
                                             } else {
                                                 if ($criterio == 'g.nombre' && $buscar != '') {
                                                     $contratos = $query
@@ -668,8 +658,7 @@ class ExpedienteController extends Controller
                                                         ->where('i.elegido', '=', 1)
                                                         ->where('contratos.integracion', '=', 0)
                                                         ->where('contratos.status', '!=', 0)
-                                                        ->where('contratos.status', '!=', 2)
-                                                        ->paginate(8);
+                                                        ->where('contratos.status', '!=', 2);
                                                 }
                                             }
                                         }
@@ -681,6 +670,8 @@ class ExpedienteController extends Controller
                 }
             }
         }
+
+        $contratos = $contratos->paginate(10);
 
         return [
             'pagination' => [
@@ -767,9 +758,7 @@ class ExpedienteController extends Controller
                     ->where('i.elegido', '=', 1)
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
-                    ->where('expedientes.fecha_ingreso','=',NULL)
-                    ->orderBy('contratos.id','asc')
-                    ->get();
+                    ->where('expedientes.fecha_ingreso','=',NULL);
             }
             else{
                 switch($criterio){
@@ -784,9 +773,7 @@ class ExpedienteController extends Controller
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('expedientes.fecha_ingreso','=',NULL)
-                            ->where('c.apellidos','like','%'. $buscar . '%')
-                            ->orderBy('contratos.id','asc')
-                            ->get();
+                            ->where('c.apellidos','like','%'. $buscar . '%');
                         break;
                     }
                     case 'contratos.id':{
@@ -795,9 +782,7 @@ class ExpedienteController extends Controller
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('expedientes.fecha_ingreso','=',NULL)
-                            ->where($criterio,'=',$buscar)
-                            ->orderBy('contratos.id','asc')
-                            ->get();
+                            ->where($criterio,'=',$buscar);
                         break;
                     }
                     case 'lotes.fraccionamiento_id':{
@@ -807,9 +792,7 @@ class ExpedienteController extends Controller
                                 ->where('contratos.status', '!=', 0)
                                 ->where('contratos.status', '!=', 2)
                                 ->where('expedientes.fecha_ingreso','=',NULL)
-                                ->where($criterio, '=', $buscar)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where($criterio, '=', $buscar);
                         }
                         elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
                             $contratos = $query
@@ -818,9 +801,7 @@ class ExpedienteController extends Controller
                                 ->where('contratos.status', '!=', 2)
                                 ->where('expedientes.fecha_ingreso','=',NULL)
                                 ->where($criterio, '=', $buscar)
-                                ->where('lotes.etapa_id', '=', $b_etapa)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.etapa_id', '=', $b_etapa);
                         }
                         elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
                             $contratos = $query
@@ -830,9 +811,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.fecha_ingreso','=',NULL)
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
-                                ->where('lotes.manzana', '=', $b_manzana)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.manzana', '=', $b_manzana);
                         }
                         elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
                             $contratos = $query
@@ -843,9 +822,7 @@ class ExpedienteController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->where('lotes.manzana', '=', $b_manzana)
-                                ->where('lotes.num_lote', '=', $b_lote)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.num_lote', '=', $b_lote);
                         }
                         elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
                             $contratos = $query
@@ -855,9 +832,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.fecha_ingreso','=',NULL)
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
-                                ->where('lotes.num_lote', '=', $b_lote)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.num_lote', '=', $b_lote);
                         }
                         elseif($b_etapa == '' && $b_manzana !='' && $b_lote == ''){
                             $contratos = $query
@@ -866,9 +841,7 @@ class ExpedienteController extends Controller
                                 ->where('contratos.status', '!=', 2)
                                 ->where('expedientes.fecha_ingreso','=',NULL)
                                 ->where($criterio, '=', $buscar)
-                                ->where('lotes.manzana', '=', $b_manzana)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.manzana', '=', $b_manzana);
                         }
                         elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
                             $contratos = $query
@@ -877,9 +850,7 @@ class ExpedienteController extends Controller
                                 ->where('contratos.status', '!=', 2)
                                 ->where('expedientes.fecha_ingreso','=',NULL)
                                 ->where($criterio, '=', $buscar)
-                                ->where('lotes.num_lote', '=', $b_lote)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.num_lote', '=', $b_lote);
                         }
                         elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
                             $contratos = $query
@@ -889,9 +860,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.fecha_ingreso','=',NULL)
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.num_lote', '=', $b_lote)
-                                ->where('lotes.manzana', '=', $b_manzana)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.manzana', '=', $b_manzana);
                         }
                     }
                     case 'expedientes.gestor_id':{
@@ -900,9 +869,7 @@ class ExpedienteController extends Controller
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('expedientes.fecha_ingreso','=',NULL)
-                            ->where($criterio,'=',$buscar)
-                            ->orderBy('contratos.id','asc')
-                            ->get();
+                            ->where($criterio,'=',$buscar);
                         break;
                     }
                 }
@@ -915,9 +882,7 @@ class ExpedienteController extends Controller
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
                     ->where('expedientes.fecha_ingreso','=',NULL)
-                    ->where('expedientes.gestor_id','=',Auth::user()->id)
-                    ->orderBy('contratos.id','asc')
-                    ->get();
+                    ->where('expedientes.gestor_id','=',Auth::user()->id);
             }
             else{
                 switch($criterio){
@@ -934,9 +899,7 @@ class ExpedienteController extends Controller
                             ->where('contratos.status', '!=', 2)
                             ->where('expedientes.fecha_ingreso','=',NULL)
                             ->where('c.apellidos','like','%'. $buscar . '%')
-                            ->where('expedientes.gestor_id','=',Auth::user()->id)
-                            ->orderBy('contratos.id','asc')
-                            ->get();
+                            ->where('expedientes.gestor_id','=',Auth::user()->id);
                         break;
                     }
                     case 'contratos.id':{
@@ -946,9 +909,7 @@ class ExpedienteController extends Controller
                             ->where('contratos.status', '!=', 2)
                             ->where('expedientes.fecha_ingreso','=',NULL)
                             ->where($criterio,'=',$buscar)
-                            ->where('expedientes.gestor_id','=',Auth::user()->id)
-                            ->orderBy('contratos.id','asc')
-                            ->get();
+                            ->where('expedientes.gestor_id','=',Auth::user()->id);
                         break;
                     }
                     case 'lotes.fraccionamiento_id':{
@@ -959,9 +920,7 @@ class ExpedienteController extends Controller
                                 ->where('contratos.status', '!=', 2)
                                 ->where('expedientes.fecha_ingreso','=',NULL)
                                 ->where($criterio, '=', $buscar)
-                                ->where('expedientes.gestor_id','=',Auth::user()->id)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('expedientes.gestor_id','=',Auth::user()->id);
                         }
                         elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
                             $contratos = $query
@@ -971,9 +930,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.fecha_ingreso','=',NULL)
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
-                                ->where('expedientes.gestor_id','=',Auth::user()->id)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('expedientes.gestor_id','=',Auth::user()->id);
                         }
                         elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
                             $contratos = $query
@@ -984,9 +941,7 @@ class ExpedienteController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->where('lotes.manzana', '=', $b_manzana)
-                                ->where('expedientes.gestor_id','=',Auth::user()->id)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('expedientes.gestor_id','=',Auth::user()->id);
                         }
                         elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
                             $contratos = $query
@@ -998,9 +953,7 @@ class ExpedienteController extends Controller
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->where('lotes.manzana', '=', $b_manzana)
                                 ->where('lotes.num_lote', '=', $b_lote)
-                                ->where('expedientes.gestor_id','=',Auth::user()->id)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('expedientes.gestor_id','=',Auth::user()->id);
                         }
                         elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
                             $contratos = $query
@@ -1011,9 +964,7 @@ class ExpedienteController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->where('lotes.num_lote', '=', $b_lote)
-                                ->where('expedientes.gestor_id','=',Auth::user()->id)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('expedientes.gestor_id','=',Auth::user()->id);
                         }
                         elseif($b_etapa == '' && $b_manzana !='' && $b_lote == ''){
                             $contratos = $query
@@ -1023,9 +974,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.fecha_ingreso','=',NULL)
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.manzana', '=', $b_manzana)
-                                ->where('expedientes.gestor_id','=',Auth::user()->id)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('expedientes.gestor_id','=',Auth::user()->id);
                         }
                         elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
                             $contratos = $query
@@ -1035,9 +984,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.fecha_ingreso','=',NULL)
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.num_lote', '=', $b_lote)
-                                ->where('expedientes.gestor_id','=',Auth::user()->id)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('expedientes.gestor_id','=',Auth::user()->id);
                         }
                         elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
                             $contratos = $query
@@ -1048,15 +995,16 @@ class ExpedienteController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.num_lote', '=', $b_lote)
                                 ->where('lotes.manzana', '=', $b_manzana)
-                                ->where('expedientes.gestor_id','=',Auth::user()->id)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('expedientes.gestor_id','=',Auth::user()->id);
                         }
                     }
                 }
     
             }
         }
+
+        $contratos = $contratos->orderBy('contratos.id','asc')
+                                ->get();
 
         if(sizeof($contratos)){
             foreach($contratos as $index => $contrato){
@@ -1165,11 +1113,7 @@ class ExpedienteController extends Controller
                     ->where('contratos.status', '!=', 2)
                     ->where('expedientes.fecha_ingreso','!=',NULL)
                     ->where('expedientes.valor_escrituras','!=',0)
-                    ->where('expedientes.fecha_infonavit','=',NULL)
-                    
-                    
-                    ->orderBy('contratos.id','asc')
-                    ->get();
+                    ->where('expedientes.fecha_infonavit','=',NULL);
             }
             else{
                 switch($criterio){
@@ -1193,9 +1137,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.fecha_infonavit','=',NULL)
                             
                             
-                            ->where('c.apellidos','like','%'. $buscar . '%')
-                            ->orderBy('contratos.id','asc')
-                            ->get();
+                            ->where('c.apellidos','like','%'. $buscar . '%');
                         break;
                     }
                     case 'contratos.id':{
@@ -1208,10 +1150,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.valor_escrituras','!=',0)
                             ->where('expedientes.fecha_infonavit','=',NULL)
                             
-                            
-                            ->where($criterio,'=',$buscar)
-                            ->orderBy('contratos.id','asc')
-                            ->get();
+                            ->where($criterio,'=',$buscar);
                         break;
                     }
                     case 'lotes.fraccionamiento_id':{
@@ -1224,11 +1163,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.fecha_ingreso','!=',NULL)
                                 ->where('expedientes.valor_escrituras','!=',0)
                                 ->where('expedientes.fecha_infonavit','=',NULL)
-                                
-                                
-                                ->where($criterio, '=', $buscar)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where($criterio, '=', $buscar);
                         }
                         elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
                             $contratos = $query
@@ -1239,12 +1174,8 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.fecha_ingreso','!=',NULL)
                                 ->where('expedientes.valor_escrituras','!=',0)
                                 ->where('expedientes.fecha_infonavit','=',NULL)
-                                
-                                
                                 ->where($criterio, '=', $buscar)
-                                ->where('lotes.etapa_id', '=', $b_etapa)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.etapa_id', '=', $b_etapa);
                         }
                         elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
                             $contratos = $query
@@ -1255,13 +1186,9 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.fecha_ingreso','!=',NULL)
                                 ->where('expedientes.valor_escrituras','!=',0)
                                 ->where('expedientes.fecha_infonavit','=',NULL)
-                                
-                                
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
-                                ->where('lotes.manzana', '=', $b_manzana)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.manzana', '=', $b_manzana);
                         }
                         elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
                             $contratos = $query
@@ -1272,14 +1199,10 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.fecha_ingreso','!=',NULL)
                                 ->where('expedientes.valor_escrituras','!=',0)
                                 ->where('expedientes.fecha_infonavit','=',NULL)
-                                
-                                
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->where('lotes.manzana', '=', $b_manzana)
-                                ->where('lotes.num_lote', '=', $b_lote)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.num_lote', '=', $b_lote);
                         }
                         elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
                             $contratos = $query
@@ -1290,13 +1213,9 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.fecha_ingreso','!=',NULL)
                                 ->where('expedientes.valor_escrituras','!=',0)
                                 ->where('expedientes.fecha_infonavit','=',NULL)
-                                
-                                
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
-                                ->where('lotes.num_lote', '=', $b_lote)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.num_lote', '=', $b_lote);
                         }
                         elseif($b_etapa == '' && $b_manzana !='' && $b_lote == ''){
                             $contratos = $query
@@ -1307,12 +1226,8 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.fecha_ingreso','!=',NULL)
                                 ->where('expedientes.valor_escrituras','!=',0)
                                 ->where('expedientes.fecha_infonavit','=',NULL)
-                                
-                                
                                 ->where($criterio, '=', $buscar)
-                                ->where('lotes.manzana', '=', $b_manzana)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.manzana', '=', $b_manzana);
                         }
                         elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
                             $contratos = $query
@@ -1323,12 +1238,8 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.fecha_ingreso','!=',NULL)
                                 ->where('expedientes.valor_escrituras','!=',0)
                                 ->where('expedientes.fecha_infonavit','=',NULL)
-                                
-                                
                                 ->where($criterio, '=', $buscar)
-                                ->where('lotes.num_lote', '=', $b_lote)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.num_lote', '=', $b_lote);
                         }
                         elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
                             $contratos = $query
@@ -1339,13 +1250,9 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.fecha_ingreso','!=',NULL)
                                 ->where('expedientes.valor_escrituras','!=',0)
                                 ->where('expedientes.fecha_infonavit','=',NULL)
-                                
-                                
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.num_lote', '=', $b_lote)
-                                ->where('lotes.manzana', '=', $b_manzana)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.manzana', '=', $b_manzana);
                         }
                     }
                     case 'expedientes.gestor_id':{
@@ -1357,11 +1264,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.fecha_ingreso','!=',NULL)
                             ->where('expedientes.valor_escrituras','!=',0)
                             ->where('expedientes.fecha_infonavit','=',NULL)
-                            
-                            
-                            ->where($criterio,'=',$buscar)
-                            ->orderBy('contratos.id','asc')
-                            ->get();
+                            ->where($criterio,'=',$buscar);
                         break;
                     }
                 }
@@ -1377,10 +1280,7 @@ class ExpedienteController extends Controller
                     ->where('expedientes.fecha_ingreso','!=',NULL)
                     ->where('expedientes.valor_escrituras','!=',0)
                     ->where('expedientes.fecha_infonavit','=',NULL)
-                    ->where('expedientes.gestor_id','=',Auth::user()->id)
-                    
-                    ->orderBy('contratos.id','asc')
-                    ->get();
+                    ->where('expedientes.gestor_id','=',Auth::user()->id);
             }
             else{
                 switch($criterio){
@@ -1404,9 +1304,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.fecha_infonavit','=',NULL)
                             ->where('expedientes.gestor_id','=',Auth::user()->id)
                             
-                            ->where('c.apellidos','like','%'. $buscar . '%')
-                            ->orderBy('contratos.id','asc')
-                            ->get();
+                            ->where('c.apellidos','like','%'. $buscar . '%');
                         break;
                     }
                     case 'contratos.id':{
@@ -1420,9 +1318,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.fecha_infonavit','=',NULL)
                             ->where('expedientes.gestor_id','=',Auth::user()->id)
                             
-                            ->where($criterio,'=',$buscar)
-                            ->orderBy('contratos.id','asc')
-                            ->get();
+                            ->where($criterio,'=',$buscar);
                         break;
                     }
                     case 'lotes.fraccionamiento_id':{
@@ -1437,9 +1333,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.fecha_infonavit','=',NULL)
                                 ->where('expedientes.gestor_id','=',Auth::user()->id)
                                 
-                                ->where($criterio, '=', $buscar)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where($criterio, '=', $buscar);
                         }
                         elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
                             $contratos = $query
@@ -1453,9 +1347,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.gestor_id','=',Auth::user()->id)
                                 
                                 ->where($criterio, '=', $buscar)
-                                ->where('lotes.etapa_id', '=', $b_etapa)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.etapa_id', '=', $b_etapa);
                         }
                         elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
                             $contratos = $query
@@ -1470,9 +1362,7 @@ class ExpedienteController extends Controller
                                 
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
-                                ->where('lotes.manzana', '=', $b_manzana)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.manzana', '=', $b_manzana);
                         }
                         elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
                             $contratos = $query
@@ -1488,9 +1378,7 @@ class ExpedienteController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->where('lotes.manzana', '=', $b_manzana)
-                                ->where('lotes.num_lote', '=', $b_lote)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.num_lote', '=', $b_lote);
                         }
                         elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
                             $contratos = $query
@@ -1505,9 +1393,7 @@ class ExpedienteController extends Controller
                                 
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
-                                ->where('lotes.num_lote', '=', $b_lote)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.num_lote', '=', $b_lote);
                         }
                         elseif($b_etapa == '' && $b_manzana !='' && $b_lote == ''){
                             $contratos = $query
@@ -1521,9 +1407,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.gestor_id','=',Auth::user()->id)
                                 
                                 ->where($criterio, '=', $buscar)
-                                ->where('lotes.manzana', '=', $b_manzana)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.manzana', '=', $b_manzana);
                         }
                         elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
                             $contratos = $query
@@ -1537,9 +1421,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.gestor_id','=',Auth::user()->id)
                                 
                                 ->where($criterio, '=', $buscar)
-                                ->where('lotes.num_lote', '=', $b_lote)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.num_lote', '=', $b_lote);
                         }
                         elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
                             $contratos = $query
@@ -1554,15 +1436,16 @@ class ExpedienteController extends Controller
                                 
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.num_lote', '=', $b_lote)
-                                ->where('lotes.manzana', '=', $b_manzana)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.manzana', '=', $b_manzana);
                         }
                     }
                 }
     
             }
         }
+
+        $contratos = $contratos->orderBy('contratos.id','asc')
+                                ->get();
 
         $contador = $contratos->count();
 
@@ -1670,11 +1553,7 @@ class ExpedienteController extends Controller
                     ->where('expedientes.fecha_ingreso','!=',NULL)
                     ->where('expedientes.valor_escrituras','!=',0)
                     ->where('expedientes.fecha_infonavit','!=',NULL)
-                    ->where('expedientes.liquidado','=',0)
-                    
-                    
-                    ->orderBy('contratos.id','asc')
-                    ->get();
+                    ->where('expedientes.liquidado','=',0);
             }
             else{
                 switch($criterio){
@@ -1689,7 +1568,6 @@ class ExpedienteController extends Controller
                             ->where('expedientes.fecha_infonavit','!=',NULL)
                             ->where('expedientes.liquidado','=',0)
                             ->where('c.nombre','like','%'. $buscar . '%')
-    
                             ->orWhere('i.elegido', '=', 1)
                             ->where('i.status','=',2)
                             ->where('contratos.status', '!=', 0)
@@ -1698,9 +1576,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.valor_escrituras','!=',0)
                             ->where('expedientes.fecha_infonavit','!=',NULL)
                             ->where('expedientes.liquidado','=',0)
-                            ->where('c.apellidos','like','%'. $buscar . '%')
-                            ->orderBy('contratos.id','asc')
-                            ->get();
+                            ->where('c.apellidos','like','%'. $buscar . '%');
                         break;
                     }
                     case 'contratos.id':{
@@ -1713,10 +1589,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.valor_escrituras','!=',0)
                             ->where('expedientes.fecha_infonavit','!=',NULL)
                             ->where('expedientes.liquidado','=',0)
-                            
-                            ->where($criterio,'=',$buscar)
-                            ->orderBy('contratos.id','asc')
-                            ->get();
+                            ->where($criterio,'=',$buscar);
                         break;
                     }
                     case 'lotes.fraccionamiento_id':{
@@ -1730,10 +1603,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.valor_escrituras','!=',0)
                                 ->where('expedientes.fecha_infonavit','!=',NULL)
                                 ->where('expedientes.liquidado','=',0)
-                                
-                                ->where($criterio, '=', $buscar)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where($criterio, '=', $buscar);
                         }
                         elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
                             $contratos = $query
@@ -1745,11 +1615,8 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.valor_escrituras','!=',0)
                                 ->where('expedientes.fecha_infonavit','!=',NULL)
                                 ->where('expedientes.liquidado','=',0)
-                                
                                 ->where($criterio, '=', $buscar)
-                                ->where('lotes.etapa_id', '=', $b_etapa)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.etapa_id', '=', $b_etapa);
                         }
                         elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
                             $contratos = $query
@@ -1761,12 +1628,9 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.valor_escrituras','!=',0)
                                 ->where('expedientes.fecha_infonavit','!=',NULL)
                                 ->where('expedientes.liquidado','=',0)
-                                
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
-                                ->where('lotes.manzana', '=', $b_manzana)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.manzana', '=', $b_manzana);
                         }
                         elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
                             $contratos = $query
@@ -1778,13 +1642,10 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.valor_escrituras','!=',0)
                                 ->where('expedientes.fecha_infonavit','!=',NULL)
                                 ->where('expedientes.liquidado','=',0)
-                                
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->where('lotes.manzana', '=', $b_manzana)
-                                ->where('lotes.num_lote', '=', $b_lote)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.num_lote', '=', $b_lote);
                         }
                         elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
                             $contratos = $query
@@ -1796,12 +1657,9 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.valor_escrituras','!=',0)
                                 ->where('expedientes.fecha_infonavit','!=',NULL)
                                 ->where('expedientes.liquidado','=',0)
-                                
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
-                                ->where('lotes.num_lote', '=', $b_lote)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.num_lote', '=', $b_lote);
                         }
                         elseif($b_etapa == '' && $b_manzana !='' && $b_lote == ''){
                             $contratos = $query
@@ -1813,11 +1671,8 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.valor_escrituras','!=',0)
                                 ->where('expedientes.fecha_infonavit','!=',NULL)
                                 ->where('expedientes.liquidado','=',0)
-                                
                                 ->where($criterio, '=', $buscar)
-                                ->where('lotes.manzana', '=', $b_manzana)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.manzana', '=', $b_manzana);
                         }
                         elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
                             $contratos = $query
@@ -1829,11 +1684,8 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.valor_escrituras','!=',0)
                                 ->where('expedientes.fecha_infonavit','!=',NULL)
                                 ->where('expedientes.liquidado','=',0)
-                                
                                 ->where($criterio, '=', $buscar)
-                                ->where('lotes.num_lote', '=', $b_lote)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.num_lote', '=', $b_lote);
                         }
                         elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
                             $contratos = $query
@@ -1845,12 +1697,9 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.valor_escrituras','!=',0)
                                 ->where('expedientes.fecha_infonavit','!=',NULL)
                                 ->where('expedientes.liquidado','=',0)
-                                
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.num_lote', '=', $b_lote)
-                                ->where('lotes.manzana', '=', $b_manzana)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.manzana', '=', $b_manzana);
                         }
                     }
                     case 'expedientes.gestor_id':{
@@ -1863,10 +1712,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.valor_escrituras','!=',0)
                             ->where('expedientes.fecha_infonavit','!=',NULL)
                             ->where('expedientes.liquidado','=',0)
-                            
-                            ->where($criterio,'=',$buscar)
-                            ->orderBy('contratos.id','asc')
-                            ->get();
+                            ->where($criterio,'=',$buscar);
                         break;
                     }
                 }
@@ -1882,10 +1728,7 @@ class ExpedienteController extends Controller
                     ->where('expedientes.valor_escrituras','!=',0)
                     ->where('expedientes.fecha_infonavit','!=',NULL)
                     ->where('expedientes.liquidado','=',0)
-                    ->where('expedientes.gestor_id','=',Auth::user()->id)
-                    
-                    ->orderBy('contratos.id','asc')
-                    ->get();
+                    ->where('expedientes.gestor_id','=',Auth::user()->id);
             }
             else{
                 switch($criterio){
@@ -1901,7 +1744,6 @@ class ExpedienteController extends Controller
                             ->where('expedientes.liquidado','=',0)
                             ->where('c.nombre','like','%'. $buscar . '%')
                             ->where('expedientes.gestor_id','=',Auth::user()->id)
-    
                             ->orWhere('i.elegido', '=', 1)
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
@@ -1910,9 +1752,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.fecha_infonavit','!=',NULL)
                             ->where('expedientes.liquidado','=',0)
                             ->where('c.apellidos','like','%'. $buscar . '%')
-                            ->where('expedientes.gestor_id','=',Auth::user()->id)
-                            ->orderBy('contratos.id','asc')
-                            ->get();
+                            ->where('expedientes.gestor_id','=',Auth::user()->id);
                         break;
                     }
                     case 'contratos.id':{
@@ -1926,9 +1766,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.fecha_infonavit','!=',NULL)
                             ->where('expedientes.liquidado','=',0)
                             ->where($criterio,'=',$buscar)
-                            ->where('expedientes.gestor_id','=',Auth::user()->id)
-                            ->orderBy('contratos.id','asc')
-                            ->get();
+                            ->where('expedientes.gestor_id','=',Auth::user()->id);
                         break;
                     }
                     case 'lotes.fraccionamiento_id':{
@@ -1943,9 +1781,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.fecha_infonavit','!=',NULL)
                                 ->where('expedientes.liquidado','=',0)
                                 ->where($criterio, '=', $buscar)
-                                ->where('expedientes.gestor_id','=',Auth::user()->id)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('expedientes.gestor_id','=',Auth::user()->id);
                         }
                         elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
                             $contratos = $query
@@ -1959,9 +1795,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.liquidado','=',0)      
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
-                                ->where('expedientes.gestor_id','=',Auth::user()->id)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('expedientes.gestor_id','=',Auth::user()->id);
                         }
                         elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
                             $contratos = $query
@@ -1976,9 +1810,7 @@ class ExpedienteController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->where('lotes.manzana', '=', $b_manzana)
-                                ->where('expedientes.gestor_id','=',Auth::user()->id)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('expedientes.gestor_id','=',Auth::user()->id);
                         }
                         elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
                             $contratos = $query
@@ -1994,9 +1826,7 @@ class ExpedienteController extends Controller
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->where('lotes.manzana', '=', $b_manzana)
                                 ->where('lotes.num_lote', '=', $b_lote)
-                                ->where('expedientes.gestor_id','=',Auth::user()->id)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('expedientes.gestor_id','=',Auth::user()->id);
                         }
                         elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
                             $contratos = $query
@@ -2011,9 +1841,7 @@ class ExpedienteController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->where('lotes.num_lote', '=', $b_lote)
-                                ->where('expedientes.gestor_id','=',Auth::user()->id)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('expedientes.gestor_id','=',Auth::user()->id);
                         }
                         elseif($b_etapa == '' && $b_manzana !='' && $b_lote == ''){
                             $contratos = $query
@@ -2027,9 +1855,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.liquidado','=',0)
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.manzana', '=', $b_manzana)
-                                ->where('expedientes.gestor_id','=',Auth::user()->id)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('expedientes.gestor_id','=',Auth::user()->id);
                         }
                         elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
                             $contratos = $query
@@ -2043,9 +1869,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.liquidado','=',0)
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.num_lote', '=', $b_lote)
-                                ->where('expedientes.gestor_id','=',Auth::user()->id)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('expedientes.gestor_id','=',Auth::user()->id);
                         }
                         elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
                             $contratos = $query
@@ -2060,14 +1884,15 @@ class ExpedienteController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.num_lote', '=', $b_lote)
                                 ->where('lotes.manzana', '=', $b_manzana)
-                                ->where('expedientes.gestor_id','=',Auth::user()->id)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('expedientes.gestor_id','=',Auth::user()->id);
                         }
                     }
                 }
             }
         }
+
+        $contratos = $contratos->orderBy('contratos.id','asc')
+                                ->get();
 
         if(sizeof($contratos)){
             foreach($contratos as $index => $contrato){
@@ -2373,9 +2198,7 @@ class ExpedienteController extends Controller
                     ->where('expedientes.valor_escrituras','!=',0)
                     ->where('expedientes.fecha_infonavit','!=',NULL)
                     ->where('expedientes.liquidado','=',1)
-                    ->where('expedientes.postventa','!=',1)
-                    ->orderBy('contratos.id','asc')
-                    ->get();
+                    ->where('expedientes.postventa','!=',1);
             }
             else{
                 switch($criterio){
@@ -2391,7 +2214,6 @@ class ExpedienteController extends Controller
                             ->where('expedientes.liquidado','=',1)
                             ->where('expedientes.postventa','!=',1)
                             ->where('c.nombre','like','%'. $buscar . '%')
-    
                             ->orWhere('i.elegido', '=', 1)
                             ->where('i.status','=',2)
                             ->where('contratos.status', '!=', 0)
@@ -2401,9 +2223,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.fecha_infonavit','!=',NULL)
                             ->where('expedientes.liquidado','=',1)
                             ->where('expedientes.postventa','!=',1)
-                            ->where('c.apellidos','like','%'. $buscar . '%')
-                            ->orderBy('contratos.id','asc')
-                            ->get();
+                            ->where('c.apellidos','like','%'. $buscar . '%');
                         break;
                     }
                     case 'contratos.id':{
@@ -2417,10 +2237,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.fecha_infonavit','!=',NULL)
                             ->where('expedientes.liquidado','=',1)
                             ->where('expedientes.postventa','!=',1)
-                            
-                            ->where($criterio,'=',$buscar)
-                            ->orderBy('contratos.id','asc')
-                            ->get();
+                            ->where($criterio,'=',$buscar);
                         break;
                     }
                     case 'lotes.fraccionamiento_id':{
@@ -2435,10 +2252,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.fecha_infonavit','!=',NULL)
                                 ->where('expedientes.liquidado','=',1)
                                 ->where('expedientes.postventa','!=',1)
-                                
-                                ->where($criterio, '=', $buscar)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where($criterio, '=', $buscar);
                         }
                         elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
                             $contratos = $query
@@ -2451,11 +2265,8 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.fecha_infonavit','!=',NULL)
                                 ->where('expedientes.liquidado','=',1)
                                 ->where('expedientes.postventa','!=',1)
-                                
                                 ->where($criterio, '=', $buscar)
-                                ->where('lotes.etapa_id', '=', $b_etapa)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.etapa_id', '=', $b_etapa);
                         }
                         elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
                             $contratos = $query
@@ -2468,12 +2279,9 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.fecha_infonavit','!=',NULL)
                                 ->where('expedientes.liquidado','=',1)
                                 ->where('expedientes.postventa','!=',1)
-                                
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
-                                ->where('lotes.manzana', '=', $b_manzana)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.manzana', '=', $b_manzana);
                         }
                         elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
                             $contratos = $query
@@ -2486,13 +2294,10 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.fecha_infonavit','!=',NULL)
                                 ->where('expedientes.liquidado','=',1)
                                 ->where('expedientes.postventa','!=',1)
-                                
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->where('lotes.manzana', '=', $b_manzana)
-                                ->where('lotes.num_lote', '=', $b_lote)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.num_lote', '=', $b_lote);
                         }
                         elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
                             $contratos = $query
@@ -2505,12 +2310,9 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.fecha_infonavit','!=',NULL)
                                 ->where('expedientes.liquidado','=',1)
                                 ->where('expedientes.postventa','!=',1)
-                                
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
-                                ->where('lotes.num_lote', '=', $b_lote)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.num_lote', '=', $b_lote);
                         }
                         elseif($b_etapa == '' && $b_manzana !='' && $b_lote == ''){
                             $contratos = $query
@@ -2523,11 +2325,8 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.fecha_infonavit','!=',NULL)
                                 ->where('expedientes.liquidado','=',1)
                                 ->where('expedientes.postventa','!=',1)
-                                
                                 ->where($criterio, '=', $buscar)
-                                ->where('lotes.manzana', '=', $b_manzana)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.manzana', '=', $b_manzana);
                         }
                         elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
                             $contratos = $query
@@ -2540,11 +2339,8 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.fecha_infonavit','!=',NULL)
                                 ->where('expedientes.liquidado','=',1)
                                 ->where('expedientes.postventa','!=',1)
-                                
                                 ->where($criterio, '=', $buscar)
-                                ->where('lotes.num_lote', '=', $b_lote)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.num_lote', '=', $b_lote);
                         }
                         elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
                             $contratos = $query
@@ -2557,12 +2353,9 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.fecha_infonavit','!=',NULL)
                                 ->where('expedientes.liquidado','=',1)
                                 ->where('expedientes.postventa','!=',1)
-                                
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.num_lote', '=', $b_lote)
-                                ->where('lotes.manzana', '=', $b_manzana)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.manzana', '=', $b_manzana);
                         }
                     }
                     case 'expedientes.gestor_id':{
@@ -2576,10 +2369,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.fecha_infonavit','!=',NULL)
                             ->where('expedientes.liquidado','=',1)
                             ->where('expedientes.postventa','!=',1)
-                            
-                            ->where($criterio,'=',$buscar)
-                            ->orderBy('contratos.id','asc')
-                            ->get();
+                            ->where($criterio,'=',$buscar);
                         break;
                     }
                 }
@@ -2597,9 +2387,7 @@ class ExpedienteController extends Controller
                     ->where('expedientes.fecha_infonavit','!=',NULL)
                     ->where('expedientes.liquidado','=',1)
                     ->where('expedientes.postventa','!=',1)
-                    ->where('expedientes.gestor_id','=',Auth::user()->id)
-                    ->orderBy('contratos.id','asc')
-                    ->get();
+                    ->where('expedientes.gestor_id','=',Auth::user()->id);
             }
             else{
                 switch($criterio){
@@ -2616,7 +2404,6 @@ class ExpedienteController extends Controller
                             ->where('expedientes.postventa','!=',1)
                             ->where('c.nombre','like','%'. $buscar . '%')
                             ->where('expedientes.gestor_id','=',Auth::user()->id)
-    
                             ->orWhere('i.elegido', '=', 1)
                             ->where('i.status','=',2)
                             ->where('contratos.status', '!=', 0)
@@ -2627,9 +2414,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.liquidado','=',1)
                             ->where('expedientes.postventa','!=',1)
                             ->where('c.apellidos','like','%'. $buscar . '%')
-                            ->where('expedientes.gestor_id','=',Auth::user()->id)
-                            ->orderBy('contratos.id','asc')
-                            ->get();
+                            ->where('expedientes.gestor_id','=',Auth::user()->id);
                         break;
                     }
                     case 'contratos.id':{
@@ -2644,9 +2429,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.liquidado','=',1)
                             ->where('expedientes.postventa','!=',1)
                             ->where('expedientes.gestor_id','=',Auth::user()->id)
-                            ->where($criterio,'=',$buscar)
-                            ->orderBy('contratos.id','asc')
-                            ->get();
+                            ->where($criterio,'=',$buscar);
                         break;
                     }
                     case 'lotes.fraccionamiento_id':{
@@ -2662,9 +2445,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.liquidado','=',1)
                                 ->where('expedientes.postventa','!=',1)
                                 ->where('expedientes.gestor_id','=',Auth::user()->id)
-                                ->where($criterio, '=', $buscar)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where($criterio, '=', $buscar);
                         }
                         elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
                             $contratos = $query
@@ -2679,9 +2460,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.postventa','!=',1)
                                 ->where('expedientes.gestor_id','=',Auth::user()->id)
                                 ->where($criterio, '=', $buscar)
-                                ->where('lotes.etapa_id', '=', $b_etapa)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.etapa_id', '=', $b_etapa);
                         }
                         elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
                             $contratos = $query
@@ -2697,9 +2476,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.gestor_id','=',Auth::user()->id)
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
-                                ->where('lotes.manzana', '=', $b_manzana)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.manzana', '=', $b_manzana);
                         }
                         elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
                             $contratos =$query
@@ -2716,9 +2493,7 @@ class ExpedienteController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->where('lotes.manzana', '=', $b_manzana)
-                                ->where('lotes.num_lote', '=', $b_lote)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.num_lote', '=', $b_lote);
                         }
                         elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
                             $contratos = $query
@@ -2734,9 +2509,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.gestor_id','=',Auth::user()->id)
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
-                                ->where('lotes.num_lote', '=', $b_lote)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.num_lote', '=', $b_lote);
                         }
                         elseif($b_etapa == '' && $b_manzana !='' && $b_lote == ''){
                             $contratos = $query
@@ -2751,9 +2524,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.postventa','!=',1)
                                 ->where('expedientes.gestor_id','=',Auth::user()->id)
                                 ->where($criterio, '=', $buscar)
-                                ->where('lotes.manzana', '=', $b_manzana)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.manzana', '=', $b_manzana);
                         }
                         elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
                             $contratos = $query
@@ -2768,9 +2539,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.postventa','!=',1)
                                 ->where('expedientes.gestor_id','=',Auth::user()->id)
                                 ->where($criterio, '=', $buscar)
-                                ->where('lotes.num_lote', '=', $b_lote)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.num_lote', '=', $b_lote);
                         }
                         elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
                             $contratos = $query
@@ -2786,15 +2555,16 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.gestor_id','=',Auth::user()->id)
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.num_lote', '=', $b_lote)
-                                ->where('lotes.manzana', '=', $b_manzana)
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('lotes.manzana', '=', $b_manzana);
                         }
                     }
                 }
     
             }
         }
+
+        $contratos = $contratos->orderBy('contratos.id','asc')
+                                ->get();
 
         if(sizeof($contratos)){
             foreach($contratos as $index => $contrato){
@@ -2908,9 +2678,7 @@ class ExpedienteController extends Controller
                     ->where('expedientes.valor_escrituras','!=',0)
                     ->where('expedientes.fecha_infonavit','!=',NULL)
                     ->where('expedientes.liquidado','=',1)
-                    ->where('expedientes.postventa','=',1)
-                    ->orderBy('contratos.id','asc')
-                    ->paginate(10);
+                    ->where('expedientes.postventa','=',1);
             }
             else{
                 switch($criterio){
@@ -2936,9 +2704,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.fecha_infonavit','!=',NULL)
                             ->where('expedientes.liquidado','=',1)
                             ->where('expedientes.postventa','=',1)
-                            ->where('c.apellidos','like','%'. $buscar . '%')
-                            ->orderBy('contratos.id','asc')
-                            ->paginate(10);
+                            ->where('c.apellidos','like','%'. $buscar . '%');
                         break;
                     }
                     case 'contratos.id':{
@@ -2953,9 +2719,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.liquidado','=',1)
                             ->where('expedientes.postventa','=',1)
                             
-                            ->where($criterio,'=',$buscar)
-                            ->orderBy('contratos.id','asc')
-                            ->paginate(10);
+                            ->where($criterio,'=',$buscar);
                         break;
                     }
                     case 'lotes.fraccionamiento_id':{
@@ -2971,9 +2735,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.liquidado','=',1)
                                 ->where('expedientes.postventa','=',1)
                                 
-                                ->where($criterio, '=', $buscar)
-                                ->orderBy('contratos.id','asc')
-                                ->paginate(10);
+                                ->where($criterio, '=', $buscar);
                         }
                         elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
                             $contratos = $query
@@ -2988,9 +2750,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.postventa','=',1)
                                 
                                 ->where($criterio, '=', $buscar)
-                                ->where('lotes.etapa_id', '=', $b_etapa)
-                                ->orderBy('contratos.id','asc')
-                                ->paginate(10);
+                                ->where('lotes.etapa_id', '=', $b_etapa);
                         }
                         elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
                             $contratos = $query
@@ -3006,9 +2766,7 @@ class ExpedienteController extends Controller
                                 
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
-                                ->where('lotes.manzana', '=', $b_manzana)
-                                ->orderBy('contratos.id','asc')
-                                ->paginate(10);
+                                ->where('lotes.manzana', '=', $b_manzana);
                         }
                         elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
                             $contratos = $query
@@ -3025,9 +2783,7 @@ class ExpedienteController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->where('lotes.manzana', '=', $b_manzana)
-                                ->where('lotes.num_lote', '=', $b_lote)
-                                ->orderBy('contratos.id','asc')
-                                ->paginate(10);
+                                ->where('lotes.num_lote', '=', $b_lote);
                         }
                         elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
                             $contratos = $query
@@ -3043,9 +2799,7 @@ class ExpedienteController extends Controller
                                 
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
-                                ->where('lotes.num_lote', '=', $b_lote)
-                                ->orderBy('contratos.id','asc')
-                                ->paginate(10);
+                                ->where('lotes.num_lote', '=', $b_lote);
                         }
                         elseif($b_etapa == '' && $b_manzana !='' && $b_lote == ''){
                             $contratos = $query
@@ -3060,9 +2814,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.postventa','=',1)
                                 
                                 ->where($criterio, '=', $buscar)
-                                ->where('lotes.manzana', '=', $b_manzana)
-                                ->orderBy('contratos.id','asc')
-                                ->paginate(10);
+                                ->where('lotes.manzana', '=', $b_manzana);
                         }
                         elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
                             $contratos = $query
@@ -3077,9 +2829,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.postventa','=',1)
                                 
                                 ->where($criterio, '=', $buscar)
-                                ->where('lotes.num_lote', '=', $b_lote)
-                                ->orderBy('contratos.id','asc')
-                                ->paginate(10);
+                                ->where('lotes.num_lote', '=', $b_lote);
                         }
                         elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
                             $contratos = $query
@@ -3095,9 +2845,7 @@ class ExpedienteController extends Controller
                                 
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.num_lote', '=', $b_lote)
-                                ->where('lotes.manzana', '=', $b_manzana)
-                                ->orderBy('contratos.id','asc')
-                                ->paginate(10);
+                                ->where('lotes.manzana', '=', $b_manzana);
                         }
                     }
                     case 'expedientes.gestor_id':{
@@ -3112,9 +2860,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.liquidado','=',1)
                             ->where('expedientes.postventa','=',1)
                             
-                            ->where($criterio,'=',$buscar)
-                            ->orderBy('contratos.id','asc')
-                            ->paginate(10);
+                            ->where($criterio,'=',$buscar);
                         break;
                     }
                 }
@@ -3132,9 +2878,7 @@ class ExpedienteController extends Controller
                     ->where('expedientes.fecha_infonavit','!=',NULL)
                     ->where('expedientes.liquidado','=',1)
                     ->where('expedientes.postventa','=',1)
-                    ->where('expedientes.gestor_id','=',Auth::user()->id)
-                    ->orderBy('contratos.id','asc')
-                    ->paginate(10);
+                    ->where('expedientes.gestor_id','=',Auth::user()->id);
             }
             else{
                 switch($criterio){
@@ -3162,9 +2906,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.liquidado','=',1)
                             ->where('expedientes.postventa','=',1)
                             ->where('c.apellidos','like','%'. $buscar . '%')
-                            ->where('expedientes.gestor_id','=',Auth::user()->id)
-                            ->orderBy('contratos.id','asc')
-                            ->paginate(10);
+                            ->where('expedientes.gestor_id','=',Auth::user()->id);
                         break;
                     }
                     case 'contratos.id':{
@@ -3179,9 +2921,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.liquidado','=',1)
                             ->where('expedientes.postventa','=',1)
                             ->where('expedientes.gestor_id','=',Auth::user()->id)
-                            ->where($criterio,'=',$buscar)
-                            ->orderBy('contratos.id','asc')
-                            ->paginate(10);
+                            ->where($criterio,'=',$buscar);
                         break;
                     }
                     case 'lotes.fraccionamiento_id':{
@@ -3197,9 +2937,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.liquidado','=',1)
                                 ->where('expedientes.postventa','=',1)
                                 ->where('expedientes.gestor_id','=',Auth::user()->id)
-                                ->where($criterio, '=', $buscar)
-                                ->orderBy('contratos.id','asc')
-                                ->paginate(10);
+                                ->where($criterio, '=', $buscar);
                         }
                         elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
                             $contratos = $query
@@ -3214,9 +2952,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.postventa','=',1)
                                 ->where('expedientes.gestor_id','=',Auth::user()->id)
                                 ->where($criterio, '=', $buscar)
-                                ->where('lotes.etapa_id', '=', $b_etapa)
-                                ->orderBy('contratos.id','asc')
-                                ->paginate(10);
+                                ->where('lotes.etapa_id', '=', $b_etapa);
                         }
                         elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
                             $contratos = $query
@@ -3232,9 +2968,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.gestor_id','=',Auth::user()->id)
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
-                                ->where('lotes.manzana', '=', $b_manzana)
-                                ->orderBy('contratos.id','asc')
-                                ->paginate(10);
+                                ->where('lotes.manzana', '=', $b_manzana);
                         }
                         elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
                             $contratos = $query
@@ -3251,9 +2985,7 @@ class ExpedienteController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->where('lotes.manzana', '=', $b_manzana)
-                                ->where('lotes.num_lote', '=', $b_lote)
-                                ->orderBy('contratos.id','asc')
-                                ->paginate(10);
+                                ->where('lotes.num_lote', '=', $b_lote);
                         }
                         elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
                             $contratos = $query
@@ -3269,9 +3001,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.gestor_id','=',Auth::user()->id)
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
-                                ->where('lotes.num_lote', '=', $b_lote)
-                                ->orderBy('contratos.id','asc')
-                                ->paginate(10);
+                                ->where('lotes.num_lote', '=', $b_lote);
                         }
                         elseif($b_etapa == '' && $b_manzana !='' && $b_lote == ''){
                             $contratos = $query
@@ -3286,9 +3016,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.postventa','=',1)
                                 ->where('expedientes.gestor_id','=',Auth::user()->id)
                                 ->where($criterio, '=', $buscar)
-                                ->where('lotes.manzana', '=', $b_manzana)
-                                ->orderBy('contratos.id','asc')
-                                ->paginate(10);
+                                ->where('lotes.manzana', '=', $b_manzana);
                         }
                         elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
                             $contratos = $query
@@ -3303,9 +3031,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.postventa','=',1)
                                 ->where('expedientes.gestor_id','=',Auth::user()->id)
                                 ->where($criterio, '=', $buscar)
-                                ->where('lotes.num_lote', '=', $b_lote)
-                                ->orderBy('contratos.id','asc')
-                                ->paginate(10);
+                                ->where('lotes.num_lote', '=', $b_lote);
                         }
                         elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
                             $contratos = $query
@@ -3321,15 +3047,16 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.gestor_id','=',Auth::user()->id)
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.num_lote', '=', $b_lote)
-                                ->where('lotes.manzana', '=', $b_manzana)
-                                ->orderBy('contratos.id','asc')
-                                ->paginate(10);
+                                ->where('lotes.manzana', '=', $b_manzana);
                         }
                     }
                 }
     
             }
         }
+
+        $contratos = $contratos->orderBy('contratos.id','asc')
+                                ->paginate(10);
 
         if(sizeof($contratos)){
             foreach($contratos as $index => $contrato){

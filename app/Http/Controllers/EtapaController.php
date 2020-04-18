@@ -42,28 +42,25 @@ class EtapaController extends Controller
         
         if($buscar==''){
             $etapas = $query
-                    ->where('etapas.num_etapa','!=','Sin Asignar')
-                    ->orderBy('fraccionamientos.nombre','asc')
-                    ->orderBy('etapas.num_etapa','asc')->paginate(8);
+                    ->where('etapas.num_etapa','!=','Sin Asignar');
         }
         else{
             if($criterio == 'f_ini' || $criterio == 'f_fin')
             {
                 $etapas = $query
                         ->whereBetween($criterio, [$buscar,$buscar2])
-                        ->where('etapas.num_etapa','!=','Sin Asignar')
-                        ->orderBy('fraccionamientos.nombre','asc')
-                        ->orderBy('etapas.num_etapa','asc')->paginate(8);
+                        ->where('etapas.num_etapa','!=','Sin Asignar');
             }
             else{
                 $etapas = $query
                         ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('etapas.num_etapa','!=','Sin Asignar')
-                        ->orderBy('fraccionamientos.nombre','asc')
-                        ->orderBy('etapas.num_etapa','asc')->paginate(8);
+                        ->where('etapas.num_etapa','!=','Sin Asignar');
             }
             
         }
+
+        $etapas = $etapas->orderBy('fraccionamientos.nombre','asc')
+                        ->orderBy('etapas.num_etapa','asc')->paginate(8);
 
         return [
             'pagination' => [
@@ -98,28 +95,25 @@ class EtapaController extends Controller
         
         if($buscar==''){
             $etapas = $query
-                    ->where('etapas.num_etapa','!=','Sin Asignar')
-                    ->orderBy('fraccionamientos.nombre','asc')
-                    ->orderBy('etapas.num_etapa','asc')->paginate(8);
+                    ->where('etapas.num_etapa','!=','Sin Asignar');
         }
         else{
             if($criterio == 'f_ini' || $criterio == 'f_fin')
             {
                 $etapas = $query
                         ->whereBetween($criterio, [$buscar,$buscar2])
-                        ->where('etapas.num_etapa','!=','Sin Asignar')
-                        ->orderBy('fraccionamientos.nombre','asc')
-                        ->orderBy('etapas.num_etapa','asc')->paginate(8);
+                        ->where('etapas.num_etapa','!=','Sin Asignar');
             }
             else{
                 $etapas = $query
                         ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('etapas.num_etapa','!=','Sin Asignar')
-                        ->orderBy('fraccionamientos.nombre','asc')
-                        ->orderBy('etapas.num_etapa','asc')->paginate(8);
+                        ->where('etapas.num_etapa','!=','Sin Asignar');
             }
             
         }
+
+        $etapas = $etapas->orderBy('fraccionamientos.nombre','asc')
+                            ->orderBy('etapas.num_etapa','asc')->paginate(8);
 
         return Excel::create('Etapas', function($excel) use ($etapas){
             $excel->sheet('Etapas', function($sheet) use ($etapas){
@@ -167,22 +161,6 @@ class EtapaController extends Controller
         )->download('xls');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     //funcion para insertar en la tabla
     public function store(Request $request)
     {
@@ -236,12 +214,7 @@ class EtapaController extends Controller
         $etapa->save();
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function destroy(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');

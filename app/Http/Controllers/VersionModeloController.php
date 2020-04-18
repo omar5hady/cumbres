@@ -73,11 +73,7 @@ class VersionModeloController extends Controller
             // ->where('lotes.contrato','=',0)
             ->where('lotes.fraccionamiento_id','=',$proyecto)
             ->where('lotes.etapa_id','=',$etapa)
-            ->where('lotes.modelo_id','=',$modelo)
-            ->orderBy('fraccionamientos.nombre','ASC')
-            ->orderBy('etapas.num_etapa','ASC')
-            ->orderBy('lotes.manzana','ASC')
-            ->orderBy('lotes.num_lote','ASC')->paginate(15);
+            ->where('lotes.modelo_id','=',$modelo);
         }
         elseif($manzana != '' && $lote == ''){
             $lotes = $query
@@ -86,11 +82,7 @@ class VersionModeloController extends Controller
             ->where('lotes.fraccionamiento_id','=',$proyecto)
             ->where('lotes.etapa_id','=',$etapa)
             ->where('lotes.modelo_id','=',$modelo)
-            ->where('lotes.manzana', 'like', '%'. $manzana . '%')
-            ->orderBy('fraccionamientos.nombre','ASC')
-            ->orderBy('etapas.num_etapa','ASC')
-            ->orderBy('lotes.manzana','ASC')
-            ->orderBy('lotes.num_lote','ASC')->paginate(15);
+            ->where('lotes.manzana', 'like', '%'. $manzana . '%');
         }
         elseif($manzana != '' && $lote != ''){
             $lotes = $query
@@ -100,11 +92,7 @@ class VersionModeloController extends Controller
             ->where('lotes.etapa_id','=',$etapa)
             ->where('lotes.modelo_id','=',$modelo)
             ->where('lotes.manzana', 'like', '%'. $manzana . '%')
-            ->where('lotes.num_lote', '=', $lote)
-            ->orderBy('fraccionamientos.nombre','ASC')
-            ->orderBy('etapas.num_etapa','ASC')
-            ->orderBy('lotes.manzana','ASC')
-            ->orderBy('lotes.num_lote','ASC')->paginate(15);
+            ->where('lotes.num_lote', '=', $lote);
         }
         elseif($manzana == '' && $lote != ''){
             $lotes = $query
@@ -113,12 +101,13 @@ class VersionModeloController extends Controller
             ->where('lotes.fraccionamiento_id','=',$proyecto)
             ->where('lotes.etapa_id','=',$etapa)
             ->where('lotes.modelo_id','=',$modelo)
-            ->where('lotes.num_lote', '=', $lote)
-            ->orderBy('fraccionamientos.nombre','ASC')
-            ->orderBy('etapas.num_etapa','ASC')
-            ->orderBy('lotes.manzana','ASC')
-            ->orderBy('lotes.num_lote','ASC')->paginate(15);
+            ->where('lotes.num_lote', '=', $lote);
         }
+
+        $lotes = $lotes->orderBy('fraccionamientos.nombre','ASC')
+                        ->orderBy('etapas.num_etapa','ASC')
+                        ->orderBy('lotes.manzana','ASC')
+                        ->orderBy('lotes.num_lote','ASC')->paginate(15);
 
         foreach($lotes as $index => $lote) {
             $archivo = Version_modelo::select('archivo')->where('modelo_id','=',$lote->modelo_id)->where('version','=',$lote->nombre_archivo)->get();

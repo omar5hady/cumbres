@@ -35,12 +35,6 @@ class InstSeleccionadasController extends Controller
                     'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
                     'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado');
 
-        $queryCont = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-            ->join('contratos','contratos.id','=','creditos.id')
-            ->join('lotes','lotes.id','=','creditos.lote_id')
-            ->join('personal','personal.id','=','creditos.prospecto_id')
-            ->select('contratos.id as folio');
-
         if($b_cobrados == 0){
             if($buscar == '' && $criterio != 'personal.nombre'){
                 $creditos = $query
@@ -51,25 +45,7 @@ class InstSeleccionadasController extends Controller
                     ->orWhere('inst_seleccionadas.tipo', '=', 1)
                     ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
                     ->where('contratos.status', '=', 3)
-                    ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                    ->orderBy('inst_seleccionadas.cobrado','asc')
-                    ->orderBy('inst_seleccionadas.monto_credito','desc')
-                    
-                    ->paginate(10);
-
-                    $contador = $queryCont
-                        ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                        ->where('inst_seleccionadas.elegido', '=', 1)
-                        ->where('contratos.status', '=', 3)
-                        ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                        ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                        ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                        ->where('contratos.status', '=', 3)
-                        ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                        ->orderBy('inst_seleccionadas.cobrado','asc')
-                        ->orderBy('inst_seleccionadas.monto_credito','desc')
-                        
-                        ->count();
+                    ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo');
             }
             else{
                 switch($criterio){
@@ -85,25 +61,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->paginate(10);
-
-                                $contador = $queryCont
-                                    ->where('inst_seleccionadas.elegido', '=', 1)
-                                    ->where('contratos.status', '=', 3)
-                                    ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                    ->where($criterio, 'like', '%' . $buscar . '%')
-                                    ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                    ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                    ->where('contratos.status', '=', 3)
-                                    ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                    ->where($criterio, 'like', '%' . $buscar . '%')
-                                    ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                    ->orderBy('inst_seleccionadas.cobrado','asc')
-                                    ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                    ->count();
+                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
                         }
                         elseif ($buscar2 != '' && $buscar == '') {
                             $creditos = $query
@@ -116,25 +74,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->paginate(10);
-
-                                $contador = $queryCont
-                                    ->where('inst_seleccionadas.elegido', '=', 1)
-                                    ->where('contratos.status', '=', 3)
-                                    ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                    ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                    ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                    ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                    ->where('contratos.status', '=', 3)
-                                    ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                    ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                    ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                    ->orderBy('inst_seleccionadas.cobrado','asc')
-                                    ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                    ->count();
+                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
                         }
                         else{
                             $creditos = $query
@@ -150,28 +90,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->paginate(10);
-                            
-                                $contador = $queryCont
-                                    ->where('inst_seleccionadas.elegido', '=', 1)
-                                    ->where('contratos.status', '=', 3)
-                                    ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                    ->where($criterio, 'like', '%' . $buscar . '%')
-                                    ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                    ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-        
-                                    ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                    ->where('contratos.status', '=', 3)
-                                    ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                    ->where($criterio, 'like', '%' . $buscar . '%')
-                                    ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                    ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                    ->orderBy('inst_seleccionadas.cobrado','asc')
-                                    ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                    ->count();
+                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
                         }
                         break;
     
@@ -188,25 +107,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->paginate(10);
-
-                            $contador = $queryCont
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->count();
+                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
                         }
                         elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 == '') {
                             $creditos = $query
@@ -221,27 +122,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.etapa', '=', $buscar2)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->paginate(10);
-
-                            $contador = $queryCont
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->count();
+                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
                         }
                         elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 == '') {
                             $creditos = $query
@@ -258,29 +139,7 @@ class InstSeleccionadasController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.manzana', '=', $buscar3)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->paginate(10);
-
-                            $contador = $queryCont
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.manzana', '=', $buscar3)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.manzana', '=', $buscar3)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->count();
+                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
                         }
                         elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 != '') {
                             $creditos = $query
@@ -300,32 +159,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.manzana', '=', $buscar3)
                                 ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->paginate(10);
-
-                            $contador = $queryCont
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.manzana', '=', $buscar3)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-    
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.manzana', '=', $buscar3)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->count();
+                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
                         }
                         elseif ($buscar2 == '' && $buscar3 == '' && $buscar4 != '') {
                             $creditos = $query
@@ -340,27 +174,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->paginate(10);
-
-                            $contador = $queryCont
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->count();
+                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
                         }
                         elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 != '') {
                             $creditos = $query
@@ -377,29 +191,7 @@ class InstSeleccionadasController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->paginate(10);
-
-                            $contador = $queryCont
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->count();
+                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
                         }
                         break;
                     }
@@ -415,25 +207,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->paginate(10);
-
-                            $contador = $queryCont
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->count();
+                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
                     }
     
                 }
@@ -449,25 +223,7 @@ class InstSeleccionadasController extends Controller
                     ->orWhere('inst_seleccionadas.tipo', '=', 1)
                     ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
                     ->where('contratos.status', '=', 3)
-                    ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                    ->orderBy('inst_seleccionadas.cobrado','asc')
-                    ->orderBy('inst_seleccionadas.monto_credito','desc')
-                    
-                    ->paginate(10);
-
-                    $contador = $queryCont
-                    ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                    ->where('inst_seleccionadas.elegido', '=', 1)
-                    ->where('contratos.status', '=', 3)
-                    ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                    ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                    ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                    ->where('contratos.status', '=', 3)
-                    ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                    ->orderBy('inst_seleccionadas.cobrado','asc')
-                    ->orderBy('inst_seleccionadas.monto_credito','desc')
-                    
-                    ->count();
+                    ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo');
             }
             else{
                 switch($criterio){
@@ -483,25 +239,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->paginate(10);
-
-                            $contador = $queryCont
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->count();
+                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
                         }
                         elseif ($buscar2 != '' && $buscar == '') {
                             $creditos = $query
@@ -514,25 +252,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->paginate(10);
-
-                            $contador = $queryCont
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->count();
+                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
                         }
                         else{
                             $creditos = $query
@@ -548,28 +268,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->paginate(10);
-
-                            $contador = $queryCont
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-    
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->count();
+                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
                         }
                         break;
     
@@ -586,25 +285,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->paginate(10);
-
-                            $contador = $queryCont
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->count();
+                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
                         }
                         elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 == '') {
                             $creditos = $query
@@ -619,27 +300,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.etapa', '=', $buscar2)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->paginate(10);
-
-                            $contador = $queryCont
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->count();
+                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
                         }
                         elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 == '') {
                             $creditos = $query
@@ -656,29 +317,7 @@ class InstSeleccionadasController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.manzana', '=', $buscar3)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->paginate(10);
-
-                            $contador = $queryCont
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.manzana', '=', $buscar3)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.manzana', '=', $buscar3)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->count();
+                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
                         }
                         elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 != '') {
                             $creditos = $query
@@ -698,32 +337,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.manzana', '=', $buscar3)
                                 ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->paginate(10);
-
-                            $contador = $queryCont
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.manzana', '=', $buscar3)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-    
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.manzana', '=', $buscar3)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->count();
+                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
                         }
                         elseif ($buscar2 == '' && $buscar3 == '' && $buscar4 != '') {
                             $creditos = $query
@@ -738,27 +352,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->paginate(10);
-
-                            $contador = $queryCont
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->count();
+                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
                         }
                         elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 != '') {
                             $creditos = $query
@@ -775,29 +369,7 @@ class InstSeleccionadasController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->paginate(10);
-
-                            $contador = $queryCont
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->count();
+                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
                         }
                         break;
                     }
@@ -813,35 +385,15 @@ class InstSeleccionadasController extends Controller
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->paginate(10);
-
-                        $contador = $queryCont
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->count();
-
-                                
+                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
                     }
-    
                 }
             }
-
         }
 
-        
+        $creditos = $creditos->orderBy('inst_seleccionadas.cobrado','asc')
+                            ->orderBy('inst_seleccionadas.monto_credito','desc')
+                            ->paginate(10);  
 
 
         return[
@@ -853,7 +405,7 @@ class InstSeleccionadasController extends Controller
                 'from'          => $creditos->firstItem(),
                 'to'            => $creditos->lastItem(),
             ],
-            'creditos' => $creditos, 'contador' => $contador
+            'creditos' => $creditos, 'contador' => $creditos->total()
         ];
     }
 
@@ -893,27 +445,26 @@ class InstSeleccionadasController extends Controller
         if($fecha1 != '' && $fecha2 != ''){
             if($banco == ''){
                 $depositos = $query
-                        ->whereBetween('dep_creditos.fecha_deposito', [$fecha1, $fecha2])
-                        ->orderBy('dep_creditos.fecha_deposito','desc')->paginate(10);
+                        ->whereBetween('dep_creditos.fecha_deposito', [$fecha1, $fecha2]);
             }
             else{
                 $depositos = $query
                         ->whereBetween('dep_creditos.fecha_deposito', [$fecha1, $fecha2])
-                        ->where('dep_creditos.banco','=',$banco)
-                        ->orderBy('dep_creditos.fecha_deposito','desc')->paginate(10);
+                        ->where('dep_creditos.banco','=',$banco);
             }
         }
         else{
             if($banco == ''){
-                $depositos = $query->orderBy('dep_creditos.fecha_deposito','desc')->paginate(10);
+                $depositos = $query;
             }
             else{
                 $depositos = $query
-                        ->where('dep_creditos.banco','=',$banco)
-                        ->orderBy('dep_creditos.fecha_deposito','desc')->paginate(10);
+                        ->where('dep_creditos.banco','=',$banco);
             }
             
         }
+
+        $depositos = $depositos->orderBy('dep_creditos.fecha_deposito','desc')->paginate(10);
         
 
         return [
@@ -1108,13 +659,7 @@ class InstSeleccionadasController extends Controller
                     ->where('contratos.status', '=', 3)
                     ->orWhere('inst_seleccionadas.tipo', '=', 1)
                     ->where('inst_seleccionadas.cobrado','=','0')
-                    ->where('contratos.status', '=', 3)
-                    ->orderBy('inst_seleccionadas.cobrado','asc')
-                    ->orderBy('inst_seleccionadas.monto_credito','desc')
-                    
-                    ->get();
-
-                  
+                    ->where('contratos.status', '=', 3);
             }
             else{
                 switch($criterio){
@@ -1137,11 +682,7 @@ class InstSeleccionadasController extends Controller
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->where('inst_seleccionadas.cobrado','=','0')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->get();
-
+                                ->where('inst_seleccionadas.cobrado','=','0');
                         }
                         elseif ($buscar2 != '' && $buscar == '') {
                             $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
@@ -1161,11 +702,7 @@ class InstSeleccionadasController extends Controller
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->where('inst_seleccionadas.cobrado','=','0')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->get();
-
+                                ->where('inst_seleccionadas.cobrado','=','0');
                         }
                         else{
                             $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
@@ -1188,11 +725,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('contratos.status', '=', 3)
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->where('inst_seleccionadas.cobrado','=','0')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->get();
-                            
+                                ->where('inst_seleccionadas.cobrado','=','0');
                         }
                         break;
     
@@ -1216,11 +749,7 @@ class InstSeleccionadasController extends Controller
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where($criterio, '=', $buscar)
-                                ->where('inst_seleccionadas.cobrado','=','0')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->get();
-
+                                ->where('inst_seleccionadas.cobrado','=','0');
                         }
                         elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 == '') {
                             $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
@@ -1242,11 +771,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('contratos.status', '=', 3)
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.etapa', '=', $buscar2)
-                                ->where('inst_seleccionadas.cobrado','=','0')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->get();
-
+                                ->where('inst_seleccionadas.cobrado','=','0');
                         }
                         elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 == '') {
                             $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
@@ -1270,11 +795,7 @@ class InstSeleccionadasController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.manzana', '=', $buscar3)
-                                ->where('inst_seleccionadas.cobrado','=','0')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->get();
-
+                                ->where('inst_seleccionadas.cobrado','=','0');
                         }
                         elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 != '') {
                             $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
@@ -1301,11 +822,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.manzana', '=', $buscar3)
                                 ->where('creditos.num_lote', '=', $buscar4)
-                                ->where('inst_seleccionadas.cobrado','=','0')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->get();
-
+                                ->where('inst_seleccionadas.cobrado','=','0');
                         }
                         elseif ($buscar2 == '' && $buscar3 == '' && $buscar4 != '') {
                             $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
@@ -1327,11 +844,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('contratos.status', '=', 3)
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.num_lote', '=', $buscar4)
-                                ->where('inst_seleccionadas.cobrado','=','0')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->get();
-
+                                ->where('inst_seleccionadas.cobrado','=','0');
                         }
                         elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 != '') {
                             $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
@@ -1355,11 +868,7 @@ class InstSeleccionadasController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.num_lote', '=', $buscar4)
-                                ->where('inst_seleccionadas.cobrado','=','0')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->get();
-
+                                ->where('inst_seleccionadas.cobrado','=','0');
                         }
                         break;
                     }
@@ -1382,10 +891,7 @@ class InstSeleccionadasController extends Controller
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where($criterio, '=', $buscar)
-                                ->where('inst_seleccionadas.cobrado','=','0')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->get();
+                                ->where('inst_seleccionadas.cobrado','=','0');
                     }
     
                 }
@@ -1408,11 +914,7 @@ class InstSeleccionadasController extends Controller
                     ->where('contratos.status', '=', 3)
                     ->orWhere('inst_seleccionadas.tipo', '=', 1)
                     ->where('inst_seleccionadas.cobrado','!=','0')
-                    ->where('contratos.status', '=', 3)
-                    ->orderBy('inst_seleccionadas.cobrado','asc')
-                    ->orderBy('inst_seleccionadas.monto_credito','desc')
-                    ->get();
-                   
+                    ->where('contratos.status', '=', 3);
             }
             else{
                 switch($criterio){
@@ -1435,11 +937,7 @@ class InstSeleccionadasController extends Controller
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->where('inst_seleccionadas.cobrado','!=','0')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->get();
-
+                                ->where('inst_seleccionadas.cobrado','!=','0');
                         }
                         elseif ($buscar2 != '' && $buscar == '') {
                             $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
@@ -1459,11 +957,7 @@ class InstSeleccionadasController extends Controller
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->where('inst_seleccionadas.cobrado','!=','0')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->get();
-
+                                ->where('inst_seleccionadas.cobrado','!=','0');
                         }
                         else{
                             $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
@@ -1486,11 +980,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('contratos.status', '=', 3)
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->where('inst_seleccionadas.cobrado','!=','0')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->get();
-
+                                ->where('inst_seleccionadas.cobrado','!=','0');
                         }
                         break;
     
@@ -1514,12 +1004,7 @@ class InstSeleccionadasController extends Controller
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where($criterio, '=', $buscar)
-                                ->where('inst_seleccionadas.cobrado','!=','0')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->get();
-
-                                
+                                ->where('inst_seleccionadas.cobrado','!=','0');   
                         }
                         elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 == '') {
                             $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
@@ -1541,12 +1026,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('contratos.status', '=', 3)
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.etapa', '=', $buscar2)
-                                ->where('inst_seleccionadas.cobrado','!=','0')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->get();
-
-                               
+                                ->where('inst_seleccionadas.cobrado','!=','0');
                         }
                         elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 == '') {
                             $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
@@ -1570,12 +1050,7 @@ class InstSeleccionadasController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.manzana', '=', $buscar3)
-                                ->where('inst_seleccionadas.cobrado','!=','0')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->get();
-
-                               
+                                ->where('inst_seleccionadas.cobrado','!=','0');
                         }
                         elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 != '') {
                             $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
@@ -1602,12 +1077,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.manzana', '=', $buscar3)
                                 ->where('creditos.num_lote', '=', $buscar4)
-                                ->where('inst_seleccionadas.cobrado','!=','0')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->get();
-
-                                
+                                ->where('inst_seleccionadas.cobrado','!=','0');
                         }
                         elseif ($buscar2 == '' && $buscar3 == '' && $buscar4 != '') {
                             $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
@@ -1629,12 +1099,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('contratos.status', '=', 3)
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.num_lote', '=', $buscar4)
-                                ->where('inst_seleccionadas.cobrado','!=','0')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->get();
-
-                              
+                                ->where('inst_seleccionadas.cobrado','!=','0');
                         }
                         elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 != '') {
                             $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
@@ -1658,12 +1123,7 @@ class InstSeleccionadasController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.num_lote', '=', $buscar4)
-                                ->where('inst_seleccionadas.cobrado','!=','0')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->get();
-
-                                
+                                ->where('inst_seleccionadas.cobrado','!=','0');
                         }
                         break;
                     }
@@ -1686,18 +1146,17 @@ class InstSeleccionadasController extends Controller
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where($criterio, '=', $buscar)
-                                ->where('inst_seleccionadas.cobrado','!=','0')
-                                ->orderBy('inst_seleccionadas.cobrado','asc')
-                                ->orderBy('inst_seleccionadas.monto_credito','desc')
-                                ->get();
-
-                               
+                                ->where('inst_seleccionadas.cobrado','!=','0');
                     }
     
                 }
             }
 
         }
+
+        $creditos = $creditos->orderBy('inst_seleccionadas.cobrado','asc')
+                            ->orderBy('inst_seleccionadas.monto_credito','desc')
+                            ->get();
 
         return Excel::create('creditos', function($excel) use ($creditos){
             $excel->sheet('creditos', function($sheet) use ($creditos){
@@ -1783,11 +1242,7 @@ class InstSeleccionadasController extends Controller
             $creditos = $query
 
                     ->where('contratos.saldo','<',0)
-                    ->where('inst_seleccionadas.elegido', '=', 1)
-                    ->orderBy('inst_seleccionadas.cobrado','asc')
-                    ->orderBy('inst_seleccionadas.monto_credito','desc')
-                    
-                    ->paginate(10);
+                    ->where('inst_seleccionadas.elegido', '=', 1);
         }
         else{
             switch($criterio){
@@ -1796,23 +1251,14 @@ class InstSeleccionadasController extends Controller
 
                         ->where('contratos.saldo','<',0)
                         ->where('inst_seleccionadas.elegido', '=', 1)
-                        ->where($criterio,'=',$buscar)
-                        ->orderBy('inst_seleccionadas.cobrado','asc')
-                        ->orderBy('inst_seleccionadas.monto_credito','desc')
-                        
-                        ->paginate(10);
-
+                        ->where($criterio,'=',$buscar);
                     break;
                 }
                 case 'personal.nombre':{
                     $creditos = $query
                         ->where('contratos.saldo','<',0)
                         ->where('inst_seleccionadas.elegido', '=', 1)
-                        ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
-                        ->orderBy('inst_seleccionadas.cobrado','asc')
-                        ->orderBy('inst_seleccionadas.monto_credito','desc')
-                        
-                        ->paginate(10);
+                        ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
                     break;
                 }
                 case 'lotes.fraccionamiento_id':{
@@ -1820,24 +1266,14 @@ class InstSeleccionadasController extends Controller
                         $creditos = $query
                         ->where('contratos.saldo','<',0)
                         ->where('inst_seleccionadas.elegido', '=', 1)
-                        ->where($criterio,'=',$buscar)
-                        ->orderBy('inst_seleccionadas.cobrado','asc')
-                        ->orderBy('inst_seleccionadas.monto_credito','desc')
-                        
-                        ->paginate(10);
-                        
+                        ->where($criterio,'=',$buscar);
                     }
                     elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
                         $creditos = $query
                         ->where('contratos.saldo','<',0)
                         ->where('inst_seleccionadas.elegido', '=', 1)
                         ->where($criterio,'=',$buscar)
-                        ->where('lotes.etapa_id','=',$b_etapa)
-                        ->orderBy('inst_seleccionadas.cobrado','asc')
-                        ->orderBy('inst_seleccionadas.monto_credito','desc')
-                        
-                        ->paginate(10);
-                        
+                        ->where('lotes.etapa_id','=',$b_etapa);
                     }
                     elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
                         $creditos = $query
@@ -1845,11 +1281,7 @@ class InstSeleccionadasController extends Controller
                         ->where('inst_seleccionadas.elegido', '=', 1)
                         ->where($criterio,'=',$buscar)
                         ->where('lotes.etapa_id','=',$b_etapa)
-                        ->where('lotes.manzana','=',$b_manzana)
-                        ->orderBy('inst_seleccionadas.cobrado','asc')
-                        ->orderBy('inst_seleccionadas.monto_credito','desc')
-                        
-                        ->paginate(10);
+                        ->where('lotes.manzana','=',$b_manzana);
                     }
                     elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
                         $creditos = $query
@@ -1858,11 +1290,7 @@ class InstSeleccionadasController extends Controller
                         ->where($criterio,'=',$buscar)
                         ->where('lotes.etapa_id','=',$b_etapa)
                         ->where('lotes.manzana','=',$b_manzana)
-                        ->where('lotes.num_lote','=',$b_lote)
-                        ->orderBy('inst_seleccionadas.cobrado','asc')
-                        ->orderBy('inst_seleccionadas.monto_credito','desc')
-                        
-                        ->paginate(10);
+                        ->where('lotes.num_lote','=',$b_lote);
                     }
                     elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
                         $creditos = $query
@@ -1870,28 +1298,23 @@ class InstSeleccionadasController extends Controller
                         ->where('inst_seleccionadas.elegido', '=', 1)
                         ->where($criterio,'=',$buscar)
                         ->where('lotes.etapa_id','=',$b_etapa)
-                        ->where('lotes.num_lote','=',$b_lote)
-                        ->orderBy('inst_seleccionadas.cobrado','asc')
-                        ->orderBy('inst_seleccionadas.monto_credito','desc')
-                        
-                        ->paginate(10);
+                        ->where('lotes.num_lote','=',$b_lote);
                     }
                     elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
                         $creditos = $query
                         ->where('contratos.saldo','<',0)
                         ->where('inst_seleccionadas.elegido', '=', 1)
                         ->where($criterio,'=',$buscar)
-                        ->where('lotes.num_lote','=',$b_lote)
-                        ->orderBy('inst_seleccionadas.cobrado','asc')
-                        ->orderBy('inst_seleccionadas.monto_credito','desc')
-                        
-                        ->paginate(10);
+                        ->where('lotes.num_lote','=',$b_lote);
                     }
-
                     break;
                 }
             }
         }
+
+        $creditos = $creditos->orderBy('inst_seleccionadas.cobrado','asc')
+                            ->orderBy('inst_seleccionadas.monto_credito','desc')
+                            ->paginate(10);
         
 
         return[

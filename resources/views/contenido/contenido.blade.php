@@ -422,6 +422,9 @@
         <template v-if="menu==239">
             <rep-ventascanc></rep-ventascanc>
         </template>
+        <template v-if="menu==240">
+            <rep-acumulado></rep-acumulado>
+        </template>
 
         
 

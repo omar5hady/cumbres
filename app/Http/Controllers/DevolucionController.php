@@ -297,15 +297,6 @@ class DevolucionController extends Controller
                 ->where('contratos.status', '=', '0')
                 ->where('contratos.devolucion', '=', '2')
                 ->orderBy('id', 'desc')->paginate(8);
-
-            // $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-            //     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-            //     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-            //     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
-            //     ->select('contratos.id as contratoId')
-            //     ->where('contratos.status', '=', '0')
-            //     ->where('contratos.devolucion', '=', '0')
-            //     ->orderBy('id', 'desc')->count();
         }
         else{
             switch ($criterio){

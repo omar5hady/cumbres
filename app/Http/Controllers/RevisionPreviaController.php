@@ -66,10 +66,7 @@ class RevisionPreviaController extends Controller
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
                     ->where('contratos.entregado', '=', 0)
-                    ->where('entregas.fecha_program','!=',NULL)
-                    ->orderBy('entregas.revision_previa','asc')
-                    ->orderBy('entregas.fecha_program','asc')
-                    ->paginate(8);
+                    ->where('entregas.fecha_program','!=',NULL);
         }
         else{
             switch($criterio){
@@ -79,11 +76,7 @@ class RevisionPreviaController extends Controller
                     ->where('contratos.status', '!=', 2)
                     ->where('contratos.entregado', '=', 0)
                     ->where('entregas.fecha_program','!=',NULL)
-                    ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%')
-                    ->orderBy('entregas.revision_previa','asc')
-                    ->orderBy('entregas.fecha_program','asc')
-                    ->paginate(8);
-
+                    ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%');
                     break;
                 }
 
@@ -93,11 +86,7 @@ class RevisionPreviaController extends Controller
                     ->where('contratos.status', '!=', 2)
                     ->where('contratos.entregado', '=', 0)
                     ->where('entregas.fecha_program','!=',NULL)
-                    ->whereBetween($criterio, [$buscar, $b_etapa])
-                    ->orderBy('entregas.revision_previa','asc')
-                    ->orderBy('entregas.fecha_program','asc')
-                    ->paginate(8);
-
+                    ->whereBetween($criterio, [$buscar, $b_etapa]);
                     break;
                 }
 
@@ -107,11 +96,7 @@ class RevisionPreviaController extends Controller
                     ->where('contratos.status', '!=', 2)
                     ->where('contratos.entregado', '=', 0)
                     ->where('entregas.fecha_program','!=',NULL)
-                    ->where($criterio, '=', $buscar)
-                    ->orderBy('entregas.revision_previa','asc')
-                    ->orderBy('entregas.fecha_program','asc')
-                    ->paginate(8);
-
+                    ->where($criterio, '=', $buscar);
                     break;
                 }
 
@@ -122,10 +107,7 @@ class RevisionPreviaController extends Controller
                         ->where('contratos.status', '!=', 2)
                         ->where('contratos.entregado', '=', 0)
                         ->where('entregas.fecha_program','!=',NULL)
-                        ->where($criterio, '=', $buscar)
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('lotes.fecha_entrega_obra','desc')
-                        ->paginate(8);
+                        ->where($criterio, '=', $buscar);
                     }
                     elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
                         $contratos = $query
@@ -134,11 +116,7 @@ class RevisionPreviaController extends Controller
                         ->where('contratos.entregado', '=', 0)
                         ->where('entregas.fecha_program','!=',NULL)
                         ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('lotes.fecha_entrega_obra','desc')
-                        ->paginate(8);
-
+                        ->where('lotes.etapa_id', '=', $b_etapa);
                     }
                     elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
                         $contratos = $query
@@ -148,10 +126,7 @@ class RevisionPreviaController extends Controller
                         ->where('entregas.fecha_program','!=',NULL)
                         ->where($criterio, '=', $buscar)
                         ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('lotes.fecha_entrega_obra','desc')
-                        ->paginate(8);
+                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
                     }
                     elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
                         $contratos = $query
@@ -162,11 +137,7 @@ class RevisionPreviaController extends Controller
                         ->where($criterio, '=', $buscar)
                         ->where('lotes.etapa_id', '=', $b_etapa)
                         ->where('lotes.num_lote', '=', $b_lote)
-                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('lotes.fecha_entrega_obra','desc')
-                        ->paginate(8);
-
+                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
                     }
                     elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
                         $contratos = $query
@@ -176,10 +147,7 @@ class RevisionPreviaController extends Controller
                         ->where('entregas.fecha_program','!=',NULL)
                         ->where($criterio, '=', $buscar)
                         ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->where('lotes.num_lote', '=', $b_lote)
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('lotes.fecha_entrega_obra','desc')
-                        ->paginate(8);
+                        ->where('lotes.num_lote', '=', $b_lote);
                     }
                     elseif($b_etapa == '' && $b_manzana != '' && $b_lote != ''){
                         $contratos = $query
@@ -189,11 +157,7 @@ class RevisionPreviaController extends Controller
                         ->where('entregas.fecha_program','!=',NULL)
                         ->where($criterio, '=', $buscar)
                         ->where('lotes.num_lote', '=', $b_lote)
-                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('lotes.fecha_entrega_obra','desc')
-                        ->paginate(8);
-
+                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
                     }
                     elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
                         $contratos = $query
@@ -202,11 +166,7 @@ class RevisionPreviaController extends Controller
                         ->where('contratos.entregado', '=', 0)
                         ->where('entregas.fecha_program','!=',NULL)
                         ->where($criterio, '=', $buscar)
-                        ->where('lotes.num_lote', '=', $b_lote)
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('lotes.fecha_entrega_obra','desc')
-                        ->paginate(8);
-
+                        ->where('lotes.num_lote', '=', $b_lote);
                     }
                     elseif($b_etapa == '' && $b_manzana != '' && $b_lote == ''){
                         $contratos = $query
@@ -215,17 +175,17 @@ class RevisionPreviaController extends Controller
                         ->where('contratos.entregado', '=', 0)
                         ->where('entregas.fecha_program','!=',NULL)
                         ->where($criterio, '=', $buscar)
-                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('lotes.fecha_entrega_obra','desc')
-                        ->paginate(8);
-
+                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
                     }
 
                     break;
                 }
             }
         }
+
+        $contratos = $contratos->orderBy('licencias.avance','desc')
+                    ->orderBy('lotes.fecha_entrega_obra','desc')
+                    ->paginate(8);
 
         return [
             'pagination' => [
@@ -286,10 +246,7 @@ class RevisionPreviaController extends Controller
                     ->where('contratos.status', '!=', 2)
                     ->where('entregas.fecha_program','!=',NULL)
                     ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
-                    ->where('entregas.revision_previa','!=',0)
-                    ->orderBy('entregas.revision_previa','asc')
-                    ->orderBy('entregas.fecha_program','asc')
-                    ->paginate(8);
+                    ->where('entregas.revision_previa','!=',0);
         }
         else{
             switch($criterio){
@@ -300,11 +257,7 @@ class RevisionPreviaController extends Controller
                         ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
                         ->where('entregas.revision_previa','!=',0)
                         ->where('entregas.fecha_program','!=',NULL)
-                        ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%')
-                        ->orderBy('entregas.revision_previa','asc')
-                        ->orderBy('entregas.fecha_program','asc')
-                        ->paginate(8);
-
+                        ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%');
                     break;
                 }
 
@@ -315,11 +268,7 @@ class RevisionPreviaController extends Controller
                         ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
                         ->where('entregas.revision_previa','!=',0)
                         ->where('entregas.fecha_program','!=',NULL)
-                        ->whereBetween($criterio, [$buscar, $b_etapa])
-                        ->orderBy('entregas.revision_previa','asc')
-                        ->orderBy('entregas.fecha_program','asc')
-                        ->paginate(8);
-
+                        ->whereBetween($criterio, [$buscar, $b_etapa]);
                     break;
                 }
 
@@ -330,11 +279,7 @@ class RevisionPreviaController extends Controller
                         ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
                         ->where('entregas.revision_previa','!=',0)
                         ->where('entregas.fecha_program','!=',NULL)
-                        ->where($criterio, '=', $buscar)
-                        ->orderBy('entregas.revision_previa','asc')
-                        ->orderBy('entregas.fecha_program','asc')
-                        ->paginate(8);
-
+                        ->where($criterio, '=', $buscar);
                     break;
                 }
 
@@ -346,10 +291,7 @@ class RevisionPreviaController extends Controller
                             ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
                             ->where('entregas.revision_previa','!=',0)
                             ->where('entregas.fecha_program','!=',NULL)
-                            ->where($criterio, '=', $buscar)
-                            ->orderBy('licencias.avance','desc')
-                            ->orderBy('lotes.fecha_entrega_obra','desc')
-                            ->paginate(8);
+                            ->where($criterio, '=', $buscar);
                     }
                     elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
                         $contratos = $query
@@ -359,10 +301,7 @@ class RevisionPreviaController extends Controller
                             ->where('entregas.revision_previa','!=',0)
                             ->where('entregas.fecha_program','!=',NULL)
                             ->where($criterio, '=', $buscar)
-                            ->where('lotes.etapa_id', '=', $b_etapa)
-                            ->orderBy('licencias.avance','desc')
-                            ->orderBy('lotes.fecha_entrega_obra','desc')
-                            ->paginate(8);
+                            ->where('lotes.etapa_id', '=', $b_etapa);
 
                     }
                     elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
@@ -374,10 +313,7 @@ class RevisionPreviaController extends Controller
                             ->where('entregas.fecha_program','!=',NULL)
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
-                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                            ->orderBy('licencias.avance','desc')
-                            ->orderBy('lotes.fecha_entrega_obra','desc')
-                            ->paginate(8);
+                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
                     }
                     elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
                         $contratos = $query
@@ -389,10 +325,7 @@ class RevisionPreviaController extends Controller
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
                             ->where('lotes.num_lote', '=', $b_lote)
-                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                            ->orderBy('licencias.avance','desc')
-                            ->orderBy('lotes.fecha_entrega_obra','desc')
-                            ->paginate(8);
+                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
 
                     }
                     elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
@@ -404,10 +337,7 @@ class RevisionPreviaController extends Controller
                             ->where('entregas.fecha_program','!=',NULL)
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
-                            ->where('lotes.num_lote', '=', $b_lote)
-                            ->orderBy('licencias.avance','desc')
-                            ->orderBy('lotes.fecha_entrega_obra','desc')
-                            ->paginate(8);
+                            ->where('lotes.num_lote', '=', $b_lote);
                         }
                     elseif($b_etapa == '' && $b_manzana != '' && $b_lote != ''){
                         $contratos = $query
@@ -418,10 +348,7 @@ class RevisionPreviaController extends Controller
                             ->where('entregas.fecha_program','!=',NULL)
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.num_lote', '=', $b_lote)
-                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                            ->orderBy('licencias.avance','desc')
-                            ->orderBy('lotes.fecha_entrega_obra','desc')
-                            ->paginate(8);
+                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
 
                     }
                     elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
@@ -432,10 +359,7 @@ class RevisionPreviaController extends Controller
                             ->where('entregas.revision_previa','!=',0)
                             ->where('entregas.fecha_program','!=',NULL)
                             ->where($criterio, '=', $buscar)
-                            ->where('lotes.num_lote', '=', $b_lote)
-                            ->orderBy('licencias.avance','desc')
-                            ->orderBy('lotes.fecha_entrega_obra','desc')
-                            ->paginate(8);
+                            ->where('lotes.num_lote', '=', $b_lote);
 
                     }
                     elseif($b_etapa == '' && $b_manzana != '' && $b_lote == ''){
@@ -446,15 +370,16 @@ class RevisionPreviaController extends Controller
                             ->where('entregas.revision_previa','!=',0)
                             ->where('entregas.fecha_program','!=',NULL)
                             ->where($criterio, '=', $buscar)
-                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                            ->orderBy('licencias.avance','desc')
-                            ->orderBy('lotes.fecha_entrega_obra','desc')
-                            ->paginate(8);
+                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
                     }
                     break;
                 }
             }
         }
+
+        $contratos = $contratos->orderBy('licencias.avance','desc')
+                                ->orderBy('lotes.fecha_entrega_obra','desc')
+                                ->paginate(8);
 
         return [
             'pagination' => [
@@ -1653,7 +1578,6 @@ class RevisionPreviaController extends Controller
         $detalle->observacion = $obs;
         $detalle->save();
     }
-
 
     public function DetallesPDF($folio){
         $contratos = Entrega::join('contratos','entregas.id','contratos.id')

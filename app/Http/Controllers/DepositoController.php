@@ -54,11 +54,7 @@ class DepositoController extends Controller
                     ->where('pagos_contratos.pagado','!=',3)
                     ->where('contratos.status','!=',0)
                     ->where('contratos.status','!=',2) 
-                    ->where('pagos_contratos.fecha_pago','<',$hoy)
-                    ->orderBy('pagos_contratos.pagado', 'asc')
-                    ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                    ->orderBy('pagos_contratos.pagado', 'asc')
-                    ->paginate(10);
+                    ->where('pagos_contratos.fecha_pago','<',$hoy);
             }
             else{
                 switch($criterio){
@@ -75,11 +71,7 @@ class DepositoController extends Controller
                             ->where('contratos.status','!=',0)
                             ->where('contratos.status','!=',2)
                             ->where('pagos_contratos.fecha_pago','<',$hoy)
-                            ->where('personal.apellidos','like', '%'. $buscar . '%')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->paginate(10);
+                            ->where('personal.apellidos','like', '%'. $buscar . '%');
                         break;
                     }
                     case 'pagos_contratos.fecha_pago':{
@@ -89,11 +81,7 @@ class DepositoController extends Controller
                             ->where('contratos.status','!=',0)
                             ->where('contratos.status','!=',2)
                             ->where('pagos_contratos.fecha_pago','<',$hoy)
-                            ->whereBetween($criterio, [$buscar,$buscar2])
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->paginate(10);
+                            ->whereBetween($criterio, [$buscar,$buscar2]);
                         break;
                     }
                     case 'creditos.fraccionamiento':{
@@ -104,11 +92,7 @@ class DepositoController extends Controller
                                 ->where('contratos.status','!=',0)
                                 ->where('contratos.status','!=',2)
                                 ->where('pagos_contratos.fecha_pago','<',$hoy)
-                                ->where($criterio,'=',$buscar)
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->paginate(10);
+                                ->where($criterio,'=',$buscar);
                         }
                         if($buscar!='' && $buscar2 !='' && $buscar3 == ''){
                             $pagares = $query
@@ -118,11 +102,7 @@ class DepositoController extends Controller
                                 ->where('contratos.status','!=',2)
                                 ->where('pagos_contratos.fecha_pago','<',$hoy)
                                 ->where($criterio,'=',$buscar)
-                                ->where('creditos.etapa','=',$buscar2)
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->paginate(10);
+                                ->where('creditos.etapa','=',$buscar2);
                         }
                         if($buscar!='' && $buscar2 !='' && $buscar3 != ''){
                             $pagares = $query
@@ -133,11 +113,7 @@ class DepositoController extends Controller
                                 ->where('pagos_contratos.fecha_pago','<',$hoy)
                                 ->where($criterio,'=',$buscar)
                                 ->where('creditos.etapa','=',$buscar2)
-                                ->where('creditos.manzana','=',$buscar3)
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->paginate(10);
+                                ->where('creditos.manzana','=',$buscar3);
                         }
                         break;
                     }
@@ -148,11 +124,7 @@ class DepositoController extends Controller
                             ->where('contratos.status','!=',0)
                             ->where('contratos.status','!=',2)
                             ->where('pagos_contratos.fecha_pago','<',$hoy)
-                            ->where($criterio,'=',$buscar)
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->paginate(10);
+                            ->where($criterio,'=',$buscar);
                         break;
                     }
                 }
@@ -165,12 +137,7 @@ class DepositoController extends Controller
                     //
                 
                     ->where('contratos.status','=',0)
-                    ->orWhere('contratos.status','=',2) 
-                
-                    ->orderBy('pagos_contratos.pagado', 'asc')
-                    ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                    ->orderBy('pagos_contratos.pagado', 'asc')
-                    ->paginate(10);
+                    ->orWhere('contratos.status','=',2);
             }
             else{
                 switch($criterio){
@@ -188,13 +155,7 @@ class DepositoController extends Controller
                             ->where('personal.apellidos','like', '%'. $buscar . '%')
 
                             ->orWhere('contratos.status','=',0)
-                            ->where('personal.apellidos','like', '%'. $buscar . '%')
-                           
-
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->paginate(10);
+                            ->where('personal.apellidos','like', '%'. $buscar . '%');
                         break;
                     }
                     case 'pagos_contratos.fecha_pago':{
@@ -204,11 +165,7 @@ class DepositoController extends Controller
                             ->whereBetween($criterio, [$buscar,$buscar2])
 
                             ->orWhere('contratos.status','=',2)
-                            ->whereBetween($criterio, [$buscar,$buscar2])
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->paginate(10);
+                            ->whereBetween($criterio, [$buscar,$buscar2]);
                         break;
                     }
                     case 'creditos.fraccionamiento':{
@@ -218,11 +175,7 @@ class DepositoController extends Controller
                                 ->where('contratos.status','=',0)
                                 ->where($criterio,'=',$buscar)
                                 ->orWhere('contratos.status','=',2)
-                                ->where($criterio,'=',$buscar)
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->paginate(10);
+                                ->where($criterio,'=',$buscar);
                         }
                         if($buscar!='' && $buscar2 !='' && $buscar3 == ''){
                             $pagares = $query
@@ -232,11 +185,7 @@ class DepositoController extends Controller
                                 ->where('creditos.etapa','=',$buscar2)
                                 ->orWhere('contratos.status','=',2)
                                 ->where($criterio,'=',$buscar)
-                                ->where('creditos.etapa','=',$buscar2)
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->paginate(10);
+                                ->where('creditos.etapa','=',$buscar2);
                         }
                         if($buscar!='' && $buscar2 !='' && $buscar3 != ''){
                             $pagares = $query
@@ -248,11 +197,7 @@ class DepositoController extends Controller
                                 ->orWhere('contratos.status','=',2)
                                 ->where($criterio,'=',$buscar)
                                 ->where('creditos.etapa','=',$buscar2)
-                                ->where('creditos.manzana','=',$buscar3)
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->paginate(10);
+                                ->where('creditos.manzana','=',$buscar3);
                         }
                         break;
                     }
@@ -262,11 +207,7 @@ class DepositoController extends Controller
                             ->where('contratos.status','=',0)
                             ->where($criterio,'=',$buscar)
                             ->orWhere('contratos.status','=',2)
-                            ->where($criterio,'=',$buscar)
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->paginate(10);
+                            ->where($criterio,'=',$buscar);
                         break;
                     }
                 }
@@ -277,11 +218,7 @@ class DepositoController extends Controller
             if($buscar==''){
                 $pagares = $query
                             ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2) 
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                    ->paginate(10);
+                            ->where('contratos.status','!=',2);
             }
             else{
                 switch($criterio){
@@ -292,22 +229,14 @@ class DepositoController extends Controller
                             ->where('contratos.status','!=',2)
                             ->orwhere('personal.apellidos','like', '%'. $buscar . '%')
                             ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2)
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->paginate(10);
+                            ->where('contratos.status','!=',2);
                         break;
                     }
                     case 'pagos_contratos.fecha_pago':{
                         $pagares = $query
                             ->whereBetween($criterio, [$buscar,$buscar2])
                             ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2) 
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->paginate(10);
+                            ->where('contratos.status','!=',2);
                         break;
                     }
                     case 'creditos.fraccionamiento':{
@@ -315,22 +244,14 @@ class DepositoController extends Controller
                             $pagares = $query
                                 ->where($criterio,'=',$buscar)
                                 ->where('contratos.status','!=',0)
-                                ->where('contratos.status','!=',2) 
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->paginate(10);
+                                ->where('contratos.status','!=',2);
                         }
                         if($buscar!='' && $buscar2 !='' && $buscar3 == ''){
                             $pagares = $query
                                 ->where($criterio,'=',$buscar)
                                 ->where('creditos.etapa','=',$buscar2)
                                 ->where('contratos.status','!=',0)
-                                ->where('contratos.status','!=',2) 
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->paginate(10);
+                                ->where('contratos.status','!=',2);
                         }
                         if($buscar!='' && $buscar2 !='' && $buscar3 != ''){
                             $pagares = $query
@@ -338,11 +259,7 @@ class DepositoController extends Controller
                                 ->where('creditos.etapa','=',$buscar2)
                                 ->where('creditos.manzana','=',$buscar3)
                                 ->where('contratos.status','!=',0)
-                                ->where('contratos.status','!=',2) 
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->paginate(10);
+                                ->where('contratos.status','!=',2);
                         }
                         break;
                     }
@@ -350,16 +267,17 @@ class DepositoController extends Controller
                         $pagares = $query
                             ->where($criterio,'=',$buscar)
                             ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2) 
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->paginate(10);
+                            ->where('contratos.status','!=',2);
                         break;
                     }
                 }
             }
         }
+
+        $pagares = $pagares->orderBy('pagos_contratos.pagado', 'asc')
+                        ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                        ->orderBy('pagos_contratos.pagado', 'asc')
+                        ->paginate(10);
 
     
         
@@ -414,11 +332,7 @@ class DepositoController extends Controller
                     ->where('pagos_contratos.pagado','!=',3)
                     ->where('contratos.status','!=',0)
                     ->where('contratos.status','!=',2) 
-                    ->where('pagos_contratos.fecha_pago','<',$hoy)
-                    ->orderBy('pagos_contratos.pagado', 'asc')
-                    ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                    ->orderBy('pagos_contratos.pagado', 'asc')
-                    ->get();
+                    ->where('pagos_contratos.fecha_pago','<',$hoy);
             }
             else{
                 switch($criterio){
@@ -435,11 +349,7 @@ class DepositoController extends Controller
                             ->where('contratos.status','!=',0)
                             ->where('contratos.status','!=',2)
                             ->where('pagos_contratos.fecha_pago','<',$hoy)
-                            ->where('personal.apellidos','like', '%'. $buscar . '%')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->get();
+                            ->where('personal.apellidos','like', '%'. $buscar . '%');
                         break;
                     }
                     case 'pagos_contratos.fecha_pago':{
@@ -449,11 +359,7 @@ class DepositoController extends Controller
                             ->where('contratos.status','!=',0)
                             ->where('contratos.status','!=',2)
                             ->where('pagos_contratos.fecha_pago','<',$hoy)
-                            ->whereBetween($criterio, [$buscar,$buscar2])
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->get();
+                            ->whereBetween($criterio, [$buscar,$buscar2]);
                         break;
                     }
                     case 'creditos.fraccionamiento':{
@@ -464,11 +370,7 @@ class DepositoController extends Controller
                                 ->where('contratos.status','!=',0)
                                 ->where('contratos.status','!=',2)
                                 ->where('pagos_contratos.fecha_pago','<',$hoy)
-                                ->where($criterio,'=',$buscar)
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->get();
+                                ->where($criterio,'=',$buscar);
                         }
                         if($buscar!='' && $buscar2 !='' && $buscar3 == ''){
                             $pagares = $query
@@ -478,11 +380,7 @@ class DepositoController extends Controller
                                 ->where('contratos.status','!=',2)
                                 ->where('pagos_contratos.fecha_pago','<',$hoy)
                                 ->where($criterio,'=',$buscar)
-                                ->where('creditos.etapa','=',$buscar2)
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->get();
+                                ->where('creditos.etapa','=',$buscar2);
                         }
                         if($buscar!='' && $buscar2 !='' && $buscar3 != ''){
                             $pagares = $query
@@ -493,11 +391,7 @@ class DepositoController extends Controller
                                 ->where('pagos_contratos.fecha_pago','<',$hoy)
                                 ->where($criterio,'=',$buscar)
                                 ->where('creditos.etapa','=',$buscar2)
-                                ->where('creditos.manzana','=',$buscar3)
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->get();
+                                ->where('creditos.manzana','=',$buscar3);
                         }
                         break;
                     }
@@ -508,11 +402,7 @@ class DepositoController extends Controller
                             ->where('contratos.status','!=',0)
                             ->where('contratos.status','!=',2)
                             ->where('pagos_contratos.fecha_pago','<',$hoy)
-                            ->where($criterio,'=',$buscar)
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->get();
+                            ->where($criterio,'=',$buscar);
                         break;
                     }
                 }
@@ -525,12 +415,7 @@ class DepositoController extends Controller
                     //
                 
                     ->where('contratos.status','=',0)
-                    ->orWhere('contratos.status','=',2) 
-                
-                    ->orderBy('pagos_contratos.pagado', 'asc')
-                    ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                    ->orderBy('pagos_contratos.pagado', 'asc')
-                    ->get();
+                    ->orWhere('contratos.status','=',2);
             }
             else{
                 switch($criterio){
@@ -548,13 +433,7 @@ class DepositoController extends Controller
                             ->where('personal.apellidos','like', '%'. $buscar . '%')
 
                             ->orWhere('contratos.status','=',0)
-                            ->where('personal.apellidos','like', '%'. $buscar . '%')
-                           
-
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->get();
+                            ->where('personal.apellidos','like', '%'. $buscar . '%');
                         break;
                     }
                     case 'pagos_contratos.fecha_pago':{
@@ -564,11 +443,7 @@ class DepositoController extends Controller
                             ->whereBetween($criterio, [$buscar,$buscar2])
 
                             ->orWhere('contratos.status','=',2)
-                            ->whereBetween($criterio, [$buscar,$buscar2])
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->get();
+                            ->whereBetween($criterio, [$buscar,$buscar2]);
                         break;
                     }
                     case 'creditos.fraccionamiento':{
@@ -578,11 +453,7 @@ class DepositoController extends Controller
                                 ->where('contratos.status','=',0)
                                 ->where($criterio,'=',$buscar)
                                 ->orWhere('contratos.status','=',2)
-                                ->where($criterio,'=',$buscar)
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->get();
+                                ->where($criterio,'=',$buscar);
                         }
                         if($buscar!='' && $buscar2 !='' && $buscar3 == ''){
                             $pagares = $query
@@ -592,11 +463,7 @@ class DepositoController extends Controller
                                 ->where('creditos.etapa','=',$buscar2)
                                 ->orWhere('contratos.status','=',2)
                                 ->where($criterio,'=',$buscar)
-                                ->where('creditos.etapa','=',$buscar2)
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->get();
+                                ->where('creditos.etapa','=',$buscar2);
                         }
                         if($buscar!='' && $buscar2 !='' && $buscar3 != ''){
                             $pagares = $query
@@ -608,11 +475,7 @@ class DepositoController extends Controller
                                 ->orWhere('contratos.status','=',2)
                                 ->where($criterio,'=',$buscar)
                                 ->where('creditos.etapa','=',$buscar2)
-                                ->where('creditos.manzana','=',$buscar3)
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->get();
+                                ->where('creditos.manzana','=',$buscar3);
                         }
                         break;
                     }
@@ -622,11 +485,7 @@ class DepositoController extends Controller
                             ->where('contratos.status','=',0)
                             ->where($criterio,'=',$buscar)
                             ->orWhere('contratos.status','=',2)
-                            ->where($criterio,'=',$buscar)
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->get();
+                            ->where($criterio,'=',$buscar);
                         break;
                     }
                 }
@@ -637,11 +496,7 @@ class DepositoController extends Controller
             if($buscar==''){
                 $pagares = $query
                             ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2) 
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                    ->get();
+                            ->where('contratos.status','!=',2);
             }
             else{
                 switch($criterio){
@@ -652,22 +507,14 @@ class DepositoController extends Controller
                             ->where('contratos.status','!=',2)
                             ->orwhere('personal.apellidos','like', '%'. $buscar . '%')
                             ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2)
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->get();
+                            ->where('contratos.status','!=',2);
                         break;
                     }
                     case 'pagos_contratos.fecha_pago':{
                         $pagares = $query
                             ->whereBetween($criterio, [$buscar,$buscar2])
                             ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2) 
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->get();
+                            ->where('contratos.status','!=',2);
                         break;
                     }
                     case 'creditos.fraccionamiento':{
@@ -675,22 +522,14 @@ class DepositoController extends Controller
                             $pagares = $query
                                 ->where($criterio,'=',$buscar)
                                 ->where('contratos.status','!=',0)
-                                ->where('contratos.status','!=',2) 
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->get();
+                                ->where('contratos.status','!=',2);
                         }
                         if($buscar!='' && $buscar2 !='' && $buscar3 == ''){
                             $pagares = $query
                                 ->where($criterio,'=',$buscar)
                                 ->where('creditos.etapa','=',$buscar2)
                                 ->where('contratos.status','!=',0)
-                                ->where('contratos.status','!=',2) 
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->get();
+                                ->where('contratos.status','!=',2);
                         }
                         if($buscar!='' && $buscar2 !='' && $buscar3 != ''){
                             $pagares = $query
@@ -698,11 +537,7 @@ class DepositoController extends Controller
                                 ->where('creditos.etapa','=',$buscar2)
                                 ->where('creditos.manzana','=',$buscar3)
                                 ->where('contratos.status','!=',0)
-                                ->where('contratos.status','!=',2) 
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                                ->orderBy('pagos_contratos.pagado', 'asc')
-                                ->get();
+                                ->where('contratos.status','!=',2);
                         }
                         break;
                     }
@@ -710,19 +545,17 @@ class DepositoController extends Controller
                         $pagares = $query
                             ->where($criterio,'=',$buscar)
                             ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2) 
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
-                            ->orderBy('pagos_contratos.pagado', 'asc')
-                            ->get();
+                            ->where('contratos.status','!=',2);
                         break;
                     }
                 }
             }
         }
 
-    
-        
+        $pagares = $pagares->orderBy('pagos_contratos.pagado', 'asc')
+                        ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                        ->orderBy('pagos_contratos.pagado', 'asc')
+                        ->get();
         
         return Excel::create('Pagares', function($excel) use ($pagares){
             $excel->sheet('pagares', function($sheet) use ($pagares){
@@ -1401,52 +1234,11 @@ class DepositoController extends Controller
 
                 );
 
-        $queryCont = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
-            ->leftJoin('creditos','contratos.id','=','creditos.id')
-            ->join('lotes','creditos.lote_id','=','lotes.id')
-            ->join('licencias','lotes.id','=','licencias.id')
-            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-            ->join('personal as c', 'clientes.id', '=', 'c.id')
-            ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-            
-            ->select(
-                    DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                        WHERE pagos_contratos.contrato_id = contratos.id AND 
-                        (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                        GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
-
-                    DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
-                        WHERE pagos_contratos.contrato_id = contratos.id 
-                        GROUP BY pagos_contratos.contrato_id) as totalRestante"),
-                    
-                    DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                        WHERE pagos_contratos.contrato_id = contratos.id 
-                        GROUP BY pagos_contratos.contrato_id) as totalPagares"),
-
-                    DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
-                        WHERE pagos_contratos.contrato_id = contratos.id AND 
-                        (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
-                        GROUP BY pagos_contratos.contrato_id) as pagares"),
-
-                    DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
-                        WHERE gastos_admin.contrato_id = contratos.id 
-                        GROUP BY gastos_admin.contrato_id) as gastos")
-            );
-
 
         if($b_status == ""){
             if($buscar == '' && $criterio!='c.nombre'){
                 $contratos = $query
-                                ->where('i.elegido', '=', 1)
-                                ->orderBy('contratos.saldo','desc')
-                                ->orderBy('contratos.id','asc')
-                                ->paginate(15);
-
-                $contador = $queryCont
-                    ->where('i.elegido', '=', 1)
-                    ->orderBy('contratos.saldo','desc')
-                    ->orderBy('contratos.id','asc')
-                    ->count();
+                                ->where('i.elegido', '=', 1);
             }
             else{
                 switch($criterio){
@@ -1454,34 +1246,14 @@ class DepositoController extends Controller
                         if($buscar2 == ''){
                             $contratos = $query
                                 ->where('i.elegido', '=', 1)
-                                ->where('c.nombre','like','%'. $buscar . '%')
-                                ->orderBy('contratos.saldo','desc')
-                                ->orderBy('contratos.id','asc')
-                                ->paginate(15);
+                                ->where('c.nombre','like','%'. $buscar . '%');
 
-                            $contador = $queryCont
-                                ->where('i.elegido', '=', 1)
-                                ->where('c.nombre','like','%'. $buscar . '%')
-                                ->orderBy('contratos.saldo','desc')
-                                ->orderBy('contratos.id','asc')
-                                ->count();
                         }
                         else{
                             $contratos = $query
                                 ->where('i.elegido', '=', 1)
                                 ->where('c.nombre','like','%'. $buscar . '%')
-                                ->where('c.apellidos','like','%'. $buscar2 . '%')
-                                ->orderBy('contratos.saldo','desc')
-                                ->orderBy('contratos.id','asc')
-                                ->paginate(15);
-
-                            $contador = $queryCont
-                                ->where('i.elegido', '=', 1)
-                                ->where('c.nombre','like','%'. $buscar . '%')
-                                ->where('c.apellidos','like','%'. $buscar2 . '%')
-                                ->orderBy('contratos.saldo','desc')
-                                ->orderBy('contratos.id','asc')
-                                ->count();
+                                ->where('c.apellidos','like','%'. $buscar2 . '%');
                         }
                         break;
                     }
@@ -1489,17 +1261,7 @@ class DepositoController extends Controller
                     case 'contratos.id':{
                         $contratos = $query
                                 ->where('i.elegido', '=', 1)
-                                ->where('contratos.id','=', $buscar )
-                                ->orderBy('contratos.saldo','desc')
-                                ->orderBy('contratos.id','asc')
-                                ->paginate(15);
-
-                        $contador = $queryCont
-                                ->where('i.elegido', '=', 1)
-                                ->where('contratos.id','=', $buscar )
-                                ->orderBy('contratos.saldo','desc')
-                                ->orderBy('contratos.id','asc')
-                                ->count();
+                                ->where('contratos.id','=', $buscar );
 
                                 break;
                     }
@@ -1510,35 +1272,14 @@ class DepositoController extends Controller
 
                                 $contratos = $query
                                     ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->paginate(15);
-    
-                                $contador = $queryCont
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->count();
+                                    ->where($criterio, '=', $buscar);
                             }
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote == ''){
     
                                 $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->paginate(15);
-    
-                                $contador = $queryCont
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->count();
+                                    ->where('lotes.etapa_id', '=', $buscar2);
                             }
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote == ''){
@@ -1547,19 +1288,7 @@ class DepositoController extends Controller
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->paginate(15);
-    
-                                $contador = $queryCont
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->count();
+                                    ->where('lotes.manzana', '=', $b_manzana);
                             }
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote != ''){
@@ -1569,20 +1298,7 @@ class DepositoController extends Controller
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
                                     ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->paginate(15);
-    
-                                $contador = $queryCont
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->count();
+                                    ->where('lotes.num_lote', '=', $b_lote);
                             }
     
                             elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote != ''){
@@ -1592,20 +1308,7 @@ class DepositoController extends Controller
                                     ->where($criterio, '=', $buscar)
                                     //->where('lotes.etapa_id', '=', $buscar2)
                                     ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->paginate(15);
-    
-                                $contador = $queryCont
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    //->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->count();
+                                    ->where('lotes.num_lote', '=', $b_lote);
                             }
                             
                             elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote == ''){
@@ -1614,21 +1317,7 @@ class DepositoController extends Controller
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     //->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    //->where('lotes.num_lote', '=', $b_lote)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->paginate(15);
-    
-                                $contador = $queryCont
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    //->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    //->where('lotes.num_lote', '=', $b_lote)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->count();
+                                    ->where('lotes.manzana', '=', $b_manzana);
                             }
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote != ''){
@@ -1638,20 +1327,7 @@ class DepositoController extends Controller
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
                                     //->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->paginate(15);
-    
-                                $contador = $queryCont
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    //->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->count();
+                                    ->where('lotes.num_lote', '=', $b_lote);
                             }
                         }
                         else{
@@ -1660,18 +1336,7 @@ class DepositoController extends Controller
                                 $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->paginate(15);
-    
-                                $contador = $queryCont
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->count();
+                                    ->where($criterio, '=', $buscar);
                             }
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote == ''){
     
@@ -1679,19 +1344,7 @@ class DepositoController extends Controller
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->paginate(15);
-    
-                                $contador = $queryCont
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->count();
+                                    ->where('lotes.etapa_id', '=', $buscar2);
                             }
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote == ''){
@@ -1701,20 +1354,7 @@ class DepositoController extends Controller
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->paginate(15);
-    
-                                $contador = $queryCont
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->count();
+                                    ->where('lotes.manzana', '=', $b_manzana);
                             }
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote != ''){
@@ -1725,21 +1365,7 @@ class DepositoController extends Controller
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
                                     ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->paginate(15);
-    
-                                $contador = $queryCont
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->count();
+                                    ->where('lotes.num_lote', '=', $b_lote);
                             }
     
                             elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote != ''){
@@ -1750,21 +1376,7 @@ class DepositoController extends Controller
                                     ->where($criterio, '=', $buscar)
                                     //->where('lotes.etapa_id', '=', $buscar2)
                                     ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->paginate(15);
-    
-                                $contador = $queryCont
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    //->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->count();
+                                    ->where('lotes.num_lote', '=', $b_lote);
                             }
                             
                             elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote == ''){
@@ -1774,22 +1386,7 @@ class DepositoController extends Controller
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
                                     //->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    //->where('lotes.num_lote', '=', $b_lote)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->paginate(15);
-    
-                                $contador = $queryCont
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    //->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    //->where('lotes.num_lote', '=', $b_lote)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->count();
+                                    ->where('lotes.manzana', '=', $b_manzana);
                             }
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote != ''){
@@ -1800,25 +1397,10 @@ class DepositoController extends Controller
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
                                     //->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->paginate(15);
-    
-                                $contador = $queryCont
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    //->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->count();
+                                    ->where('lotes.num_lote', '=', $b_lote);
                             }
                         }
                         
-
                         break;
                     }
                 }
@@ -1828,18 +1410,7 @@ class DepositoController extends Controller
             if($buscar == '' && $criterio!='c.nombre'){
                 $contratos = $query
                                 ->where('i.elegido', '=', 1)
-                                ->where('contratos.status','=',$b_status)
-                                ->orderBy('contratos.saldo','desc')
-                                ->orderBy('contratos.id','asc')
-                                ->paginate(15);
-
-                $contador = $queryCont
-                                ->where('i.elegido', '=', 1)
-                                ->where('contratos.status','=',$b_status)
-                                ->orderBy('contratos.saldo','desc')
-                                ->orderBy('contratos.id','asc')
-                                ->count();
-
+                                ->where('contratos.status','=',$b_status);
             }
             else{
                 switch($criterio){
@@ -1848,37 +1419,14 @@ class DepositoController extends Controller
                             $contratos = $query
                                 ->where('i.elegido', '=', 1)
                                 ->where('c.nombre','like','%'. $buscar . '%')
-                                ->where('contratos.status','=',$b_status)
-                                ->orderBy('contratos.saldo','desc')
-                                ->orderBy('contratos.id','asc')
-                                ->paginate(15);
-
-                            $contador = $queryCont
-                                ->where('i.elegido', '=', 1)
-                                ->where('c.nombre','like','%'. $buscar . '%')
-                                ->where('contratos.status','=',$b_status)
-                                ->orderBy('contratos.saldo','desc')
-                                ->orderBy('contratos.id','asc')
-                                ->count();
+                                ->where('contratos.status','=',$b_status);
                         }
                         else{
                             $contratos = $query
                                 ->where('i.elegido', '=', 1)
                                 ->where('c.nombre','like','%'. $buscar . '%')
                                 ->where('c.apellidos','like','%'. $buscar2 . '%')
-                                ->where('contratos.status','=',$b_status)
-                                ->orderBy('contratos.saldo','desc')
-                                ->orderBy('contratos.id','asc')
-                                ->paginate(15);
-
-                            $contador = $queryCont
-                                ->where('i.elegido', '=', 1)
-                                ->where('c.nombre','like','%'. $buscar . '%')
-                                ->where('c.apellidos','like','%'. $buscar2 . '%')
-                                ->where('contratos.status','=',$b_status)
-                                ->orderBy('contratos.saldo','desc')
-                                ->orderBy('contratos.id','asc')
-                                ->count();
+                                ->where('contratos.status','=',$b_status);
                         }
                         break;
                     }
@@ -1887,19 +1435,7 @@ class DepositoController extends Controller
                         $contratos = $query
                                 ->where('i.elegido', '=', 1)
                                 ->where('contratos.id','=', $buscar )
-                                ->where('contratos.status','=',$b_status)
-                                ->orderBy('contratos.saldo','desc')
-                                ->orderBy('contratos.id','asc')
-                                ->paginate(15);
-
-                        $contador = $queryCont
-                                ->where('i.elegido', '=', 1)
-                                ->where('contratos.id','=', $buscar )
-                                ->where('contratos.status','=',$b_status)
-                                ->orderBy('contratos.saldo','desc')
-                                ->orderBy('contratos.id','asc')
-                                ->count();
-
+                                ->where('contratos.status','=',$b_status);
                                 break;
                     }
 
@@ -1910,18 +1446,7 @@ class DepositoController extends Controller
                                 $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->paginate(15);
-    
-                                $contador = $queryCont
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->count();
+                                    ->where('contratos.status','=',$b_status);
                             }
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote == ''){
     
@@ -1929,19 +1454,7 @@ class DepositoController extends Controller
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->paginate(15);
-    
-                                $contador = $queryCont
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->count();
+                                    ->where('contratos.status','=',$b_status);
                             }
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote == ''){
@@ -1951,20 +1464,7 @@ class DepositoController extends Controller
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
                                     ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->paginate(15);
-    
-                                $contador = $queryCont
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->count();
+                                    ->where('contratos.status','=',$b_status);
                             }
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote != ''){
@@ -1975,21 +1475,7 @@ class DepositoController extends Controller
                                     ->where('lotes.etapa_id', '=', $buscar2)
                                     ->where('lotes.manzana', '=', $b_manzana)
                                     ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->paginate(15);
-    
-                                $contador = $queryCont
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->count();
+                                    ->where('contratos.status','=',$b_status);
                             }
     
                             elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote != ''){
@@ -2000,21 +1486,7 @@ class DepositoController extends Controller
                                     //->where('lotes.etapa_id', '=', $buscar2)
                                     ->where('lotes.manzana', '=', $b_manzana)
                                     ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->paginate(15);
-    
-                                $contador = $queryCont
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    //->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->count();
+                                    ->where('contratos.status','=',$b_status);
                             }
                             
                             elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote == ''){
@@ -2025,21 +1497,7 @@ class DepositoController extends Controller
                                     //->where('lotes.etapa_id', '=', $buscar2)
                                     ->where('lotes.manzana', '=', $b_manzana)
                                     //->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->paginate(15);
-    
-                                $contador = $queryCont
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    //->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    //->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->count();
+                                    ->where('contratos.status','=',$b_status);
                             }
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote != ''){
@@ -2050,21 +1508,7 @@ class DepositoController extends Controller
                                     ->where('lotes.etapa_id', '=', $buscar2)
                                     //->where('lotes.manzana', '=', $b_manzana)
                                     ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->paginate(15);
-    
-                                $contador = $queryCont
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    //->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->count();
+                                    ->where('contratos.status','=',$b_status);
                             }
                         }
                         else{
@@ -2074,19 +1518,7 @@ class DepositoController extends Controller
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->paginate(15);
-    
-                                $contador = $queryCont
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->count();
+                                    ->where('contratos.status','=',$b_status);
                             }
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote == ''){
     
@@ -2095,20 +1527,7 @@ class DepositoController extends Controller
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->paginate(15);
-    
-                                $contador = $queryCont
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->count();
+                                    ->where('contratos.status','=',$b_status);
                             }
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote == ''){
@@ -2119,21 +1538,7 @@ class DepositoController extends Controller
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
                                     ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->paginate(15);
-    
-                                $contador = $queryCont
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->count();
+                                    ->where('contratos.status','=',$b_status);
                             }
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote != ''){
@@ -2145,22 +1550,7 @@ class DepositoController extends Controller
                                     ->where('lotes.etapa_id', '=', $buscar2)
                                     ->where('lotes.manzana', '=', $b_manzana)
                                     ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->paginate(15);
-    
-                                $contador = $queryCont
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->count();
+                                    ->where('contratos.status','=',$b_status);
                             }
     
                             elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote != ''){
@@ -2172,22 +1562,7 @@ class DepositoController extends Controller
                                     //->where('lotes.etapa_id', '=', $buscar2)
                                     ->where('lotes.manzana', '=', $b_manzana)
                                     ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->paginate(15);
-    
-                                $contador = $queryCont
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    //->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->count();
+                                    ->where('contratos.status','=',$b_status);
                             }
                             
                             elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote == ''){
@@ -2199,22 +1574,7 @@ class DepositoController extends Controller
                                     //->where('lotes.etapa_id', '=', $buscar2)
                                     ->where('lotes.manzana', '=', $b_manzana)
                                     //->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->paginate(15);
-    
-                                $contador = $queryCont
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    //->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    //->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->count();
+                                    ->where('contratos.status','=',$b_status);
                             }
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote != ''){
@@ -2226,31 +1586,18 @@ class DepositoController extends Controller
                                     ->where('lotes.etapa_id', '=', $buscar2)
                                     //->where('lotes.manzana', '=', $b_manzana)
                                     ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->paginate(15);
-    
-                                $contador = $queryCont
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    //->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->count();
+                                    ->where('contratos.status','=',$b_status);
                             }
                         }
-                        
-
                         break;
                     }
                 }
             }
         }
+
+        $contratos = $contratos->orderBy('contratos.saldo','desc')
+                        ->orderBy('contratos.id','asc')
+                        ->paginate(15);
        
 
         return [
@@ -2261,7 +1608,7 @@ class DepositoController extends Controller
                 'last_page'     => $contratos->lastPage(),
                 'from'          => $contratos->firstItem(),
                 'to'            => $contratos->lastItem(),
-            ],'contratos' => $contratos,'contador' => $contador];
+            ],'contratos' => $contratos,'contador' => $contratos->total()];
     }
 
     public function excelEstadoCuenta(Request $request){
@@ -2330,10 +1677,7 @@ class DepositoController extends Controller
         if($b_status == ""){
             if($buscar == '' && $criterio!='c.nombre'){
                 $contratos = $query
-                                ->where('i.elegido', '=', 1)
-                                ->orderBy('contratos.saldo','desc')
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('i.elegido', '=', 1);
 
             }
             else{
@@ -2342,19 +1686,13 @@ class DepositoController extends Controller
                         if($buscar2 == ''){
                             $contratos = $query
                                 ->where('i.elegido', '=', 1)
-                                ->where('c.nombre','like','%'. $buscar . '%')
-                                ->orderBy('contratos.saldo','desc')
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('c.nombre','like','%'. $buscar . '%');
                         }
                         else{
                             $contratos = $query
                                 ->where('i.elegido', '=', 1)
                                 ->where('c.nombre','like','%'. $buscar . '%')
-                                ->where('c.apellidos','like','%'. $buscar2 . '%')
-                                ->orderBy('contratos.saldo','desc')
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('c.apellidos','like','%'. $buscar2 . '%');
                         }
                         break;
                     }
@@ -2362,10 +1700,7 @@ class DepositoController extends Controller
                     case 'contratos.id':{
                         $contratos = $query
                                 ->where('i.elegido', '=', 1)
-                                ->where('contratos.id','=', $buscar )
-                                ->orderBy('contratos.saldo','desc')
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('contratos.id','=', $buscar );
 
                                 break;
                     }
@@ -2376,20 +1711,14 @@ class DepositoController extends Controller
 
                                 $contratos = $query
                                     ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->get();
+                                    ->where($criterio, '=', $buscar);
                             }
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote == ''){
     
                                 $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->get();
+                                    ->where('lotes.etapa_id', '=', $buscar2);
                             }
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote == ''){
@@ -2398,10 +1727,7 @@ class DepositoController extends Controller
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->get();
+                                    ->where('lotes.manzana', '=', $b_manzana);
                             }
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote != ''){
@@ -2411,10 +1737,7 @@ class DepositoController extends Controller
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
                                     ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->get();
+                                    ->where('lotes.num_lote', '=', $b_lote);
                             }
     
                             elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote != ''){
@@ -2424,10 +1747,7 @@ class DepositoController extends Controller
                                     ->where($criterio, '=', $buscar)
                                     //->where('lotes.etapa_id', '=', $buscar2)
                                     ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->get();
+                                    ->where('lotes.num_lote', '=', $b_lote);
                             }
                             
                             elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote == ''){
@@ -2436,11 +1756,7 @@ class DepositoController extends Controller
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     //->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    //->where('lotes.num_lote', '=', $b_lote)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->get();
+                                    ->where('lotes.manzana', '=', $b_manzana);
                             }
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote != ''){
@@ -2450,10 +1766,7 @@ class DepositoController extends Controller
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
                                     //->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->get();
+                                    ->where('lotes.num_lote', '=', $b_lote);
                             }
                         }
                         else{
@@ -2462,10 +1775,7 @@ class DepositoController extends Controller
                                 $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->get();
+                                    ->where($criterio, '=', $buscar);
                             }
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote == ''){
     
@@ -2473,10 +1783,7 @@ class DepositoController extends Controller
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->get();
+                                    ->where('lotes.etapa_id', '=', $buscar2);
                             }
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote == ''){
@@ -2486,10 +1793,7 @@ class DepositoController extends Controller
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->get();
+                                    ->where('lotes.manzana', '=', $b_manzana);
                             }
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote != ''){
@@ -2500,10 +1804,7 @@ class DepositoController extends Controller
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
                                     ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->get();
+                                    ->where('lotes.num_lote', '=', $b_lote);
                             }
     
                             elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote != ''){
@@ -2514,10 +1815,7 @@ class DepositoController extends Controller
                                     ->where($criterio, '=', $buscar)
                                     //->where('lotes.etapa_id', '=', $buscar2)
                                     ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->get();
+                                    ->where('lotes.num_lote', '=', $b_lote);
                             }
                             
                             elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote == ''){
@@ -2527,11 +1825,7 @@ class DepositoController extends Controller
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
                                     //->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    //->where('lotes.num_lote', '=', $b_lote)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->get();
+                                    ->where('lotes.manzana', '=', $b_manzana);
                             }
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote != ''){
@@ -2542,10 +1836,7 @@ class DepositoController extends Controller
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
                                     //->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->get();
+                                    ->where('lotes.num_lote', '=', $b_lote);
                             }
                         }
                         
@@ -2558,10 +1849,7 @@ class DepositoController extends Controller
             if($buscar == '' && $criterio!='c.nombre'){
                 $contratos = $query
                                 ->where('i.elegido', '=', 1)
-                                ->where('contratos.status','=',$b_status)
-                                ->orderBy('contratos.saldo','desc')
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('contratos.status','=',$b_status);
 
             }
             else{
@@ -2571,20 +1859,14 @@ class DepositoController extends Controller
                             $contratos = $query
                                 ->where('i.elegido', '=', 1)
                                 ->where('c.nombre','like','%'. $buscar . '%')
-                                ->where('contratos.status','=',$b_status)
-                                ->orderBy('contratos.saldo','desc')
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('contratos.status','=',$b_status);
                         }
                         else{
                             $contratos = $query
                                 ->where('i.elegido', '=', 1)
                                 ->where('c.nombre','like','%'. $buscar . '%')
                                 ->where('c.apellidos','like','%'. $buscar2 . '%')
-                                ->where('contratos.status','=',$b_status)
-                                ->orderBy('contratos.saldo','desc')
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('contratos.status','=',$b_status);
                         }
                         break;
                     }
@@ -2593,10 +1875,7 @@ class DepositoController extends Controller
                         $contratos = $query
                                 ->where('i.elegido', '=', 1)
                                 ->where('contratos.id','=', $buscar )
-                                ->where('contratos.status','=',$b_status)
-                                ->orderBy('contratos.saldo','desc')
-                                ->orderBy('contratos.id','asc')
-                                ->get();
+                                ->where('contratos.status','=',$b_status);
 
                                 break;
                     }
@@ -2608,10 +1887,7 @@ class DepositoController extends Controller
                                 $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->get();
+                                    ->where('contratos.status','=',$b_status);
                             }
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote == ''){
     
@@ -2619,10 +1895,7 @@ class DepositoController extends Controller
                                     ->where('i.elegido', '=', 1)
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->get();
+                                    ->where('contratos.status','=',$b_status);
                             }
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote == ''){
@@ -2632,10 +1905,7 @@ class DepositoController extends Controller
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
                                     ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->get();
+                                    ->where('contratos.status','=',$b_status);
                             }
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote != ''){
@@ -2646,10 +1916,7 @@ class DepositoController extends Controller
                                     ->where('lotes.etapa_id', '=', $buscar2)
                                     ->where('lotes.manzana', '=', $b_manzana)
                                     ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->get();
+                                    ->where('contratos.status','=',$b_status);
                             }
     
                             elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote != ''){
@@ -2660,10 +1927,7 @@ class DepositoController extends Controller
                                     //->where('lotes.etapa_id', '=', $buscar2)
                                     ->where('lotes.manzana', '=', $b_manzana)
                                     ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->get();
+                                    ->where('contratos.status','=',$b_status);
                             }
                             
                             elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote == ''){
@@ -2674,10 +1938,7 @@ class DepositoController extends Controller
                                     //->where('lotes.etapa_id', '=', $buscar2)
                                     ->where('lotes.manzana', '=', $b_manzana)
                                     //->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->get();
+                                    ->where('contratos.status','=',$b_status);
                             }
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote != ''){
@@ -2688,10 +1949,7 @@ class DepositoController extends Controller
                                     ->where('lotes.etapa_id', '=', $buscar2)
                                     //->where('lotes.manzana', '=', $b_manzana)
                                     ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->get();
+                                    ->where('contratos.status','=',$b_status);
                             }
                         }
                         else{
@@ -2701,10 +1959,7 @@ class DepositoController extends Controller
                                     ->where('i.elegido', '=', 1)
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->get();
+                                    ->where('contratos.status','=',$b_status);
                             }
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote == ''){
     
@@ -2713,10 +1968,7 @@ class DepositoController extends Controller
                                     ->where('i.tipo_credito','=',$credito)
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->get();
+                                    ->where('contratos.status','=',$b_status);
                             }
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote == ''){
@@ -2727,10 +1979,7 @@ class DepositoController extends Controller
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $buscar2)
                                     ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->get();
+                                    ->where('contratos.status','=',$b_status);
                             }
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote != ''){
@@ -2742,10 +1991,7 @@ class DepositoController extends Controller
                                     ->where('lotes.etapa_id', '=', $buscar2)
                                     ->where('lotes.manzana', '=', $b_manzana)
                                     ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->get();
+                                    ->where('contratos.status','=',$b_status);
                             }
     
                             elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote != ''){
@@ -2757,10 +2003,7 @@ class DepositoController extends Controller
                                     //->where('lotes.etapa_id', '=', $buscar2)
                                     ->where('lotes.manzana', '=', $b_manzana)
                                     ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->get();
+                                    ->where('contratos.status','=',$b_status);
                             }
                             
                             elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote == ''){
@@ -2772,10 +2015,7 @@ class DepositoController extends Controller
                                     //->where('lotes.etapa_id', '=', $buscar2)
                                     ->where('lotes.manzana', '=', $b_manzana)
                                     //->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->get();
+                                    ->where('contratos.status','=',$b_status);
                             }
     
                             elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote != ''){
@@ -2787,10 +2027,7 @@ class DepositoController extends Controller
                                     ->where('lotes.etapa_id', '=', $buscar2)
                                     //->where('lotes.manzana', '=', $b_manzana)
                                     ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('contratos.saldo','desc')
-                                    ->orderBy('contratos.id','asc')
-                                    ->get();
+                                    ->where('contratos.status','=',$b_status);
                             }
                         }
                         break;
@@ -2798,6 +2035,10 @@ class DepositoController extends Controller
                 }
             }
         }
+
+        $contratos = $contratos->orderBy('contratos.saldo','desc')
+                                ->orderBy('contratos.id','asc')
+                                ->get();
 
         return Excel::create('Relacion estado de cuenta', function($excel) use ($contratos){
             $excel->sheet('Contratos', function($sheet) use ($contratos){

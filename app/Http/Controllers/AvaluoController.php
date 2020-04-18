@@ -88,9 +88,7 @@ class AvaluoController extends Controller
                     ->where('inst_seleccionadas.elegido','=','1')
                     ->where('avaluos.fecha_recibido','=',NULL)
                     ->where('contratos.status','!=',2)
-                    ->where('contratos.status','!=',0)
-                    ->orderBy('avaluos.fecha_recibido','asc')
-                    ->paginate(12);
+                    ->where('contratos.status','!=',0);
 
         }
         else{
@@ -102,9 +100,7 @@ class AvaluoController extends Controller
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('avaluos.fecha_recibido','=',NULL)
                         ->where('contratos.status','!=',2)
-                        ->where('contratos.status','!=',0)
-                        ->orderBy('avaluos.fecha_recibido','asc')
-                        ->paginate(12);
+                        ->where('contratos.status','!=',0);
 
                     }
                     elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
@@ -114,9 +110,7 @@ class AvaluoController extends Controller
                         ->where('lotes.etapa_id','=',$b_etapa)
                         ->where('avaluos.fecha_recibido','=',NULL)
                         ->where('contratos.status','!=',2)
-                        ->where('contratos.status','!=',0)
-                        ->orderBy('avaluos.fecha_recibido','asc')
-                        ->paginate(12);
+                        ->where('contratos.status','!=',0);
 
                     }
                     elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
@@ -127,9 +121,7 @@ class AvaluoController extends Controller
                         ->where('lotes.manzana','=',$b_manzana)
                         ->where('avaluos.fecha_recibido','=',NULL)
                         ->where('contratos.status','!=',2)
-                        ->where('contratos.status','!=',0)
-                        ->orderBy('avaluos.fecha_recibido','asc')
-                        ->paginate(12);
+                        ->where('contratos.status','!=',0);
 
                     }
                     elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
@@ -141,9 +133,7 @@ class AvaluoController extends Controller
                         ->where('lotes.num_lote','=',$b_lote)
                         ->where('avaluos.fecha_recibido','=',NULL)
                         ->where('contratos.status','!=',2)
-                        ->where('contratos.status','!=',0)
-                        ->orderBy('avaluos.fecha_recibido','asc')
-                        ->paginate(12);
+                        ->where('contratos.status','!=',0);
 
                     }
                     elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
@@ -154,9 +144,7 @@ class AvaluoController extends Controller
                         ->where('lotes.num_lote','=',$b_lote)
                         ->where('avaluos.fecha_recibido','=',NULL)
                         ->where('contratos.status','!=',2)
-                        ->where('contratos.status','!=',0)
-                        ->orderBy('avaluos.fecha_recibido','asc')
-                        ->paginate(12);
+                        ->where('contratos.status','!=',0);
 
                     }
                     elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
@@ -166,9 +154,7 @@ class AvaluoController extends Controller
                         ->where('lotes.num_lote','=',$b_lote)
                         ->where('avaluos.fecha_recibido','=',NULL)
                         ->where('contratos.status','!=',2)
-                        ->where('contratos.status','!=',0)
-                        ->orderBy('avaluos.fecha_recibido','asc')
-                        ->paginate(12);
+                        ->where('contratos.status','!=',0);
 
                     }
                     elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
@@ -179,9 +165,7 @@ class AvaluoController extends Controller
                         ->where('lotes.num_lote','=',$b_lote)
                         ->where('avaluos.fecha_recibido','=',NULL)
                         ->where('contratos.status','!=',2)
-                        ->where('contratos.status','!=',0)
-                        ->orderBy('avaluos.fecha_recibido','asc')
-                        ->paginate(12);
+                        ->where('contratos.status','!=',0);
 
                     }
                     elseif($b_etapa == '' && $b_manzana !='' && $b_lote == ''){
@@ -191,9 +175,7 @@ class AvaluoController extends Controller
                         ->where('lotes.manzana','=',$b_manzana)
                         ->where('avaluos.fecha_recibido','=',NULL)
                         ->where('contratos.status','!=',2)
-                        ->where('contratos.status','!=',0)
-                        ->orderBy('avaluos.fecha_recibido','asc')
-                        ->paginate(12);
+                        ->where('contratos.status','!=',0);
 
                     }
                     break;
@@ -204,13 +186,14 @@ class AvaluoController extends Controller
                     ->where('licencias.visita_avaluo','=',$buscar)
                     ->where('avaluos.fecha_recibido','=',NULL)
                     ->where('contratos.status','!=',2)
-                    ->where('contratos.status','!=',0)
-                    ->orderBy('avaluos.fecha_recibido','asc')
-                    ->paginate(12);
+                    ->where('contratos.status','!=',0);
                     break;
                 }
             }
         }
+
+        $avaluos = $avaluos->orderBy('avaluos.fecha_recibido','asc')
+                        ->paginate(12);
         
         return [
             'pagination' => [
@@ -251,10 +234,7 @@ class AvaluoController extends Controller
         if($buscar == ''){
             $avaluos = $query
                     ->where('inst_seleccionadas.elegido','=','1')
-                    ->where('avaluos.fecha_recibido','!=',NULL)
-                    ->orderBy('avaluos.fecha_recibido','asc')
-                    ->paginate(25);
-
+                    ->where('avaluos.fecha_recibido','!=',NULL);
         }
         else{
             switch($criterio){
@@ -263,20 +243,14 @@ class AvaluoController extends Controller
                         $avaluos = $query
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
-                        ->where('avaluos.fecha_recibido','!=',NULL)
-                        ->orderBy('avaluos.fecha_recibido','asc')
-                        ->paginate(25);
-
+                        ->where('avaluos.fecha_recibido','!=',NULL);
                     }
                     elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
                         $avaluos = $query
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.etapa_id','=',$b_etapa)
-                        ->where('avaluos.fecha_recibido','!=',NULL)
-                        ->orderBy('avaluos.fecha_recibido','asc')
-                        ->paginate(25);
-
+                        ->where('avaluos.fecha_recibido','!=',NULL);
                     }
                     elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
                         $avaluos = $query
@@ -284,10 +258,7 @@ class AvaluoController extends Controller
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.etapa_id','=',$b_etapa)
                         ->where('lotes.manzana','=',$b_manzana)
-                        ->where('avaluos.fecha_recibido','!=',NULL)
-                        ->orderBy('avaluos.fecha_recibido','asc')
-                        ->paginate(25);
-
+                        ->where('avaluos.fecha_recibido','!=',NULL);
                     }
                     elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
                         $avaluos = $query
@@ -296,10 +267,7 @@ class AvaluoController extends Controller
                         ->where('lotes.etapa_id','=',$b_etapa)
                         ->where('lotes.manzana','=',$b_manzana)
                         ->where('lotes.num_lote','=',$b_lote)
-                        ->where('avaluos.fecha_recibido','!=',NULL)
-                        ->orderBy('avaluos.fecha_recibido','asc')
-                        ->paginate(25);
-
+                        ->where('avaluos.fecha_recibido','!=',NULL);
                     }
                     elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
                         $avaluos = $query
@@ -307,20 +275,14 @@ class AvaluoController extends Controller
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.etapa_id','=',$b_etapa)
                         ->where('lotes.num_lote','=',$b_lote)
-                        ->where('avaluos.fecha_recibido','!=',NULL)
-                        ->orderBy('avaluos.fecha_recibido','asc')
-                        ->paginate(25);
-
+                        ->where('avaluos.fecha_recibido','!=',NULL);
                     }
                     elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
                         $avaluos = $query
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.num_lote','=',$b_lote)
-                        ->where('avaluos.fecha_recibido','!=',NULL)
-                        ->orderBy('avaluos.fecha_recibido','asc')
-                        ->paginate(25);
-
+                        ->where('avaluos.fecha_recibido','!=',NULL);
                     }
                     elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
                         $avaluos = $query
@@ -328,10 +290,7 @@ class AvaluoController extends Controller
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.manzana','=',$b_manzana)
                         ->where('lotes.num_lote','=',$b_lote)
-                        ->where('avaluos.fecha_recibido','!=',NULL)
-                        ->orderBy('avaluos.fecha_recibido','asc')
-                        ->paginate(25);
-
+                        ->where('avaluos.fecha_recibido','!=',NULL);
                     }
                     break;
                 }
@@ -339,13 +298,14 @@ class AvaluoController extends Controller
                     $avaluos = $query
                     ->where($criterio,'=',$buscar)
                     ->where('inst_seleccionadas.elegido','=','1')
-                    ->where('avaluos.fecha_recibido','!=',NULL)
-                    ->orderBy('avaluos.fecha_recibido','asc')
-                    ->paginate(25);
+                    ->where('avaluos.fecha_recibido','!=',NULL);
                     break;
                 }
             }
         }
+
+        $avaluos = $avaluos->orderBy('avaluos.fecha_recibido','asc')
+                    ->paginate(25);
         
         return [
             'pagination' => [
@@ -385,10 +345,7 @@ class AvaluoController extends Controller
         if($buscar == ''){
             $avaluos = $query
                     ->where('inst_seleccionadas.elegido','=','1')
-                    ->where('avaluos.fecha_recibido','!=',NULL)
-                    ->orderBy('avaluos.fecha_recibido','asc')
-                    ->get();
-
+                    ->where('avaluos.fecha_recibido','!=',NULL);
         }
         else{
             switch($criterio){
@@ -397,29 +354,20 @@ class AvaluoController extends Controller
                         $avaluos = $query
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
-                        ->where('avaluos.fecha_recibido','!=',NULL)
-                        ->orderBy('avaluos.fecha_recibido','asc')
-                        ->get();
-
+                        ->where('avaluos.fecha_recibido','!=',NULL);
                     }
                     elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
                         $avaluos = $query
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
-                        ->where('lotes.etapa_id','=',$b_etapa)
-                        ->orderBy('avaluos.fecha_recibido','asc')
-                        ->get();
-
+                        ->where('lotes.etapa_id','=',$b_etapa);
                     }
                     elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
                         $avaluos = $query
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.etapa_id','=',$b_etapa)
-                        ->where('lotes.manzana','=',$b_manzana)
-                        ->orderBy('avaluos.fecha_recibido','asc')
-                        ->get();
-
+                        ->where('lotes.manzana','=',$b_manzana);
                     }
                     elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
                         $avaluos = $query
@@ -427,52 +375,41 @@ class AvaluoController extends Controller
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.etapa_id','=',$b_etapa)
                         ->where('lotes.manzana','=',$b_manzana)
-                        ->where('lotes.num_lote','=',$b_lote)
-                        ->orderBy('avaluos.fecha_recibido','asc')
-                        ->get();
-
+                        ->where('lotes.num_lote','=',$b_lote);
                     }
                     elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
                         $avaluos = $query
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.etapa_id','=',$b_etapa)
-                        ->where('lotes.num_lote','=',$b_lote)
-                        ->orderBy('avaluos.fecha_recibido','asc')
-                        ->get();
-
+                        ->where('lotes.num_lote','=',$b_lote);
                     }
                     elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
                         $avaluos = $query
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
-                        ->where('lotes.num_lote','=',$b_lote)
-                        ->orderBy('avaluos.fecha_recibido','asc')
-                        ->get();
-
+                        ->where('lotes.num_lote','=',$b_lote);
                     }
                     elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
                         $avaluos = $query
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.manzana','=',$b_manzana)
-                        ->where('lotes.num_lote','=',$b_lote)
-                        ->orderBy('avaluos.fecha_recibido','asc')
-                        ->get();
-
+                        ->where('lotes.num_lote','=',$b_lote);
                     }
                     break;
                 }
                 case 'licencias.visita_avaluo':{
                     $avaluos = $query
                     ->where('inst_seleccionadas.elegido','=','1')
-                    ->where('avaluos.fecha_recibido','!=',NULL)
-                    ->orderBy('avaluos.fecha_recibido','asc')
-                    ->get();
+                    ->where('avaluos.fecha_recibido','!=',NULL);
                     break;
                 }
             }
         }
+
+        $avaluos = $avaluos->orderBy('avaluos.fecha_recibido','asc')
+                    ->get();
         
         return Excel::create('Avaluos', function($excel) use ($avaluos){
                 $excel->sheet('Avaluos', function($sheet) use ($avaluos){

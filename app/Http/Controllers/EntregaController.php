@@ -148,10 +148,7 @@ class EntregaController extends Controller
             $contratos = $query
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
-                    ->where('contratos.entregado', '=', 0)
-                    ->orderBy('licencias.avance','desc')
-                    ->orderBy('lotes.fecha_entrega_obra','desc')
-                    ->paginate(8);
+                    ->where('contratos.entregado', '=', 0);
         }
         else{
             switch($criterio){
@@ -160,10 +157,7 @@ class EntregaController extends Controller
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
                     ->where('contratos.entregado', '=', 0)
-                    ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%')
-                    ->orderBy('licencias.avance','desc')
-                    ->orderBy('lotes.fecha_entrega_obra','desc')
-                    ->paginate(8);
+                    ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%');
 
                     break;
                 }
@@ -173,10 +167,7 @@ class EntregaController extends Controller
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
                     ->where('contratos.entregado', '=', 0)
-                    ->whereBetween($criterio, [$buscar, $b_etapa])
-                    ->orderBy('licencias.avance','desc')
-                    ->orderBy('lotes.fecha_entrega_obra','desc')
-                    ->paginate(8);
+                    ->whereBetween($criterio, [$buscar, $b_etapa]);
 
                     break;
                 }
@@ -186,10 +177,7 @@ class EntregaController extends Controller
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
                     ->where('contratos.entregado', '=', 0)
-                    ->where($criterio, '=', $buscar)
-                    ->orderBy('licencias.avance','desc')
-                    ->orderBy('lotes.fecha_entrega_obra','desc')
-                    ->paginate(8);
+                    ->where($criterio, '=', $buscar);
 
                     break;
                 }
@@ -201,10 +189,7 @@ class EntregaController extends Controller
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('contratos.entregado', '=', 0)
-                            ->where($criterio, '=', $buscar)
-                            ->orderBy('licencias.avance','desc')
-                            ->orderBy('lotes.fecha_entrega_obra','desc')
-                            ->paginate(8);
+                            ->where($criterio, '=', $buscar);
                         }
                         elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
                             $contratos = $query
@@ -212,10 +197,7 @@ class EntregaController extends Controller
                             ->where('contratos.status', '!=', 2)
                             ->where('contratos.entregado', '=', 0)
                             ->where($criterio, '=', $buscar)
-                            ->where('lotes.etapa_id', '=', $b_etapa)
-                            ->orderBy('licencias.avance','desc')
-                            ->orderBy('lotes.fecha_entrega_obra','desc')
-                            ->paginate(8);
+                            ->where('lotes.etapa_id', '=', $b_etapa);
     
                         }
                         elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
@@ -225,10 +207,7 @@ class EntregaController extends Controller
                             ->where('contratos.entregado', '=', 0)
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
-                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                            ->orderBy('licencias.avance','desc')
-                            ->orderBy('lotes.fecha_entrega_obra','desc')
-                            ->paginate(8);
+                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
                         }
                         elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
                             $contratos = $query
@@ -238,10 +217,7 @@ class EntregaController extends Controller
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
                             ->where('lotes.num_lote', '=', $b_lote)
-                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                            ->orderBy('licencias.avance','desc')
-                            ->orderBy('lotes.fecha_entrega_obra','desc')
-                            ->paginate(8);
+                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
     
                         }
                         elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
@@ -251,10 +227,7 @@ class EntregaController extends Controller
                             ->where('contratos.entregado', '=', 0)
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
-                            ->where('lotes.num_lote', '=', $b_lote)
-                            ->orderBy('licencias.avance','desc')
-                            ->orderBy('lotes.fecha_entrega_obra','desc')
-                            ->paginate(8);
+                            ->where('lotes.num_lote', '=', $b_lote);
                         }
                         elseif($b_etapa == '' && $b_manzana != '' && $b_lote != ''){
                             $contratos = $query
@@ -263,10 +236,7 @@ class EntregaController extends Controller
                             ->where('contratos.entregado', '=', 0)
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.num_lote', '=', $b_lote)
-                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                            ->orderBy('licencias.avance','desc')
-                            ->orderBy('lotes.fecha_entrega_obra','desc')
-                            ->paginate(8);
+                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
     
                         }
                         elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
@@ -275,10 +245,7 @@ class EntregaController extends Controller
                             ->where('contratos.status', '!=', 2)
                             ->where('contratos.entregado', '=', 0)
                             ->where($criterio, '=', $buscar)
-                            ->where('lotes.num_lote', '=', $b_lote)
-                            ->orderBy('licencias.avance','desc')
-                            ->orderBy('lotes.fecha_entrega_obra','desc')
-                            ->paginate(8);
+                            ->where('lotes.num_lote', '=', $b_lote);
     
                         }
                         elseif($b_etapa == '' && $b_manzana != '' && $b_lote == ''){
@@ -287,10 +254,7 @@ class EntregaController extends Controller
                             ->where('contratos.status', '!=', 2)
                             ->where('contratos.entregado', '=', 0)
                             ->where($criterio, '=', $buscar)
-                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                            ->orderBy('licencias.avance','desc')
-                            ->orderBy('lotes.fecha_entrega_obra','desc')
-                            ->paginate(8);
+                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
     
                         }
                     }
@@ -301,10 +265,7 @@ class EntregaController extends Controller
                             ->where('contratos.status', '!=', 2)
                             ->where('contratos.entregado', '=', 0)
                             ->where($criterio, '=', $buscar)
-                            ->whereBetween('entregas.fecha_program', [$request->b_desde,$request->b_hasta])
-                            ->orderBy('licencias.avance','desc')
-                            ->orderBy('lotes.fecha_entrega_obra','desc')
-                            ->paginate(8);
+                            ->whereBetween('entregas.fecha_program', [$request->b_desde,$request->b_hasta]);
                         }
                         elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
                             $contratos = $query
@@ -313,10 +274,7 @@ class EntregaController extends Controller
                             ->where('contratos.entregado', '=', 0)
                             ->where($criterio, '=', $buscar)
                             ->whereBetween('entregas.fecha_program', [$request->b_desde,$request->b_hasta])
-                            ->where('lotes.etapa_id', '=', $b_etapa)
-                            ->orderBy('licencias.avance','desc')
-                            ->orderBy('lotes.fecha_entrega_obra','desc')
-                            ->paginate(8);
+                            ->where('lotes.etapa_id', '=', $b_etapa);
     
                         }
                         elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
@@ -327,10 +285,7 @@ class EntregaController extends Controller
                             ->where($criterio, '=', $buscar)
                             ->whereBetween('entregas.fecha_program', [$request->b_desde,$request->b_hasta])
                             ->where('lotes.etapa_id', '=', $b_etapa)
-                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                            ->orderBy('licencias.avance','desc')
-                            ->orderBy('lotes.fecha_entrega_obra','desc')
-                            ->paginate(8);
+                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
                         }
                         elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
                             $contratos = $query
@@ -341,10 +296,7 @@ class EntregaController extends Controller
                             ->whereBetween('entregas.fecha_program', [$request->b_desde,$request->b_hasta])
                             ->where('lotes.etapa_id', '=', $b_etapa)
                             ->where('lotes.num_lote', '=', $b_lote)
-                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                            ->orderBy('licencias.avance','desc')
-                            ->orderBy('lotes.fecha_entrega_obra','desc')
-                            ->paginate(8);
+                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
     
                         }
                         elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
@@ -355,10 +307,7 @@ class EntregaController extends Controller
                             ->where($criterio, '=', $buscar)
                             ->whereBetween('entregas.fecha_program', [$request->b_desde,$request->b_hasta])
                             ->where('lotes.etapa_id', '=', $b_etapa)
-                            ->where('lotes.num_lote', '=', $b_lote)
-                            ->orderBy('licencias.avance','desc')
-                            ->orderBy('lotes.fecha_entrega_obra','desc')
-                            ->paginate(8);
+                            ->where('lotes.num_lote', '=', $b_lote);
                         }
                         elseif($b_etapa == '' && $b_manzana != '' && $b_lote != ''){
                             $contratos = $query
@@ -368,10 +317,7 @@ class EntregaController extends Controller
                             ->where($criterio, '=', $buscar)
                             ->whereBetween('entregas.fecha_program', [$request->b_desde,$request->b_hasta])
                             ->where('lotes.num_lote', '=', $b_lote)
-                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                            ->orderBy('licencias.avance','desc')
-                            ->orderBy('lotes.fecha_entrega_obra','desc')
-                            ->paginate(8);
+                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
     
                         }
                         elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
@@ -381,10 +327,7 @@ class EntregaController extends Controller
                             ->where('contratos.entregado', '=', 0)
                             ->where($criterio, '=', $buscar)
                             ->whereBetween('entregas.fecha_program', [$request->b_desde,$request->b_hasta])
-                            ->where('lotes.num_lote', '=', $b_lote)
-                            ->orderBy('licencias.avance','desc')
-                            ->orderBy('lotes.fecha_entrega_obra','desc')
-                            ->paginate(8);
+                            ->where('lotes.num_lote', '=', $b_lote);
     
                         }
                         elseif($b_etapa == '' && $b_manzana != '' && $b_lote == ''){
@@ -394,10 +337,7 @@ class EntregaController extends Controller
                             ->where('contratos.entregado', '=', 0)
                             ->where($criterio, '=', $buscar)
                             ->whereBetween('entregas.fecha_program', [$request->b_desde,$request->b_hasta])
-                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                            ->orderBy('licencias.avance','desc')
-                            ->orderBy('lotes.fecha_entrega_obra','desc')
-                            ->paginate(8);
+                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
     
                         }
                     }
@@ -407,6 +347,10 @@ class EntregaController extends Controller
                 }
             }
         }
+
+        $contratos = $contratos->orderBy('licencias.avance','desc')
+                                ->orderBy('lotes.fecha_entrega_obra','desc')
+                                ->paginate(8);
 
                 return [
                     'pagination' => [
@@ -608,10 +552,7 @@ class EntregaController extends Controller
             $contratos = $query
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
-                    ->where('contratos.entregado', '=', 1)
-                    ->orderBy('licencias.avance','desc')
-                    ->orderBy('lotes.fecha_entrega_obra','desc')
-                    ->paginate(8);
+                    ->where('contratos.entregado', '=', 1);
         }
         else{
             switch($criterio){
@@ -620,11 +561,7 @@ class EntregaController extends Controller
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
                     ->where('contratos.entregado', '=', 1)
-                    ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%')
-                    ->orderBy('licencias.avance','desc')
-                    ->orderBy('lotes.fecha_entrega_obra','desc')
-                    ->paginate(8);
-
+                    ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%');
                     break;
                 }
 
@@ -633,11 +570,7 @@ class EntregaController extends Controller
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
                     ->where('contratos.entregado', '=', 1)
-                    ->whereBetween($criterio, [$buscar, $b_etapa])
-                    ->orderBy('licencias.avance','desc')
-                    ->orderBy('lotes.fecha_entrega_obra','desc')
-                    ->paginate(8);
-
+                    ->whereBetween($criterio, [$buscar, $b_etapa]);
                     break;
                 }
 
@@ -646,11 +579,7 @@ class EntregaController extends Controller
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
                     ->where('contratos.entregado', '=', 1)
-                    ->where($criterio, '=', $buscar)
-                    ->orderBy('licencias.avance','desc')
-                    ->orderBy('lotes.fecha_entrega_obra','desc')
-                    ->paginate(8);
-
+                    ->where($criterio, '=', $buscar);
                     break;
                 }
                 case 'lotes.fraccionamiento_id':{
@@ -659,10 +588,7 @@ class EntregaController extends Controller
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('contratos.entregado', '=', 1)
-                        ->where($criterio, '=', $buscar)
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('lotes.fecha_entrega_obra','desc')
-                        ->paginate(8);
+                        ->where($criterio, '=', $buscar);
                     }
                     elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
                         $contratos = $query
@@ -670,11 +596,7 @@ class EntregaController extends Controller
                         ->where('contratos.status', '!=', 2)
                         ->where('contratos.entregado', '=', 1)
                         ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('lotes.fecha_entrega_obra','desc')
-                        ->paginate(8);
-
+                        ->where('lotes.etapa_id', '=', $b_etapa);
                     }
                     elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
                         $contratos = $query
@@ -683,10 +605,7 @@ class EntregaController extends Controller
                         ->where('contratos.entregado', '=', 1)
                         ->where($criterio, '=', $buscar)
                         ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('lotes.fecha_entrega_obra','desc')
-                        ->paginate(8);
+                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
                     }
                     elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
                         $contratos = $query
@@ -696,10 +615,7 @@ class EntregaController extends Controller
                         ->where($criterio, '=', $buscar)
                         ->where('lotes.etapa_id', '=', $b_etapa)
                         ->where('lotes.num_lote', '=', $b_lote)
-                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('lotes.fecha_entrega_obra','desc')
-                        ->paginate(8);
+                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
 
                     }
                     elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
@@ -709,10 +625,7 @@ class EntregaController extends Controller
                         ->where('contratos.entregado', '=', 1)
                         ->where($criterio, '=', $buscar)
                         ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->where('lotes.num_lote', '=', $b_lote)
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('lotes.fecha_entrega_obra','desc')
-                        ->paginate(8);
+                        ->where('lotes.num_lote', '=', $b_lote);
                     }
                     elseif($b_etapa == '' && $b_manzana != '' && $b_lote != ''){
                         $contratos = $query
@@ -721,11 +634,7 @@ class EntregaController extends Controller
                         ->where('contratos.entregado', '=', 1)
                         ->where($criterio, '=', $buscar)
                         ->where('lotes.num_lote', '=', $b_lote)
-                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('lotes.fecha_entrega_obra','desc')
-                        ->paginate(8);
-
+                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
                     }
                     elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
                         $contratos = $query
@@ -733,10 +642,7 @@ class EntregaController extends Controller
                         ->where('contratos.status', '!=', 2)
                         ->where('contratos.entregado', '=', 1)
                         ->where($criterio, '=', $buscar)
-                        ->where('lotes.num_lote', '=', $b_lote)
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('lotes.fecha_entrega_obra','desc')
-                        ->paginate(8);
+                        ->where('lotes.num_lote', '=', $b_lote);
 
                     }
                     elseif($b_etapa == '' && $b_manzana != '' && $b_lote == ''){
@@ -745,11 +651,7 @@ class EntregaController extends Controller
                         ->where('contratos.status', '!=', 2)
                         ->where('contratos.entregado', '=', 1)
                         ->where($criterio, '=', $buscar)
-                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('lotes.fecha_entrega_obra','desc')
-                        ->paginate(8);
-
+                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
                     }
 
                     break;
@@ -757,16 +659,20 @@ class EntregaController extends Controller
             }
         }
 
-                return [
-                    'pagination' => [
-                        'total'         => $contratos->total(),
-                        'current_page'  => $contratos->currentPage(),
-                        'per_page'      => $contratos->perPage(),
-                        'last_page'     => $contratos->lastPage(),
-                        'from'          => $contratos->firstItem(),
-                        'to'            => $contratos->lastItem(),
-                    ],'contratos' => $contratos,
-                ];   
+        $contratos = $contratos->orderBy('licencias.avance','desc')
+                                ->orderBy('lotes.fecha_entrega_obra','desc')
+                                ->paginate(8);
+
+        return [
+            'pagination' => [
+                'total'         => $contratos->total(),
+                'current_page'  => $contratos->currentPage(),
+                'per_page'      => $contratos->perPage(),
+                'last_page'     => $contratos->lastPage(),
+                'from'          => $contratos->firstItem(),
+                'to'            => $contratos->lastItem(),
+            ],'contratos' => $contratos,
+        ];   
     }
 
     public function cartaCuotaMantenimiento($id){
@@ -1037,10 +943,7 @@ class EntregaController extends Controller
             $contratos = $query
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
-                    ->where('contratos.entregado', '=', 1)
-                    ->orderBy('licencias.avance','desc')
-                    ->orderBy('lotes.fecha_entrega_obra','desc')
-                    ->get();
+                    ->where('contratos.entregado', '=', 1);
         }
         else{
             switch($criterio){
@@ -1049,11 +952,7 @@ class EntregaController extends Controller
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
                     ->where('contratos.entregado', '=', 1)
-                    ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%')
-                    ->orderBy('licencias.avance','desc')
-                    ->orderBy('lotes.fecha_entrega_obra','desc')
-                    ->get();
-
+                    ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%');
                     break;
                 }
 
@@ -1062,11 +961,7 @@ class EntregaController extends Controller
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
                     ->where('contratos.entregado', '=', 1)
-                    ->whereBetween($criterio, [$buscar, $b_etapa])
-                    ->orderBy('licencias.avance','desc')
-                    ->orderBy('lotes.fecha_entrega_obra','desc')
-                    ->get();
-
+                    ->whereBetween($criterio, [$buscar, $b_etapa]);
                     break;
                 }
 
@@ -1075,11 +970,7 @@ class EntregaController extends Controller
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
                     ->where('contratos.entregado', '=', 1)
-                    ->where($criterio, '=', $buscar)
-                    ->orderBy('licencias.avance','desc')
-                    ->orderBy('lotes.fecha_entrega_obra','desc')
-                    ->get();
-
+                    ->where($criterio, '=', $buscar);
                     break;
                 }
                 case 'lotes.fraccionamiento_id':{
@@ -1088,10 +979,7 @@ class EntregaController extends Controller
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('contratos.entregado', '=', 1)
-                        ->where($criterio, '=', $buscar)
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('lotes.fecha_entrega_obra','desc')
-                        ->get();
+                        ->where($criterio, '=', $buscar);
                     }
                     elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
                         $contratos = $query
@@ -1099,11 +987,7 @@ class EntregaController extends Controller
                         ->where('contratos.status', '!=', 2)
                         ->where('contratos.entregado', '=', 1)
                         ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('lotes.fecha_entrega_obra','desc')
-                        ->get();
-
+                        ->where('lotes.etapa_id', '=', $b_etapa);
                     }
                     elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
                         $contratos = $query
@@ -1112,10 +996,7 @@ class EntregaController extends Controller
                         ->where('contratos.entregado', '=', 1)
                         ->where($criterio, '=', $buscar)
                         ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('lotes.fecha_entrega_obra','desc')
-                        ->get();
+                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
                     }
                     elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
                         $contratos = $query
@@ -1125,11 +1006,7 @@ class EntregaController extends Controller
                         ->where($criterio, '=', $buscar)
                         ->where('lotes.etapa_id', '=', $b_etapa)
                         ->where('lotes.num_lote', '=', $b_lote)
-                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('lotes.fecha_entrega_obra','desc')
-                        ->get();
-
+                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
                     }
                     elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
                         $contratos = $query
@@ -1138,10 +1015,7 @@ class EntregaController extends Controller
                         ->where('contratos.entregado', '=', 1)
                         ->where($criterio, '=', $buscar)
                         ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->where('lotes.num_lote', '=', $b_lote)
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('lotes.fecha_entrega_obra','desc')
-                        ->get();
+                        ->where('lotes.num_lote', '=', $b_lote);
                     }
                     elseif($b_etapa == '' && $b_manzana != '' && $b_lote != ''){
                         $contratos = $query
@@ -1150,11 +1024,7 @@ class EntregaController extends Controller
                         ->where('contratos.entregado', '=', 1)
                         ->where($criterio, '=', $buscar)
                         ->where('lotes.num_lote', '=', $b_lote)
-                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('lotes.fecha_entrega_obra','desc')
-                        ->get();
-
+                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
                     }
                     elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
                         $contratos = $query
@@ -1162,11 +1032,7 @@ class EntregaController extends Controller
                         ->where('contratos.status', '!=', 2)
                         ->where('contratos.entregado', '=', 1)
                         ->where($criterio, '=', $buscar)
-                        ->where('lotes.num_lote', '=', $b_lote)
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('lotes.fecha_entrega_obra','desc')
-                        ->get();
-
+                        ->where('lotes.num_lote', '=', $b_lote);
                     }
                     elseif($b_etapa == '' && $b_manzana != '' && $b_lote == ''){
                         $contratos = $query
@@ -1174,17 +1040,16 @@ class EntregaController extends Controller
                         ->where('contratos.status', '!=', 2)
                         ->where('contratos.entregado', '=', 1)
                         ->where($criterio, '=', $buscar)
-                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('lotes.fecha_entrega_obra','desc')
-                        ->get();
-
+                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
                     }
-
                     break;
                 }
             }
         }
+
+        $contratos = $contratos->orderBy('licencias.avance','desc')
+                                ->orderBy('lotes.fecha_entrega_obra','desc')
+                                ->get();
 
         return Excel::create('Entregas', function($excel) use ($contratos){
             $excel->sheet('Entregas', function($sheet) use ($contratos){

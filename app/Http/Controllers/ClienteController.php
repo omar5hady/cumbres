@@ -80,20 +80,7 @@ class ClienteController extends Controller
                 if ($buscar==''){
                     $personas = $queryVendedor
                     ->where('vendedor_id','=',Auth::user()->id)
-                    ->where('clientes.clasificacion', '=', $buscarC)
-                    ->orderBy('personal.nombre', 'asc')
-                    ->orderBy('personal.apellidos', 'asc')
-                    ->paginate(20);
-    
-                    $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave')
-                    ->where('vendedor_id','=',Auth::user()->id)
-                    ->where('clientes.clasificacion', '=', $buscarC)
-                    ->orderBy('personal.nombre', 'asc')
-                    ->orderBy('personal.apellidos', 'asc')
-                    ->count();
+                    ->where('clientes.clasificacion', '=', $buscarC);
                 }
                 else{
     
@@ -107,52 +94,14 @@ class ClienteController extends Controller
                         ->where('clientes.clasificacion', '=', $buscarC)
                         ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
                         ->where('vendedor_id','=',Auth::user()->id)
-                        ->where('clientes.clasificacion', '=', $buscarC)
-                        ->orderBy('personal.nombre', 'asc')
-                        ->orderBy('personal.apellidos', 'asc')
-
-                        ->paginate(20);
-    
-                        $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
-                        ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                        ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                        ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave')
-                        ->where('vendedor_id','=',Auth::user()->id)     
-                        ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('clientes.clasificacion', '=', $buscarC)
-                        ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
-                        ->where('vendedor_id','=',Auth::user()->id)
-                        ->where('clientes.clasificacion', '=', $buscarC)
-                        ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
-                        ->where('vendedor_id','=',Auth::user()->id)
-                        ->where('clientes.clasificacion', '=', $buscarC)
-                        ->orderBy('personal.nombre', 'asc')
-                        ->orderBy('personal.apellidos', 'asc')
-
-                        ->count();
+                        ->where('clientes.clasificacion', '=', $buscarC);
                     }
     
                     else{
                         $personas = $queryVendedor
                         ->where('vendedor_id','=',Auth::user()->id)     
                         ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('clientes.clasificacion', '=', $buscarC)
-                        ->orderBy('personal.nombre', 'asc')
-                        ->orderBy('personal.apellidos', 'asc')
-
-                        ->paginate(20);
-    
-                        $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
-                        ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                        ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                        ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave')
-                        ->where('vendedor_id','=',Auth::user()->id)     
-                        ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('clientes.clasificacion', '=', $buscarC)
-                        ->orderBy('personal.nombre', 'asc')
-                        ->orderBy('personal.apellidos', 'asc')
-
-                        ->count();
+                        ->where('clientes.clasificacion', '=', $buscarC);
                     }
                 }
             }
@@ -161,20 +110,7 @@ class ClienteController extends Controller
                 if ($buscar==''){
                     $personas = $queryVendedor
                     ->where('vendedor_id','=',Auth::user()->id)
-                    ->where('clientes.clasificacion', '!=', 7)
-                    ->orderBy('personal.nombre', 'asc')
-                    ->orderBy('personal.apellidos', 'asc')
-                    ->paginate(20);
-    
-                    $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave')
-                    ->where('vendedor_id','=',Auth::user()->id)
-                    ->where('clientes.clasificacion', '!=', 7)
-                    ->orderBy('personal.nombre', 'asc')
-                    ->orderBy('personal.apellidos', 'asc')
-                    ->count();
+                    ->where('clientes.clasificacion', '!=', 7);
                 }
                 else{
     
@@ -188,52 +124,14 @@ class ClienteController extends Controller
                         ->where('clientes.clasificacion', '!=', 7)
                         ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
                         ->where('vendedor_id','=',Auth::user()->id)
-                        ->where('clientes.clasificacion', '!=', 7)
-                        ->orderBy('personal.nombre', 'asc')
-                        ->orderBy('personal.apellidos', 'asc')
-
-                        ->paginate(20);
-    
-                        $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
-                        ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                        ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                        ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave')
-                        ->where('vendedor_id','=',Auth::user()->id)     
-                        ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('clientes.clasificacion', '!=', 7)
-                        ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
-                        ->where('vendedor_id','=',Auth::user()->id)
-                        ->where('clientes.clasificacion', '!=', 7)
-                        ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
-                        ->where('vendedor_id','=',Auth::user()->id)
-                        ->where('clientes.clasificacion', '!=', 7)
-                        ->orderBy('personal.nombre', 'asc')
-                        ->orderBy('personal.apellidos', 'asc')
-
-                        ->count();
+                        ->where('clientes.clasificacion', '!=', 7);
                     }
     
                     else{
                         $personas = $queryVendedor
                         ->where('vendedor_id','=',Auth::user()->id)     
                         ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('clientes.clasificacion', '!=', 7)
-                        ->orderBy('personal.nombre', 'asc')
-                        ->orderBy('personal.apellidos', 'asc')
-
-                        ->paginate(20);
-    
-                        $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
-                        ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                        ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                        ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave')
-                        ->where('vendedor_id','=',Auth::user()->id)     
-                        ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('clientes.clasificacion', '!=', 7)
-                        ->orderBy('personal.nombre', 'asc')
-                        ->orderBy('personal.apellidos', 'asc')
-
-                        ->count();
+                        ->where('clientes.clasificacion', '!=', 7);
                     }
                 }
 
@@ -245,20 +143,7 @@ class ClienteController extends Controller
                 if ($buscar==''){
                     $personas = $queryGen
                     //->where('vendedor_id','=',Auth::user()->id)
-                    ->where('clientes.clasificacion', '=', $buscarC)
-                    ->orderBy('personal.nombre', 'asc')
-                    ->orderBy('personal.apellidos', 'asc')
-                    ->paginate(20);
-    
-                    $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave')
-                    //->where('vendedor_id','=',Auth::user()->id)
-                    ->where('clientes.clasificacion', '=', $buscarC)
-                    ->orderBy('personal.nombre', 'asc')
-                    ->orderBy('personal.apellidos', 'asc')
-                    ->count();
+                    ->where('clientes.clasificacion', '=', $buscarC);
                 }
                 else{
     
@@ -270,77 +155,20 @@ class ClienteController extends Controller
                         ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
                         ->where('clientes.clasificacion', '=', $buscarC)
                         ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
-                        ->where('clientes.clasificacion', '=', $buscarC)
-                        ->orderBy('personal.nombre', 'asc')
-                        ->orderBy('personal.apellidos', 'asc')
-
-                        ->paginate(20);
-    
-                        $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
-                            ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                            ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                            ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave')
-                            //->where('vendedor_id','=',Auth::user()->id)     
-                            ->where($criterio, 'like', '%'. $buscar . '%')
-                            ->where('clientes.clasificacion', '=', $buscarC)
-                            ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
-                            ->where('clientes.clasificacion', '=', $buscarC)
-                            ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
-                            ->where('clientes.clasificacion', '=', $buscarC)
-                            ->orderBy('personal.nombre', 'asc')
-                            ->orderBy('personal.apellidos', 'asc')
-
-                            ->count();
+                        ->where('clientes.clasificacion', '=', $buscarC);
                     }
                     elseif($criterio == 'clientes.vendedor_id'){
                         if($buscar2 == ""){
                             $personas = $queryGen  
                             //->where('vendedor_id','=',Auth::user()->id)     
                             ->where($criterio, '=',$buscar)
-                            ->where('clientes.clasificacion', '=', $buscarC)
-                            ->orderBy('personal.nombre', 'asc')
-                            ->orderBy('personal.apellidos', 'asc')
-    
-                            ->paginate(20);
-        
-                            $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
-                                ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                                ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                                ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                                ->join('personal as v', 'vendedores.id', '=', 'v.id' )
-                                ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave')
-                                //->where('vendedor_id','=',Auth::user()->id)     
-                                ->where($criterio, '=',$buscar)
-                                ->where('clientes.clasificacion', '=', $buscarC)
-                                ->orderBy('personal.nombre', 'asc')
-                                ->orderBy('personal.apellidos', 'asc')
-    
-                                ->count();
+                            ->where('clientes.clasificacion', '=', $buscarC);
                         }else{
                             $personas = $queryGen
                             //->where('vendedor_id','=',Auth::user()->id)     
                             ->where($criterio, '=',$buscar)
                             ->where('clientes.clasificacion', '=', $buscarC)
-                            ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar2 . '%')
-                            ->orderBy('personal.nombre', 'asc')
-                            ->orderBy('personal.apellidos', 'asc')
-    
-                            ->paginate(20);
-        
-                            $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
-                                ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                                ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                                ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                                ->join('personal as v', 'vendedores.id', '=', 'v.id' )
-                                ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave')
-                                //->where('vendedor_id','=',Auth::user()->id)     
-                                ->where($criterio, '=',$buscar)
-                                ->where('clientes.clasificacion', '=', $buscarC)
-                                ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar2 . '%')
-                                ->orderBy('personal.nombre', 'asc')
-                                ->orderBy('personal.apellidos', 'asc')
-    
-                                ->count();
+                            ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar2 . '%');
                         }
                         
                     }
@@ -351,24 +179,7 @@ class ClienteController extends Controller
                                     //->where('vendedor_id','=',Auth::user()->id)     
                                     ->whereBetween($criterio, [$buscar, $buscar2])
                                     ->where('clientes.clasificacion', '=', $buscarC)
-                                    ->where('fraccionamientos.id','=',$buscar3)
-                                    ->orderBy('personal.nombre', 'asc')
-                                    ->orderBy('personal.apellidos', 'asc')
-                                ->paginate(20);
-        
-                                $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
-                                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                                    ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                                    ->join('personal as v', 'vendedores.id', '=', 'v.id' )
-                                    ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave')
-                                    //->where('vendedor_id','=',Auth::user()->id)     
-                                    ->whereBetween($criterio, [$buscar, $buscar2])
-                                    ->where('clientes.clasificacion', '=', $buscarC)
-                                    ->where('fraccionamientos.id','=',$buscar3)
-                                    ->orderBy('personal.nombre', 'asc')
-                                    ->orderBy('personal.apellidos', 'asc')
-                                ->count();
+                                    ->where('fraccionamientos.id','=',$buscar3);
                             }
                             else{
                                 $personas = $queryGen  
@@ -376,25 +187,7 @@ class ClienteController extends Controller
                                     ->whereBetween($criterio, [$buscar, $buscar2])
                                     ->where('clientes.clasificacion', '=', $buscarC)
                                     ->where('clientes.publicidad_id', '=', $publicidad)
-                                    ->where('fraccionamientos.id','=',$buscar3)
-                                    ->orderBy('personal.nombre', 'asc')
-                                    ->orderBy('personal.apellidos', 'asc')
-                                ->paginate(20);
-        
-                                $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
-                                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                                    ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                                    ->join('personal as v', 'vendedores.id', '=', 'v.id' )
-                                    ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave')
-                                    //->where('vendedor_id','=',Auth::user()->id)     
-                                    ->whereBetween($criterio, [$buscar, $buscar2])
-                                    ->where('clientes.clasificacion', '=', $buscarC)
-                                    ->where('clientes.publicidad_id', '=', $publicidad)
-                                    ->where('fraccionamientos.id','=',$buscar3)
-                                    ->orderBy('personal.nombre', 'asc')
-                                    ->orderBy('personal.apellidos', 'asc')
-                                ->count();
+                                    ->where('fraccionamientos.id','=',$buscar3);
 
                             }
                             
@@ -404,47 +197,14 @@ class ClienteController extends Controller
                                 $personas = $queryGen
                                     //->where('vendedor_id','=',Auth::user()->id)     
                                     ->whereBetween($criterio, [$buscar, $buscar2])
-                                    ->where('clientes.clasificacion', '=', $buscarC)
-                                    ->orderBy('personal.nombre', 'asc')
-                                    ->orderBy('personal.apellidos', 'asc')
-                                ->paginate(20);
-        
-                                $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
-                                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                                    ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                                    ->join('personal as v', 'vendedores.id', '=', 'v.id' )
-                                    ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave')
-                                    //->where('vendedor_id','=',Auth::user()->id)     
-                                    ->whereBetween($criterio, [$buscar, $buscar2])
-                                    ->where('clientes.clasificacion', '=', $buscarC)
-                                    ->orderBy('personal.nombre', 'asc')
-                                    ->orderBy('personal.apellidos', 'asc')
-                                ->count();
+                                    ->where('clientes.clasificacion', '=', $buscarC);
                             }
                             else{
                                 $personas = $queryGen  
                                     //->where('vendedor_id','=',Auth::user()->id)     
                                     ->whereBetween($criterio, [$buscar, $buscar2])
                                     ->where('clientes.clasificacion', '=', $buscarC)
-                                    ->where('clientes.publicidad_id', '=', $publicidad)
-                                    ->orderBy('personal.nombre', 'asc')
-                                    ->orderBy('personal.apellidos', 'asc')
-                                ->paginate(20);
-        
-                                $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
-                                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                                    ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                                    ->join('personal as v', 'vendedores.id', '=', 'v.id' )
-                                    ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave')
-                                    //->where('vendedor_id','=',Auth::user()->id)     
-                                    ->whereBetween($criterio, [$buscar, $buscar2])
-                                    ->where('clientes.clasificacion', '=', $buscarC)
-                                    ->where('clientes.publicidad_id', '=', $publicidad)
-                                    ->orderBy('personal.nombre', 'asc')
-                                    ->orderBy('personal.apellidos', 'asc')
-                                ->count();
+                                    ->where('clientes.publicidad_id', '=', $publicidad);
 
                             }
                         }
@@ -455,22 +215,7 @@ class ClienteController extends Controller
                         $personas = $queryGen
                         //->where('vendedor_id','=',Auth::user()->id)     
                         ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('clientes.clasificacion', '=', $buscarC)
-                        ->orderBy('personal.nombre', 'asc')
-                        ->orderBy('personal.apellidos', 'asc')
-                        ->paginate(20);
-    
-                        $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
-                        ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                        ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                        ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave')
-                        //->where('vendedor_id','=',Auth::user()->id)     
-                        ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('clientes.clasificacion', '=', $buscarC)
-                        ->orderBy('personal.nombre', 'asc')
-                        ->orderBy('personal.apellidos', 'asc')
-
-                        ->count();
+                        ->where('clientes.clasificacion', '=', $buscarC);
                     }
                 }
 
@@ -479,20 +224,7 @@ class ClienteController extends Controller
                 if ($buscar==''){
                     $personas = $queryGen
                     //->where('vendedor_id','=',Auth::user()->id)
-                    ->where('clientes.clasificacion', '!=', 7)
-                    ->orderBy('personal.nombre', 'asc')
-                    ->orderBy('personal.apellidos', 'asc')
-                    ->paginate(20);
-    
-                    $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave')
-                    //->where('vendedor_id','=',Auth::user()->id)
-                    ->where('clientes.clasificacion', '!=', 7)
-                    ->orderBy('personal.nombre', 'asc')
-                    ->orderBy('personal.apellidos', 'asc')
-                    ->count();
+                    ->where('clientes.clasificacion', '!=', 7);
                 }
                 else{
     
@@ -503,76 +235,20 @@ class ClienteController extends Controller
                         ->where('clientes.clasificacion', '!=', 7)
                         ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
                         ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
-                        ->where('clientes.clasificacion', '!=', 7)
-                        ->orderBy('personal.nombre', 'asc')
-                        ->orderBy('personal.apellidos', 'asc')
-
-                        ->paginate(20);
-    
-                        $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
-                        ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                        ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                        ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave')
-                        //->where('vendedor_id','=',Auth::user()->id)     
-                        ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('clientes.clasificacion', '!=', 7)
-                        ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
-                        ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
-                        ->where('clientes.clasificacion', '!=', 7)
-                        ->orderBy('personal.nombre', 'asc')
-                        ->orderBy('personal.apellidos', 'asc')
-
-                        ->count();
+                        ->where('clientes.clasificacion', '!=', 7);
                     }
                     elseif($criterio == 'clientes.vendedor_id'){
                         if($buscar2 == ""){
                         $personas = $queryGen
                         //->where('vendedor_id','=',Auth::user()->id)     
                         ->where($criterio, '=',$buscar)
-                        ->where('clientes.clasificacion', '!=', 7)
-                        ->orderBy('personal.nombre', 'asc')
-                        ->orderBy('personal.apellidos', 'asc')
-
-                        ->paginate(20);
-    
-                        $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
-                            ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                            ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                            ->join('personal as v', 'vendedores.id', '=', 'v.id' )
-                            ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave')
-                            //->where('vendedor_id','=',Auth::user()->id)     
-                            ->where($criterio, '=',$buscar)
-                            ->where('clientes.clasificacion', '!=', 7)
-                            ->orderBy('personal.nombre', 'asc')
-                            ->orderBy('personal.apellidos', 'asc')
-
-                            ->count();
+                        ->where('clientes.clasificacion', '!=', 7);
                         }else{
                         $personas = $queryGen
                         //->where('vendedor_id','=',Auth::user()->id)     
                         ->where($criterio, '=',$buscar)
                         ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar2 . '%')
-                        ->where('clientes.clasificacion', '!=', 7)
-                        ->orderBy('personal.nombre', 'asc')
-                        ->orderBy('personal.apellidos', 'asc')
-
-                        ->paginate(20);
-    
-                        $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
-                            ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                            ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                            ->join('personal as v', 'vendedores.id', '=', 'v.id' )
-                            ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave')
-                            //->where('vendedor_id','=',Auth::user()->id)     
-                            ->where($criterio, '=',$buscar)
-                            ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar2 . '%')
-                            ->where('clientes.clasificacion', '!=', 7)
-                            ->orderBy('personal.nombre', 'asc')
-                            ->orderBy('personal.apellidos', 'asc')
-
-                            ->count();
+                        ->where('clientes.clasificacion', '!=', 7);
                         }
                     }
                     elseif($criterio == 'clientes.created_at'){
@@ -582,24 +258,7 @@ class ClienteController extends Controller
                                     //->where('vendedor_id','=',Auth::user()->id)     
                                     ->whereBetween($criterio, [$buscar, $buscar2])
                                     ->where('fraccionamientos.id','=',$buscar3)
-                                    ->where('clientes.clasificacion', '!=', 7)
-                                    ->orderBy('personal.nombre', 'asc')
-                                    ->orderBy('personal.apellidos', 'asc')
-                                ->paginate(20);
-
-                                $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
-                                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                                    ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                                    ->join('personal as v', 'vendedores.id', '=', 'v.id' )
-                                    ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave')
-                                    //->where('vendedor_id','=',Auth::user()->id)     
-                                    ->whereBetween($criterio, [$buscar, $buscar2])
-                                    ->where('fraccionamientos.id','=',$buscar3)
-                                    ->where('clientes.clasificacion', '!=', 7)
-                                    ->orderBy('personal.nombre', 'asc')
-                                    ->orderBy('personal.apellidos', 'asc')
-                                ->count();
+                                    ->where('clientes.clasificacion', '!=', 7);
                             }
                             else{
                                 $personas = $queryGen  
@@ -607,25 +266,7 @@ class ClienteController extends Controller
                                     ->whereBetween($criterio, [$buscar, $buscar2])
                                     ->where('fraccionamientos.id','=',$buscar3)
                                     ->where('clientes.clasificacion', '!=', 7)
-                                    ->where('clientes.publicidad_id', '=', $publicidad)
-                                    ->orderBy('personal.nombre', 'asc')
-                                    ->orderBy('personal.apellidos', 'asc')
-                                ->paginate(20);
-
-                                $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
-                                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                                    ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                                    ->join('personal as v', 'vendedores.id', '=', 'v.id' )
-                                    ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave')
-                                    //->where('vendedor_id','=',Auth::user()->id)     
-                                    ->whereBetween($criterio, [$buscar, $buscar2])
-                                    ->where('fraccionamientos.id','=',$buscar3)
-                                    ->where('clientes.clasificacion', '!=', 7)
-                                    ->where('clientes.publicidad_id', '=', $publicidad)
-                                    ->orderBy('personal.nombre', 'asc')
-                                    ->orderBy('personal.apellidos', 'asc')
-                                ->count();
+                                    ->where('clientes.publicidad_id', '=', $publicidad);
                             }
                         }
                         else{
@@ -633,79 +274,31 @@ class ClienteController extends Controller
                                 $personas = $queryGen
                                     //->where('vendedor_id','=',Auth::user()->id)     
                                     ->whereBetween($criterio, [$buscar, $buscar2])
-                                    ->where('clientes.clasificacion', '!=', 7)
-                                    ->orderBy('personal.nombre', 'asc')
-                                    ->orderBy('personal.apellidos', 'asc')
-                                ->paginate(20);
-
-                                $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
-                                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                                    ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                                    ->join('personal as v', 'vendedores.id', '=', 'v.id' )
-                                    ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave')
-                                    //->where('vendedor_id','=',Auth::user()->id)     
-                                    ->whereBetween($criterio, [$buscar, $buscar2])
-                                    ->where('clientes.clasificacion', '!=', 7)
-                                    ->orderBy('personal.nombre', 'asc')
-                                    ->orderBy('personal.apellidos', 'asc')
-                                ->count();
+                                    ->where('clientes.clasificacion', '!=', 7);
                             }
                             else{
                                 $personas = $queryGen
                                     //->where('vendedor_id','=',Auth::user()->id)     
                                     ->whereBetween($criterio, [$buscar, $buscar2])
                                     ->where('clientes.clasificacion', '!=', 7)
-                                    ->where('clientes.publicidad_id', '=', $publicidad)
-                                    ->orderBy('personal.nombre', 'asc')
-                                    ->orderBy('personal.apellidos', 'asc')
-                                ->paginate(20);
-
-                                $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
-                                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                                    ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                                    ->join('personal as v', 'vendedores.id', '=', 'v.id' )
-                                    ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave')
-                                    //->where('vendedor_id','=',Auth::user()->id)     
-                                    ->whereBetween($criterio, [$buscar, $buscar2])
-                                    ->where('clientes.clasificacion', '!=', 7)
-                                    ->where('clientes.publicidad_id', '=', $publicidad)
-                                    ->orderBy('personal.nombre', 'asc')
-                                    ->orderBy('personal.apellidos', 'asc')
-                                ->count();
+                                    ->where('clientes.publicidad_id', '=', $publicidad);
                             }
-
-                        }
-
-                        
+                        }  
                     }
     
                     else{
                         $personas = $queryGen
                         //->where('vendedor_id','=',Auth::user()->id)     
                         ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('clientes.clasificacion', '!=', 7)
-                        ->orderBy('personal.nombre', 'asc')
-                        ->orderBy('personal.apellidos', 'asc')
-                        ->paginate(20);
-    
-                        $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
-                        ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                        ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                        ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave')
-                        //->where('vendedor_id','=',Auth::user()->id)     
-                        ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('clientes.clasificacion', '!=', 7)
-                        ->orderBy('personal.nombre', 'asc')
-                        ->orderBy('personal.apellidos', 'asc')
-
-                        ->count();
+                        ->where('clientes.clasificacion', '!=', 7);
                     }
                 }
-
             }
         }
+
+        $personas = $personas->orderBy('personal.nombre', 'asc')
+                        ->orderBy('personal.apellidos', 'asc')
+                        ->paginate(20);
 
         foreach($personas as $index => $persona){
             $ultimoCom = Cliente_observacion::select('created_at')->where('cliente_id','=',$persona->id)->orderBy('id','desc')->get();
@@ -730,7 +323,7 @@ class ClienteController extends Controller
                 'from'         => $personas->firstItem(),
                 'to'           => $personas->lastItem(),
             ],
-            'personas' => $personas, 'contadorClientes' => $contadorClientes
+            'personas' => $personas, 'contadorClientes' => $personas->total()
         ];
     }
  
@@ -1119,10 +712,8 @@ class ClienteController extends Controller
         $buscar = $request->buscar;
         $criterio = $request->criterio;
         $rol = Auth::user()->rol_id;
-   
-        if($rol == 2){
-            if ($buscar==''){
-                $personas = Cliente::join('personal','clientes.id','=','personal.id')
+
+        $query = Cliente::join('personal','clientes.id','=','personal.id')
                 ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
                 ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
                 ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave',
@@ -1142,236 +733,62 @@ class ClienteController extends Controller
                 'clientes.cp_coa','clientes.telefono_coa','clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa',
                 'clientes.nacionalidad_coa','clientes.estado_coa','clientes.ciudad_coa',
                 DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS n_completo_coa"),
-                'medios_publicitarios.nombre as publicidad','fraccionamientos.nombre as proyecto') 
+                'medios_publicitarios.nombre as publicidad','fraccionamientos.nombre as proyecto');
+   
+        if($rol == 2){
+            if ($buscar==''){
+                $personas = $query
                 ->where('vendedor_id','=',Auth::user()->id)
-                ->where('clientes.clasificacion','=','2')
-                ->orderBy('personal.apellidos', 'desc')
-                ->orderBy('personal.nombre', 'desc')
-                ->paginate(20);
-
-                $contadorPersonas = Cliente::join('personal','clientes.id','=','personal.id')
-                ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                ->select('personal.id') 
-                ->where('vendedor_id','=',Auth::user()->id)
-                ->where('clientes.clasificacion','=','2')
-                ->orderBy('personal.apellidos', 'desc')
-                ->orderBy('personal.nombre', 'desc')
-                ->count();
+                ->where('clientes.clasificacion','=','2');
             }
             else{
 
                 if($criterio == 'personal.nombre'){
-                    $personas = Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave',
-                    'personal.f_nacimiento','personal.direccion','personal.telefono','personal.departamento_id',
-                    'personal.colonia','personal.ext','personal.cp',
-                    'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
-                    'personal.email',
-        
-                    'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
-                    'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
-                    'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
-                    'clientes.nacionalidad','clientes.puesto', 'clientes.estado','clientes.ciudad',
-                    
-                    'clientes.sexo_coa', 'clientes.tipo_casa_coa','clientes.email_institucional_coa','clientes.empresa_coa',
-                    'clientes.edo_civil_coa','clientes.nss_coa','clientes.curp_coa','clientes.nombre_coa','clientes.apellidos_coa',
-                    'clientes.f_nacimiento_coa', 'clientes.rfc_coa','clientes.homoclave_coa','clientes.direccion_coa','clientes.colonia_coa',
-                    'clientes.cp_coa','clientes.telefono_coa','clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa',
-                    'clientes.nacionalidad_coa','clientes.estado_coa','clientes.ciudad_coa',
-                    DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS n_completo_coa"),
-                    'medios_publicitarios.nombre as publicidad','fraccionamientos.nombre as proyecto') 
+                    $personas = $query 
                     ->where('vendedor_id','=',Auth::user()->id)     
                     ->where('clientes.clasificacion','=','2')
                     ->where($criterio, 'like', '%'. $buscar . '%')
                     ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
-                ->paginate(20);
-
-                $contadorPersonas = Cliente::join('personal','clientes.id','=','personal.id')
-                ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                ->select('personal.id') 
-                ->where('vendedor_id','=',Auth::user()->id)     
-                ->where('clientes.clasificacion','=','2')
-                ->where($criterio, 'like', '%'. $buscar . '%')
-                ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
-                ->orderBy('personal.apellidos', 'desc')
-                ->orderBy('personal.nombre', 'desc')
-                ->count();
+                    ->where('clientes.clasificacion','=','2');
                 }
 
                 else{
-                    $personas = Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave',
-                    'personal.f_nacimiento','personal.direccion','personal.telefono','personal.departamento_id',
-                    'personal.colonia','personal.ext','personal.cp',
-                    'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
-                    'personal.email',
-        
-                    'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
-                    'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
-                    'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
-                    'clientes.nacionalidad','clientes.puesto', 'clientes.estado','clientes.ciudad',
-                    
-                    'clientes.sexo_coa', 'clientes.tipo_casa_coa','clientes.email_institucional_coa','clientes.empresa_coa',
-                    'clientes.edo_civil_coa','clientes.nss_coa','clientes.curp_coa','clientes.nombre_coa','clientes.apellidos_coa',
-                    'clientes.f_nacimiento_coa', 'clientes.rfc_coa','clientes.homoclave_coa','clientes.direccion_coa','clientes.colonia_coa',
-                    'clientes.cp_coa','clientes.telefono_coa','clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa',
-                    'clientes.nacionalidad_coa','clientes.estado_coa','clientes.ciudad_coa',
-                    DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS n_completo_coa"),
-                    'medios_publicitarios.nombre as publicidad','fraccionamientos.nombre as proyecto') 
-                ->where('vendedor_id','=',Auth::user()->id)     
-                ->where('clientes.clasificacion','=','2')
-                ->where($criterio, 'like', '%'. $buscar . '%')
-                ->orderBy('personal.apellidos', 'desc')
-                ->orderBy('personal.nombre', 'desc')
-                ->paginate(20);
-
-                $contadorPersonas = Cliente::join('personal','clientes.id','=','personal.id')
-                ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                ->select('personal.id') 
-                ->where('vendedor_id','=',Auth::user()->id)     
-                ->where('clientes.clasificacion','=','2')
-                ->where($criterio, 'like', '%'. $buscar . '%')
-                ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
-                ->orderBy('personal.apellidos', 'desc')
-                ->orderBy('personal.nombre', 'desc')
-                ->count();
+                    $personas = $query
+                    ->where('vendedor_id','=',Auth::user()->id)     
+                    ->where('clientes.clasificacion','=','2')
+                    ->where($criterio, 'like', '%'. $buscar . '%');
                 }
             }
         }
         else{
             if($rol == 1 || $rol==4 || $rol==6 || $rol==8 || $rol == 11){
                 if ($buscar==''){
-                    $personas = Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave',
-                    'personal.f_nacimiento','personal.direccion','personal.telefono','personal.departamento_id',
-                    'personal.colonia','personal.ext','personal.cp',
-                    'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
-                    'personal.email',
-
-                    'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
-                    'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
-                    'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
-                    'clientes.nacionalidad','clientes.puesto', 'clientes.estado','clientes.ciudad',
-                    
-                    'clientes.sexo_coa', 'clientes.tipo_casa_coa','clientes.email_institucional_coa','clientes.empresa_coa',
-                    'clientes.edo_civil_coa','clientes.nss_coa','clientes.curp_coa','clientes.nombre_coa','clientes.apellidos_coa',
-                    'clientes.f_nacimiento_coa', 'clientes.rfc_coa','clientes.homoclave_coa','clientes.direccion_coa','clientes.colonia_coa',
-                    'clientes.cp_coa','clientes.telefono_coa','clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa',
-                    'clientes.nacionalidad_coa','clientes.estado_coa','clientes.ciudad_coa',
-                    DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS n_completo_coa"),
-                    'medios_publicitarios.nombre as publicidad','fraccionamientos.nombre as proyecto') 
-                    
-                    ->where('clientes.clasificacion','=','2')
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
-                    ->paginate(20);
-
-                    $contadorPersonas = Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select('personal.id') 
-                    ->where('clientes.clasificacion','=','2')
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
-                    ->count();
+                    $personas = $query
+                    ->where('clientes.clasificacion','=','2');
                 }
                 else{
 
                     if($criterio == 'personal.nombre'){
-                        $personas = Cliente::join('personal','clientes.id','=','personal.id')
-                        ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                        ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                        ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave',
-                        'personal.f_nacimiento','personal.direccion','personal.telefono','personal.departamento_id',
-                        'personal.colonia','personal.ext','personal.cp',
-                        'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
-                        'personal.email',
-            
-                        'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
-                        'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
-                        'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
-                        'clientes.nacionalidad','clientes.puesto', 'clientes.estado','clientes.ciudad',
-                        
-                        'clientes.sexo_coa', 'clientes.tipo_casa_coa','clientes.email_institucional_coa','clientes.empresa_coa',
-                        'clientes.edo_civil_coa','clientes.nss_coa','clientes.curp_coa','clientes.nombre_coa','clientes.apellidos_coa',
-                        'clientes.f_nacimiento_coa', 'clientes.rfc_coa','clientes.homoclave_coa','clientes.direccion_coa','clientes.colonia_coa',
-                        'clientes.cp_coa','clientes.telefono_coa','clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa',
-                        'clientes.nacionalidad_coa','clientes.estado_coa','clientes.ciudad_coa',
-                        DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS n_completo_coa"),
-                        'medios_publicitarios.nombre as publicidad','fraccionamientos.nombre as proyecto') 
-                            
+                        $personas = $query
                         ->where('clientes.clasificacion','=','2')
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
-                        ->orderBy('personal.apellidos', 'desc')
-                        ->orderBy('personal.nombre', 'desc')
-                    ->paginate(20);
-
-                    $contadorPersonas = Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select('personal.id') 
-                    ->where('clientes.clasificacion','=','2')
-                    ->where($criterio, 'like', '%'. $buscar . '%')
-                    ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
-                    ->count();
+                        ->where('clientes.clasificacion','=','2');
                     }
 
                     else{
-                        $personas = Cliente::join('personal','clientes.id','=','personal.id')
-                        ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                        ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                        ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave',
-                        'personal.f_nacimiento','personal.direccion','personal.telefono','personal.departamento_id',
-                        'personal.colonia','personal.ext','personal.cp',
-                        'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
-                        'personal.email',
-            
-                        'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
-                        'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
-                        'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
-                        'clientes.nacionalidad','clientes.puesto', 'clientes.estado','clientes.ciudad',
-                        
-                        'clientes.sexo_coa', 'clientes.tipo_casa_coa','clientes.email_institucional_coa','clientes.empresa_coa',
-                        'clientes.edo_civil_coa','clientes.nss_coa','clientes.curp_coa','clientes.nombre_coa','clientes.apellidos_coa',
-                        'clientes.f_nacimiento_coa', 'clientes.rfc_coa','clientes.homoclave_coa','clientes.direccion_coa','clientes.colonia_coa',
-                        'clientes.cp_coa','clientes.telefono_coa','clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa',
-                        'clientes.nacionalidad_coa','clientes.estado_coa','clientes.ciudad_coa',
-                        DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS n_completo_coa"),
-                        'medios_publicitarios.nombre as publicidad','fraccionamientos.nombre as proyecto') 
-                        
-                    ->where('clientes.clasificacion','=','2')
-                    ->where($criterio, 'like', '%'. $buscar . '%')
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
-                    ->paginate(20);
+                        $personas = $query
+                        ->where('clientes.clasificacion','=','2')
+                        ->where($criterio, 'like', '%'. $buscar . '%');
 
-                    $contadorPersonas = Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select('personal.id') 
-                    ->where('clientes.clasificacion','=','2')
-                    ->where($criterio, 'like', '%'. $buscar . '%')
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
-                    ->count();
                     }
                 }
             }
         }
+
+        $personas = $personas->orderBy('personal.apellidos', 'desc')
+                    ->orderBy('personal.nombre', 'desc')
+                    ->paginate(20);
          
         
         return [
@@ -1383,7 +800,7 @@ class ClienteController extends Controller
                 'from'         => $personas->firstItem(),
                 'to'           => $personas->lastItem(),
             ],
-            'personas' => $personas, 'contadorSimulacion' => $contadorPersonas
+            'personas' => $personas, 'contadorSimulacion' => $personas->total()
         ];
     }
 
@@ -1490,21 +907,7 @@ class ClienteController extends Controller
                 $personas = $query
                 ->where('vendedor_id','=',$vendedor)
                 ->where('clientes.clasificacion', '=', $b_clasificacion)
-                ->where('clientes.clasificacion', '!=', 7)
-                ->orderBy('personal.apellidos', 'desc')
-                ->orderBy('personal.nombre', 'desc')
-                ->paginate(20);
-
-                $contador = Cliente::join('personal','clientes.id','=','personal.id')
-                ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                ->select('personal.id')
-                ->where('vendedor_id','=',$vendedor)
-                ->where('clientes.clasificacion', '=', $b_clasificacion)
-                ->where('clientes.clasificacion', '!=', 7)
-                ->orderBy('personal.apellidos', 'desc')
-                ->orderBy('personal.nombre', 'desc')
-                ->count();
+                ->where('clientes.clasificacion', '!=', 7);
             }
             else{
     
@@ -1520,29 +923,7 @@ class ClienteController extends Controller
                     ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
                     ->where('vendedor_id','=',$vendedor)     
                     ->where('clientes.clasificacion', '=', $b_clasificacion)
-                    ->where('clientes.clasificacion', '!=', 7)
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
-                   ->paginate(20);
-
-                   $contador = Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select('personal.id')   
-                    ->where('vendedor_id','=',$vendedor)     
-                    ->where($criterio, 'like', '%'. $buscar . '%')
-                    ->where('clientes.clasificacion', '=', $b_clasificacion)
-                    ->where('clientes.clasificacion', '!=', 7)
-                    ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
-                    ->where('vendedor_id','=',$vendedor)     
-                    ->where('clientes.clasificacion', '=', $b_clasificacion)
-                    ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
-                    ->where('vendedor_id','=',$vendedor)     
-                    ->where('clientes.clasificacion', '=', $b_clasificacion)
-                    ->where('clientes.clasificacion', '!=', 7)
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
-                   ->count();
+                    ->where('clientes.clasificacion', '!=', 7);
                 }
 
                 elseif($criterio == 'clientes.proyecto_interes_id'){
@@ -1550,22 +931,7 @@ class ClienteController extends Controller
                     ->where('vendedor_id','=',$vendedor)     
                     ->where($criterio, '=',$buscar)
                     ->where('clientes.clasificacion', '=', $b_clasificacion)
-                    ->where('clientes.clasificacion', '!=', 7)
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
-                   ->paginate(20);
-
-                   $contador = Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select('personal.id')   
-                    ->where('vendedor_id','=',$vendedor)     
-                    ->where($criterio, '=', $buscar)
-                    ->where('clientes.clasificacion', '=', $b_clasificacion)
-                    ->where('clientes.clasificacion', '!=', 7)
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
-                   ->count();
+                    ->where('clientes.clasificacion', '!=', 7);
                 }
 
                 elseif($criterio == 'clientes.created_at'){
@@ -1573,22 +939,7 @@ class ClienteController extends Controller
                     ->where('vendedor_id','=',$vendedor)     
                     ->whereBetween($criterio, [$buscar, $buscar2])
                     ->where('clientes.clasificacion', '=', $b_clasificacion)
-                    ->where('clientes.clasificacion', '!=', 7)
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
-                   ->paginate(20);
-
-                   $contador = Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select('personal.id')   
-                    ->where('vendedor_id','=',$vendedor)     
-                    ->whereBetween($criterio, [$buscar, $buscar2])
-                    ->where('clientes.clasificacion', '=', $b_clasificacion)
-                    ->where('clientes.clasificacion', '!=', 7)
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
-                   ->count();
+                    ->where('clientes.clasificacion', '!=', 7);
                 }
     
                 else{
@@ -1596,22 +947,7 @@ class ClienteController extends Controller
                     ->where('vendedor_id','=',$vendedor)     
                     ->where($criterio, 'like', '%'. $buscar . '%')
                     ->where('clientes.clasificacion', '=', $b_clasificacion)
-                    ->where('clientes.clasificacion', '!=', 7)
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
-                    ->paginate(20);
-
-                    $contador = Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select('personal.id')   
-                    ->where('vendedor_id','=',$vendedor)     
-                    ->where($criterio, 'like', '%'. $buscar . '%')
-                    ->where('clientes.clasificacion', '=', $b_clasificacion)
-                    ->where('clientes.clasificacion', '!=', 7)
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
-                    ->count();
+                    ->where('clientes.clasificacion', '!=', 7);
                 }
             }
 
@@ -1620,20 +956,7 @@ class ClienteController extends Controller
             if ($buscar==''){
                 $personas = $query
                 ->where('vendedor_id','=',$vendedor)
-                ->where('clientes.clasificacion', '=', 7)
-                ->orderBy('personal.apellidos', 'desc')
-                ->orderBy('personal.nombre', 'desc')
-                ->paginate(20);
-
-                $contador = Cliente::join('personal','clientes.id','=','personal.id')
-                ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                ->select('personal.id')
-                ->where('vendedor_id','=',$vendedor)
-                ->where('clientes.clasificacion', '=',7)
-                ->orderBy('personal.apellidos', 'desc')
-                ->orderBy('personal.nombre', 'desc')
-                ->count();
+                ->where('clientes.clasificacion', '=', 7);
             }
             else{
     
@@ -1647,90 +970,28 @@ class ClienteController extends Controller
                     ->where('clientes.clasificacion', '=', 7)
                     ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
                     ->where('vendedor_id','=',$vendedor)     
-                    ->where('clientes.clasificacion', '=', 7)
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
-                   ->paginate(20);
-
-                   $contador = Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select('personal.id')   
-                    ->where('vendedor_id','=',$vendedor)     
-                    ->where($criterio, 'like', '%'. $buscar . '%')
-                    ->where('clientes.clasificacion', '=',7)
-                    ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
-                    ->where('vendedor_id','=',$vendedor)     
-                    ->where('clientes.clasificacion', '=',7)
-                    ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
-                    ->where('vendedor_id','=',$vendedor)     
-                    ->where('clientes.clasificacion', '=',7)
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
-                   ->count();
+                    ->where('clientes.clasificacion', '=', 7);
                 }
 
                 elseif($criterio == 'clientes.proyecto_interes_id'){
                     $personas = $query
                     ->where('vendedor_id','=',$vendedor)     
                     ->where($criterio, '=',$buscar)
-                    ->where('clientes.clasificacion', '=', 7)
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
-                   ->paginate(20);
-
-                   $contador = Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select('personal.id')   
-                    ->where('vendedor_id','=',$vendedor)     
-                    ->where($criterio, '=', $buscar)
-                    ->where('clientes.clasificacion', '=', 7)
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
-                   ->count();
+                    ->where('clientes.clasificacion', '=', 7);
                 }
 
                 elseif($criterio == 'clientes.created_at'){
                     $personas = $query
                     ->where('vendedor_id','=',$vendedor)     
                     ->whereBetween($criterio, [$buscar, $buscar2])
-                    ->where('clientes.clasificacion', '=', 7)
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
-                   ->paginate(20);
-
-                   $contador = Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select('personal.id')   
-                    ->where('vendedor_id','=',$vendedor)     
-                    ->whereBetween($criterio, [$buscar, $buscar2])
-                    ->where('clientes.clasificacion', '=', 7)
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
-                   ->count();
+                    ->where('clientes.clasificacion', '=', 7);
                 }
     
                 else{
                     $personas = $query   
                     ->where('vendedor_id','=',$vendedor)     
                     ->where($criterio, 'like', '%'. $buscar . '%')
-                    ->where('clientes.clasificacion', '=', 7)
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
-                    ->paginate(20);
-
-                    $contador = Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select('personal.id')   
-                    ->where('vendedor_id','=',$vendedor)     
-                    ->where($criterio, 'like', '%'. $buscar . '%')
-                    ->where('clientes.clasificacion', '=', 7)
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
-                    ->count();
+                    ->where('clientes.clasificacion', '=', 7);
                 }
             }
         }
@@ -1738,20 +999,7 @@ class ClienteController extends Controller
             if ($buscar==''){
                 $personas = $query
                 ->where('vendedor_id','=',$vendedor)
-                ->where('clientes.clasificacion', '!=', 7)
-                ->orderBy('personal.apellidos', 'desc')
-                ->orderBy('personal.nombre', 'desc')
-                ->paginate(20);
-
-                $contador = Cliente::join('personal','clientes.id','=','personal.id')
-                ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                ->select('personal.id')
-                ->where('vendedor_id','=',$vendedor)
-                ->where('clientes.clasificacion', '!=', 7)
-                ->orderBy('personal.apellidos', 'desc')
-                ->orderBy('personal.nombre', 'desc')
-                ->count();
+                ->where('clientes.clasificacion', '!=', 7);
             }
             else{
     
@@ -1766,90 +1014,33 @@ class ClienteController extends Controller
                     
                     ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
                     ->where('vendedor_id','=',$vendedor)     
-                    ->where('clientes.clasificacion', '!=', 7)
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
-                   ->paginate(20);
-
-                   $contador = Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select('personal.id')   
-                    ->where('clientes.clasificacion', '!=', 7)
-                    ->where('vendedor_id','=',$vendedor)     
-                    ->where($criterio, 'like', '%'. $buscar . '%')
-                    
-                    ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
-                    ->where('vendedor_id','=',$vendedor)     
-
-                    ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
-                    ->where('vendedor_id','=',$vendedor)     
-                    ->where('clientes.clasificacion', '!=', 7)
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
-                    ->count();
+                    ->where('clientes.clasificacion', '!=', 7);
                 }
 
                 elseif($criterio == 'clientes.proyecto_interes_id'){
                     $personas = $query
                     ->where('vendedor_id','=',$vendedor)     
-                    ->where($criterio, '=',$buscar)
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
-                   ->paginate(20);
-
-                   $contador = Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select('personal.id')   
-                    ->where('vendedor_id','=',$vendedor)     
-                    ->where($criterio, '=', $buscar)
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
-                   ->count();
+                    ->where($criterio, '=',$buscar);
                 }
 
                 elseif($criterio == 'clientes.created_at'){
                     $personas = $query
                     ->where('vendedor_id','=',$vendedor)     
-                    ->whereBetween($criterio, [$buscar, $buscar2])
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
-                   ->paginate(20);
-
-                   $contador = Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select('personal.id')   
-                    ->where('vendedor_id','=',$vendedor)     
-                    ->whereBetween($criterio, [$buscar, $buscar2])
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
-                   ->count();
+                    ->whereBetween($criterio, [$buscar, $buscar2]);
                 }
     
                 else{
                     $personas = $query
                     ->where('vendedor_id','=',$vendedor)     
                     ->where($criterio, 'like', '%'. $buscar . '%')
-                    ->where('clientes.clasificacion', '!=', 7)
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
-                    ->paginate(20);
-
-                    $contador = Cliente::join('personal','clientes.id','=','personal.id')
-                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                    ->select('personal.id')   
-                    ->where('vendedor_id','=',$vendedor)     
-                    ->where($criterio, 'like', '%'. $buscar . '%')
-                    ->where('clientes.clasificacion', '!=', 7)
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
-                    ->count();
+                    ->where('clientes.clasificacion', '!=', 7);
                 }
             }
         } 
+
+        $personas = $personas->orderBy('personal.apellidos', 'desc')
+                    ->orderBy('personal.nombre', 'desc')
+                    ->paginate(20);
  
         return [
             'pagination' => [
@@ -1860,7 +1051,7 @@ class ClienteController extends Controller
                 'from'         => $personas->firstItem(),
                 'to'           => $personas->lastItem(),
             ],
-            'personas' => $personas, 'contador' => $contador
+            'personas' => $personas, 'contador' => $personas->total()
         ];
     }
 

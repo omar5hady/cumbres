@@ -11,11 +11,7 @@ use Auth;
 
 class PaqueteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
@@ -34,38 +30,29 @@ class PaqueteController extends Controller
                     DB::raw('(CASE WHEN paquetes.v_fin >= ' . $current . ' THEN 1 ELSE 0 END) AS is_active'));
         
         if($buscar==''){
-            $paquetes = $query
-                ->orderBy('fraccionamientos.nombre','asc')
-                ->orderBy('etapas.num_etapa','asc')
-                ->orderBy('paquetes.nombre','asc')
-                //->where('paquetes.v_fin', '>', $current)
-                ->paginate(20);
+            $paquetes = $query;
         }
         elseif($buscar != '' && $buscar2 == ''){
             if($criterio == 'paquetes.nombre'){
                 $paquetes = $query
-                    ->orderBy('fraccionamientos.nombre','asc')
-                    ->orderBy('etapas.num_etapa','asc')
-                    ->orderBy('paquetes.nombre','asc')
-                    ->where($criterio, 'like','%'. $buscar.'%')->paginate(20);
+                    ->where($criterio, 'like','%'. $buscar.'%');
             }
             else{
                 $paquetes = $query
-                    ->orderBy('fraccionamientos.nombre','asc')
-                    ->orderBy('etapas.num_etapa','asc')
-                    ->orderBy('paquetes.nombre','asc')
-                    ->where($criterio, '=', $buscar)->paginate(20);
+                    ->where($criterio, '=', $buscar);
             }
             
         }
         else{
             $paquetes = $query
-                ->orderBy('fraccionamientos.nombre','asc')
-                ->orderBy('etapas.num_etapa','asc')
-                ->orderBy('paquetes.nombre','asc')
                 ->where($criterio, '=', $buscar)
-                ->where('etapas.id', '=', $buscar2)->paginate(20);
+                ->where('etapas.id', '=', $buscar2);
         }
+
+        $paquetes = $paquetes->orderBy('fraccionamientos.nombre','asc')
+                                ->orderBy('etapas.num_etapa','asc')
+                                ->orderBy('paquetes.nombre','asc')
+                                ->paginate(20);
 
 
         return [
@@ -81,22 +68,6 @@ class PaqueteController extends Controller
         ];
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     //funcion para insertar en la tabla
     public function store(Request $request)
     {
@@ -112,35 +83,6 @@ class PaqueteController extends Controller
         $paquetes->save();
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     //funcion para actualizar los datos
     public function update(Request $request)
     {
@@ -158,12 +100,6 @@ class PaqueteController extends Controller
         $paquetes->save();
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');

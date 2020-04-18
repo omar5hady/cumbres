@@ -108,7 +108,7 @@
                                         <tbody>
                                             <tr v-for="ingresar in arrayPorIngresar" :key="ingresar.id" v-bind:style="{ backgroundColor : !ingresar.detenido ? '#FFFFFF' : '#FF5F5F'}"> 
                                                 <td class="td2">
-                                                    <button v-if="ingresar.detenidoo == 0" type="button" class="btn btn-danger btn-sm" @click="regresarExpediente(ingresar.folio)" title="Regresar expediente">
+                                                    <button v-if="ingresar.detenido == 0" type="button" class="btn btn-danger btn-sm" @click="regresarExpediente(ingresar.folio)" title="Regresar expediente">
                                                         <i class="fa fa-exclamation-triangle"></i>
                                                     </button>
                                                     <label v-else> DETENIDO </label>

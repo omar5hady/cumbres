@@ -362,7 +362,7 @@
                     var respuesta = response.data;
                     me.arrayLote = respuesta.lotes.data;
                     me.pagination = respuesta.pagination;
-                    me.contador = respuesta.contadorLotesDisponibles;
+                    me.contador = me.pagination.total;
                 })
                 .catch(function (error) {
                     console.log(error);

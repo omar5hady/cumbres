@@ -29,30 +29,25 @@ class PromocionController extends Controller
                     DB::raw('(CASE WHEN promociones.v_fin >= ' . $current . ' THEN 1 ELSE 0 END) AS is_active'));
                 
         if($buscar==''){
-            $promociones = $query
-            ->orderBy('fraccionamientos.nombre', 'asc')
-            ->orderBy('etapas.num_etapa', 'asc')
-            ->orderBy('is_active', 'desc')->paginate(20);
+            $promociones = $query;
         }
         else{
             if($buscar2 == ''){
                 $promociones = $query
-                ->where($criterio, 'like', '%'. $buscar . '%')
-                ->orderBy('fraccionamientos.nombre', 'asc')
-                ->orderBy('etapas.num_etapa', 'asc')
-                ->orderBy('is_active', 'desc')->paginate(20);
+                ->where($criterio, 'like', '%'. $buscar . '%');
             }
             else{
                 $promociones = $query
                 ->where($criterio, '=', $buscar)
-                ->where('etapas.id', '=', $buscar2)
-                ->orderBy('fraccionamientos.nombre', 'asc')
-                ->orderBy('etapas.num_etapa', 'asc')
-                ->orderBy('is_active', 'desc')->paginate(20);
+                ->where('etapas.id', '=', $buscar2);
 
             }
             
         }
+
+        $promociones = $promociones->orderBy('fraccionamientos.nombre', 'asc')
+                                    ->orderBy('etapas.num_etapa', 'asc')
+                                    ->orderBy('is_active', 'desc')->paginate(20);
 
         if(sizeOf($promociones)){
             foreach($promociones as $index => $promo){
@@ -73,7 +68,6 @@ class PromocionController extends Controller
                 }
             }
         }
-       
             
         return [
             'pagination' => [

@@ -97,81 +97,54 @@ class SolicDetallesController extends Controller
 
         if($status == ''){
             if($buscar == ''){
-                $solicitudes = $query
-                    ->orderBy('solic_detalles.status','asc')
-                    ->orderBy('solic_detalles.created_at','asc')
-                    ->paginate(8);
+                $solicitudes = $query;
             }
             else{
                 switch($criterio){
                     case 'contratos.id':{
                         $solicitudes = $query
-                            ->where($criterio,'=',$buscar)
-                            ->orderBy('solic_detalles.status','asc')
-                            ->orderBy('solic_detalles.created_at','asc')
-                            ->paginate(8);
+                            ->where($criterio,'=',$buscar);
                         break;
                     }
                     case 'lotes.fraccionamiento_id':{
                         if($etapa == '' && $manzana == '' && $lote == ''){
                             $solicitudes = $query
-                            ->where($criterio,'=',$buscar)
-                            ->orderBy('solic_detalles.status','asc')
-                            ->orderBy('solic_detalles.created_at','asc')
-                            ->paginate(8);
+                            ->where($criterio,'=',$buscar);
                         }
                         elseif($etapa != '' && $manzana == '' && $lote == ''){
                             $solicitudes = $query
                             ->where($criterio,'=',$buscar)
-                            ->where('lotes.etapa_id','=',$etapa)
-                            ->orderBy('solic_detalles.status','asc')
-                            ->orderBy('solic_detalles.created_at','asc')
-                            ->paginate(8);
+                            ->where('lotes.etapa_id','=',$etapa);
                         }
                         elseif($etapa != '' && $manzana != '' && $lote == ''){
                             $solicitudes = $query
                             ->where($criterio,'=',$buscar)
                             ->where('lotes.etapa_id','=',$etapa)
-                            ->where('lotes.manzana','=',$manzana)
-                            ->orderBy('solic_detalles.status','asc')
-                            ->orderBy('solic_detalles.created_at','asc')
-                            ->paginate(8);
+                            ->where('lotes.manzana','=',$manzana);
                         }
                         elseif($etapa != '' && $manzana != '' && $lote != ''){
                             $solicitudes = $query
                             ->where($criterio,'=',$buscar)
                             ->where('lotes.etapa_id','=',$etapa)
                             ->where('lotes.manzana','=',$manzana)
-                            ->where('lotes.num_lote','=',$lote)
-                            ->orderBy('solic_detalles.status','asc')
-                            ->orderBy('solic_detalles.created_at','asc')
-                            ->paginate(8);
+                            ->where('lotes.num_lote','=',$lote);
                         }
                         elseif($etapa != '' && $manzana == '' && $lote != ''){
                             $solicitudes = $query
                             ->where($criterio,'=',$buscar)
                             ->where('lotes.etapa_id','=',$etapa)
-                            ->where('lotes.num_lote','=',$lote)
-                            ->orderBy('solic_detalles.status','asc')
-                            ->orderBy('solic_detalles.created_at','asc')
-                            ->paginate(8);
+                            ->where('lotes.num_lote','=',$lote);
                         }
                         elseif($etapa == '' && $manzana == '' && $lote != ''){
                             $solicitudes = $query
                             ->where($criterio,'=',$buscar)
-                            ->where('lotes.num_lote','=',$lote)
-                            ->orderBy('solic_detalles.status','asc')
-                            ->orderBy('solic_detalles.created_at','asc')
-                            ->paginate(8);
+                            ->where('lotes.num_lote','=',$lote);
                         }
                         break;
                     }
                     default:{
                         $solicitudes = $query
-                            ->where($criterio,'like','%'.$buscar.'%')
-                            ->orderBy('solic_detalles.status','asc')
-                            ->orderBy('solic_detalles.created_at','asc')
-                            ->paginate(8);
+                            ->where($criterio,'like','%'.$buscar.'%');
                         break;
                     }
                 }
@@ -181,49 +154,34 @@ class SolicDetallesController extends Controller
         else{
             if($buscar == ''){
                 $solicitudes = $query
-                    ->where('solic_detalles.status','=',$status)
-                    ->orderBy('solic_detalles.status','asc')
-                    ->orderBy('solic_detalles.created_at','asc')
-                    ->paginate(8);
+                    ->where('solic_detalles.status','=',$status);
             }
             else{
                 switch($criterio){
                     case 'contratos.id':{
                         $solicitudes = $query
                             ->where($criterio,'=',$buscar)
-                            ->where('solic_detalles.status','=',$status)
-                            ->orderBy('solic_detalles.status','asc')
-                            ->orderBy('solic_detalles.created_at','asc')
-                            ->paginate(8);
+                            ->where('solic_detalles.status','=',$status);
                         break;
                     }
                     case 'lotes.fraccionamiento_id':{
                         if($etapa == '' && $manzana == '' && $lote == ''){
                             $solicitudes = $query
                             ->where($criterio,'=',$buscar)
-                            ->where('solic_detalles.status','=',$status)
-                            ->orderBy('solic_detalles.status','asc')
-                            ->orderBy('solic_detalles.created_at','asc')
-                            ->paginate(8);
+                            ->where('solic_detalles.status','=',$status);
                         }
                         elseif($etapa != '' && $manzana == '' && $lote == ''){
                             $solicitudes = $query
                             ->where($criterio,'=',$buscar)
                             ->where('solic_detalles.status','=',$status)
-                            ->where('lotes.etapa_id','=',$etapa)
-                            ->orderBy('solic_detalles.status','asc')
-                            ->orderBy('solic_detalles.created_at','asc')
-                            ->paginate(8);
+                            ->where('lotes.etapa_id','=',$etapa);
                         }
                         elseif($etapa != '' && $manzana != '' && $lote == ''){
                             $solicitudes = $query
                             ->where($criterio,'=',$buscar)
                             ->where('solic_detalles.status','=',$status)
                             ->where('lotes.etapa_id','=',$etapa)
-                            ->where('lotes.manzana','=',$manzana)
-                            ->orderBy('solic_detalles.status','asc')
-                            ->orderBy('solic_detalles.created_at','asc')
-                            ->paginate(8);
+                            ->where('lotes.manzana','=',$manzana);
                         }
                         elseif($etapa != '' && $manzana != '' && $lote != ''){
                             $solicitudes = $query
@@ -231,47 +189,36 @@ class SolicDetallesController extends Controller
                             ->where('solic_detalles.status','=',$status)
                             ->where('lotes.etapa_id','=',$etapa)
                             ->where('lotes.manzana','=',$manzana)
-                            ->where('lotes.num_lote','=',$lote)
-                            ->orderBy('solic_detalles.status','asc')
-                            ->orderBy('solic_detalles.created_at','asc')
-                            ->paginate(8);
+                            ->where('lotes.num_lote','=',$lote);
                         }
                         elseif($etapa != '' && $manzana == '' && $lote != ''){
                             $solicitudes = $query
                             ->where($criterio,'=',$buscar)
                             ->where('solic_detalles.status','=',$status)
                             ->where('lotes.etapa_id','=',$etapa)
-                            ->where('lotes.num_lote','=',$lote)
-                            ->orderBy('solic_detalles.status','asc')
-                            ->orderBy('solic_detalles.created_at','asc')
-                            ->paginate(8);
+                            ->where('lotes.num_lote','=',$lote);
                         }
                         elseif($etapa == '' && $manzana == '' && $lote != ''){
                             $solicitudes = $query
                             ->where($criterio,'=',$buscar)
                             ->where('solic_detalles.status','=',$status)
-                            ->where('lotes.num_lote','=',$lote)
-                            ->orderBy('solic_detalles.status','asc')
-                            ->orderBy('solic_detalles.created_at','asc')
-                            ->paginate(8);
+                            ->where('lotes.num_lote','=',$lote);
                         }
                         break;
                     }
                     default:{
                         $solicitudes = $query
                             ->where($criterio,'like','%'.$buscar.'%')
-                            ->where('solic_detalles.status','=',$status)
-                            ->orderBy('solic_detalles.status','asc')
-                            ->orderBy('solic_detalles.created_at','asc')
-                            ->paginate(8);
+                            ->where('solic_detalles.status','=',$status);
                         break;
                     }
                 }
-
             }
-            
         }
-        
+
+        $solicitudes = $solicitudes->orderBy('solic_detalles.status','asc')
+                            ->orderBy('solic_detalles.created_at','asc')
+                            ->paginate(8);
 
         return [
             'pagination' => [
@@ -358,9 +305,7 @@ class SolicDetallesController extends Controller
             if($buscar == ''){
                 $contratos = $query
                          ->where('contratos.entregado','=',1)
-                         ->where('solic_detalles.fecha_program','!=',NULL)
-                         ->orderBy('solic_detalles.fecha_program','ASC')
-                         ->paginate(10);
+                         ->where('solic_detalles.fecha_program','!=',NULL);
             }else{
                 switch($criterio){
                     case 'lotes.fraccionamiento_id': {
@@ -371,49 +316,37 @@ class SolicDetallesController extends Controller
                                         ->where($criterio,'=',$buscar)
                                         ->where('lotes.etapa_id','=',$b_etapa)
                                         ->where('creditos.manzana','=',$b_manzana)
-                                        ->where('creditos.num_lote','=',$b_lote)
-                                        ->orderBy('solic_detalles.fecha_program','ASC')
-                                        ->paginate(10);
+                                        ->where('creditos.num_lote','=',$b_lote);
                         }elseif($buscar != '' && $b_etapa != '' && $b_manzana != '' && $b_lote == ''){
                             $contratos = $query
                                         ->where('contratos.entregado','=',1)
                                         ->where('solic_detalles.fecha_program','!=',NULL)
                                         ->where($criterio,'=',$buscar)
                                         ->where('lotes.etapa_id','=',$b_etapa)
-                                        ->where('creditos.manzana','=',$b_manzana)
-                                        ->orderBy('solic_detalles.fecha_program','ASC')
-                                        ->paginate(10);
+                                        ->where('creditos.manzana','=',$b_manzana);
                         }elseif($buscar != '' && $b_etapa != '' && $b_manzana == '' && $b_lote == ''){
                             $contratos =$query
                                         ->where('contratos.entregado','=',1)
                                         ->where('solic_detalles.fecha_program','!=',NULL)
                                         ->where($criterio,'=',$buscar)
-                                        ->where('lotes.etapa_id','=',$b_etapa)
-                                        ->orderBy('solic_detalles.fecha_program','ASC')
-                                        ->paginate(10);
+                                        ->where('lotes.etapa_id','=',$b_etapa);
                         }elseif($buscar != '' && $b_etapa == '' && $b_manzana == '' && $b_lote == ''){
                             $contratos = $query
                                         ->where('contratos.entregado','=',1)
                                         ->where('solic_detalles.fecha_program','!=',NULL)
-                                        ->where($criterio,'=',$buscar)
-                                        ->orderBy('solic_detalles.fecha_program','ASC')
-                                        ->paginate(10);
+                                        ->where($criterio,'=',$buscar);
                         }elseif($buscar != '' && $b_etapa == '' && $b_manzana == '' && $b_lote != ''){
                             $contratos = $query
                                         ->where('contratos.entregado','=',1)
                                         ->where('solic_detalles.fecha_program','!=',NULL)
                                         ->where($criterio,'=',$buscar)
-                                        ->where('creditos.num_lote','=',$b_lote)
-                                        ->orderBy('solic_detalles.fecha_program','ASC')
-                                        ->paginate(10);
+                                        ->where('creditos.num_lote','=',$b_lote);
                         }elseif($buscar != '' && $b_etapa == '' && $b_manzana != '' && $b_lote == ''){
                             $contratos = $query
                                         ->where('contratos.entregado','=',1)
                                         ->where('solic_detalles.fecha_program','!=',NULL)
                                         ->where($criterio,'=',$buscar)
-                                        ->where('creditos.manzana','=',$b_manzana)
-                                        ->orderBy('solic_detalles.fecha_program','ASC')
-                                        ->paginate(10);
+                                        ->where('creditos.manzana','=',$b_manzana);
                         }
                         break;
                     }
@@ -421,9 +354,7 @@ class SolicDetallesController extends Controller
                         $contratos = $query
                                  ->where('contratos.entregado','=',1)
                                  ->where('solic_detalles.fecha_program','!=',NULL)
-                                 ->where($criterio,'=',$buscar)
-                                 ->orderBy('solic_detalles.fecha_program','ASC')
-                                 ->paginate(10);
+                                 ->where($criterio,'=',$buscar);
                         break;
                     }
                 }
@@ -436,9 +367,7 @@ class SolicDetallesController extends Controller
                              ->where('contratos.entregado','=',1)
                              ->where('solic_detalles.fecha_program','!=',NULL)
                              ->where('solic_detalles.contratista_id','=',Auth::user()->id)
-                             ->where('solic_detalles.status','!=',2)
-                             ->orderBy('solic_detalles.fecha_program','ASC')
-                             ->paginate(10);
+                             ->where('solic_detalles.status','!=',2);
                 }else{
                     switch($criterio){
                         case 'lotes.fraccionamiento_id': {
@@ -451,9 +380,7 @@ class SolicDetallesController extends Controller
                                             ->where($criterio,'=',$buscar)
                                             ->where('lotes.etapa_id','=',$b_etapa)
                                             ->where('creditos.manzana','=',$b_manzana)
-                                            ->where('creditos.num_lote','=',$b_lote)
-                                            ->orderBy('solic_detalles.fecha_program','ASC')
-                                            ->paginate(10);
+                                            ->where('creditos.num_lote','=',$b_lote);
                             }elseif($buscar != '' && $b_etapa != '' && $b_manzana != '' && $b_lote == ''){
                                 $contratos = $query
                                             ->where('contratos.entregado','=',1)
@@ -462,9 +389,7 @@ class SolicDetallesController extends Controller
                                             ->where('solic_detalles.status','!=',2)
                                             ->where($criterio,'=',$buscar)
                                             ->where('lotes.etapa_id','=',$b_etapa)
-                                            ->where('creditos.manzana','=',$b_manzana)
-                                            ->orderBy('solic_detalles.fecha_program','ASC')
-                                            ->paginate(10);
+                                            ->where('creditos.manzana','=',$b_manzana);
                             }elseif($buscar != '' && $b_etapa != '' && $b_manzana == '' && $b_lote == ''){
                                 $contratos = $query
                                             ->where('contratos.entregado','=',1)
@@ -472,18 +397,14 @@ class SolicDetallesController extends Controller
                                             ->where('solic_detalles.contratista_id','=',Auth::user()->id)
                                             ->where('solic_detalles.status','!=',2)
                                             ->where($criterio,'=',$buscar)
-                                            ->where('lotes.etapa_id','=',$b_etapa)
-                                            ->orderBy('solic_detalles.fecha_program','ASC')
-                                            ->paginate(10);
+                                            ->where('lotes.etapa_id','=',$b_etapa);
                             }elseif($buscar != '' && $b_etapa == '' && $b_manzana == '' && $b_lote == ''){
                                 $contratos = $query
                                             ->where('contratos.entregado','=',1)
                                             ->where('solic_detalles.fecha_program','!=',NULL)
                                             ->where('solic_detalles.contratista_id','=',Auth::user()->id)
                                             ->where('solic_detalles.status','!=',2)
-                                            ->where($criterio,'=',$buscar)
-                                            ->orderBy('solic_detalles.fecha_program','ASC')
-                                            ->paginate(10);
+                                            ->where($criterio,'=',$buscar);
                             }elseif($buscar != '' && $b_etapa == '' && $b_manzana == '' && $b_lote != ''){
                                 $contratos = $query
                                             ->where('contratos.entregado','=',1)
@@ -491,9 +412,7 @@ class SolicDetallesController extends Controller
                                             ->where('solic_detalles.contratista_id','=',Auth::user()->id)
                                             ->where('solic_detalles.status','!=',2)
                                             ->where($criterio,'=',$buscar)
-                                            ->where('creditos.num_lote','=',$b_lote)
-                                            ->orderBy('solic_detalles.fecha_program','ASC')
-                                            ->paginate(10);
+                                            ->where('creditos.num_lote','=',$b_lote);
                             }elseif($buscar != '' && $b_etapa == '' && $b_manzana != '' && $b_lote == ''){
                                 $contratos = $query
                                             ->where('contratos.entregado','=',1)
@@ -501,9 +420,7 @@ class SolicDetallesController extends Controller
                                             ->where('solic_detalles.contratista_id','=',Auth::user()->id)
                                             ->where('solic_detalles.status','!=',2)
                                             ->where($criterio,'=',$buscar)
-                                            ->where('creditos.manzana','=',$b_manzana)
-                                            ->orderBy('solic_detalles.fecha_program','ASC')
-                                            ->paginate(10);
+                                            ->where('creditos.manzana','=',$b_manzana);
                             }
                             break;
                         }
@@ -513,9 +430,7 @@ class SolicDetallesController extends Controller
                                      ->where('solic_detalles.fecha_program','!=',NULL)
                                      ->where('solic_detalles.contratista_id','=',Auth::user()->id)
                                      ->where('solic_detalles.status','!=',2)
-                                     ->where($criterio,'=',$buscar)
-                                     ->orderBy('solic_detalles.fecha_program','ASC')
-                                     ->paginate(10);
+                                     ->where($criterio,'=',$buscar);
                             break;
                         }
                     }
@@ -527,9 +442,7 @@ class SolicDetallesController extends Controller
                              ->where('contratos.entregado','=',1)
                              ->where('solic_detalles.fecha_program','!=',NULL)
                              ->where('solic_detalles.status','=',2)
-                             ->where('solic_detalles.contratista_id','=',Auth::user()->id)
-                             ->orderBy('solic_detalles.fecha_program','ASC')
-                             ->paginate(10);
+                             ->where('solic_detalles.contratista_id','=',Auth::user()->id);
                 }else{
                     switch($criterio){
                         case 'lotes.fraccionamiento_id': {
@@ -542,9 +455,7 @@ class SolicDetallesController extends Controller
                                             ->where($criterio,'=',$buscar)
                                             ->where('lotes.etapa_id','=',$b_etapa)
                                             ->where('creditos.manzana','=',$b_manzana)
-                                            ->where('creditos.num_lote','=',$b_lote)
-                                            ->orderBy('solic_detalles.fecha_program','ASC')
-                                            ->paginate(10);
+                                            ->where('creditos.num_lote','=',$b_lote);
                             }elseif($buscar != '' && $b_etapa != '' && $b_manzana != '' && $b_lote == ''){
                                 $contratos = $query
                                             ->where('contratos.entregado','=',1)
@@ -553,9 +464,7 @@ class SolicDetallesController extends Controller
                                             ->where('solic_detalles.contratista_id','=',Auth::user()->id)
                                             ->where($criterio,'=',$buscar)
                                             ->where('lotes.etapa_id','=',$b_etapa)
-                                            ->where('creditos.manzana','=',$b_manzana)
-                                            ->orderBy('solic_detalles.fecha_program','ASC')
-                                            ->paginate(10);
+                                            ->where('creditos.manzana','=',$b_manzana);
                             }elseif($buscar != '' && $b_etapa != '' && $b_manzana == '' && $b_lote == ''){
                                 $contratos = $query
                                             ->where('contratos.entregado','=',1)
@@ -563,9 +472,7 @@ class SolicDetallesController extends Controller
                                             ->where('solic_detalles.status','=',2)
                                             ->where('solic_detalles.contratista_id','=',Auth::user()->id)
                                             ->where($criterio,'=',$buscar)
-                                            ->where('lotes.etapa_id','=',$b_etapa)
-                                            ->orderBy('solic_detalles.fecha_program','ASC')
-                                            ->paginate(10);
+                                            ->where('lotes.etapa_id','=',$b_etapa);
                             }elseif($buscar != '' && $b_etapa == '' && $b_manzana == '' && $b_lote == ''){
                                 $contratos = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
                                 ->join('creditos','contratos.id','=','creditos.id')
@@ -581,9 +488,7 @@ class SolicDetallesController extends Controller
                                             ->where('solic_detalles.fecha_program','!=',NULL)
                                             ->where('solic_detalles.status','=',2)
                                             ->where('solic_detalles.contratista_id','=',Auth::user()->id)
-                                            ->where($criterio,'=',$buscar)
-                                            ->orderBy('solic_detalles.fecha_program','ASC')
-                                            ->paginate(10);
+                                            ->where($criterio,'=',$buscar);
                             }elseif($buscar != '' && $b_etapa == '' && $b_manzana == '' && $b_lote != ''){
                                 $contratos = $query
                                             ->where('contratos.entregado','=',1)
@@ -591,9 +496,7 @@ class SolicDetallesController extends Controller
                                             ->where('solic_detalles.status','=',2)
                                             ->where('solic_detalles.contratista_id','=',Auth::user()->id)
                                             ->where($criterio,'=',$buscar)
-                                            ->where('creditos.num_lote','=',$b_lote)
-                                            ->orderBy('solic_detalles.fecha_program','ASC')
-                                            ->paginate(10);
+                                            ->where('creditos.num_lote','=',$b_lote);
                             }elseif($buscar != '' && $b_etapa == '' && $b_manzana != '' && $b_lote == ''){
                                 $contratos = $query
                                             ->where('contratos.entregado','=',1)
@@ -601,9 +504,7 @@ class SolicDetallesController extends Controller
                                             ->where('solic_detalles.status','=',2)
                                             ->where('solic_detalles.contratista_id','=',Auth::user()->id)
                                             ->where($criterio,'=',$buscar)
-                                            ->where('creditos.manzana','=',$b_manzana)
-                                            ->orderBy('solic_detalles.fecha_program','ASC')
-                                            ->paginate(10);
+                                            ->where('creditos.manzana','=',$b_manzana);
                             }
                             break;
                         }
@@ -613,20 +514,17 @@ class SolicDetallesController extends Controller
                                      ->where('solic_detalles.fecha_program','!=',NULL)
                                      ->where('solic_detalles.status','=',2)
                                      ->where('solic_detalles.contratista_id','=',Auth::user()->id)
-                                     ->where($criterio,'=',$buscar)
-                                     ->orderBy('solic_detalles.fecha_program','ASC')
-                                     ->paginate(10);
+                                     ->where($criterio,'=',$buscar);
                             break;
                         }
                     }
                 }
             }
-            
         }
+
+        $contratos = $contratos->orderBy('solic_detalles.fecha_program','ASC')
+                                ->paginate(10);
         
-      
-
-
             return [
             'pagination' => [
                 'total'        => $contratos->total(),

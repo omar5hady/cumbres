@@ -113,121 +113,69 @@ class SolEquipamientoController extends Controller
         if($rolID != 10){
             if($status==''){
                 if($buscar == ''){
-                    $equipamientos = $query
-                            ->orderBy('contratos.id','desc')
-                            ->orderBy('proveedores.proveedor','asc')
-                            ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                        ->paginate(8);
-
+                    $equipamientos = $query;
                 }
                 else{
                     switch($criterio){
                         case 'c.nombre':{
                             $equipamientos = $query
-                                    ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%')
-                                    ->orderBy('contratos.id','desc')
-                                    ->orderBy('proveedores.proveedor','asc')
-                                    ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                ->paginate(8);
+                                    ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%');
                             break;
                         }
                         case 'contratos.id':{
                             $equipamientos = $query
-                                    ->where($criterio, '=', $buscar)
-                                    ->orderBy('contratos.id','desc')
-                                    ->orderBy('proveedores.proveedor','asc')
-                                    ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                ->paginate(8);
+                                    ->where($criterio, '=', $buscar);
                             break;
                         }
                         case 'proveedores.proveedor':{
                             $equipamientos = $query
-                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                    ->orderBy('contratos.id','desc')
-                                    ->orderBy('proveedores.proveedor','asc')
-                                    ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                ->paginate(8);
+                                    ->where($criterio, 'like', '%'. $buscar . '%');
                             break;
                         }
                         case 'lotes.fraccionamiento_id':{
                             if($b_etapa == '' && $b_manzana == '' && $b_lote == ''){
                                 $equipamientos = $query
-                                        ->where($criterio, '=', $buscar)
-                                        ->orderBy('contratos.id','desc')
-                                        ->orderBy('proveedores.proveedor','asc')
-                                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                    ->paginate(8);
+                                        ->where($criterio, '=', $buscar);
                             }
                             elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
                                 $equipamientos = $query
                                         ->where($criterio, '=', $buscar)
-                                        ->where('lotes.etapa_id', '=', $b_etapa)
-                                        ->orderBy('contratos.id','desc')
-                                        ->orderBy('proveedores.proveedor','asc')
-                                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                    ->paginate(8);
-                                
+                                        ->where('lotes.etapa_id', '=', $b_etapa);
                             }
                             elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
                                 $equipamientos = $query
                                         ->where($criterio, '=', $buscar)
                                         ->where('lotes.etapa_id', '=', $b_etapa)
-                                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                                        ->orderBy('contratos.id','desc')
-                                        ->orderBy('proveedores.proveedor','asc')
-                                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                    ->paginate(8);
-                                
+                                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
                             }
                             elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
                                 $equipamientos = $query
                                         ->where($criterio, '=', $buscar)
                                         ->where('lotes.etapa_id', '=', $b_etapa)
                                         ->where('lotes.num_lote', '=', $b_lote)
-                                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                                        ->orderBy('contratos.id','desc')
-                                        ->orderBy('proveedores.proveedor','asc')
-                                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                    ->paginate(8);
-                                
+                                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
                             }
                             elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
                                 $equipamientos = $query
                                         ->where($criterio, '=', $buscar)
                                         ->where('lotes.etapa_id', '=', $b_etapa)
-                                        ->where('lotes.num_lote', '=', $b_lote)
-                                        ->orderBy('contratos.id','desc')
-                                        ->orderBy('proveedores.proveedor','asc')
-                                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                    ->paginate(8);
+                                        ->where('lotes.num_lote', '=', $b_lote);
                             }
                             elseif($b_etapa == '' && $b_manzana != '' && $b_lote != ''){
                                 $equipamientos = $query
                                         ->where($criterio, '=', $buscar)
                                         ->where('lotes.num_lote', '=', $b_lote)
-                                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                                        ->orderBy('contratos.id','desc')
-                                        ->orderBy('proveedores.proveedor','asc')
-                                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                    ->paginate(8);
+                                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
                             }
                             elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
                                 $equipamientos = $query
                                         ->where($criterio, '=', $buscar)
-                                        ->where('lotes.num_lote', '=', $b_lote)
-                                        ->orderBy('contratos.id','desc')
-                                        ->orderBy('proveedores.proveedor','asc')
-                                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                    ->paginate(8);
+                                        ->where('lotes.num_lote', '=', $b_lote);
                             }
                             elseif($b_etapa == '' && $b_manzana != '' && $b_lote == ''){
                                 $equipamientos = $query
                                         ->where($criterio, '=', $buscar)
-                                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                                        ->orderBy('contratos.id','desc')
-                                        ->orderBy('proveedores.proveedor','asc')
-                                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                    ->paginate(8);
+                                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
                             }
                             break;
                         }
@@ -237,77 +185,46 @@ class SolEquipamientoController extends Controller
             else{
                 if($buscar == ''){
                     $equipamientos = $query
-                            ->where('solic_equipamientos.status','=',$status)
-                            ->orderBy('contratos.id','desc')
-                            ->orderBy('proveedores.proveedor','asc')
-                            ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                        ->paginate(8);
-
+                            ->where('solic_equipamientos.status','=',$status);
                 }
                 else{
                     switch($criterio){
                         case 'c.nombre':{
                             $equipamientos = $query
                                     ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%')
-                                    ->where('solic_equipamientos.status','=',$status)
-                                    ->orderBy('contratos.id','desc')
-                                    ->orderBy('proveedores.proveedor','asc')
-                                    ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                ->paginate(8);
+                                    ->where('solic_equipamientos.status','=',$status);
                             break;
                         }
                         case 'contratos.id':{
                             $equipamientos = $query
                                     ->where($criterio, '=', $buscar)
-                                    ->where('solic_equipamientos.status','=',$status)
-                                    ->orderBy('contratos.id','desc')
-                                    ->orderBy('proveedores.proveedor','asc')
-                                    ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                ->paginate(8);
+                                    ->where('solic_equipamientos.status','=',$status);
                             break;
                         }
                         case 'proveedores.proveedor':{
                             $equipamientos = $query
                                     ->where($criterio, 'like', '%'. $buscar . '%')
-                                    ->where('solic_equipamientos.status','=',$status)
-                                    ->orderBy('contratos.id','desc')
-                                    ->orderBy('proveedores.proveedor','asc')
-                                    ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                ->paginate(8);
+                                    ->where('solic_equipamientos.status','=',$status);
                             break;
                         }
                         case 'lotes.fraccionamiento_id':{
                             if($b_etapa == '' && $b_manzana == '' && $b_lote == ''){
                                 $equipamientos = $query
                                         ->where($criterio, '=', $buscar)
-                                        ->where('solic_equipamientos.status','=',$status)
-                                        ->orderBy('contratos.id','desc')
-                                        ->orderBy('proveedores.proveedor','asc')
-                                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                    ->paginate(8);
+                                        ->where('solic_equipamientos.status','=',$status);
                             }
                             elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
                                 $equipamientos = $query
                                         ->where($criterio, '=', $buscar)
                                         ->where('lotes.etapa_id', '=', $b_etapa)
-                                        ->where('solic_equipamientos.status','=',$status)
-                                        ->orderBy('contratos.id','desc')
-                                        ->orderBy('proveedores.proveedor','asc')
-                                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                    ->paginate(8);
-                                
+                                        ->where('solic_equipamientos.status','=',$status);
                             }
                             elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
                                 $equipamientos = $query
                                         ->where($criterio, '=', $buscar)
                                         ->where('lotes.etapa_id', '=', $b_etapa)
                                         ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                                        ->where('solic_equipamientos.status','=',$status)
-                                        ->orderBy('contratos.id','desc')
-                                        ->orderBy('proveedores.proveedor','asc')
-                                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                    ->paginate(8);
-                                
+                                        ->where('solic_equipamientos.status','=',$status);
                             }
                             elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
                                 $equipamientos = $query
@@ -315,11 +232,7 @@ class SolEquipamientoController extends Controller
                                         ->where('lotes.etapa_id', '=', $b_etapa)
                                         ->where('lotes.num_lote', '=', $b_lote)
                                         ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                                        ->where('solic_equipamientos.status','=',$status)
-                                        ->orderBy('contratos.id','desc')
-                                        ->orderBy('proveedores.proveedor','asc')
-                                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                    ->paginate(8);
+                                        ->where('solic_equipamientos.status','=',$status);
                                 
                             }
                             elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
@@ -327,42 +240,26 @@ class SolEquipamientoController extends Controller
                                         ->where($criterio, '=', $buscar)
                                         ->where('lotes.etapa_id', '=', $b_etapa)
                                         ->where('lotes.num_lote', '=', $b_lote)
-                                        ->where('solic_equipamientos.status','=',$status)
-                                        ->orderBy('contratos.id','desc')
-                                        ->orderBy('proveedores.proveedor','asc')
-                                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                    ->paginate(8);
+                                        ->where('solic_equipamientos.status','=',$status);
                             }
                             elseif($b_etapa == '' && $b_manzana != '' && $b_lote != ''){
                                 $equipamientos = $query
                                         ->where($criterio, '=', $buscar)
                                         ->where('lotes.num_lote', '=', $b_lote)
                                         ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                                        ->where('solic_equipamientos.status','=',$status)
-                                        ->orderBy('contratos.id','desc')
-                                        ->orderBy('proveedores.proveedor','asc')
-                                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                    ->paginate(8);
+                                        ->where('solic_equipamientos.status','=',$status);
                             }
                             elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
                                 $equipamientos = $query
                                         ->where($criterio, '=', $buscar)
                                         ->where('lotes.num_lote', '=', $b_lote)
-                                        ->where('solic_equipamientos.status','=',$status)
-                                        ->orderBy('contratos.id','desc')
-                                        ->orderBy('proveedores.proveedor','asc')
-                                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                    ->paginate(8);
+                                        ->where('solic_equipamientos.status','=',$status);
                             }
                             elseif($b_etapa == '' && $b_manzana != '' && $b_lote == ''){
                                 $equipamientos = $query
                                         ->where($criterio, '=', $buscar)
                                         ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                                        ->where('solic_equipamientos.status','=',$status)
-                                        ->orderBy('contratos.id','desc')
-                                        ->orderBy('proveedores.proveedor','asc')
-                                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                    ->paginate(8);
+                                        ->where('solic_equipamientos.status','=',$status);
                             }
                             break;
                         }
@@ -374,12 +271,7 @@ class SolEquipamientoController extends Controller
             if($buscar == ''){
                 $equipamientos = $queryProveedor
                         ->where('proveedores.id','=',$userID)
-                        ->where('contratos.entregado','=',0)
-                        ->orderBy('contratos.id','desc')
-                        ->orderBy('proveedores.proveedor','asc')
-                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                    ->paginate(8);
-
+                        ->where('contratos.entregado','=',0);
             }
             else{
                 switch($criterio){
@@ -387,33 +279,21 @@ class SolEquipamientoController extends Controller
                         $equipamientos = $queryProveedor
                                 ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%')
                                 ->where('proveedores.id','=',$userID)
-                                ->where('contratos.entregado','=',0)
-                                ->orderBy('contratos.id','desc')
-                                ->orderBy('proveedores.proveedor','asc')
-                                ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                            ->paginate(8);
+                                ->where('contratos.entregado','=',0);
                         break;
                     }
                     case 'contratos.id':{
                         $equipamientos = $queryProveedor
                                 ->where($criterio, '=', $buscar)
                                 ->where('proveedores.id','=',$userID)
-                                ->where('contratos.entregado','=',0)
-                                ->orderBy('contratos.id','desc')
-                                ->orderBy('proveedores.proveedor','asc')
-                                ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                            ->paginate(8);
+                                ->where('contratos.entregado','=',0);
                         break;
                     }
                     case 'proveedores.proveedor':{
                         $equipamientos = $queryProveedor
                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                 ->where('proveedores.id','=',$userID)
-                                ->where('contratos.entregado','=',0)
-                                ->orderBy('contratos.id','desc')
-                                ->orderBy('proveedores.proveedor','asc')
-                                ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                            ->paginate(8);
+                                ->where('contratos.entregado','=',0);
                         break;
                     }
                     case 'lotes.fraccionamiento_id':{
@@ -421,23 +301,14 @@ class SolEquipamientoController extends Controller
                             $equipamientos = $queryProveedor
                                     ->where($criterio, '=', $buscar)
                                     ->where('proveedores.id','=',$userID)
-                                    ->where('contratos.entregado','=',0)
-                                    ->orderBy('contratos.id','desc')
-                                    ->orderBy('proveedores.proveedor','asc')
-                                    ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                ->paginate(8);
+                                    ->where('contratos.entregado','=',0);
                         }
                         elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
                             $equipamientos = $queryProveedor
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $b_etapa)
                                     ->where('proveedores.id','=',$userID)
-                                    ->where('contratos.entregado','=',0)
-                                    ->orderBy('contratos.id','desc')
-                                    ->orderBy('proveedores.proveedor','asc')
-                                    ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                ->paginate(8);
-                            
+                                    ->where('contratos.entregado','=',0);
                         }
                         elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
                             $equipamientos = $queryProveedor
@@ -445,12 +316,7 @@ class SolEquipamientoController extends Controller
                                     ->where('lotes.etapa_id', '=', $b_etapa)
                                     ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
                                     ->where('proveedores.id','=',$userID)
-                                    ->where('contratos.entregado','=',0)
-                                    ->orderBy('contratos.id','desc')
-                                    ->orderBy('proveedores.proveedor','asc')
-                                    ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                ->paginate(8);
-                            
+                                    ->where('contratos.entregado','=',0);
                         }
                         elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
                             $equipamientos = $queryProveedor
@@ -459,12 +325,7 @@ class SolEquipamientoController extends Controller
                                     ->where('lotes.num_lote', '=', $b_lote)
                                     ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
                                     ->where('proveedores.id','=',$userID)
-                                    ->where('contratos.entregado','=',0)
-                                    ->orderBy('contratos.id','desc')
-                                    ->orderBy('proveedores.proveedor','asc')
-                                    ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                ->paginate(8);
-                            
+                                    ->where('contratos.entregado','=',0);
                         }
                         elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
                             $equipamientos = $queryProveedor
@@ -472,11 +333,7 @@ class SolEquipamientoController extends Controller
                                     ->where('lotes.etapa_id', '=', $b_etapa)
                                     ->where('lotes.num_lote', '=', $b_lote)
                                     ->where('proveedores.id','=',$userID)
-                                    ->where('contratos.entregado','=',0)
-                                    ->orderBy('contratos.id','desc')
-                                    ->orderBy('proveedores.proveedor','asc')
-                                    ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                ->paginate(8);
+                                    ->where('contratos.entregado','=',0);
                         }
                         elseif($b_etapa == '' && $b_manzana != '' && $b_lote != ''){
                             $equipamientos = $queryProveedor
@@ -484,39 +341,32 @@ class SolEquipamientoController extends Controller
                                     ->where('lotes.num_lote', '=', $b_lote)
                                     ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
                                     ->where('proveedores.id','=',$userID)
-                                    ->where('contratos.entregado','=',0)
-                                    ->orderBy('contratos.id','desc')
-                                    ->orderBy('proveedores.proveedor','asc')
-                                    ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                ->paginate(8);
+                                    ->where('contratos.entregado','=',0);
                         }
                         elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
                             $equipamientos = $queryProveedor
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.num_lote', '=', $b_lote)
                                     ->where('proveedores.id','=',$userID)
-                                    ->where('contratos.entregado','=',0)
-                                    ->orderBy('contratos.id','desc')
-                                    ->orderBy('proveedores.proveedor','asc')
-                                    ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                ->paginate(8);
+                                    ->where('contratos.entregado','=',0);
                         }
                         elseif($b_etapa == '' && $b_manzana != '' && $b_lote == ''){
                             $equipamientos = $queryProveedor
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
                                     ->where('proveedores.id','=',$userID)
-                                    ->where('contratos.entregado','=',0)
-                                    ->orderBy('contratos.id','desc')
-                                    ->orderBy('proveedores.proveedor','asc')
-                                    ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                ->paginate(8);
+                                    ->where('contratos.entregado','=',0);
                         }
                         break;
                     }
                 }
             }
         }
+
+        $equipamientos = $equipamientos->orderBy('contratos.id','desc')
+                            ->orderBy('proveedores.proveedor','asc')
+                            ->orderBy('solic_equipamientos.fecha_colocacion','asc')
+                        ->paginate(8);
   
 
         

@@ -287,8 +287,6 @@ class FraccionamientoController extends Controller
         return['fraccionamientos' => $fraccionamiento];
     }
 
-
-
      //funciones para carga y descarga de planos
 
      public function formSubmitPlanos(Request $request, $id)

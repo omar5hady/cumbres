@@ -33,26 +33,27 @@ class PersonalController extends Controller
         
         if($buscar==''){
             $Personales = $query
-                ->where('personal.nombre','!=','Sin Asignar')
-                ->orderBy('id','desc')->paginate(8);
+                ->where('personal.nombre','!=','Sin Asignar');
         }
         else{
             if($criterio == 'id_departamento'){
                 $Personales = $query
                     ->where($criterio, '=', $buscar )
-                    ->where('personal.nombre','!=','Sin Asignar')->orderBy('id','desc')->paginate(8);
+                    ->where('personal.nombre','!=','Sin Asignar');
             }
             elseif($criterio == 'personal.nombre'){
                 $Personales = $query
                     ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
-                    ->where('personal.nombre','!=','Sin Asignar')->orderBy('id','desc')->paginate(8);
+                    ->where('personal.nombre','!=','Sin Asignar');
             }
             else{
                 $Personales = $query
                     ->where($criterio, 'like', '%'. $buscar . '%')
-                    ->where('personal.nombre','!=','Sin Asignar')->orderBy('id','desc')->paginate(8);
+                    ->where('personal.nombre','!=','Sin Asignar');
             }
         }
+
+        $Personales = $Personales->orderBy('id','desc')->paginate(8);
 
         return [
             'pagination' => [

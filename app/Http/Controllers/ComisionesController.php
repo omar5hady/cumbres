@@ -631,62 +631,49 @@ class ComisionesController extends Controller
 
         if($asesor == ''){
             if($mes == '' && $anio == ''){
-                $comisiones = $query
-                        ->orderBy('comisiones.id','desc')
-                        ->orderBy('asesor','asc')->paginate();
+                $comisiones = $query;
             }
             elseif($mes != '' && $anio == ''){
                 $comisiones = $query
-                        ->where('comisiones.mes','=',$mes)
-                        ->orderBy('comisiones.id','desc')
-                        ->orderBy('asesor','asc')->paginate();
+                        ->where('comisiones.mes','=',$mes);
             }
             elseif($mes == '' && $anio != ''){
                 $comisiones = $query
-                        ->where('comisiones.anio','=',$anio)
-                        ->orderBy('comisiones.id','desc')
-                        ->orderBy('asesor','asc')->paginate();
+                        ->where('comisiones.anio','=',$anio);
             }
             else{
                 $comisiones = $query
                         ->where('comisiones.mes','=',$mes)
-                        ->where('comisiones.anio','=',$anio)
-                        ->orderBy('comisiones.id','desc')
-                        ->orderBy('asesor','asc')->paginate();
+                        ->where('comisiones.anio','=',$anio);
             }
 
         }
         else{
             if($mes == '' && $anio == ''){
                 $comisiones = $query
-                        ->where('comisiones.asesor_id','=',$asesor)
-                        ->orderBy('comisiones.id','desc')
-                        ->orderBy('asesor','asc')->paginate();
+                        ->where('comisiones.asesor_id','=',$asesor);
             }
             elseif($mes != '' && $anio == ''){
                 $comisiones = $query
                         ->where('comisiones.asesor_id','=',$asesor)
-                        ->where('comisiones.mes','=',$mes)
-                        ->orderBy('comisiones.id','desc')
-                        ->orderBy('asesor','asc')->paginate();
+                        ->where('comisiones.mes','=',$mes);
             }
             elseif($mes == '' && $anio != ''){
                 $comisiones = $query
                         ->where('comisiones.asesor_id','=',$asesor)
-                        ->where('comisiones.anio','=',$anio)
-                        ->orderBy('comisiones.id','desc')
-                        ->orderBy('asesor','asc')->paginate();
+                        ->where('comisiones.anio','=',$anio);
             }
             else{
                 $comisiones = $query
                         ->where('comisiones.asesor_id','=',$asesor)
                         ->where('comisiones.mes','=',$mes)
-                        ->where('comisiones.anio','=',$anio)
-                        ->orderBy('comisiones.id','desc')
-                        ->orderBy('asesor','asc')->paginate();
+                        ->where('comisiones.anio','=',$anio);
             }
 
         }
+
+        $comisiones = $comisiones->orderBy('comisiones.id','desc')
+                    ->orderBy('asesor','asc')->paginate();
         
 
         return[

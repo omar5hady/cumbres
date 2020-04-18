@@ -121,11 +121,7 @@ class EquipamientoController extends Controller
                 ->where('contratos.entregado', '=',0)
                 ->where('inst_seleccionadas.elegido','=',1)
                 ->where('inst_seleccionadas.status','=',2)
-                ->whereNotNull('creditos.descripcion_promocion')
-                ->orderBy('contratos.equipamiento','asc')
-                ->orderBy('licencias.avance','desc')
-                ->orderBy('licencias.visita_avaluo','asc')
-                ->paginate(8);
+                ->whereNotNull('creditos.descripcion_promocion');
         } else{
             switch($criterio){
                 case 'lotes.fraccionamiento_id':{
@@ -144,11 +140,7 @@ class EquipamientoController extends Controller
                             ->where('inst_seleccionadas.elegido','=',1)
                             ->where('inst_seleccionadas.status','=',2)
                             ->where($criterio, '=', $buscar)
-                            ->whereNotNull('creditos.descripcion_promocion')
-                            ->orderBy('contratos.equipamiento','asc')
-                            ->orderBy('licencias.avance','desc')
-                            ->orderBy('licencias.visita_avaluo','asc')
-                            ->paginate(8);
+                            ->whereNotNull('creditos.descripcion_promocion');
                     }
                     elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
                         $contratos = $query
@@ -167,11 +159,7 @@ class EquipamientoController extends Controller
                             ->where('inst_seleccionadas.status','=',2)
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
-                            ->whereNotNull('creditos.descripcion_promocion')
-                            ->orderBy('contratos.equipamiento','asc')
-                            ->orderBy('licencias.avance','desc')
-                            ->orderBy('licencias.visita_avaluo','asc')
-                            ->paginate(8);
+                            ->whereNotNull('creditos.descripcion_promocion');
                     }
                     elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
                         $contratos = $query
@@ -192,11 +180,7 @@ class EquipamientoController extends Controller
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
                             ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                            ->whereNotNull('creditos.descripcion_promocion')
-                            ->orderBy('contratos.equipamiento','asc')
-                            ->orderBy('licencias.avance','desc')
-                            ->orderBy('licencias.visita_avaluo','asc')
-                            ->paginate(8);
+                            ->whereNotNull('creditos.descripcion_promocion');
                     }
                     elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
                         $contratos = $query
@@ -219,11 +203,7 @@ class EquipamientoController extends Controller
                             ->where('lotes.etapa_id', '=', $b_etapa)
                             ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
                             ->where('lotes.num_lote', '=', $b_lote)
-                            ->whereNotNull('creditos.descripcion_promocion')
-                            ->orderBy('contratos.equipamiento','asc')
-                            ->orderBy('licencias.avance','desc')
-                            ->orderBy('licencias.visita_avaluo','asc')
-                            ->paginate(8);
+                            ->whereNotNull('creditos.descripcion_promocion');
                     }
                     elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
                         $contratos = $query
@@ -244,11 +224,7 @@ class EquipamientoController extends Controller
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
                             ->where('lotes.num_lote', '=', $b_lote)
-                            ->whereNotNull('creditos.descripcion_promocion')
-                            ->orderBy('contratos.equipamiento','asc')
-                            ->orderBy('licencias.avance','desc')
-                            ->orderBy('licencias.visita_avaluo','asc')
-                            ->paginate(8);
+                            ->whereNotNull('creditos.descripcion_promocion');
                     }
 
                     elseif($b_etapa == '' && $b_manzana != '' && $b_lote != ''){
@@ -270,11 +246,7 @@ class EquipamientoController extends Controller
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
                             ->where('lotes.num_lote', '=', $b_lote)
-                            ->whereNotNull('creditos.descripcion_promocion')
-                            ->orderBy('contratos.equipamiento','asc')
-                            ->orderBy('licencias.avance','desc')
-                            ->orderBy('licencias.visita_avaluo','asc')
-                            ->paginate(8);
+                            ->whereNotNull('creditos.descripcion_promocion');
                     }
                     elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
                         $contratos = $query
@@ -293,11 +265,7 @@ class EquipamientoController extends Controller
                             ->where('inst_seleccionadas.status','=',2)
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.num_lote', '=', $b_lote)
-                            ->whereNotNull('creditos.descripcion_promocion')
-                            ->orderBy('contratos.equipamiento','asc')
-                            ->orderBy('licencias.avance','desc')
-                            ->orderBy('licencias.visita_avaluo','asc')
-                            ->paginate(8);
+                            ->whereNotNull('creditos.descripcion_promocion');
                     }
                     elseif($b_etapa == '' && $b_manzana != '' && $b_lote == ''){
                         $contratos = $query
@@ -318,11 +286,7 @@ class EquipamientoController extends Controller
                             ->where('lotes.etapa_id', '=', $b_etapa)
                             ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
                             ->where('lotes.num_lote', '=', $b_lote)
-                            ->whereNotNull('creditos.descripcion_promocion')
-                            ->orderBy('contratos.equipamiento','asc')
-                            ->orderBy('licencias.avance','desc')
-                            ->orderBy('licencias.visita_avaluo','asc')
-                            ->paginate(8);
+                            ->whereNotNull('creditos.descripcion_promocion');
                     }
 
                     break;
@@ -343,11 +307,7 @@ class EquipamientoController extends Controller
                         ->where('inst_seleccionadas.elegido','=',1)
                         ->where('inst_seleccionadas.status','=',2)
                         ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%')
-                        ->whereNotNull('creditos.descripcion_promocion')
-                        ->orderBy('contratos.equipamiento','asc')
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('licencias.visita_avaluo','asc')
-                        ->paginate(8);
+                        ->whereNotNull('creditos.descripcion_promocion');
                     break;
                 }
                 case 'contratos.id':{
@@ -365,15 +325,16 @@ class EquipamientoController extends Controller
                         ->where('inst_seleccionadas.elegido','=',1)
                         ->where('inst_seleccionadas.status','=',2)
                         ->where($criterio, '=', $buscar)
-                        ->whereNotNull('creditos.descripcion_promocion')
-                        ->orderBy('contratos.equipamiento','asc')
-                        ->orderBy('licencias.avance','desc')
-                        ->orderBy('licencias.visita_avaluo','asc')
-                        ->paginate(8);
+                        ->whereNotNull('creditos.descripcion_promocion');
                     break;
                 }
             }
         }
+
+        $contratos = $contratos->orderBy('contratos.equipamiento','asc')
+                                ->orderBy('licencias.avance','desc')
+                                ->orderBy('licencias.visita_avaluo','asc')
+                                ->paginate(10);
 
         return [
             'pagination' => [

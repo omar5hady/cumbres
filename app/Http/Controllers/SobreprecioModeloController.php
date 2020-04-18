@@ -32,55 +32,39 @@ class SobreprecioModeloController extends Controller
                 'etapas.num_etapa as etapa','fraccionamientos.nombre as proyecto');
         
         if($buscar == ''){
-        $sobreprecio_modelo = $query
-            ->orderBy('fraccionamientos.nombre','ASC')
-            ->orderBy('etapas.num_etapa','ASC')
-            ->orderBy('lotes.manzana','ASC')
-            ->orderBy('lotes.num_lote','ASC')->paginate(20);
+        $sobreprecio_modelo = $query;
         }
         else{
             if($buscar2 == '' && $buscar3 == '') {
                 $sobreprecio_modelo = $query
-                    ->where('sobreprecios_etapas.etapa_id','=', $buscar)
-                    ->orderBy('fraccionamientos.nombre','ASC')
-                    ->orderBy('etapas.num_etapa','ASC')
-                    ->orderBy('lotes.manzana','ASC')
-                    ->orderBy('lotes.num_lote','ASC')->paginate(20);
+                    ->where('sobreprecios_etapas.etapa_id','=', $buscar);
             }
             else{
                 if($buscar2 == ''){
                     $sobreprecio_modelo = $query
                         ->where('sobreprecios_etapas.etapa_id','=', $buscar)
-                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                        ->orderBy('fraccionamientos.nombre','ASC')
-                        ->orderBy('etapas.num_etapa','ASC')
-                        ->orderBy('lotes.manzana','ASC')
-                        ->orderBy('lotes.num_lote','ASC')->paginate(20);
+                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%');
                     }
                 
                 if($buscar3 == ''){
                     $sobreprecio_modelo = $query
                         ->where('sobreprecios_etapas.etapa_id','=', $buscar)
-                        ->where('lotes.num_lote', 'like', '%'. $buscar2 . '%')
-                        ->orderBy('fraccionamientos.nombre','ASC')
-                        ->orderBy('etapas.num_etapa','ASC')
-                        ->orderBy('lotes.manzana','ASC')
-                        ->orderBy('lotes.num_lote','ASC')->paginate(20);
+                        ->where('lotes.num_lote', 'like', '%'. $buscar2 . '%');
                     }
                 else{
                     $sobreprecio_modelo = $query
                         ->where('sobreprecios_etapas.etapa_id','=', $buscar)
                         ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                        ->where('lotes.num_lote', 'like', '%'. $buscar2 . '%')
-                        ->orderBy('fraccionamientos.nombre','ASC')
-                        ->orderBy('etapas.num_etapa','ASC')
-                        ->orderBy('lotes.manzana','ASC')
-                        ->orderBy('lotes.num_lote','ASC')->paginate(20);
+                        ->where('lotes.num_lote', 'like', '%'. $buscar2 . '%');
 
                     }
             }
         }
 
+        $sobreprecio_modelo = $sobreprecio_modelo->orderBy('fraccionamientos.nombre','ASC')
+                                    ->orderBy('etapas.num_etapa','ASC')
+                                    ->orderBy('lotes.manzana','ASC')
+                                    ->orderBy('lotes.num_lote','ASC')->paginate(20);
 
         return [
             'pagination' => [
@@ -95,22 +79,6 @@ class SobreprecioModeloController extends Controller
         ];
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     //funcion para insertar en la tabla
     public function store(Request $request)
     {
@@ -147,35 +115,6 @@ class SobreprecioModeloController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     //funcion para actualizar los datos
     public function update(Request $request)
     {
@@ -201,12 +140,6 @@ class SobreprecioModeloController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');

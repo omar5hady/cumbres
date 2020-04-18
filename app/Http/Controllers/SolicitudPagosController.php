@@ -23,19 +23,19 @@ class SolicitudPagosController extends Controller
         $fecha2 = $fecha2.' 23:59:59';
 
         $query = Solicitudes_pago::join('users','solicitudes_pagos.user_id','=','users.id')
-                                    ->join('personal','users.id','=','personal.id')
-                                    ->select('personal.nombre','personal.apellidos','solicitudes_pagos.id',
-                                            'solicitudes_pagos.concepto','solicitudes_pagos.orden_compra',
-                                            'solicitudes_pagos.status','solicitudes_pagos.doc_orden',
-                                            'solicitudes_pagos.autorizacion_orden', 'solicitudes_pagos.cotizacion',
-                                            'solicitudes_pagos.pago_partes','solicitudes_pagos.created_at',
-                                            'solicitudes_pagos.factura',
-                                            'solicitudes_pagos.check1',
-                                            'solicitudes_pagos.fecha_status',
-                                            'solicitudes_pagos.check2',
-                                            'solicitudes_pagos.check3',
-                                            'solicitudes_pagos.orden_vistoBueno',
-                                            'solicitudes_pagos.solic_cheque','solicitudes_pagos.user_id');
+                        ->join('personal','users.id','=','personal.id')
+                        ->select('personal.nombre','personal.apellidos','solicitudes_pagos.id',
+                                'solicitudes_pagos.concepto','solicitudes_pagos.orden_compra',
+                                'solicitudes_pagos.status','solicitudes_pagos.doc_orden',
+                                'solicitudes_pagos.autorizacion_orden', 'solicitudes_pagos.cotizacion',
+                                'solicitudes_pagos.pago_partes','solicitudes_pagos.created_at',
+                                'solicitudes_pagos.factura',
+                                'solicitudes_pagos.check1',
+                                'solicitudes_pagos.fecha_status',
+                                'solicitudes_pagos.check2',
+                                'solicitudes_pagos.check3',
+                                'solicitudes_pagos.orden_vistoBueno',
+                                'solicitudes_pagos.solic_cheque','solicitudes_pagos.user_id');
 
 
         if($request->tipo == 0){

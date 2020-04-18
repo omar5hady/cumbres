@@ -31,31 +31,23 @@ class UserController extends Controller
             'users.condicion','users.rol_id','roles.nombre as rol');
          
         if ($buscar==''){
-            $personas = $query 
-            ->orderBy('users.condicion', 'desc')
-            ->orderBy('personal.id', 'desc')
-            ->paginate(8);
+            $personas = $query;
         }
         else{
             if($criterio == 'personal.nombre'){
                 $personas = $query       
-                ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
-                ->orderBy('users.condicion', 'desc')
-                ->orderBy('personal.id', 'desc')
-                ->paginate(8);
+                ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
             }
             else{
                 $personas = $query         
-                ->where($criterio, 'like', '%'. $buscar . '%')
-                ->orderBy('users.condicion', 'desc')
-                ->orderBy('personal.id', 'desc')
-                ->paginate(8);
-
+                ->where($criterio, 'like', '%'. $buscar . '%');
             }
-            
         }
+
+        $personas = $personas->orderBy('users.condicion', 'desc')
+                            ->orderBy('personal.id', 'desc')
+                            ->paginate(8);
          
- 
         return [
             'pagination' => [
                 'total'        => $personas->total(),
@@ -88,23 +80,18 @@ class UserController extends Controller
             'vendedores.esquema');
          
             if ($buscar==''){
-                $personas = $query
-                ->orderBy('users.condicion', 'desc')
-                ->orderBy('personal.apellidos', 'asc')
-                ->orderBy('personal.nombre', 'asc')
-                ->paginate(8);
+                $personas = $query;
             }
             else{
                 $personas = $query  
-                ->where($criterio, '=',  $buscar )
-                ->orderBy('users.condicion', 'desc')
-                ->orderBy('personal.apellidos', 'asc')
-                ->orderBy('personal.nombre', 'asc')
-               ->paginate(8);
+                ->where($criterio, '=',  $buscar );
 
             }
 
-       
+        $personas = $personas->orderBy('users.condicion', 'desc')
+                            ->orderBy('personal.apellidos', 'asc')
+                            ->orderBy('personal.nombre', 'asc')
+                        ->paginate(8);
          
  
         return [
@@ -1252,20 +1239,17 @@ class UserController extends Controller
             'users.condicion','users.rol_id','roles.nombre as rol','vendedores.inmobiliaria','vendedores.tipo');
          
             if ($buscar==''){
-                $personas = $query
-                ->orderBy('users.condicion', 'desc')
-                ->orderBy('personal.apellidos', 'asc')
-                ->orderBy('personal.nombre', 'asc')
-                ->get();
+                $personas = $query;
             }
             else{
                 $personas = $query 
-                ->where($criterio, '=',  $buscar )
-                ->orderBy('users.condicion', 'desc')
-                ->orderBy('personal.apellidos', 'asc')
-                ->orderBy('personal.nombre', 'asc')
-               ->get(); 
+                ->where($criterio, '=',  $buscar );
             }
+
+            $personas = $personas->orderBy('users.condicion', 'desc')
+                        ->orderBy('personal.apellidos', 'asc')
+                        ->orderBy('personal.nombre', 'asc')
+                    ->get(); 
 
             return Excel::create('Asesores', function($excel) use ($personas){
                 $excel->sheet('asesores', function($sheet) use ($personas){
