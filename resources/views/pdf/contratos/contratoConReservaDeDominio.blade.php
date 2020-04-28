@@ -20,7 +20,7 @@ body{
     margin-left: 90px;
 }
 
-.table-cell3 { display: table-cell; padding: 0em; font-size: 11pt; }
+.table-cell3 { display: table-cell; padding: 0em; font-size: 10pt; }
 .table3 { display: table; width:100%; border-collapse: collapse; table-layout: fixed; }
 .table-row { display: table-row; }
 </style>
@@ -242,31 +242,78 @@ body{
         
         <br>
 
+        <div class="table3">
+            <div class="table-row">
+                <div colspan="2" class="table-cell3"><b>LA PARTE VENDEDORA </div>
+                <div class="table-cell3"></div>
+                <div colspan="2" class="table-cell3"><b>LA PARTE COMPRADORA</div>
+            </div>
+            <div class="table-row"> 
+                <div colspan="5" class="table-cell3"> <br> <br> </div>
+            </div>
+            <div class="table-row">
+                <div colspan="2" class="table-cell3">_________________________________</div>
+                <div style="width: 8%;" class="table-cell3"></div>
+                <div colspan="2" class="table-cell3">_________________________________</div>
+            </div>
+            <div class="table-row">
+                <div colspan="2" class="table-cell3">GRUPO CONSTRUCTOR CUMBRES<br>ING. ALEJANDRO F. PEREZ ESPINOSA<br>ING. DAVID CALVILLO MARTINEZ</div>
+                <div style="width: 8%;" class="table-cell3"></div>
+                <div colspan="2" class="table-cell3">SR(A) {{mb_strtoupper($contratosDom[0]->nombre)}} {{mb_strtoupper($contratosDom[0]->apellidos)}}</div>
+            </div>
+            @if($contratosDom[0]->coacreditado == 1)
+            <div class="table-row">
+                <div colspan="2" class="table-cell3"></div>
+                <div style="width: 8%;" class="table-cell3"></div>
+                <div colspan="2" class="table-cell3">_________________________________</div>
+            </div>
+            <div class="table-row"> 
+                <div colspan="5" class="table-cell3"> <br> </div>
+            </div>
+            <div class="table-row">
+                <div colspan="2" class="table-cell3"></div>
+                <div style="width: 8%;" class="table-cell3"></div>
+                <div colspan="2" class="table-cell3">{{mb_strtoupper($contratosDom[0]->nombre_coa)}} {{mb_strtoupper($contratosDom[0]->apellidos_coa)}}</div>
+            </div>
+        @endif
+        </div>
+
         
         
 
-            <div class="table3">
+            {{-- <div class="table3">
                 <div class="table-row">
                     <div colspan="2" class="table-cell3"><b>LA PARTE VENDEDORA </div>
                     <div class="table-cell3"></div>
                     <div colspan="2" class="table-cell3"><b>LA PARTE COMPRADORA</div>
                 </div>
+
                 <div class="table-row"> 
                     <div colspan="5" class="table-cell3"><br> <br> <br> </div>
                 </div>
+
+                <div class="table-row">
+                    <div colspan="2" class="table-cell3">_________________________________</div>
+                    <div style="width: 8%;" class="table-cell3"></div>
+                    <div colspan="2" class="table-cell3">_________________________________</div>
+                </div>
+
                 <div class="table-row">
                     <div colspan="3" class="table-cell3">GRUPO CONSTRUCTOR CUMBRES S.A DE C.V</div>
                     
                     <div colspan="4" class="table-cell3">SR(A) {{mb_strtoupper($contratosDom[0]->nombre)}} {{mb_strtoupper($contratosDom[0]->apellidos)}}</div>
                 </div>
+
                 <div class="table-row"> 
                     <div colspan="5" class="table-cell3"> Representada por este acto por el</div>
                 </div>
+
                 <div class="table-row">
                     <div colspan="5" class="table-cell3"><b>ING. ALEJANDRO F. PEREZ ESPINOSA O <br> EL ING. DAVID CALVILLO MARTINEZ</div>
                 </div>
-            </div>
 
+            </div>
+ --}}
 
 
     </div>

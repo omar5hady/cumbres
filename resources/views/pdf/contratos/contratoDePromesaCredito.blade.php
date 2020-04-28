@@ -318,6 +318,21 @@ en tres ejemplares de un mismo tenor y para un solo efecto, a los <strong>{{$con
                     <div style="width: 8%;" class="table-cell3"></div>
                     <div colspan="2" class="table-cell3">{{mb_strtoupper($contratoPromesa[0]->nombre)}} {{mb_strtoupper($contratoPromesa[0]->apellidos)}}</div>
                 </div>
+                @if($contratoPromesa[0]->coacreditado == 1)
+                    <div class="table-row">
+                        <div colspan="2" class="table-cell3"></div>
+                        <div style="width: 8%;" class="table-cell3"></div>
+                        <div colspan="2" class="table-cell3">_________________________________</div>
+                    </div>
+                    <div class="table-row"> 
+                        <div colspan="5" class="table-cell3"> <br> </div>
+                    </div>
+                    <div class="table-row">
+                        <div colspan="2" class="table-cell3"></div>
+                        <div style="width: 8%;" class="table-cell3"></div>
+                        <div colspan="2" class="table-cell3">{{mb_strtoupper($contratoPromesa[0]->nombre_coa)}} {{mb_strtoupper($contratoPromesa[0]->apellidos_coa)}}</div>
+                    </div>
+                @endif
             </div>
 
 

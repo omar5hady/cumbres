@@ -542,8 +542,12 @@ class ReportesController extends Controller
                         ->join('etapas as et','lotes.etapa_id','=','et.id')
                         ->select('lotes.manzana','lotes.num_lote','f.nombre as proyecto','et.num_etapa','p.nombre', 'p.apellidos',
                                 'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta')
-                        ->where('ins.elegido','=',1)
+                        
                         ->where('contratos.status','=',3)
+                        ->where('ins.elegido','=',1)
+                        ->whereBetween('contratos.fecha', [$request->fecha, $request->fecha2])
+                        ->orWhere('contratos.status','=',1)
+                        ->where('ins.elegido','=',1)
                         ->whereBetween('contratos.fecha', [$request->fecha, $request->fecha2])
                         ->orderBy('contratos.fecha','asc')
                         ->get();
@@ -896,10 +900,41 @@ class ReportesController extends Controller
                 ->where('contratos.status','=',3)
                 ->where('ins.elegido','=',1)
                 ->where('expedientes.fecha_firma_esc','!=',NULL)
-                ->where('ins.tipo_credito','!=','Crédito Directo')
                 ->whereMonth('expedientes.fecha_firma_esc',$mes)
                 ->whereYear('expedientes.fecha_firma_esc',$anio)
                 ->orderBy('expedientes.fecha_firma_esc','desc')->get();
+
+        $contadoSinEscrituras = Expediente::join('contratos','expedientes.id','=','contratos.id')
+                ->join('creditos','contratos.id','=','creditos.id')
+                ->join('inst_seleccionadas as ins', 'creditos.id', '=', 'ins.credito_id')
+                ->join('lotes','creditos.lote_id','=','lotes.id')
+                ->join('personal as p','creditos.prospecto_id','=','p.id')
+                ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
+                ->join('etapas as et','lotes.etapa_id','=','et.id')
+                ->join('personal as g','expedientes.gestor_id','=','g.id')
+                ->select('contratos.id','p.nombre','p.apellidos','f.nombre as proyecto','et.num_etapa',
+                        'lotes.manzana','lotes.num_lote','ins.tipo_credito','ins.institucion',
+                        DB::raw("CONCAT(g.nombre,' ',g.apellidos) AS nombre_gestor"),'contratos.fecha',
+                        'expedientes.fecha_firma_esc','expedientes.valor_escrituras','expedientes.notaria')
+                ->where('contratos.status','=',3)
+                ->where('contratos.saldo','<=',0)
+                ->where('ins.elegido','=',1)
+                ->where('expedientes.fecha_firma_esc','=',NULL)
+                ->where('ins.tipo_credito','=','Crédito Directo')
+                ->orderBy('contratos.fecha')->get();
+
+        $ingresosCobranza = Contrato::join('creditos','contratos.id','=','creditos.id')
+                ->join('inst_seleccionadas as ins', 'creditos.id', '=', 'ins.credito_id')
+                ->join('dep_creditos as dep','ins.id','=','dep.inst_sel_id')
+                ->join('lotes','creditos.lote_id','=','lotes.id')
+                ->join('personal as p','creditos.prospecto_id','=','p.id')
+                ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
+                ->join('etapas as et','lotes.etapa_id','=','et.id')
+                ->select('p.nombre','p.apellidos','f.nombre as proyecto','et.num_etapa',
+                        'lotes.manzana','lotes.num_lote','dep.cant_depo','dep.fecha_deposito','dep.banco')
+                ->whereMonth('dep.fecha_deposito',$mes)
+                ->whereYear('dep.fecha_deposito',$anio)
+                ->orderBy('dep.fecha_deposito')->get();
         
 
         
@@ -907,7 +942,10 @@ class ReportesController extends Controller
         return ['expCreditos'=>$expCreditos,
                 'expContado'=>$expContado,
                 'pendientes'=>$sinEntregar,
-                'escrituras'=>$escrituras
+                'escrituras'=>$escrituras,
+                'contadoSinEscrituras'=>$contadoSinEscrituras,
+                'ingresosCobranza'=>$ingresosCobranza
+
             ];
 
     }

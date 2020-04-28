@@ -21,9 +21,9 @@
                             <li class="nav-item">
                                 <a class="nav-link active show" id="expediente-tab" data-toggle="tab" href="#expediente" role="tab" aria-controls="expediente" v-text="'Expedientes entregados'"></a>
                             </li>
-                            <li class="nav-item">
+                            <!-- <li class="nav-item">
                                 <a class="nav-link" id="cobranza-tab" data-toggle="tab" href="#cobranza" role="tab" aria-controls="cobranza" aria-selected="false" v-text="'Acumulado de cobranza'"></a>
-                            </li>
+                            </li> -->
                             <li class="nav-item">
                                 <a class="nav-link" id="escrituras-tab" data-toggle="tab" href="#escrituras" role="tab" aria-controls="escrituras" aria-selected="false" v-text="'Escrituras'"></a>
                             </li>
@@ -118,7 +118,7 @@
                                 </div>
                             </div>
 
-                            <!-- Listado por cobranza -->
+                            <!-- Listado por cobranza
                             <div class="tab-pane fade" id="cobranza" role="tabpanel" aria-labelledby="cobranza-tab">
 
                                 <div class="table-responsive">
@@ -158,7 +158,7 @@
 
                                     
                                 </div>
-                            </div>
+                            </div> -->
 
                             <!-- Listado por escrituras -->
                             <div class="tab-pane fade" id="escrituras" role="tabpanel" aria-labelledby="escrituras-tab">
@@ -204,8 +204,46 @@
                                             </tr>                             
                                         </tbody>
                                     </table>
+                                </div>
 
-                                    
+                                <div class="table-responsive">
+                                    <table class="table2 table-bordered table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="9" class="text-center"> Contados Pendientes de Escriturar </th>
+                                            </tr>
+                                            <tr></tr>
+                                            <tr>
+                                                <th colspan="2"></th>
+                                                <th colspan="4" class="text-center">Ubicación</th>
+                                                <th colspan="3"></th>
+                                            </tr>
+                                            <tr>
+                                                <th># Referencia</th>
+                                                <th>Cliente</th>
+                                                <th>Fraccionamiento</th>
+                                                <th>Etapa</th>
+                                                <th>Manzana</th>
+                                                <th>Lote</th>
+                                                <th>Crédito</th>
+                                                <th>Fecha de Venta</th>
+                                                <th>Responsable</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="contadoSinEsc in arraycontadoSinEscrituras" :key="contadoSinEsc.id">
+                                                <td class="td2" v-text="contadoSinEsc.id"></td>
+                                                <td class="td2" v-text="contadoSinEsc.nombre + ' '+contadoSinEsc.apellidos"></td>
+                                                <td class="td2" v-text="contadoSinEsc.proyecto"></td>
+                                                <td class="td2" v-text="contadoSinEsc.num_etapa"></td>
+                                                <td class="td2" v-text="contadoSinEsc.manzana"></td>
+                                                <td class="td2" v-text="contadoSinEsc.num_lote"></td>
+                                                <td class="td2" v-text="contadoSinEsc.tipo_credito+' ('+contadoSinEsc.institucion+')'"></td>
+                                                <td class="td2" v-text="contadoSinEsc.fecha"></td>
+                                                <td class="td2" v-text="contadoSinEsc.nombre_gestor"></td>
+                                            </tr>                             
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
 
@@ -216,45 +254,41 @@
                                     <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
-                                                <th colspan="11" class="text-center"> Cancelaciones en el periodo </th>
+                                                <th colspan="8" class="text-center"> Reporte de Ingresos (Cobranza Institucional) </th>
+                                            </tr>
+                                            <tr></tr>
+                                            <tr>
+                                                <th></th>
+                                                <th colspan="4" class="text-center">Ubicación</th>
+                                                <th colspan="3"></th>
                                             </tr>
                                             <tr>
+                                                <th>Cliente</th>
                                                 <th>Fraccionamiento</th>
                                                 <th>Etapa</th>
                                                 <th>Manzana</th>
                                                 <th>Lote</th>
-                                                <th>Cliente</th>
-                                                <th>Fecha de cancelación</th>
-                                                <th>Fecha de venta</th>
-                                                <th>Crédito</th>
-                                                <th>Institución</th>
-                                                <th>Valor de escrituración</th>
+                                                <th>Monto Credito Neto</th>
+                                                <th>Fecha</th>
+                                                <th>Banco</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr v-for="cancelacion in arrayCancelaciones" :key="cancelacion.id">
-                                                <td class="td2" v-text="cancelacion.proyecto"></td>
-                                                <td class="td2" v-text="cancelacion.num_etapa"></td>
-                                                <td class="td2" v-text="cancelacion.manzana"></td>
-                                                <td class="td2" v-text="cancelacion.num_lote"></td>
-                                                <td class="td2" v-text="cancelacion.nombre + ' ' + cancelacion.apellidos"></td>
-                                                <td class="td2" v-text="cancelacion.fecha_status"></td>
-                                                <td class="td2" v-text="cancelacion.fecha"></td>
-                                                <td class="td2" v-text="cancelacion.tipo_credito"></td>
-                                                <td class="td2" v-text="cancelacion.institucion"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(cancelacion.precio_venta)"></td>
+                                            <tr v-for="ingresoCobranza in arrayIngresosCobranza" :key="ingresoCobranza.id">
+                                                <td class="td2" v-text="ingresoCobranza.nombre + ' ' + ingresoCobranza.apellidos"></td>
+                                                <td class="td2" v-text="ingresoCobranza.proyecto"></td>
+                                                <td class="td2" v-text="ingresoCobranza.num_etapa"></td>
+                                                <td class="td2" v-text="ingresoCobranza.manzana"></td>
+                                                <td class="td2" v-text="ingresoCobranza.num_lote"></td>
+                                                <td class="td2" v-text="'$'+formatNumber(ingresoCobranza.cant_depo)"></td>
+                                                <td class="td2" v-text="ingresoCobranza.fecha_deposito"></td>
+                                                <td class="td2" v-text="ingresoCobranza.banco"></td>
                                             </tr>                             
                                         </tbody>
                                     </table>
-
-                                    
                                 </div>
                             </div>
-
                         </div>
-
-
-
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
@@ -277,8 +311,11 @@
                 arrayPendientes:[],
 
                 arrayEscrituras:[],
+                arraycontadoSinEscrituras:[],
 
                 arrayCancelaciones : [],
+
+                arrayIngresosCobranza : [],
                 mes:'',
                 anio:''
             }
@@ -296,6 +333,8 @@
                     me.arrayExpContado = respuesta.expContado;
                     me.arrayPendientes = respuesta.pendientes;
                     me.arrayEscrituras = respuesta.escrituras;
+                    me.arraycontadoSinEscrituras = respuesta.contadoSinEscrituras;
+                    me.arrayIngresosCobranza = respuesta.ingresosCobranza;
 
                 })
                 .catch(function (error) {

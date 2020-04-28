@@ -51,6 +51,8 @@ class CreateLotesTable extends Migration
             $table->boolean('firmado')->default(0);
             $table->float('extra')->default(0);
             $table->float('extra_ext')->default(0);
+            $table->string('emp_terreno')->default('Grupo Constructor Cumbres');
+            $table->string('emp_constructora')->default('Grupo Constructor Cumbres');
 
             $table->string('nombre_archivo')->nullable();
 

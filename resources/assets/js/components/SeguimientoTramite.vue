@@ -3032,8 +3032,8 @@
                 });
             },
 
-        updateMontoCredito(){
-            let me = this;
+            updateMontoCredito(){
+                let me = this;
                 //Con axios se llama el metodo update de LoteController
                 axios.put('/update/montocredito/liquidacion',{
                     'id':this.id,

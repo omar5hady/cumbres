@@ -2440,7 +2440,8 @@
                 monto_credito:0,
                 plazo_credito2:0,
                 monto_credito2:0,
-                contrato:0
+                contrato:0,
+                lote_id:''
                 
             }
         },
@@ -2692,6 +2693,7 @@
                         me.num_lote = me.arrayDatosLotes[0]['num_lote'];
                         me.precioObraExtra = me.arrayDatosLotes[0]['obra_extra'];
                         me.fraccionamiento = me.arrayDatosLotes[0]['proyecto'];
+                        me.lote_id = lote;
 
                         me.precioVenta = me.precioVenta - me.descuentoPromo;
                         me.selectPaquetes(me.etapa,me.fraccionamiento);
@@ -3010,7 +3012,7 @@
                     'tipo_credito':this.tipo_credito,
                     'inst_financiera':this.inst_financiera,
                     'num_vehiculos':this.num_vehiculos,
-                    'lote_id':this.lote,
+                    'lote_id':this.lote_id,
                     'precio_obra_extra':this.precioObraExtra,
                     'fraccionamiento':this.fraccionamiento
                     

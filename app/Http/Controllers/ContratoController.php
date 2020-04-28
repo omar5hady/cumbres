@@ -3523,6 +3523,7 @@ class ContratoController extends Controller
             $loteNuevo_id = $request->sel_lote;
 
             $lote_ant = Lote::findOrFail($request->lote_id);
+            $terrenoExcedenteOld = 0;
 
                     $precioTerrenoOld = Precio_etapa::select('precio_excedente','id')
                     ->where('etapa_id','=',$lote_ant->etapa_id)->get();
@@ -3542,7 +3543,7 @@ class ContratoController extends Controller
 
                     $terrenoExcedenteOld = ($lote_ant->terreno - $terrenoModelo[0]->terreno);
                     if($terrenoExcedenteOld > 0)
-                        $lote->excedente_terreno = $terrenoExcedenteOld * $precioTerrenoOld[0]->precio_excedente;
+                        $lote_ant->excedente_terreno = $terrenoExcedenteOld * $precioTerrenoOld[0]->precio_excedente;
 
                     $lote_ant->precio_base = $precioBaseOld[0]->precio_modelo;
 
