@@ -1033,7 +1033,7 @@ class UserController extends Controller
                                 //Acceso
                                 'users.usuarios','users.roles',
                                 //Reportes
-                                'users.mejora','users.rep_proy','users.rep_publi','users.inventario'
+                                'users.mejora','users.rep_proy','users.rep_publi','users.inventario','rep_venta_canc'
                         )->where('users.id','=',$request->id)->get();
             
             return['privilegios' => $privilegios];
@@ -1132,6 +1132,7 @@ class UserController extends Controller
         $user->rep_publi = $request->rep_publi;
         $user->rep_proy = $request->rep_proy;
         $user->inventario = $request->inventario;
+        $user->rep_venta_canc = $request->rep_venta_canc;
         $user->save();
 
     }

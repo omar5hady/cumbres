@@ -62,13 +62,27 @@
                         <div class="form-group row">
                             <div class="col-md-8">
                                 <div class="input-group">
+                                    <select class="form-control" v-model="b_empresa" >
+                                        <option value="">Empresa constructora</option>
+                                        <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                    </select>
+                                    <select class="form-control" v-model="b_empresa2" >
+                                        <option value="">Empresa terreno</option>
+                                        <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-8">
+                                <div class="input-group">
                                     <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_puente" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)"> 
                                         <option value="">Credito Puente</option>
                                         <option v-for="puente in arrayPuentes" :key="puente.credito_puente" :value="puente.credito_puente" v-text="puente.credito_puente"></option>
                                     </select>
                                     <input v-if="criterio=='lotes.fraccionamiento_id'" type="text"  v-model="b_num_inicio" @keyup.enter="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="form-control" placeholder="# inicio de obra">
                                     <button type="submit" @click="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                    <a class="btn btn-success" v-bind:href="'/acta_terminacion/excel?buscar=' + buscar + '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + '&criterio=' + criterio + '&buscar2=' + buscar2 + '&b_puente=' + b_puente + '&b_num_inicio=' + b_num_inicio" >
+                                    <a class="btn btn-success" v-bind:href="'/acta_terminacion/excel?buscar=' + buscar + '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + '&criterio=' + criterio + '&buscar2=' + buscar2 + '&b_puente=' + b_puente + '&b_num_inicio=' + b_num_inicio + '&b_empresa=' + b_empresa + '&b_empresa2=' + b_empresa2" >
                                         <i class="icon-pencil"></i>&nbsp;Excel
                                     </a>
                                 </div>
@@ -615,7 +629,10 @@
                 b_manzana : '',
                 b_lote : '',
                 b_puente : '',
-                b_num_inicio : ''
+                b_num_inicio : '',
+                empresas:[],
+                b_empresa:'',
+                b_empresa2:''
                 
             }
         },
@@ -757,12 +774,24 @@
 
             },
 
-           
+            getEmpresa(){
+                let me = this;
+                me.empresas=[];
+                var url = '/lotes/empresa/select';
+                axios.get(url).then(function (response) {
+                    var respuesta = response;
+                    me.empresas = respuesta.data.empresas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
 
             /**Metodo para mostrar los registros */
             listarActa(page, buscar,b_manzana,b_lote,criterio,buscar2){
                 let me = this;
-                var url = '/acta_terminacion?page=' + page + '&buscar=' + buscar + '&b_manzana=' + b_manzana + '&b_lote='+ b_lote  + '&criterio=' + criterio + '&buscar2=' + buscar2 + '&b_puente=' + me.b_puente + '&b_num_inicio=' + me.b_num_inicio;
+                var url = '/acta_terminacion?page=' + page + '&buscar=' + buscar + '&b_manzana=' + b_manzana + '&b_lote='+ b_lote  + '&criterio=' + criterio + 
+                            '&buscar2=' + buscar2 + '&b_puente=' + me.b_puente + '&b_num_inicio=' + me.b_num_inicio + '&b_empresa=' + me.b_empresa + '&b_empresa2=' + me.b_empresa2;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayActaDeTerminacion = respuesta.actas.data;
@@ -1123,6 +1152,7 @@
         mounted() {
             this.listarActa(1,this.buscar,this.b_manzana,this.b_lote,this.criterio,this.buscar2);
             this.selectFraccionamientos();
+            this.getEmpresa();
         }
     }
 </script>

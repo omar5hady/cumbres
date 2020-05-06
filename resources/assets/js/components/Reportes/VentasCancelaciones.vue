@@ -45,7 +45,7 @@
                                     <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
-                                                <th colspan="11" class="text-center"> Ventas en el periodo </th>
+                                                <th colspan="11" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
                                             </tr>
                                             <tr>
                                                 <th>Fraccionamiento</th>
@@ -60,7 +60,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr v-for="lote in arrayLotes" :key="lote.id">
+                                            <tr v-for="lote in arrayLotes" :key="lote.id" v-bind:style="{ backgroundColor : !lote.status == 0 ? '#FFFFFF' : '#D23939'}">
                                                 <td class="td2" v-text="lote.proyecto"></td>
                                                 <td class="td2" v-text="lote.num_etapa"></td>
                                                 <td class="td2" v-text="lote.manzana"></td>
@@ -78,7 +78,7 @@
                                 </div>
                             </div>
 
-                            <!-- Listado por Ventas -->
+                            <!-- Listado por Cancelaciones -->
                             <div class="tab-pane fade" id="cancelacion" role="tabpanel" aria-labelledby="cancelacion-tab">
                         
                                 <div class="form-group row">
@@ -95,7 +95,7 @@
                                     <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
-                                                <th colspan="11" class="text-center"> Cancelaciones en el periodo </th>
+                                                <th colspan="11" class="text-center"> Cancelaciones en el periodo ({{cont2}}) </th>
                                             </tr>
                                             <tr>
                                                 <th>Fraccionamiento</th>
@@ -168,6 +168,8 @@
                     var respuesta = response.data;
                     me.arrayLotes = respuesta.ventas;
                     me.arrayCancelaciones = respuesta.cancelaciones;
+                    me.cont1 = respuesta.contVentas;
+                    me.cont2 = respuesta.contCancelaciones;
 
                 })
                 .catch(function (error) {

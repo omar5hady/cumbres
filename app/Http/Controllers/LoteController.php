@@ -53,7 +53,7 @@ class LoteController extends Controller
                   'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
                   'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
                   'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios',
-                  'lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
+                  'lotes.regimen_condom','lotes.extra', 'lotes.extra_ext','lotes.emp_terreno', 'lotes.emp_constructora',
                   'lotes.fecha_termino_ventas');
 
         if($b_habilitado != ''){
@@ -529,6 +529,14 @@ class LoteController extends Controller
             }
         }
 
+        if($request->b_empresa != ''){
+            $lotes= $lotes->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
+
+        if($request->b_empresa2 != ''){
+            $lotes= $lotes->where('lotes.emp_terreno','=',$request->b_empresa2);
+        }
+
         $lotes = $lotes->orderBy('fraccionamientos.nombre','ASC')
                         ->orderBy('etapas.num_etapa','ASC')
                         ->orderBy('lotes.manzana','ASC')
@@ -569,6 +577,7 @@ class LoteController extends Controller
                     'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                     'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
                     'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
+                    'lotes.emp_terreno', 'lotes.emp_constructora',
                     'lotes.clv_catastral','lotes.etapa_servicios');
         
         if($buscar==''){
@@ -602,6 +611,14 @@ class LoteController extends Controller
                     
                 }
             }
+        }
+
+        if($request->b_empresa != ''){
+            $lotes= $lotes->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
+
+        if($request->b_empresa2 != ''){
+            $lotes= $lotes->where('lotes.emp_terreno','=',$request->b_empresa2);
         }
 
         $lotes = $lotes->orderBy('fraccionamientos.nombre','DESC')
@@ -985,7 +1002,16 @@ class LoteController extends Controller
                 if(!empty($data) && $data->count()){
  
                     foreach ($data as $key => $value) {
-                        
+                        $emp_terreno = 'Grupo Constructor Cumbres';
+                        $emp_constructora = 'Grupo Constructor Cumbres';
+
+                        if($value->empresa_terreno == 2){
+                            $emp_terreno = 'Concretania';
+                        }
+                        if($value->empresa_constructora == 2){
+                            $emp_constructora = 'Concretania';
+                        }
+
                         $insert[] = [
                         'id' => $id,
                         'fraccionamiento_id' => $request->fraccionamiento_id,
@@ -1002,7 +1028,10 @@ class LoteController extends Controller
                         'construccion' => $modelo[0]->construccion,
                         'clv_catastral' =>$value->clave_catastral,
                         'etapa_servicios' =>$value->etapa_servicios,
-                        'arquitecto_id' => 1
+                        'arquitecto_id' => 1,
+                        'emp_constructora' =>$emp_constructora,
+                        'emp_terreno' =>$emp_terreno
+                        
                         
                         ];
 
@@ -3548,6 +3577,14 @@ class LoteController extends Controller
             }
         }
 
+        if($request->b_empresa != ''){
+            $lotes= $lotes->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
+
+        if($request->b_empresa2 != ''){
+            $lotes= $lotes->where('lotes.emp_terreno','=',$request->b_empresa2);
+        }
+
         $lotes = $lotes->orderBy('fraccionamientos.nombre','ASC')
                         ->orderBy('etapas.num_etapa','ASC')
                         ->orderBy('lotes.manzana','ASC')
@@ -3689,6 +3726,22 @@ class LoteController extends Controller
                     ->get();
         
         return ['lotes_entregados' => $lotes_entregados];
+    }
+
+    public function asignarEmpresa(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        //FindOrFail se utiliza para buscar lo que recibe de argumento
+        $lote = Lote::findOrFail($request->id);
+        $lote->emp_constructora = $request->emp_constructora;
+        $lote->emp_terreno = $request->emp_terreno;
+        $lote->save();
+    }
+
+    public function selectEmpresaConstructora(Request $request){
+        if(!$request->ajax())return redirect('/');
+        $empresas = ['Grupo Constructor Cumbres'];
+
+        return ['empresas'=>$empresas];
     }
 
 

@@ -113,6 +113,7 @@ class User extends Authenticatable
         'rep_publi',
         'rep_proy',
         'inventario',
+        'rep_venta_canc',
 
         //Pagos Internos
         'seg_pago'

@@ -343,6 +343,9 @@
                                                     <li class="nav-item">
                                                         <a class="nav-link"><i class="icon-chart"></i> <input v-model="inventario" type="checkbox" value="1"/> Inventario contable</a>
                                                     </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_venta_canc" type="checkbox" value="1"/> Reporte de ventas y cancelaciones</a>
+                                                    </li>
                                                 </ul>
                                     </div>
                                 </div> 
@@ -817,6 +820,7 @@
                     rep_proy:0,
                     rep_publi:0,
                     inventario:0,
+                    rep_venta_canc:0,
 
                 pagination : {
                     'total' : 0,         
@@ -1025,6 +1029,7 @@
                 this.rep_proy=0;
                 this.rep_publi=0;
                 this.inventario=0;
+                this.rep_venta_canc = 0;
             },
 
             selectPersonas(){
@@ -1148,6 +1153,7 @@
                     me.rep_proy = usuarios[0].rep_proy;
                     me.rep_publi = usuarios[0].rep_publi;
                     me.inventario = usuarios[0].inventario;
+                    me.rep_venta_canc = usuarios[0].rep_venta_canc;
 
                     me.rol_id = usuarios[0].rol_id;
 
@@ -1433,7 +1439,8 @@
                     'mejora':this.mejora,
                     'rep_proy':this.rep_proy,
                     'rep_publi':this.rep_publi,
-                    'inventario':this.inventario
+                    'inventario':this.inventario,
+                    'rep_venta_canc':this.rep_venta_canc
 
                 }).then(function (response){
                     me.listarPersonal(1,'','nombre');

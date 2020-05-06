@@ -19,6 +19,10 @@
                         <button type="button" @click="abrirModal('lote','descargarExcel')" class="btn btn-success">
                             <i class="icon-plus"></i>&nbsp;Descargar Excel
                         </button>
+                        &nbsp;
+                        <button class="btn btn-info"  v-if="allLic.length > 0" @click="abrirModal('lote','empresa')">
+                            <i class="fa fa-university"></i>&nbsp;Asignar empresa
+                        </button>
                         <!---->
                     </div>
                     <div class="card-body">
@@ -44,6 +48,21 @@
                                     <input type="text" v-if="criterio=='lotes.calle'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Texto a buscar">
                                                                         
                                     <input type="text" v-if="criterio=='fraccionamientos.nombre'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Texto a buscar">
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <select class="form-control" v-model="b_empresa" >
+                                        <option value="">Empresa constructora</option>
+                                        <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                    </select>
+                                    <select class="form-control" v-model="b_empresa2" >
+                                        <option value="">Empresa terreno</option>
+                                        <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                    </select>
                                     <button type="submit" @click="listarLote(1,buscar,buscar2,buscar3,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
@@ -52,6 +71,9 @@
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
+                                        <th>
+                                            <input type="checkbox" @click="selectAll" v-model="allSelected">
+                                        </th>
                                         <th>Opciones</th>
                                         <th>Proyecto</th>
                                         <th>Manzana</th>
@@ -62,12 +84,18 @@
                                         <th>Clave Catastral</th>
                                         <th>Modelo</th>
                                         <th>Construc. m&sup2;</th>
+                                        <th>Empresa terreno</th>
+                                        <th>Empresa constructora</th>
                                         <th style="width:8%">Etapa de Servicio</th>
                                         
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="lote in arrayLote" :key="lote.id">
+                                        
+                                        <td class="td2">
+                                            <input type="checkbox"  @click="select" :id="lote.id" :value="lote.id" v-model="allLic" >
+                                        </td>
                                         <td class="td2" style="width:12%">
                                             <button title="Editar" type="button" @click="abrirModal('lote','actualizar',lote)" class="btn btn-warning btn-sm">
                                             <i class="icon-pencil"></i>
@@ -91,6 +119,8 @@
                                             <span v-else class="badge badge-danger"> Por Asignar </span>
                                         </td> 
                                         <td class="td2" v-text="lote.construccion"></td>
+                                        <td class="td2" v-text="lote.emp_terreno"></td>
+                                        <td class="td2" v-text="lote.emp_constructora"></td>
                                         <td class="td2" style="width:8%" v-text="lote.etapa_servicios"></td>
                                        
                                     </tr>                               
@@ -315,8 +345,51 @@
             </div>
             <!--Fin del modal-->
 
+        <!-- Modal para asignar empresa-->
+             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal5}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-LG" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal"></h4>
+                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Empresa dueña del terreno</label>
+                                    <div class="col-md-6">
+                                       <select class="form-control" v-model="empresaTerreno" >
+                                            <option value="">Seleccione</option>
+                                            <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Empresa constructora</label>
+                                    <div class="col-md-6">
+                                       <select class="form-control" v-model="empresaConst" >
+                                            <option value="">Seleccione</option>
+                                            <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                         </form>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" @click="guardarEmpresa()">Guardar cambios</button>
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
+                        </div>
+                    </div>
+                      <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal-->
 
-                    
         </main>
 </template>
 
@@ -384,7 +457,15 @@
                 arrayModelos : [],
                 arrayModelosTC: [],
                 arrayEmpresas : [],
-                arrayManzanas: []
+                arrayManzanas: [],
+                empresas:[],
+                allSelected: false,
+                allLic: [],
+                empresaConst : '',
+                empresaTerreno : '',
+                modal5:0,
+                b_empresa:'',
+                b_empresa2:''
             }
         },
         computed:{
@@ -424,6 +505,21 @@
 
         
         methods : {
+
+            selectAll: function() {
+            this.allLic = [];
+
+            if (!this.allSelected) {
+                for (var lote in this.arrayLote
+                ) {
+                    this.allLic.push(this.arrayLote[lote].id.toString());
+                }
+            }
+            },
+
+             select: function() {
+                this.allSelected =   false;
+            },
 
             onImageChange(e){
 
@@ -477,7 +573,7 @@
             /**Metodo para mostrar los registros */
             listarLote(page, buscar, buscar2, buscar3, criterio){
                 let me = this;
-                var url = '/lote2?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2+ '&buscar3=' + buscar3 + '&criterio=' + criterio;
+                var url = '/lote2?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2+ '&buscar3=' + buscar3 + '&criterio=' + criterio + '&b_empresa=' + me.b_empresa + '&b_empresa2=' + me.b_empresa2;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLote = respuesta.lotes.data;
@@ -511,6 +607,8 @@
                 me.buscar="";
                 me.buscar2="";
                 me.buscar3="";
+                me.b_empresa = "";
+                me.b_empresa2 = "";
                 me.arrayFraccionamientos=[];
                 var url = '/select_fraccionamiento';
                 axios.get(url).then(function (response) {
@@ -521,6 +619,20 @@
                     console.log(error);
                 });
             },
+
+            getEmpresa(){
+                let me = this;
+                me.empresas=[];
+                var url = '/lotes/empresa/select';
+                axios.get(url).then(function (response) {
+                    var respuesta = response;
+                    me.empresas = respuesta.data.empresas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
 
             // selectFraccionamientosConLote(){
             //     let me = this;
@@ -773,6 +885,52 @@
                 return this.errorLote;
             },
 
+            guardarEmpresa(){
+                 if(this.proceso==true){
+                    return;
+                }
+                this.proceso=true;
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                
+                 Swal({
+                    title: 'Estas seguro?',
+                    animation: false,
+                    customClass: 'animated bounceInDown',
+                    text: "Las empresas seleccionadas seran asignadas a los lotes",
+                    type: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Cancelar',
+                    
+                    confirmButtonText: 'Si, asignar!'
+                    }).then((result) => {
+
+                    if (result.value) {
+                        me.allLic.forEach(element => {
+                            axios.put('/lotes/masa/empresa',{
+                                'id':element,
+                                'emp_constructora' : this.empresaConst,
+                                'emp_terreno' : this.empresaTerreno
+                            }); 
+                        })
+                        me.proceso=false;
+                        me.cerrarModal();
+                        me.listarLote(me.pagination.current_page,me.buscar,me.buscar2,me.buscar3,me.criterio);
+                        me.allLic = [];
+                        me.allSelected = false;
+                        Swal({
+                            title: 'Hecho!',
+                            text: 'Se han asignado',
+                            type: 'success',
+                            animation: false,
+                            customClass: 'animated bounceInRight'
+                        })
+                    }})
+              
+            },
+
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
@@ -793,6 +951,7 @@
                 this.clv_catastral='';
                 this.etapa_servicios='';
                 this.comentarios= '';
+                this.modal5 = 0;
                 
                 this.errorLote = 0;
                 this.errorMostrarMsjLote = [];
@@ -884,6 +1043,14 @@
                                 this.buscar_fraccionamientoExcel = 0;
                                 break;
                             }
+                            case 'empresa':
+                            {
+                                this.modal5 = 1;
+                                this.tituloModal = "Asignar empresas"
+                                this.empresaConst = '';
+                                this.empresaTerreno = '';
+                                break;
+                            }
 
                         
                         }
@@ -900,6 +1067,7 @@
         mounted() {
             this.listarLote(1,this.buscar,this.buscar2,this.buscar3,this.criterio);
             this.selectFraccionamientos();
+            this.getEmpresa();
         }
     }
 </script>

@@ -190,6 +190,14 @@ class LicenciasController extends Controller
             }
         }
 
+        if($request->b_empresa != ''){
+            $licencias= $licencias->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
+
+        if($request->b_empresa2 != ''){
+            $licencias= $licencias->where('lotes.emp_terreno','=',$request->b_empresa2);
+        }
+
         $licencias = $licencias->orderBy('licencias.cambios', 'DESC')
                                 ->orderBy('fraccionamientos.nombre', 'DESC')
                                 ->orderBy('lotes.manzana', 'ASC')
@@ -318,6 +326,14 @@ class LicenciasController extends Controller
                     }
                 }
             }
+        }
+
+        if($request->b_empresa != ''){
+            $actas= $actas->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
+
+        if($request->b_empresa2 != ''){
+            $actas= $actas->where('lotes.emp_terreno','=',$request->b_empresa2);
         }
 
         $actas = $actas->orderBy('licencias.cambios', 'DESC')
@@ -1229,44 +1245,24 @@ class LicenciasController extends Controller
             );
 
         if ($buscar == '') {
-            $licencias = $query
-                ->orderBy('licencias.cambios', 'DESC')
-                ->orderBy('fraccionamientos.nombre', 'DESC')
-                ->orderBy('lotes.manzana', 'ASC')
-                ->orderBy('lotes.num_lote', 'ASC')->paginate(16);
+            $licencias = $query;
         } else {
             if ($criterio != 'arquitecto' && $criterio != 'lotes.fraccionamiento_id' && $criterio != 'licencias.perito_dro' && $criterio != 'licencias.f_planos') {
                 $licencias = $query
-                    ->where($criterio, 'like', '%' . $buscar . '%')
-                    ->orderBy('licencias.cambios', 'DESC')
-                    ->orderBy('fraccionamientos.nombre', 'DESC')
-                    ->orderBy('lotes.manzana', 'ASC')
-                    ->orderBy('lotes.num_lote', 'ASC')->paginate(16);
+                    ->where($criterio, 'like', '%' . $buscar . '%');
             } else {
 
                 if ($criterio == 'lotes.siembra') {
                     $licencias = $query
-                        ->where($criterio, '=', $buscar)
-                        ->orderBy('licencias.cambios', 'DESC')
-                        ->orderBy('fraccionamientos.nombre', 'DESC')
-                        ->orderBy('lotes.manzana', 'ASC')
-                        ->orderBy('lotes.num_lote', 'ASC')->paginate(16);
+                        ->where($criterio, '=', $buscar);
                 } 
                 elseif ($criterio == 'licencias.perito_dro'){
                     $licencias = $query
-                        ->where($criterio, '=', $buscar)
-                        ->orderBy('licencias.cambios', 'DESC')
-                        ->orderBy('fraccionamientos.nombre', 'DESC')
-                        ->orderBy('lotes.manzana', 'ASC')
-                        ->orderBy('lotes.num_lote', 'ASC')->paginate(16);
+                        ->where($criterio, '=', $buscar);
                 }else {
                     if ($criterio == 'licencias.f_planos') {
                         $licencias = $query
-                            ->whereBetween($criterio, [$buscar, $buscar2])
-                            ->orderBy('licencias.cambios', 'DESC')
-                            ->orderBy('fraccionamientos.nombre', 'DESC')
-                            ->orderBy('lotes.manzana', 'ASC')
-                            ->orderBy('lotes.num_lote', 'ASC')->paginate(16);
+                            ->whereBetween($criterio, [$buscar, $buscar2]);
                     } else {
 
                         if ($criterio == 'lotes.fraccionamiento_id') {
@@ -1278,21 +1274,13 @@ class LicenciasController extends Controller
                                             ->where('lotes.manzana', '=', $b_manzana)
                                             ->where('lotes.num_lote', 'like', '%' . $b_lote . '%')
                                             ->where('modelos.nombre', 'like', '%' . $b_modelo . '%')
-                                            ->where('personal.nombre', 'like', '%' . $b_arquitecto . '%')
-                                            ->orderBy('licencias.cambios', 'DESC')
-                                            ->orderBy('fraccionamientos.nombre', 'DESC')
-                                            ->orderBy('lotes.manzana', 'ASC')
-                                            ->orderBy('lotes.num_lote', 'ASC')->paginate(16);
+                                            ->where('personal.nombre', 'like', '%' . $b_arquitecto . '%');
                                     } else {
                                         $licencias = $query
                                             ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                             ->where('lotes.num_lote', 'like', '%' . $b_lote . '%')
                                             ->where('modelos.nombre', 'like', '%' . $b_modelo . '%')
-                                            ->where('personal.nombre', 'like', '%' . $b_arquitecto . '%')
-                                            ->orderBy('licencias.cambios', 'DESC')
-                                            ->orderBy('fraccionamientos.nombre', 'DESC')
-                                            ->orderBy('lotes.manzana', 'ASC')
-                                            ->orderBy('lotes.num_lote', 'ASC')->paginate(16);
+                                            ->where('personal.nombre', 'like', '%' . $b_arquitecto . '%');
                                     }
                                 }
                                 else{
@@ -1303,22 +1291,14 @@ class LicenciasController extends Controller
                                             ->where('lotes.num_lote', 'like', '%' . $b_lote . '%')
                                             ->where('modelos.nombre', 'like', '%' . $b_modelo . '%')
                                             ->where('personal.nombre', 'like', '%' . $b_arquitecto . '%')
-                                            ->where('lotes.num_inicio', '=', $b_num_inicio)
-                                            ->orderBy('licencias.cambios', 'DESC')
-                                            ->orderBy('fraccionamientos.nombre', 'DESC')
-                                            ->orderBy('lotes.manzana', 'ASC')
-                                            ->orderBy('lotes.num_lote', 'ASC')->paginate(16);
+                                            ->where('lotes.num_inicio', '=', $b_num_inicio);
                                     } else {
                                         $licencias = $query
                                             ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                             ->where('lotes.num_lote', 'like', '%' . $b_lote . '%')
                                             ->where('modelos.nombre', 'like', '%' . $b_modelo . '%')
                                             ->where('personal.nombre', 'like', '%' . $b_arquitecto . '%')
-                                            ->where('lotes.num_inicio', '=', $b_num_inicio)
-                                            ->orderBy('licencias.cambios', 'DESC')
-                                            ->orderBy('fraccionamientos.nombre', 'DESC')
-                                            ->orderBy('lotes.manzana', 'ASC')
-                                            ->orderBy('lotes.num_lote', 'ASC')->paginate(16);
+                                            ->where('lotes.num_inicio', '=', $b_num_inicio);
                                     }
                                 }
                                 
@@ -1332,22 +1312,14 @@ class LicenciasController extends Controller
                                             ->where('lotes.num_lote', 'like', '%' . $b_lote . '%')
                                             ->where('lotes.credito_puente', '=', $b_puente)
                                             ->where('modelos.nombre', 'like', '%' . $b_modelo . '%')
-                                            ->where('personal.nombre', 'like', '%' . $b_arquitecto . '%')
-                                            ->orderBy('licencias.cambios', 'DESC')
-                                            ->orderBy('fraccionamientos.nombre', 'DESC')
-                                            ->orderBy('lotes.manzana', 'ASC')
-                                            ->orderBy('lotes.num_lote', 'ASC')->paginate(16);
+                                            ->where('personal.nombre', 'like', '%' . $b_arquitecto . '%');
                                     } else {
                                         $licencias = $query
                                             ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                             ->where('lotes.num_lote', 'like', '%' . $b_lote . '%')
                                             ->where('lotes.credito_puente', '=', $b_puente)
                                             ->where('modelos.nombre', 'like', '%' . $b_modelo . '%')
-                                            ->where('personal.nombre', 'like', '%' . $b_arquitecto . '%')
-                                            ->orderBy('licencias.cambios', 'DESC')
-                                            ->orderBy('fraccionamientos.nombre', 'DESC')
-                                            ->orderBy('lotes.manzana', 'ASC')
-                                            ->orderBy('lotes.num_lote', 'ASC')->paginate(16);
+                                            ->where('personal.nombre', 'like', '%' . $b_arquitecto . '%');
                                     }
                                 }
                                 else{
@@ -1359,11 +1331,7 @@ class LicenciasController extends Controller
                                             ->where('lotes.credito_puente', '=', $b_puente)
                                             ->where('modelos.nombre', 'like', '%' . $b_modelo . '%')
                                             ->where('personal.nombre', 'like', '%' . $b_arquitecto . '%')
-                                            ->where('lotes.num_inicio', '=', $b_num_inicio)
-                                            ->orderBy('licencias.cambios', 'DESC')
-                                            ->orderBy('fraccionamientos.nombre', 'DESC')
-                                            ->orderBy('lotes.manzana', 'ASC')
-                                            ->orderBy('lotes.num_lote', 'ASC')->paginate(16);
+                                            ->where('lotes.num_inicio', '=', $b_num_inicio);
                                     } else {
                                         $licencias = $query
                                             ->where('lotes.fraccionamiento_id', '=',  $buscar)
@@ -1371,11 +1339,7 @@ class LicenciasController extends Controller
                                             ->where('lotes.credito_puente', '=', $b_puente)
                                             ->where('modelos.nombre', 'like', '%' . $b_modelo . '%')
                                             ->where('personal.nombre', 'like', '%' . $b_arquitecto . '%')
-                                            ->where('lotes.num_inicio', '=', $b_num_inicio)
-                                            ->orderBy('licencias.cambios', 'DESC')
-                                            ->orderBy('fraccionamientos.nombre', 'DESC')
-                                            ->orderBy('lotes.manzana', 'ASC')
-                                            ->orderBy('lotes.num_lote', 'ASC')->paginate(16);
+                                            ->where('lotes.num_inicio', '=', $b_num_inicio);
                                     }
                                 }
                                 
@@ -1384,16 +1348,25 @@ class LicenciasController extends Controller
                         } else {
                             $licencias = $query
                                 ->where('personal.nombre', 'like', '%' . $buscar . '%')
-                                ->orWhere('personal.apellidos', 'like', '%' . $buscar . '%')
-                                ->orderBy('licencias.cambios', 'DESC')
-                                ->orderBy('fraccionamientos.nombre', 'DESC')
-                                ->orderBy('lotes.manzana', 'ASC')
-                                ->orderBy('lotes.num_lote', 'ASC')->paginate(16);
+                                ->orWhere('personal.apellidos', 'like', '%' . $buscar . '%');
                         }
                     }
                 }
             }
         }
+
+        if($request->b_empresa != ''){
+            $licencias= $licencias->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
+
+        if($request->b_empresa2 != ''){
+            $licencias= $licencias->where('lotes.emp_terreno','=',$request->b_empresa2);
+        }
+
+        $licencias = $licencias->orderBy('licencias.cambios', 'DESC')
+                                ->orderBy('fraccionamientos.nombre', 'DESC')
+                                ->orderBy('lotes.manzana', 'ASC')
+                                ->orderBy('lotes.num_lote', 'ASC')->paginate(16);
 
         return Excel::create(
             'Licencias',
@@ -1548,27 +1521,15 @@ class LicenciasController extends Controller
             );
 
         if ($buscar == '') {
-            $actas = $query
-                ->orderBy('licencias.cambios', 'DESC')
-                ->orderBy('fraccionamientos.nombre', 'DESC')
-                ->orderBy('lotes.manzana', 'ASC')
-                ->orderBy('lotes.num_lote', 'ASC')->paginate(15);
+            $actas = $query;
         } else {
             if ($criterio != 'lotes.fraccionamiento_id') {
                 $actas = $query
-                    ->where($criterio, 'like', '%' . $buscar . '%')
-                    ->orderBy('licencias.cambios', 'DESC')
-                    ->orderBy('fraccionamientos.nombre', 'DESC')
-                    ->orderBy('lotes.manzana', 'ASC')
-                    ->orderBy('lotes.num_lote', 'ASC')->paginate(15);
+                    ->where($criterio, 'like', '%' . $buscar . '%');
             } else {
                 if ($criterio == 'licencias.term_ingreso' || $criterio == 'licencias.term_salida') {
                     $actas = $query
-                        ->whereBetween($criterio, [$buscar, $buscar2])
-                        ->orderBy('licencias.cambios', 'DESC')
-                        ->orderBy('fraccionamientos.nombre', 'DESC')
-                        ->orderBy('lotes.manzana', 'ASC')
-                        ->orderBy('lotes.num_lote', 'ASC')->paginate(15);
+                        ->whereBetween($criterio, [$buscar, $buscar2]);
                 } else {
                     if ($criterio == 'lotes.fraccionamiento_id') {
                         if($b_num_inicio == ''){
@@ -1576,22 +1537,14 @@ class LicenciasController extends Controller
                                 $actas = $query
                                 ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                 ->where('lotes.manzana', 'like', '%' . $b_manzana . '%')
-                                ->where('lotes.num_lote', 'like', '%' . $b_lote . '%')
-                                ->orderBy('licencias.cambios', 'DESC')
-                                ->orderBy('fraccionamientos.nombre', 'DESC')
-                                ->orderBy('lotes.manzana', 'ASC')
-                                ->orderBy('lotes.num_lote', 'ASC')->paginate(15);
+                                ->where('lotes.num_lote', 'like', '%' . $b_lote . '%');
                             }
                             else{
                                 $actas = $query
                                 ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                 ->where('lotes.manzana', 'like', '%' . $b_manzana . '%')
                                 ->where('lotes.num_lote', 'like', '%' . $b_lote . '%')
-                                ->where('lotes.credito_puente','=',$b_puente)
-                                ->orderBy('licencias.cambios', 'DESC')
-                                ->orderBy('fraccionamientos.nombre', 'DESC')
-                                ->orderBy('lotes.manzana', 'ASC')
-                                ->orderBy('lotes.num_lote', 'ASC')->paginate(15);
+                                ->where('lotes.credito_puente','=',$b_puente);
     
                             }
                         }
@@ -1601,11 +1554,7 @@ class LicenciasController extends Controller
                                 ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                 ->where('lotes.manzana', 'like', '%' . $b_manzana . '%')
                                 ->where('lotes.num_lote', 'like', '%' . $b_lote . '%')
-                                ->where('lotes.num_inicio', '=',  $b_num_inicio)
-                                ->orderBy('licencias.cambios', 'DESC')
-                                ->orderBy('fraccionamientos.nombre', 'DESC')
-                                ->orderBy('lotes.manzana', 'ASC')
-                                ->orderBy('lotes.num_lote', 'ASC')->paginate(15);
+                                ->where('lotes.num_inicio', '=',  $b_num_inicio);
                             }
                             else{
                                 $actas = $query
@@ -1613,20 +1562,26 @@ class LicenciasController extends Controller
                                 ->where('lotes.manzana', 'like', '%' . $b_manzana . '%')
                                 ->where('lotes.num_lote', 'like', '%' . $b_lote . '%')
                                 ->where('lotes.num_inicio', '=',  $b_num_inicio)
-                                ->where('lotes.credito_puente','=',$b_puente)
-                                ->orderBy('licencias.cambios', 'DESC')
-                                ->orderBy('fraccionamientos.nombre', 'DESC')
-                                ->orderBy('lotes.manzana', 'ASC')
-                                ->orderBy('lotes.num_lote', 'ASC')->paginate(15);
-    
+                                ->where('lotes.credito_puente','=',$b_puente);
                             }
                         }
-                        
-                        
                     }
                 }
             }
         }
+
+        if($request->b_empresa != ''){
+            $actas= $actas->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
+
+        if($request->b_empresa2 != ''){
+            $actas= $actas->where('lotes.emp_terreno','=',$request->b_empresa2);
+        }
+
+        $actas = $actas->orderBy('licencias.cambios', 'DESC')
+                        ->orderBy('fraccionamientos.nombre', 'DESC')
+                        ->orderBy('lotes.manzana', 'ASC')
+                        ->orderBy('lotes.num_lote', 'ASC')->paginate(15);
 
         return Excel::create(
             'actas',

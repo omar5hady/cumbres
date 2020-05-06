@@ -602,7 +602,7 @@
                                         <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de inicio, termino, ventas y cobranza</a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 6)
+                                @if(Auth::user()->rol_id == 1 || Auth::user()->rep_venta_canc == 1)
                                     <li @click="menu=239" class="nav-item">
                                         <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de ventas y cancelaciones</a>
                                     </li>

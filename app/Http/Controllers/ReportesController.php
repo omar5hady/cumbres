@@ -246,9 +246,23 @@ class ReportesController extends Controller
                                         ->whereBetween('created_at', [$fecha1,$fecha2])
                                         ->count();
 
-                $vendedor->por_venta=(($vendedor->ventas-$vendedor->canceladas)/$vendedor->clientes)*100;
-                $vendedor->por_cancel=(($vendedor->canceladas)/$vendedor->clientes)*100;
-                $vendedor->por_bat=($vendedor->clientes/$vendedor->nv)*100;
+                if($vendedor->clientes != 0) {
+                    $vendedor->por_venta=(($vendedor->ventas-$vendedor->canceladas)/$vendedor->clientes)*100;
+                    $vendedor->por_cancel=(($vendedor->canceladas)/$vendedor->clientes)*100;
+                }
+                else{
+                    $vendedor->por_venta= 0;
+                    $vendedor->por_cancel= 0;
+                }
+
+                if($vendedor->nv!=0){
+                    $vendedor->por_bat=($vendedor->clientes/$vendedor->nv)*100;
+                }
+                else{
+                    $vendedor->por_bat=0;
+                }
+
+
 
             }
             
@@ -541,7 +555,7 @@ class ReportesController extends Controller
                         ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
                         ->join('etapas as et','lotes.etapa_id','=','et.id')
                         ->select('lotes.manzana','lotes.num_lote','f.nombre as proyecto','et.num_etapa','p.nombre', 'p.apellidos',
-                                'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta')
+                                'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta','contratos.status')
                         
                         ->where('contratos.status','=',3)
                         ->where('ins.elegido','=',1)
@@ -549,6 +563,10 @@ class ReportesController extends Controller
                         ->orWhere('contratos.status','=',1)
                         ->where('ins.elegido','=',1)
                         ->whereBetween('contratos.fecha', [$request->fecha, $request->fecha2])
+                        ->orWhere('contratos.status','=',0)
+                        ->where('ins.elegido','=',1)
+                        ->whereBetween('contratos.fecha', [$request->fecha, $request->fecha2])
+                        ->orderBy('contratos.status','desc')
                         ->orderBy('contratos.fecha','asc')
                         ->get();
 
@@ -568,8 +586,12 @@ class ReportesController extends Controller
                         ->get();
 
         
+        $contVentas = $ventas->count();
+        $contCancelaciones = $cancelaciones->count();
         return[
             'ventas'=>$ventas,
+            'contVentas'=>$contVentas,
+            'contCancelaciones'=>$contCancelaciones,
             'cancelaciones'=>$cancelaciones,
         ];
     }

@@ -70,6 +70,20 @@
                             </div>
                         </div>
                         <div class="form-group row">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <select class="form-control" v-model="b_empresa" >
+                                        <option value="">Empresa constructora</option>
+                                        <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                    </select>
+                                    <select class="form-control" v-model="b_empresa2" >
+                                        <option value="">Empresa terreno</option>
+                                        <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <div class="col-md-6">
                                 <div class="input-group">
                                     <select class="form-control" v-model="b_habilitado" >
@@ -78,7 +92,7 @@
                                         <option value="">Todos</option>
                                     </select>
                                     <button type="submit" @click="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,b_habilitado,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                    <a class="btn btn-success" v-bind:href="'/asignar_modelo/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3  + '&bmodelo=' + b_modelo + '&blote=' + b_lote + '&b_habilitado='+ b_habilitado+'&criterio=' + criterio + '&b_puente=' + b_puente" >
+                                    <a class="btn btn-success" v-bind:href="'/asignar_modelo/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3  + '&bmodelo=' + b_modelo + '&blote=' + b_lote + '&b_habilitado='+ b_habilitado+'&criterio=' + criterio + '&b_puente=' + b_puente + '&b_empresa=' + b_empresa + '&b_empresa2=' + b_empresa2" >
                                         <i class="icon-pencil"></i>&nbsp;Excel
                                     </a>
                                     <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
@@ -533,6 +547,9 @@
                 arrayEmpresas : [],
                 arrayManzanas: [],
                 arrayPuentes: [],
+                empresas: [],
+                b_empresa:'',
+                b_empresa2:'',
 
                 fecha_termino_ventas: ''
             }
@@ -638,12 +655,26 @@
             /**Metodo para mostrar los registros */
             listarLote(page, buscar, buscar2, buscar3, b_modelo, b_lote,b_habilitado, criterio){
                 let me = this;
-                var url = '/lote?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3  + '&bmodelo=' + b_modelo + '&blote=' + b_lote + '&b_habilitado='+ b_habilitado+'&criterio=' + criterio + '&b_puente=' + me.b_puente;
+                var url = '/lote?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3  + '&bmodelo=' + b_modelo + '&blote=' + b_lote + '&b_habilitado='+ b_habilitado 
+                            +'&criterio=' + criterio + '&b_puente=' + me.b_puente + '&b_empresa=' + me.b_empresa + '&b_empresa2=' + me.b_empresa2;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLote = respuesta.lotes.data;
                     me.pagination = respuesta.pagination;
                     me.contador = me.pagination.total;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            getEmpresa(){
+                let me = this;
+                me.empresas=[];
+                var url = '/lotes/empresa/select';
+                axios.get(url).then(function (response) {
+                    var respuesta = response;
+                    me.empresas = respuesta.data.empresas;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -675,9 +706,11 @@
             selectFraccionamientos(){
                 let me = this;
                 if(me.modal == 0){
-                me.buscar=""
-                me.buscar2=""
-                me.buscar3=""
+                    me.buscar="";
+                    me.buscar2="";
+                    me.buscar3="";
+                    me.b_empresa="";
+                    me.b_empresa2="";
                 }
                 
                 me.arrayFraccionamientos=[];
@@ -997,6 +1030,7 @@
         mounted() {
             this.listarLote(1,this.buscar,this.buscar2,this.buscar3,this.b_modelo,this.b_lote,this.b_habilitado, this.criterio);
             this.selectFraccionamientos();
+            this.getEmpresa();
         }
     }
 </script>
