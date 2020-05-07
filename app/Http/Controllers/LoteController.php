@@ -959,6 +959,14 @@ class LoteController extends Controller
 
     }
 
+    public function actNumInicio(Request $request){
+        $lote = Lote::findOrFail($request->id);
+        $lote->num_inicio = $request->num_inicio;
+        
+        $lote->save();
+
+    }
+
     public function destroy(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -1201,7 +1209,7 @@ class LoteController extends Controller
             ->join('empresas','lotes.empresa_id','=','empresas.id')
             ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
                   'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                  'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
+                  'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id','lotes.num_inicio',
                   'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
                   'lotes.fecha_termino_ventas', 'lotes.ehl_solicitado');
         

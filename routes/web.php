@@ -220,6 +220,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/lote_aviso','LoteController@indexIniObra');
         Route::get('/lote_aviso/historial','LoteController@indexHistorialIniObra');
         Route::put('/lotes/enviarAviObra','LoteController@enviarAviso');
+        Route::put('/lotes/enviarAviObra/actualizar','LoteController@actNumInicio');
         Route::get('/lotes/export_excel/{fraccionamiento_id}','LoteController@excelLotes');
         Route::get('/lotes/resume_excel_lotes_disp','LoteController@exportExcelLotesDisp');
         Route::get('/lotes/con_precio_base','LoteController@LotesConPrecioBase');

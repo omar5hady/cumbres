@@ -35,11 +35,14 @@
                                             <option value="23679">Raúl Palos López</option>
                                     </select>
 
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @click="selectPuente(buscar)">
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @click="selectPuente(buscar),selectEtapas(buscar)">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
-                                    
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa" >
+                                        <option value="">Etapa</option>
+                                        <option v-for="etapa in arrayAllEtapas" :key="etapa.id" :value="etapa.id" v-text="etapa.num_etapa"></option>
+                                    </select>
                                     <input type="date" v-if="criterio=='licencias.term_ingreso' || criterio== 'licencias.term_salida'" v-model="buscar" @keyup.enter="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="form-control col-md-6" placeholder="Desde" >
                                     <input type="date" v-if="criterio=='licencias.term_ingreso' || criterio== 'licencias.term_salida'" v-model="buscar2"  @keyup.enter="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="form-control col-md-6" placeholder="Hasta" >
 
@@ -82,7 +85,8 @@
                                     </select>
                                     <input v-if="criterio=='lotes.fraccionamiento_id'" type="text"  v-model="b_num_inicio" @keyup.enter="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="form-control" placeholder="# inicio de obra">
                                     <button type="submit" @click="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                    <a class="btn btn-success" v-bind:href="'/acta_terminacion/excel?buscar=' + buscar + '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + '&criterio=' + criterio + '&buscar2=' + buscar2 + '&b_puente=' + b_puente + '&b_num_inicio=' + b_num_inicio + '&b_empresa=' + b_empresa + '&b_empresa2=' + b_empresa2" >
+                                    <a class="btn btn-success" v-bind:href="'/acta_terminacion/excel?buscar=' + buscar + '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + '&criterio=' + criterio + '&buscar2=' + buscar2 + '&b_puente=' + b_puente + '&b_num_inicio=' + 
+                                                b_num_inicio + '&b_empresa=' + b_empresa + '&b_empresa2=' + b_empresa2 + '&b_etapa=' + b_etapa" >
                                         <i class="icon-pencil"></i>&nbsp;Excel
                                     </a>
                                 </div>
@@ -102,6 +106,7 @@
                                         </th>
                                         <th>Opciones</th>
                                         <th>Proyecto</th>
+                                        <th>Etapa</th>
                                         <th>Manzana</th>
                                         <th># Lote</th>
                                         <th>Terreno mts&sup2;</th>
@@ -132,6 +137,7 @@
                                             </button>
                                         </td>
                                         <td class="td2" v-text="act_terminacion.proyecto"></td>
+                                        <td class="td2" v-text="act_terminacion.num_etapa"></td>
                                         <td class="td2" v-text="act_terminacion.manzana"></td>
                                         <td class="td2" v-text="act_terminacion.num_lote"></td>
                                         <td class="td2" v-text="act_terminacion.terreno"></td>
@@ -632,7 +638,9 @@
                 b_num_inicio : '',
                 empresas:[],
                 b_empresa:'',
-                b_empresa2:''
+                b_empresa2:'',
+                arrayAllEtapas:[],
+                b_etapa:''
                 
             }
         },
@@ -791,7 +799,8 @@
             listarActa(page, buscar,b_manzana,b_lote,criterio,buscar2){
                 let me = this;
                 var url = '/acta_terminacion?page=' + page + '&buscar=' + buscar + '&b_manzana=' + b_manzana + '&b_lote='+ b_lote  + '&criterio=' + criterio + 
-                            '&buscar2=' + buscar2 + '&b_puente=' + me.b_puente + '&b_num_inicio=' + me.b_num_inicio + '&b_empresa=' + me.b_empresa + '&b_empresa2=' + me.b_empresa2;
+                            '&buscar2=' + buscar2 + '&b_puente=' + me.b_puente + '&b_num_inicio=' + me.b_num_inicio + '&b_empresa=' + me.b_empresa + '&b_empresa2=' + me.b_empresa2
+                            + '&b_etapa=' + me.b_etapa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayActaDeTerminacion = respuesta.actas.data;
@@ -904,6 +913,21 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayPuentes = respuesta.creditos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+             selectEtapas(buscar){
+                let me = this;
+                me.b_etapa="";
+                
+                me.arrayAllEtapas=[];
+                var url = '/select_etapa_proyecto?buscar=' + buscar;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayAllEtapas = respuesta.etapas;
                 })
                 .catch(function (error) {
                     console.log(error);

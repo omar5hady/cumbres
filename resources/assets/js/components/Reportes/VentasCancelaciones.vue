@@ -56,6 +56,7 @@
                                                 <th>Fecha de venta</th>
                                                 <th>Crédito</th>
                                                 <th>Institución</th>
+                                                <th>Promocion/paquete</th>
                                                 <th>Valor de escrituración</th>
                                             </tr>
                                         </thead>
@@ -69,6 +70,12 @@
                                                 <td class="td2" v-text="lote.fecha"></td>
                                                 <td class="td2" v-text="lote.tipo_credito"></td>
                                                 <td class="td2" v-text="lote.institucion"></td>
+                                                <template>
+                                                    <td class="td2" v-if="lote.descripcion_promocion == null && lote.descripcion_paquete == null" v-text="''"></td>
+                                                    <td class="td2" v-else-if="lote.descripcion_promocion != null && lote.descripcion_paquete == null" v-text="'Promo: '+lote.descripcion_promocion"></td>
+                                                    <td class="td2" v-else-if="lote.descripcion_promocion == null && lote.descripcion_paquete != null" v-text="'Paquete: '+lote.descripcion_paquete"></td>
+                                                    <td class="td2" v-else v-text="'Promo: ' + lote.descripcion_promocion + ' / Paquete:' + lote.descripcion_paquete"></td>
+                                                </template>
                                                 <td class="td2" v-text="'$'+formatNumber(lote.precio_venta)"></td>
                                             </tr>                             
                                         </tbody>
@@ -107,6 +114,7 @@
                                                 <th>Fecha de venta</th>
                                                 <th>Crédito</th>
                                                 <th>Institución</th>
+                                                <th>Promoción / Paquete</th>
                                                 <th>Valor de escrituración</th>
                                             </tr>
                                         </thead>
@@ -121,6 +129,12 @@
                                                 <td class="td2" v-text="cancelacion.fecha"></td>
                                                 <td class="td2" v-text="cancelacion.tipo_credito"></td>
                                                 <td class="td2" v-text="cancelacion.institucion"></td>
+                                                <template>
+                                                    <td class="td2" v-if="cancelacion.descripcion_promocion == null && cancelacion.descripcion_paquete == null" v-text="''"></td>
+                                                    <td class="td2" v-else-if="cancelacion.descripcion_promocion != null && cancelacion.descripcion_paquete == null" v-text="'Promo: '+cancelacion.descripcion_promocion"></td>
+                                                    <td class="td2" v-else-if="cancelacion.descripcion_promocion == null && cancelacion.descripcion_paquete != null" v-text="'Paquete: '+cancelacion.descripcion_paquete"></td>
+                                                    <td class="td2" v-else v-text="'Promo: ' + cancelacion.descripcion_promocion + ' / Paquete:' + cancelacion.descripcion_paquete"></td>
+                                                </template>
                                                 <td class="td2" v-text="'$'+formatNumber(cancelacion.precio_venta)"></td>
                                             </tr>                             
                                         </tbody>

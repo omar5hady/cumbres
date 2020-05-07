@@ -38,7 +38,7 @@ class LicenciasController extends Controller
                 ->join('empresas', 'lotes.empresa_id', '=', 'empresas.id')
                 ->select(
                     'fraccionamientos.nombre as proyecto',
-                    'etapas.num_etapa as etapas',
+                    'etapas.num_etapa',
                     'lotes.manzana',
                     'lotes.num_lote',
                     'lotes.sublote',
@@ -179,6 +179,10 @@ class LicenciasController extends Controller
                                 }
                                 
                             }
+
+                            if($request->b_etapa != ''){
+                                $licencias = $licencias->where('lotes.etapa_id','=',$request->b_etapa);
+                            }
                             
                         } else {
                             $licencias = $query
@@ -200,6 +204,7 @@ class LicenciasController extends Controller
 
         $licencias = $licencias->orderBy('licencias.cambios', 'DESC')
                                 ->orderBy('fraccionamientos.nombre', 'DESC')
+                                ->orderBy('etapas.num_etapa', 'DESC')
                                 ->orderBy('lotes.manzana', 'ASC')
                                 ->orderBy('lotes.num_lote', 'ASC')->paginate(16);
 
@@ -238,7 +243,7 @@ class LicenciasController extends Controller
             ->join('empresas', 'lotes.empresa_id', '=', 'empresas.id')
             ->select(
                 'fraccionamientos.nombre as proyecto',
-                'etapas.num_etapa as etapas',
+                'etapas.num_etapa',
                 'lotes.manzana',
                 'lotes.num_lote',
                 'lotes.sublote',
@@ -322,7 +327,11 @@ class LicenciasController extends Controller
                                 ->where('lotes.num_inicio', '=',  $b_num_inicio)
                                 ->where('lotes.credito_puente','=',$b_puente);
                             }
-                        }                        
+                        }    
+                        
+                        if($request->b_etapa != ''){
+                            $actas = $actas->where('lotes.etapa_id','=',$request->b_etapa);
+                        }
                     }
                 }
             }
@@ -338,6 +347,7 @@ class LicenciasController extends Controller
 
         $actas = $actas->orderBy('licencias.cambios', 'DESC')
                         ->orderBy('fraccionamientos.nombre', 'DESC')
+                        ->orderBy('etapas.num_etapa', 'DESC')
                         ->orderBy('lotes.manzana', 'ASC')
                         ->orderBy('lotes.num_lote', 'ASC')->paginate(15);
 
@@ -1205,7 +1215,7 @@ class LicenciasController extends Controller
             ->join('empresas', 'lotes.empresa_id', '=', 'empresas.id')
             ->select(
                 'fraccionamientos.nombre as proyecto',
-                'etapas.num_etapa as etapas',
+                'etapas.num_etapa',
                 'lotes.manzana',
                 'lotes.num_lote',
                 'lotes.sublote',
@@ -1344,7 +1354,9 @@ class LicenciasController extends Controller
                                 }
                                 
                             }
-                            
+                            if($request->b_etapa != ''){
+                                $licencias = $licencias->where('lotes.etapa_id','=',$request->b_etapa);
+                            }
                         } else {
                             $licencias = $query
                                 ->where('personal.nombre', 'like', '%' . $buscar . '%')
@@ -1365,6 +1377,7 @@ class LicenciasController extends Controller
 
         $licencias = $licencias->orderBy('licencias.cambios', 'DESC')
                                 ->orderBy('fraccionamientos.nombre', 'DESC')
+                                ->orderBy('etapas.num_etapa', 'DESC')
                                 ->orderBy('lotes.manzana', 'ASC')
                                 ->orderBy('lotes.num_lote', 'ASC')->paginate(16);
 
@@ -1374,7 +1387,7 @@ class LicenciasController extends Controller
                 $excel->sheet('licencias', function ($sheet) use ($licencias) {
 
                     $sheet->row(1, [
-                        'Fracc.', 'Manzana', 'Lote', 'Terreno', 'Construccion', 'Modelo', 'Arquitecto',
+                        'Fracc.','Manzana', 'Lote', 'Terreno', 'Construccion', 'Modelo', 'Arquitecto',
                         'No. Inicio','Fecha Inicio', 'Siembra obra', 'Planos licencia', 'DRO', 'Ingreso', 'Salida', 'Num.Licencia', 'Credito puente'
                     ]);
 
@@ -1434,8 +1447,10 @@ class LicenciasController extends Controller
                             $licencia->f_salida = $tiempo->formatLocalized('%d de %B de %Y');
                         }
 
+                        $proyecto = $licencia->proyecto.'-'.$licencia->num_etapa;
+
                         $sheet->row($index + 2, [
-                            $licencia->proyecto,
+                            $proyecto,
                             $licencia->manzana,
                             $licencia->num_lote,
                             $licencia->terreno,
@@ -1480,7 +1495,7 @@ class LicenciasController extends Controller
             ->join('empresas', 'lotes.empresa_id', '=', 'empresas.id')
             ->select(
                 'fraccionamientos.nombre as proyecto',
-                'etapas.num_etapa as etapas',
+                'etapas.num_etapa',
                 'lotes.manzana',
                 'lotes.num_lote',
                 'lotes.sublote',
@@ -1565,6 +1580,10 @@ class LicenciasController extends Controller
                                 ->where('lotes.credito_puente','=',$b_puente);
                             }
                         }
+
+                        if($request->b_etapa != ''){
+                            $actas = $actas->where('lotes.etapa_id','=',$request->b_etapa);
+                        }
                     }
                 }
             }
@@ -1580,6 +1599,7 @@ class LicenciasController extends Controller
 
         $actas = $actas->orderBy('licencias.cambios', 'DESC')
                         ->orderBy('fraccionamientos.nombre', 'DESC')
+                        ->orderBy('etapas.num_etapa', 'DESC')
                         ->orderBy('lotes.manzana', 'ASC')
                         ->orderBy('lotes.num_lote', 'ASC')->paginate(15);
 
@@ -1627,8 +1647,10 @@ class LicenciasController extends Controller
                             $acta->term_salida = $tiempo->formatLocalized('%d de %B de %Y');
                         }
 
+                        $proyecto = $acta->proyecto.'-'.$acta->num_etapa;
+
                         $sheet->row($index + 2, [
-                            $acta->proyecto,
+                            $proyecto,
                             $acta->manzana,
                             $acta->num_lote,
                             $acta->terreno,

@@ -555,6 +555,7 @@ class ReportesController extends Controller
                         ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
                         ->join('etapas as et','lotes.etapa_id','=','et.id')
                         ->select('lotes.manzana','lotes.num_lote','f.nombre as proyecto','et.num_etapa','p.nombre', 'p.apellidos',
+                                'creditos.descripcion_promocion','creditos.descripcion_paquete',
                                 'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta','contratos.status')
                         
                         ->where('contratos.status','=',3)
@@ -578,6 +579,7 @@ class ReportesController extends Controller
                         ->join('etapas as et','lotes.etapa_id','=','et.id')
                         ->select('lotes.manzana','lotes.num_lote','f.nombre as proyecto','et.num_etapa','p.nombre', 'p.apellidos',
                                 'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta',
+                                'creditos.descripcion_promocion','creditos.descripcion_paquete',
                                 'contratos.fecha_status')
                         ->where('ins.elegido','=',1)
                         ->where('contratos.status','=',0)
@@ -605,10 +607,20 @@ class ReportesController extends Controller
                         ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
                         ->join('etapas as et','lotes.etapa_id','=','et.id')
                         ->select('lotes.manzana','lotes.num_lote','f.nombre as proyecto','et.num_etapa','p.nombre', 'p.apellidos',
+                                'creditos.descripcion_promocion','creditos.descripcion_paquete', 'contratos.status',
                                 'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta')
                         ->where('ins.elegido','=',1)
                         ->where('contratos.status','=',3)
                         ->whereBetween('contratos.fecha', [$request->fecha, $request->fecha2])
+
+                        ->orWhere('contratos.status','=',1)
+                        ->where('ins.elegido','=',1)
+                        ->whereBetween('contratos.fecha', [$request->fecha, $request->fecha2])
+
+                        ->orWhere('contratos.status','=',0)
+                        ->where('ins.elegido','=',1)
+                        ->whereBetween('contratos.fecha', [$request->fecha, $request->fecha2])
+                        ->orderBy('contratos.status','desc')
                         ->orderBy('contratos.fecha','asc')
                         ->get();
 
@@ -620,6 +632,7 @@ class ReportesController extends Controller
                         ->join('etapas as et','lotes.etapa_id','=','et.id')
                         ->select('lotes.manzana','lotes.num_lote','f.nombre as proyecto','et.num_etapa','p.nombre', 'p.apellidos',
                                 'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta',
+                                'creditos.descripcion_promocion','creditos.descripcion_paquete',
                                 'contratos.fecha_status')
                         ->where('ins.elegido','=',1)
                         ->where('contratos.status','=',0)
@@ -640,8 +653,8 @@ class ReportesController extends Controller
         return Excel::create('Reporte de ventas y cancelaciones', function($excel) use ($ventas,$cancelaciones,$periodo){
             $excel->sheet('Ventas', function($sheet) use ($ventas,$periodo){
 
-                $sheet->mergeCells('A1:J1');
-                $sheet->mergeCells('A2:J2');
+                $sheet->mergeCells('A1:K1');
+                $sheet->mergeCells('A2:K2');
                 $sheet->mergeCells('C4:G4');
 
                 $sheet->cell('A1', function($cell) {
@@ -689,7 +702,7 @@ class ReportesController extends Controller
                 });
 
                 $sheet->setColumnFormat(array(
-                    'J' => '$#,##0.00',
+                    'K' => '$#,##0.00',
                 ));
 
                 $sheet->row(8, [
@@ -702,11 +715,12 @@ class ReportesController extends Controller
                     'Fecha de venta',
                     'Crédito',
                     'Institución',
+                    'Promoción / Paquete',
                     'Valor de escrituración'
                 ]);
                 
 
-                $sheet->cells('A8:J8', function ($cells) {
+                $sheet->cells('A8:K8', function ($cells) {
                     // Set font family
                     $cells->setFontFamily('Calibri');
 
@@ -725,6 +739,21 @@ class ReportesController extends Controller
                 foreach($ventas as $index => $lote) {
                     $cont++;
 
+                    $paquete = '';
+
+                    $status='';
+                    if($lote->status == 0)
+                        $status = 'Cancelado';
+
+                    if($lote->descripcion_promocion == null && $lote->descripcion_paquete == null) 
+                        $paquete = '';
+                    elseif($lote->descripcion_promocion != null && $lote->descripcion_paquete == null)
+                        $paquete = 'Promo: '.$lote->descripcion_promocion;
+                    elseif($lote->descripcion_promocion == null && $lote->descripcion_paquete != null)
+                        $paquete = 'Paquete: '.$lote->descripcion_paquete;
+                    else 
+                        $paquete = 'Promo: ' . $lote->descripcion_promocion . ' / Paquete:' . $lote->descripcion_paquete;
+
                     $sheet->row($index+9, [
                         $index+1,
                         $lote->proyecto, 
@@ -735,11 +764,13 @@ class ReportesController extends Controller
                         $lote->fecha,
                         $lote->tipo_credito,
                         $lote->institucion,
+                        $paquete,
                         $lote->precio_venta,
+                        $status,
                     ]);	
                 }
             
-                $num='A8:J' . $cont;
+                $num='A8:K' . $cont;
                 $sheet->setBorder($num, 'thin');
 
                 
@@ -747,8 +778,8 @@ class ReportesController extends Controller
 
             $excel->sheet('Cancelaciones', function($sheet) use ($cancelaciones,$periodo){
 
-                $sheet->mergeCells('A1:K1');
-                $sheet->mergeCells('A2:K2');
+                $sheet->mergeCells('A1:L1');
+                $sheet->mergeCells('A2:L2');
                 $sheet->mergeCells('C4:G4');
 
                 $sheet->cell('A1', function($cell) {
@@ -796,7 +827,7 @@ class ReportesController extends Controller
                 });
 
                 $sheet->setColumnFormat(array(
-                    'K' => '$#,##0.00',
+                    'L' => '$#,##0.00',
                 ));
 
                 $sheet->row(8, [
@@ -810,11 +841,12 @@ class ReportesController extends Controller
                     'Fecha de venta',
                     'Crédito',
                     'Institución',
+                    'Promoción / Paquete',
                     'Valor de escrituración'
                 ]);
                 
 
-                $sheet->cells('A8:K8', function ($cells) {
+                $sheet->cells('A8:L8', function ($cells) {
                     // Set font family
                     $cells->setFontFamily('Calibri');
 
@@ -833,6 +865,17 @@ class ReportesController extends Controller
                 foreach($cancelaciones as $index => $lote) {
                     $cont++;
 
+                    $paquete = '';
+                    
+                    if($lote->descripcion_promocion == null && $lote->descripcion_paquete == null) 
+                        $paquete = '';
+                    elseif($lote->descripcion_promocion != null && $lote->descripcion_paquete == null)
+                        $paquete = 'Promo: '.$lote->descripcion_promocion;
+                    elseif($lote->descripcion_promocion == null && $lote->descripcion_paquete != null)
+                        $paquete = 'Paquete: '.$lote->descripcion_paquete;
+                    else 
+                        $paquete = 'Promo: ' . $lote->descripcion_promocion . ' / Paquete:' . $lote->descripcion_paquete;
+
                     $sheet->row($index+9, [
                         $index+1,
                         $lote->proyecto, 
@@ -844,11 +887,12 @@ class ReportesController extends Controller
                         $lote->fecha,
                         $lote->tipo_credito,
                         $lote->institucion,
+                        $paquete,
                         $lote->precio_venta,
                     ]);	
                 }
             
-                $num='A8:K' . $cont;
+                $num='A8:L' . $cont;
                 $sheet->setBorder($num, 'thin');
 
                 

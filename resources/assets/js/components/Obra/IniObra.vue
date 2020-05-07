@@ -20,6 +20,9 @@
                         <button v-if="historial == 1" type="button" @click="historial=0" class="btn btn-default">
                             <i class="fa fa-mail-reply"></i>&nbsp;Regresar
                         </button>
+                        <button  v-if="historial == 1" type="button" @click="abrirModal('lotes','editar')" class="btn btn-dark">
+                            <i class="icon-pencil"></i>&nbsp;Editar Numero de inicio
+                        </button>
                         <!---->
                     </div>
                     <div class="card-body" v-if="historial == 0">
@@ -129,6 +132,9 @@
                             <table class="table table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
+                                        <th>
+                                            <input type="checkbox" @click="selectAll2" v-model="allSelected2"> Todos
+                                        </th>
                                         <th>Fraccionamiento</th>
                                         <th>Etapa</th>
                                         <th>Manzana</th>
@@ -137,11 +143,14 @@
                                         <th>Terreno mts&sup2;</th>
                                         <th>Construcción mts&sup2;</th>
                                         <th>Fecha de solicitud</th>
+                                        <th># Inicio</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="lote in arrayHistorial" :key="lote.id">
-                                        
+                                        <td style="width:8%; ">
+                                            <input type="checkbox" @click="select2" :id="lote.id" :value="lote.id" v-model="lotes_ini2">
+                                        </td>
                                         <td v-text="lote.proyecto"></td>
                                         <td v-text="lote.etapas"></td>
                                         <td v-text="lote.manzana"></td>
@@ -150,6 +159,7 @@
                                         <td v-text="lote.terreno"></td>
                                         <td v-text="lote.construccion"></td>
                                         <td v-text="lote.ehl_solicitado"></td>
+                                        <td v-text="lote.num_inicio"></td>
                                     </tr>                               
                                 </tbody>
                             </table>
@@ -193,25 +203,25 @@
                                         <input type="number" v-model="num_inicio" class="form-control" placeholder="Numero de inicio">
                                     </div>
                                 </div>
-                                <div class="form-group row">
+                                <div class="form-group row" v-if="tipoAccion == 1">
                                     <label class="col-md-3 form-control-label" for="text-input">Fecha de inicio</label>
                                     <div class="col-md-6">
                                         <input type="date" v-model="f_ini" class="form-control" placeholder="Fecha de inicio">
                                     </div>
                                 </div>
-                                   <div class="form-group row">
+                                <div class="form-group row" v-if="tipoAccion == 1">
                                     <label class="col-md-3 form-control-label" for="text-input">Fecha de terminacion</label>
                                     <div class="col-md-6">
                                         <input type="date" v-model="f_fin" class="form-control" placeholder="Fecha de terminacion">
                                     </div>
                                 </div>
-                                <div class="form-group row">
+                                <div class="form-group row" v-if="tipoAccion == 1">
                                     <label class="col-md-3 form-control-label" for="text-input">Fecha de terminacion ventas</label>
                                     <div class="col-md-6">
                                         <input type="date" v-model="fecha_termino_ventas" class="form-control" placeholder="Fecha de terminacion ventas">
                                     </div>
                                 </div>
-                                <div class="form-group row">
+                                <div class="form-group row" v-if="tipoAccion == 1">
                                     <label class="col-md-3 form-control-label" for="text-input">Arquitectos</label>
                                     <div class="col-md-6">
                                         <select class="form-control" v-model="arquitecto_id">
@@ -235,6 +245,7 @@
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
                             <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarInicioObra()">Enviar</button>
+                            <button type="button" v-if="tipoAccion==2 && num_inicio != ''" class="btn btn-primary" @click="actualizarInicio()">Actualizar</button>
                             
                         </div>
                     </div>
@@ -258,6 +269,7 @@
             return{
                 proceso:false,
                 allSelected: false,
+                allSelected2: false,
                 id:0,
                 f_ini : new Date().toISOString().substr(0, 10),
                 f_fin : '',
@@ -265,6 +277,7 @@
                 arrayLotes : [],
                 arrayHistorial : [],
                 lotes_ini : [],
+                lotes_ini2 : [],
                 arrayEtapas: [],
                 arrayFraccionamientos:[],
                 modal : 0,
@@ -370,6 +383,18 @@
             },
             select: function() {
                 this.allSelected = false;
+            },
+            selectAll2: function() {
+                this.lotes_ini2 = [];
+
+                if (!this.allSelected2) {
+                    for (var lote in this.arrayHistorial) {
+                        this.lotes_ini2.push(this.arrayHistorial[lote].id.toString());
+                    }
+                }
+            },
+            select2: function() {
+                this.allSelected2 = false;
             },
             selectArquitectos(){
                 let me = this;
@@ -510,6 +535,37 @@
                 me.listarLotesIniObra(1,'','fraccionamientos.nombre');
                 
             },
+
+            actualizarInicio(){
+                if(this.proceso==true){
+                    return;
+                }
+                this.proceso=true;
+                
+                let me = this;
+                //Con axios se llama el metodo update de DepartamentoController
+                me.lotes_ini2.forEach(element => {
+                    axios.put('/lotes/enviarAviObra/actualizar',{
+                    'id': element,
+                    'num_inicio' : this.num_inicio
+                    }); 
+                });
+                const toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                    });
+
+                    toast({
+                    type: 'success',
+                    title: 'Numeros de inicios actualizados correctamente'
+                    })
+                me.proceso=false;
+                me.cerrarModal();
+                me.listarHistorial(1,me.buscar,me.buscar2,me.buscar3,me.criterio);
+                
+            },
             
             validarInicioObra(){
                 this.errorLotesIniObra=0;
@@ -540,12 +596,14 @@
                 this.errorLotesIniObra = 0;
                 this.errorMostrarMsjLotesIniObra = [];
                 this.lotes_ini = [];
+                this.lotes_ini2 = [];
+                this.allSelected2 = false;
                 this.allSelected = false;
 
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
             abrirModal(modelo, accion,data =[]){
-                if(this.lotes_ini.length<1){
+                if(this.lotes_ini.length<1 && accion == 'enviar'){
                     Swal({
                     title: 'No se ha seleccionado ningun lote',
                     animation: false,
@@ -553,6 +611,16 @@
                     })
                     return;
                 }
+
+                if(this.lotes_ini2.length<1 && accion == 'editar'){
+                    Swal({
+                    title: 'No se ha seleccionado ningun lote',
+                    animation: false,
+                    customClass: 'animated tada'
+                    })
+                    return;
+                }
+               
                 switch(modelo){
                     case "lotes":
                     {
@@ -564,6 +632,15 @@
                                 //this.f_ini = '';
                                 this.f_fin ='';
                                 this.tipoAccion = 1;
+                                break;
+                            }
+                            case 'editar':
+                            {
+                                this.modal = 1;
+                                this.tituloModal = 'Editar numero de inicio de obra';
+                                //this.f_ini = '';
+                                this.num_inicio = '';
+                                this.tipoAccion = 2;
                                 break;
                             }
                         }
