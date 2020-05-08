@@ -36,13 +36,15 @@
                                         <option value="lotes.calle">Calle</option>
                                     </select>
                                     
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" >
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @click="selectEtapas(buscar)">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
 
-                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar2" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Etapa de servicio">
-                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar3" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Manzana a buscar">
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa" >
+                                        <option value="">Etapa</option>
+                                        <option v-for="etapa in arrayAllEtapas" :key="etapa.id" :value="etapa.id" v-text="etapa.num_etapa"></option>
+                                    </select>
 
                                     <input type="text" v-if="criterio=='modelos.nombre'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Texto a buscar">
                                     <input type="text" v-if="criterio=='lotes.calle'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Texto a buscar">
@@ -52,6 +54,16 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="form-group row" v-if="criterio=='lotes.fraccionamiento_id'">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar2" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Etapa de servicio">
+                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar3" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Manzana a buscar">
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="form-group row">
                             <div class="col-md-8">
                                 <div class="input-group">
@@ -76,6 +88,7 @@
                                         </th>
                                         <th>Opciones</th>
                                         <th>Proyecto</th>
+                                        <th>Etapa</th>
                                         <th>Manzana</th>
                                         <th># Lote</th>
                                         <th>Calle</th>
@@ -106,6 +119,7 @@
                                         </td>
                                         
                                         <td class="td2" v-text="lote.proyecto"></td>
+                                        <td class="td2" v-text="lote.num_etapa"></td>
                                         <td class="td2" v-text="lote.manzana"></td>
                                         <td class="td2" v-if="!lote.sublote" v-text="lote.num_lote"></td>
                                         <td class="td2" v-else v-text="lote.num_lote + '-' + lote.sublote"></td>
@@ -465,7 +479,9 @@
                 empresaTerreno : '',
                 modal5:0,
                 b_empresa:'',
-                b_empresa2:''
+                b_empresa2:'',
+                arrayAllEtapas:[],
+                b_etapa:''
             }
         },
         computed:{
@@ -573,7 +589,9 @@
             /**Metodo para mostrar los registros */
             listarLote(page, buscar, buscar2, buscar3, criterio){
                 let me = this;
-                var url = '/lote2?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2+ '&buscar3=' + buscar3 + '&criterio=' + criterio + '&b_empresa=' + me.b_empresa + '&b_empresa2=' + me.b_empresa2;
+                var url = '/lote2?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2+ '&buscar3=' + buscar3 + 
+                        '&criterio=' + criterio + '&b_empresa=' + me.b_empresa + '&b_empresa2=' + me.b_empresa2
+                        + '&b_etapa=' + me.b_etapa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLote = respuesta.lotes.data;
@@ -670,6 +688,21 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayModelos = respuesta.modelos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            selectEtapas(buscar){
+                let me = this;
+                me.b_etapa="";
+                
+                me.arrayAllEtapas=[];
+                var url = '/select_etapa_proyecto?buscar=' + buscar;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayAllEtapas = respuesta.etapas;
                 })
                 .catch(function (error) {
                     console.log(error);

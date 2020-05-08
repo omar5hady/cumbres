@@ -66,9 +66,9 @@
                                         <td class="td2" v-text="vendedor.tipoB"></td>
                                         <td class="td2" v-text="vendedor.tipoC"></td>
                                         <td class="td2" v-text="vendedor.nv"></td>
-                                        <td class="td2" v-text="vendedor.por_venta"></td>
-                                        <td class="td2" v-text="vendedor.por_cancel"></td>
-                                        <td class="td2" v-text="vendedor.por_bat"></td>
+                                        <td class="td2" v-text="formatNumber(vendedor.por_venta) + '%'"></td>
+                                        <td class="td2" v-text="formatNumber(vendedor.por_cancel) + '%'"></td>
+                                        <td class="td2" v-text="formatNumber(vendedor.por_bat)  + '%'"></td>
                                     </tr>                               
                                 </tbody>
                             </table>
@@ -115,9 +115,9 @@
                                         <td class="td2" v-text="vendedor.tipoB"></td>
                                         <td class="td2" v-text="vendedor.tipoC"></td>
                                         <td class="td2" v-text="vendedor.nv"></td>
-                                        <td class="td2" >% V</td>
-                                        <td class="td2" >% C</td>
-                                        <td class="td2" >% B</td>
+                                        <td class="td2" v-text="formatNumber(vendedor.por_venta)  + '%'"></td>
+                                        <td class="td2" v-text="formatNumber(vendedor.por_cancel)  + '%'"></td>
+                                        <td class="td2" v-text="formatNumber(vendedor.por_bat)  + '%'"></td>
                                     </tr>                               
                                 </tbody>
                             </table>

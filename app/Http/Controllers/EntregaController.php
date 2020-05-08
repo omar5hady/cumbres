@@ -20,6 +20,7 @@ use NumerosEnLetras;
 use App\User;
 use App\Notifications\NotifyAdmin;
 use App\Ini_obra;
+use App\Obs_expediente;
 
 class EntregaController extends Controller
 {
@@ -50,7 +51,7 @@ class EntregaController extends Controller
             $observacion->save();
 
             $observacion_exp = new Obs_expediente();
-            $observacion_exp->contrato_id = $request->folio;
+            $observacion_exp->contrato_id = $request->id;
             $observacion_exp->observacion = 'Se solicito la entrega de la vivienda';
             $observacion_exp->usuario = Auth::user()->usuario;
             $observacion_exp->save();

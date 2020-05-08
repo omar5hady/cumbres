@@ -58,6 +58,7 @@
                                                 <th>Institución</th>
                                                 <th>Promocion/paquete</th>
                                                 <th>Valor de escrituración</th>
+                                                <th>Status</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -77,6 +78,12 @@
                                                     <td class="td2" v-else v-text="'Promo: ' + lote.descripcion_promocion + ' / Paquete:' + lote.descripcion_paquete"></td>
                                                 </template>
                                                 <td class="td2" v-text="'$'+formatNumber(lote.precio_venta)"></td>
+                                                <template>
+                                                    <td v-if="lote.status == 0" class="td2"> <span class="badge badge-danger">Cancelado</span></td>
+                                                    <td v-else-if="lote.status == 1" class="td2"> <span class="badge badge-warning">Vendida</span></td>
+                                                    <td v-else-if="lote.status == 3 && lote.firmado == 0" class="td2"> <span class="badge badge-warning">Vendida</span></td>
+                                                    <td v-else-if="lote.status == 3 && lote.firmado == 1" class="td2"> <span class="badge badge-success">Individualizada</span></td>
+                                                </template>
                                             </tr>                             
                                         </tbody>
                                     </table>
@@ -130,7 +137,7 @@
                                                 <td class="td2" v-text="cancelacion.tipo_credito"></td>
                                                 <td class="td2" v-text="cancelacion.institucion"></td>
                                                 <template>
-                                                    <td class="td2" v-if="cancelacion.descripcion_promocion == null && cancelacion.descripcion_paquete == null" v-text="''"></td>
+                                                    <td class="td2" v-if="cancelacion.descripcion_promocion == null && cancelacion.descripcion_paquete == null || cancelacion.descripcion_promocion == '' && cancelacion.descripcion_paquete == ''" v-text="''"></td>
                                                     <td class="td2" v-else-if="cancelacion.descripcion_promocion != null && cancelacion.descripcion_paquete == null" v-text="'Promo: '+cancelacion.descripcion_promocion"></td>
                                                     <td class="td2" v-else-if="cancelacion.descripcion_promocion == null && cancelacion.descripcion_paquete != null" v-text="'Paquete: '+cancelacion.descripcion_paquete"></td>
                                                     <td class="td2" v-else v-text="'Promo: ' + cancelacion.descripcion_promocion + ' / Paquete:' + cancelacion.descripcion_paquete"></td>
@@ -139,20 +146,13 @@
                                             </tr>                             
                                         </tbody>
                                     </table>
-
-                                    
                                 </div>
                             </div>
-
                         </div>
-
-
-
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>          
-
         </main>
 </template>
 
@@ -168,7 +168,9 @@
                 arrayLotes : [],
                 arrayCancelaciones : [],
                 fecha:'',
-                fecha2:''
+                fecha2:'',
+                cont1:0,
+                cont2:0,
             }
         },
         computed:{

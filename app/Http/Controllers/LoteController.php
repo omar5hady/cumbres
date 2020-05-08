@@ -573,7 +573,7 @@ class LoteController extends Controller
             ->join('etapas','lotes.etapa_id','=','etapas.id')
             ->join('modelos','lotes.modelo_id','=','modelos.id')
             ->join('empresas','lotes.empresa_id','=','empresas.id')
-            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
+            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
                     'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                     'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
                     'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
@@ -611,6 +611,9 @@ class LoteController extends Controller
                     
                 }
             }
+            if($request->b_etapa != ''){
+                $lotes = $lotes->where('lotes.etapa_id', '=', $request->b_etapa);
+            }
         }
 
         if($request->b_empresa != ''){
@@ -622,6 +625,7 @@ class LoteController extends Controller
         }
 
         $lotes = $lotes->orderBy('fraccionamientos.nombre','DESC')
+                        ->orderBy('etapas.num_etapa','DESC')
                         ->orderBy('lotes.manzana','ASC')
                         ->orderBy('lotes.num_lote','ASC')->paginate(25);
 

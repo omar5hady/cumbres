@@ -55,6 +55,12 @@
                 </div>
 
                 <div class="table-row">
+                    <div class="table-cell">Modelo: </div>
+                    <div class="table-cell">{{$contratos[0]->modelo}}</div>
+                    <div class="table-cell"></div>   
+                </div>
+
+                <div class="table-row">
                     <div class="table-cell">Cliente: </div>
                     <div colspan="2" class="table-cell">{{mb_strtoupper($contratos[0]->nombre_cliente)}}</div>
                 </div>
