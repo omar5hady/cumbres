@@ -12,7 +12,10 @@ use App\Expediente;
 use App\Lote;
 use App\User;
 use App\Cliente;
+use App\Vendedor;
 use Carbon\Carbon;
+use Auth;
+use File;
 
 class VendedoresController extends Controller
 {
@@ -34,5 +37,129 @@ class VendedoresController extends Controller
 
         
         return['vendedores'=>$vendedores];
+    }
+
+    public function formSubmitComprobante(Request $request, $id)
+    {
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $fecha = Carbon::now();
+        $comprobanteAnt = Vendedor::select('doc_comprobante', 'id')
+            ->where('id', '=', $id)
+            ->get();
+        if ($comprobanteAnt->isEmpty() == 1) {
+            $fileName = uniqid() . time() . '.' . $request->doc_comprobante->getClientOriginalExtension();
+            $moved =  $request->doc_comprobante->move(public_path('/files/vendedores'), $fileName);
+
+            if ($moved) {
+                if (!$request->ajax()) return redirect('/');
+                $vendedor = Vendedor::findOrFail($request->id);
+                $vendedor->doc_comprobante = $fileName;
+                $vendedor->save(); //Insert
+
+            }
+
+            return response()->json(['success'=>$fileName]);
+        } else {
+            $pathAnterior = public_path() . '/files/vendedores/' . $comprobanteAnt[0]->doc_comprobante;
+            File::delete($pathAnterior);
+
+            $fileName = uniqid() . time() . '.' . $request->doc_comprobante->getClientOriginalExtension();
+            $moved =  $request->doc_comprobante->move(public_path('/files/vendedores'), $fileName);
+
+            if ($moved) {
+                if (!$request->ajax()) return redirect('/');
+                $vendedor = Vendedor::findOrFail($request->id);
+                $vendedor->doc_comprobante = $fileName;
+                $vendedor->save(); //Insert
+
+            }
+
+            return response()->json(['success'=>$fileName]);
+        }
+    }
+
+    public function formSubmitINE(Request $request, $id)
+    {
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $fecha = Carbon::now();
+        $comprobanteAnt = Vendedor::select('doc_ine', 'id')
+            ->where('id', '=', $id)
+            ->get();
+        if ($comprobanteAnt->isEmpty() == 1) {
+            $fileName = uniqid() . time() . '.' . $request->doc_ine->getClientOriginalExtension();
+            $moved =  $request->doc_ine->move(public_path('/files/vendedores'), $fileName);
+
+            if ($moved) {
+                if (!$request->ajax()) return redirect('/');
+                $vendedor = Vendedor::findOrFail($request->id);
+                $vendedor->doc_ine = $fileName;
+                $vendedor->save(); //Insert
+
+            }
+
+            return response()->json(['success'=>$fileName]);
+        } else {
+            $pathAnterior = public_path() . '/files/vendedores/' . $comprobanteAnt[0]->doc_ine;
+            File::delete($pathAnterior);
+
+            $fileName = uniqid() . time() . '.' . $request->doc_ine->getClientOriginalExtension();
+            $moved =  $request->doc_ine->move(public_path('/files/vendedores'), $fileName);
+
+            if ($moved) {
+                if (!$request->ajax()) return redirect('/');
+                $vendedor = Vendedor::findOrFail($request->id);
+                $vendedor->doc_ine = $fileName;
+                $vendedor->save(); //Insert
+
+            }
+
+            return response()->json(['success'=>$fileName]);
+        }
+    }
+
+    public function formSubmitCV(Request $request, $id)
+    {
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $fecha = Carbon::now();
+        $comprobanteAnt = Vendedor::select('curriculum', 'id')
+            ->where('id', '=', $id)
+            ->get();
+        if ($comprobanteAnt->isEmpty() == 1) {
+            $fileName = uniqid() . time() . '.' . $request->curriculum->getClientOriginalExtension();
+            $moved =  $request->curriculum->move(public_path('/files/vendedores'), $fileName);
+
+            if ($moved) {
+                if (!$request->ajax()) return redirect('/');
+                $vendedor = Vendedor::findOrFail($request->id);
+                $vendedor->curriculum = $fileName;
+                $vendedor->save(); //Insert
+
+            }
+
+            return response()->json(['success'=>$fileName]);
+        } else {
+            $pathAnterior = public_path() . '/files/vendedores/' . $comprobanteAnt[0]->curriculum;
+            File::delete($pathAnterior);
+
+            $fileName = uniqid() . time() . '.' . $request->curriculum->getClientOriginalExtension();
+            $moved =  $request->curriculum->move(public_path('/files/vendedores'), $fileName);
+
+            if ($moved) {
+                if (!$request->ajax()) return redirect('/');
+                $vendedor = Vendedor::findOrFail($request->id);
+                $vendedor->curriculum = $fileName;
+                $vendedor->save(); //Insert
+
+            }
+
+            return response()->json(['success'=>$fileName]);
+        }
+    }
+
+    public function downloadFile($fileName)
+    {
+
+        $pathtoFile = public_path() . '/files/vendedores/' . $fileName;
+        return response()->download($pathtoFile);
     }
 }

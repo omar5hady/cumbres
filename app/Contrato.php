@@ -61,6 +61,10 @@ class Contrato extends Model
         return $this->hasOne('App/Det_comision');
     }
 
+    public function bono_recomendado(){
+        return $this->hasOne('App/Bono_recomendado');
+    }
+
     public function devolucion(){
         return $this->hasMany('App/Devolucion');
     }

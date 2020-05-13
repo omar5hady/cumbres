@@ -22,6 +22,9 @@ class CreateVendedoresTable extends Migration
             $table->boolean('tipo')->default(0);
             $table->integer('esquema')->default(2);
             $table->date('fecha_sueldo')->nullable();
+            $table->string('doc_ine')->nullable();
+            $table->string('doc_comprobante')->nullable();
+            $table->string('curriculum')->nullable();
             $table->timestamps();
         });
     }

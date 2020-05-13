@@ -332,7 +332,7 @@
 
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Usuario</label>
-                                    <div class="col-md-9">
+                                    <div class="col-md-4">
                                         <input type="text" v-model="usuario" class="form-control" placeholder="Usuario" >
                                     </div>
                                 </div>
@@ -340,18 +340,22 @@
                                 
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Contraseña</label>
-                                    <div class="col-md-9">
+                                    <div class="col-md-4">
                                         <input type="password" v-model="password" class="form-control" placeholder="Contraseña" >
                                     </div>
                                 </div>
 
                                 <div class="form-group row" v-if="rol_id==2">
                                     <label class="col-md-3 form-control-label" for="text-input">Tipo</label>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                        <select class="form-control" v-model="tipo_vendedor" >
                                             <option value="0">Interno</option>
                                             <option value="1">Externo</option>
                                         </select>
+                                    </div>
+
+                                    <div class="col-md-4" v-if="tipo_vendedor == 1">
+                                       <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="modalArchivos = 1">Archivos</button>
                                     </div>
                                 </div>
 
@@ -668,7 +672,126 @@
             <!--Fin del modal-->
 
 
-            
+            <!-- modal para la carga de archivos -->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modalArchivos}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="'Cargar archivos'"></h4>
+                            <button type="button" class="close" @click="cerrarModal3(), modal=1" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            
+                            <div class="modal-body">
+
+                                <div class="form-group">
+                                    <table class="table table-bordered table-striped table-sm">
+                                        <thead>
+                                            <tr><th>
+                                                <form  method="post" @submit="formSubmitIne" enctype="multipart/form-data">
+                                                    <div class="form-group row">
+                                                        <label class="col-md-3 form-control-label" for="text-input"> <strong>INE</strong> </label>
+                                                        
+                                                        <div class="col-md-5">
+                                                            <input type="file" class="form-control" v-on:change="onImageChangeIne">
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <button type="submit" class="btn btn-success">Cargar</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </th></tr>
+
+                                            <tr><th>
+                                                <form  method="post" @submit="formSubmitComprobante" enctype="multipart/form-data">
+                                                    <div class="form-group row">
+                                                        <label class="col-md-3 form-control-label" for="text-input"> <strong>Comprobante de domicilio</strong> </label>
+                                                        
+                                                        <div class="col-md-5">
+                                                            <input type="file" class="form-control" v-on:change="onImageChangeComprobante">
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <button type="submit" class="btn btn-success">Cargar</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </th></tr>
+
+                                            <tr><th>
+                                                <form  method="post" @submit="formSubmitCV" enctype="multipart/form-data">
+                                                    <div class="form-group row">
+                                                        <label class="col-md-3 form-control-label" for="text-input"> <strong>Curruculum</strong> </label>
+                                                        
+                                                        <div class="col-md-5">
+                                                            <input type="file" class="form-control" v-on:change="onImageChangeCV">
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <button type="submit" class="btn btn-success">Cargar</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </th></tr>
+                                        </thead>
+                                    </table>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group row">
+                                                <div class="col-md-12">
+                                                    <table class="table table-bordered table-striped table-sm">
+                                                        <thead>
+                                                            <tr>
+                                                                <th style="width:12%"></th>
+                                                                <th>Archivo</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr v-if="doc_ine != null">
+                                                                <td style="width:12%">
+                                                                    
+                                                                </td>
+                                                                <td>
+                                                                    <a v-bind:href="'/asesores/downloadFile/'+ doc_ine"> INE</a>
+                                                                </td>
+                                                            </tr>
+                                                            <tr v-if="doc_comprobante != null">
+                                                                <td style="width:12%">
+                                                                    
+                                                                </td>
+                                                                <td>
+                                                                    <a v-bind:href="'/asesores/downloadFile/'+ doc_comprobante"> Comprobante de domicilio</a>
+                                                                </td>
+                                                            </tr>
+                                                            <tr v-if="curriculum != null">
+                                                                <td style="width:12%">
+                                                                    
+                                                                </td>
+                                                                <td>
+                                                                    <a v-bind:href="'/asesores/downloadFile/'+ curriculum"> Curriculum vitae</a>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal3(), modal = 1">Cerrar</button>
+                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
+                        </div>
+                    </div> 
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal-->
 
         </main>
 </template>
@@ -710,6 +833,13 @@
                 activo: 1, 
                 tipo_vendedor:0,
                 contador:0,
+                archivoINE:'',
+                archivoComprobante:'',
+                archivoCV:'',
+
+                doc_ine:'',
+                doc_comprobante:'',
+                curriculum:'',
 
                 nombreProspecto:'',
                 apellidosProspecto:'',
@@ -732,6 +862,7 @@
                 ProyectoProspecto: 0,
                 publicidad_id:0,
                 esquema:2,
+                archivo:'',
 
                 inmobiliaria:'',
                 arrayPersonal : [],
@@ -744,6 +875,7 @@
                 modal2 : 0,
                 modal3 : 0,
                 modal4 : 0,
+                modalArchivos:0,
                 tituloModal : '',
                 tituloModal2 : '',
                 tituloModal3 : '',
@@ -834,6 +966,135 @@
         },
         
         methods : {
+            onImageChangeComprobante(e){
+
+                console.log(e.target.files[0]);
+
+                this.archivo = e.target.files[0];
+
+            },
+
+            formSubmitComprobante(e) {
+
+                e.preventDefault();
+
+                let currentObj = this;
+                // const config = {
+
+                //     headers: { 'content-type': 'multipart/form-data' }
+
+                // }
+                let formData = new FormData();
+               // formData.append('id', this.id);
+                formData.append('doc_comprobante', this.archivo);
+                let me = this;
+                axios.post('/asesores/formSubmitComprobante/' + this.id , formData)
+                .then(function (response) {
+                    me.doc_comprobante = response.data.success;
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Comprobante de domicilio guardado correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+
+                })
+
+                .catch(function (error) {
+
+                    currentObj.output = error;
+
+                });
+
+            },
+
+            onImageChangeIne(e){
+
+                console.log(e.target.files[0]);
+
+                this.archivo = e.target.files[0];
+
+            },
+
+            formSubmitIne(e) {
+
+                e.preventDefault();
+
+                let currentObj = this;
+                // const config = {
+
+                //     headers: { 'content-type': 'multipart/form-data' }
+
+                // }
+                let formData = new FormData();
+               // formData.append('id', this.id);
+                formData.append('doc_ine', this.archivo);
+                let me = this;
+                axios.post('/asesores/formSubmitINE/' + this.id , formData)
+                .then(function (response) {
+                    me.doc_ine = response.data.success;
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'INE guardada correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+
+                })
+
+                .catch(function (error) {
+
+                    currentObj.output = error;
+
+                });
+
+            },
+
+            onImageChangeCV(e){
+
+                console.log(e.target.files[0]);
+
+                this.archivo = e.target.files[0];
+
+            },
+
+            formSubmitCV(e) {
+
+                e.preventDefault();
+
+                let currentObj = this;
+                // const config = {
+
+                //     headers: { 'content-type': 'multipart/form-data' }
+
+                // }
+                let formData = new FormData();
+               // formData.append('id', this.id);
+                formData.append('curriculum', this.archivo);
+                let me = this;
+                axios.post('/asesores/formSubmitCV/' + this.id , formData)
+                .then(function (response) {
+                    me.curriculum = response.data.success;
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'INE guardada correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+
+                })
+
+                .catch(function (error) {
+
+                    currentObj.output = error;
+
+                });
+
+            },
+
             /**Metodo para mostrar los registros */
             listarPersonal(page, buscar, criterio){
                 let me = this;
@@ -1386,6 +1647,11 @@
             cerrarModal3(){
                 this.modal3 = 0;
                 this.tituloModal3 = '';
+                this.archivoINE = '';
+                this.archivoComprobante = '';
+                this.archivoCV = '';
+                this.modalArchivos = 0;
+            
             },
             cerrarModal4(){
                 this.modal4=0;
@@ -1477,6 +1743,9 @@
                                 this.inmobiliaria=data['inmobiliaria'];
                                 this.tipo_vendedor=data['tipo'];
                                 this.esquema = data['esquema'];
+                                this.doc_ine = data['doc_ine'];
+                                this.doc_comprobante = data['doc_comprobante'];
+                                this.curriculum = data['curriculum'];
                                 break;
                             }
                         }

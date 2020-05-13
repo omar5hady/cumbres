@@ -66,6 +66,7 @@ Vue.component('precio-etapa', require('./components/Precios/PrecioEtapa.vue'));
 Vue.component('sobreprecios', require('./components/Precios/Sobreprecio.vue'));
 Vue.component('paquetes', require('./components/Precios/Paquete.vue'));
 Vue.component('promociones', require('./components/Precios/Promocion.vue'));
+Vue.component('cat-bonos', require('./components/Precios/CatalogoBono.vue'));
 
 //Componentes Obra
 Vue.component('contratistas', require('./components/Obra/Contratista.vue'));

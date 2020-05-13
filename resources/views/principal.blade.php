@@ -287,6 +287,11 @@
                                         <a class="nav-link" href="#"><i class="fa fa-percent"></i> Promociones</a>
                                     </li>
                                 @endif
+                                @if(Auth::user()->rol_id == 1)
+                                    <li @click="menu=241" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-percent"></i> Catalogo de bonos</a>
+                                    </li>
+                                @endif
                             </ul>
                         </li>
                     @endif

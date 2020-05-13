@@ -426,6 +426,10 @@
             <rep-acumulado></rep-acumulado>
         </template>
 
+        <template v-if="menu==241">
+            <cat-bonos></cat-bonos>
+        </template>
+
         
 
         

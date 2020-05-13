@@ -93,6 +93,10 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/select/asesores','UserController@selectAsesores');
         Route::put('/cliente/reasignar','ClienteController@asignarCliente');
         Route::post('/cliente/reasignar2','ClienteController@asignarCliente2'); // desde vista mis Prospectos
+        Route::post('/asesores/formSubmitComprobante/{id}','VendedoresController@formSubmitComprobante');
+        Route::post('/asesores/formSubmitINE/{id}','VendedoresController@formSubmitINE');
+        Route::post('/asesores/formSubmitCV/{id}','VendedoresController@formSubmitCV');
+        Route::get('/asesores/downloadFile/{fileName}' , 'VendedoresController@downloadFile'); //descarga de acta
 
         //////////// REPORTE VENTAS POR VENDEDOR ///////////////
             Route::get('/vendedores/reporte','VendedoresController@ventasVendedorReporte');
@@ -731,6 +735,12 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/detalles/updateFecha','SolicDetallesController@updateFecha');
         Route::put('/detalles/updateHora','SolicDetallesController@updateHora');
         Route::put('/detalles/updateResultado','SolicDetallesController@updateResultado');
+
+    //////////////////// RUTAS BONOS RECOMENDADOS ///////////////////////
+        Route::get('/cat_bono/index','CatalogoBonoController@index');
+        Route::post('/cat_bono/store', 'CatalogoBonoController@store');
+        Route::put('/cat_bono/update', 'CatalogoBonoController@update');
+        Route::delete('/cat_bono/delete', 'CatalogoBonoController@delete');
 
         //////////////////////// RUTAS CONTRATISTA //////////////////////
          Route::get('/solicitudes/indexContratista','SolicDetallesController@indexContratista');

@@ -715,10 +715,10 @@
                                         <h6 style="font-weight: bold;" class="col-md-12">Comisión: &nbsp;$ {{formatNumber(this.comisionMes)}}</h6>
                                     </div>
                                     <div class="col-md-6">
-                                        <label style="font-weight: bold;" class="col-md-12">+ Anticipo: &nbsp;$ {{formatNumber(this.anticipo)}} </label>
+                                        <label style="font-weight: bold;" class="col-md-12">+ Anticipo: &nbsp;$ {{formatNumber(this.anticipoMes)}} </label>
                                         <label v-if="totalAnticipo != 0" style="font-weight: bold;" class="col-md-12">- Cancelaciones: &nbsp;$ {{formatNumber(this.totalAnticipo)}}</label>
                                         <label v-if="restante != 0" style="font-weight: bold;" class="col-md-12">- Restante anterior: &nbsp;$ {{formatNumber(this.restante)}}</label>
-                                        <label v-if="modal1 ==1 && tipoVendedor == 1" style="font-weight: bold; color: blue;" class="col-md-12">= A pagar: &nbsp;$ {{formatNumber(this.aPagar =this.anticipo + this.totalIndividualizadas - this.totalAnticipo - this.restante)}}</label>
+                                        <label v-if="modal1 ==1 && tipoVendedor == 1" style="font-weight: bold; color: blue;" class="col-md-12">= A pagar: &nbsp;$ {{formatNumber(this.aPagar =this.anticipoMes + this.totalIndividualizadas - this.totalAnticipo - this.restante)}}</label>
                                     </div>
                                 </div>
                             

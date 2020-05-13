@@ -3271,27 +3271,34 @@ class ExpedienteController extends Controller
 
     public function generarInstruccionNot(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-        $asignar = Expediente::findOrFail($request->folio);
-        $asignar->fecha_firma_esc =  $request->fecha_firma_esc;
-        $asignar->notaria_id =  $request->notaria_id;
-        $asignar->notario =  $request->notario;
-        $asignar->notaria =  $request->notaria;
-        $asignar->hora_firma =  $request->hora_firma;
-        $asignar->direccion_firma =  $request->direccion_firma;
+        try {
+            DB::beginTransaction();
+            
+            $asignar = Expediente::findOrFail($request->folio);
+            $asignar->fecha_firma_esc =  $request->fecha_firma_esc;
+            $asignar->notaria_id =  $request->notaria_id;
+            $asignar->notario =  $request->notario;
+            $asignar->notaria =  $request->notaria;
+            $asignar->hora_firma =  $request->hora_firma;
+            $asignar->direccion_firma =  $request->direccion_firma;
 
-        $credito = Credito::findOrFail($request->folio);
-        $lote = $credito->lote_id;
-        $firmado = Lote::findOrFail($lote);
-        $firmado->firmado = 1;
-        $firmado->save();
-        
+            $credito = Credito::findOrFail($request->folio);
+            $lote = $credito->lote_id;
+            $firmado = Lote::findOrFail($lote);
+            $firmado->firmado = 1;
+            $firmado->save();
+            
 
-        $entrega = Entrega::select('id')->where('id','=',$credito->id)->get();
+            $entrega = Entrega::select('id')->where('id','=',$credito->id)->get();
 
-        if(sizeOf($entrega)){
-            $asignar->postventa = 1;
+            if(sizeOf($entrega)){
+                $asignar->postventa = 1;
+            }
+            $asignar->save();
+        DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
         }
-        $asignar->save();
     }
 
     public function regresarExpediente(Request $request){
