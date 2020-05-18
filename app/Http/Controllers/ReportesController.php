@@ -550,41 +550,66 @@ class ReportesController extends Controller
                                 ->where('etapa_id','=',$lote->etapaId)->count();
 
             $lote->terminadaDisponible = Lote::join('licencias','lotes.id','=','licencias.id')
-                                ->where('licencias.avance','>',95)
+                                ->where('licencias.avance','>',89)
                                 ->where('lotes.contrato','=',0)
                                 ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                 ->where('lotes.etapa_id','=',$lote->etapaId)->count();
 
             $lote->procesoDisponible = Lote::join('licencias','lotes.id','=','licencias.id')
-                                ->whereBetween('licencias.avance', [25, 95])
+                                ->whereBetween('licencias.avance', [1, 89])
                                 ->where('lotes.contrato','=',0)
                                 ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                 ->where('lotes.etapa_id','=',$lote->etapaId)->count();
 
             $lote->sinAvanceDisponible = Lote::join('licencias','lotes.id','=','licencias.id')
-                                ->where('licencias.avance','<',25)
+                                ->where('licencias.avance','=',0)
                                 ->where('lotes.contrato','=',0)
                                 ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                 ->where('lotes.etapa_id','=',$lote->etapaId)->count();
 
-            $lote->cobradas = Contrato::join('creditos','contratos.id', '=', 'creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->where('contratos.status','=',3)
-                                ->where('contratos.saldo','<=',0)
-                                ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
-                                ->where('lotes.etapa_id','=',$lote->etapaId)
-                                ->count();
+            // $lote->cobradas = Contrato::join('creditos','contratos.id', '=', 'creditos.id')
+            //                     ->join('lotes','creditos.lote_id','=','lotes.id')
+            //                     ->where('contratos.status','=',3)
+            //                     ->where('contratos.saldo','<=',0)
+            //                     ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
+            //                     ->where('lotes.etapa_id','=',$lote->etapaId)
+            //                     ->count();
+            
+            $indivContado = Contrato::join('expedientes','contratos.id','=','expedientes.id')
+                                        ->join('creditos','contratos.id', '=', 'creditos.id')
+                                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                                        ->where('contratos.status','=',3)
+                                        ->where('expedientes.liquidado','=',1)
+                                        ->where('inst_seleccionadas.elegido', '=', '1')
+                                        ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
+                                        ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
+                                        ->where('lotes.etapa_id','=',$lote->etapaId)
+                                        ->count();
+            $indivCredito = Contrato::join('expedientes','contratos.id','=','expedientes.id')
+                                        ->join('creditos','contratos.id', '=', 'creditos.id')
+                                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                                        ->where('contratos.status','=',3)
+                                        ->where('expedientes.fecha_firma_esc','!=',NULL)
+                                        ->where('inst_seleccionadas.elegido', '=', '1')
+                                        ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
+                                        ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
+                                        ->where('lotes.etapa_id','=',$lote->etapaId)
+                                        ->count();
+
+            $lote->cobradas = $indivContado + $indivCredito;
 
             $lote->procVendidaNoCobrada = Contrato::join('creditos','contratos.id', '=', 'creditos.id')
                                 ->join('lotes','creditos.lote_id','=','lotes.id')
                                 ->join('licencias','lotes.id','=','licencias.id')
                                 ->where('contratos.status','=',3)
-                                ->whereBetween('licencias.avance', [0, 95])
+                                ->whereBetween('licencias.avance', [1, 89])
                                 ->where('contratos.saldo','>',0)
                                 ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                 ->where('lotes.etapa_id','=',$lote->etapaId)
                                 ->orWhere('contratos.status','=',1)
-                                ->whereBetween('licencias.avance', [0, 95])
+                                ->whereBetween('licencias.avance', [1, 89])
                                 ->where('contratos.saldo','>',0)
                                 ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                 ->where('lotes.etapa_id','=',$lote->etapaId)
@@ -594,12 +619,12 @@ class ReportesController extends Controller
                                 ->join('lotes','creditos.lote_id','=','lotes.id')
                                 ->join('licencias','lotes.id','=','licencias.id')
                                 ->where('contratos.status','=',3)
-                                ->where('licencias.avance','>',95)
+                                ->where('licencias.avance','>=',90)
                                 ->where('contratos.saldo','>',0)
                                 ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                 ->where('lotes.etapa_id','=',$lote->etapaId)
                                 ->orWhere('contratos.status','=',1)
-                                ->where('licencias.avance','>',95)
+                                ->where('licencias.avance','>=',90)
                                 ->where('contratos.saldo','>',0)
                                 ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                 ->where('lotes.etapa_id','=',$lote->etapaId)

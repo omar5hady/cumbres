@@ -94,6 +94,7 @@ class User extends Authenticatable
         'asig_gestor',
         'seg_tramite',
         'avaluos',
+        'bonos_rec',
 
         //Postventa
         'entregas',

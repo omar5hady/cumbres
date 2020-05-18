@@ -48,17 +48,20 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="lote in arrayLotes" :key="lote.id">
-                                        <td class="td2" v-text="lote.proyecto"></td>
-                                        <td class="td2" v-text="lote.num_etapa"></td>
-                                        <td class="td2" v-text="lote.lotes"></td>
-                                        <td class="td2" v-text="lote.cobradas"></td>
-                                        <td class="td2" v-text="lote.terminadaNoCobrada"></td>
-                                        <td class="td2" v-text="lote.termVendidaNoCobrada"></td>
-                                        <td class="td2" v-text="lote.terminadaDisponible"></td>
-                                        <td class="td2" v-text="lote.procesoNoCobrada"></td>
-                                        <td class="td2" v-text="lote.procVendidaNoCobrada"></td>
-                                        <td class="td2" v-text="lote.procesoDisponible"></td>
-                                        <td class="td2" v-text="lote.sinAvanceDisponible"></td>
+                                        <template v-if="lote.lotes != 0">
+                                            <td class="td2" v-text="lote.proyecto"></td>
+                                            <td class="td2" v-text="lote.num_etapa"></td>
+                                            <td class="td2" v-text="lote.lotes"></td>
+                                            <td class="td2" v-text="lote.cobradas"></td>
+                                            <td class="td2" v-text="lote.terminadaNoCobrada"></td>
+                                            <td class="td2" v-text="lote.termVendidaNoCobrada"></td>
+                                            <td class="td2" v-text="lote.terminadaDisponible"></td>
+                                            <td class="td2" v-text="lote.procesoNoCobrada"></td>
+                                            <td class="td2" v-text="lote.procVendidaNoCobrada"></td>
+                                            <td class="td2" v-text="lote.procesoDisponible"></td>
+                                            <td class="td2" v-text="lote.sinAvanceDisponible"></td>
+                                        </template>
+                                        
                                     </tr>                             
                                 </tbody>
                                 

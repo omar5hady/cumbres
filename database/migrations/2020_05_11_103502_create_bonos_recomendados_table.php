@@ -23,6 +23,13 @@ class CreateBonosRecomendadosTable extends Migration
             $table->date('ini_promo')->nullable();
             $table->date('fin_promo')->nullable();
             $table->string('recomendado');
+
+            $table->string('proyecto_rec')->nullable();
+            $table->string('etapa_rec')->nullable();
+            $table->string('manzana_rec')->nullable();
+            $table->string('lote_rec')->nullable();
+            $table->date('fecha_compra_rec')->nullable();
+            
             $table->date('fecha_pago')->nullable();
             $table->boolean('status')->default(0);
             

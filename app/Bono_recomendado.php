@@ -18,7 +18,13 @@ class Bono_recomendado extends Model
         'fin_promo',
         'recomendado',
         'fecha_pago',
-        'status'
+        'status',
+
+        'proyecto_rec',
+        'etapa_rec',
+        'manzana_rec',
+        'lote_rec',
+        'fecha_compra_rec'
 
     ];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
 

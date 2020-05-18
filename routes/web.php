@@ -742,6 +742,16 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/cat_bono/update', 'CatalogoBonoController@update');
         Route::delete('/cat_bono/delete', 'CatalogoBonoController@delete');
 
+        Route::get('/bono_recomendado/index','BonoRecomendadoController@index');
+        Route::get('/bono_recomendado/listarObs','BonoRecomendadoController@listarObservaciones');
+        Route::post('/bono_recomendado/storeObservacion', 'BonoRecomendadoController@storeObservacion');
+
+        Route::post('/bono_recomendado/aprobarBono', 'BonoRecomendadoController@aprobarBono');
+        Route::post('/bono_recomendado/cancelarBono', 'BonoRecomendadoController@cancelarBono');
+        Route::post('/bono_recomendado/autorizarBono', 'BonoRecomendadoController@autorizarBono');
+        Route::post('/bono_recomendado/generarPago', 'BonoRecomendadoController@generarPago');
+        Route::put('/bono_recomendado/update', 'BonoRecomendadoController@update');
+
         //////////////////////// RUTAS CONTRATISTA //////////////////////
          Route::get('/solicitudes/indexContratista','SolicDetallesController@indexContratista');
          Route::get('/detalles/indexContratista','SolicDetallesController@indexDetallesContratista');

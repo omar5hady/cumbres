@@ -1025,7 +1025,7 @@ class UserController extends Controller
                                 'users.edo_cuenta','users.depositos','users.gastos_admn','users.cobro_credito',
                                 'users.dev_exc','users.dev_cancel',
                                 //Gestoria
-                                'users.expediente','users.asig_gestor','users.seg_tramite','users.avaluos',
+                                'users.expediente','users.asig_gestor','users.seg_tramite','users.avaluos','users.bonos_rec',
                                 //Postventa
                                 'users.entregas', 'users.solic_detalles',
                                 //Comisiones
@@ -1117,6 +1117,7 @@ class UserController extends Controller
         $user->asig_gestor = $request->asig_gestor;
         $user->seg_tramite = $request->seg_tramite;
         $user->avaluos = $request->avaluos;
+        $user->bonos_rec = $request->bonos_rec;
         //Postventa
         $user->entregas = $request->entregas;
         $user->solic_detalles = $request->solic_detalles;

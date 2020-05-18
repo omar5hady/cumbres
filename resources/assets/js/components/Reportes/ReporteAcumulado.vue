@@ -167,15 +167,16 @@
                                     <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
-                                                <th colspan="10" class="text-center"> Reporte Mensual de Escrituras Ventas de Crédito </th>
+                                                <th colspan="11" class="text-center"> Reporte Mensual de Escrituras Ventas de Crédito </th>
                                             </tr>
                                             <tr></tr>
                                             <tr>
-                                                <th colspan="2"></th>
+                                                <th colspan="3"></th>
                                                 <th colspan="4" class="text-center">Ubicación</th>
                                                 <th colspan="4"></th>
                                             </tr>
                                             <tr>
+                                                <th></th>
                                                 <th># Referencia</th>
                                                 <th>Cliente</th>
                                                 <th>Fraccionamiento</th>
@@ -189,7 +190,8 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr v-for="escrituras in arrayEscrituras" :key="escrituras.id">
+                                            <tr v-for="(escrituras, index) in arrayEscrituras" :key="escrituras.id">
+                                                <td>{{index+1}}</td>
                                                 <td class="td2" v-text="escrituras.id"></td>
                                                 <td class="td2" v-text="escrituras.nombre + ' '+escrituras.apellidos"></td>
                                                 <td class="td2" v-text="escrituras.proyecto"></td>
@@ -210,15 +212,16 @@
                                     <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
-                                                <th colspan="9" class="text-center"> Contados Pendientes de Escriturar </th>
+                                                <th colspan="10" class="text-center"> Contados Pendientes de Escriturar </th>
                                             </tr>
                                             <tr></tr>
                                             <tr>
-                                                <th colspan="2"></th>
+                                                <th colspan="3"></th>
                                                 <th colspan="4" class="text-center">Ubicación</th>
                                                 <th colspan="3"></th>
                                             </tr>
                                             <tr>
+                                                <th></th>
                                                 <th># Referencia</th>
                                                 <th>Cliente</th>
                                                 <th>Fraccionamiento</th>
@@ -231,7 +234,8 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr v-for="contadoSinEsc in arraycontadoSinEscrituras" :key="contadoSinEsc.id">
+                                            <tr v-for="(contadoSinEsc,index) in arraycontadoSinEscrituras" :key="contadoSinEsc.id">
+                                                <td>{{index+1}}</td>
                                                 <td class="td2" v-text="contadoSinEsc.id"></td>
                                                 <td class="td2" v-text="contadoSinEsc.nombre + ' '+contadoSinEsc.apellidos"></td>
                                                 <td class="td2" v-text="contadoSinEsc.proyecto"></td>
@@ -254,15 +258,16 @@
                                     <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
-                                                <th colspan="8" class="text-center"> Reporte de Ingresos (Cobranza Institucional) </th>
+                                                <th colspan="9" class="text-center"> Reporte de Ingresos (Cobranza Institucional) </th>
                                             </tr>
                                             <tr></tr>
                                             <tr>
-                                                <th></th>
+                                                <th colspan="2"></th>
                                                 <th colspan="4" class="text-center">Ubicación</th>
                                                 <th colspan="3"></th>
                                             </tr>
                                             <tr>
+                                                <th></th>
                                                 <th>Cliente</th>
                                                 <th>Fraccionamiento</th>
                                                 <th>Etapa</th>
@@ -274,7 +279,8 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr v-for="ingresoCobranza in arrayIngresosCobranza" :key="ingresoCobranza.id">
+                                            <tr v-for="(ingresoCobranza, index) in arrayIngresosCobranza" :key="ingresoCobranza.id">
+                                                <td>{{index + 1}}</td>
                                                 <td class="td2" v-text="ingresoCobranza.nombre + ' ' + ingresoCobranza.apellidos"></td>
                                                 <td class="td2" v-text="ingresoCobranza.proyecto"></td>
                                                 <td class="td2" v-text="ingresoCobranza.num_etapa"></td>

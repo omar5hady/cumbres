@@ -41,7 +41,7 @@
 
                                     <input v-else type="text" v-model="buscar" @keyup.enter="listarPersonal(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">                                   
                                     <button type="submit" @click="listarPersonal(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                    <a :href="'/asesores/excel?buscar=' + buscar + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
+                                    <a :href="'/asesores/excel?buscar=' + buscar + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i>&nbsp;Excel</a>
                                 </div>
                             </div>
                         </div>
@@ -1647,7 +1647,7 @@
             cerrarModal3(){
                 this.modal3 = 0;
                 this.tituloModal3 = '';
-                this.archivoINE = '';
+                this.archivo = '';
                 this.archivoComprobante = '';
                 this.archivoCV = '';
                 this.modalArchivos = 0;

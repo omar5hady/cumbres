@@ -429,6 +429,9 @@
         <template v-if="menu==241">
             <cat-bonos></cat-bonos>
         </template>
+        <template v-if="menu==242">
+            <bono-recomendado rol-id="{{Auth::user()->rol_id}}"></bono-recomendado>
+        </template>
 
         
 

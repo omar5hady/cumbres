@@ -287,7 +287,7 @@
                                         <a class="nav-link" href="#"><i class="fa fa-percent"></i> Promociones</a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->rol_id == 1)
+                                @if(Auth::user()->bonos_rec == 1)
                                     <li @click="menu=241" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-percent"></i> Catalogo de bonos</a>
                                     </li>
@@ -470,6 +470,11 @@
                                 @if(Auth::user()->avaluos == 1)
                                     <li @click="menu=204" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-money"></i> Avaluos</a>
+                                    </li>
+                                @endif
+                                @if(Auth::user()->bonos_rec == 1)
+                                    <li @click="menu=242" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-money"></i> Bonos por recomendación</a>
                                     </li>
                                 @endif
                                 

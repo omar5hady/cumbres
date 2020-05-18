@@ -957,7 +957,7 @@
             cambiarPagina2(page2,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2){
                 let me = this;
                 //Actualiza la pagina actual
-                me.pagination2.current_page = page;
+                me.pagination2.current_page = page2;
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarHistorialAvaluos(page2,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2);
             },

@@ -18,6 +18,8 @@ use NumerosEnLetras;
 use App\Lote;
 use App\Credito;
 use App\Entrega;
+use App\Bono_recomendado;
+use App\Http\Controllers\BonoRecomendadoController;
 
 class ExpedienteController extends Controller
 {
@@ -3285,10 +3287,22 @@ class ExpedienteController extends Controller
             $credito = Credito::findOrFail($request->folio);
             $lote = $credito->lote_id;
             $firmado = Lote::findOrFail($lote);
+            $etapa = $firmado->etapa_id;
+            $cliente = $credito->prospecto_id;
             $firmado->firmado = 1;
             $firmado->save();
-            
 
+            $contrato = Contrato::findOrFail($request->folio);
+            
+            if($contrato->publicidad_id == 1){
+                $bonoAnt = Bono_recomendado::select('id')->where('id','=',$request->folio)->get();
+
+                if(sizeOf($bonoAnt)==0){
+                    $bono = new BonoRecomendadoController();
+                    $bono->store($request->folio, $etapa, $cliente, $request->fecha_firma_esc);
+                }
+            }
+            
             $entrega = Entrega::select('id')->where('id','=',$credito->id)->get();
 
             if(sizeOf($entrega)){

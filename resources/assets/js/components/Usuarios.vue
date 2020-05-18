@@ -292,6 +292,9 @@
                                                     <li class="nav-item" v-if="rol_id == 5 || rol_id == 1 || rol_id == 6 || rol_id == 11">
                                                         <a class="nav-link" ><i class="fa fa-money"></i> <input v-model="avaluos" type="checkbox" value="1"/> Avaluos</a>
                                                     </li>
+                                                    <li class="nav-item" v-if="rol_id == 5 || rol_id == 1 || rol_id == 6 || rol_id == 11">
+                                                        <a class="nav-link" ><i class="fa fa-money"></i> <input v-model="bonos_rec" type="checkbox" value="1"/> Bonos por recomendación</a>
+                                                    </li>
                                                 </ul>
                                     </div>
                                 </div> 
@@ -801,6 +804,7 @@
                     asig_gestor:0,
                     seg_tramite:0,
                     avaluos:0,
+                    bonos_rec:0,
 
                     //Postventa
                     entregas:0,
@@ -1002,6 +1006,7 @@
                 this.asig_gestor=0;
                 this.seg_tramite=0;
                 this.avaluos=0;
+                this.bonos_rec=0;
             },
             limpiarPostventa(){
                 //Gestoria
@@ -1133,6 +1138,7 @@
                     me.asig_gestor = usuarios[0].asig_gestor;
                     me.seg_tramite = usuarios[0].seg_tramite;
                     me.avaluos = usuarios[0].avaluos;
+                    me.bonos_rec = usuarios[0].bonos_rec;
 
                     //Postventa
                     me.entregas = usuarios[0].entregas;
@@ -1424,6 +1430,7 @@
                     'asig_gestor':this.asig_gestor,
                     'seg_tramite':this.seg_tramite,
                     'avaluos':this.avaluos,
+                    'bonos_rec':this.bonos_rec,
                         //Postventa
                     'entregas':this.entregas,
                     'solic_detalles':this.solic_detalles,

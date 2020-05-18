@@ -107,6 +107,7 @@ class CreateUsersTable extends Migration
             $table->boolean('asig_gestor')->default(0);
             $table->boolean('seg_tramite')->default(0);
             $table->boolean('avaluos')->default(0);
+            $table->boolean('bonos_rec')->default(0);
 
             //Postventa
             $table->boolean('entregas')->default(0);
