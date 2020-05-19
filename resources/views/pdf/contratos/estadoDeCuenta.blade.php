@@ -9,6 +9,7 @@
 <style type="text/css">
 
 .table1 { display: table; width: 60%; border-collapse: collapse; table-layout: fixed; }
+.table2 { display: table; width: 100%; border-collapse: collapse; table-layout: fixed; }
 .table { display: table; width: 105%; border-collapse: collapse; table-layout: fixed; }
 .table-row { display: table-row;  }
 .table-cell { display: table-cell; padding: 0.05em; font-size: 9pt;}
@@ -68,14 +69,18 @@
                 <div class="table-row">
                     <div class="table-cell">RFC: </div>
                     <div class="table-cell">{{mb_strtoupper($contratos[0]->rfc)}}-{{mb_strtoupper($contratos[0]->homoclave)}}</div>
-                    <div class="table-cell"></div>   
+                    <div class="table-cell"></div>      
                 </div>
-               
         </div>
     </div> 
 
     <div style="position: static; margin: 25px;">
         <div class="table" style="margin-top: 0.2em;">
+            <div class="table-row">
+                <div colspan="2" class="table-cell"><b> Tipo de Credito: </div>
+                <div colspan="4" class="table-cell">{{mb_strtoupper($contratos[0]->institucion)}}-{{mb_strtoupper($contratos[0]->tipo_credito)}}</div>
+            </div>
+            <br>
                 <div class="table-row">
                     <div colspan="2" class="table-cell"> <b> Valor a escriturar</div>
                     <div colspan="2" class="table-cell">${{$contratos[0]->valor_escrituras}}</div>

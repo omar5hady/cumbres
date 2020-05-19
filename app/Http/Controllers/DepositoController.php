@@ -2138,6 +2138,8 @@ class DepositoController extends Controller
                 'contratos.fecha',
                 'contratos.saldo',
                 'contratos.status',
+                'i.tipo_credito',
+                'i.institucion',
                 'i.monto_credito as credito_solic',
                 'i.cobrado',
                 'i.segundo_credito',

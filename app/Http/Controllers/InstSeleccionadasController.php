@@ -12,6 +12,7 @@ use Excel;
 use App\Contrato;
 use App\Dev_credito;
 use Auth;
+use App\Pago_contrato;
 
 class InstSeleccionadasController extends Controller
 {
@@ -33,7 +34,9 @@ class InstSeleccionadasController extends Controller
                     'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
                     'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
                     'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                    'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado');
+                    'lotes.fecha_termino_ventas',
+                    'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+            ->where('lotes.firmado','=',$request->firmado);
 
         if($b_cobrados == 0){
             if($buscar == '' && $criterio != 'personal.nombre'){
@@ -391,11 +394,24 @@ class InstSeleccionadasController extends Controller
             }
         }
 
+        
+
         $creditos = $creditos->orderBy('inst_seleccionadas.cobrado','asc')
                             ->orderBy('inst_seleccionadas.monto_credito','desc')
                             ->paginate(10);  
 
 
+        if(sizeof($creditos)){
+            foreach($creditos as $et=>$contrato){
+                $pagos = Pago_contrato::select('num_pago','fecha_pago')
+                    ->where('tipo_pagare','=',0)
+                    ->where('contrato_id','=',$contrato->folio)
+                    ->orderBy('fecha_pago','desc')
+                    ->get();
+
+                $contrato->pagare=$pagos[0]->fecha_pago;
+            }
+        }
         return[
                 'pagination' => [
                 'total'         => $creditos->total(),
@@ -651,7 +667,9 @@ class InstSeleccionadasController extends Controller
                             'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
                             'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
                             'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                            'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado');
+                            'lotes.fecha_termino_ventas',
+                            'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                            ->where('lotes.firmado','=',$request->firmado);
 
         if($b_cobrados == 0){
             if($buscar == '' && $criterio != 'personal.nombre'){
@@ -1009,521 +1027,21 @@ class InstSeleccionadasController extends Controller
             }
         }
 
-        // if($b_cobrados == 0){
-        //     if($buscar == '' && $criterio != 'personal.nombre'){
-        //         $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-        //             ->join('contratos','contratos.id','=','creditos.id')
-        //             ->join('lotes','lotes.id','=','creditos.lote_id')
-        //             ->join('personal','personal.id','=','creditos.prospecto_id')
-        //             ->select('contratos.id as folio', 'lotes.credito_puente',
-        //                     'creditos.fraccionamiento as proyecto',
-        //                     'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-        //                     'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-        //                     'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-        //                     'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-        //             ->where('inst_seleccionadas.cobrado','=','0')
-        //             ->where('inst_seleccionadas.elegido', '=', 1)
-        //             ->where('contratos.status', '=', 3)
-        //             ->orWhere('inst_seleccionadas.tipo', '=', 1)
-        //             ->where('inst_seleccionadas.cobrado','=','0')
-        //             ->where('contratos.status', '=', 3);
-        //     }
-        //     else{
-        //         switch($criterio){
-        //             case 'personal.nombre':{
-        //                 if($buscar2 == ''){
-        //                     $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-        //                         ->join('contratos','contratos.id','=','creditos.id')
-        //                         ->join('lotes','lotes.id','=','creditos.lote_id')
-        //                         ->join('personal','personal.id','=','creditos.prospecto_id')
-        //                         ->select('contratos.id as folio', 'lotes.credito_puente',
-        //                                 'creditos.fraccionamiento as proyecto',
-        //                                 'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-        //                                 'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-        //                                 'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-        //                                 'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-        //                         ->where('inst_seleccionadas.elegido', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, 'like', '%' . $buscar . '%')
-        //                         ->where('inst_seleccionadas.cobrado','=','0')
-        //                         ->orWhere('inst_seleccionadas.tipo', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, 'like', '%' . $buscar . '%')
-        //                         ->where('inst_seleccionadas.cobrado','=','0');
-        //                 }
-        //                 elseif ($buscar2 != '' && $buscar == '') {
-        //                     $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-        //                         ->join('contratos','contratos.id','=','creditos.id')
-        //                         ->join('lotes','lotes.id','=','creditos.lote_id')
-        //                         ->join('personal','personal.id','=','creditos.prospecto_id')
-        //                         ->select('contratos.id as folio', 'lotes.credito_puente',
-        //                                 'creditos.fraccionamiento as proyecto',
-        //                                 'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-        //                                 'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-        //                                 'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-        //                                 'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-        //                         ->where('inst_seleccionadas.elegido', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-        //                         ->where('inst_seleccionadas.cobrado','=','0')
-        //                         ->orWhere('inst_seleccionadas.tipo', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-        //                         ->where('inst_seleccionadas.cobrado','=','0');
-        //                 }
-        //                 else{
-        //                     $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-        //                         ->join('contratos','contratos.id','=','creditos.id')
-        //                         ->join('lotes','lotes.id','=','creditos.lote_id')
-        //                         ->join('personal','personal.id','=','creditos.prospecto_id')
-        //                         ->select('contratos.id as folio', 'lotes.credito_puente',
-        //                                 'creditos.fraccionamiento as proyecto',
-        //                                 'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-        //                                 'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-        //                                 'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-        //                                 'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-        //                         ->where('inst_seleccionadas.elegido', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, 'like', '%' . $buscar . '%')
-        //                         ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-        //                         ->where('inst_seleccionadas.cobrado','=','0')
-    
-        //                         ->orWhere('inst_seleccionadas.tipo', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, 'like', '%' . $buscar . '%')
-        //                         ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-        //                         ->where('inst_seleccionadas.cobrado','=','0');
-        //                 }
-        //                 break;
-    
-        //             }
-        //             case 'creditos.fraccionamiento': {
-        //                 if($buscar2 == '' && $buscar3 == '' && $buscar4 == ''){
-        //                     $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-        //                         ->join('contratos','contratos.id','=','creditos.id')
-        //                         ->join('lotes','lotes.id','=','creditos.lote_id')
-        //                         ->join('personal','personal.id','=','creditos.prospecto_id')
-        //                         ->select('contratos.id as folio', 'lotes.credito_puente',
-        //                                 'creditos.fraccionamiento as proyecto',
-        //                                 'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-        //                                 'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-        //                                 'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-        //                                 'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-        //                         ->where('inst_seleccionadas.elegido', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, '=', $buscar)
-        //                         ->where('inst_seleccionadas.cobrado','=','0')
-        //                         ->orWhere('inst_seleccionadas.tipo', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, '=', $buscar)
-        //                         ->where('inst_seleccionadas.cobrado','=','0');
-        //                 }
-        //                 elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 == '') {
-        //                     $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-        //                         ->join('contratos','contratos.id','=','creditos.id')
-        //                         ->join('lotes','lotes.id','=','creditos.lote_id')
-        //                         ->join('personal','personal.id','=','creditos.prospecto_id')
-        //                         ->select('contratos.id as folio', 'lotes.credito_puente',
-        //                                 'creditos.fraccionamiento as proyecto',
-        //                                 'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-        //                                 'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-        //                                 'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-        //                                 'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-        //                         ->where('inst_seleccionadas.elegido', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, '=', $buscar)
-        //                         ->where('creditos.etapa', '=', $buscar2)
-        //                         ->where('inst_seleccionadas.cobrado','=','0')
-        //                         ->orWhere('inst_seleccionadas.tipo', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, '=', $buscar)
-        //                         ->where('creditos.etapa', '=', $buscar2)
-        //                         ->where('inst_seleccionadas.cobrado','=','0');
-        //                 }
-        //                 elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 == '') {
-        //                     $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-        //                         ->join('contratos','contratos.id','=','creditos.id')
-        //                         ->join('lotes','lotes.id','=','creditos.lote_id')
-        //                         ->join('personal','personal.id','=','creditos.prospecto_id')
-        //                         ->select('contratos.id as folio', 'lotes.credito_puente',
-        //                                 'creditos.fraccionamiento as proyecto',
-        //                                 'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-        //                                 'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-        //                                 'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-        //                                 'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-        //                         ->where('inst_seleccionadas.elegido', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, '=', $buscar)
-        //                         ->where('creditos.etapa', '=', $buscar2)
-        //                         ->where('creditos.manzana', '=', $buscar3)
-        //                         ->where('inst_seleccionadas.cobrado','=','0')
-        //                         ->orWhere('inst_seleccionadas.tipo', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, '=', $buscar)
-        //                         ->where('creditos.etapa', '=', $buscar2)
-        //                         ->where('creditos.manzana', '=', $buscar3)
-        //                         ->where('inst_seleccionadas.cobrado','=','0');
-        //                 }
-        //                 elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 != '') {
-        //                     $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-        //                         ->join('contratos','contratos.id','=','creditos.id')
-        //                         ->join('lotes','lotes.id','=','creditos.lote_id')
-        //                         ->join('personal','personal.id','=','creditos.prospecto_id')
-        //                         ->select('contratos.id as folio', 'lotes.credito_puente',
-        //                                 'creditos.fraccionamiento as proyecto',
-        //                                 'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-        //                                 'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-        //                                 'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-        //                                 'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-        //                         ->where('inst_seleccionadas.elegido', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, '=', $buscar)
-        //                         ->where('creditos.etapa', '=', $buscar2)
-        //                         ->where('creditos.manzana', '=', $buscar3)
-        //                         ->where('creditos.num_lote', '=', $buscar4)
-        //                         ->where('inst_seleccionadas.cobrado','=','0')
-    
-        //                         ->orWhere('inst_seleccionadas.tipo', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, '=', $buscar)
-        //                         ->where('creditos.etapa', '=', $buscar2)
-        //                         ->where('creditos.manzana', '=', $buscar3)
-        //                         ->where('creditos.num_lote', '=', $buscar4)
-        //                         ->where('inst_seleccionadas.cobrado','=','0');
-        //                 }
-        //                 elseif ($buscar2 == '' && $buscar3 == '' && $buscar4 != '') {
-        //                     $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-        //                         ->join('contratos','contratos.id','=','creditos.id')
-        //                         ->join('lotes','lotes.id','=','creditos.lote_id')
-        //                         ->join('personal','personal.id','=','creditos.prospecto_id')
-        //                         ->select('contratos.id as folio', 'lotes.credito_puente',
-        //                                 'creditos.fraccionamiento as proyecto',
-        //                                 'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-        //                                 'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-        //                                 'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-        //                                 'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-        //                         ->where('inst_seleccionadas.elegido', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, '=', $buscar)
-        //                         ->where('creditos.num_lote', '=', $buscar4)
-        //                         ->where('inst_seleccionadas.cobrado','=','0')
-        //                         ->orWhere('inst_seleccionadas.tipo', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, '=', $buscar)
-        //                         ->where('creditos.num_lote', '=', $buscar4)
-        //                         ->where('inst_seleccionadas.cobrado','=','0');
-        //                 }
-        //                 elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 != '') {
-        //                     $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-        //                         ->join('contratos','contratos.id','=','creditos.id')
-        //                         ->join('lotes','lotes.id','=','creditos.lote_id')
-        //                         ->join('personal','personal.id','=','creditos.prospecto_id')
-        //                         ->select('contratos.id as folio', 'lotes.credito_puente',
-        //                                 'creditos.fraccionamiento as proyecto',
-        //                                 'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-        //                                 'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-        //                                 'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-        //                                 'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-        //                         ->where('inst_seleccionadas.elegido', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, '=', $buscar)
-        //                         ->where('creditos.etapa', '=', $buscar2)
-        //                         ->where('creditos.num_lote', '=', $buscar4)
-        //                         ->where('inst_seleccionadas.cobrado','=','0')
-        //                         ->orWhere('inst_seleccionadas.tipo', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, '=', $buscar)
-        //                         ->where('creditos.etapa', '=', $buscar2)
-        //                         ->where('creditos.num_lote', '=', $buscar4)
-        //                         ->where('inst_seleccionadas.cobrado','=','0');
-        //                 }
-        //                 break;
-        //             }
-    
-        //             case 'contratos.id': {
-        //                 $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-        //                         ->join('contratos','contratos.id','=','creditos.id')
-        //                         ->join('lotes','lotes.id','=','creditos.lote_id')
-        //                         ->join('personal','personal.id','=','creditos.prospecto_id')
-        //                         ->select('contratos.id as folio', 'lotes.credito_puente',
-        //                                 'creditos.fraccionamiento as proyecto',
-        //                                 'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-        //                                 'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-        //                                 'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-        //                                 'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-        //                         ->where('inst_seleccionadas.elegido', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, '=', $buscar)
-        //                         ->where('inst_seleccionadas.cobrado','=','0')
-        //                         ->orWhere('inst_seleccionadas.tipo', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, '=', $buscar)
-        //                         ->where('inst_seleccionadas.cobrado','=','0');
-        //             }
-    
-        //         }
-        //     }
-        // }
-        // else{
-        //     if($buscar == '' && $criterio != 'personal.nombre'){
-        //         $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-        //             ->join('contratos','contratos.id','=','creditos.id')
-        //             ->join('lotes','lotes.id','=','creditos.lote_id')
-        //             ->join('personal','personal.id','=','creditos.prospecto_id')
-        //             ->select('contratos.id as folio', 'lotes.credito_puente',
-        //                     'creditos.fraccionamiento as proyecto',
-        //                     'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-        //                     'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-        //                     'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-        //                     'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-        //             ->where('inst_seleccionadas.cobrado','!=','0')
-        //             ->where('inst_seleccionadas.elegido', '=', 1)
-        //             ->where('contratos.status', '=', 3)
-        //             ->orWhere('inst_seleccionadas.tipo', '=', 1)
-        //             ->where('inst_seleccionadas.cobrado','!=','0')
-        //             ->where('contratos.status', '=', 3);
-        //     }
-        //     else{
-        //         switch($criterio){
-        //             case 'personal.nombre':{
-        //                 if($buscar2 == ''){
-        //                     $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-        //                         ->join('contratos','contratos.id','=','creditos.id')
-        //                         ->join('lotes','lotes.id','=','creditos.lote_id')
-        //                         ->join('personal','personal.id','=','creditos.prospecto_id')
-        //                         ->select('contratos.id as folio', 'lotes.credito_puente',
-        //                                 'creditos.fraccionamiento as proyecto',
-        //                                 'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-        //                                 'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-        //                                 'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-        //                                 'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-        //                         ->where('inst_seleccionadas.elegido', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, 'like', '%' . $buscar . '%')
-        //                         ->where('inst_seleccionadas.cobrado','!=','0')
-        //                         ->orWhere('inst_seleccionadas.tipo', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, 'like', '%' . $buscar . '%')
-        //                         ->where('inst_seleccionadas.cobrado','!=','0');
-        //                 }
-        //                 elseif ($buscar2 != '' && $buscar == '') {
-        //                     $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-        //                         ->join('contratos','contratos.id','=','creditos.id')
-        //                         ->join('lotes','lotes.id','=','creditos.lote_id')
-        //                         ->join('personal','personal.id','=','creditos.prospecto_id')
-        //                         ->select('contratos.id as folio', 'lotes.credito_puente',
-        //                                 'creditos.fraccionamiento as proyecto',
-        //                                 'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-        //                                 'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-        //                                 'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-        //                                 'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-        //                         ->where('inst_seleccionadas.elegido', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-        //                         ->where('inst_seleccionadas.cobrado','!=','0')
-        //                         ->orWhere('inst_seleccionadas.tipo', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-        //                         ->where('inst_seleccionadas.cobrado','!=','0');
-        //                 }
-        //                 else{
-        //                     $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-        //                         ->join('contratos','contratos.id','=','creditos.id')
-        //                         ->join('lotes','lotes.id','=','creditos.lote_id')
-        //                         ->join('personal','personal.id','=','creditos.prospecto_id')
-        //                         ->select('contratos.id as folio', 'lotes.credito_puente',
-        //                                 'creditos.fraccionamiento as proyecto',
-        //                                 'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-        //                                 'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-        //                                 'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-        //                                 'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-        //                         ->where('inst_seleccionadas.elegido', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, 'like', '%' . $buscar . '%')
-        //                         ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-        //                         ->where('inst_seleccionadas.cobrado','!=','0')
-    
-        //                         ->orWhere('inst_seleccionadas.tipo', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, 'like', '%' . $buscar . '%')
-        //                         ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-        //                         ->where('inst_seleccionadas.cobrado','!=','0');
-        //                 }
-        //                 break;
-    
-        //             }
-        //             case 'creditos.fraccionamiento': {
-        //                 if($buscar2 == '' && $buscar3 == '' && $buscar4 == ''){
-        //                     $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-        //                         ->join('contratos','contratos.id','=','creditos.id')
-        //                         ->join('lotes','lotes.id','=','creditos.lote_id')
-        //                         ->join('personal','personal.id','=','creditos.prospecto_id')
-        //                         ->select('contratos.id as folio', 'lotes.credito_puente',
-        //                                 'creditos.fraccionamiento as proyecto',
-        //                                 'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-        //                                 'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-        //                                 'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-        //                                 'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-        //                         ->where('inst_seleccionadas.elegido', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, '=', $buscar)
-        //                         ->where('inst_seleccionadas.cobrado','!=','0')
-        //                         ->orWhere('inst_seleccionadas.tipo', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, '=', $buscar)
-        //                         ->where('inst_seleccionadas.cobrado','!=','0');   
-        //                 }
-        //                 elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 == '') {
-        //                     $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-        //                         ->join('contratos','contratos.id','=','creditos.id')
-        //                         ->join('lotes','lotes.id','=','creditos.lote_id')
-        //                         ->join('personal','personal.id','=','creditos.prospecto_id')
-        //                         ->select('contratos.id as folio', 'lotes.credito_puente',
-        //                                 'creditos.fraccionamiento as proyecto',
-        //                                 'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-        //                                 'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-        //                                 'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-        //                                 'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-        //                         ->where('inst_seleccionadas.elegido', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, '=', $buscar)
-        //                         ->where('creditos.etapa', '=', $buscar2)
-        //                         ->where('inst_seleccionadas.cobrado','!=','0')
-        //                         ->orWhere('inst_seleccionadas.tipo', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, '=', $buscar)
-        //                         ->where('creditos.etapa', '=', $buscar2)
-        //                         ->where('inst_seleccionadas.cobrado','!=','0');
-        //                 }
-        //                 elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 == '') {
-        //                     $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-        //                         ->join('contratos','contratos.id','=','creditos.id')
-        //                         ->join('lotes','lotes.id','=','creditos.lote_id')
-        //                         ->join('personal','personal.id','=','creditos.prospecto_id')
-        //                         ->select('contratos.id as folio', 'lotes.credito_puente',
-        //                                 'creditos.fraccionamiento as proyecto',
-        //                                 'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-        //                                 'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-        //                                 'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-        //                                 'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-        //                         ->where('inst_seleccionadas.elegido', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, '=', $buscar)
-        //                         ->where('creditos.etapa', '=', $buscar2)
-        //                         ->where('creditos.manzana', '=', $buscar3)
-        //                         ->where('inst_seleccionadas.cobrado','!=','0')
-        //                         ->orWhere('inst_seleccionadas.tipo', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, '=', $buscar)
-        //                         ->where('creditos.etapa', '=', $buscar2)
-        //                         ->where('creditos.manzana', '=', $buscar3)
-        //                         ->where('inst_seleccionadas.cobrado','!=','0');
-        //                 }
-        //                 elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 != '') {
-        //                     $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-        //                         ->join('contratos','contratos.id','=','creditos.id')
-        //                         ->join('lotes','lotes.id','=','creditos.lote_id')
-        //                         ->join('personal','personal.id','=','creditos.prospecto_id')
-        //                         ->select('contratos.id as folio', 'lotes.credito_puente',
-        //                                 'creditos.fraccionamiento as proyecto',
-        //                                 'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-        //                                 'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-        //                                 'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-        //                                 'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-        //                         ->where('inst_seleccionadas.elegido', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, '=', $buscar)
-        //                         ->where('creditos.etapa', '=', $buscar2)
-        //                         ->where('creditos.manzana', '=', $buscar3)
-        //                         ->where('creditos.num_lote', '=', $buscar4)
-        //                         ->where('inst_seleccionadas.cobrado','!=','0')
-    
-        //                         ->orWhere('inst_seleccionadas.tipo', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, '=', $buscar)
-        //                         ->where('creditos.etapa', '=', $buscar2)
-        //                         ->where('creditos.manzana', '=', $buscar3)
-        //                         ->where('creditos.num_lote', '=', $buscar4)
-        //                         ->where('inst_seleccionadas.cobrado','!=','0');
-        //                 }
-        //                 elseif ($buscar2 == '' && $buscar3 == '' && $buscar4 != '') {
-        //                     $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-        //                         ->join('contratos','contratos.id','=','creditos.id')
-        //                         ->join('lotes','lotes.id','=','creditos.lote_id')
-        //                         ->join('personal','personal.id','=','creditos.prospecto_id')
-        //                         ->select('contratos.id as folio', 'lotes.credito_puente',
-        //                                 'creditos.fraccionamiento as proyecto',
-        //                                 'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-        //                                 'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-        //                                 'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-        //                                 'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-        //                         ->where('inst_seleccionadas.elegido', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, '=', $buscar)
-        //                         ->where('creditos.num_lote', '=', $buscar4)
-        //                         ->where('inst_seleccionadas.cobrado','!=','0')
-        //                         ->orWhere('inst_seleccionadas.tipo', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, '=', $buscar)
-        //                         ->where('creditos.num_lote', '=', $buscar4)
-        //                         ->where('inst_seleccionadas.cobrado','!=','0');
-        //                 }
-        //                 elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 != '') {
-        //                     $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-        //                         ->join('contratos','contratos.id','=','creditos.id')
-        //                         ->join('lotes','lotes.id','=','creditos.lote_id')
-        //                         ->join('personal','personal.id','=','creditos.prospecto_id')
-        //                         ->select('contratos.id as folio', 'lotes.credito_puente',
-        //                                 'creditos.fraccionamiento as proyecto',
-        //                                 'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-        //                                 'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-        //                                 'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-        //                                 'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-        //                         ->where('inst_seleccionadas.elegido', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, '=', $buscar)
-        //                         ->where('creditos.etapa', '=', $buscar2)
-        //                         ->where('creditos.num_lote', '=', $buscar4)
-        //                         ->where('inst_seleccionadas.cobrado','!=','0')
-        //                         ->orWhere('inst_seleccionadas.tipo', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, '=', $buscar)
-        //                         ->where('creditos.etapa', '=', $buscar2)
-        //                         ->where('creditos.num_lote', '=', $buscar4)
-        //                         ->where('inst_seleccionadas.cobrado','!=','0');
-        //                 }
-        //                 break;
-        //             }
-    
-        //             case 'contratos.id': {
-        //                 $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-        //                         ->join('contratos','contratos.id','=','creditos.id')
-        //                         ->join('lotes','lotes.id','=','creditos.lote_id')
-        //                         ->join('personal','personal.id','=','creditos.prospecto_id')
-        //                         ->select('contratos.id as folio', 'lotes.credito_puente',
-        //                                 'creditos.fraccionamiento as proyecto',
-        //                                 'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-        //                                 'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-        //                                 'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-        //                                 'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-        //                         ->where('inst_seleccionadas.elegido', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, '=', $buscar)
-        //                         ->where('inst_seleccionadas.cobrado','!=','0')
-        //                         ->orWhere('inst_seleccionadas.tipo', '=', 1)
-        //                         ->where('contratos.status', '=', 3)
-        //                         ->where($criterio, '=', $buscar)
-        //                         ->where('inst_seleccionadas.cobrado','!=','0');
-        //             }
-    
-        //         }
-        //     }
-
-        // }
-
         $creditos = $creditos->orderBy('inst_seleccionadas.cobrado','asc')
                             ->orderBy('inst_seleccionadas.monto_credito','desc')
                             ->get();
+
+        if(sizeof($creditos)){
+            foreach($creditos as $et=>$contrato){
+                $pagos = Pago_contrato::select('num_pago','fecha_pago')
+                    ->where('tipo_pagare','=',0)
+                    ->where('contrato_id','=',$contrato->folio)
+                    ->orderBy('fecha_pago','desc')
+                    ->get();
+
+                $contrato->pagare=$pagos[0]->fecha_pago;
+            }
+        }
 
         return Excel::create('creditos', function($excel) use ($creditos){
             $excel->sheet('creditos', function($sheet) use ($creditos){
@@ -1531,11 +1049,11 @@ class InstSeleccionadasController extends Controller
                 $sheet->row(1, [
                     '# Ref', 'Cliente', 'Proyecto','Etapa', 'Manzana',
                     '# Lote','Credito puente', 'Institución', 'Crédito', 'Cobrado',
-                    'Pendiente'
+                    'Pendiente', 'Fecha de termino', 'Fecha pagare'
                 ]);
 
 
-                $sheet->cells('A1:K1', function ($cells) {
+                $sheet->cells('A1:M1', function ($cells) {
                     $cells->setBackground('#052154');
                     $cells->setFontColor('#ffffff');
                     // Set font family
@@ -1571,12 +1089,14 @@ class InstSeleccionadasController extends Controller
                         $credito->institucion,
                         '$ '.$montoCredito,
                         '$ '.$cobrado,
-                        '$ '.$pendiente
+                        '$ '.$pendiente,
+                        $credito->fecha_termino_ventas,
+                        $credito->pagare,
                         
 
                     ]);	
                 }
-                $num='A1:K' . $cont;
+                $num='A1:M' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
         }
