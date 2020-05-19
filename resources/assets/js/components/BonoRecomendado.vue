@@ -74,7 +74,7 @@
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
-                                        <th v-if="rolId == 1 || rolId == 3"></th>
+                                        <th v-if="rolId == 1 || rolId == 6 || rolId == 8"></th>
                                         <th></th>
                                         <th colspan="7">Datos de la venta</th>
                                         <th colspan="5" class="text-center" style="text-color:''"><font color="#00ADEF">Cliente que nos recomienda:</font></th>
@@ -82,7 +82,7 @@
                                         <th colspan="6"></th>
                                     </tr>
                                     <tr>
-                                        <th v-if="rolId == 1 || rolId == 3"></th>
+                                        <th v-if="rolId == 1 || rolId == 6 || rolId == 8"></th>
                                         <th>Status</th>
                                         <th>Folio</th>
                                         <th>Proyecto</th>
@@ -109,11 +109,11 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="bono in arrayBonos" :key="bono.id">
-                                        <td class="td2"  v-if="rolId == 1 || rolId == 3" style="width:20%">
+                                        <td class="td2"  v-if="rolId == 1 || rolId == 6 || rolId == 8" style="width:20%">
                                             <button v-if="bono.fecha_pago == null && bono.status != 5" type="button" title="Actualizar" @click="abrirModal('actualizar',bono)" class="btn btn-warning btn-sm">
                                             <i class="icon-pencil"></i>
                                             </button> &nbsp;
-                                            <button v-if="bono.fecha_pago == null && bono.status != 5" type="button" title="Cancelar" class="btn btn-danger btn-sm" @click="cancelarBono(bono.id)">
+                                            <button v-if="bono.fecha_pago == null && bono.status != 5 && rolId == 6" type="button" title="Cancelar" class="btn btn-danger btn-sm" @click="cancelarBono(bono.id)">
                                             <i class="icon-close"></i>
                                             </button>
                                         </td>
@@ -347,6 +347,7 @@
                             <div class="form-group row">
                                 <label class="col-md-2 form-control-label" for="text-input">Nombre:</label>
                                 <div class="col-md-5">
+                                    
                                     <input type="text" readonly v-model="recomendado" class="form-control" placeholder="Recomendado">
                                 </div>
                             </div>
@@ -440,7 +441,11 @@
                             <div class="form-group row">
                                 <label class="col-md-2 form-control-label" for="text-input">Nombre:</label>
                                 <div class="col-md-5">
-                                    <input type="text" v-model="recomendado" class="form-control" placeholder="Recomendado">
+                                    <input type="text" name="city3" list="cityname3" class="form-control" v-model="recomendado" v-on:keypress="selectCliente(recomendado)" @click="getDatos(recomendado)" @keyup.enter="getDatos(recomendado)">
+                                        <datalist id="cityname3" @click="getDatos(recomendado)">
+                                            <option value="">Seleccione</option>
+                                            <option v-for="cliente in arrayClientes" :key="cliente.id " :value="cliente.nombre_cliente" v-text="cliente.nombre_cliente"></option>    
+                                        </datalist>
                                 </div>
                             </div>
 
@@ -568,7 +573,7 @@
 <script>
     export default {
         props:{
-            rolId:{type: String}
+            rolId:{ty6e: String}
         },
         data(){
             return{
@@ -587,6 +592,7 @@
                 arrayBonos : [],
                 arrayFraccionamientos: [],
                 arrayEtapas: [],
+                arrayClientes:[],
                 modal : 0,
                 tituloModal : '',
                 tipoAccion: 0,
@@ -676,8 +682,37 @@
                 
             },
 
+            selectCliente(buscar){
+                let me = this;
+                me.arrayClientes = [];
+                var url = '/select_clientesVenta?buscar=' + buscar ;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayClientes = respuesta.clientes;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+                
+            },
+
+            getDatos(buscar){
+                let me = this;
+                var url = '/clientes/getDatosVentas?buscar=' + buscar ;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.proyecto_rec = respuesta.clientes[0].fraccionamiento;
+                    me.etapa_rec = respuesta.clientes[0].etapa;
+                    me.manzana_rec = respuesta.clientes[0].manzana;
+                    me.lote_rec = respuesta.clientes[0].num_lote;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
             aprobarBono(id){
-                if( this.rolId == 3 || this.rolId == 1 ){ 
+                if( this.rolId == 6 || this.rolId == 1 ){ 
                     let me = this;
                     //Con axios se llama el metodo update de LoteController
                 
@@ -722,7 +757,7 @@
               
             },
             autorizarBono(id){
-                if( this.rolId == 3 || this.rolId == 1 ){ 
+                if( this.rolId == 6 || this.rolId == 1 ){ 
                     let me = this;
                     //Con axios se llama el metodo update de LoteController
                 
@@ -768,7 +803,7 @@
             },
 
             cancelarBono(id){
-                if( this.rolId == 3 || this.rolId == 1 ){ 
+                if( this.rolId == 6 || this.rolId == 1 ){ 
                     let me = this;
                     //Con axios se llama el metodo update de LoteController
                 
@@ -978,11 +1013,14 @@
                         this.manzana_rec = data['manzana_rec'];
                         this.lote_rec = data['lote_rec'];
 
+                        this.selectCliente(this.recomendado);
+
                         break;
                     }
                     
                     case 'pagar':
                     {
+                        if(this.rolId == 9 || this.rolId == 6){
                         //console.log(data);
                         this.modal =1;
                         this.tituloModal='Generar pago';
@@ -1000,6 +1038,15 @@
                         this.etapa_rec = data['etapa_rec'];
                         this.manzana_rec = data['manzana_rec'];
                         this.lote_rec = data['lote_rec'];
+                        }
+                        else{
+                            Swal.fire({
+                                type:'warning',
+                                title: 'Sin permisos...',
+                                text: 'No tiene permisos para realizar esta accion!',
+                                })
+                        }
+                        
 
                         break;
                     }

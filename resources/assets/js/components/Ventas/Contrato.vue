@@ -529,15 +529,15 @@
                                             </div>
 
                                             <div class="col-md-2">
-                                                    <div class="form-group">
-                                                <label for="">Colonia<span style="color:red;" v-show="colonia==''">(*)</span></label>
-                                                <input v-if="listado==3 || listado==4 && btn_actualizar==1" type="text" name="city3" list="cityname3" class="form-control" v-model="colonia">
-                                                <datalist v-if="listado==3 || listado==4 && btn_actualizar==1" id="cityname3">
-                                                    <option value="">Seleccione</option>
-                                                    <option v-for="colonias in arrayColonias" :key="colonias.colonia " :value="colonias.colonia" v-text="colonias.colonia"></option>    
-                                                </datalist>
-                                                <input type="text" v-if="listado==4 && btn_actualizar==0" class="form-control" :readonly="listado==4 && btn_actualizar==0" v-model="colonia">
-                                            </div>
+                                                <div class="form-group">
+                                                    <label for="">Colonia<span style="color:red;" v-show="colonia==''">(*)</span></label>
+                                                    <input v-if="listado==3 || listado==4 && btn_actualizar==1" type="text" name="city3" list="cityname3" class="form-control" v-model="colonia">
+                                                    <datalist v-if="listado==3 || listado==4 && btn_actualizar==1" id="cityname3">
+                                                        <option value="">Seleccione</option>
+                                                        <option v-for="colonias in arrayColonias" :key="colonias.colonia " :value="colonias.colonia" v-text="colonias.colonia"></option>    
+                                                    </datalist>
+                                                    <input type="text" v-if="listado==4 && btn_actualizar==0" class="form-control" :readonly="listado==4 && btn_actualizar==0" v-model="colonia">
+                                                </div>
                                             </div>
 
                                             

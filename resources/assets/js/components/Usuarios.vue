@@ -276,7 +276,7 @@
                                 </div> 
 
                                 <!-- listado para privilegios del menu Gestoria -->
-                                <div class="col-md-4" v-if="rol_id==1 || rol_id==5 || rol_id==6 || rol_id==8 || rol_id == 11">
+                                <div class="col-md-4" v-if="rol_id==1 || rol_id==5 || rol_id==6 || rol_id==8 || rol_id==9 || rol_id == 11">
                                     <div class="form-group row border">
                                             <a class="nav-link nav-dropdown-toggle"><i class="fa fa-bank"></i> <input @click="limpiarGestoria()" v-model="gestoria" type="checkbox" value="1"/> Modulo Gestoria</a>
                                                 <ul class="nav-dropdown-items" v-if="gestoria==1">
@@ -292,7 +292,7 @@
                                                     <li class="nav-item" v-if="rol_id == 5 || rol_id == 1 || rol_id == 6 || rol_id == 11">
                                                         <a class="nav-link" ><i class="fa fa-money"></i> <input v-model="avaluos" type="checkbox" value="1"/> Avaluos</a>
                                                     </li>
-                                                    <li class="nav-item" v-if="rol_id == 5 || rol_id == 1 || rol_id == 6 || rol_id == 11">
+                                                    <li class="nav-item" v-if="rol_id == 5 || rol_id == 1 || rol_id == 6  || rol_id == 8  || rol_id == 9 || rol_id == 11">
                                                         <a class="nav-link" ><i class="fa fa-money"></i> <input v-model="bonos_rec" type="checkbox" value="1"/> Bonos por recomendación</a>
                                                     </li>
                                                 </ul>

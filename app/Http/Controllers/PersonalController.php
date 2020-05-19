@@ -627,4 +627,36 @@ class PersonalController extends Controller
 )->download('xls');
     }
 
+    public function selectClientesVenta(Request $request){
+        $datos = Personal::join('clientes as c','personal.id','=','c.id')
+                        ->join('creditos as cre','personal.id','=','cre.prospecto_id')
+                        ->join('contratos','cre.id','=','contratos.id')
+                        ->join('expedientes','contratos.id','=','expedientes.id')
+                        ->select(
+                            'c.id',
+                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente")
+                        )
+                        ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $request->buscar. '%')
+                        ->distinct()
+                        ->get();
+
+        return['clientes'=>$datos];
+    }
+
+    public function getDatosCliente(Request $request){
+        $datos = Personal::join('clientes as c','personal.id','=','c.id')
+                        ->join('creditos as cre','personal.id','=','cre.prospecto_id')
+                        ->join('contratos','cre.id','=','contratos.id')
+                        ->join('expedientes','contratos.id','=','expedientes.id')
+                        ->select(
+                            'c.id',
+                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
+                            'cre.fraccionamiento','cre.etapa','cre.manzana','cre.num_lote'
+                        )
+                        ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), '=',$request->buscar)
+                        ->get();
+
+        return['clientes'=>$datos];
+    }
+
 }

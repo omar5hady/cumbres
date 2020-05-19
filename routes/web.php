@@ -839,6 +839,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/select_datos_notaria','NotariaController@getDatosNotaria'); 
         Route::get('/select_ultima_fecha_instalacion','EntregaController@select_ultimaFecha_instalacion');
         Route::get('/selectCreditoPuente','CuentasController@selectCreditoPuente');
+
+        Route::get('/select_clientesVenta','PersonalController@selectClientesVenta');
+        Route::get('/clientes/getDatosVentas','PersonalController@getDatosCliente');
     
     
 });
