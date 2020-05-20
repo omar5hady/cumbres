@@ -69,6 +69,7 @@
                                         <th>Depositos</th>
                                         <th>Pendiente Devolver</th>
                                         <th>Fecha cancelación</th>
+                                        <th>Observaciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -83,6 +84,10 @@
                                         <td class="td2" v-text="'$'+formatNumber(contratos.sumaPagares - contratos.sumaRestante)"></td>
                                         <td class="td2" v-text="'$'+formatNumber(contratos.sumaPagares - contratos.sumaRestante -  contratos.sumGastos)"></td>
                                         <td class="td2" v-text="this.moment(contratos.fecha_status).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <td class="td2">
+                                            <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
+                                                        @click="abrirModal('observaciones',contratos)">Observaciones</button>
+                                        </td>
                                     </template>
                                     </tr>                               
                                 </tbody>
@@ -162,6 +167,7 @@
                                         <th>Fecha de devolucion</th>
                                         <th>Cheque</th>
                                         <th>Cuenta</th>
+                                        <th>Observaciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -178,6 +184,11 @@
                                         <td class="td2" v-text="this.moment(devoluciones.fecha).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2" v-text="devoluciones.cheque"></td>
                                         <td class="td2" v-text="devoluciones.cuenta"></td>
+                                        <td class="td2">
+                                            <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
+                                                        @click="abrirModal('observaciones',devoluciones)">Observaciones</button>
+                                        </td>
+                                        <td></td>
                                     </template>
                                     </tr>                               
                                 </tbody>
@@ -192,7 +203,7 @@
                                 <li class="page-item" v-if="pagination2.current_page > 1">
                                     <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d)">Ant</a>
                                 </li>
-                                <li class="page-item" v-for="page in pagesNumber2" :key="page" :class="[page == isActived ? 'active' : '']">
+                                <li class="page-item" v-for="page in pagesNumber2" :key="page" :class="[page == isActived2 ? 'active' : '']">
                                     <a class="page-link" href="#" @click.prevent="cambiarPagina2(page, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d)" v-text="page"></a>
                                 </li>
                                 <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
@@ -368,6 +379,61 @@
                 <!-- /.modal-dialog -->
             </div>
             <!--Fin del modal consulta-->
+
+            <!--Inicio del modal observaciones-->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal"></h4>
+                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
+                                    <div class="col-md-6">
+                                         <textarea rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observacion"></textarea>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button"  class="btn btn-primary" @click="agregarComentario()">Guardar</button>
+                                    </div>
+                                </div>
+
+                                
+                                <table class="table table-bordered table-striped table-sm" >
+                                    <thead>
+                                        <tr>
+                                            <th>Usuario</th>
+                                            <th>Observacion</th>
+                                            <th>Fecha</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="observacion in arrayObservacion" :key="observacion.id">
+                                            
+                                            <td v-text="observacion.usuario" ></td>
+                                            <td v-text="observacion.observacion" ></td>
+                                            <td v-text="observacion.created_at"></td>
+                                        </tr>                               
+                                    </tbody>
+                                </table>
+                                
+                            </form>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
+                        </div>
+                    </div>
+                      <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
             
          
      </main>
@@ -393,11 +459,13 @@
                 arrayBancos : [],
                 arrayGastos : [],
                 arrayDevoluciones: [],
+                arrayObservacion: [],
 
                 errorDev:0,
                 errorMostrarMsjDev:[],
 
                 modal : 0,
+                modal2: 0,
                 depositos : 0,
                 proyecto : '',
                 etapa: '',
@@ -408,6 +476,7 @@
                 fecha_devolucion:'',
                 cheque:'',
                 observaciones: '',
+                observacion: '',
                 totalGastos:0,
                 devolver : 0,
                 cant_dev : 0,
@@ -547,6 +616,47 @@
                     console.log(error);
                 });
                 
+            },
+
+            listarObservacion(buscar){
+                let me = this;
+                var url = '/devoluciones/listarObservacionesCanc?id=' + buscar ;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayObservacion = respuesta.observacion;
+                    console.log(url);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+                
+            },
+
+            agregarComentario(){
+                let me = this;
+                //Con axios se llama el metodo store de DepartamentoController
+                axios.post('/devoluciones/storeObservacionCanc',{
+                    'id': this.id,
+                    'observacion': this.observacion
+                }).then(function (response){
+                    me.listarObservacion(me.id);
+                    me.observacion = '';
+                    //me.cerrarModal3(); //al guardar el registro se cierra el modal
+                    
+                    const toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                    });
+
+                    toast({
+                    type: 'success',
+                    title: 'Observación Agregada Correctamente'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
             },
 
             formatNumber(value) {
@@ -709,6 +819,8 @@
        
             cerrarModal(){
                 this.modal = 0;
+                this.modal2 = 0;
+                this.arrayObservacion = [];
                 this.tituloModal = '';
                 this.depositos = 0;
                 this.proyecto = "";
@@ -777,7 +889,17 @@
                         this.listarGastos();
                         this.selectCuenta();
                         break;
-                    }       
+                    }   
+                    
+                    case 'observaciones':{
+                        this.modal2 = 1;
+                        this.tituloModal='Observaciones';
+                        this.observacion='';
+                        this.usuario='';
+                        this.id=data['id'];
+                        this.listarObservacion(this.id);
+                        break;
+                    }
                 }
             }
             

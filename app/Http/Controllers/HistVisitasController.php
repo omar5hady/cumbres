@@ -7,6 +7,7 @@ use App\Avaluo;
 use App\Hist_visita;
 use App\Avaluo_status;
 use Auth;
+use App\Obs_avaluos;
 
 class HistVisitasController extends Controller
 {
@@ -44,6 +45,12 @@ class HistVisitasController extends Controller
         $visita->status = $request->status;
         $visita->observacion = $request->observacion;
         $visita->save();
+
+        $obs = new Obs_avaluos();
+        $obs->avaluo_id = $request->avaluoId;
+        $obs->usuario = Auth::user()->usuario;
+        $obs->observacion = $request->status.': '.$request->observacion;
+        $obs->save();
 
         $avaluo = Avaluo::findOrFail($request->avaluoId);
         $avaluo->status = $request->status;

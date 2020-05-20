@@ -87,7 +87,7 @@ class DevolucionController extends Controller
             $contratos = $query
                 ->where('contratos.status', '=', '0')
                 ->where('contratos.devolucion', '!=', '2')
-                ->orderBy('id', 'desc')->paginate(30);
+                ->orderBy('id', 'desc')->paginate(1);
         }
         else{
             switch ($criterio){

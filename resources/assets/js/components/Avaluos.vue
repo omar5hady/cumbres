@@ -42,6 +42,22 @@
                                     <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
 
                                     <input v-else type="date"  v-model="buscar" @keyup.enter="listarAvaluos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
+                                   
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <select class="form-control" @keyup.enter="listarAvaluos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-model="b_status" >
+                                        <option value="">Status</option>
+                                        <option value="Pendiente">Pendiente</option>
+                                        <option value="Revisión">Revisión</option>
+                                        <option value="Reconsideración">Reconsideración</option>
+                                        <option value="Visto bueno">Visto bueno</option>
+                                        <option value="Detenido">Detenido</option>
+                                        <option value="En Elaboración">En Elaboración</option>
+                                        <option value="Cancelado">Cancelado</option>
+                                    </select>
                                     <button type="submit" @click="listarAvaluos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                    
                                 </div>
@@ -63,7 +79,6 @@
                                         <th>Solicitud Ventas</th>
                                         <th>Valor Solicitado</th>
                                         <th>Fecha solicitud avaluo</th>
-                                        <!-- <th>Pago realizado</th> -->
                                         <th>Fecha de visita</th>
                                         <th>Estatus</th>
                                         <th>Fecha concluido</th>
@@ -71,6 +86,7 @@
                                         <th>Valor concluido</th>
                                         <th>Costo</th>
                                         <th>Enviado a ventas</th>
+                                        <th>Observaciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -105,23 +121,7 @@
                                                 <i class="fa fa-calendar"></i>
                                             </button>
                                         </td>
-
-
-                                        <!-- <template v-if="avaluos.fecha_pago">
-                                            <td @click="abrirModal('fecha_pago',avaluos)" v-if="avaluos.fecha_pago!='0000-01-01'" class="td2" v-text="this.moment(avaluos.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
-                                            <td v-if="avaluos.fecha_pago=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
-                                        </template>
-                                        <template v-else>
-                                            <td class="td2">
-                                                <button type="button" @click="abrirModal('fecha_pago',avaluos)" class="btn btn-default btn-sm" title="Ingresar fecha de pago">
-                                                    <i class="fa fa-calendar"></i>
-                                                </button>
-                                                <button type="button" @click="noAplicaPago(avaluos.avaluoId)" class="btn btn-danger btn-sm" title="No aplica">
-                                                    <i class="fa fa-times-circle"></i>
-                                                </button>
-                                            </td>
-                                        </template>  -->
-
+                                        
                                         <td class="td2" @click="abrirModal('visita_avaluo',avaluos)" v-text="this.moment(avaluos.visita_avaluo).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2" @click="abrirModal('status',avaluos)" v-text="avaluos.status"></td>
                                         <td class="td2" v-if="avaluos.fecha_concluido" @click="abrirModal('concluido_act',avaluos)"
@@ -150,6 +150,10 @@
                                             <button type="button" @click="enviarVentas(avaluos.avaluoId)" class="btn btn-primary btn-sm" title="Enviar a ventas">
                                                 Enviar a ventas
                                             </button>
+                                        </td>
+                                        <td class="td2">
+                                            <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
+                                                        @click="abrirModal('observaciones',avaluos)">Observaciones</button>
                                         </td>
                                     </tr>                               
                                 </tbody>
@@ -235,7 +239,6 @@
                                         <th>Solicitud Ventas</th>
                                         <th>Valor Solicitado</th>
                                         <th>Fecha solicitud avaluo</th>
-                                        <!-- <th>Pago realizado</th> -->
                                         <th>Fecha de visita</th>
                                         <th>Estatus</th>
                                         <th>Fecha concluido</th>
@@ -243,6 +246,7 @@
                                         <th>Valor concluido</th>
                                         <th>Costo</th>
                                         <th>Enviado a ventas</th>
+                                        <th>Observaciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -278,22 +282,6 @@
                                             </button>
                                         </td>
 
-                                    <!-- 
-                                        <template v-if="avaluos.fecha_pago">
-                                            <td @click="abrirModal('fecha_pago',avaluos)" v-if="avaluos.fecha_pago!='0000-01-01'" class="td2" v-text="this.moment(avaluos.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
-                                            <td v-if="avaluos.fecha_pago=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
-                                        </template>
-                                        <template v-else>
-                                            <td class="td2">
-                                                <button type="button" @click="abrirModal('fecha_pago',avaluos)" class="btn btn-default btn-sm" title="Ingresar fecha de pago">
-                                                    <i class="fa fa-calendar"></i>
-                                                </button>
-                                                <button type="button" @click="noAplicaPago(avaluos.avaluoId)" class="btn btn-danger btn-sm" title="No aplica">
-                                                    <i class="fa fa-times-circle"></i>
-                                                </button>
-                                            </td>
-                                        </template>  -->
-
                                         <td class="td2" @click="abrirModal('visita_avaluo',avaluos)" v-text="this.moment(avaluos.visita_avaluo).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2" @click="abrirModal('status',avaluos)" v-text="avaluos.status"></td>
                                         <td class="td2" v-if="avaluos.fecha_concluido" @click="abrirModal('concluido_act',avaluos)"
@@ -322,6 +310,10 @@
                                             <button type="button" @click="enviarVentas(avaluos.avaluoId)" class="btn btn-primary btn-sm" title="Enviar a ventas">
                                                 Enviar a ventas
                                             </button>
+                                        </td>
+                                        <td class="td2">
+                                            <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
+                                                        @click="abrirModal('observaciones',avaluos)">Observaciones</button>
                                         </td>
                                     </tr>                               
                                 </tbody>
@@ -507,6 +499,7 @@
                                         <option value="Visto bueno">Visto bueno</option>
                                         <option value="Detenido">Detenido</option>
                                         <option value="En Elaboración">En Elaboración</option>
+                                        <option value="Cancelado">Cancelado</option>
                                     </select>
                                 </div>
                             </div>
@@ -637,6 +630,61 @@
                 <!-- /.modal-dialog -->
             </div>
             <!--Fin del modal-->
+
+            <!--Inicio del modal observaciones-->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal5}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal"></h4>
+                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
+                                    <div class="col-md-6">
+                                         <textarea rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observacion"></textarea>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button"  class="btn btn-primary" @click="agregarComentario()">Guardar</button>
+                                    </div>
+                                </div>
+
+                                
+                                <table class="table table-bordered table-striped table-sm" >
+                                    <thead>
+                                        <tr>
+                                            <th>Usuario</th>
+                                            <th>Observacion</th>
+                                            <th>Fecha</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="observacion in arrayObservacion" :key="observacion.id">
+                                            
+                                            <td v-text="observacion.usuario" ></td>
+                                            <td v-text="observacion.observacion" ></td>
+                                            <td v-text="observacion.created_at"></td>
+                                        </tr>                               
+                                    </tbody>
+                                </table>
+                                
+                            </form>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
+                        </div>
+                    </div>
+                      <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
             
          
      </main>
@@ -666,6 +714,7 @@
                 arrayGastoAdmin:[],
                 arrayGastos:[],
                 arrayAllManzanas:[],
+                arrayObservacion:[],
 
                 arrayStatus:[],
                 arrayVisitas:[],
@@ -683,6 +732,7 @@
                 modal2: 0,
                 modal3: 0,
                 modal4 :0,
+                modal5:0,
                 listado: 1,
 
                 tituloModal : '',
@@ -716,7 +766,9 @@
                 buscar2 : '',
                 b_etapa2: '',
                 b_manzana2: '',
-                b_lote2: ''
+                b_lote2: '',
+                usuario:'',
+                b_status:''
                
             }
         },
@@ -828,7 +880,7 @@
             /**Metodo para mostrar los registros */
             listarAvaluos(page, buscar, b_etapa, b_manzana, b_lote, criterio){
                 let me = this;
-                var url = '/avaluos/index?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio;
+                var url = '/avaluos/index?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote + '&b_status=' + me.b_status +  '&criterio=' + criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayAvaluos = respuesta.avaluos.data;
@@ -884,6 +936,47 @@
                     me.arrayStatus = respuesta.status;
                 })
                 .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            listarObservacion(buscar){
+                let me = this;
+                var url = '/avaluos/listarObs?id=' + buscar ;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayObservacion = respuesta.observacion;
+                    console.log(url);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+                
+            },
+
+            agregarComentario(){
+                let me = this;
+                //Con axios se llama el metodo store de DepartamentoController
+                axios.post('/avaluos/storeObservacion',{
+                    'id': this.id,
+                    'observacion': this.observacion
+                }).then(function (response){
+                    me.listarObservacion(me.id);
+                    me.observacion = '';
+                    //me.cerrarModal3(); //al guardar el registro se cierra el modal
+                    
+                    const toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                    });
+
+                    toast({
+                    type: 'success',
+                    title: 'Observación Agregada Correctamente'
+                    })
+                }).catch(function (error){
                     console.log(error);
                 });
             },
@@ -1291,6 +1384,8 @@
                 this.fecha_ava_sol = '';
                 this.modal2=0;
                 this.modal3=0;
+                this.modal5=0;
+                this.usuario='';
                 this.visita_avaluo='';
             },
 
@@ -1411,6 +1506,15 @@
                         this.tituloModal='Subir Archivo';
                         this.avaluoId=data['avaluoId'];
                         this.pdf=data['pdf'];
+                        break;
+                    }
+                    case 'observaciones':{
+                        this.modal5 = 1;
+                        this.tituloModal='Observaciones';
+                        this.observacion='';
+                        this.usuario='';
+                        this.id=data['avaluoId'];
+                        this.listarObservacion(this.id);
                         break;
                     }
                 } 

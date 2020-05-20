@@ -208,7 +208,7 @@
                                                     <li class="nav-item" v-if="rol_id==1 || rol_id==4 || rol_id==6 || rol_id == 9">
                                                         <a class="nav-link"><i class="icon-bag"></i> <input v-model="ruv" type="checkbox" value="1"/> Solicitud de RUV</a>
                                                     </li>
-                                                    <li class="nav-item" v-if="rol_id==1 || rol_id==6 || rol_id == 9 || rol_id==3 || rol_id==5">
+                                                    <li class="nav-item" v-if="rol_id==1 || rol_id==6 || rol_id == 9 || rol_id == 11 || rol_id==3 || rol_id==5">
                                                         <a class="nav-link"><i class="icon-bag"></i> <input v-model="seg_ruv" type="checkbox" value="1"/> Seguimiento de RUV</a>
                                                     </li>
                                                 </ul>

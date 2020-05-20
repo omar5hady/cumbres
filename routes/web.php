@@ -600,6 +600,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/formSubmitAvaluo/{id}','AvaluoController@formSubmitAvaluo'); //carga de Avaluo
         Route::get('/downloadAvaluo/{fileName}' , 'AvaluoController@downloadFile'); //descarga de Avaluo
 
+        Route::get('/avaluos/listarObs','AvaluoController@listarObservaciones');
+        Route::post('/avaluos/storeObservacion', 'AvaluoController@storeObservacion');
+
     //////////////////// RUTAS GASTOS ADMINISTRATIVOS /////////////////////////////
         Route::get('/gastos/index','GastosAdministrativosController@index');
         Route::get('/gastos/excel','GastosAdministrativosController@excel');
@@ -660,6 +663,13 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/credito_devolucion/registrar','InstSeleccionadasController@storeDevolucion');
         Route::get('/credito_devolucion/indexDevoluciones','InstSeleccionadasController@indexHistorialDev');
         Route::get('/devoluciones_credito/excel','InstSeleccionadasController@excelHistDev');
+
+        Route::get('/devoluciones/listarObservacionesCanc','ObsDevolucionController@listarObservacionesCanc');
+        Route::post('/devoluciones/storeObservacionCanc', 'ObsDevolucionController@storeObservacionCanc');
+        Route::get('/devoluciones/listarObservacionesCredit','ObsDevolucionController@listarObservacionesCredit');
+        Route::post('/devoluciones/storeObservacionCredit', 'ObsDevolucionController@storeObservacionCredit');
+
+
 
     ////////////////////// RUTAS PROVEEDOR
         Route::get('/proveedor','ProveedorController@index');

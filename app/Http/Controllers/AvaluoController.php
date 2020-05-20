@@ -15,6 +15,7 @@ use App\Notifications\NotifyAdmin;
 use App\Obs_expediente;
 use File;
 use Excel;
+use App\Obs_avaluos;
 
 
 class AvaluoController extends Controller
@@ -82,6 +83,10 @@ class AvaluoController extends Controller
                         'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
 
                     );
+
+                    if($request->b_status != ''){
+                        $query = $query->where('avaluos.status','=',$request->b_status);
+                    }
 
         if($buscar == ''){
             $avaluos = $query
@@ -191,6 +196,8 @@ class AvaluoController extends Controller
                 }
             }
         }
+
+        
 
         $avaluos = $avaluos->orderBy('avaluos.fecha_recibido','asc')
                         ->paginate(12);
@@ -682,4 +689,23 @@ class AvaluoController extends Controller
         $pathtoFile = public_path() . '/files/avaluos/' . $fileName;
         return response()->download($pathtoFile);
     }
+
+    public function listarObservaciones(Request $request){
+        if(!$request->ajax())return redirect('/');
+        $observaciones = Obs_avaluos::select('observacion','usuario','created_at')
+        ->where('avaluo_id','=', $request->id)->orderBy('created_at','desc')->get();
+
+        return ['observacion' => $observaciones];
+    }
+
+    public function storeObservacion(Request $request)
+    {
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $observacion = new Obs_avaluos();
+        $observacion->avaluo_id = $request->id;
+        $observacion->observacion = $request->observacion;
+        $observacion->usuario = Auth::user()->usuario;
+        $observacion->save();
+    }
+
 }
