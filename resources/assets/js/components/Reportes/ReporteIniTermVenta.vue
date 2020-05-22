@@ -51,15 +51,15 @@
                                         <template v-if="lote.lotes != 0">
                                             <td class="td2" v-text="lote.proyecto"></td>
                                             <td class="td2" v-text="lote.num_etapa"></td>
-                                            <td class="td2" v-text="lote.lotes"></td>
-                                            <td class="td2" v-text="lote.cobradas"></td>
-                                            <td class="td2" v-text="lote.terminadaNoCobrada"></td>
-                                            <td class="td2" v-text="lote.termVendidaNoCobrada"></td>
-                                            <td class="td2" v-text="lote.terminadaDisponible"></td>
-                                            <td class="td2" v-text="lote.procesoNoCobrada"></td>
-                                            <td class="td2" v-text="lote.procVendidaNoCobrada"></td>
-                                            <td class="td2" v-text="lote.procesoDisponible"></td>
-                                            <td class="td2" v-text="lote.sinAvanceDisponible"></td>
+                                            <td class="td2 text-center" v-text="lote.lotes"></td>
+                                            <td class="td2 text-center" v-text="lote.cobradas"></td>
+                                            <td class="td2 text-center" v-text="lote.terminadaNoCobrada"></td>
+                                            <td class="td2 text-center" v-text="lote.termVendidaNoCobrada"></td>
+                                            <td class="td2 text-center" v-text="lote.terminadaDisponible"></td>
+                                            <td class="td2 text-center" v-text="lote.procesoNoCobrada"></td>
+                                            <td class="td2 text-center" v-text="lote.procVendidaNoCobrada"></td>
+                                            <td class="td2 text-center" v-text="lote.procesoDisponible"></td>
+                                            <td class="td2 text-center" v-text="lote.sinAvanceDisponible"></td>
                                         </template>
                                         
                                     </tr>                             
@@ -68,15 +68,15 @@
                                 <thead>
                                     <tr>
                                         <th colspan="2">Total</th>
-                                        <th v-text="total1"></th>
-                                        <th v-text="total2"></th>
-                                        <th v-text="total3"></th>
-                                        <th v-text="total4"></th>
-                                        <th v-text="total5"></th>
-                                        <th v-text="total6"></th>
-                                        <th v-text="total7"></th>
-                                        <th v-text="total8"></th>
-                                        <th v-text="total9"></th>
+                                        <th v-text="total1" class="td2 text-center"></th>
+                                        <th v-text="total2" class="td2 text-center"></th>
+                                        <th v-text="total3" class="td2 text-center"></th>
+                                        <th v-text="total4" class="td2 text-center"></th>
+                                        <th v-text="total5" class="td2 text-center"></th>
+                                        <th v-text="total6" class="td2 text-center"></th>
+                                        <th v-text="total7" class="td2 text-center"></th>
+                                        <th v-text="total8" class="td2 text-center"></th>
+                                        <th v-text="total9" class="td2 text-center"></th>
                                     </tr>       
                                 </thead>
                             </table>

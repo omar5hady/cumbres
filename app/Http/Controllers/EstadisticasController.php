@@ -1998,6 +1998,7 @@ class EstadisticasController extends Controller
                                 ->where('contratos.integracion','=',1)
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.tipo_credito', '!=', 'Crédito Directo')
+                                ->distinct('contratos.id')
                                 ->count();
 
                 $indiviDirecto = Expediente::join('contratos','expedientes.id','=','contratos.id')
@@ -2011,6 +2012,7 @@ class EstadisticasController extends Controller
                                 ->where('contratos.saldo','<=',0)
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.tipo_credito', '=', 'Crédito Directo')
+                                ->distinct('contratos.id')
                                 ->count();
 
                 $sumas = Contrato::join('creditos','contratos.id','=','creditos.id')
@@ -2127,6 +2129,7 @@ class EstadisticasController extends Controller
                                 ->where('contratos.integracion','=',1)
                                 ->where('i.tipo_credito', '!=', 'Crédito Directo')
                                 ->where('i.elegido', '=', 1)
+                                ->distinct('contratos.id')
                                 ->count();
                 
                 $indiviDirecto = Expediente::join('contratos','expedientes.id','=','contratos.id')
@@ -2139,6 +2142,7 @@ class EstadisticasController extends Controller
                                 ->where('contratos.saldo','<=',0)
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.tipo_credito', '=', 'Crédito Directo')
+                                ->distinct('contratos.id')
                                 ->count();
 
                 $sumas = Contrato::join('creditos','contratos.id','=','creditos.id')
