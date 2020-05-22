@@ -94,8 +94,10 @@
                                         <th>Crédito</th>
                                         <th>Cobrado</th>
                                         <th>Pendiente</th>
+                                        <th v-if="firmado == 1">Fecha de firma</th>
                                         <th>Fecha de termino</th>
                                         <th>Fecha de pagare</th>
+                                        <th>Observaciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -116,8 +118,13 @@
                                         <td v-text="'$'+formatNumber(credito.monto_credito)"></td>
                                         <td v-text="'$'+formatNumber(credito.cobrado)"></td>
                                         <td v-text="'$'+formatNumber(parseFloat(credito.monto_credito)-parseFloat(credito.cobrado))"></td>
+                                        <td v-if="firmado == 1" v-text="this.moment(credito.fecha_firma_esc).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td v-text="this.moment(credito.fecha_termino_ventas).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td v-text="this.moment(credito.pagare).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <td class="td2">
+                                            <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
+                                                        @click="abrirModal('observaciones',credito)">Observaciones</button>
+                                        </td>
                                     </tr>                               
                                 </tbody>
                             </table>
@@ -152,6 +159,7 @@
                                         <th>Cuenta</th>
                                         <th>Fecha de deposito</th>
                                         <th>Monto</th>
+                                        <th>Observaciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -167,6 +175,10 @@
                                         <td v-text="deposito.banco"></td>
                                         <td v-text="this.moment(deposito.fecha_deposito).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td v-text="'$'+formatNumber(deposito.cant_depo)"></td>
+                                        <td class="td2">
+                                            <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
+                                                        @click="abrirModal('observaciones',deposito)">Observaciones</button>
+                                        </td>
                                     </tr>                               
                                 </tbody>
                             </table>
@@ -211,6 +223,7 @@
                                         <th>Cuenta</th>
                                         <th>Fecha de deposito</th>
                                         <th>Monto</th>
+                                        <th>Observaciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -226,6 +239,10 @@
                                         <td v-text="deposito.banco"></td>
                                         <td v-text="this.moment(deposito.fecha_deposito).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td v-text="'$'+formatNumber(deposito.cant_depo)"></td>
+                                        <td class="td2">
+                                            <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
+                                                        @click="abrirModal('observaciones',deposito)">Observaciones</button>
+                                        </td>
                                     </tr>                               
                                 </tbody>
                             </table>
@@ -341,6 +358,63 @@
                 <!-- /.modal-dialog -->
             </div>
             <!--Fin del modal-->
+
+            <!--Inicio del modal observaciones-->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal"></h4>
+                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
+                                    <div class="col-md-6">
+                                         <textarea rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observacion"></textarea>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button"  class="btn btn-primary" @click="agregarComentario()">Guardar</button>
+                                    </div>
+                                </div>
+
+                                <table class="table table-bordered table-striped table-sm" >
+                                    <thead>
+                                        <tr>
+                                            <th>Usuario</th>
+                                            <th>Observacion</th>
+                                            <th>Fecha</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="observacion in arrayObservacion" :key="observacion.id">
+                                            
+                                            <td v-text="observacion.usuario" ></td>
+                                            <td v-text="observacion.comentario" ></td>
+                                            <td v-text="observacion.created_at"></td>
+                                        </tr>                               
+                                    </tbody>
+                                </table>
+
+                                
+                                
+                                
+                            </form>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
+                        </div>
+                    </div>
+                      <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
             
 
         </main>
@@ -365,11 +439,14 @@
                 arrayHistorial : [],
                 arrayBancos : [],
                 modal : 0,
+                modal2 : 0,
+                observacion : '',
                 deposito : 0,
                 tituloModal : '',
                 tipoAccion: 0,
                 errorDeposito : 0,
                 errorMostrarMsjDeposito : [],
+                arrayObservacion: [],
 
                 cliente:'',
                 proyecto:'',
@@ -384,6 +461,7 @@
                 inst_sel_id:0,
                 dep_id:0,
                 contador:0,
+                firmado:1,
 
                 b_cobrados:0,
 
@@ -507,6 +585,7 @@
                     me.arrayCreditos = respuesta.creditos.data;
                     me.pagination = respuesta.pagination;
                     me.contador = respuesta.contador;
+                    me.firmado = respuesta.firmado;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -568,6 +647,33 @@
                     console.log(error);
                 });
 
+            },
+
+            agregarComentario(){
+                let me = this;
+                //Con axios se llama el metodo store de DepartamentoController
+                axios.post('/credito_devolucion/storeObs',{
+                    'credito_id': this.inst_sel_id,
+                    'comentario': this.observacion
+                }).then(function (response){
+                    me.listarObservacion(me.inst_sel_id);
+                    me.observacion = '';
+                    //me.cerrarModal3(); //al guardar el registro se cierra el modal
+                    
+                    const toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                    });
+
+                    toast({
+                    type: 'success',
+                    title: 'Observación Agregada Correctamente'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
             },
             selectEtapa(buscar){
                 let me = this;
@@ -710,6 +816,20 @@
                 });
             },
 
+            listarObservacion(buscar){
+                let me = this;
+                var url = '/credito_devolucion/observacionIndex?buscar=' + buscar ;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayObservacion = respuesta.observacion.data;
+                    console.log(url);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+                
+            },
+
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
@@ -718,6 +838,8 @@
                 this.cant_depo=0;
                 
                 this.banco='';
+                this.modal2 = '';
+                this.observacion='';
 
                 this.errorDeposito = 0;
                 this.errorMostrarMsjDeposito = [];
@@ -764,6 +886,15 @@
                         this.banco=data['banco'];
                         
                         this.dep_id=data['id'];
+                        break;
+                    }
+                    case 'observaciones':{
+                        this.modal2 = 1;
+                        this.tituloModal='Observaciones';
+                        this.observacion='';
+                        this.usuario='';
+                        this.inst_sel_id=data['inst_sel_id'];
+                        this.listarObservacion(this.inst_sel_id);
                         break;
                     }
                 }

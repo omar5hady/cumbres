@@ -13,6 +13,7 @@ use App\Contrato;
 use App\Dev_credito;
 use Auth;
 use App\Pago_contrato;
+use App\Expediente;
 
 class InstSeleccionadasController extends Controller
 {
@@ -410,6 +411,12 @@ class InstSeleccionadasController extends Controller
                     ->get();
 
                 $contrato->pagare=$pagos[0]->fecha_pago;
+
+                if($request->firmado == 1){
+                    $expediente = Expediente::findOrFail($contrato->folio);
+
+                    $contrato->fecha_firma_esc = $expediente->fecha_firma_esc;
+                }
             }
         }
         return[
@@ -421,7 +428,7 @@ class InstSeleccionadasController extends Controller
                 'from'          => $creditos->firstItem(),
                 'to'            => $creditos->lastItem(),
             ],
-            'creditos' => $creditos, 'contador' => $creditos->total()
+            'creditos' => $creditos, 'contador' => $creditos->total(), 'firmado' => $request->firmado
         ];
     }
 
@@ -453,6 +460,7 @@ class InstSeleccionadasController extends Controller
                 'creditos.fraccionamiento as proyecto',
                 'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
                 'personal.nombre','personal.apellidos', 
+                'inst_seleccionadas.id as inst_sel_id',
                 'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
                 'dep_creditos.cant_depo', 'dep_creditos.banco', 'dep_creditos.fecha_deposito'
             );

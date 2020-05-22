@@ -669,6 +669,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/devoluciones/listarObservacionesCredit','ObsDevolucionController@listarObservacionesCredit');
         Route::post('/devoluciones/storeObservacionCredit', 'ObsDevolucionController@storeObservacionCredit');
 
+        Route::get('/credito_devolucion/observacionIndex','ObservacionInstSeleccionadaController@indexCobro');
+        Route::post('/credito_devolucion/storeObs','ObservacionInstSeleccionadaController@storeCobro');
+
 
 
     ////////////////////// RUTAS PROVEEDOR
