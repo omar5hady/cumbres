@@ -451,7 +451,8 @@ class ReportesController extends Controller
         foreach($lotes as $index => $lote){
             $lote->lotes = Lote::where('fraccionamiento_id','=',$lote->proyectoId)
                                 ->where('etapa_id','=',$lote->etapaId)->count();
-
+        
+        /// CONSULTAS PARA TODAS LAS DISPONIBLES (lotes.contrato = 0)
             $lote->terminadaDisponible = Lote::join('licencias','lotes.id','=','licencias.id')
                                 ->where('licencias.avance','>',90)
                                 ->where('lotes.contrato','=',0)
@@ -470,7 +471,7 @@ class ReportesController extends Controller
                                 ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                 ->where('lotes.etapa_id','=',$lote->etapaId)->count();
 
-        // COBRADAS    
+        // CONSULTAS PARA OBTENER LAS COBRADAS    
             $indivContado   =   Contrato::join('expedientes','contratos.id','=','expedientes.id')
                                         ->join('creditos','contratos.id', '=', 'creditos.id')
                                         ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -513,7 +514,7 @@ class ReportesController extends Controller
                                         ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
                                         ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                         ->where('lotes.etapa_id','=',$lote->etapaId)
-                                        ->whereBetween('licencias.avance', [0, 90])
+                                        ->where('licencias.avance','<=',90)
                                         ->distinct('contratos.id')
                                         ->count('contratos.id');
 
@@ -525,12 +526,12 @@ class ReportesController extends Controller
                                         ->join('licencias','lotes.id','=','licencias.id')
                                         ->where('contratos.status','=',3)
                                         ->where('contratos.integracion','=',1)
-                                        ->where('expedientes.fecha_firma_esc','=',NULL)
+                                        ->whereNull('expedientes.fecha_firma_esc')
                                         ->where('inst_seleccionadas.elegido', '=', '1')
                                         ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                         ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                         ->where('lotes.etapa_id','=',$lote->etapaId)
-                                        ->whereBetween('licencias.avance', [0, 90])
+                                        ->where('licencias.avance','<=',90)
                                         ->distinct('contratos.id')
                                         ->count('contratos.id');
 
@@ -542,7 +543,7 @@ class ReportesController extends Controller
                                         
                                         ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                         ->where('lotes.etapa_id','=',$lote->etapaId)
-                                        ->whereBetween('licencias.avance', [0, 90])
+                                        ->where('licencias.avance','<=',90)
                                         ->count('contratos.id');
 
             $procVenNoCobrada4 = Contrato::join('creditos','contratos.id', '=', 'creditos.id')
@@ -554,7 +555,7 @@ class ReportesController extends Controller
                                         
                                         ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                         ->where('lotes.etapa_id','=',$lote->etapaId)
-                                        ->whereBetween('licencias.avance', [0, 90])
+                                        ->where('licencias.avance','<=',90)
                                         ->count('contratos.id');
 
 
@@ -584,7 +585,7 @@ class ReportesController extends Controller
                                         ->join('licencias','lotes.id','=','licencias.id')
                                         ->where('contratos.status','=',3)
                                         ->where('contratos.integracion','=',1)
-                                        ->where('expedientes.fecha_firma_esc','=',NULL)
+                                        ->whereNull('expedientes.fecha_firma_esc')
                                         ->where('inst_seleccionadas.elegido', '=', '1')
                                         ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                         ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
@@ -617,12 +618,6 @@ class ReportesController extends Controller
                                         ->where('lotes.etapa_id','=',$lote->etapaId)
                                         ->where('licencias.avance','>',90)
                                         ->count('contratos.id');
-
-            // $termVendidaNoCobrada4 = $termVendidaNoCobrada4 - $termVendidaNoCobrada2 - $termVendidaNoCobrada1;
-
-            // if($termVendidaNoCobrada4 < 0){
-            //     $termVendidaNoCobrada4 = 0;
-            // }
 
             $lote->termVendidaNoCobrada = $termVendidaNoCobrada1 + $termVendidaNoCobrada2 + $termVendidaNoCobrada3 + $termVendidaNoCobrada4;
 

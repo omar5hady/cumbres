@@ -18,6 +18,7 @@ use NumerosEnLetras;
 use App\Lote;
 use App\Credito;
 use App\Entrega;
+use App\Avaluo;
 use App\Bono_recomendado;
 use App\Http\Controllers\BonoRecomendadoController;
 
@@ -707,7 +708,6 @@ class ExpedienteController extends Controller
         $rolId = Auth::user()->rol_id;
 
         $query = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-            ->leftJoin('avaluos','contratos.id','=','avaluos.contrato_id')
             ->join('expedientes','contratos.id','=','expedientes.id')
             ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
             ->join('licencias', 'lotes.id', '=', 'licencias.id')
@@ -748,10 +748,7 @@ class ExpedienteController extends Controller
                 'expedientes.valor_escrituras',
                 'expedientes.fecha_ingreso',
                 'expedientes.fecha_integracion',
-                'lotes.calle','lotes.numero','lotes.interior',
-                'avaluos.resultado','avaluos.fecha_recibido',
-                'avaluos.id as avaluoId','avaluos.fecha_concluido',
-                'avaluos.pdf'
+                'lotes.calle','lotes.numero','lotes.interior'
             );
 
         if($rolId == 1 || $rolId == 4 || $rolId == 6 || Auth::user()->id == 24701){
@@ -1011,6 +1008,27 @@ class ExpedienteController extends Controller
         if(sizeof($contratos)){
             foreach($contratos as $index => $contrato){
                 $lastPagare = Pago_contrato::select('fecha_pago')->where('contrato_id','=',$contrato->folio)->orderBy('fecha_pago','desc')->get();
+
+                $avaluos = Avaluo::select('resultado','fecha_recibido',
+                                            'id as avaluoId',
+                                            'fecha_concluido',
+                                            'pdf')->where('contrato_id','=',$contrato->folio)->orderBy('created_at','desc')->get();
+                
+                if(sizeof($avaluos)){
+                    $contrato->resultado = $avaluos[0]->resultado;
+                    $contrato->fecha_recibido = $avaluos[0]->fecha_recibido;
+                    $contrato->avaluoId = $avaluos[0]->avaluoId;
+                    $contrato->fecha_concluido = $avaluos[0]->fecha_concluido;
+                    $contrato->pdf = $avaluos[0]->pdf;
+                }
+                else{
+                    $contrato->resultado = '';
+                    $contrato->fecha_recibido = '';
+                    $contrato->avaluoId = '';
+                    $contrato->fecha_concluido = '';
+                    $contrato->pdf = '';
+                }
+
                 if(sizeof($lastPagare)){
                     $contrato->ultimo_pagare = $lastPagare[0]->fecha_pago;
                 }
@@ -1055,7 +1073,6 @@ class ExpedienteController extends Controller
         $rolId = Auth::user()->rol_id;
 
         $query = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-            ->leftJoin('avaluos','contratos.id','=','avaluos.contrato_id')
             ->join('expedientes','contratos.id','=','expedientes.id')
             ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
             ->join('licencias', 'lotes.id', '=', 'licencias.id')
@@ -1100,10 +1117,7 @@ class ExpedienteController extends Controller
                 'expedientes.fecha_ingreso',
                 'expedientes.fecha_integracion',
                 'expedientes.fecha_infonavit',
-                'lotes.calle','lotes.numero','lotes.interior',
-                'avaluos.resultado','avaluos.fecha_recibido',
-                'avaluos.id as avaluoId','avaluos.fecha_concluido',
-                'avaluos.pdf'
+                'lotes.calle','lotes.numero','lotes.interior'
             );
 
         if($rolId == 1 || $rolId == 4 || $rolId == 6 || Auth::user()->id == 24701){
@@ -1454,6 +1468,27 @@ class ExpedienteController extends Controller
         if(sizeof($contratos)){
             foreach($contratos as $index => $contrato){
                 $lastPagare = Pago_contrato::select('fecha_pago')->where('contrato_id','=',$contrato->folio)->orderBy('fecha_pago','desc')->get();
+
+                $avaluos = Avaluo::select('resultado','fecha_recibido',
+                                            'id as avaluoId',
+                                            'fecha_concluido',
+                                            'pdf')->where('contrato_id','=',$contrato->folio)->orderBy('created_at','desc')->get();
+                
+                if(sizeof($avaluos)){
+                    $contrato->resultado = $avaluos[0]->resultado;
+                    $contrato->fecha_recibido = $avaluos[0]->fecha_recibido;
+                    $contrato->avaluoId = $avaluos[0]->avaluoId;
+                    $contrato->fecha_concluido = $avaluos[0]->fecha_concluido;
+                    $contrato->pdf = $avaluos[0]->pdf;
+                }
+                else{
+                    $contrato->resultado = '';
+                    $contrato->fecha_recibido = '';
+                    $contrato->avaluoId = '';
+                    $contrato->fecha_concluido = '';
+                    $contrato->pdf = '';
+                }
+                
                 if(sizeof($lastPagare)){
                     $contrato->ultimo_pagare = $lastPagare[0]->fecha_pago;
                 }
@@ -1488,7 +1523,6 @@ class ExpedienteController extends Controller
         $rolId = Auth::user()->rol_id;
 
         $query = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-                ->leftJoin('avaluos','contratos.id','=','avaluos.contrato_id')
                 ->join('expedientes','contratos.id','=','expedientes.id')
                 ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                 ->join('licencias', 'lotes.id', '=', 'licencias.id')
@@ -1539,10 +1573,7 @@ class ExpedienteController extends Controller
                     'expedientes.fovissste',
                     'expedientes.total_liquidar',
                     'expedientes.fecha_infonavit',
-                    'lotes.calle','lotes.numero','lotes.interior',
-                    'avaluos.resultado','avaluos.fecha_recibido',
-                    'avaluos.id as avaluoId','avaluos.fecha_concluido',
-                    'avaluos.pdf'
+                    'lotes.calle','lotes.numero','lotes.interior'
                 );
 
         if($rolId == 1 || $rolId == 4 || $rolId == 6 || Auth::user()->id == 24701){
@@ -1899,6 +1930,27 @@ class ExpedienteController extends Controller
         if(sizeof($contratos)){
             foreach($contratos as $index => $contrato){
                 $lastPagare = Pago_contrato::select('fecha_pago')->where('contrato_id','=',$contrato->folio)->orderBy('fecha_pago','desc')->get();
+                
+                $avaluos = Avaluo::select('resultado','fecha_recibido',
+                                            'id as avaluoId',
+                                            'fecha_concluido',
+                                            'pdf')->where('contrato_id','=',$contrato->folio)->orderBy('created_at','desc')->get();
+                
+                if(sizeof($avaluos)){
+                    $contrato->resultado = $avaluos[0]->resultado;
+                    $contrato->fecha_recibido = $avaluos[0]->fecha_recibido;
+                    $contrato->avaluoId = $avaluos[0]->avaluoId;
+                    $contrato->fecha_concluido = $avaluos[0]->fecha_concluido;
+                    $contrato->pdf = $avaluos[0]->pdf;
+                }
+                else{
+                    $contrato->resultado = '';
+                    $contrato->fecha_recibido = '';
+                    $contrato->avaluoId = '';
+                    $contrato->fecha_concluido = '';
+                    $contrato->pdf = '';
+                }
+                
                 if(sizeof($lastPagare)){
                     $contrato->ultimo_pagare = $lastPagare[0]->fecha_pago;
                 }
@@ -2120,7 +2172,6 @@ class ExpedienteController extends Controller
         $rolId = Auth::user()->rol_id;
 
         $query = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-            ->leftJoin('avaluos','contratos.id','=','avaluos.contrato_id')
             ->join('expedientes','contratos.id','=','expedientes.id')
             ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
             ->join('licencias', 'lotes.id', '=', 'licencias.id')
@@ -2183,10 +2234,7 @@ class ExpedienteController extends Controller
                 'expedientes.notaria',
                 'expedientes.hora_firma',
                 'expedientes.direccion_firma',
-                'lotes.calle','lotes.numero','lotes.interior',
-                'avaluos.resultado','avaluos.fecha_recibido',
-                'avaluos.id as avaluoId','avaluos.fecha_concluido',
-                'avaluos.pdf'
+                'lotes.calle','lotes.numero','lotes.interior'
             );
        
         if($rolId == 1 || $rolId == 4 || $rolId == 6 || Auth::user()->id == 24701){
@@ -2571,12 +2619,35 @@ class ExpedienteController extends Controller
         if(sizeof($contratos)){
             foreach($contratos as $index => $contrato){
                 $lastPagare = Pago_contrato::select('fecha_pago')->where('contrato_id','=',$contrato->folio)->orderBy('fecha_pago','desc')->get();
+
+                $avaluos = Avaluo::select('resultado','fecha_recibido',
+                                            'id as avaluoId',
+                                            'fecha_concluido',
+                                            'pdf')->where('contrato_id','=',$contrato->folio)->orderBy('created_at','desc')->get();
+                
+                if(sizeof($avaluos)){
+                    $contrato->resultado = $avaluos[0]->resultado;
+                    $contrato->fecha_recibido = $avaluos[0]->fecha_recibido;
+                    $contrato->avaluoId = $avaluos[0]->avaluoId;
+                    $contrato->fecha_concluido = $avaluos[0]->fecha_concluido;
+                    $contrato->pdf = $avaluos[0]->pdf;
+                }
+                else{
+                    $contrato->resultado = '';
+                    $contrato->fecha_recibido = '';
+                    $contrato->avaluoId = '';
+                    $contrato->fecha_concluido = '';
+                    $contrato->pdf = '';
+                }
+
                 if(sizeof($lastPagare)){
                     $contrato->ultimo_pagare = $lastPagare[0]->fecha_pago;
                 }
                 else{
                     $contrato->ultimo_pagare = '';
                 }
+
+                
             }
         }
        
@@ -2600,7 +2671,7 @@ class ExpedienteController extends Controller
         $rolId = Auth::user()->rol_id;
 
         $query = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-            ->leftJoin('avaluos','contratos.id','=','avaluos.contrato_id')
+            //->leftJoin('avaluos','contratos.id','=','avaluos.contrato_id')
             ->join('expedientes','contratos.id','=','expedientes.id')
             ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
             ->join('licencias', 'lotes.id', '=', 'licencias.id')
@@ -2610,7 +2681,8 @@ class ExpedienteController extends Controller
             ->join('personal as v', 'vendedores.id', '=', 'v.id')
             ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
             ->select(
-                'contratos.id as folio',
+                DB::RAW("DISTINCT(contratos.id) as folio"),
+                //'contratos.id as folio',
                 'contratos.saldo',
                 DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                 DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
@@ -2663,10 +2735,11 @@ class ExpedienteController extends Controller
                 'expedientes.notaria',
                 'expedientes.hora_firma',
                 'expedientes.direccion_firma',
-                'lotes.calle','lotes.numero','lotes.interior',
-                'avaluos.resultado','avaluos.fecha_recibido',
-                'avaluos.id as avaluoId','avaluos.fecha_concluido',
-                'avaluos.pdf'
+                'lotes.calle','lotes.numero','lotes.interior'
+                // 'avaluos.resultado','avaluos.fecha_recibido',
+                // //'avaluos.id as avaluoId',
+                // 'avaluos.fecha_concluido',
+                // 'avaluos.pdf'
             );
        
         if($rolId == 1 || $rolId == 4 || $rolId == 6 || Auth::user()->id == 24701){
@@ -3057,26 +3130,46 @@ class ExpedienteController extends Controller
             }
         }
 
-        $contratos = $contratos->orderBy('contratos.id','asc')
+        $contratos = $contratos->distinct()
+                                ->orderBy('contratos.id','asc')
                                 ->paginate(10);
 
         if(sizeof($contratos)){
             foreach($contratos as $index => $contrato){
                 $lastPagare = Pago_contrato::select('fecha_pago')->where('contrato_id','=',$contrato->folio)->orderBy('fecha_pago','desc')->get();
+
+                $avaluos = Avaluo::select('resultado','fecha_recibido',
+                                            'id as avaluoId',
+                                            'fecha_concluido',
+                                            'pdf')->where('contrato_id','=',$contrato->folio)->orderBy('created_at','desc')->get();
                 if(sizeof($lastPagare)){
                     $contrato->ultimo_pagare = $lastPagare[0]->fecha_pago;
                 }
                 else{
                     $contrato->ultimo_pagare = '';
                 }
+
+                if(sizeof($avaluos)){
+                    $contrato->resultado = $avaluos[0]->resultado;
+                    $contrato->fecha_recibido = $avaluos[0]->fecha_recibido;
+                    $contrato->avaluoId = $avaluos[0]->avaluoId;
+                    $contrato->fecha_concluido = $avaluos[0]->fecha_concluido;
+                    $contrato->pdf = $avaluos[0]->pdf;
+                }
+                else{
+                    $contrato->resultado = '';
+                    $contrato->fecha_recibido = '';
+                    $contrato->avaluoId = '';
+                    $contrato->fecha_concluido = '';
+                    $contrato->pdf = '';
+                }
             }
         }
        
-        $contador = $contratos->count();
 
         return [
             'contratos' => $contratos,
-            'contador' => $contador,
+            'contador' => $contratos->total(),
                 'pagination' => [
                     'total'         => $contratos->total(),
                     'current_page'  => $contratos->currentPage(),
