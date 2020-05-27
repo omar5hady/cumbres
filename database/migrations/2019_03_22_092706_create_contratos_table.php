@@ -67,6 +67,8 @@ class CreateContratosTable extends Migration
             $table->date('fecha_audit')->nullable();
 
             $table->boolean('detenido')->default(0);
+
+            $table->boolean('exp_bono')->default(0);
             
             
             $table->foreign('id')->references('id')->on('creditos');

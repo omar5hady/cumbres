@@ -3392,7 +3392,7 @@ class ExpedienteController extends Controller
 
                 if(sizeOf($bonoAnt)==0){
                     $bono = new BonoRecomendadoController();
-                    $bono->store($request->folio, $etapa, $cliente, $request->fecha_firma_esc);
+                    $bono->store($request->folio, $etapa, $cliente, $contrato->fecha_status);
                 }
             }
             

@@ -500,6 +500,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/contrato/status/fecha','ContratoController@statusContrato');
         Route::get('/contratos/excel','ContratoController@excelContratos');
         Route::get('/contratos/validarLotes','ContratoController@validarLoteEnContrato');
+        Route::put('/contratos/entregarExp','ContratoController@entregarExp');
 
         Route::post('/contratos/auditar','ObsAuditoriaController@auditar');
 
@@ -777,6 +778,10 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/dropbox/files/{id}/{sub}', 'DropboxFilesController@store');
         Route::delete('/files/delete', 'DropboxFilesController@destroy');
         Route::get('/files/{carpeta}/{file}/download', 'DropboxFilesController@download');
+
+
+        /////////////////////// RUTAS BONOS VENTAS /////////////////////
+        Route::get('/bonos_ventas/index_contratos', 'BonoVentaController@indexContratos');
 
 
         /////////////////////// RUTAS Versiones archivos modelo /////////////////////////

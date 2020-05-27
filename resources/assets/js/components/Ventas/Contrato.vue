@@ -287,6 +287,7 @@
                                             <th>Fecha del contrato</th>
                                             <th>Status</th>
                                             <th>Publicidad</th>
+                                            <th v-if="rolId!=2">Expediente</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -316,6 +317,11 @@
                                                 <span class="badge badge-success">Firmado</span>
                                             </td>
                                             <td class="td2" v-text="contrato.publicidad"></td>
+                                            <td v-if="rolId!=2">
+                                                <button v-if="contrato.exp_bono == 0" title="Registrar Expediente" type="button" class="btn btn-primary pull-right" 
+                                                        @click="entregarExp(contrato.id)">Expediente</button>
+                                                <span v-else class="badge badge-success">Exp. Completo</span>
+                                            </td>
                                         </tr>                               
                                     </tbody>
                                 </table>
@@ -2206,6 +2212,52 @@
                 .catch(function (error) {
                     console.log(error);
                 })
+            },
+
+            entregarExp(id){
+                if( this.rolId == 6 || this.rolId == 1 || this.rolId == 4 || this.rolId == 8 ){ 
+                    let me = this;
+                    //Con axios se llama el metodo update de LoteController
+                
+                    Swal({
+                        title: 'Estas seguro?',
+                        animation: false,
+                        customClass: 'animated bounceInDown',
+                        text: "Se confirmara la entrega del expediente",
+                        type: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        cancelButtonText: 'Cancelar',
+                        
+                        confirmButtonText: 'Si, entregado!'
+                        }).then((result) => {
+
+                        if (result.value) {
+                        
+                            axios.put('/contratos/entregarExp',{
+                                'id':id
+                            }); 
+                            
+                            me.listarContratos(me.pagination.current_page,me.buscar,me.buscar3,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
+                            Swal({
+                                title: 'Hecho!',
+                                text: 'El expediente ha sido entregado',
+                                type: 'success',
+                                animation: false,
+                                customClass: 'animated bounceInRight'
+                            })
+                        }
+                    })
+                }
+                else{
+                    Swal.fire({
+                        type:'warning',
+                        title: 'Sin permisos...',
+                        text: 'No tiene permisos para realizar esta accion!',
+                        })
+                }
+              
             },
             obtenerDatosCredito(buscar){
                 let me = this;

@@ -179,7 +179,8 @@ class ContratoController extends Controller
                     'contratos.monto_total_credito',
                     'contratos.enganche_total',
                     'contratos.avance_lote',
-                    'contratos.observacion'
+                    'contratos.observacion',
+                    'contratos.exp_bono'
                 );
 
         if(Auth::user()->rol_id != 2){
@@ -2692,7 +2693,8 @@ class ContratoController extends Controller
                 'contratos.monto_total_credito',
                 'contratos.enganche_total',
                 'contratos.avance_lote',
-                'contratos.observacion'
+                'contratos.observacion',
+                'contratos.exp_bono'
             )
             ->where('inst_seleccionadas.elegido', '=', '1')
             ->where('contratos.id', '=', $id)
@@ -4318,6 +4320,13 @@ class ContratoController extends Controller
         $contrato->detenido = $request->detenido;
         $contrato->save();
 
+    }
+
+    public function entregarExp(Request $request){
+        if(!$request->ajax())return redirect('/');
+        $contrato = Contrato::findOrFail($request->id);
+        $contrato->exp_bono = 1;
+        $contrato->save();
     }
 
 }
