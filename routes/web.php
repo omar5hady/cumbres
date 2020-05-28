@@ -91,6 +91,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/asesores/clientes','ClienteController@indexProspectos');
         Route::get('/asesores/excel','UserController@excelAsesores');
         Route::get('/select/asesores','UserController@selectAsesores');
+        Route::get('/select/asesores2','UserController@selectAsesores2');
         Route::put('/cliente/reasignar','ClienteController@asignarCliente');
         Route::post('/cliente/reasignar2','ClienteController@asignarCliente2'); // desde vista mis Prospectos
         Route::post('/asesores/formSubmitComprobante/{id}','VendedoresController@formSubmitComprobante');
@@ -782,6 +783,9 @@ Route::group(['middleware' => ['auth']],function(){
 
         /////////////////////// RUTAS BONOS VENTAS /////////////////////
         Route::get('/bonos_ventas/index_contratos', 'BonoVentaController@indexContratos');
+        Route::get('/bonos_ventas/indexBonos', 'BonoVentaController@indexBonos');
+        Route::post('/bonos_ventas/storeBono', 'BonoVentaController@storeBono');
+        Route::post('/bonos_ventas/segundoBono', 'BonoVentaController@segundoBono');
 
 
         /////////////////////// RUTAS Versiones archivos modelo /////////////////////////

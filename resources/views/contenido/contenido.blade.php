@@ -389,7 +389,7 @@
         </template>
 
         <template v-if="menu==229">
-            <comision-anticipos></comision-anticipos>
+            <comision-bonos></comision-bonos>
         </template>
         <template v-if="menu==230">
             <asignar-especificaciones></asignar-especificaciones>
