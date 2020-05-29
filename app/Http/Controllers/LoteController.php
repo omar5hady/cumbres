@@ -721,6 +721,9 @@ class LoteController extends Controller
         $siembra = '';
         $terrenoExcedente = 0;
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        
+        ///////////// 
+        if(Auth::user()->id == 26516)return redirect('/');
 
        $etapa= Etapa::select('num_etapa')
        ->where('id','=', $request->etapa_id)
@@ -812,6 +815,11 @@ class LoteController extends Controller
     {
         $siembra = '';
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+
+        ///////////// 
+        if(Auth::user()->id == 26516)return redirect('/');
+
+
         $aviso = $request->aviso;
 
         $etapa= Etapa::select('num_etapa')
@@ -1422,6 +1430,11 @@ class LoteController extends Controller
                     'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
                     'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste',
                     'lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas');
+
+                    // if($request->casa_muestra == 1){
+                    //     $query = $query->where('lotes.casa_muestra','=',1);
+                    //     $queryVendedores = $queryVendedores->where('lotes.casa_muestra','=',1);
+                    // } 
 
         if($rolId == 1 || $rolId == 4 || $rolId == 6 || $rolId == 8 || $rolId == 11 ){
             switch($b_apartado){
@@ -2065,6 +2078,13 @@ class LoteController extends Controller
             }
         }
 
+
+        if($request->casa_muestra != ''){
+            $lotes = $lotes->where('lotes.casa_muestra','=',$request->casa_muestra == 0);
+            //$queryVendedores = $queryVendedores->where('lotes.casa_muestra','=',1);
+        }
+        
+
         $lotes = $lotes->orderBy('fraccionamientos.nombre','DESC')
                     ->orderBy('etapas.num_etapa','ASC')
                     ->orderBy('lotes.manzana','ASC')
@@ -2076,6 +2096,8 @@ class LoteController extends Controller
             $vendedor = Vendedor::findOrFail(Auth::user()->id);
             $tipo = $vendedor->tipo;
         }
+
+        
         
         
         foreach($lotes as $index => $lote) {
@@ -2285,6 +2307,8 @@ class LoteController extends Controller
                     'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
                     'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
                     'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas');
+
+                    
 
         if($rolId == 1 || $rolId == 4 || $rolId == 6 || $rolId == 8 || $rolId == 11 ){
             switch($b_apartado){
@@ -2881,6 +2905,12 @@ class LoteController extends Controller
                     }
                 }
             }
+        }
+        
+
+        if($request->casa_muestra != ''){
+            $lotes = $lotes->where('lotes.casa_muestra','=',$request->casa_muestra == 0);
+            //$queryVendedores = $queryVendedores->where('lotes.casa_muestra','=',1);
         }
 
             $lotes = $lotes->orderBy('fraccionamientos.nombre','DESC')

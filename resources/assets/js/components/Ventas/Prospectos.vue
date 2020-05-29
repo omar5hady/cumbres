@@ -145,10 +145,10 @@
                                             <template>
                                                 <td v-if="prospecto.clasificacion == 1 || prospecto.clasificacion >= 5 || prospecto.clasificacion >= 2 && prospecto.clasificacion < 5 && prospecto.diferencia < 7" class="td2" v-text="prospecto.nombre + ' ' + prospecto.apellidos "></td>                                                    
                                                 <td v-else-if="prospecto.clasificacion >= 2 && prospecto.clasificacion < 5 && prospecto.diferencia >= 7 && prospecto.diferencia <= 15  " class="td2">
-                                                    <span class="badge2 badge-warning">{{ prospecto.nombre+' '+prospecto.apellidos}}</span>
+                                                    <span class="badge2 badge-warning">{{ prospecto.nombre.toUpperCase()+' '+prospecto.apellidos.toUpperCase()}}</span>
                                                 </td>    
                                                 <td v-else-if="prospecto.clasificacion >= 2 && prospecto.clasificacion < 5 && prospecto.diferencia > 15" class="td2">
-                                                    <span class="badge2 badge-danger">{{ prospecto.nombre+' '+prospecto.apellidos}}</span>
+                                                    <span class="badge2 badge-danger">{{ prospecto.nombre.toUpperCase()+' '+prospecto.apellidos.toUpperCase()}}</span>
                                                 </td>                                                
                                             </template>
                                             <td class="td2" >
@@ -162,9 +162,9 @@
                                               <td class="td2" v-else> 
                                                 <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+prospecto.email+ ';'+prospecto.email_institucional"> <i class="fa fa-envelope-o fa-lg"></i> </a>
                                             </td>
-                                            <td class="td2" style="text-transform:uppercase" v-text="prospecto.rfc"></td>
-                                            <td class="td2" v-text="prospecto.nss"></td>
-                                            <td class="td2" style="text-transform:uppercase" v-text="prospecto.curp"></td>
+                                            <td class="td2" style="text-transform:uppercase" v-text="prospecto.rfc.toUpperCase()"></td>
+                                            <td class="td2" v-text="prospecto.nss.toUpperCase()"></td>
+                                            <td class="td2" style="text-transform:uppercase" v-text="prospecto.curp.toUpperCase()"></td>
                                             <td class="td2" v-text="prospecto.proyecto"></td>
                                             <td class="td2" v-if="prospecto.clasificacion==1">No viable</td>
                                             <td class="td2" v-if="prospecto.clasificacion==2">Tipo A</td>
@@ -211,7 +211,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                     <label for="">Nombre <span style="color:red;" v-show="nombre==''">(*)</span> </label>
-                                    <input type="text" class="form-control" v-model="nombre" placeholder="Nombre">
+                                    <input type="text" class="form-control" v-model="nombre" placeholder="Nombre" onchange="this.value = this.value.trim()" onkeyup="this.value = this.value.replace('  ', ' ')">
                                     </div>
                                 </div> 
 
@@ -219,14 +219,14 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="">1° apellido <span style="color:red;" v-show="apellidos==''">(*)</span></label>
-                                        <input type="text" class="form-control" v-model="apellidos" placeholder="Apellidos">
+                                        <input type="text" class="form-control" v-model="apellidos" placeholder="Apellidos" onchange="this.value = this.value.trim()" onkeyup="this.value = this.value.replace('  ', ' ')">
                                     </div>
                                 </div>
 
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="">2° apellido</label>
-                                        <input type="text" class="form-control" v-model="apellidos2" placeholder="2° apellido">
+                                        <input type="text" class="form-control" v-model="apellidos2" placeholder="2° apellido" onchange="this.value = this.value.trim()" onkeyup="this.value = this.value.replace('  ', ' ')">
                                     </div>
                                 </div>
 
@@ -554,7 +554,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                     <label for="">Nombre <span style="color:red;" v-show="nombre==''">(*)</span> </label>
-                                    <input type="text" class="form-control" v-model="nombre" placeholder="Nombre">
+                                    <input type="text" class="form-control" v-model="nombre" placeholder="Nombre" onchange="this.value = this.value.trim()" onkeyup="this.value = this.value.replace('  ', ' ')">
                                     </div>
                                 </div> 
 
@@ -562,7 +562,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                     <label for="">Apellidos <span style="color:red;" v-show="apellidos==''">(*)</span></label>
-                                    <input type="text" class="form-control" v-model="apellidos" placeholder="Apellidos">
+                                    <input type="text" class="form-control" v-model="apellidos" placeholder="Apellidos" onchange="this.value = this.value.trim()" onkeyup="this.value = this.value.replace('  ', ' ')">
                                 </div>
                                 </div>
 
@@ -911,14 +911,14 @@
                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Nombre </label>
                                      <div class="col-md-6">
-                                    <input type="text" class="form-control" v-model="nombre_coa" placeholder="Nombre">
+                                    <input type="text" class="form-control" v-model="nombre_coa" placeholder="Nombre" onchange="this.value = this.value.trim()" onkeyup="this.value = this.value.replace('  ', ' ')">
                                     </div>
                                 </div> 
 
                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Apellidos</label>
                                  <div class="col-md-6">
-                                    <input type="text" class="form-control" v-model="apellidos_coa" placeholder="Apellidos">
+                                    <input type="text" class="form-control" v-model="apellidos_coa" placeholder="Apellidos" onchange="this.value = this.value.trim()" onkeyup="this.value = this.value.replace('  ', ' ')">
                                 </div>
                                 </div>
 

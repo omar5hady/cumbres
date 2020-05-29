@@ -293,7 +293,7 @@
                                     <tbody>
                                         <tr v-for="contrato in arrayContratos" :key="contrato.id" v-on:dblclick="verContrato(contrato)" v-bind:style="{ backgroundColor : !contrato.detenido ? '#FFFFFF' : '#D23939'}">
                                             <td class="td2" v-text="contrato.id"></td>
-                                            <td class="td2" v-text="contrato.nombre + ' ' + contrato.apellidos "></td>
+                                            <td class="td2" v-text="contrato.nombre.toUpperCase() + ' ' + contrato.apellidos.toUpperCase() "></td>
                                             <td class="td2" v-text="contrato.vendedor_nombre + ' ' + contrato.vendedor_apellidos "></td>
                                             <td class="td2" v-text="contrato.fraccionamiento"></td>
                                             <td class="td2" v-text="contrato.etapa"></td>
@@ -304,7 +304,7 @@
                                             <td class="td2" v-text="contrato.institucion"></td>
                                             <td class="td2" v-text="'$'+formatNumber(contrato.precio_venta)"></td>
                                             <td class="td2" v-text="this.moment(contrato.fecha).locale('es').format('DD/MMM/YYYY')"></td>
-                                            <td class="td2" v-if="contrato.status == '0'">
+                                            <td class="td2" v-if="contrato.status == '0' ">
                                                 <span class="badge badge-danger">Cancelado/ {{this.moment(contrato.fecha_status).locale('es').format('DD/MMM/YYYY')}}</span>
                                             </td>
                                             <td class="td2" v-if="contrato.status == '1'">
@@ -315,7 +315,10 @@
                                             </td>
                                             <td class="td2" v-if="contrato.status == '3'">
                                                 <span class="badge badge-success">Firmado</span>
+                                                <span v-if="contrato.status2 == 1" class="badge badge-dark"> INDIVIDUALIZADA </span>
+                                                
                                             </td>
+                                            
                                             <td class="td2" v-text="contrato.publicidad"></td>
                                             <td v-if="rolId!=2">
                                                 <button v-if="contrato.exp_bono == 0" title="Registrar Expediente" type="button" class="btn btn-primary pull-right" 

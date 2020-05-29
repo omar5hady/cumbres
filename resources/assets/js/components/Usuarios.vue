@@ -1821,9 +1821,9 @@
                                 this.password=data['password'];
                                 this.condicion=data['condicion'];
                                 this.tipoAccion = 2;
-                                this.inmobiliaria='';
-                                this.tipo_vendedor=0;
-                                this.esquema = 2;
+                                this.inmobiliaria=data['inmobiliaria'];
+                                this.tipo_vendedor=data['tipo'];
+                                this.esquema = data['esquema'];
                                 break;
                             }
                             case 'Asignar':

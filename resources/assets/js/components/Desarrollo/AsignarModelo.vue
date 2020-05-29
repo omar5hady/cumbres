@@ -135,9 +135,9 @@
                                             <button type="button" @click="abrirModal('lote','actualizar',lote)" class="btn btn-warning btn-sm">
                                             <i class="icon-pencil"></i>
                                             </button>
-                                            <button type="button" class="btn btn-danger btn-sm" @click="eliminarLote(lote)">
+                                            <!-- <button type="button" class="btn btn-danger btn-sm" @click="eliminarLote(lote)">
                                             <i class="icon-trash"></i>
-                                            </button>
+                                            </button> -->
                                         </td>
 
                                         <td class="td2" v-text="lote.proyecto"></td>

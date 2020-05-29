@@ -61,6 +61,7 @@ class ContratoController extends Controller
                 ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                 ->select(
                     'expedientes.liquidado',
+                    'expedientes.fecha_firma_esc',
                     'creditos.id',
                     'creditos.prospecto_id',
                     'creditos.num_dep_economicos',
@@ -2055,6 +2056,22 @@ class ContratoController extends Controller
                             }
                     }
                 }
+            }
+        }
+
+        if(sizeOf($contratos)){
+            foreach($contratos as $index => $contrato) 
+            {
+                if($contrato->tipo_credito == 'Crédito Directo' && $contrato->liquidado == 1){
+                    $contrato->status2 = 1;
+                }
+                elseif($contrato->tipo_credito != 'Crédito Directo' && $contrato->fecha_firma_esc != NULL){
+                    $contrato->status2 = 1;
+                }
+                else{
+                    $contrato->status2 = 0;
+                }
+
             }
         }
 

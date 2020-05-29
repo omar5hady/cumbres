@@ -10,7 +10,7 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Casas Disponibles
                         <!--   Boton descargar excel    -->
-                         <a class="btn btn-success" v-bind:href="'/lotes/resume_excel_lotes_disp?buscar=' + buscar + '&buscar2=' + buscar2+ '&buscar3=' + buscar3 + '&b_modelo='+ b_modelo + '&b_lote='+ b_lote + '&b_apartado='+ b_apartado +'&criterio=' + criterio + '&rolId=' + rolId">
+                         <a class="btn btn-success" v-bind:href="'/lotes/resume_excel_lotes_disp?buscar=' + buscar + '&buscar2=' + buscar2+ '&buscar3=' + buscar3 + '&b_modelo='+ b_modelo + '&b_lote='+ b_lote + '&b_apartado='+ b_apartado +'&criterio=' + criterio + '&rolId=' + rolId + '&casa_muestra=' + casa_muestra">
                             <i class="fa fa-file-text"></i>&nbsp; Descargar relacion
                         </a>
                         <!---->
@@ -57,6 +57,12 @@
                                         <option value=1>Apartados</option>
                                         
                                     </select>
+
+                                    <select class="form-control" v-model="casa_muestra" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)">
+                                        <option value="">Todos</option>
+                                        <option value=0>Lotes en venta</option>
+                                        <option value=1>Casas muestra</option>
+                                    </select>
                                     
                                 </div>
                                 <button type="submit" @click="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
@@ -81,8 +87,14 @@
                                         <option value="">Todos</option>
                                         <option value=0>Sin apartar</option>
                                         <option value=1>Apartados</option>
-                                        
                                     </select>
+
+                                    <select class="form-control" v-model="casa_muestra" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)">
+                                        <option value="">Todos</option>
+                                        <option value=0>Lotes en venta</option>
+                                        <option value=1>Casas muestra</option>
+                                    </select>
+                                    
                                 </div>
                                 <button type="submit" @click="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
@@ -319,6 +331,7 @@
                 buscar3 : '',
                 buscar : '',
                 b_apartado : '',
+                casa_muestra : 0,
             }
         },
         computed:{
@@ -357,7 +370,7 @@
             /**Metodo para mostrar los registros */
             listarLote(page, buscar, buscar2, buscar3, b_modelo, b_lote, criterio,rol){
                 let me = this;
-                var url = '/lotesDisponibles?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2+ '&buscar3=' + buscar3 + '&b_modelo='+ b_modelo + '&b_lote='+ b_lote + '&b_apartado='+ this.b_apartado +'&criterio=' + criterio + '&rolId=' + rol; 
+                var url = '/lotesDisponibles?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2+ '&buscar3=' + buscar3 + '&b_modelo='+ b_modelo + '&b_lote='+ b_lote + '&b_apartado='+ this.b_apartado +'&criterio=' + criterio + '&rolId=' + rol + '&casa_muestra=' + this.casa_muestra ; 
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLote = respuesta.lotes.data;

@@ -47,6 +47,22 @@ class UserController extends Controller
         $personas = $personas->orderBy('users.condicion', 'desc')
                             ->orderBy('personal.id', 'desc')
                             ->paginate(8);
+
+        if(sizeOf($personas)){
+            foreach($personas as $index => $persona){
+                $vendedores = Vendedor::select('tipo','inmobiliaria','esquema')->where('id','=',$persona->id)->get();
+                if(sizeof($vendedores)){
+                    $persona->tipo = $vendedores[0]->tipo;
+                    $persona->inmobiliaria = $vendedores[0]->inmobiliaria;
+                    $persona->esquema = $vendedores[0]->esquema;
+                }
+                else{
+                    $persona->tipo = '';
+                    $persona->inmobiliaria = '';
+                    $persona->esquema = '';
+                }
+            }
+        }
          
         return [
             'pagination' => [

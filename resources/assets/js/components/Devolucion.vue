@@ -75,7 +75,12 @@
                                 <tbody>
                                     <tr v-for="contratos in arrayContratos" :key="contratos.id" v-on:dblclick="abrirModal('devolucion',contratos)"> 
                                     <template v-if="(contratos.sumaPagares - contratos.sumaRestante -  contratos.sumGastos) > 0">
-                                        <td class="td2" v-text="contratos.id"></td>
+                                        <td class="td2">
+                                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{contratos.id}}</a>
+                                            <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                <a class="dropdown-item" @click="abrirPDF(contratos.id)">Estado de cuenta</a>
+                                            </div>
+                                        </td>
                                         <td class="td2" v-text="contratos.nombre_cliente"></td>
                                         <td class="td2" v-text="contratos.proyecto"></td>
                                         <td class="td2" v-text="contratos.etapa"></td>
@@ -173,7 +178,12 @@
                                 <tbody>
                                     <tr v-for="devoluciones in arrayDevoluciones" :key="devoluciones.id" v-on:dblclick="abrirModal('info',devoluciones)"> 
                                     <template v-if="(devoluciones.sumaPagares - devoluciones.sumaRestante) > 0">
-                                        <td class="td2" v-text="devoluciones.id"></td>
+                                        <td class="td2">
+                                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{devoluciones.id}}</a>
+                                            <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                <a class="dropdown-item" @click="abrirPDF(devoluciones.id)">Estado de cuenta</a>
+                                            </div>
+                                        </td>
                                         <td class="td2" v-text="devoluciones.nombre_cliente"></td>
                                         <td class="td2" v-text="devoluciones.proyecto"></td>
                                         <td class="td2" v-text="devoluciones.etapa"></td>
@@ -732,6 +742,11 @@
                     console.log(error);
                 });
 
+            },
+
+            abrirPDF(id){
+                const win = window.open('/estadoCuenta/estadoPDF/'+id, '_blank');
+                win.focus();
             },
 
             listarGastos(){
