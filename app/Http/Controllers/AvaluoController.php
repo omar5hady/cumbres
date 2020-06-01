@@ -529,7 +529,10 @@ class AvaluoController extends Controller
 
         try{
             DB::beginTransaction();
-            if($request->costo >0){
+            
+            $avaluo=Avaluo::findOrFail($avaluo_id);
+
+            if($request->costo >0 && $avaluo->costo == 0){
                 $gasto = new Gasto_admin();
                 $gasto->contrato_id = $request->id;
                 $gasto->concepto = 'Avaluo';
@@ -539,11 +542,12 @@ class AvaluoController extends Controller
                 $gasto->save();
             }
 
-            $avaluo=Avaluo::findOrFail($avaluo_id);
             $avaluo->costo = $request->costo;
             $avaluo->fecha_concluido = $request->fecha_concluido;
             $avaluo->resultado = $request->resultado;
             $avaluo->save();
+
+            
 
             $contrato = Contrato::findOrFail($request->id);
             $contrato->saldo = round($contrato->saldo + $request->costo,2);

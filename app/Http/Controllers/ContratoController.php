@@ -58,10 +58,8 @@ class ContratoController extends Controller
                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
-                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
+                
                 ->select(
-                    'expedientes.liquidado',
-                    'expedientes.fecha_firma_esc',
                     'creditos.id',
                     'creditos.prospecto_id',
                     'creditos.num_dep_economicos',
@@ -2071,6 +2069,14 @@ class ContratoController extends Controller
                 else{
                     $contrato->status2 = 0;
                 }
+
+                $expediente = Expediente::select('liquidado','fecha_firma_esc')->where('id','=',$contrato->id)->get();
+
+                if(sizeOf($expediente)){
+                    $contrato->liquidado = $expediente[0]->liquidado;
+                    $contrato->fecha_firma_esc = $expediente[0]->fecha_firma_esc;
+                }
+                
 
             }
         }

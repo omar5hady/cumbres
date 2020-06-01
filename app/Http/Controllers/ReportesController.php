@@ -12,6 +12,7 @@ use App\Expediente;
 use App\Lote;
 use Excel;
 use Carbon\Carbon;
+use App\Pago_contrato;
 use App\Historial_descartado;
 
 use App\Cliente;
@@ -1420,6 +1421,434 @@ class ReportesController extends Controller
 
             ];
 
+    }
+
+    public function reporteRecursosPropios(Request $request){
+        $indivContado   =   Contrato::join('expedientes','contratos.id','=','expedientes.id')
+                                        ->join('creditos','contratos.id', '=', 'creditos.id')
+                                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                                        ->select('lotes.id')
+                                        ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
+                                        ->where('contratos.status','=',3)
+                                        ->where('expedientes.liquidado','=',1)
+                                        ->where('inst_seleccionadas.elegido', '=', '1')
+                                        
+                                        ->orWhere('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
+                                        ->where('contratos.status','=',3)
+                                        ->where('expedientes.fecha_firma_esc','!=',NULL)
+                                        ->where('inst_seleccionadas.elegido', '=', '1')
+                                        
+                                        ->orderBy('lotes.id','asc')
+                                        ->distinct('contratos.id')->get();
+        $indiv = [];
+
+        if(sizeof($indivContado))
+            foreach($indivContado as $index => $individual){
+                array_push($indiv,$individual->id);
+            }
+                                        
+        
+        $lotes = Lote::join('fraccionamientos','fraccionamientos.id','=','lotes.fraccionamiento_id')
+                        ->join('etapas','etapas.id','=','lotes.etapa_id')
+                        ->join('licencias','licencias.id','=','lotes.id')
+                        ->select('etapas.num_etapa','lotes.manzana','fraccionamientos.nombre as proyecto',
+                                'licencias.id', 'lotes.credito_puente','licencias.avance', 'lotes.num_lote',
+                                'lotes.precio_base', 'lotes.excedente_terreno','lotes.sobreprecio',
+                                'lotes.ajuste','lotes.obra_extra');
+    
+        if($request->proyecto == ''){
+            $lotes = $lotes->where('lotes.credito_puente','like','NO TIENE CREDITO PUENTE%')
+                        ->whereNotIn('lotes.id',$indiv)
+                        ->where('licencias.avance','>',1)
+                        ->orWhere('lotes.credito_puente','like','EN PROCESO%')
+                        ->whereNotIn('lotes.id',$indiv)
+                        ->where('licencias.avance','>',1)
+                        ->orWhere('lotes.credito_puente','like','LIQUIDADO%')
+                        ->whereNotIn('lotes.id',$indiv)
+                        ->where('licencias.avance','>',1);
+                        
+        }
+        else{
+            if($request->etapa == ''){
+                $lotes->where('lotes.credito_puente','like','NO TIENE CREDITO PUENTE%')
+                        ->whereNotIn('lotes.id',$indiv)
+                        ->where('licencias.avance','>',1)
+                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
+                        ->orWhere('lotes.credito_puente','like','EN PROCESO%')
+                        ->whereNotIn('lotes.id',$indiv)
+                        ->where('licencias.avance','>',1)
+                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
+                        ->orWhere('lotes.credito_puente','like','LIQUIDADO%')
+                        ->whereNotIn('lotes.id',$indiv)
+                        ->where('licencias.avance','>',1)
+                        ->where('lotes.fraccionamiento_id','=',$request->proyecto);
+            }
+            else{
+                $lotes->where('lotes.credito_puente','like','NO TIENE CREDITO PUENTE%')
+                        ->whereNotIn('lotes.id',$indiv)
+                        ->where('licencias.avance','>',1)
+                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
+                        ->where('lotes.etapa_id','=',$request->etapa)
+                        ->orWhere('lotes.credito_puente','like','EN PROCESO%')
+                        ->whereNotIn('lotes.id',$indiv)
+                        ->where('licencias.avance','>',1)
+                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
+                        ->where('lotes.etapa_id','=',$request->etapa)
+                        ->orWhere('lotes.credito_puente','like','LIQUIDADO%')
+                        ->whereNotIn('lotes.id',$indiv)
+                        ->where('licencias.avance','>',1)
+                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
+                        ->where('lotes.etapa_id','=',$request->etapa);
+            }
+        }
+                        
+        $lotes2 = $lotes->get();
+
+        $lotes = $lotes->orderBy('proyecto','asc')
+                        ->orderBy('etapas.num_etapa','asc')
+                        ->orderBy('etapas.num_etapa','asc')->paginate(25);
+
+        
+
+        
+        if(sizeOf($lotes)){
+            foreach($lotes as $index => $lote){
+
+                $lote->valor_venta = $lote->precio_base + $lote->excedente_terreno + $lote->sobreprecio +
+                                        $lote->obra_extra - $lote->ajuste;
+                $lote->porCobrar = 0;
+                $lote->status = 0;
+                $lote->cobrado = 0;
+
+                $contratos = Contrato::join('creditos','creditos.id','=','contratos.id')
+                        ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                        ->select('creditos.precio_venta','contratos.id')
+                        ->where('contratos.status', '=', 3)
+                        ->where('i.elegido','=',1)
+                        ->where('creditos.lote_id','=',$lote->id)
+                        ->orWhere('contratos.status','=', 1)
+                        ->where('i.elegido','=',1)
+                        ->where('creditos.lote_id','=',$lote->id)
+                        ->get();
+
+                if(sizeOf($contratos) > 0){
+                    $lote->valor_venta = $contratos[0]->precio_venta;
+                    $lote->status = 1;
+                    $pagos = Pago_contrato::select(
+                        DB::raw("SUM(monto_pago) as sumMontoPago"), 
+                        DB::raw("SUM(restante) as sumRestante"))
+                                ->where('contrato_id','=',$contratos[0]->id)
+                                ->get();
+
+                    $lote->pagos = $pagos;
+                    $lote->cobrado = $pagos[0]->sumMontoPago - $pagos[0]->sumRestante;
+                    $lote->porCobrar =$lote->valor_venta - $lote->cobrado;
+                }
+            }
+        }
+
+        if(sizeOf($lotes2)){
+            $suma1=0;
+            $suma2=0;
+            $suma3=0;
+            foreach($lotes2 as $index => $lote){
+
+                $lote->valor_venta = $lote->precio_base + $lote->excedente_terreno + $lote->sobreprecio +
+                                        $lote->obra_extra - $lote->ajuste;
+                $lote->porCobrar = 0;
+                $lote->status = 0;
+                $lote->cobrado = 0;
+
+                $contratos = Contrato::join('creditos','creditos.id','=','contratos.id')
+                        ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                        ->select('creditos.precio_venta','contratos.id')
+                        ->where('contratos.status', '=', 3)
+                        ->where('i.elegido','=',1)
+                        ->where('creditos.lote_id','=',$lote->id)
+                        ->orWhere('contratos.status','=', 1)
+                        ->where('i.elegido','=',1)
+                        ->where('creditos.lote_id','=',$lote->id)
+                        ->get();
+
+                if(sizeOf($contratos) > 0){
+                    $lote->valor_venta = $contratos[0]->precio_venta;
+                    $lote->status = 1;
+                    $pagos = Pago_contrato::select(
+                        DB::raw("SUM(monto_pago) as sumMontoPago"), 
+                        DB::raw("SUM(restante) as sumRestante"))
+                                ->where('contrato_id','=',$contratos[0]->id)
+                                ->get();
+                    $lote->pagos = $pagos;
+                    $lote->cobrado = $pagos[0]->sumMontoPago - $pagos[0]->sumRestante;
+                    $lote->porCobrar =$lote->valor_venta - $lote->cobrado;
+                }
+
+                $suma1 += $lote->valor_venta;
+                $suma2 += $lote->cobrado;
+                $suma3 += $lote->porCobrar;
+            }
+        }
+
+
+        return [
+            'pagination' => [
+                'total'         => $lotes->total(),
+                'current_page'  => $lotes->currentPage(),
+                'per_page'      => $lotes->perPage(),
+                'last_page'     => $lotes->lastPage(),
+                'from'          => $lotes->firstItem(),
+                'to'            => $lotes->lastItem(),
+            ],
+            'lotes' => $lotes,
+            'suma1' => $suma1,
+            'suma2' => $suma2,
+            'suma3' => $suma3
+        ];
+    }
+
+    public function excelRecursosPropios(Request $request){
+        $indivContado   =   Contrato::join('expedientes','contratos.id','=','expedientes.id')
+                                        ->join('creditos','contratos.id', '=', 'creditos.id')
+                                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                                        ->select('lotes.id')
+                                        ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
+                                        ->where('contratos.status','=',3)
+                                        ->where('expedientes.liquidado','=',1)
+                                        ->where('inst_seleccionadas.elegido', '=', '1')
+                                        
+                                        ->orWhere('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
+                                        ->where('contratos.status','=',3)
+                                        ->where('expedientes.fecha_firma_esc','!=',NULL)
+                                        ->where('inst_seleccionadas.elegido', '=', '1')
+                                        
+                                        ->orderBy('lotes.id','asc')
+                                        ->distinct('contratos.id')->get();
+        $indiv = [];
+
+        if(sizeof($indivContado))
+            foreach($indivContado as $index => $individual){
+                array_push($indiv,$individual->id);
+            }
+                                        
+        
+        $lotes = Lote::join('fraccionamientos','fraccionamientos.id','=','lotes.fraccionamiento_id')
+                        ->join('etapas','etapas.id','=','lotes.etapa_id')
+                        ->join('licencias','licencias.id','=','lotes.id')
+                        ->select('etapas.num_etapa','lotes.manzana','fraccionamientos.nombre as proyecto',
+                                'licencias.id', 'lotes.credito_puente','licencias.avance', 'lotes.num_lote',
+                                'lotes.precio_base', 'lotes.excedente_terreno','lotes.sobreprecio',
+                                'lotes.ajuste','lotes.obra_extra');
+    
+        if($request->proyecto == ''){
+            $lotes = $lotes->where('lotes.credito_puente','like','NO TIENE CREDITO PUENTE%')
+                        ->whereNotIn('lotes.id',$indiv)
+                        ->where('licencias.avance','>',1)
+                        ->orWhere('lotes.credito_puente','like','EN PROCESO%')
+                        ->whereNotIn('lotes.id',$indiv)
+                        ->where('licencias.avance','>',1)
+                        ->orWhere('lotes.credito_puente','like','LIQUIDADO%')
+                        ->whereNotIn('lotes.id',$indiv)
+                        ->where('licencias.avance','>',1);
+                        
+        }
+        else{
+            if($request->etapa == ''){
+                $lotes->where('lotes.credito_puente','like','NO TIENE CREDITO PUENTE%')
+                        ->whereNotIn('lotes.id',$indiv)
+                        ->where('licencias.avance','>',1)
+                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
+                        ->orWhere('lotes.credito_puente','like','EN PROCESO%')
+                        ->whereNotIn('lotes.id',$indiv)
+                        ->where('licencias.avance','>',1)
+                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
+                        ->orWhere('lotes.credito_puente','like','LIQUIDADO%')
+                        ->whereNotIn('lotes.id',$indiv)
+                        ->where('licencias.avance','>',1)
+                        ->where('lotes.fraccionamiento_id','=',$request->proyecto);
+            }
+            else{
+                $lotes->where('lotes.credito_puente','like','NO TIENE CREDITO PUENTE%')
+                        ->whereNotIn('lotes.id',$indiv)
+                        ->where('licencias.avance','>',1)
+                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
+                        ->where('lotes.etapa_id','=',$request->etapa)
+                        ->orWhere('lotes.credito_puente','like','EN PROCESO%')
+                        ->whereNotIn('lotes.id',$indiv)
+                        ->where('licencias.avance','>',1)
+                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
+                        ->where('lotes.etapa_id','=',$request->etapa)
+                        ->orWhere('lotes.credito_puente','like','LIQUIDADO%')
+                        ->whereNotIn('lotes.id',$indiv)
+                        ->where('licencias.avance','>',1)
+                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
+                        ->where('lotes.etapa_id','=',$request->etapa);
+            }
+        }
+                        
+        // $lotes2 = $lotes->get();
+
+        $lotes = $lotes->orderBy('proyecto','asc')
+                        ->orderBy('etapas.num_etapa','asc')
+                        ->orderBy('etapas.num_etapa','asc')->get();
+
+        
+
+        
+        if(sizeOf($lotes)){
+            $suma1=0;
+            $suma2=0;
+            $suma3=0;
+            foreach($lotes as $index => $lote){
+
+                $lote->valor_venta = $lote->precio_base + $lote->excedente_terreno + $lote->sobreprecio +
+                                        $lote->obra_extra - $lote->ajuste;
+                $lote->porCobrar = 0;
+                $lote->status = 0;
+                $lote->cobrado = 0;
+
+                $contratos = Contrato::join('creditos','creditos.id','=','contratos.id')
+                        ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                        ->select('creditos.precio_venta','contratos.id')
+                        ->where('contratos.status', '=', 3)
+                        ->where('i.elegido','=',1)
+                        ->where('creditos.lote_id','=',$lote->id)
+                        ->orWhere('contratos.status','=', 1)
+                        ->where('i.elegido','=',1)
+                        ->where('creditos.lote_id','=',$lote->id)
+                        ->get();
+
+                if(sizeOf($contratos) > 0){
+                    $lote->valor_venta = $contratos[0]->precio_venta;
+                    $lote->status = 1;
+                    $pagos = Pago_contrato::select(
+                        DB::raw("SUM(monto_pago) as sumMontoPago"), 
+                        DB::raw("SUM(restante) as sumRestante"))
+                                ->where('contrato_id','=',$contratos[0]->id)
+                                ->get();
+                                
+                    $lote->pagos = $pagos;
+                    $lote->cobrado = $pagos[0]->sumMontoPago - $pagos[0]->sumRestante;
+                    $lote->porCobrar =$lote->valor_venta - $lote->cobrado;
+                }
+
+                $suma1 += $lote->valor_venta;
+                $suma2 += $lote->cobrado;
+                $suma3 += $lote->porCobrar;
+            }
+        }
+
+       
+        return Excel::create('Reporte', function($excel) use ($lotes, $suma1, $suma2, $suma3){
+            $excel->sheet('Reoorte recursos propios', function($sheet) use ($lotes, $suma1, $suma2, $suma3){
+
+                $sheet->row(1, ['',
+                    'Fraccionamiento',
+                    'Etapa',
+                    'Manzana',
+                    'Lote',
+                    'Estatus',
+                    'Avance',
+                    'Valor de Venta',
+                    'Cobrado',
+                    'Por Cobrar',
+                    'Credito Puente'
+                ]);
+                
+
+                $sheet->cells('A1:K1', function ($cells) {
+                    // Set font family
+                    $cells->setFontFamily('Calibri');
+
+                    // Set font size
+                    $cells->setFontSize(12);
+
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+
+                $sheet->setColumnFormat(array(
+                    'H' => '$#,##0.00',
+                    'I' => '$#,##0.00',
+                    'J' => '$#,##0.00',
+                ));
+
+                $cont=3;
+                $renglon = 2;
+
+                $i = 1;
+
+                foreach($lotes as $index => $lote) {
+                    $cont++;
+
+                    if($lote->status == 0){
+                        $status = 'Disponible';
+                    }
+                    else{
+                        $status = 'Vendida';
+                    }
+
+
+                    
+
+                        $sheet->row($renglon, [
+                            $i,
+                            $lote->proyecto, 
+                            $lote->num_etapa,
+                            $lote->manzana,
+                            $lote->num_lote,
+                            $status,
+                            $lote->avance.'%',
+                            $lote->valor_venta,
+                            $lote->cobrado,
+                            $lote->porCobrar,
+                            $lote->credito_puente,
+
+                        ]);	
+                        $renglon ++;
+                        $i++;
+                    
+                }
+                $sheet->row($renglon+1,[
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    'Total',
+                    $suma1,
+                    $suma2,
+                    $suma3,
+                   ''
+                    
+                ]);
+
+                $renglon = $renglon + 1;
+            
+                $num='A1:K' . $renglon;
+                $sheet->setBorder($num, 'thin');
+
+                $sheet->cells('A'.$renglon.':'.'K'.$renglon, function ($cells) {
+                    // Set font family
+                    $cells->setFontFamily('Calibri');
+    
+                    // Set font size
+                    $cells->setFontSize(11);
+    
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                });
+            });
+
+            
+        }
+        
+        )->download('xls');
+
+       
     }
     
 }

@@ -617,6 +617,11 @@
                                         <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de ventas y cancelaciones</a>
                                     </li>
                                 @endif
+                                @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 6)
+                                    <li @click="menu=243" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de recursos propios</a>
+                                    </li>
+                                @endif
                                 @if(Auth::user()->rol_id == 1)
                                     <li @click="menu=240" class="nav-item">
                                         <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte acumulado</a>

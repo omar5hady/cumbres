@@ -2080,7 +2080,7 @@ class LoteController extends Controller
 
 
         if($request->casa_muestra != ''){
-            $lotes = $lotes->where('lotes.casa_muestra','=',$request->casa_muestra == 0);
+            $lotes = $lotes->where('lotes.casa_muestra','=',$request->casa_muestra);
             //$queryVendedores = $queryVendedores->where('lotes.casa_muestra','=',1);
         }
         
@@ -2909,7 +2909,7 @@ class LoteController extends Controller
         
 
         if($request->casa_muestra != ''){
-            $lotes = $lotes->where('lotes.casa_muestra','=',$request->casa_muestra == 0);
+            $lotes = $lotes->where('lotes.casa_muestra','=',$request->casa_muestra);
             //$queryVendedores = $queryVendedores->where('lotes.casa_muestra','=',1);
         }
 

@@ -163,8 +163,8 @@
                                                 <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+prospecto.email+ ';'+prospecto.email_institucional"> <i class="fa fa-envelope-o fa-lg"></i> </a>
                                             </td>
                                             <td class="td2" style="text-transform:uppercase" v-text="prospecto.rfc.toUpperCase()"></td>
-                                            <td class="td2" v-text="prospecto.nss.toUpperCase()"></td>
-                                            <td class="td2" style="text-transform:uppercase" v-text="prospecto.curp.toUpperCase()"></td>
+                                            <td class="td2" v-text="prospecto.nss"></td>
+                                            <td class="td2" style="text-transform:uppercase" v-text="prospecto.curp"></td>
                                             <td class="td2" v-text="prospecto.proyecto"></td>
                                             <td class="td2" v-if="prospecto.clasificacion==1">No viable</td>
                                             <td class="td2" v-if="prospecto.clasificacion==2">Tipo A</td>

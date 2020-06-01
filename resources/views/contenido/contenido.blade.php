@@ -432,6 +432,9 @@
         <template v-if="menu==242">
             <bono-recomendado rol-id="{{Auth::user()->rol_id}}"></bono-recomendado>
         </template>
+        <template v-if="menu==243">
+            <recursos-propios></recursos-propios>
+        </template>
 
         
 
