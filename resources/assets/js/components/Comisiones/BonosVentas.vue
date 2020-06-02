@@ -170,10 +170,11 @@
                                         <th>Bono</th>
                                         <th>Descripcion</th>
                                         <th>Duplicar</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="contrato in arrayAnticipos" :key="contrato.folio">
+                                    <tr v-for="contrato in arrayAnticipos" :key="contrato.id">
                                         <td class="td2" v-text="contrato.folio"> </td>
                                         <td class="td2" v-text="contrato.fraccionamiento"></td>
                                         <td class="td2" v-text="contrato.etapa"></td>
@@ -184,7 +185,7 @@
                                         <td class="td2" v-text="'$'+formatNumber((contrato.monto).toFixed(2))"></td>
                                         <td class="td2" v-text="contrato.descripcion"></td>
                                         <template>
-                                            <td v-if="contrato.status == 1 && contrato.num_bono == 1 && contrato.numVentas > 2 && contrato.ventaQuincena>0">
+                                            <td v-if="contrato.status == 1 && contrato.num_bono == 1 && contrato.numVentas > 2 && contrato.ventaQuincena>0 && contrato.ventaAnt > 1">
                                                 <button title="Duplicar bono" type="button" class="btn btn-success btn-sm" @click="abrirModal('duplicar',contrato)">
                                                     <i class="fa fa-money">&nbsp; Duplicar bono</i>
                                                 </button>
@@ -192,6 +193,10 @@
                                             <td v-else-if="contrato.status == 0">CANCELADO</td>
                                             <td v-else> No aplica </td>
                                         </template>
+                                        <th>
+                                            <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
+                                                    @click="abrirModal('observaciones',contrato)">Observaciones</button>
+                                        </th>
                                     </tr>                               
                                 </tbody>
                             </table>
@@ -290,6 +295,61 @@
             </div>
             <!--Fin del modal-->
 
+            <!--Inicio del modal observaciones-->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal"></h4>
+                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
+                                    <div class="col-md-6">
+                                         <textarea rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observacion"></textarea>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button"  class="btn btn-primary" @click="agregarComentario()">Guardar</button>
+                                    </div>
+                                </div>
+
+                                
+                                <table class="table table-bordered table-striped table-sm" >
+                                    <thead>
+                                        <tr>
+                                            <th>Usuario</th>
+                                            <th>Observacion</th>
+                                            <th>Fecha</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="observacion in arrayObservacion" :key="observacion.id">
+                                            
+                                            <td v-text="observacion.usuario" ></td>
+                                            <td v-text="observacion.observacion" ></td>
+                                            <td v-text="observacion.created_at"></td>
+                                        </tr>                               
+                                    </tbody>
+                                </table>
+                                
+                            </form>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
+                        </div>
+                    </div>
+                      <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+
            
 
         </main>
@@ -313,6 +373,9 @@
                 arrayFraccionamientos:[],
                 arrayEtapas:[],
                 arrayAnticipos:[],
+                arrayObservacion:[],
+
+                observacion:'',
                 comision:0,
                 bono:0,
                 fecha_pago:0,
@@ -361,6 +424,8 @@
                 hoy:'',
                 folio : '',
                 bono_id:'',
+
+                modal2:0,
 
                
             }
@@ -452,6 +517,47 @@
                 .catch(function (error) {
                     console.log(error);
                 })
+            },
+
+            listarObservacion(buscar){
+                let me = this;
+                var url = '/bonos_ventas/listarObs?id=' + buscar ;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayObservacion = respuesta.observacion;
+                    console.log(url);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+                
+            },
+
+            agregarComentario(){
+                let me = this;
+                //Con axios se llama el metodo store de DepartamentoController
+                axios.post('/bonos_ventas/storeObservacion',{
+                    'id': this.id,
+                    'observacion': this.observacion
+                }).then(function (response){
+                    me.listarObservacion(me.id);
+                    me.observacion = '';
+                    //me.cerrarModal3(); //al guardar el registro se cierra el modal
+                    
+                    const toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                    });
+
+                    toast({
+                    type: 'success',
+                    title: 'Observación Agregada Correctamente'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
             },
 
             selectFraccionamientos(){
@@ -577,6 +683,9 @@
                 this.tituloModal = '';
                 this.asesor_id = '';
                 this.descripcion = '';
+                this.modal2 = '';
+                this.observacion = '';
+                this.arrayObservacion = [];
 
             },
 
@@ -621,6 +730,15 @@
                         this.id = data['folio'];
                         this.bono_id = data['id'];
                         this.tipoAccion = 2;
+                        break;
+                    }
+                    case 'observaciones':{
+                        this.modal2 =1;
+                        this.tituloModal='Observaciones';
+                        this.observacion='';
+                        this.usuario='';
+                        this.id=data['id'];
+                        this.listarObservacion(this.id);
                         break;
                     }
                 }

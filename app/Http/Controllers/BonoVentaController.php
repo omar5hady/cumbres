@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Contrato;
 use App\Credito;
 use App\Bono_venta;
+use App\Obs_bono_venta;
 use DB;
 use Auth;
 use Carbon\Carbon;
@@ -248,6 +249,15 @@ class BonoVentaController extends Controller
                 $fechaIni = $bono->year.'-'.$bono->month.'-01';
                 $fechaFin = $bono->year.'-'.$bono->month.'-15';
 
+                if($bono->month == '01'){
+                    $mesAnt = 12;
+                    $anioAnt = $bono->year - 1;
+                }
+                else{
+                    $mesAnt = $bono->month - 1;
+                    $anioAnt = $bono->year;
+                }
+
                 $bono->numVentas = Contrato::join('creditos','contratos.id','=','creditos.id')
                             ->select('contratos.id')
                             ->whereMonth('contratos.fecha',$bono->month)
@@ -258,6 +268,13 @@ class BonoVentaController extends Controller
                 $bono->ventaQuincena = Contrato::join('creditos','contratos.id','=','creditos.id')
                                     ->select('contratos.id')
                                     ->whereBetween('contratos.fecha', [$fechaIni, $fechaFin])
+                                    ->where('creditos.vendedor_id','=',$bono->vendedor_id)
+                                    ->where('contratos.status','=',3)->count();
+
+                $bono->ventaAnt = Contrato::join('creditos','contratos.id','=','creditos.id')
+                                    ->select('contratos.id')
+                                    ->whereMonth('contratos.fecha',$mesAnt)
+                                    ->whereYear('contratos.fecha',$anioAnt)
                                     ->where('creditos.vendedor_id','=',$bono->vendedor_id)
                                     ->where('contratos.status','=',3)->count();
                 
@@ -289,5 +306,23 @@ class BonoVentaController extends Controller
         $primerBono = Bono_venta::findOrFail($request->id);
         $primerBono->status = 2;
         $primerBono->save();
+    }
+
+    public function listarObservaciones(Request $request){
+        if(!$request->ajax())return redirect('/');
+        $observaciones = Obs_bono_venta::select('observacion','usuario','created_at')
+        ->where('bono_id','=', $request->id)->orderBy('created_at','desc')->get();
+
+        return ['observacion' => $observaciones];
+    }
+
+    public function storeObservacion(Request $request)
+    {
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $observacion = new Obs_bono_venta();
+        $observacion->bono_id = $request->id;
+        $observacion->observacion = $request->observacion;
+        $observacion->usuario = Auth::user()->usuario;
+        $observacion->save();
     }
 }

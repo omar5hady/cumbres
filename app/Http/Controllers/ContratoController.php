@@ -3201,14 +3201,7 @@ class ContratoController extends Controller
                 }
             }
 
-            if(sizeof($equipamientosCancel) != 0){
-                foreach ($equipamientosCancel as $canc){
-                    $cancel_equip = Solic_equipamiento::findOrFail($canc->id);
-                    $cancel_equip->control = 2;
-                    $cancel_equip->status = 5;
-                    $cancel_equip->save();
-                }
-            }
+            
 
             if(sizeof($equipamientosCost)){
                 if($equipamientosCost[0]->sumCosto != 0)
@@ -3283,6 +3276,16 @@ class ContratoController extends Controller
                     $contrato->contrato = 0;
                     $contrato->apartado = 0;
                     $contrato->ajuste += $ajuste;
+
+                    if(sizeof($equipamientosCancel) != 0){
+                        foreach ($equipamientosCancel as $canc){
+                            $cancel_equip = Solic_equipamiento::findOrFail($canc->id);
+                            $cancel_equip->control = 2;
+                            $cancel_equip->status = 5;
+                            $cancel_equip->save();
+                        }
+                    }
+                    
                     if($ajuste != 0)
                         $contrato->comentarios ='Lote con equipamiento: '.$equipo.'. '.$contrato->comentarios;
 

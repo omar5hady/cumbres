@@ -790,6 +790,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/bonos_ventas/storeBono', 'BonoVentaController@storeBono');
         Route::post('/bonos_ventas/segundoBono', 'BonoVentaController@segundoBono');
 
+        Route::get('/bonos_ventas/listarObs','BonoVentaController@listarObservaciones');
+        Route::post('/bonos_ventas/storeObservacion', 'BonoVentaController@storeObservacion');
+
 
         /////////////////////// RUTAS Versiones archivos modelo /////////////////////////
         Route::get('/modelos/archivos/versiones', 'VersionModeloController@getVersiones');
