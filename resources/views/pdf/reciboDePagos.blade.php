@@ -87,7 +87,7 @@ body {
         </div>
 
         <div class="table-row">
-            <div colspan="4" class="table-cell1">En la cidudad de:SAN LUIS POTOSI </div>
+            <div colspan="4" class="table-cell1">En la ciudad de: SAN LUIS POTOSI </div>
         </div>
 
         <div class="table-row">
@@ -208,7 +208,7 @@ body {
         </div>
 
         <div class="table-row">
-            <div colspan="4" class="table-cell1">En la cidudad de:SAN LUIS POTOSI </div>
+            <div colspan="4" class="table-cell1">En la ciudad de: SAN LUIS POTOSI </div>
         </div>
 
         <div class="table-row">
@@ -331,7 +331,7 @@ body {
         </div>
 
         <div class="table-row">
-            <div colspan="4" class="table-cell1">En la cidudad de:SAN LUIS POTOSI </div>
+            <div colspan="4" class="table-cell1">En la ciudad de: SAN LUIS POTOSI </div>
         </div>
 
         <div class="table-row">

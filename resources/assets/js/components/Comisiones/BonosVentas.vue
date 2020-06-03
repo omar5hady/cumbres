@@ -160,6 +160,7 @@
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
+                                        <th></th>
                                         <th>Folio</th>
                                         <th>Proyecto</th>
                                         <th>Etapa</th>
@@ -175,6 +176,9 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="contrato in arrayAnticipos" :key="contrato.id">
+                                        <td>
+                                            <a type="button" target="_blank" class="btn btn-danger btn-sm" title="Imprimir" v-bind:href="'bonos_ventas/reciboPDF/'+contrato.id"> <i class="fa fa-file-pdf-o"></i></a>
+                                        </td>
                                         <td class="td2" v-text="contrato.folio"> </td>
                                         <td class="td2" v-text="contrato.fraccionamiento"></td>
                                         <td class="td2" v-text="contrato.etapa"></td>

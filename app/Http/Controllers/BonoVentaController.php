@@ -325,4 +325,32 @@ class BonoVentaController extends Controller
         $observacion->usuario = Auth::user()->usuario;
         $observacion->save();
     }
+
+    public function reciboPDF($id){
+        $bonos = Bono_venta::join('contratos','bonos_ventas.contrato_id','=','contratos.id')
+        ->join('creditos','contratos.id','=','creditos.id')
+        ->join('lotes','creditos.lote_id','=','lotes.id')
+        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+        ->join('vendedores', 'creditos.vendedor_id', '=', 'vendedores.id')
+        ->join('personal as c', 'clientes.id', '=', 'c.id')
+        ->join('personal as v', 'vendedores.id', '=', 'v.id')
+        ->select('contratos.id as folio',
+                DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS asesor"),
+                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS cliente"),
+                'bonos_ventas.id',
+                'bonos_ventas.fecha_pago',
+                'bonos_ventas.monto',
+                'bonos_ventas.descripcion',
+                'creditos.fraccionamiento',
+                'creditos.etapa',
+                'creditos.num_lote',
+                'creditos.manzana'
+        )->where('bonos_ventas.id','=',$id)
+        ->get();
+
+        $fechaDeposito = new Carbon($bonos[0]->fecha_pago);
+        $bonos[0]->fecha_pago = $fechaDeposito->formatLocalized('%d/%m/%Y');
+        $pdf = \PDF::loadview('pdf.reciboBonoVenta',['bonos' => $bonos]);
+        return $pdf->stream('recibo_bono.pdf');
+    }
 }
