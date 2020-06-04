@@ -411,7 +411,7 @@ class ComisionesController extends Controller
                     ->whereYear('depositos.fecha_pago',$request->anio)
                     ->where('pagos_contratos.num_pago','=',0)
                     ->where('pagos_contratos.pagado','=',2)
-                    ->groupBy('contratos.id')
+                    //->groupBy('contratos.id')
                     ->orderBy('contratos.id','asc')
                     ->get();
 

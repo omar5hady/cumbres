@@ -26,6 +26,7 @@ use Auth;
 use App\User;
 use App\Credito;
 use App\Vendedor;
+use App\Expediente;
 
 class LoteController extends Controller
 {
@@ -1026,10 +1027,10 @@ class LoteController extends Controller
                         $emp_constructora = 'Grupo Constructor Cumbres';
 
                         if($value->empresa_terreno == 2){
-                            $emp_terreno = 'Concretania';
+                            $emp_terreno = 'CONCRETANIA';
                         }
                         if($value->empresa_constructora == 2){
-                            $emp_constructora = 'Concretania';
+                            $emp_constructora = 'CONCRETANIA';
                         }
 
                         $insert[] = [
@@ -3632,6 +3633,29 @@ class LoteController extends Controller
                         ->orderBy('lotes.manzana','ASC')
                         ->orderBy('lotes.num_lote','ASC')
                         ->orderBy('lotes.etapa_servicios','ASC')->get();
+
+        if(sizeOf($lotes)){
+            foreach($lotes as $index => $lote){
+                $lote->indiv = 0;
+                $expedientes = Expediente::join('contratos','expedientes.id','=','contratos.id')
+                                            ->join('creditos','creditos.id','=','contratos.id')
+                                            ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                            ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
+                                            ->where('creditos.lote_id','=',$lote->id)
+                                            ->where('inst_seleccionadas.elegido','=',1)
+                                            ->where('expedientes.liquidado','=',1)
+                                            ->orWhere('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
+                                            ->where('creditos.lote_id','=',$lote->id)
+                                            ->where('inst_seleccionadas.elegido','=',1)
+                                            ->where('expedientes.fecha_firma_esc','!=',NULL)->get();
+
+                if(sizeOf($expedientes)){
+                    $lote->indiv = 1;
+                }
+            }
+            
+
+        }
         
         return Excel::create('lotes', function($excel) use ($lotes){
             $excel->sheet('lotes', function($sheet) use ($lotes){
@@ -3668,7 +3692,7 @@ class LoteController extends Controller
                         $status = 'Vendida';
                     }
 
-                    if($lote->firmado == 1){
+                    if($lote->indiv == 1){
                         $status = 'Individualizada';
                     }
 
@@ -3781,7 +3805,7 @@ class LoteController extends Controller
 
     public function selectEmpresaConstructora(Request $request){
         if(!$request->ajax())return redirect('/');
-        $empresas = ['Grupo Constructor Cumbres'];
+        $empresas = ['Grupo Constructor Cumbres','CONCRETANIA'];
 
         return ['empresas'=>$empresas];
     }

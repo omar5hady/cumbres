@@ -329,6 +329,7 @@ class BonoVentaController extends Controller
     public function reciboPDF($id){
         $bonos = Bono_venta::join('contratos','bonos_ventas.contrato_id','=','contratos.id')
         ->join('creditos','contratos.id','=','creditos.id')
+        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
         ->join('lotes','creditos.lote_id','=','lotes.id')
         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
         ->join('vendedores', 'creditos.vendedor_id', '=', 'vendedores.id')
@@ -344,12 +345,19 @@ class BonoVentaController extends Controller
                 'creditos.fraccionamiento',
                 'creditos.etapa',
                 'creditos.num_lote',
-                'creditos.manzana'
+                'creditos.manzana',
+                'contratos.fecha',
+                'inst_seleccionadas.tipo_credito'
         )->where('bonos_ventas.id','=',$id)
+        ->where('inst_seleccionadas.elegido', '=', '1')
         ->get();
 
         $fechaDeposito = new Carbon($bonos[0]->fecha_pago);
         $bonos[0]->fecha_pago = $fechaDeposito->formatLocalized('%d/%m/%Y');
+
+        $fecha = new Carbon($bonos[0]->fecha);
+        $bonos[0]->fecha = $fecha->formatLocalized('%d/%m/%Y');
+
         $pdf = \PDF::loadview('pdf.reciboBonoVenta',['bonos' => $bonos]);
         return $pdf->stream('recibo_bono.pdf');
     }

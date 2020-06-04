@@ -179,7 +179,7 @@
                                         <div class="form-inline">
                                         <select class="form-control" v-model="lote_id" @click="selectDatosLotes(lote_id)">
                                             <option value="0">Seleccione</option>
-                                            <option v-for="lotes in arrayLotes" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote + ' - ' + lotes.fecha_fin"></option>
+                                            <option v-for="lotes in arrayLotes" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote +' ('+lotes.emp_constructora+')' + ' - ' + lotes.fecha_fin"></option>
                                         </select>
                                            
                                         </div>
@@ -251,23 +251,23 @@
                                                     <input v-model="detalle.costo_directo" type="text" class="form-control">
                                                 </td>
                                                 <td>
-                                                    {{ detalle.costo_indirecto=detalle.costo_directo*costo_indirecto_porcentaje/100}}
+                                                    {{'$' +formatNumber(detalle.costo_indirecto=detalle.costo_directo*costo_indirecto_porcentaje/100)}}
                                                 </td>
                                                 <td>
                                                     <input v-model="detalle.obra_extra" type="text" class="form-control">
                                                 </td>
                                                 <td>
-                                                    {{parseFloat(detalle.costo_directo) + parseFloat(detalle.costo_indirecto)}}
+                                                    {{'$' +formatNumber(parseFloat(detalle.costo_directo) + parseFloat(detalle.costo_indirecto))}}
                                                   <!-- <input readonly v-model="detalle.importe" type="text" class="form-control">  -->
                                                 </td>
                                             </tr>
                                   
                                             <tr style="background-color: #CEECF5;">
                                                
-                                               <td align="right" colspan="4"> <strong>{{ total_construccion=totalSuperficie}}</strong> </td>
-                                                <td align="right"> <strong>{{ total_costo_directo=totalCostoDirecto}}</strong> </td>
-                                                <td align="right"> <strong>{{ total_costo_indirecto=totalCostoIndirecto}}</strong> </td>
-                                                <td align="right" colspan="2"> <strong>{{ total_importe=totalImporte}}</strong> </td>
+                                               <td align="right" colspan="5"> <strong>{{ total_construccion=totalSuperficie}}</strong> </td>
+                                                <td align="right"> <strong>{{ '$' +formatNumber(total_costo_directo=totalCostoDirecto) }}</strong> </td>
+                                                <td align="right"> <strong>{{ '$' +formatNumber(total_costo_indirecto=totalCostoIndirecto) }}</strong> </td>
+                                                <td align="right" colspan="2"> <strong>{{ '$' +formatNumber(total_importe=totalImporte) }}</strong> </td>
                                             </tr>
                                         </tbody>
 
@@ -496,7 +496,7 @@
                                   
                                             <tr style="background-color: #CEECF5;">
                                                 
-                                                <td align="right" colspan="4"> <strong>{{ total_construccion=totalConstruccion}}</strong> </td>
+                                                <td align="right" colspan="5"> <strong>{{ total_construccion=totalConstruccion}}</strong> </td>
                                                 <td align="right" > <strong>{{ total_costo_directo=totalCostoDirecto | currency}}</strong> </td>
                                                 <td align="right"> <strong>{{ total_costo_indirecto=totalCostoIndirecto | currency}}</strong> </td>
                                                 <td align="right" colspan="2"> <strong>{{'$'+formatNumber( total_importe=totalImporte)}}</strong> </td>
@@ -792,7 +792,8 @@
                 modelo:'',
                 importe: 0.0,
                 contratista:'',
-                fraccionamiento:''
+                fraccionamiento:'',
+                empresa_constructora:'',
                 
             }
         },
@@ -1018,6 +1019,7 @@
                     me.manzana = me.arrayDatosLotes[0].manzana;
                     me.modelo=me.arrayDatosLotes[0].modelo;
                     me.descripcion=me.arrayDatosLotes[0].modelo;
+                    me.empresa_constructora = me.arrayDatosLotes[0].emp_constructora;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -1030,12 +1032,15 @@
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarAvisos(page,buscar,criterio);
             },
-            encuentra(id){
+            encuentra(id,emp_constructora){
                 var sw=0;
                 for(var i=0;i<this.arrayAvisoObraLotes.length;i++)
                 {
-                    if(this.arrayAvisoObraLotes[i].lote_id == id)
+                    if(this.arrayAvisoObraLotes[i].lote_id == id )
                     {
+                        sw=true;
+                    }
+                    if(this.arrayAvisoObraLotes[i].emp_constructora != emp_constructora){
                         sw=true;
                     }
                 }
@@ -1047,26 +1052,27 @@
                 if(me.descripcion == '' || me.costo_directo==0 || me.costo_indirecto==0){
 
                 }else{
-                    if(me.encuentra(me.lote_id)){
+                    if(me.encuentra(me.lote_id, me.empresa_constructora)){
                          swal({
                         type: 'error',
                         title: 'Error',
-                        text: 'Este lote ya se encuentra agregado',
+                        text: 'Este lote no se puede agregar',
                         })
                     }else{
                     me.costo_indirecto = parseFloat(me.costo_directo) * parseFloat(me.costo_indirecto_porcentaje)/100;
                     me.importe = parseFloat(me.costo_directo) + parseFloat(me.costo_indirecto);
                     me.arrayAvisoObraLotes.push({
-                    lote_id: me.lote_id,
-                    lote: me.lote,
-                    superficie: me.construccion,
-                    manzana: me.manzana,
-                    descripcion: me.descripcion,
-                    importe: me.importe,
-                    modelo:me.modelo,
-                    costo_directo: parseFloat(me.costo_directo),
-                    costo_indirecto: parseFloat(me.costo_indirecto),
-                    obra_extra:0,
+                        lote_id: me.lote_id,
+                        lote: me.lote,
+                        superficie: me.construccion,
+                        manzana: me.manzana,
+                        descripcion: me.descripcion,
+                        importe: me.importe,
+                        modelo:me.modelo,
+                        costo_directo: parseFloat(me.costo_directo),
+                        costo_indirecto: parseFloat(me.costo_indirecto),
+                        obra_extra:0,
+                        emp_constructora:me.empresa_constructora
                     });
                     me.lote = '';
                     me.lote_id =0;
@@ -1076,6 +1082,7 @@
                     me.costo_directo = 0;
                     me.costo_indirecto = 0;
                     me.modelo='';
+                    me.empresa_constructora='';
                     }
                 }
 
@@ -1198,6 +1205,7 @@
                     'anticipo':this.anticipo,
                     'total_anticipo':this.total_anticipo,
                     'data':this.arrayAvisoObraLotes,
+                    'emp_constructora':this.arrayAvisoObraLotes[0].emp_constructora,
                     'costo_indirecto_porcentaje':this.costo_indirecto_porcentaje,
                     'tipo':this.tipo,
                     'iva':this.iva,

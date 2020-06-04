@@ -120,6 +120,7 @@ class IniObraController extends Controller
             $ini_obra->tipo = $request->tipo;
             $ini_obra->iva = $request->iva;
             $ini_obra->total_superficie = $request->total_superficie;
+            $ini_obra->emp_constructora = $request->emp_constructora;
             $ini_obra->save();
  
             $lotes = $request->data;//Array de detalles
@@ -200,7 +201,7 @@ class IniObraController extends Controller
         if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $buscar2 = $request->buscar2;
-        $lotes = Lote::select('num_lote','id','fecha_fin')
+        $lotes = Lote::select('num_lote','id','fecha_fin','emp_constructora')
                         ->where('fraccionamiento_id','=',$buscar2)
                         ->where('manzana','=',$buscar)
                         ->where('ini_obra', '=', '1')
@@ -215,7 +216,7 @@ class IniObraController extends Controller
         if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $lotesDatos = Lote::join('modelos','lotes.modelo_id','=','modelos.id')
-        ->select('lotes.num_lote as num_lote','lotes.construccion as construccion','lotes.manzana as manzana','modelos.nombre as modelo','lotes.id as lote_id')
+        ->select('lotes.num_lote as num_lote','lotes.construccion as construccion','lotes.manzana as manzana','modelos.nombre as modelo','lotes.id as lote_id','lotes.emp_constructora')
                         ->where('lotes.id','=',$buscar)
                         ->where('lotes.ini_obra', '=', '1')
                         ->where('lotes.aviso','=','0')

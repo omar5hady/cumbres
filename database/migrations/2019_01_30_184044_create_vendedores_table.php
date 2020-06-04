@@ -25,6 +25,9 @@ class CreateVendedoresTable extends Migration
             $table->string('doc_ine')->nullable();
             $table->string('doc_comprobante')->nullable();
             $table->string('curriculum')->nullable();
+
+            $table->boolean('isr')->default(0);
+            $table->boolean('retencion')->default(0);
             $table->timestamps();
         });
     }

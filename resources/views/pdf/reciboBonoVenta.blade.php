@@ -94,6 +94,18 @@ body {
                 </div>
 
                 <div class="table-row">
+                    <div colspan="4" class="table-cell1">Tipo de Crédito: <b>{{mb_strtoupper($bonos[0]->tipo_credito)}}</div>
+                </div>
+
+                <div class="table-row">
+                    <div colspan="4" class="table-cell1">Fecha de venta: <b>{{mb_strtoupper($bonos[0]->fecha)}}</div>
+                </div>
+
+                <div class="table-row">
+                    <div colspan="4" class="table-cell1"><br></div>
+                </div>
+
+                <div class="table-row">
                     <div colspan="4" class="table-cell1">Por la cantidad de $1'000.00 (Mil Pesos 00/100 M.N.) </div>
                 </div>
 
@@ -108,7 +120,7 @@ body {
                         <div colspan="2" class="table-cell1"> </div>
                     </div>
                     <div class="table-row"> 
-                        <div colspan="5" class="table-cell1"> <br> <br> </div>
+                        <div colspan="5" class="table-cell1"> <br><br> <br> </div>
                     </div>
                     <div class="table-row">
                         <div colspan="2" class="table-cell1"></div>

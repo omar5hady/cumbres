@@ -580,6 +580,10 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/comision/generarBono','ComisionesController@generarBono');
         Route::put('/comision/noAplica','ComisionesController@noAplicaComision');
 
+
+        /////////////////////////////////////////////
+        Route::get('/comision/getComision','ComisionesVentaController@getComision');
+
     ////////////////////////// RUTAS ASIGNAR GESTOR /////////////////////////////
 
         Route::get('/expediente/indexAsignarGestor','ExpedienteController@indexAsignarGestor');
