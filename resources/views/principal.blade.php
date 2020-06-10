@@ -602,12 +602,12 @@
                                         <a class="nav-link" href="#"><i class="icon-chart"></i> Inventario Contable</a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 6)
+                                @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 6 || Auth::user()->id == 26545 || Auth::user()->id == 26310)
                                     <li @click="menu=233" class="nav-item">
                                         <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de asesores</a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 6)
+                                @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 6 || Auth::user()->id == 26545 || Auth::user()->id == 26310)
                                     <li @click="menu=238" class="nav-item">
                                         <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de inicio, termino, ventas y cobranza</a>
                                     </li>
@@ -617,7 +617,7 @@
                                         <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de ventas y cancelaciones</a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 6)
+                                @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 6 || Auth::user()->id == 26545 || Auth::user()->id == 26310 ) 
                                     <li @click="menu=243" class="nav-item">
                                         <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de recursos propios</a>
                                     </li>

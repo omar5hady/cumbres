@@ -1379,7 +1379,7 @@ class LicenciasController extends Controller
                                 ->orderBy('fraccionamientos.nombre', 'DESC')
                                 ->orderBy('etapas.num_etapa', 'DESC')
                                 ->orderBy('lotes.manzana', 'ASC')
-                                ->orderBy('lotes.num_lote', 'ASC')->paginate(16);
+                                ->orderBy('lotes.num_lote', 'ASC')->get();
 
         return Excel::create(
             'Licencias',

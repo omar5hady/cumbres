@@ -50,16 +50,20 @@ class UserController extends Controller
 
         if(sizeOf($personas)){
             foreach($personas as $index => $persona){
-                $vendedores = Vendedor::select('tipo','inmobiliaria','esquema')->where('id','=',$persona->id)->get();
+                $vendedores = Vendedor::select('tipo','inmobiliaria','esquema','isr','retencion')->where('id','=',$persona->id)->get();
                 if(sizeof($vendedores)){
                     $persona->tipo = $vendedores[0]->tipo;
                     $persona->inmobiliaria = $vendedores[0]->inmobiliaria;
                     $persona->esquema = $vendedores[0]->esquema;
+                    $persona->isr = $vendedores[0]->isr;
+                    $persona->retencion = $vendedores[0]->retencion;
                 }
                 else{
                     $persona->tipo = '';
                     $persona->inmobiliaria = '';
                     $persona->esquema = '';
+                    $persona->isr = '';
+                    $persona->retencion = '';
                 }
             }
         }
@@ -407,6 +411,14 @@ class UserController extends Controller
                 $vendedor->id = $persona->id;
                 $vendedor->tipo = $request->tipo_vendedor;
                 $vendedor->inmobiliaria = $request->inmobiliaria;
+                if($vendedor->tipo == 1){
+                    $vendedor->retencion = $request->retencion;
+                    $vendedor->isr = $request->isr;
+                }
+                else{
+                    $vendedor->retencion = 0;
+                    $vendedor->isr = 0;
+                }
                 $vendedor->supervisor_id = Auth::user()->id;
                 $vendedor->esquema = $request->esquema;
                 $vendedor->fecha_sueldo = $inicioSueldo;
@@ -460,6 +472,14 @@ class UserController extends Controller
                 }
                 else{
                     $vendedor->tipo = $request->tipo_vendedor;
+                    if($vendedor->tipo == 1){
+                        $vendedor->retencion = $request->retencion;
+                        $vendedor->isr = $request->isr;
+                    }
+                    else{
+                        $vendedor->retencion = 0;
+                        $vendedor->isr = 0;
+                    }
                     $vendedor->inmobiliaria = $request->inmobiliaria;
                     $vendedor->esquema = $request->esquema;
                     $vendedor->save();

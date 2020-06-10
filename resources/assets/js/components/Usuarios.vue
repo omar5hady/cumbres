@@ -138,7 +138,7 @@
                                                 <li class="nav-item" v-if="rol_id == 1 || rol_id==4 || rol_id == 6 || rol_id==8">
                                                     <a class="nav-link"><i class="fa fa-industry"></i> <input v-model="empresas" type="checkbox" value="1"/> Empresas</a>
                                                 </li>
-                                                <li class="nav-item" v-if="rol_id == 1 || rol_id == 7">
+                                                <li class="nav-item" v-if="rol_id == 1 || rol_id == 6 || rol_id == 7">
                                                     <a class="nav-link"><i class="fa fa-bullhorn"></i> <input v-model="medios_public" type="checkbox" value="1"/> Medios Publicitarios</a>
                                                 </li>
                                                 <li class="nav-item" v-if="rol_id == 1 || rol_id == 6 || rol_id == 7 || rol_id==8">
@@ -615,12 +615,32 @@
                                     </div>
                                 </div>
 
-                                 <div class="form-group row" v-if="tipo_vendedor==1 && rol_id==2 && tipoAccion != 4">
+                                <div class="form-group row" v-if="tipo_vendedor==1 && rol_id==2 && tipoAccion != 4">
                                     <label class="col-md-3 form-control-label" for="text-input">Esquema</label>
                                     <div class="col-md-2">
                                         <select class="form-control" v-model="esquema" >
                                             <option value=2>2%</option>
                                             <option value=3>3%</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" v-if="tipo_vendedor==1 && rol_id==2 && tipoAccion != 4">
+                                    <label class="col-md-3 form-control-label" for="text-input">Retencion</label>
+                                    <div class="col-md-2">
+                                        <select class="form-control" v-model="retencion" >
+                                            <option value=0>No</option>
+                                            <option value=1>Si</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" v-if="tipo_vendedor==1 && rol_id==2 && tipoAccion != 4">
+                                    <label class="col-md-3 form-control-label" for="text-input">ISR</label>
+                                    <div class="col-md-2">
+                                        <select class="form-control" v-model="isr" >
+                                            <option value=0>No</option>
+                                            <option value=1>Si</option>
                                         </select>
                                     </div>
                                 </div>
@@ -706,6 +726,8 @@
                 email: '',
                 esquema: 2,
                 activo: 1, 
+                isr : 0,
+                retencion : 0,
                 tipo_vendedor:0,
                 inmobiliaria:'',
                 supervisor_id: 0,
@@ -1258,7 +1280,9 @@
                     'condicion':this.condicion,
                     'tipo_vendedor':this.tipo_vendedor,
                     'inmobiliaria':this.inmobiliaria,
-                    'esquema':this.esquema
+                    'esquema':this.esquema,
+                    'retencion':this.retencion,
+                    'isr':this.isr
                     
                 }).then(function (response){
                     me.proceso=false;
@@ -1313,7 +1337,9 @@
                     'condicion':this.condicion,
                     'tipo_vendedor':this.tipo_vendedor,
                     'inmobiliaria':this.inmobiliaria,
-                    'esquema':this.esquema
+                    'esquema':this.esquema,
+                    'retencion':this.retencion,
+                    'isr':this.isr
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal();
@@ -1789,6 +1815,8 @@
                                 this.inmobiliaria='';
                                 this.tipo_vendedor=0;
                                 this.esquema=2;
+                                this.retencion =0;
+                                this.isr = 0;
 
                                 this.activo='1';
                                 this.tipoAccion = 3;
@@ -1824,6 +1852,8 @@
                                 this.inmobiliaria=data['inmobiliaria'];
                                 this.tipo_vendedor=data['tipo'];
                                 this.esquema = data['esquema'];
+                                this.retencion = data['retencion'];
+                                this.isr = data['isr'];
                                 break;
                             }
                             case 'Asignar':

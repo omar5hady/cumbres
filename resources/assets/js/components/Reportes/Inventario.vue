@@ -59,7 +59,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="lote in arrayLotes" :key="lote.id">
+                                    <tr v-if="lote.totalLotes != 0" v-for="lote in arrayLotes" :key="lote.id">
                                         <td class="td2" v-text="lote.proyecto"></td>
                                         <td class="td2" v-text="lote.num_etapa"></td>
                                         <td class="td2" v-text="lote.totalLotes"></td>

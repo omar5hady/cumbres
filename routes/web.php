@@ -571,9 +571,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/comision/historialExpedientes','ComisionesController@historialExpedientes');
         Route::get('/comision/ventasAsesor','ComisionesController@ventasAsesor');
         Route::put('/comision/agregarExpediente','ComisionesController@agregarExpediente');
-        Route::post('/comision/storeComision','ComisionesController@storeComision');
+        
 
-        Route::get('/comision/indexComisiones','ComisionesController@indexComisiones');
+        
         Route::get('/comision/detalleComision','ComisionesController@detalleComision');
         Route::get('/comision/bonosPorPagar','ComisionesController@bonosPorPagar');
         Route::get('/comision/bonos','ComisionesController@bonos');
@@ -583,6 +583,9 @@ Route::group(['middleware' => ['auth']],function(){
 
         /////////////////////////////////////////////
         Route::get('/comision/getComision','ComisionesVentaController@getComision');
+        Route::post('/comision/storeComision','ComisionesVentaController@storeComision');
+        Route::get('/comision/indexComisiones','ComisionesVentaController@indexComisiones');
+        Route::get('/comision/detalleComision','ComisionesVentaController@getDetalle');
 
     ////////////////////////// RUTAS ASIGNAR GESTOR /////////////////////////////
 

@@ -73,6 +73,7 @@ class ContratoController extends Controller
                     'creditos.etapa',
                     'creditos.manzana',
                     'creditos.num_lote',
+                    'lotes.sobreprecio',
                     'creditos.modelo',
                     'creditos.precio_base',
                     'creditos.superficie',
@@ -2264,7 +2265,9 @@ class ContratoController extends Controller
         if(!$request->ajax())return redirect('/');
         $folio = $request->folio;
         $creditos = Credito::join('datos_extra', 'creditos.id', '=', 'datos_extra.id')
+                    ->join('lotes','lotes.id','=','creditos.lote_id')
             ->select(
+                'lotes.sobreprecio',
                 'creditos.id',
                 'creditos.prospecto_id',
                 'creditos.num_dep_economicos',

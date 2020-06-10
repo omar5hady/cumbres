@@ -9,7 +9,7 @@ class Det_com_pendiente extends Model
     protected $table = 'det_com_pendientes';
     protected $primaryKey = 'id'; //Referenciar la llave primaria
     protected $fillable = [
-        'detalle_id', 'monto_pagado', 'comision_id'
+        'detalle_id', 'monto_pagado', 'comision_id','por_pagar'
     ];
 
     public $timestamps = false;

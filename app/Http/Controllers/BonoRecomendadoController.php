@@ -25,6 +25,7 @@ class BonoRecomendadoController extends Controller
         $datosBono = Catalogo_bono::select('id','fecha_ini','fecha_fin','descripcion','monto','etapa_id')
             ->where('etapa_id','=',$etapa)
             ->where('fecha_fin','>=',$fecha)
+            ->where('fecha_ini','<=',$fecha)
             ->orderBy('id','desc')->get();
         if(sizeof($datosBono) > 0){
             $bono->monto = $datosBono[0]->monto;

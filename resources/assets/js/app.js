@@ -143,7 +143,7 @@ Vue.component('detalles-generales', require('./components/Postventa/DetallesGene
 
 //Comisiones
 Vue.component('comision-expediente', require('./components/Comisiones/IngresoComision.vue'));
-Vue.component('comision-asesores', require('./components/Comisiones/Comisiones.vue'));
+Vue.component('comision-asesores', require('./components/Comisiones/ComisionesVentas.vue'));
 Vue.component('comision-anticipos', require('./components/Comisiones/Anticipos.vue'));
 Vue.component('comision-bonos', require('./components/Comisiones/BonosVentas.vue'));
 

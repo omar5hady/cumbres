@@ -1216,6 +1216,13 @@
                                                         </div>
                                                     </div>
 
+                                                    <div class="col-md-3" v-if="precioBase!=''">
+                                                        <div class="form-group">
+                                                            <label style="color:#2271b3;" for=""><strong>Sobreprecio</strong></label>
+                                                            <p v-text="'$'+formatNumber(sobreprecio)"></p>
+                                                        </div>
+                                                    </div>
+
                                                      <div class="col-md-12" v-if="precioBase!=''">
                                                         <div class="form-group">
                                                             <h6></h6>
@@ -1885,6 +1892,8 @@
                 nombre_archivo_modelo: '',
                 motivo_cancel:'',
 
+                sobreprecio:0,
+
                 /// variables datos del prospecto //
                     nombre:'',
                     apellidos:'',
@@ -2508,6 +2517,7 @@
                     me.precioObraExtra = me.arrayDatosLotes[0]['obra_extra'];
                     me.proyecto = me.arrayDatosLotes[0]['proyecto'];
                     me.lote_id = lote;
+                    me.sobreprecio = me.arrayDatosLotes[0]['sobreprecio'];
 
                     me.precioVenta = me.precioVenta - me.descuentoPromo;
                     me.descripcion_paquete = "";
@@ -2695,6 +2705,7 @@
             },
 
             mostrarDetalle(data = []){
+                this.sobreprecio = data['sobreprecio'];
                 this.publicidad_id = data['publicidadId'];
                 this.nombre_recomendado = data['nombre_recomendado'];
                 this.prospecto_id = data['prospecto_id'];
@@ -3051,6 +3062,7 @@
                 this.total_pagar = data['total_pagar'];
                 this.monto_total_credito = data['monto_total_credito'];
                 this.enganche_total = data['enganche_total'];
+                this.sobreprecio = data['sobreprecio'];
 
                 this.id_contrato = data['contratoId'];
            

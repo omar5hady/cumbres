@@ -2409,19 +2409,21 @@
 
             calcularRestante(){
                 if(this.arrayPagos.length == 0){
-                var Restante = this.total_liquidar1;
-                var a = moment(this.fecha_pago);
-                var b = moment(this.fecha_ini_interes);
-                this.dias = a.diff(b, 'days'); //[days, years, months, seconds, ...]
-                var intereses = (this.int_oridinario / 100) * (this.dias/30) * (this.total_liquidar1);
-                this.interes = Math.round(intereses*100)/100;
-                
-                
-                Restante += this.interes;
-                Restante = Math.round(Restante*100)/100;
-                this.rest_real = Restante;
-                // this.restante_pago = Restante;
-                return Restante;
+                    var Restante = this.total_liquidar1;
+                    var a = moment(this.fecha_pago);
+                    var b = moment(this.fecha_ini_interes);
+                    this.dias = a.diff(b, 'days'); //[days, years, months, seconds, ...]
+                    var intereses = (this.int_oridinario / 100) * (this.dias/30) * (this.total_liquidar1);
+                    this.interes = Math.round(intereses*100)/100;
+                    
+                    if(this.dias > 0){
+                        Restante += this.interes;
+                    }
+                    
+                    Restante = Math.round(Restante*100)/100;
+                    this.rest_real = Restante;
+                    // this.restante_pago = Restante;
+                    return Restante;
 
                 }else{
                     var b = this.arrayPagos[this.arrayPagos.length-1].fecha_pago;

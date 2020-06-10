@@ -289,8 +289,8 @@
                         <!-- Botones del modal -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <button type="button" class="btn btn-primary" v-if="tipoAccion==1" @click="generarBono()">Generar bono</button>
-                            <button type="button" class="btn btn-primary" v-if="tipoAccion==2" @click="generarSegundoBono()">Generar segundo bono</button>
+                            <button type="button" class="btn btn-primary" v-if="tipoAccion==1 && proceso == 0" @click="generarBono()">Generar bono</button>
+                            <button type="button" class="btn btn-primary" v-if="tipoAccion==2 && proceso == 0" @click="generarSegundoBono()">Generar segundo bono</button>
                         </div>
                     </div> 
                     <!-- /.modal-content -->
@@ -430,8 +430,7 @@
                 bono_id:'',
 
                 modal2:0,
-
-               
+                proceso:0,
             }
         },
         computed:{
@@ -632,6 +631,7 @@
 
             generarBono(){
                 let me = this;
+                me.proceso = 1;
                 //Con axios se llama el metodo update de DepartamentoController
                 axios.post('/bonos_ventas/storeBono',{
                     'contrato_id': this.id,
@@ -643,6 +643,7 @@
                     me.listarPendientes(1);
                     me.listarHistorial(1);
                     me.cerrarModal();
+                    me.proceso = 0;
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -653,11 +654,13 @@
                         })
                 }).catch(function (error){
                     console.log(error);
+                    me.proceso = 0;
                 });
             },
 
             generarSegundoBono(){
                 let me = this;
+                me.proceso = 1;
                 //Con axios se llama el metodo update de DepartamentoController
                 axios.post('/bonos_ventas/segundoBono',{
                     'contrato_id': this.id,
@@ -668,6 +671,7 @@
                     me.listarPendientes(1);
                     me.listarHistorial(1);
                     me.cerrarModal();
+                    me.proceso = 0;
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -678,9 +682,9 @@
                         })
                 }).catch(function (error){
                     console.log(error);
+                    me.proceso = 0;
                 });
             },
-
 
             cerrarModal(){
                 this.modal = 0;
@@ -690,7 +694,6 @@
                 this.modal2 = '';
                 this.observacion = '';
                 this.arrayObservacion = [];
-
             },
 
             isNumber: function(evt) {

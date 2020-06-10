@@ -18,6 +18,7 @@ class CreateDetComPendientesTable extends Migration
             $table->unsignedInteger('detalle_id');
             $table->foreign('detalle_id')->references('id')->on('det_com_ventas');
             $table->double('monto_pagado')->default(0);
+            $table->double('por_pagar')->default(0);
             
             $table->unsignedInteger('comision_id')->nullable();
             $table->foreign('comision_id')->references('id')->on('comisiones_ventas');

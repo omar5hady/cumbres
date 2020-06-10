@@ -156,7 +156,8 @@
                                     <td class="td2" v-text="contrato.manzana"></td>
                                     <td class="td2" v-text="contrato.num_lote"></td>
                                     <td class="td2" v-text="contrato.modelo"></td>
-                                    <td class="td2" v-text="contrato.calle + ' Num. '+ contrato.numero"></td>
+                                    <td v-if="contrato.interior == null" class="td2" v-text="contrato.calle + ' Num. '+ contrato.numero"></td>
+                                    <td v-else class="td2" v-text="contrato.calle + ' Num. '+ contrato.numero + '-' + contrato.interior"></td>
                                     <td class="td2" v-text="this.moment(contrato.fecha_status).locale('es').format('DD/MMM/YYYY')"></td>
                                     <td class="td2" v-text="contrato.nombre_cliente"></td>
                                     <td class="td2" v-text="contrato.institucion"></td>

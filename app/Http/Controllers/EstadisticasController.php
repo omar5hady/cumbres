@@ -2043,7 +2043,7 @@ class EstadisticasController extends Controller
                                 ->where('inst_seleccionadas.tipo_credito', '=', 'Crédito Directo')->get();
 
                 $resContratos = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->leftJoin('expedientes','contratos.id','=','expedientes.id')
+                                //->leftJoin('expedientes','contratos.id','=','expedientes.id')
                                 ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
                                 ->join('lotes','creditos.lote_id','=','lotes.id')
                                 ->join('modelos','lotes.modelo_id','=','modelos.id')
@@ -2062,14 +2062,23 @@ class EstadisticasController extends Controller
                                                 'creditos.costo_paquete',
                                                 'contratos.total_pagar',
                                                 'contratos.saldo',
-                                                'contratos.monto_total_credito',
-                                                'lotes.calle','lotes.numero','expedientes.fecha_firma_esc',
+                                                'contratos.monto_total_credito','lotes.interior',
+                                                'lotes.calle','lotes.numero',//'expedientes.fecha_firma_esc',
                                                 'modelos.nombre as modelo','contratos.fecha_audit','contratos.id'
                                         )
                                 ->where('lotes.fraccionamiento_id','=',$proyecto)
                                 ->where('lotes.etapa_id','=',$etapa)
                                 ->where('contratos.status','=',3)
                                 ->where('i.elegido', '=', 1)->paginate(20);
+
+                if(sizeOf($resContratos)){
+                        foreach($resContratos as $index => $contrato){
+                                $contrato->fecha_firma_esc ='';
+                                $expedientes = Expediente::select('fecha_firma_esc')->where('id','=',$contrato->id)->get();
+                                if(sizeof($expedientes))
+                                        $contrato->fecha_firma_esc = $expedientes[0]->fecha_firma_esc;
+                        }
+                }
 
                 $disponibles  = $disponibles + $contratos;
                 $vendidas = $vendidas - $individualizadas - $indiviDirecto;
@@ -2172,7 +2181,7 @@ class EstadisticasController extends Controller
 
                 $resContratos = Contrato::join('creditos','contratos.id','=','creditos.id')
                                 ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                ->leftJoin('expedientes','contratos.id','=','expedientes.id')
+                                //->leftJoin('expedientes','contratos.id','=','expedientes.id')
                                 ->join('lotes','creditos.lote_id','=','lotes.id')
                                 ->join('modelos','lotes.modelo_id','=','modelos.id')
                                 ->join('personal as c', 'creditos.prospecto_id', '=', 'c.id')
@@ -2190,13 +2199,22 @@ class EstadisticasController extends Controller
                                                 'creditos.costo_paquete',
                                                 'contratos.total_pagar',
                                                 'contratos.saldo',
-                                                'contratos.monto_total_credito',
-                                                'lotes.calle','lotes.numero','expedientes.fecha_firma_esc',
+                                                'contratos.monto_total_credito', 'lotes.interior',
+                                                'lotes.calle','lotes.numero',//'expedientes.fecha_firma_esc',
                                                 'modelos.nombre as modelo','contratos.fecha_audit','contratos.id'
                                         )
                                 ->where('lotes.fraccionamiento_id','=',$proyecto)
                                 ->where('contratos.status','=',3)
                                 ->where('i.elegido', '=', 1)->paginate(20);
+
+                if(sizeOf($resContratos)){
+                        foreach($resContratos as $index => $contrato){
+                                $contrato->fecha_firma_esc ='';
+                                $expedientes = Expediente::select('fecha_firma_esc')->where('id','=',$contrato->id)->get();
+                                if(sizeof($expedientes))
+                                        $contrato->fecha_firma_esc = $expedientes[0]->fecha_firma_esc;
+                        }
+                }
 
                 $disponibles  = $disponibles + $contratos;
                 $vendidas = $vendidas - $individualizadas - $indiviDirecto;
@@ -2256,7 +2274,7 @@ class EstadisticasController extends Controller
                                         'creditos.costo_paquete',
                                         'contratos.total_pagar',
                                         'contratos.saldo',
-                                        'contratos.monto_total_credito',
+                                        'contratos.monto_total_credito','lotes.interior',
                                         'lotes.calle','lotes.numero','expedientes.fecha_firma_esc',
                                         'modelos.nombre as modelo'
                 );

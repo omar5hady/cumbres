@@ -14,12 +14,19 @@ class CreateComisionesVentasTable extends Migration
     public function up()
     {
         Schema::create('comisiones_ventas', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('mes');
-            $table->integer('anio');
-            $table->double('total_pagado');
-            $table->double('total_comision');
-            $table->double('apoyo_mes');
+            $table->increments('id');//
+            $table->integer('mes');//
+            $table->integer('anio');//
+            $table->double('total_pagado'); //total_a_pagar//
+            $table->double('total_comision'); // total//
+            $table->double('total_porPagar')->default(0); //total_a_pagar
+
+            $table->double('total_bono')->default(0); //total_bono
+            $table->double('total_anticipo')->default(0); //total_anticipo
+            $table->double('apoyo_mes'); //apoyo//
+            $table->boolean('tipo_vendedor')->default(0); 
+
+            $table->double('restanteAnt')->default(0); //restante
             
             $table->unsignedInteger('asesor_id');
             $table->foreign('asesor_id')->references('id')->on('vendedores');

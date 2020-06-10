@@ -10,7 +10,7 @@ class Det_com_venta extends Model
     protected $primaryKey = 'id'; //Referenciar la llave primaria
     protected $fillable = [
         'contrato_id', 'porcentaje_comision', 'comision_pagar', 'iva', 'isr',
-        'retencion', 'este_pago', 'por_pagar', 'comision_id'
+        'retencion', 'este_pago', 'por_pagar', 'comision_id','pendiente'
     ];
 
     public $timestamps = false;

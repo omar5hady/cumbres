@@ -24,6 +24,8 @@ class CreateDetComVentasTable extends Migration
             $table->double('retencion')->default(0);
             $table->double('este_pago')->default(0);
             $table->double('por_pagar')->default(0);
+
+            $table->boolean('pendiente')->default(0);
            
             $table->unsignedInteger('comision_id')->nullable();
             $table->foreign('comision_id')->references('id')->on('comisiones_ventas');
