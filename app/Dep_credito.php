@@ -18,4 +18,8 @@ class Dep_credito extends Model
         return $this->belongsTo('App\inst_seleccionada');
     }
 
+    public function factura_dep_creditos(){
+        return $this->hasMany('App\Factura_dep_creditos', 'id_dep_creditos');
+    }
+
 }
