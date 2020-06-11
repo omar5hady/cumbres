@@ -36,18 +36,29 @@
                                          <input v-else-if="criterio=='ini_obras.f_ini'" type="date" v-model="buscar" @keyup.enter="listarAvisos(1,buscar,criterio)" class="form-control">
                                          <input v-else-if="criterio=='ini_obras.f_fin'" type="date" v-model="buscar" @keyup.enter="listarAvisos(1,buscar,criterio)" class="form-control">
                                         <input v-else type="text" v-model="buscar" @keyup.enter="listarAvisos(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-8">
+                                    <div class="input-group">
                                         <button type="submit" @click="listarAvisos(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                        <a class="btn btn-success" v-bind:href="'/iniobra/excelAvisos?buscar=' + buscar + '&criterio=' + criterio" >
+                                            <i class="icon-pencil"></i>&nbsp;Excel
+                                        </a>
                                     </div>
                                 </div>
                             </div>
                             <div class="table-responsive">
-                                <table class="table table-bordered table-striped table-sm">
+                                <table class="table2 table-bordered table-striped table-sm">
                                     <thead>
                                         <tr>
                                             <th>Opciones</th>
                                             <th>Clave</th>
                                             <th>Contratista</th>
                                             <th>Fraccionamiento</th>
+                                            <th>Superficie total</th>
+                                            <th>Importe total</th>
                                             <th>Fecha de inicio </th>
                                             <th>Fecha de termino</th>
                                             
@@ -71,10 +82,12 @@
                                                 </a>
                                             </td>
                                             <td v-text="avisoObra.clave"></td>
-                                            <td v-text="avisoObra.contratista"></td>
-                                            <td v-text="avisoObra.proyecto"></td>
-                                            <td v-text="avisoObra.f_ini"></td>
-                                            <td v-text="avisoObra.f_fin"></td>
+                                            <td class="td2" v-text="avisoObra.contratista"></td>
+                                            <td class="td2" v-text="avisoObra.proyecto"></td>
+                                            <td class="td2">{{formatNumber(avisoObra.total_superficie)}} m&sup2;</td>
+                                            <td class="td2" v-text="'$'+formatNumber(avisoObra.total_importe)"></td>
+                                            <td class="td2" v-text="avisoObra.f_ini"></td>
+                                            <td class="td2" v-text="avisoObra.f_fin"></td>
                                         </tr>                               
                                     </tbody>
                                 </table>
@@ -1504,6 +1517,20 @@
         opacity: 1 !important;
         position: fixed !important;
         background-color: #3c29297a !important;
+    }
+    .table2 {
+        margin: auto;
+        border-collapse: collapse;
+        overflow-x: auto;
+        display: block;
+        width: fit-content;
+        max-width: 100%;
+        box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+    }
+
+    .td2, .th2 {
+        border: solid rgb(200, 200, 200) 1px;
+        padding: .5rem;
     }
     .div-error{
         display:flex;

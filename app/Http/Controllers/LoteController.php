@@ -724,7 +724,7 @@ class LoteController extends Controller
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         
         ///////////// 
-        if(Auth::user()->id == 26516)return redirect('/');
+       // if(Auth::user()->id == 26516)return redirect('/');
 
        $etapa= Etapa::select('num_etapa')
        ->where('id','=', $request->etapa_id)

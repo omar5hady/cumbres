@@ -249,6 +249,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/licencias/excel','LicenciasController@exportExcelLicencias'); //excel de las licencias
 
         Route::get('/licencias/indexDescargas','LicenciasController@indexDescargas');
+        Route::get('/licencias/excelDescargas','LicenciasController@excelDescargas');
 
     ///////////////////       RUTAS RUV   ////////////////////////////////////
         Route::get('/ruv/indexLotes','RuvController@indexLotes');
@@ -371,6 +372,7 @@ Route::group(['middleware' => ['auth']],function(){
         
     ////////////////////        RUTAS INICIO DE OBRA    /////////////////////////////////
         Route::get('/iniobra','IniObraController@index');
+        Route::get('/iniobra/excelAvisos','IniObraController@excelAvisos');
         Route::post('/iniobra/registrar','IniObraController@store');
         Route::put('/iniobra/actualizar','IniObraController@ActualizarIniObra');
         Route::get('/iniobra/obtenerCabecera','IniObraController@obtenerCabecera');

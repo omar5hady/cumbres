@@ -41,7 +41,7 @@ class ExpedienteController extends Controller
             ->join('personal as c', 'clientes.id', '=', 'c.id')
             ->join('personal as v', 'vendedores.id', '=', 'v.id')
             ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-            ->leftjoin('avaluos','contratos.id','=','avaluos.contrato_id')
+            //->leftjoin('avaluos','contratos.id','=','avaluos.contrato_id')
             ->select(
                 'contratos.id as folio',
                 DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
@@ -68,7 +68,7 @@ class ExpedienteController extends Controller
                 'lotes.credito_puente',
                 'contratos.integracion',
                 'lotes.fraccionamiento_id',
-                'avaluos.pdf',
+                //'avaluos.pdf',
                 'contratos.detenido',
                 DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
                             WHERE pagos_contratos.tipo_pagare = 0
@@ -215,6 +215,19 @@ class ExpedienteController extends Controller
         if(sizeof($contratos)){
             foreach($contratos as $index => $contrato){
                 $lastPagare = Pago_contrato::select('fecha_pago')->where('contrato_id','=',$contrato->folio)->orderBy('fecha_pago','desc')->get();
+
+                $avaluos = Avaluo::select('resultado','fecha_recibido',
+                                            'id as avaluoId',
+                                            'fecha_concluido',
+                                            'pdf')->where('contrato_id','=',$contrato->folio)->orderBy('created_at','desc')->get();
+
+                if(sizeof($avaluos)){
+                    $contrato->pdf = $avaluos[0]->pdf;
+                }
+                else{
+                    $contrato->pdf = '';
+                }
+                            
                 if(sizeof($lastPagare)){
                     $contrato->ultimo_pagare = $lastPagare[0]->fecha_pago;
                 }
@@ -3331,9 +3344,11 @@ class ExpedienteController extends Controller
         $liquidacion[0]->sobreprecio = number_format((float)$liquidacion[0]->sobreprecio, 2, '.', ',');
         $liquidacion[0]->costo_paquete = number_format((float)$liquidacion[0]->costo_paquete, 2, '.', ',');
 
+        if($liquidacion[0]->fecha_firma_esc != NULL){
+            $fecha1 = new Carbon($liquidacion[0]->fecha_firma_esc);
+            $liquidacion[0]->fecha_firma_esc = $fecha1->formatLocalized('%d de %B de %Y');
+        }
         
-        $fecha1 = new Carbon($liquidacion[0]->fecha_firma_esc);
-        $liquidacion[0]->fecha_firma_esc = $fecha1->formatLocalized('%d de %B de %Y');
 
         $fecha2 = new Carbon($liquidacion[0]->fecha_liquidacion);
         $liquidacion[0]->fecha_liquidacion = $fecha2->formatLocalized('%d de %B de %Y');

@@ -79,6 +79,7 @@
                                         <th># Oficial</th>
                                         <th>Planos obra</th>
                                         <th>Avance</th>
+                                        <th>Credito puente</th>
                                         <th>Fecha termino</th>
                                         <th>Paquete</th>
                                         <th>Fecha de visita</th>
@@ -109,6 +110,7 @@
                                             <td class="td2" v-else v-text="'Sin planos'"></td>
                                         </template>
                                         <td class="td2" v-text="lotes.avance+'%'"></td>
+                                        <td class="td2" v-text="lotes.credito_puente"></td>
                                         <td class="td2" v-text="this.moment(lotes.fecha_fin).locale('es').format('MMMM YYYY')"></td>
                                         <td class="td2" v-text="lotes.paquete"></td>
                                         <td @click="abrirModal('fecha',lotes)" class="td2" v-text="lotes.visita_avaluo"></td>

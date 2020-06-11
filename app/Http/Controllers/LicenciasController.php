@@ -398,7 +398,8 @@ class LicenciasController extends Controller
                 'licencias.f_planos_obra',
                 'lotes.contrato',
                 'lotes.firmado',
-                'lotes.fecha_fin'
+                'lotes.fecha_fin',
+                'lotes.credito_puente'
             );
 
         if ($buscar == '') {
@@ -486,7 +487,7 @@ class LicenciasController extends Controller
         $lotes = $lotes->orderBy('fraccionamientos.nombre', 'ASC')
                         ->orderBy('etapas.num_etapa', 'ASC')
                         ->orderBy('lotes.manzana', 'ASC')
-                        ->orderBy('lotes.num_lote', 'ASC')->paginate(8);
+                        ->orderBy('lotes.num_lote', 'ASC')->paginate(12);
     
 
         return [
@@ -535,7 +536,8 @@ class LicenciasController extends Controller
                 'licencias.f_planos_obra',
                 'lotes.contrato',
                 'lotes.firmado',
-                'lotes.fecha_fin'
+                'lotes.fecha_fin',
+                'lotes.credito_puente'
             );
 
         if ($buscar == '') {
@@ -633,12 +635,12 @@ class LicenciasController extends Controller
 
                     $sheet->row(1, [
                         'Proyecto', 'Etapa', 'Manzana', 'Lote', 'Dirección', 
-                        '# Oficial', 'Planos obra','% Avance', 'Fecha termino', 'Paquete',
+                        '# Oficial', 'Planos obra','% Avance', 'Crédito Puente', 'Fecha termino', 'Paquete',
                         'Fecha de visita', 'Status'
                     ]);
 
 
-                    $sheet->cells('A1:L1', function ($cells) {
+                    $sheet->cells('A1:M1', function ($cells) {
                         $cells->setBackground('#052154');
                         $cells->setFontColor('#ffffff');
                         // Set font family
@@ -706,13 +708,14 @@ class LicenciasController extends Controller
                             $lote->numero,
                             $lote->f_planos_obra,
                             $lote->avance.' %',
+                            $lote->credito_puente,
                             $lote->fecha_fin,
                             $lote->paquete,
                             $lote->visita_avaluo,
                             $estado
                         ]);
                     }
-                    $num = 'A1:L' . $cont;
+                    $num = 'A1:M' . $cont;
                     $sheet->setBorder($num, 'thin');
                 });
             }
@@ -729,7 +732,6 @@ class LicenciasController extends Controller
         $licencia->perito_dro = $request->perito_dro;
         $licencia->save();
     }
-
 
     public function updateMasaLicencias(Request $request)
     {
@@ -1035,9 +1037,7 @@ class LicenciasController extends Controller
         )->download('xls');
     }
 
-
     //funciones para carga y descarga de la licencia
-
     public function formSubmit(Request $request, $id)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -1086,7 +1086,6 @@ class LicenciasController extends Controller
         $pathtoFile = public_path() . '/files/licencias/' . $fileName;
         return response()->download($pathtoFile);
     }
-
 
     //funciones para carga y descarga de la acta
 
@@ -1141,7 +1140,6 @@ class LicenciasController extends Controller
     }
 
     //funciones para carga y descarga de predial
-
     public function formSubmitPredial(Request $request, $id)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -1601,7 +1599,7 @@ class LicenciasController extends Controller
                         ->orderBy('fraccionamientos.nombre', 'DESC')
                         ->orderBy('etapas.num_etapa', 'DESC')
                         ->orderBy('lotes.manzana', 'ASC')
-                        ->orderBy('lotes.num_lote', 'ASC')->paginate(15);
+                        ->orderBy('lotes.num_lote', 'ASC')->get();
 
         return Excel::create(
             'actas',
@@ -1689,6 +1687,7 @@ class LicenciasController extends Controller
             ->join('etapas','lotes.etapa_id','=','etapas.id')
             ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
             ->select('licencias.id','licencias.fecha_licencia as fecha','licencias.fecha_acta','licencias.fecha_predial',
+                'licencias.num_licencia','licencias.num_acta', 'lotes.interior',
                 'licencias.foto_lic as archivo','licencias.foto_acta','licencias.foto_predial','lotes.manzana','lotes.num_lote',
                 'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo', 'lotes.calle', 'lotes.numero',
                 'lotes.precio_base','lotes.obra_extra','lotes.ajuste','lotes.sobreprecio','lotes.excedente_terreno');
@@ -1928,7 +1927,7 @@ class LicenciasController extends Controller
                         ->orderBy('etapas.num_etapa','asc')
                         ->orderBy('lotes.manzana','asc')
                         ->orderBy('lotes.num_lote','asc')
-                        ->paginate(10);
+                        ->paginate(12);
         
         return [
             'pagination' => [
@@ -1942,5 +1941,362 @@ class LicenciasController extends Controller
             'lotes' => $lotes, 'criterio'=> $busqueda
 
         ];
+    }
+
+
+    public function excelDescargas(Request $request){
+        $proyecto = $request->proyecto;
+        $etapa = $request->etapa;
+        $manzana = $request->manzana;
+        $lote = $request->lote;
+        $fecha1 = $request->fecha1;
+        $fecha2 = $request->fecha2;
+        $busqueda = $request->busqueda;
+
+        
+
+        $query = Licencia::join('lotes','licencias.id','=','lotes.id')
+            ->join('modelos','lotes.modelo_id','=','modelos.id')
+            ->join('etapas','lotes.etapa_id','=','etapas.id')
+            ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+            ->select('licencias.id','licencias.fecha_licencia as fecha','licencias.fecha_acta','licencias.fecha_predial',
+                'licencias.num_licencia','licencias.num_acta', 'lotes.interior',
+                'licencias.foto_lic as archivo','licencias.foto_acta','licencias.foto_predial','lotes.manzana','lotes.num_lote',
+                'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo', 'lotes.calle', 'lotes.numero',
+                'lotes.precio_base','lotes.obra_extra','lotes.ajuste','lotes.sobreprecio','lotes.excedente_terreno');
+
+        switch($busqueda){
+            case 'licencias.fecha_licencia':{
+                $titulo = 'Licencias';
+                if($fecha1 != '' && $fecha2 != ''){
+                    if($proyecto == ''){
+                        $lotes = $query
+                            ->where('licencias.foto_lic', '!=', NULL)
+                            ->whereBetween($busqueda, [$fecha1, $fecha2]);
+                    }
+                    else{
+                        if($etapa == '' && $manzana == '' && $lote == ''){
+                            $lotes = $query
+                                ->where('licencias.foto_lic', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->whereBetween($busqueda, [$fecha1, $fecha2]);
+                        }
+                        elseif($etapa != '' && $manzana == '' && $lote == ''){
+                            $lotes = $query
+                                ->where('licencias.foto_lic', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa)
+                                ->whereBetween($busqueda, [$fecha1, $fecha2]);
+                        }
+                        elseif($etapa != '' && $manzana != '' && $lote == ''){
+                            $lotes = $query
+                                ->where('licencias.foto_lic', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa)
+                                ->where('lotes.manzana', '=', $manzana)
+                                ->whereBetween($busqueda, [$fecha1, $fecha2]);
+                        }
+                        elseif($etapa != '' && $manzana != '' && $lote != ''){
+                            $lotes = $query
+                                ->where('licencias.foto_lic', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa)
+                                ->where('lotes.manzana', '=', $manzana)
+                                ->where('lotes.num_lote', '=', $lote)
+                                ->whereBetween($busqueda, [$fecha1, $fecha2]);
+                        }
+                    }
+                }
+                else{
+                    if($proyecto == ''){
+                        $lotes = $query
+                            ->where('licencias.foto_lic', '!=', NULL);
+                    }
+                    else{
+                        if($etapa == '' && $manzana == '' && $lote == ''){
+                            $lotes = $query
+                                ->where('licencias.foto_lic', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto);
+                        }
+                        elseif($etapa != '' && $manzana == '' && $lote == ''){
+                            $lotes = $query
+                                ->where('licencias.foto_lic', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa);
+                        }
+                        elseif($etapa != '' && $manzana != '' && $lote == ''){
+                            $lotes = $query
+                                ->where('licencias.foto_lic', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa)
+                                ->where('lotes.manzana', '=', $manzana);
+                        }
+                        elseif($etapa != '' && $manzana != '' && $lote != ''){
+                            $lotes = $query
+                                ->where('licencias.foto_lic', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa)
+                                ->where('lotes.manzana', '=', $manzana)
+                                ->where('lotes.num_lote', '=', $lote);
+                        }
+                    }
+                }  
+                break;
+            }
+            case 'licencias.fecha_acta':{
+                $titulo = 'Actas';
+                if($fecha1 != '' && $fecha2 != ''){
+                    if($proyecto == ''){
+                        $lotes = $query
+                            ->where('licencias.foto_acta', '!=', NULL)
+                            ->whereBetween($busqueda, [$fecha1, $fecha2]);
+                    }
+                    else{
+                        if($etapa == '' && $manzana == '' && $lote == ''){
+                            $lotes = $query
+                                ->where('licencias.foto_acta', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->whereBetween($busqueda, [$fecha1, $fecha2]);
+                        }
+                        elseif($etapa != '' && $manzana == '' && $lote == ''){
+                            $lotes = $query
+                                ->where('licencias.foto_acta', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa)
+                                ->whereBetween($busqueda, [$fecha1, $fecha2]);
+                        }
+                        elseif($etapa != '' && $manzana != '' && $lote == ''){
+                            $lotes = $query
+                                ->where('licencias.foto_acta', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa)
+                                ->where('lotes.manzana', '=', $manzana)
+                                ->whereBetween($busqueda, [$fecha1, $fecha2]);
+                        }
+                        elseif($etapa != '' && $manzana != '' && $lote != ''){
+                            $lotes = $query
+                                ->where('licencias.foto_acta', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa)
+                                ->where('lotes.manzana', '=', $manzana)
+                                ->where('lotes.num_lote', '=', $lote)
+                                ->whereBetween($busqueda, [$fecha1, $fecha2]);
+                        }
+                    }
+                }
+                else{
+                    if($proyecto == ''){
+                        $lotes = $query
+                            ->where('licencias.foto_acta', '!=', NULL);
+                    }
+                    else{
+                        if($etapa == '' && $manzana == '' && $lote == ''){
+                            $lotes = $query
+                                ->where('licencias.foto_acta', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto);
+                        }
+                        elseif($etapa != '' && $manzana == '' && $lote == ''){
+                            $lotes = $query
+                                ->where('licencias.foto_acta', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa);
+                        }
+                        elseif($etapa != '' && $manzana != '' && $lote == ''){
+                            $lotes = $query
+                                ->where('licencias.foto_acta', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa)
+                                ->where('lotes.manzana', '=', $manzana);
+                        }
+                        elseif($etapa != '' && $manzana != '' && $lote != ''){
+                            $lotes = $query
+                                ->where('licencias.foto_acta', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa)
+                                ->where('lotes.manzana', '=', $manzana)
+                                ->where('lotes.num_lote', '=', $lote);
+                        }
+                    }
+                }  
+                break;
+            }
+            case 'licencias.fecha_predial':{
+                $titulo = 'Prediales';
+                if($fecha1 != '' && $fecha2 != ''){
+                    if($proyecto == ''){
+                        $lotes = $query
+                            ->where('licencias.foto_predial', '!=', NULL)
+                            ->whereBetween($busqueda, [$fecha1, $fecha2]);
+                    }
+                    else{
+                        if($etapa == '' && $manzana == '' && $lote == ''){
+                            $lotes = $query
+                                ->where('licencias.foto_predial', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->whereBetween($busqueda, [$fecha1, $fecha2]);
+                        }
+                        elseif($etapa != '' && $manzana == '' && $lote == ''){
+                            $lotes = $query
+                                ->where('licencias.foto_predial', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa)
+                                ->whereBetween($busqueda, [$fecha1, $fecha2]);
+                        }
+                        elseif($etapa != '' && $manzana != '' && $lote == ''){
+                            $lotes = $query
+                                ->where('licencias.foto_predial', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa)
+                                ->where('lotes.manzana', '=', $manzana)
+                                ->whereBetween($busqueda, [$fecha1, $fecha2]);
+                        }
+                        elseif($etapa != '' && $manzana != '' && $lote != ''){
+                            $lotes = $query
+                                ->where('licencias.foto_predial', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa)
+                                ->where('lotes.manzana', '=', $manzana)
+                                ->where('lotes.num_lote', '=', $lote)
+                                ->whereBetween($busqueda, [$fecha1, $fecha2]);
+                        }
+                    }
+                }
+                else{
+                    if($proyecto == ''){
+                        $lotes = $query
+                            ->where('licencias.foto_predial', '!=', NULL);
+                    }
+                    else{
+                        if($etapa == '' && $manzana == '' && $lote == ''){
+                            $lotes = $query
+                                ->where('licencias.foto_predial', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto);
+                        }
+                        elseif($etapa != '' && $manzana == '' && $lote == ''){
+                            $lotes = $query
+                                ->where('licencias.foto_predial', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa);
+                        }
+                        elseif($etapa != '' && $manzana != '' && $lote == ''){
+                            $lotes = $query
+                                ->where('licencias.foto_predial', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa)
+                                ->where('lotes.manzana', '=', $manzana);
+                        }
+                        elseif($etapa != '' && $manzana != '' && $lote != ''){
+                            $lotes = $query
+                                ->where('licencias.foto_predial', '!=', NULL)
+                                ->where('lotes.fraccionamiento_id', '=', $proyecto)
+                                ->where('lotes.etapa_id', '=', $etapa)
+                                ->where('lotes.manzana', '=', $manzana)
+                                ->where('lotes.num_lote', '=', $lote);
+                        }
+                    }
+                }  
+                break;
+            }
+        }
+        
+        $lotes = $lotes->orderBy('fraccionamientos.nombre','asc')
+                        ->orderBy('etapas.num_etapa','asc')
+                        ->orderBy('lotes.manzana','asc')
+                        ->orderBy('lotes.num_lote','asc')
+                        ->get();
+
+        
+
+        return Excel::create(
+            'Descargas',
+            function ($excel) use ($lotes, $busqueda) {
+                $excel->sheet('Descargas', function ($sheet) use ($lotes,$busqueda) {
+
+                    $sheet->row(1, [
+                        'Fracc.', 'Etapa','Manzana', 'Lote', 'Modelo',
+                        'Dirección', '# Licencia', '# Acta de termino', 'Precio venta', 'Fecha de subida'
+                    ]);
+
+
+                    $sheet->cells('A1:J1', function ($cells) {
+                        $cells->setBackground('#052154');
+                        $cells->setFontColor('#ffffff');
+                        // Set font family
+                        $cells->setFontFamily('Calibri');
+
+                        // Set font size
+                        $cells->setFontSize(13);
+
+                        // Set font weight to bold
+                        $cells->setFontWeight('bold');
+                        $cells->setAlignment('center');
+                    });
+
+                    $sheet->setColumnFormat(array(
+                        'I' => '$#,##0.00',
+                    ));
+
+
+                    $cont = 1;
+
+                    foreach ($lotes as $index => $lote) {
+                        $cont++;
+
+                        $precio = $lote->precio_base + $lote->ajuste + $lote->obra_extra + $lote->excedente_terreno + $lote->sobreprecio;
+
+                        switch($busqueda){
+                            case 'licencias.fecha_licencia':{
+                                if ($lote->fecha) {
+                                    setlocale(LC_TIME, 'es_MX.utf8');
+                                    $tiempo = new Carbon($lote->fecha);
+                                    $fecha = $tiempo->formatLocalized('%d de %B de %Y');
+                                }
+                                break;
+                            }
+                            case 'licencias.fecha_acta':{
+                                if ($lote->fecha_acta) {
+                                    setlocale(LC_TIME, 'es_MX.utf8');
+                                    $tiempo = new Carbon($lote->fecha_acta);
+                                    $fecha = $tiempo->formatLocalized('%d de %B de %Y');
+                                }
+                                break;
+                            }
+                            case 'licencias.fecha_predial':{
+                                if ($lote->fecha_predial) {
+                                    setlocale(LC_TIME, 'es_MX.utf8');
+                                    $tiempo = new Carbon($lote->fecha_predial);
+                                    $fecha = $tiempo->formatLocalized('%d de %B de %Y');
+                                }
+                                break;
+                            }
+                        }
+
+                        if($lote->interior != NULL){
+                            $direccion = $lote->calle.' #'. $lote->numero.'-'.$lote->interior;
+                        }
+                        else
+                            $direccion = $lote->calle.' #'. $lote->numero;
+                        
+
+                        $sheet->row($index + 2, [
+                            $lote->proyecto,
+                            $lote->num_etapa,
+                            $lote->manzana,
+                            $lote->num_lote,
+                            $lote->modelo,
+                            $direccion,
+                            $lote->num_licencia,
+                            $lote->num_acta,
+                            $precio,
+                            $fecha
+                        ]);
+                    }
+                    $num = 'A1:J' . $cont;
+                    $sheet->setBorder($num, 'thin');
+                });
+            }
+
+        )->download('xls');
+
     }
 }

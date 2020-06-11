@@ -30,6 +30,7 @@ class IniObraController extends Controller
             ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
             ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
             'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto', 'ini_obras.documento','ini_obras.total_importe',
+            'ini_obras.total_superficie',
             'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto');
          
         if ($buscar==''){
@@ -63,6 +64,104 @@ class IniObraController extends Controller
             'ini_obra' => $ini_obra
         ];
     }
+
+    public function excelAvisos(Request $request)
+    {
+        
+ 
+        $buscar = $request->buscar;
+        $criterio = $request->criterio;
+
+        $query = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
+            ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
+            ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
+            'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto', 'ini_obras.documento','ini_obras.total_importe',
+            'ini_obras.total_superficie',
+            'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto');
+         
+        if ($buscar==''){
+            $ini_obra = $query
+            ->orderBy('ini_obras.id', 'desc')->get();
+        }
+        else{
+            if($criterio!='ini_obras.f_ini' && $criterio!='ini_obras.f_fin'){
+                $ini_obra = $query
+                ->where($criterio, 'like', '%'. $buscar . '%')
+                ->orderBy('ini_obras.id', 'desc')->get();
+            }
+            else{
+                $ini_obra = $query
+                ->where($criterio, '=',  $buscar )
+                ->orderBy('ini_obras.id', 'desc')->get();
+            }
+
+          
+        }
+         
+        return Excel::create(
+            'Avisos de obra',
+            function ($excel) use ($ini_obra) {
+                $excel->sheet('Avisos de obra', function ($sheet) use ($ini_obra) {
+
+                    $sheet->row(1, [
+                        'Clave', 'Contratista','Fraccionamiento', 'Superficie total', 'Importe Total',
+                        'Fecha de inicio', 'Fecha de termino'
+                    ]);
+
+
+                    $sheet->cells('A1:G1', function ($cells) {
+                        $cells->setBackground('#052154');
+                        $cells->setFontColor('#ffffff');
+                        // Set font family
+                        $cells->setFontFamily('Calibri');
+
+                        // Set font size
+                        $cells->setFontSize(13);
+
+                        // Set font weight to bold
+                        $cells->setFontWeight('bold');
+                        $cells->setAlignment('center');
+                    });
+
+                    $sheet->setColumnFormat(array(
+                        'D' => '#,##0.00',
+                        'E' => '$#,##0.00',
+                    ));
+
+
+                    $cont = 1;
+
+                    foreach ($ini_obra as $index => $lote) {
+                        $cont++;
+
+
+                        setlocale(LC_TIME, 'es_MX.utf8');
+                        $tiempo = new Carbon($lote->f_ini);
+                        $lote->f_ini = $tiempo->formatLocalized('%d de %B de %Y');
+
+                        setlocale(LC_TIME, 'es_MX.utf8');
+                        $tiempo = new Carbon($lote->f_fin);
+                        $lote->f_fin = $tiempo->formatLocalized('%d de %B de %Y');
+                        
+
+                        $sheet->row($index + 2, [
+                            $lote->clave,
+                            $lote->contratista,
+                            $lote->proyecto,
+                            $lote->total_superficie,
+                            $lote->total_importe,
+                            $lote->f_ini,
+                            $lote->f_fin
+                        ]);
+                    }
+                    $num = 'A1:G' . $cont;
+                    $sheet->setBorder($num, 'thin');
+                });
+            }
+
+        )->download('xls');
+    }
+
     public function obtenerCabecera(Request $request){
         if (!$request->ajax()) return redirect('/');
  

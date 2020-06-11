@@ -52,11 +52,23 @@
                         </div>
 
                         <div class="form-group row">
-                            <div class="col-md-8">
+                            <div class="col-md-6">
                                 <div class="input-group">
                                     <input type="date" v-model="b_fecha1" @keyup.enter="listarHistorialDep(1)" class="form-control" >
                                     <input type="date" v-model="b_fecha2" @keyup.enter="listarHistorialDep(1)" class="form-control" >
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <div class="input-group">
                                     <button type="submit" @click="listarDescargas(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+
+                                    <a class="btn btn-success" v-bind:href="'/licencias/excelDescargas?busqueda=' + b_busqueda + '&proyecto=' + b_proyecto + 
+                                                '&etapa=' + b_etapa + '&manzana=' + b_manzana + '&lote=' + b_lote + '&fecha1=' + b_fecha1 + '&fecha2=' + b_fecha2" >
+                                        <i class="icon-pencil"></i>&nbsp;Excel
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -71,6 +83,8 @@
                                         <th>Lote</th>
                                         <th>Modelo</th>
                                         <th>Dirección</th>
+                                        <th v-if="criterio == 'licencias.fecha_licencia'"># Licencia</th>
+                                        <th v-if="criterio == 'licencias.fecha_acta' " class="td2"># Acta de termino</th>
                                         <th>Precio venta</th>
                                         <th>Fecha de subida </th>
                                         <th>Archivo</th>
@@ -83,7 +97,10 @@
                                         <td class="td2" v-text="lote.manzana"></td>
                                         <td class="td2" v-text="lote.num_lote"></td>
                                         <td class="td2" v-text="lote.modelo"></td>
-                                        <td class="td2" v-text="lote.calle + ' #' + lote.numero"></td>
+                                        <td v-if="lote.interior != null" class="td2" v-text="lote.calle + ' #' + lote.numero + '-' + lote.interior"></td>
+                                        <td v-else class="td2" v-text="lote.calle + ' #' + lote.numero "></td>
+                                        <td v-if="criterio == 'licencias.fecha_licencia'" class="td2" v-text="lote.num_licencia"></td>
+                                        <td v-if="criterio == 'licencias.fecha_acta' " class="td2" v-text="lote.num_acta"></td>
                                         <td class="td2" v-text="'$'+formatNumber(lote.precio_base+lote.ajuste+lote.obra_extra+lote.excedente_terreno+lote.sobreprecio)"></td>
                                         <td class="td2" v-text="this.moment(lote.fecha).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2">
