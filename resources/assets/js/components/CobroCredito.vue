@@ -187,7 +187,7 @@
 
                     <div class="card-body" v-if="deposito==2">
                             <div class="form-group row">
-                                <div class="col-md-12">
+                                <div class="col-md-8">
                                     <div class="input-group">
                                         <!--Criterios para el listado de busqueda -->
                                         <input type="date" v-model="b_fecha1" @keyup.enter="listarHistorialCreditos(1)" class="form-control" >
@@ -196,14 +196,21 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <div class="col-md-12">
+                                <div class="col-md-8">
                                     <div class="input-group">
-                                        <input type="number" step="0.01" v-model="bMonto" @keyup.enter="listarHistorialCreditos(1)" class="form-control">
+                                        <input type="number" step="0.01" v-model="bMonto" @keyup.enter="listarHistorialCreditos(1)" class="form-control" placeholder="Monto">
                                         <select class="form-control" v-model="banco">
                                             <option value="">Seleccione</option>
                                             <option v-for="banco in arrayBancos" :key="banco.num_cuenta" :value="banco.num_cuenta + '-' + banco.banco" v-text="banco.num_cuenta + '-' + banco.banco"></option>
                                         </select>
-                                    
+                                
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-8">
+                                    <div class="input-group">
+                                                                            
                                         <button type="submit" @click="listarHistorialCreditos(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                         <a  :href="'/cobroCredito/indexDepositos/excelHistorialDep?fecha1=' + b_fecha1 + '&fecha2=' + b_fecha2 + '&banco=' + banco "  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
                                     </div>
@@ -324,7 +331,7 @@
                                     <div class="col-md-9">
                                         <select class="form-control" v-model="banco">
                                             <option value="">Seleccione</option>
-                                            <option v-for="banco in arrayBancos" :key="banco.num_cuenta" :value="banco.num_cuenta + '-' + banco.banco" v-text="banco.num_cuenta + '-' + banco.banco"></option>
+                                            <option v-for="banco in arrayBancos" :key="banco.num_cuenta" :value="banco.num_cuenta + '-' + banco.banco + '-' + banco.sucursal" v-text="banco.num_cuenta + '-' + banco.banco + '-' + banco.sucursal"></option>
                                         </select>
                                     </div>
                                 </div>

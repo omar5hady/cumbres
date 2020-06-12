@@ -28,7 +28,7 @@ body {
 
 <div style="margin-right: 100px;  margin-top: -40px; position: absolute;">
 <div style="position: static;"> 
-<p align="center" style="border: ridge #0B173B 1px; font-size:16pt; color:white; margin-right: 100px; background-color: #0B173B;">CONTRATO DE COMPRA-VENTA</p>
+<p align="center" style="border: ridge #0B173B 1px; font-size:15pt; color:white; margin-right: 100px; background-color: #0B173B;">SOLICITUD DE CONTRATO DE COMPRA-VENTA</p>
 
     <div class="table1" style="margin-top: -12px;">
         <div class="table-row">

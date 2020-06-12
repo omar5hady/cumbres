@@ -2041,7 +2041,7 @@ class EstadisticasController extends Controller
                                 ->where('contratos.status','=',3)
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('inst_seleccionadas.tipo_credito', '=', 'Crédito Directo')->get();
-
+                                        
                 $resContratos = Contrato::join('creditos','contratos.id','=','creditos.id')
                                 //->leftJoin('expedientes','contratos.id','=','expedientes.id')
                                 ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
@@ -2066,6 +2066,12 @@ class EstadisticasController extends Controller
                                                 'lotes.calle','lotes.numero',//'expedientes.fecha_firma_esc',
                                                 'modelos.nombre as modelo','contratos.fecha_audit','contratos.id'
                                         )
+                                ->when($request->bAudit,function($query, $audit){
+                                                if($audit == 1){
+                                                        $query->whereNull('contratos.fecha_audit')->get();
+                                                }elseif($audit == 2) $query->whereNotNull('contratos.fecha_audit')->get();
+                                        }
+                                )
                                 ->where('lotes.fraccionamiento_id','=',$proyecto)
                                 ->where('lotes.etapa_id','=',$etapa)
                                 ->where('contratos.status','=',3)
@@ -2203,6 +2209,12 @@ class EstadisticasController extends Controller
                                                 'lotes.calle','lotes.numero',//'expedientes.fecha_firma_esc',
                                                 'modelos.nombre as modelo','contratos.fecha_audit','contratos.id'
                                         )
+                                ->when($request->bAudit,function($query, $audit){
+                                                if($audit == 1){
+                                                        $query->whereNull('contratos.fecha_audit')->get();
+                                                }elseif($audit == 2) $query->whereNotNull('contratos.fecha_audit')->get();
+                                        }
+                                )
                                 ->where('lotes.fraccionamiento_id','=',$proyecto)
                                 ->where('contratos.status','=',3)
                                 ->where('i.elegido', '=', 1)->paginate(20);

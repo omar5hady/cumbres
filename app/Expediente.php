@@ -12,7 +12,8 @@ class Expediente extends Model
                             'fecha_ingreso','fecha_infonavit','descuento','total_liquidar',
                             'fecha_liquidacion','infonavit','fovissste','liquidado','interes_ord',
                             'fecha_firma_esc','notaria_id','notaria','notario','hora_firma',
-                            'direccion_firma', 'postventa'
+                            'direccion_firma', 'postventa', 'notas_liquidacion',
+                            'obs_descuento'
                             ];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
 
     public function contrato()

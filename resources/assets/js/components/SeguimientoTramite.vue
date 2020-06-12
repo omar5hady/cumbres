@@ -1271,6 +1271,13 @@
                                         </div>
                                     </div>
 
+                                    <div class="form-group row" v-if="descuento > 0">
+                                        <label class="col-md-2 form-control-label" for="text-input">Observacion del descuento</label>
+                                        <div class="col-md-8">
+                                            <textarea rows="2" cols="30" class="form-control" v-model="obs_descuento" placeholder="Observaciones"></textarea>
+                                        </div>
+                                    </div>
+
                                     <div class="form-group row">
                                         <label class="col-md-2 form-control-label" for="text-input">Credito autorizado</label>
                                         <div class="col-md-3">
@@ -1305,6 +1312,16 @@
                                         <label class="col-md-2 form-control-label" for="text-input"><strong> Total a liquidar </strong></label>
                                         <div class="col-md-3">
                                             <h6><strong> ${{ formatNumber(total_liquidar=totalLiquidar)}} </strong></h6>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row line-separator"></div>
+
+                                    
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Notas</label>
+                                        <div class="col-md-8">
+                                            <textarea rows="2" cols="30" class="form-control" v-model="notas_liquidacion" placeholder="Notas extra"></textarea>
                                         </div>
                                     </div>
 
@@ -1977,6 +1994,8 @@
                 manzana:'',
                 lote:'',
                 descuento:0,
+                obs_descuento:'',
+                notas_liquidacion:'',
                 pagado:0,
                 monto_credito:0,
                 infonavit:0,
@@ -2647,6 +2666,8 @@
                     'infonavit' : this.infonavit,
                     'fovissste': this.fovissste,
                     'monto_credito' : this.monto_credito,
+                    'obs_descuento' : this.obs_descuento,
+                    'notas_liquidacion' : this.notas_liquidacion
                     
                 }).then(function (response){
                    

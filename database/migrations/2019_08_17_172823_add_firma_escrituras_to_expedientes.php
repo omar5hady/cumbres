@@ -19,6 +19,8 @@ class AddFirmaEscriturasToExpedientes extends Migration
             $table->string('notaria')->nullable();
             $table->string('notario')->nullable();
             $table->time('hora_firma')->nullable();
+            $table->text('notas_liquidacion')->nullable();
+            $table->text('obs_descuento')->nullable();
 
             $table->string('direccion_firma')->nullable();
 
