@@ -19,6 +19,8 @@ body {
 .table-cell { display: table-cell; padding: 0.5em; font-size: 7pt; border: ridge #0B173B 1px; color:black; }
 .table-cell1 { display: table-cell; padding: 0em; font-size: 8pt; }
 
+.table-cell2 { display: table-cell; padding: 0.5em; font-size: 8pt; border: none #0B173B 1px; color:black; }
+
 .table2 { display: table; width: 45%; }
 
 .table3 { display: table; width: 45%; border-collapse: collapse; table-layout: fixed; }
@@ -28,7 +30,7 @@ body {
 </style>
 
 <div style="clear:both;">
-    <div style="float: left; margin-top: 10px; margin-left: 20px;" >
+    <div style="float: left; margin-top: 2px; margin-left: 20px;" >
          <IMG SRC="img/contratos/logoContrato.jpg" width="110" height="110">
     </div>
     <p style="text-align:right;">San Luis Potosí, San Luis Potosí, a {{$liquidacion[0]->fecha_liquidacion}}</p>
@@ -167,18 +169,25 @@ body {
                     <div class="table-cell">M.N.</div>      
                 </div>
 
+            @if($liquidacion[0]->obs_descuento != '' && $liquidacion[0]->obs_descuento != NULL )
+                <div class="table-row">
+                    <div colspan="4" class="table-cell">Obs: {{$liquidacion[0]->obs_descuento}}</div>      
+                </div>
+            @endif
+
                 <div class="table-row">
                     <div colspan="2" class="table-cell">TOTAL A LIQUIDAR </div> 
                     <div class="table-cell">$ {{$liquidacion[0]->totalRestante}}</div>
                     <div class="table-cell">M.N.</div>      
                 </div>
         </div>
-    @if($pagares)
+    @if(count($pagares)>0) 
         <div class="table2" style="border: ridge #0B173B 1px; color:black; margin-top: 0.3em; float:right;">
-                    
+             
             <div class="table-row">
                 <div colspan="4" class="table-cell">PAGARES PENDIENTES</div>   
             </div>
+        
 
         @for($i=0; $i < count($pagares); $i++)
             <div class="table-row">
@@ -219,11 +228,39 @@ body {
                     <div colspan="4" class="table-cell">Observaciones: LA EMPRESA NO ENTREGA LA CASA AMENOS QUE HAYA SIDO LIQUIDADO EL SALDO DE DIFERENCIA RESTANTE</div>        
                 </div>
         </div>
+
+        @if($liquidacion[0]->notas_liquidacion != '' && $liquidacion[0]->notas_liquidacion != NULL )
+            <div class="table" style="border: ridge #0B173B 1px; color:black; margin-top: 0.3em;">
+                <div class="table-row">
+                <div colspan="4" class="table-cell">NOTAS: {{mb_strtoupper($liquidacion[0]->notas_liquidacion)}}</div>        
+                </div>
+            </div>
+        @endif
     </div> 
 
-    <p style="text-align:center; margin-top: 0.3em;"><strong>Nombre y firma de conformidad del Solicitante</strong></p>
+    {{-- <p style="text-align:center; margin-top: 0.3em;"><strong>Nombre y firma de conformidad del Solicitante</strong></p> --}}
+
+    <div style="position: static; margin: 30px;">
+
+        <br><br>
+            <div class="table" style="margin-top: 0.3em;">
+                <div class="table-row">
+                    <div colspan="4" class="table-cell2" style="text-align: center">___________________________</div>        
+                    <div colspan="4" class="table-cell2" style="text-align: center">___________________________</div>     
+                    <div colspan="4" class="table-cell2" style="text-align: center">___________________________</div>     
+                </div>
+                <div class="table-row">
+                    <div colspan="4" class="table-cell2" style="text-align: center">Revisado Depto. Comercial</div>        
+                    <div colspan="4" class="table-cell2" style="text-align: center">Revisado Depto. Admon.</div>     
+                    <div colspan="4" class="table-cell2" style="text-align: center">Auditado Depto Contabilidad</div>     
+                </div>
+            </div>
+
+    </div> 
 
 </div>
+
+
 @if($pagares)
 @for($u=0; $u < count($pagares); $u++)
         <div style="clear:both;">

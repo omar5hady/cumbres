@@ -214,12 +214,18 @@
                 </div>
             
                 <div class="table-row">
-                    <div colspan="2" class="table-cell">DESCUENTO</div>
+                    <div colspan="2" class="table-cell">DESCUENTO <br>
+                        Obs: {{$contratos[0]->obs_descuento}} 
+                    </div>
                     <div class="table-cell">{{$contratos[0]->fecha_liquidacion}}</div>
                     <div class="table-cell"></div>    
                     <div colspan="2" class="table-cell"></div>
                     <div class="table-cell">$ 0.00</div>  
                     <div class="table-cell">$ {{$contratos[0]->descuento}}</div>
+                </div>
+
+                <div class="table-row">
+                    <div colspan="8" class="table-cell">Obs: {{$contratos[0]->obs_descuento}} </div>
                 </div>
 
                 <div class="table-row">

@@ -2009,6 +2009,8 @@ class ExpedienteController extends Controller
             $expediente->fecha_liquidacion = $request->fecha_liquidacion;
             $expediente->valor_escrituras = $request->valor_escrituras;
             $expediente->descuento = $request->descuento;
+            $expediente->notas_liquidacion = $request->notas_liquidacion;
+            $expediente->obs_descuento = $request->obs_descuento;
 
             $contrato = Contrato::findOrFail($request->folio);
             $contrato->saldo = $contrato->saldo - round($request->descuento,2);
@@ -3256,6 +3258,8 @@ class ExpedienteController extends Controller
             'expedientes.fecha_firma_esc',
             'expedientes.interes_ord',
             'expedientes.descuento',
+            'expedientes.obs_descuento',
+            'expedientes.notas_liquidacion',
             'liquidacion.nombre_aval',
             'liquidacion.direccion as direccion_aval',
             'liquidacion.telefono as telefono_aval',

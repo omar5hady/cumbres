@@ -2131,6 +2131,7 @@ class DepositoController extends Controller
                 'creditos.precio_venta',
                 'expedientes.valor_escrituras', 
                 'expedientes.descuento', 
+                'expedientes.obs_descuento', 
                 'expedientes.fecha_liquidacion',
                 'expedientes.fecha_firma_esc',
                 'lotes.credito_puente',
