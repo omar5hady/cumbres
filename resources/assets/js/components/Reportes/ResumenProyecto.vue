@@ -30,6 +30,15 @@
                             </div>
                             <div class="col-md-2">
                                 <div class="input-group">
+                                    <select class="form-control" v-model="bAudit" >
+                                        <option value="0">¿Auditado?</option>
+                                        <option value="1">Sin Auditar</option>
+                                        <option value="2">Auditado</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="input-group">
                                     <button type="submit" @click="listarResumen(1,b_proyecto,b_etapa)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
@@ -299,6 +308,7 @@
                 id:'',
                 tipoAccion : 0,
                 titulo : '',
+                bAudit: 0,
             }
         },
         computed:{
@@ -333,7 +343,8 @@
         methods : {
             listarResumen (page,proyecto,etapa){
                 let me=this;
-                var url= '/estadisticas/res_proyecto?page=' + page + '&proyecto='+ proyecto + '&etapa='+ etapa;
+                var url= '/estadisticas/res_proyecto?page=' + page + '&proyecto='+ proyecto + '&etapa='+ etapa+
+                        '&bAudit='+this.bAudit;
                 axios.get(url).then(function (response) {
                     var respuesta= response.data;
                     me.arrayResProyecto = respuesta.resContratos.data;
@@ -392,7 +403,6 @@
                 });
                 
             },
-
             agregarComentario(){
                 let me = this;
                 //Con axios se llama el metodo store de DepartamentoController
@@ -419,7 +429,6 @@
                     console.log(error);
                 });
             },
-
             selectEtapas(buscar){
                 let me = this;
                 
@@ -433,7 +442,6 @@
                     console.log(error);
                 });
             },
-
             auditar(){
                  
                 let me = this;
@@ -473,7 +481,6 @@
                 })
               
             },
-
             abrirModal(accion,id){
                 switch(accion){
                     case 'auditar':{
