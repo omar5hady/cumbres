@@ -34,7 +34,7 @@
                     </div>
                     <div class="card-body" v-if="deposito==0">
                         <div class="form-group row">
-                            <div class="col-md-10">
+                            <div class="col-md-12">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-3" v-model="criterio" @click="buscar='', buscar2=''">
@@ -149,7 +149,7 @@
                             
                         </div>
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-sm">
+                            <table class="table2 table table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
                                         <th>Opciones</th>
@@ -187,7 +187,7 @@
 
                     <div class="card-body" v-if="deposito==2">
                             <div class="form-group row">
-                                <div class="col-md-8">
+                                <div class="col-md-12">
                                     <div class="input-group">
                                         <!--Criterios para el listado de busqueda -->
                                         <input type="date" v-model="b_fecha1" @keyup.enter="listarHistorialCreditos(1)" class="form-control" >
@@ -196,8 +196,9 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <div class="input-group">
+                                        <input type="number" step="0.01" v-model="bMonto" @keyup.enter="listarHistorialCreditos(1)" class="form-control">
                                         <select class="form-control" v-model="banco">
                                             <option value="">Seleccione</option>
                                             <option v-for="banco in arrayBancos" :key="banco.num_cuenta" :value="banco.num_cuenta + '-' + banco.banco" v-text="banco.num_cuenta + '-' + banco.banco"></option>
@@ -492,6 +493,7 @@
                 b_fecha2:'',
                 banco:'',
                 b_firmado:1,
+                bMonto:'',
             }
         },
         computed:{
@@ -579,7 +581,8 @@
                 me.pago_id=0;
                 me.diferencia=0;
                 var url = '/cobroCredito/indexCreditos?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + 
-                            '&buscar3=' + buscar3 + '&buscar4=' + buscar4 + '&b_cobrados=' + b_cobrados + '&firmado=' + me.b_firmado + '&criterio=' + criterio;
+                            '&buscar3=' + buscar3 + '&buscar4=' + buscar4 + '&b_cobrados=' + b_cobrados + '&firmado=' + me.b_firmado + 
+                            '&criterio=' + criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayCreditos = respuesta.creditos.data;
@@ -634,7 +637,6 @@
                 });
 
             },
-
             selectCuenta(){
                 let me = this;
                 me.arrayBancos=[];
@@ -648,7 +650,6 @@
                 });
 
             },
-
             agregarComentario(){
                 let me = this;
                 //Con axios se llama el metodo store de DepartamentoController
@@ -799,13 +800,13 @@
                     console.log(error);
                 });
             },
-
             listarHistorialCreditos(page){
                 let me = this;
 
                 me.deposito = 2;
                 me.arrayHistorial = [];
-                var url = '/cobroCredito/indexDepositos/historial?page=' + page + '&fecha1=' + me.b_fecha1 + '&fecha2=' + me.b_fecha2 + '&banco=' + me.banco;
+                var url = '/cobroCredito/indexDepositos/historial?page=' + page + '&fecha1=' + me.b_fecha1 + '&fecha2=' + me.b_fecha2 + 
+                        '&banco=' + me.banco +'&bMonto='+this.bMonto;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayHistorial = respuesta.depositos.data;
@@ -815,7 +816,6 @@
                     console.log(error);
                 });
             },
-
             listarObservacion(buscar){
                 let me = this;
                 var url = '/credito_devolucion/observacionIndex?buscar=' + buscar ;
@@ -829,7 +829,6 @@
                 });
                 
             },
-
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';

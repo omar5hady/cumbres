@@ -488,6 +488,8 @@ class InstSeleccionadasController extends Controller
             
         }
 
+        if($request->bMonto != "") $depositos = $depositos->where('dep_creditos.cant_depo','=',$request->bMonto);
+
         $depositos = $depositos->orderBy('dep_creditos.fecha_deposito','desc')->paginate(10);
         
 
