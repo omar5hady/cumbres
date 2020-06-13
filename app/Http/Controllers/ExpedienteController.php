@@ -65,6 +65,11 @@ class ExpedienteController extends Controller
                 DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                 DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
                 'clientes.coacreditado',
+                
+                'c.celular',
+                'clientes.email_institucional',
+                'c.email',
+
                 'lotes.credito_puente',
                 'contratos.integracion',
                 'lotes.fraccionamiento_id',
@@ -730,6 +735,10 @@ class ExpedienteController extends Controller
             ->join('personal as v', 'vendedores.id', '=', 'v.id')
             ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
             ->select(
+                'c.celular',
+                'clientes.email_institucional',
+                'c.email',
+                
                 'contratos.id as folio',
                 DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                 DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
@@ -762,7 +771,7 @@ class ExpedienteController extends Controller
                 'expedientes.fecha_ingreso',
                 'expedientes.fecha_integracion',
                 'lotes.calle','lotes.numero','lotes.interior'
-            );
+        );
 
         if($rolId == 1 || $rolId == 4 || $rolId == 6 || Auth::user()->id == 24701){
             if ($buscar == ''){
@@ -1095,6 +1104,11 @@ class ExpedienteController extends Controller
             ->join('personal as v', 'vendedores.id', '=', 'v.id')
             ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
             ->select(
+
+                'c.celular',
+                'clientes.email_institucional',
+                'c.email',
+
                 'contratos.id as folio',
                 'contratos.saldo',
                 'contratos.detenido',
@@ -1545,6 +1559,10 @@ class ExpedienteController extends Controller
                 ->join('personal as v', 'vendedores.id', '=', 'v.id')
                 ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
                 ->select(
+                    'c.celular',
+                    'clientes.email_institucional',
+                    'c.email',
+                    
                     'contratos.id as folio',
                     'contratos.saldo',
                     'contratos.detenido',
@@ -2196,6 +2214,10 @@ class ExpedienteController extends Controller
             ->join('personal as v', 'vendedores.id', '=', 'v.id')
             ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
             ->select(
+                'c.celular',
+                'clientes.email_institucional',
+                'c.email',
+                
                 'contratos.id as folio',
                 'contratos.saldo',
                 DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
@@ -2703,6 +2725,9 @@ class ExpedienteController extends Controller
                 DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
                 'creditos.fraccionamiento as proyecto',
                 'creditos.etapa',
+                'c.celular',
+                'clientes.email_institucional',
+                'c.email',
                 'creditos.manzana',
                 'creditos.num_lote',
                 'creditos.precio_venta',
