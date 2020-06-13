@@ -52,6 +52,8 @@
                                     <tr> 
                                         <th class="td2"> <i class="fa fa-hand-paper-o"></i> Detener</th>
                                         <th># Ref</th>
+                                        <th>Celular</th>
+                                        <th>Email</th>
                                         <th>Cliente</th>
                                         <th>Asesor</th>
                                         <th>Proyecto</th>
@@ -95,6 +97,16 @@
                                                 <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ contratos.folio">Reglamento de la etapa</a>
                                                 <a class="dropdown-item" @click="selectNombreArchivoModelo(contratos.folio)">Catalogo de especificaciones</a>
                                             </div>
+                                        </td>
+                                        <td class="td2" >
+                                            <a title="Llamar" class="btn btn-dark" :href="'tel:'+contratos.celular"><i class="fa fa-phone fa-lg"></i></a>
+                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+contratos.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
+                                        </td>
+                                        <td class="td2" v-if="contratos.email_institucional == null"> 
+                                            <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+contratos.email"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                        </td>
+                                        <td class="td2" v-else> 
+                                            <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+contratos.email+ ';'+contratos.email_institucional"> <i class="fa fa-envelope-o fa-lg"></i> </a>
                                         </td>
                                         <td class="td2" v-text="contratos.nombre_cliente"></td>
                                         <td class="td2" v-text="contratos.nombre_vendedor"></td>

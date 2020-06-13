@@ -83,6 +83,8 @@
                                             <tr> 
                                                 <th></th>
                                                 <th class="td2"> <i class="fa fa-hand-paper-o"></i> Detener</th>
+                                                <th>Celular</th>
+                                                <th>Email</th>
                                                 <th># Ref</th>
                                                 <th>Cliente</th>
                                                 <th>Asesor</th>
@@ -113,7 +115,6 @@
                                                     </button>
                                                     <label v-else> DETENIDO </label>
                                                 </td>
-
                                                 <td class="td2">
                                                     <button v-if="ingresar.detenido == 0" type="button" @click="detenerContrato(ingresar.folio,1)" class="btn btn-danger btn-sm" title="Detener solicitud">
                                                         <i class="fa fa-hand-paper-o"></i>
@@ -121,6 +122,17 @@
                                                     <button v-if="ingresar.detenido == 1" type="button" @click="continuarContrato(ingresar.folio,0)" class="btn btn-success btn-sm" title="Reanudar solicitud">
                                                         <i class="fa fa-play"></i>
                                                     </button>
+                                                </td>
+
+                                                <td class="td2" >
+                                                    <a title="Llamar" class="btn btn-dark" :href="'tel:'+ingresar.celular"><i class="fa fa-phone fa-lg"></i></a>
+                                                    <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+ingresar.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
+                                                </td>
+                                                <td class="td2" v-if="ingresar.email_institucional == null"> 
+                                                    <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+ingresar.email"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                                </td>
+                                                <td class="td2" v-else> 
+                                                    <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+ingresar.email+ ';'+ingresar.email_institucional"> <i class="fa fa-envelope-o fa-lg"></i> </a>
                                                 </td>
 
                                                 <td class="td2">
@@ -254,6 +266,8 @@
                                             <tr> 
                                                 <th></th>
                                                 <th class="td2"> <i class="fa fa-hand-paper-o"></i> Detener</th>
+                                                <th>Celular</th>
+                                                <th>Email</th>
                                                 <th># Ref</th>
                                                 <th>Cliente</th>
                                                 <th>Asesor</th>
@@ -294,6 +308,18 @@
                                                         <i class="fa fa-play"></i>
                                                     </button>
                                                 </td>
+
+                                                <td class="td2" >
+                                                    <a title="Llamar" class="btn btn-dark" :href="'tel:'+preautorizados.celular"><i class="fa fa-phone fa-lg"></i></a>
+                                                    <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+preautorizados.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
+                                                </td>
+                                                <td class="td2" v-if="preautorizados.email_institucional == null"> 
+                                                    <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+preautorizados.email"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                                </td>
+                                                <td class="td2" v-else> 
+                                                    <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+preautorizados.email+ ';'+preautorizados.email_institucional"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                                </td>
+                                                
                                                 <td class="td2">
                                                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{preautorizados.folio}}</a>
                                                     <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
@@ -453,6 +479,8 @@
                                             <tr> 
                                                 <th></th>
                                                 <th class="td2"> <i class="fa fa-hand-paper-o"></i> Detener</th>
+                                                <th>Celular</th>
+                                                <th>Email</th>
                                                 <th># Ref</th>
                                                 <th>Cliente</th>
                                                 <th>Asesor</th>
@@ -494,6 +522,16 @@
                                                     <button v-if="liquidacion.detenido == 1" type="button" @click="continuarContrato(liquidacion.folio,0)" class="btn btn-success btn-sm" title="Reanudar solicitud">
                                                         <i class="fa fa-play"></i>
                                                     </button>
+                                                </td>
+                                                <td class="td2" >
+                                                    <a title="Llamar" class="btn btn-dark" :href="'tel:'+liquidacion.celular"><i class="fa fa-phone fa-lg"></i></a>
+                                                    <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+liquidacion.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
+                                                </td>
+                                                <td class="td2" v-if="liquidacion.email_institucional == null"> 
+                                                    <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+liquidacion.email"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                                </td>
+                                                <td class="td2" v-else> 
+                                                    <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+liquidacion.email+ ';'+liquidacion.email_institucional"> <i class="fa fa-envelope-o fa-lg"></i> </a>
                                                 </td>
                                                 <td class="td2">
                                                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{liquidacion.folio}}</a>
@@ -657,7 +695,8 @@
                                     <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr> 
-                                                
+                                                <th>Celular</th>
+                                                <th>Email</th>
                                                 <th># Ref</th>
                                                 <th>Cliente</th>
                                                 <th>Asesor</th>
@@ -688,7 +727,17 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr v-for="programacion in arrayProgramacion" :key="programacion.id"> 
+                                            <tr v-for="programacion in arrayProgramacion" :key="programacion.id">
+                                                <td class="td2" >
+                                                    <a title="Llamar" class="btn btn-dark" :href="'tel:'+programacion.celular"><i class="fa fa-phone fa-lg"></i></a>
+                                                    <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+programacion.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
+                                                </td>
+                                                <td class="td2" v-if="programacion.email_institucional == null"> 
+                                                    <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+programacion.email"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                                </td>
+                                                <td class="td2" v-else> 
+                                                    <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+programacion.email+ ';'+programacion.email_institucional"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                                </td>
                                                 
                                                 <td class="td2">
                                                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{programacion.folio}}</a>
@@ -860,6 +909,8 @@
                                     <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr> 
+                                                <th>Celular</th>
+                                                <th>Email</th>
                                                 <th># Ref</th>
                                                 <th>Cliente</th>
                                                 <th>Asesor</th>
@@ -889,6 +940,16 @@
                                         </thead>
                                         <tbody>
                                             <tr v-for="programacion in arrayEnviados" :key="programacion.id"> 
+                                                <td class="td2" >
+                                                    <a title="Llamar" class="btn btn-dark" :href="'tel:'+programacion.celular"><i class="fa fa-phone fa-lg"></i></a>
+                                                    <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+programacion.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
+                                                </td>
+                                                <td class="td2" v-if="programacion.email_institucional == null"> 
+                                                    <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+programacion.email"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                                </td>
+                                                <td class="td2" v-else> 
+                                                    <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+programacion.email+ ';'+programacion.email_institucional"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                                </td>
                                                 
                                                 <td class="td2">
                                                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{programacion.folio}}</a>
@@ -1017,8 +1078,6 @@
                                     </ul>
                                 </nav>
                             </div>
-
-
                         </div>
                     </div>
                 </div>
@@ -1898,9 +1957,6 @@
                 </div>
                 <!-- /.modal-dialog -->
             </div>
-
-            
-         
      </main>
 </template>
 

@@ -477,6 +477,11 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/cartaServicios/pdf/{id}','ServicioController@cartaDeServicioPdf')->name('CartaDeservicios.pdf');
         
 
+        Route::put('/creditos/updateCostoDescuento','CreditoController@updateCostoDescuento');
+        Route::put('/creditos/updateDescuentoTerreno','CreditoController@updateDescuentoTerreno');
+        Route::put('/creditos/updateCostoAlarma','CreditoController@updateCostoAlarma');
+        Route::put('/creditos/updateCostoCuotaMant','CreditoController@updateCostoCuotaMant');
+        Route::put('/creditos/updateCostoProtecciones','CreditoController@updateCostoProtecciones');
         
         Route::post('/users/foto/{id}','UserController@updateProfile');
         Route::put('/users/update/password','UserController@updatePassword');

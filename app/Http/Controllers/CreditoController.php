@@ -988,4 +988,34 @@ class CreditoController extends Controller
         $instSel->save();
     }
 
+    public function updateCostoDescuento(Request $request){
+        $creditos = Credito::findOrFail($request->id);
+        $creditos->costo_descuento = $request->monto;
+        $creditos->save();
+    }
+
+    public function updateDescuentoTerreno(Request $request){
+        $creditos = Credito::findOrFail($request->id);
+        $creditos->descuento_terreno = $request->monto;
+        $creditos->save();
+    }
+
+    public function updateCostoAlarma(Request $request){
+        $creditos = Credito::findOrFail($request->id);
+        $creditos->costo_alarma = $request->monto;
+        $creditos->save();
+    }
+
+    public function updateCostoCuotaMant(Request $request){
+        $creditos = Credito::findOrFail($request->id);
+        $creditos->costo_cuota_mant = $request->monto;
+        $creditos->save();
+    }
+
+    public function updateCostoProtecciones(Request $request){
+        $creditos = Credito::findOrFail($request->id);
+        $creditos->costo_protecciones = $request->monto;
+        $creditos->save();
+    }
+
 }

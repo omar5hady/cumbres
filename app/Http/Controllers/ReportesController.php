@@ -959,6 +959,8 @@ class ReportesController extends Controller
                         ->join('etapas as et','lotes.etapa_id','=','et.id')
                         ->select('lotes.manzana','lotes.num_lote','f.nombre as proyecto','et.num_etapa','p.nombre', 'p.apellidos',
                                 'creditos.descripcion_promocion','creditos.descripcion_paquete', 'lotes.firmado',
+                                'creditos.costo_descuento', 'creditos.descuento_terreno', 'creditos.costo_alarma',
+                                'creditos.costo_cuota_mant', 'creditos.costo_protecciones','contratos.id',
                                 'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta','contratos.status')
                         
                         ->where('contratos.status','=',3)

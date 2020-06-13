@@ -41,13 +41,17 @@
                                     </div>
                                 </div>
 
-                                <div class="table-responsive">
-                                    <table class="table2 table-bordered table-striped table-sm">
+                                <div class="table-responsive" >
+                                    <table v-if="cont1 != 0 && cont2 != 0" class="table2 table-bordered table-striped table-sm">
                                         <thead>
-                                            <tr>
-                                                <th colspan="11" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
+                                            <tr v-if="activo == 1">
+                                                <th colspan="8" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
+                                                <th colspan="1" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
+                                                <th colspan="8" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
                                             </tr>
-                                            <tr>
+                                            <tr v-else></tr>
+                                                <th colspan="17" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
+                                            <tr @dblclick="cambiar()" >
                                                 <th>Fraccionamiento</th>
                                                 <th>Etapa</th>
                                                 <th>Manzana</th>
@@ -56,8 +60,14 @@
                                                 <th>Fecha de venta</th>
                                                 <th>Crédito</th>
                                                 <th>Institución</th>
-                                                <th>Promocion/paquete</th>
+                                                <th v-if="activo == 1">Promocion/paquete</th>
                                                 <th>Valor de escrituración</th>
+                                                <th></th>
+                                                <th>Descuento precio de casa o equipamiento</th>
+                                                <th class="td2">Descuento en el terreno</th>
+                                                <th class="td2">Costo de Alarma </th>
+                                                <th class="td2">Cuota de mantenimiento</th>
+                                                <th class="td2">Protecciones</th>
                                                 <th>Status</th>
                                             </tr>
                                         </thead>
@@ -71,13 +81,30 @@
                                                 <td class="td2" v-text="lote.fecha"></td>
                                                 <td class="td2" v-text="lote.tipo_credito"></td>
                                                 <td class="td2" v-text="lote.institucion"></td>
-                                                <template>
+                                                <template v-if="activo == 1">
                                                     <td class="td2" v-if="lote.descripcion_promocion == null && lote.descripcion_paquete == null" v-text="''"></td>
                                                     <td class="td2" v-else-if="lote.descripcion_promocion != null && lote.descripcion_paquete == null" v-text="'Promo: '+lote.descripcion_promocion"></td>
                                                     <td class="td2" v-else-if="lote.descripcion_promocion == null && lote.descripcion_paquete != null" v-text="'Paquete: '+lote.descripcion_paquete"></td>
                                                     <td class="td2" v-else v-text="'Promo: ' + lote.descripcion_promocion + ' / Paquete:' + lote.descripcion_paquete"></td>
                                                 </template>
                                                 <td class="td2" v-text="'$'+formatNumber(lote.precio_venta)"></td>
+                                                <td></td>
+                                                <td class="td2">
+                                                    <input type="text" pattern="\d*" @keyup.enter="actualizarDescuento(lote.id,$event.target.value)" :id="lote.id" :value="lote.costo_descuento|currency" step="1"  v-on:keypress="isNumber($event)" class="form-control" >
+                                                </td>
+                                                <td class="td2">
+                                                    <input type="text" pattern="\d*" @keyup.enter="updateDescuentoTerreno(lote.id,$event.target.value)" :id="lote.id" :value="lote.descuento_terreno|currency" step="1"  v-on:keypress="isNumber($event)" class="form-control" >
+                                                </td>
+                                                <td class="td2">
+                                                    <input type="text" pattern="\d*" @keyup.enter="updateCostoAlarma(lote.id,$event.target.value)" :id="lote.id" :value="lote.costo_alarma|currency" step="1"  v-on:keypress="isNumber($event)" class="form-control" >
+                                                </td>
+                                                <td class="td2">
+                                                    <input type="text" pattern="\d*" @keyup.enter="updateCostoCuotaMant(lote.id,$event.target.value)" :id="lote.id" :value="lote.costo_cuota_mant|currency" step="1"  v-on:keypress="isNumber($event)" class="form-control" >
+                                                </td>
+                                                <td class="td2">
+                                                    <input type="text" pattern="\d*" @keyup.enter="updateCostoProtecciones(lote.id,$event.target.value)" :id="lote.id" :value="lote.costo_protecciones|currency" step="1"  v-on:keypress="isNumber($event)" class="form-control" >
+                                                </td>
+
                                                 <template>
                                                     <td v-if="lote.status == 0" class="td2"> <span class="badge badge-danger">Cancelado</span></td>
                                                     <td v-else-if="lote.status == 1" class="td2"> <span class="badge badge-warning">Vendida</span></td>
@@ -171,6 +198,7 @@
                 fecha2:'',
                 cont1:0,
                 cont2:0,
+                activo:1
             }
         },
         computed:{
@@ -193,6 +221,142 @@
                 });
             },
 
+            actualizarDescuento(id,monto){
+                let me = this;
+                axios.put('/creditos/updateCostoDescuento',{
+                    'monto':monto,
+                    'id' : id
+                }).then(function (response){ 
+                me.listarReporte();
+                const toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+
+                    });
+
+                    toast({
+                    type: 'success',
+                    title: 'Cambios guardados'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            updateDescuentoTerreno(id,monto){
+                let me = this;
+                axios.put('/creditos/updateDescuentoTerreno',{
+                    'monto':monto,
+                    'id' : id
+                }).then(function (response){ 
+                me.listarReporte();
+                const toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+
+                    });
+
+                    toast({
+                    type: 'success',
+                    title: 'Cambios guardados'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            updateCostoAlarma(id,monto){
+                let me = this;
+                axios.put('/creditos/updateCostoAlarma',{
+                    'monto':monto,
+                    'id' : id
+                }).then(function (response){ 
+                me.listarReporte();
+                const toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+
+                    });
+
+                    toast({
+                    type: 'success',
+                    title: 'Cambios guardados'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            updateCostoCuotaMant(id,monto){
+                let me = this;
+                axios.put('/creditos/updateCostoCuotaMant',{
+                    'monto':monto,
+                    'id' : id
+                }).then(function (response){ 
+                me.listarReporte();
+                const toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+
+                    });
+
+                    toast({
+                    type: 'success',
+                    title: 'Cambios guardados'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            updateCostoProtecciones(id,monto){
+                let me = this;
+                axios.put('/creditos/updateCostoProtecciones',{
+                    'monto':monto,
+                    'id' : id
+                }).then(function (response){ 
+                me.listarReporte();
+                const toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+
+                    });
+
+                    toast({
+                    type: 'success',
+                    title: 'Cambios guardados'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            cambiar(){
+                if(this.activo == 1)
+                    this.activo = 0;
+                else
+                    this.activo = 1;
+            },
+
+            isNumber: function(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+                    evt.preventDefault();
+                } else {
+                    return true;
+                }
+            },
             
             formatNumber(value) {
                 let val = (value/1).toFixed(2)
