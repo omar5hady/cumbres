@@ -49,6 +49,12 @@ class CreateCreditosTable extends Migration
             $table->boolean('bono')->default(0)->nullable();
             $table->unsignedInteger('vendedor_id')->nullable();
 
+            $table->double('costo_descuento')->default(0);
+            $table->double('descuento_terreno')->default(0);
+            $table->double('costo_alarma')->default(0);
+            $table->double('costo_cuota_mant')->default(0);
+            $table->double('costo_protecciones')->default(0);
+
             $table->timestamps();
             
             $table->foreign('prospecto_id')->references('id')->on('clientes')->onDelete('cascade');
