@@ -60,6 +60,11 @@ class CreateCreditosTable extends Migration
             $table->foreign('prospecto_id')->references('id')->on('clientes')->onDelete('cascade');
             $table->foreign('lote_id')->references('id')->on('lotes')->onDelete('cascade');
             $table->foreign('vendedor_id')->references('id')->on('vendedores')->onDelete('cascade');
+
+            $table->string('factura')->nullable();
+            $table->string('folio_factura',30)->nullable();
+            $table->double('monto', 8,2)->nullable();
+            $table->date('f_carga_factura')->nullable();
         });
     }
 
