@@ -531,6 +531,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/estadoCuenta/excel','DepositoController@excelEstadoCuenta');
         Route::get('/estadoCuenta/estadoPDF/{id}','DepositoController@estadoPDF');
 
+        Route::get('/facturas/contratos/get','ContratoController@listarFacturaContratos');//by Rafael Rivera
+
 
     /************************** RUTAS ESTADISTICAS ***************************/
         Route::get('/estadisticas/datos_extra','EstadisticasController@estad_datos_extra');

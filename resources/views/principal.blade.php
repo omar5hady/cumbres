@@ -440,7 +440,10 @@
                                         <a class="nav-link" href="#"><i class="icon-reload"></i> Devolución por credito excedente</a>
                                     </li>
                                 @endif
-                                    
+                                
+                                    <li @click="menu=1001" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-file-invoice"></i> Facturas</a>
+                                    </li>
                                     
                             </ul>
                         </li>

@@ -16,6 +16,16 @@ class AddPublicidadIdToContratos extends Migration
         Schema::table('contratos', function($table) {
             $table->unsignedInteger('publicidad_id')->nullable();
             $table->foreign('publicidad_id')->references('id')->on('medios_publicitarios');
+
+            $table->string('c_factura')->nullable(); //factura de contrato
+            $table->string('c_folio_factura',30)->nullable(); //factura de contrato
+            $table->double('c_monto', 8,2)->nullable(); //factura de contrato
+            $table->date('c_f_carga_factura')->nullable(); //factura de contrato
+
+            $table->string('e_factura')->nullable(); //factura de firma de escrituras
+            $table->string('e_folio_factura',30)->nullable(); //factura de firma de escrituras
+            $table->double('e_monto', 8,2)->nullable(); //factura de firma de escrituras
+            $table->date('e_f_carga_factura')->nullable(); //factura de firma de escrituras
         });
     }
 

@@ -4358,4 +4358,18 @@ class ContratoController extends Controller
         $contrato->save();
     }
 
+    public function listarFacturaContratos(Request $request){
+        $facturas = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+            ->join('clientes', 'clientes.id', '=', 'creditos.prospecto_id')
+            ->join('personal as c', 'c.id', '=', 'clientes.id')
+            ->select(
+                'contratos.id',//como es el mismo que el de credito seusara este id para las consultas
+                DB::raw('CONCAT(c.nombre, " ", c.apellidos) as nombre'),
+                'c.rfc',
+                'creditos.num_lote'
+            )
+            ->get();
+
+        return $facturas;
+    }
 }
