@@ -147,11 +147,11 @@
                                             </a> 
                                         </td>
                                         <td class="td2">
-                                            Fecha: <input v-if="contratos.status != '2'"  type="date" @keyup.enter="actualizarFechaProgram($event.target.value,contratos.id)" :id="contratos.id" :value="contratos.fecha_program" class="form-control" >
+                                            Fecha: <input v-if="contratos.status != '2'"  type="date" v-on:change="actualizarFechaProgram($event.target.value,contratos.id)"  :id="contratos.id" :value="contratos.fecha_program" class="form-control" >
                                             <label v-else v-text="this.moment(contratos.fecha_program).locale('es').format('DD/MMM/YYYY')"></label>
                                         </td>
                                         <td class="td2">                                           
-                                            Hora: <input v-if="contratos.status != '2'"  type="time" @keyup.enter="actualizarHoraProgram($event.target.value,contratos.id)" :id="contratos.id" :value="contratos.hora_program" class="form-control" >
+                                            Hora: <input v-if="contratos.status != '2'"  type="time" v-on:change="actualizarHoraProgram($event.target.value,contratos.id)" :id="contratos.id" :value="contratos.hora_program" class="form-control" >
                                             <label v-else v-text="contratos.hora_program"></label>
                                         </td>
                                         <template>    

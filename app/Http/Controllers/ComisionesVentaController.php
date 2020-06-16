@@ -32,6 +32,20 @@ class ComisionesVentaController extends Controller
         $isr = $vendedor->isr;
         $retencion = $vendedor->retencion;
 
+        $numVentas = Contrato::join('creditos','contratos.id','=','creditos.id')
+                    ->join('lotes','creditos.lote_id','lotes.id')
+                    ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                    ->join('vendedores', 'creditos.vendedor_id', '=', 'vendedores.id')
+                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                    ->join('personal as c', 'clientes.id', '=', 'c.id')
+                    ->select('contratos.id')
+                    ->where('contratos.status','!=',2)
+                    ->where('inst_seleccionadas.elegido', '=', '1')
+                    ->where('creditos.vendedor_id','=',$request->vendedor)
+                    ->whereMonth('contratos.fecha',$request->mes)
+                    ->whereYear('contratos.fecha',$request->anio)
+                    ->count();
+
         $sueldo = !Carbon::parse($vendedor->fecha_sueldo)->gt(Carbon::now());
         
         $ventas = $this->getVentas($request->vendedor, $request->mes, $request->anio);
@@ -40,7 +54,7 @@ class ComisionesVentaController extends Controller
         $individualizadas = $this->getIndividualizadas($request->vendedor, $request->mes, $request->anio);
         $pendientes = $this->getPendientes($request->vendedor);
 
-        $numVentas = $ventas->count();
+        //$numVentas = $ventas->count();
         $numIndividualizadas = $individualizadas->count();
         $numCancelaciones = $cancelaciones->count();
         $numPendientes = $pendientes->count();

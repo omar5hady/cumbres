@@ -1636,7 +1636,7 @@ class RevisionPreviaController extends Controller
                                     ->where('solic_equipamientos.contrato_id','=',$folio)
                                     ->get();
 
-                    
+                    if(sizeOf($detalles))
                     for ($i = 0; $i < count($detalles); $i++) {
                        switch($detalles[$i]->identificador){
                            case 1 : {

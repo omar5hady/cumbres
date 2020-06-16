@@ -258,7 +258,7 @@ class SolicDetallesController extends Controller
                             ->where('solic_detalles.id','=',$id)
                             ->get();
 
-            $detalles = Descripcion_detalle::select('general','subconcepto','detalle','garantia','fecha_concluido')->where('solicitud_id','=',$id)->get();
+            $detalles = Descripcion_detalle::select('general','subconcepto','detalle','garantia','fecha_concluido','observacion')->where('solicitud_id','=',$id)->get();
 
         
 
@@ -701,7 +701,7 @@ class SolicDetallesController extends Controller
                             ->where('solic_detalles.id','=',$id)
                             ->get();
 
-            $detalles = Descripcion_detalle::select('general','subconcepto','detalle','garantia','fecha_concluido')->where('solicitud_id','=',$id)->get();
+            $detalles = Descripcion_detalle::select('general','subconcepto','detalle','garantia','fecha_concluido','observacion')->where('solicitud_id','=',$id)->get();
 
         
 

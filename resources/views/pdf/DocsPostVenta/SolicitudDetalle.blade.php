@@ -78,7 +78,7 @@
                 @for($i=0; $i < count($detalles); $i++)
                     <div class="table-row">
                         <div colspan="2" class="table-cell" style="text-align: center; "><b>&nbsp; {{$i+1}} </b></div>
-                    <div colspan="14" class="table-cell" style="text-align: center; ">{{$detalles[$i]->general}}, {{$detalles[$i]->subconcepto}}, {{$detalles[$i]->detalle}}</div>
+                    <div colspan="14" class="table-cell" style="text-align: center; ">{{$detalles[$i]->general}}, {{$detalles[$i]->subconcepto}}, {{$detalles[$i]->detalle}}, {{$detalles[$i]->observacion}}</div>
                         <div colspan="4" class="table-cell" style="text-align: center; "><b>
                             &nbsp;&nbsp; @if($detalles[$i]->garantia == 1) Si @else No @endif
                         </b></div>

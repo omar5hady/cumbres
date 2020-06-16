@@ -76,7 +76,7 @@
                 </div>
                 @for($i=0; $i < count($detalles); $i++)
                     <div class="table-row">
-                    <div colspan="14" class="table-cell" style="text-align: center; ">{{$detalles[$i]->general}}, {{$detalles[$i]->subconcepto}}, {{$detalles[$i]->detalle}}</div>
+                    <div colspan="14" class="table-cell" style="text-align: center; ">{{$detalles[$i]->general}}, {{$detalles[$i]->subconcepto}}, {{$detalles[$i]->detalle}} , {{$detalles[$i]->observacion}}</div>
                         <div colspan="6" class="table-cell" style="text-align: center; "><b>{{$detalles[$i]->fecha_concluido}}</b></div>
                     </div>
                 @endfor                          
