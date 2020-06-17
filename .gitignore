@@ -14,3 +14,6 @@ yarn-error.log
 public_html/files/licencias/5e5ea27324346.jpg
 public_html/img/avatars/5ee249b799f81.png
 public_html/js/app.js
+public_html/files/*.jpg
+public_html/files/*.png
+public_html/files/*.jfif
