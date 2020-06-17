@@ -532,7 +532,7 @@
                             
                             <!-- VENTAS CANCELADAS -->
                                 <div class="form-group row">
-                                    <h6 v-if="ventas==1 & numCancelaciones != 0"  style="font-weight: bold; color: blue;" class="col-md-3">Cancelaciones: {{this.numCancelaciones}}</h6>
+                                    <h6 v-if="ventas==1 & numCancelaciones != 0"  style="font-weight: bold; color: blue;" class="col-md-3">Canceladas: {{this.numCancelaciones}}</h6>
                                 </div>
 
                                 <div class="form-group row" v-if="ventas==1 && numCancelaciones != 0">
@@ -697,6 +697,149 @@
                                     </div>
                                 </div>
 
+                            <!-- CAMBIOS -->
+                                <div class="form-group row">
+                                    <h6 v-if="ventas==1 & numCambios != 0"  style="font-weight: bold; color: blue;" class="col-md-3">Cambios: {{this.numCambios}}</h6>
+                                </div>
+
+                                <div class="form-group row" v-if="ventas==1 && numCambios != 0 && tipoVendedor == 0">
+                                    <div class="col-md-12">
+                                        <table class="table table-bordered table-striped table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Fecha</th>
+                                                    <th>Folio</th>
+                                                    <th>Proyecto</th>
+                                                    <th>Etapa</th>
+                                                    <th>Manzana</th>
+                                                    <th>Lote</th>
+                                                    <th>Cliente</th>
+                                                    <th>Precio Venta</th>
+                                                    <th>Crédito</th>
+                                                    <th>% Avance</th>
+                                                    <th>% De comisión</th>
+                                                    <th>Comisión a pagar</th>
+                                                    <th>Este pago</th>
+                                                    <th>Por pagar</th>
+                                                    <th>Anticipo anterior (-)</th>
+                                                    <th></th>
+                                                    <!-- <th>Observaciones</th> -->
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="cambio in arrayCambios" :key="cambio.id">
+                                                    <td class="td2" v-text="cambio.fecha"></td>
+                                                    <td v-text="cambio.id"></td>
+                                                    <td class="td2" v-text="cambio.proyecto_ant + ' -> ' + cambio.proyecto"></td>
+                                                    <td class="td2" v-text="cambio.etapa_ant + ' -> ' + cambio.etapa"></td>
+                                                    <td class="td2" v-text="cambio.manzana_ant + ' -> ' + cambio.manzana"></td>
+                                                    <td class="td2" v-text="cambio.lote_ant + ' -> ' + cambio.num_lote"></td>
+                                                    <td class="td2" v-text="cambio.nombre_cliente"></td>
+                                                    <td class="td2" v-text="'$'+formatNumber(cambio.precio_venta_ant) + ' -> ' + formatNumber(cambio.precio_venta)"></td>
+                                                    <td class="td2" v-text="cambio.tipo_credito + '(' + cambio.institucion + ')'"></td>
+                                                    <td v-text="cambio.avance_lote + '%'"></td>
+                                                    <td v-text="cambio.porcentaje_comision + '%'"></td>
+                                                    <td class="td2" v-text="'$'+formatNumber(cambio.comision_pagar = (cambio.precio_venta * (cambio.porcentaje_comision/100) ) )"></td>
+                                                    
+                                                    <td v-if="cambio.indiv == 0" v-text="'$'+formatNumber(cambio.este_pago = (cambio.comision_pagar / 2) )"></td>
+                                                    <td v-else v-text="'$'+formatNumber(cambio.este_pago = cambio.comision_pagar )"></td>
+                                                    <td v-if="cambio.indiv == 0" v-text="'$'+formatNumber(cambio.por_pagar = (cambio.comision_pagar / 2) )"></td>
+                                                    <td v-else v-text="'$'+formatNumber(cambio.por_pagar=0)"></td>
+                                                    <td v-text="'$'+formatNumber(cambio.pago_ant)"></td>
+                                                    <td>
+                                                        <button title="No aplica cambio" type="button" class="btn btn-danger btn-sm" @click="noAplica(cambio.id)">
+                                                            <i class="fa fa-close"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>      
+                                                <tr>
+                                                    <td align="right" colspan="11"><strong>Total: </strong></td>
+                                                    <td> ${{formatNumber(total_comision_cambio = totalComisionCambio)}} </td>
+                                                    <td><strong> ${{formatNumber(total_pagado_cambio = totalPagadoCambio)}} </strong></td>
+                                                    <td> ${{formatNumber(total_porPagar_cambio = totalPorPagarCambio)}} </td>
+                                                    <td colspan="2"> ${{formatNumber(total_anticipo_cambio = totalAnticipoCambio)}} </td>
+                                                      
+                                                </tr>                       
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" v-if="ventas==1 && numPendientes != 0 && tipoVendedor == 1">
+                                    <div class="col-md-12">
+                                        <table class="table table-bordered table-striped table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Fecha</th>
+                                                    <th>Folio</th>
+                                                    <th>Proyecto</th>
+                                                    <th>Etapa</th>
+                                                    <th>Manzana</th>
+                                                    <th>Lote</th>
+                                                    <th>Cliente</th>
+                                                    <th>Precio Venta</th>
+                                                    <th>Crédito</th>
+                                                    <th>% Avance</th>
+                                                    <th>% De comisión</th>
+                                                    <th>Comisión a pagar</th>
+                                                    <th>IVA</th>
+                                                    <th>Retención</th>
+                                                    <th>ISR</th>
+                                                    
+                                                    <th>Este pago</th>
+                                                    <th>Por pagar</th>
+                                                    <th>Anticipo anterior (-)</th>
+                                                    <th></th>
+                                                    <!-- <th>Observaciones</th> -->
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="cambio in arrayCambios" :key="cambio.id">
+                                                    <td class="td2" v-text="cambio.fecha"></td>
+                                                    <td v-text="cambio.id"></td>
+                                                    <td class="td2" v-text="cambio.proyecto_ant + '->' + cambio.proyecto"></td>
+                                                    <td class="td2" v-text="cambio.etapa_ant + '->' + cambio.etapa"></td>
+                                                    <td class="td2" v-text="cambio.manzana_ant + '->' + cambio.manzana"></td>
+                                                    <td v-text="cambio.lote_ant + '->' + cambio.num_lote"></td>
+                                                    <td class="td2" v-text="cambio.nombre_cliente"></td>
+                                                    <td v-text="'$'+formatNumber(cambio.precio_venta)"></td>
+                                                    <td class="td2" v-text="cambio.tipo_credito + '(' + cambio.institucion + ')'"></td>
+                                                    <td v-text="cambio.avance_lote + '%'"></td>
+                                                    <td v-text="cambio.porcentaje_comision + '%'"></td>
+                                                    <td class="td2" v-text="'$'+formatNumber(cambio.comision_pagar = (cambio.precio_venta * (cambio.porcentaje_comision/100) ) )"></td>
+                                                    <td v-text="'$'+formatNumber(cambio.iva = cambio.comision_pagar * 0.16)"></td>
+                                                    <td v-if="bandRetencion == 1" v-text="'$'+formatNumber(cambio.retencion = (cambio.iva * (2/3)))"></td>
+                                                    <td v-else v-text="'$'+formatNumber(cambio.retencion = 0)"></td>
+                                                    <td v-if="bandISR == 1" v-text="'$'+formatNumber(cambio.isr = (cambio.comision_pagar * .10 ))"></td>
+                                                    <td v-else v-text="'$'+formatNumber(cambio.isr = 0 )"></td>
+                                                    
+                                                    <td v-if="pendiente.indiv == 0" v-text="'$'+formatNumber(cambio.este_pago = (cambio.comision_pagar / 2) + cambio.iva - cambio.isr - cambio.retencion)"></td>
+                                                    <td v-else v-text="'$'+formatNumber(cambio.este_pago = (cambio.comision_pagar) + cambio.iva - cambio.isr - cambio.retencion )"></td>
+                                                    <td v-if="cambio.indiv == 0" v-text="'$'+formatNumber(cambio.por_pagar = (cambio.comision_pagar / 2) )"></td>
+                                                    <td v-else v-text="'$'+formatNumber(cambio.por_pagar=0)"></td>
+                                                    <td v-text="'$'+formatNumber(cambio.pago_ant)"></td>
+                                                    <td>
+                                                        <button title="No aplica cambio" type="button" class="btn btn-danger btn-sm" @click="noAplica(cambio.id)">
+                                                            <i class="fa fa-close"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>      
+                                                <tr>
+                                                    <td align="right" colspan="11"><strong>Total:</strong></td>
+                                                     <td> ${{formatNumber(total_comision_cambio = totalComisionCambio)}} </td>
+                                                     <td><strong> ${{formatNumber(total_iva_cambio = totalIvaCambio)}} </strong></td>
+                                                     <td><strong> ${{formatNumber(total_retencion_cambio = totalRetencionCambio)}} </strong></td>
+                                                     <td><strong> ${{formatNumber(total_isr_cambio = totalIsrCambio)}} </strong></td>
+                                                    <td><strong> ${{formatNumber(total_pagado_cambio = totalPagadoCambio)}} </strong></td>
+                                                    <td> ${{formatNumber(total_porPagar_cambio = totalPorPagarCambio)}} </td>
+                                                    <td colspan="2"> ${{formatNumber(total_anticipo_cambio = totalAnticipoCambio)}} </td>
+                                                      
+                                                </tr>                       
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
                             <!-- <div class="form-group row line-separator"  v-if="ventas==1"></div> -->
 
                             <!-- DATOS DE VENTA -->
@@ -709,11 +852,15 @@
                                             <thead>
                                                 <tr>
                                                     <th> Total </th>
-                                                    <td>  $ {{formatNumber(total = total_pagado + total_pagado_indiv + total_pagado_pendiente)}} </td>
+                                                    <td>  $ {{formatNumber(total = total_pagado + total_pagado_indiv + total_pagado_pendiente + total_pagado_cambio)}} </td>
                                                 </tr>
                                                 <tr>
                                                     <th>- Ventas canceladas </th>
                                                     <td>  $ {{formatNumber(total_anticipo)}} </td>
+                                                </tr>
+                                                <tr v-if="total_anticipo_cambio != 0">
+                                                    <th>- Cambios </th>
+                                                    <td>  $ {{formatNumber(total_anticipo_cambio)}} </td>
                                                 </tr>
                                                 <tr>
                                                     <th>- Bonos cancelados </th>
@@ -751,7 +898,11 @@
                                             <thead>
                                                 <tr>
                                                     <th> Total </th>
-                                                    <td>  $ {{formatNumber(total = total_pagado + total_pagado_indiv + total_pagado_pendiente)}} </td>
+                                                    <td>  $ {{formatNumber(total = total_pagado + total_pagado_indiv + total_pagado_pendiente + total_pagado_cambio)}} </td>
+                                                </tr>
+                                                <tr v-if="total_anticipo_cambio != 0">
+                                                    <th>- Cambios </th>
+                                                    <td>  $ {{formatNumber(total_anticipo_cambio)}} </td>
                                                 </tr>
                                                 <tr v-if="numCancelaciones > 0">
                                                     <th>- Ventas canceladas </th>
@@ -1135,7 +1286,7 @@
                             
                             <!-- VENTAS CANCELADAS -->
                                 <div class="form-group row">
-                                    <h6 v-if="numCancelaciones != 0"  style="font-weight: bold; color: blue;" class="col-md-3">Cancelaciones: {{this.numCancelaciones}}</h6>
+                                    <h6 v-if="numCancelaciones != 0"  style="font-weight: bold; color: blue;" class="col-md-3">Canceladas: {{this.numCancelaciones}}</h6>
                                 </div>
 
                                 <div class="form-group row" v-if="numCancelaciones != 0">
@@ -1301,6 +1452,35 @@
 
                             <!-- <div class="form-group row line-separator"  v-if="ventas==1"></div> -->
 
+                            <!-- CAMBIOS  -->
+                                <div class="form-group row">
+                                    <h6 v-if=" numCambios != 0"  style="font-weight: bold; color: blue;" class="col-md-3">Cambios: {{this.numCambios}}</h6>
+                                </div>
+
+                                <div class="form-group row" v-if="numCambios != 0">
+                                    <div class="col-md-12">
+                                        <table class="table table-bordered table-striped table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Descripcion</th>
+                                                    <th>Monto</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="cambio in arrayCambios" :key="cambio.id">
+                                                    <td class="td2" v-text="cambio.descripcion"></td>
+                                                    <td v-text="'$'+formatNumber(cambio.pago_ant)"></td>
+                                                </tr>      
+                                                <tr>
+                                                    <td align="right"><strong>Total: </strong></td>
+                                                    <td> ${{formatNumber(total_anticipo_cambio = totalAnticipoCambio)}} </td>
+                                                      
+                                                </tr>                       
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
                             <!-- DATOS DE VENTA -->
 
                                 <div class="form-group row"  v-if="tipoVendedor == 0">
@@ -1312,6 +1492,10 @@
                                                 <tr>
                                                     <th> Total </th>
                                                     <td>  &nbsp; $ {{formatNumber(total )}} </td>
+                                                </tr>
+                                                <tr v-if="total_anticipo_cambio != 0">
+                                                    <th>- Cambios </th>
+                                                    <td>  $ {{formatNumber(total_anticipo_cambio)}} </td>
                                                 </tr>
                                                 <tr>
                                                     <th>- Ventas canceladas </th>
@@ -1433,12 +1617,14 @@
                 numIndividualizadas:0,
                 numCancelaciones:0,
                 numPendientes:0,
+                numCambios:0,
 
                 arrayVentas:[],
                 arrayDetalle:[],
                 arrayCanceladas:[],
                 arrayIndividualizadas:[],
                 arrayPendientes : [],
+                arrayCambios:[],
                 
                 numVentas:'', 
 
@@ -1466,6 +1652,14 @@
                 total_comision_pendiente:0,
                 total_pagado_pendiente:0,
                 total_porPagar_pendiente:0,
+
+                total_comision_cambio:0,
+                total_pagado_cambio:0,
+                total_porPagar_cambio:0,
+                total_anticipo_cambio:0,
+                total_iva_cambio:0,
+                total_retencion_cambio:0,
+                total_isr_cambio:0,
 
                 total_iva:0,
                 total_isr:0,
@@ -1588,6 +1782,83 @@
                     totalPorPagar = 0;
                 totalPorPagar = Math.round(totalPorPagar*100)/100;
                 return totalPorPagar;
+            },
+
+            totalComisionCambio: function(){
+                var totalComision =0.0;
+                for(var i=0;i<this.arrayCambios.length;i++){
+                    totalComision += parseFloat(this.arrayCambios[i].comision_pagar)
+                }
+                if(totalComision < 0)
+                    totalComision = 0;
+                totalComision = Math.round(totalComision*100)/100;
+                return totalComision;
+            },
+
+            totalPagadoCambio: function(){
+                var totalPagado =0.0;
+                for(var i=0;i<this.arrayCambios.length;i++){
+                    totalPagado += parseFloat(this.arrayCambios[i].este_pago)
+                }
+                if(totalPagado < 0)
+                    totalPagado = 0;
+                totalPagado = Math.round(totalPagado*100)/100;
+                return totalPagado;
+            },
+
+            totalPorPagarCambio: function(){
+                var totalPorPagar =0.0;
+                for(var i=0;i<this.arrayCambios.length;i++){
+                    totalPorPagar += parseFloat(this.arrayCambios[i].por_pagar)
+                }
+                if(totalPorPagar < 0)
+                    totalPorPagar = 0;
+                totalPorPagar = Math.round(totalPorPagar*100)/100;
+                return totalPorPagar;
+            },
+
+            totalAnticipoCambio: function(){
+                var totalAnticipo =0.0;
+                for(var i=0;i<this.arrayCambios.length;i++){
+                    totalAnticipo += parseFloat(this.arrayCambios[i].pago_ant)
+                }
+                if(totalAnticipo < 0)
+                    totalAnticipo = 0;
+                totalAnticipo = Math.round(totalAnticipo*100)/100;
+                return totalAnticipo;
+            },
+
+            totalIvaCambio: function(){
+                var totalIva =0.0;
+                for(var i=0;i<this.arrayCambios.length;i++){
+                    totalIva += parseFloat(this.arrayCambios[i].iva)
+                }
+                if(totalIva < 0)
+                    totalIva = 0;
+                totalIva = Math.round(totalIva*100)/100;
+                return totalIva;
+            },
+
+            totalIsrCambio: function(){
+                var totalIsr =0.0;
+                for(var i=0;i<this.arrayCambios.length;i++){
+                    totalIsr += parseFloat(this.arrayCambios[i].isr)
+                }
+                if(totalIsr < 0)
+                    totalIsr = 0;
+                totalIsr = Math.round(totalIsr*100)/100;
+                return totalIsr;
+            },
+
+            totalRetencionCambio: function(){
+                var totalRetencion =0.0;
+                for(var i=0;i<this.arrayCambios.length;i++){
+                    totalRetencion += parseFloat(this.arrayCambios[i].retencion)
+                }
+                if(totalRetencion < 0)
+                    totalRetencion = 0;
+                totalRetencion = Math.round(totalRetencion*100)/100;
+                return totalRetencion;
             },
 
             totalIva: function(){
@@ -1736,7 +2007,7 @@
             totalAPagar: function(){
                 var total_a_pagar = 0;
 
-                total_a_pagar = parseFloat(this.total) - parseFloat(this.apoyo) - parseFloat(this.total_anticipo) - parseFloat(this.total_bono) - parseFloat(this.restante);
+                total_a_pagar = parseFloat(this.total) - parseFloat(this.apoyo) - parseFloat(this.total_anticipo) - parseFloat(this.total_bono) - parseFloat(this.restante) - parseFloat(this.total_anticipo_cambio);
 
                 return total_a_pagar;
             }
@@ -1772,9 +2043,12 @@
                     me.arrayCanceladas = respuesta.canceladas;
                     me.arrayIndividualizadas = respuesta.individualizadas;
                     me.arrayPendientes = respuesta.pendientes;
+                    me.arrayCambios = respuesta.cambios;
+
                     me.numCancelaciones = respuesta.numCancelaciones;
                     me.numIndividualizadas = respuesta.numIndividualizadas;
                     me.numPendientes = respuesta.numPendientes;
+                    me.numCambios = respuesta.numCambios;
                     me.apoyo = 0;
                     me.aPagar = 0;
                     me.restante = respuesta.acumuladoAnt;
@@ -1806,40 +2080,61 @@
                 this.proceso=true;
 
                 let me = this;
-                //Con axios se llama el metodo store de PersonalController
-                axios.post('/comision/storeComision',{
-                    'mes': this.mes,
-                    'anio': this.anio,
-                    'total_pagado' : this.total_a_pagar,
-                    'total_comision' : this.total,
-                    'apoyo_mes' : this.apoyo,
-                    'asesor_id' : this.asesor_id,
-                    'total_porPagar' : this.total_porPagar,
-                    'restanteAnt' : this.restante,
+                Swal({
+                    title: 'Estas seguro?',
+                    animation: false,
+                    customClass: 'animated bounceInDown',
+                    text: "Se registrará la comisión",
+                    type: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Cancelar',
+                    
+                    confirmButtonText: 'Si, registrar!'
+                    }).then((result) => {
 
-                    'dataVentas':this.arrayVentas,
-                    'dataIndividualizadas': this.arrayIndividualizadas,
-                    'dataCanceladas' : this.arrayCanceladas,
-                    'dataPendientes' : this.arrayPendientes,
+                    if (result.value) {
+                        //Con axios se llama el metodo store de PersonalController
+                        axios.post('/comision/storeComision',{
+                            'mes': this.mes,
+                            'anio': this.anio,
+                            'total_pagado' : this.total_a_pagar,
+                            'total_comision' : this.total,
+                            'apoyo_mes' : this.apoyo,
+                            'asesor_id' : this.asesor_id,
+                            'total_porPagar' : this.total_porPagar,
+                            'restanteAnt' : this.restante,
 
-                    'tipo_vendedor' : this.tipoVendedor,
-                    'total_bono' : this.total_bono,
-                    'total_anticipo' : this.total_anticipo,
-                }).then(function (response){
-                    me.proceso=false;
-                    me.cerrarModal(); //al guardar el registro se cierra el modal
-                    me.listarComisiones(1); //se enlistan nuevamente los registros
-                    //Se muestra mensaje Success
-                    swal({
-                        position: 'top-end',
-                        type: 'success',
-                        title: 'Comision creada correctamente',
-                        showConfirmButton: false,
-                        timer: 1500
-                        })
-                }).catch(function (error){
-                    console.log(error);
-                });
+                            'dataVentas':this.arrayVentas,
+                            'dataIndividualizadas': this.arrayIndividualizadas,
+                            'dataCanceladas' : this.arrayCanceladas,
+                            'dataPendientes' : this.arrayPendientes,
+                            'dataCambios' : this.arrayCambios,
+
+                            'tipo_vendedor' : this.tipoVendedor,
+                            'total_bono' : this.total_bono,
+                            'total_anticipo' : this.total_anticipo,
+                        }).then(function (response){
+                            me.proceso=false;
+                            me.cerrarModal(); //al guardar el registro se cierra el modal
+                            me.listarComisiones(1); //se enlistan nuevamente los registros
+                            //Se muestra mensaje Success
+                            swal({
+                                position: 'top-end',
+                                type: 'success',
+                                title: 'Comision creada correctamente',
+                                showConfirmButton: false,
+                                timer: 1500
+                                })
+                        }).catch(function (error){
+                            console.log(error);
+                        });
+                    }
+                    else{
+                        me.proceso = false;
+                    }
+                })
             },
 
             formatNumber(value) {
@@ -1928,6 +2223,46 @@
                     return true;
                 }
             },
+
+            noAplica(id){
+                 
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+            
+                Swal({
+                    title: 'Estas seguro?',
+                    animation: false,
+                    customClass: 'animated bounceInDown',
+                    text: "Se descartaran los cambios de esta comisión",
+                    type: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Cancelar',
+                    
+                    confirmButtonText: 'Si, cambiar!'
+                    }).then((result) => {
+
+                    if (result.value) {
+                    
+                        axios.put('/comision/desartarCambio',{
+                            'id':id
+                        }); 
+                        
+                        me.getComision(me.asesor_id);
+                        Swal({
+                            title: 'Hecho!',
+                            text: 'Cambio descartado',
+                            type: 'success',
+                            animation: false,
+                            customClass: 'animated bounceInRight'
+                        })
+                    }
+                })
+                
+              
+            },
+
             detalleComision(comision_id){
                 let me = this;
                 var url = '/comision/detalleComision?comision_id=' + comision_id;
@@ -1944,6 +2279,9 @@
 
                     me.arrayIndividualizadas = respuesta.individualizadas;
                     me.numIndividualizadas = respuesta.numIndividualizadas;
+
+                    me.arrayCambios = respuesta.cambios;
+                    me.numCambios = respuesta.numCambios;
 
                     
                 })

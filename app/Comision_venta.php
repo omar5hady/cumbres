@@ -37,4 +37,9 @@ class Comision_venta extends Model
     {
         return $this->hasMany('App\Det_com_venta');
     }
+
+    public function det_com_cambios()
+    {
+        return $this->hasMany('App\Det_com_cambio');
+    }
 }

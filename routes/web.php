@@ -598,6 +598,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/comision/indexComisiones','ComisionesVentaController@indexComisiones');
         Route::get('/comision/detalleComision','ComisionesVentaController@getDetalle');
 
+        Route::put('/comision/desartarCambio','ComisionesVentaController@desartarCambio');
+
     ////////////////////////// RUTAS ASIGNAR GESTOR /////////////////////////////
 
         Route::get('/expediente/indexAsignarGestor','ExpedienteController@indexAsignarGestor');

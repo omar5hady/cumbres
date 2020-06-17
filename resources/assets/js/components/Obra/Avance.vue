@@ -170,7 +170,8 @@
                                         </template>
                                         <td class="td2" v-text="avancepro.fecha_ini"></td>
                                         <td class="td2" v-text="avancepro.fecha_fin"></td>
-                                        <td class="td2" v-text="formatNumber(avancepro.porcentajeTotal) + '%'"></td>
+                                        <td class="td2" v-if="avancepro.porcentajeTotal > 100" v-text="formatNumber(100) + '%'"></td>
+                                        <td class="td2" v-else v-text="formatNumber(avancepro.porcentajeTotal) + '%'"></td>
                                         <td class="td2"> <button v-if="avancepro.paquete != NULL && avancepro.paquete != ''" title="Ver paquete" type="button" class="btn btn-info pull-right" @click="mostrarPaquete(avancepro.paquete)">Ver paquete</button> </td>
                                        <td style="width:7%">
                                             <a v-if="avancepro.archivo" class="btn btn-primary btn-sm" v-bind:href="'/downloadModelo/'+avancepro.archivo"><i class="icon-cloud-download"></i></a>

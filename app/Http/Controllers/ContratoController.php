@@ -3643,6 +3643,15 @@ class ContratoController extends Controller
             $lote_new->save();
             DB::commit();
 
+                $contratos = Contrato::select('comision')->where('id','=',$request->id)->get();
+
+                if(sizeOf($contratos))
+                    if($contratos[0]->comision == 1){
+                        $contrato = Contrato::findOrFail($request->id);
+                        $contrato->comision = 3;
+                        $contrato->save();
+                    }
+
 
             } catch (Exception $e) { 
                 DB::rollBack();
