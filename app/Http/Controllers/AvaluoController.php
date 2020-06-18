@@ -195,6 +195,16 @@ class AvaluoController extends Controller
                     ->where('contratos.status','!=',0);
                     break;
                 }
+                case 'contratos.id':{
+                    $avaluos = $query
+                    ->where('inst_seleccionadas.elegido','=','1')
+                    ->where('contratos.id','=',$buscar)
+                    ->where('avaluos.fecha_recibido','=',NULL)
+                    ->where('contratos.status','!=',2)
+                    ->where('contratos.status','!=',0);
+                    break;
+
+                }
             }
         }
 
@@ -303,6 +313,14 @@ class AvaluoController extends Controller
                     break;
                 }
                 case 'licencias.visita_avaluo':{
+                    $avaluos = $query
+                    ->where($criterio,'=',$buscar)
+                    ->where('inst_seleccionadas.elegido','=','1')
+                    ->where('avaluos.fecha_recibido','!=',NULL);
+                    break;
+                }
+
+                case 'contratos.id':{
                     $avaluos = $query
                     ->where($criterio,'=',$buscar)
                     ->where('inst_seleccionadas.elegido','=','1')
