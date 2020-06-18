@@ -25,6 +25,7 @@ class AvaluoController extends Controller
         $avaluo = new Avaluo();
         $avaluo->contrato_id = $request->folio;
         $avaluo->fecha_solicitud = $request->fecha_solicitud;
+        $avaluo->fecha_ava_sol = $request->fecha_solicitud;
         $avaluo->valor_requerido = $request->valor_requerido;
         $avaluo->save();
 

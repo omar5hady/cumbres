@@ -838,13 +838,13 @@
                                                 <td class="td2" v-text="this.moment(programacion.ultimo_pagare).locale('es').format('DD/MMM/YYYY')"></td>
                                                 <td class="td2" v-text="'$'+formatNumber(programacion.saldo)"></td>
 
-                                                <td class="td2" v-if="programacion.fecha_firma_esc">
-                                                    <button title="Programar Firma" type="button" class="btn btn-warning pull-right" 
-                                                        @click="abrirModal('solic_entrega',programacion)">Solicitar
+                                                <td class="td2">
+                                                    <button title="Solicitar entrega de vivienda" type="button" class="btn btn-warning pull-right" 
+                                                        @click="abrirModal('solic_entrega',programacion)">Solicitar entrega
                                                     </button>
                                                 </td>
-                                                <td class="td2" v-else>Faltan Documentos
-                                                </td>
+                                                <!-- <td class="td2" v-else>Faltan Documentos
+                                                </td> -->
                                                 <td class="td2" v-if="programacion.saldo != 0" v-text="'Saldo Pendiente ó sin solicitud'"></td>
                                                 <td class="td2" v-else v-text="'Concluido'"></td>
 
