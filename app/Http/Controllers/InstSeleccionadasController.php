@@ -14,6 +14,11 @@ use App\Dev_credito;
 use Auth;
 use App\Pago_contrato;
 use App\Expediente;
+use App\User;
+use App\Notifications\NotifyAdmin;
+use App\Personal;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NotificationReceived;
 
 class InstSeleccionadasController extends Controller
 {
@@ -628,6 +633,29 @@ class InstSeleccionadasController extends Controller
             $credito->save();
 
             $deposito->save();
+
+            $toAlert = [2];
+            $msj = 'Se ha realizado un nuevo abono a crédito';
+
+            foreach($toAlert as $index => $id){
+                $senderData = DB::table('users')->select('foto_user', 'usuario')->where('id','=',Auth::user()->id)->get();
+
+                $dataAr = [
+                    'notificacion'=>[
+                        'usuario' => $senderData[0]->usuario,
+                        'foto' => $senderData[0]->foto_user,
+                        'fecha' => Carbon::now(),
+                        'msj' => $msj,
+                        'titulo' => 'Nuevo deposito'
+                    ]
+                ];
+                User::findOrFail($id)->notify(new NotifyAdmin($dataAr));
+
+                $persona = Personal::findOrFail($id);
+
+                Mail::to($persona->email)->send(new NotificationReceived($msj));
+            }
+
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();

@@ -22,6 +22,12 @@ use App\Avaluo;
 use App\Bono_recomendado;
 use App\Http\Controllers\BonoRecomendadoController;
 
+use App\Mail\NotificationReceived;
+use Illuminate\Support\Facades\Mail;
+use App\Personal;
+use App\Notifications\NotifyAdmin;
+use App\User;
+
 class ExpedienteController extends Controller
 {
     public function indexContratos(Request $request)
@@ -3446,9 +3452,9 @@ class ExpedienteController extends Controller
                 $asignar->postventa = 1;
             }
             $asignar->save();
-
+            
             $toAlert = [2];
-            $msj = 'Se ha realizado una nueva escritura';
+            $msj = 'Se ha realizado una nueva firma de escritura';
 
             foreach($toAlert as $index => $id){
                 $senderData = DB::table('users')->select('foto_user', 'usuario')->where('id','=',Auth::user()->id)->get();

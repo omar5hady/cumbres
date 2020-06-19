@@ -23,6 +23,8 @@ class FacturasController extends Controller
             ->select(
                 'contratos.id',//como es el mismo que el de credito seusara este id para las consultas
                 DB::raw('CONCAT(c.nombre, " ", c.apellidos) as nombre'),
+                DB::raw("DATEDIFF('".Carbon::now()->format('Y-m-d')."', contratos.fecha_status) as dias"),
+                'contratos.status',
                 'c.rfc',
                 'creditos.num_lote',
                 'creditos.fraccionamiento',
@@ -42,16 +44,18 @@ class FacturasController extends Controller
                                 return $query->where('creditos.etapa', '=', $b);
                             })
                             ->when($request->b_gen, function($query, $b){
-                                return $query->where('nombre', 'like', "%$b%")
+                                return $query->where(DB::raw('CONCAT(nombre," ",apellidos)'), 'like', "%$b%")
                                     ->orWhere('contratos.e_monto', 'like', "%$b%")
                                     ->orWhere('contratos.e_folio_factura', 'like', "%$b%")
                                     ->orWhere('creditos.num_lote', 'like', "%$b%");
                             });
             }else{
-                $facturas = $facturas->where("$request->criterio", 'like', "%$request->b_gen%");
+                if($request->criterio == 'nombre'){
+                    $facturas = $facturas->where(DB::raw('CONCAT(nombre," ",apellidos)'), 'like', "%$request->b_gen%");
+                }else{$facturas = $facturas->where("$request->criterio", 'like', "%$request->b_gen%");}
             }
         }else{
-            $facturas = $facturas->whereNull('contratos.e_factura');
+            $facturas = $facturas->where('contratos.status', '=', 3)->whereNull('contratos.e_factura');
         }
         
 
@@ -99,6 +103,7 @@ class FacturasController extends Controller
 
     //Depositos pagares
     public function listarFacturaDepositos(Request $request){
+        
         $facturas = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
             ->join('clientes', 'clientes.id', '=', 'creditos.prospecto_id')
             ->join('personal as c', 'c.id', '=', 'clientes.id')
@@ -109,12 +114,13 @@ class FacturasController extends Controller
                 'depositos.id',
                 'contratos.id as cId',
                 DB::raw('CONCAT(c.nombre, " ", c.apellidos) as nombre'),
+                DB::raw("DATEDIFF('".Carbon::now()->format('Y-m-d')."', depositos.fecha_pago) as dias"),
                 'c.rfc',
                 'creditos.num_lote',
                 'creditos.fraccionamiento',
                 'creditos.etapa',
                 'creditos.manzana',
-                
+
                 'depositos.cant_depo',
                 'depositos.banco',
                 'depositos.concepto',
@@ -133,7 +139,7 @@ class FacturasController extends Controller
                                 return $query->where('creditos.etapa', '=', $b);
                             })
                             ->when($request->b_gen, function($query, $b){
-                                return $query->where('nombre', 'like', "%$b%")
+                                return $query->where(DB::raw('CONCAT(nombre," ",apellidos)'), 'like', "%$b%")
                                     ->orWhere('depositos.monto', 'like', "%$b%")
                                     ->orWhere('depositos.folio_factura', 'like', "%$b%")
                                     ->orWhere('depositos.cant_depo', 'like', "%$b%")
@@ -141,14 +147,16 @@ class FacturasController extends Controller
                                     ->orWhere('creditos.num_lote', 'like', "%$b%");
                             });
             }else{
-                $facturas = $facturas->where("$request->criterio", 'like', "%$request->b_gen%");
+                if($request->criterio == 'nombre'){
+                    $facturas = $facturas->where(DB::raw('CONCAT(nombre," ",apellidos)'), 'like', "%$request->b_gen%");
+                }else{$facturas = $facturas->where("$request->criterio", 'like', "%$request->b_gen%");}
             }
         }else{
             $facturas = $facturas->whereNull('depositos.factura');
         }
         
 
-        $facturas = $facturas->distinct('depositos.id')->paginate(30);
+        $facturas = $facturas->where('pagos_contratos.tipo_pagare', '!=', 1)->distinct('depositos.id')->paginate(30);
 
         return $facturas;
     }
@@ -190,7 +198,7 @@ class FacturasController extends Controller
         return response()->download($pathtoFile);
     }
 
-    //liquidacion de credito
+    //liquidacion de credito (escrituras)
     public function listarFacturaLiqCredito(Request $request){
         $facturas = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
             ->join('clientes', 'clientes.id', '=', 'creditos.prospecto_id')
@@ -202,6 +210,7 @@ class FacturasController extends Controller
                 'creditos.id',
                 'contratos.id as cId',
                 DB::raw('CONCAT(c.nombre, " ", c.apellidos) as nombre'),
+                DB::raw("DATEDIFF('".Carbon::now()->format('Y-m-d')."', expedientes.fecha_firma_esc) as dias"),
                 'c.rfc',
                 'creditos.num_lote',
                 'creditos.fraccionamiento',
@@ -221,13 +230,15 @@ class FacturasController extends Controller
                                 return $query->where('creditos.etapa', '=', $b);
                             })
                             ->when($request->b_gen, function($query, $b){
-                                return $query->where('nombre', 'like', "%$b%")
+                                return $query->where(DB::raw('CONCAT(nombre," ",apellidos)'), 'like', "%$b%")
                                     ->orWhere('creditos.monto', 'like', "%$b%")
                                     ->orWhere('creditos.folio_factura', 'like', "%$b%")
                                     ->orWhere('creditos.num_lote', 'like', "%$b%");
                             });
             }else{
-                $facturas = $facturas->where("$request->criterio", 'like', "%$request->b_gen%");
+                if($request->criterio == 'nombre'){
+                    $facturas = $facturas->where(DB::raw('CONCAT(nombre," ",apellidos)'), 'like', "%$request->b_gen%");
+                }else{$facturas = $facturas->where("$request->criterio", 'like', "%$request->b_gen%");}
             }
         }else{
             $facturas = $facturas->whereNull('creditos.factura');
@@ -289,6 +300,7 @@ class FacturasController extends Controller
                 'dep_creditos.id',
                 'contratos.id as cId',
                 DB::raw('CONCAT(c.nombre, " ", c.apellidos) as nombre'),
+                DB::raw("DATEDIFF('".Carbon::now()->format('Y-m-d')."', dep_creditos.fecha_deposito) as dias"),
                 'c.rfc',
                 'creditos.num_lote',
                 'creditos.fraccionamiento',
@@ -313,7 +325,7 @@ class FacturasController extends Controller
                                 return $query->where('creditos.etapa', '=', $b);
                             })
                             ->when($request->b_gen, function($query, $b){
-                                return $query->where('nombre', 'like', "%$b%")
+                                return $query->where(DB::raw('CONCAT(nombre," ",apellidos)'), 'like', "%$b%")
                                     ->orWhere('dep_creditos.monto', 'like', "%$b%")
                                     ->orWhere('dep_creditos.folio_factura', 'like', "%$b%")
                                     ->orWhere('creditos.num_lote', 'like', "%$b%")
@@ -322,7 +334,9 @@ class FacturasController extends Controller
                                     ->orWhere('dep_creditos.cant_depo', 'like', "%$b%");
                             });
             }else{
-                $facturas = $facturas->where($request->criterio, 'like', "%$request->b_gen%");
+                if($request->criterio == 'nombre'){
+                    $facturas = $facturas->where(DB::raw('CONCAT(nombre," ",apellidos)'), 'like', "%$request->b_gen%");
+                }else{$facturas = $facturas->where("$request->criterio", 'like', "%$request->b_gen%");}
             }
         }else{
             $facturas = $facturas->whereNull('dep_creditos.factura');

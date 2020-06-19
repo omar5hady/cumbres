@@ -19,6 +19,7 @@ use App\User;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\NotificationReceived;
 use App\Personal;
+use App\Inst_seleccionada;
 
 class DepositoController extends Controller
 {
@@ -1005,9 +1006,50 @@ class DepositoController extends Controller
 
             $deposito->save();
 
+            $tCredito = Inst_seleccionada::select('tipo_credito')
+                ->where([
+                    ['credito_id', '=', $contrato->id],
+                    ['elegido', '=', 1]
+                ])
+            ->first();
+            
+            if($tCredito->tipo_credito == "Apartado"){
+                
+                $saldo = Pago_contrato::select(
+                            DB::raw('SUM(monto_pago) as monto'), 
+                            DB::raw('SUM(restante) as restante')
+                        )->groupBy('contrato_id')
+                        ->where('contrato_id', '=', $contrato->id)
+                ->get();
+                
+                if(($saldo[0]->monto - $saldo[0]->restante) >= 50000){
+                    
+                    $toAlert1 = [2];
+                    $msj1 = "El contrato con folio $contrato->id ha acumulado un monto de $50,000.00 es momento de cambiar el tipo de crédito";
+                    foreach($toAlert1 as $index => $id){
+                        $senderData = DB::table('users')->select('foto_user', 'usuario')->where('id','=',Auth::user()->id)->get();
+                        
+                        $dataAr = [
+                            'notificacion'=>[
+                                'usuario' => $senderData[0]->usuario,
+                                'foto' => $senderData[0]->foto_user,
+                                'fecha' => Carbon::now(),
+                                'msj' => $msj1,
+                                'titulo' => 'Cambio de tipo de crédito'
+                            ]
+                        ];
+                        User::findOrFail($id)->notify(new NotifyAdmin($dataAr));
+                        
+
+                        $persona = Personal::findOrFail($id);
+
+                        Mail::to($persona->email)->send(new NotificationReceived($msj1));
+                    }
+                }
+            }
+
             $toAlert = [2];
             $msj = 'Se ha realizado un nuevo depósito de pagare';
-
             foreach($toAlert as $index => $id){
                 $senderData = DB::table('users')->select('foto_user', 'usuario')->where('id','=',Auth::user()->id)->get();
 

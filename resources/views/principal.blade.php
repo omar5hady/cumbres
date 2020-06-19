@@ -442,7 +442,7 @@
                                 @endif
                                 
                                     <li @click="menu=1001" class="nav-item">
-                                        <a class="nav-link" href="#"><i class="fa fa-file-invoice"></i> Facturas</a>
+                                        <a class="nav-link" href="#"><i class="fa fa-inbox"></i> Facturas</a>
                                     </li>
                                     
                             </ul>
