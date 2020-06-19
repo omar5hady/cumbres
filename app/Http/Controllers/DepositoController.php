@@ -13,6 +13,12 @@ use App\Gasto_admin;
 use App\Dep_credito;
 use Excel;
 use Auth;
+use File;
+use App\Notifications\NotifyAdmin;
+use App\User;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NotificationReceived;
+use App\Personal;
 
 class DepositoController extends Controller
 {
@@ -998,6 +1004,29 @@ class DepositoController extends Controller
             $pago_contrato->save();
 
             $deposito->save();
+
+            $toAlert = [2];
+            $msj = 'Se ha realizado un nuevo depósito de pagare';
+
+            foreach($toAlert as $index => $id){
+                $senderData = DB::table('users')->select('foto_user', 'usuario')->where('id','=',Auth::user()->id)->get();
+
+                $dataAr = [
+                    'notificacion'=>[
+                        'usuario' => $senderData[0]->usuario,
+                        'foto' => $senderData[0]->foto_user,
+                        'fecha' => Carbon::now(),
+                        'msj' => $msj,
+                        'titulo' => 'Nuevo deposito'
+                    ]
+                ];
+                User::findOrFail($id)->notify(new NotifyAdmin($dataAr));
+
+                $persona = Personal::findOrFail($id);
+
+                Mail::to($persona->email)->send(new NotificationReceived($msj));
+            }
+            
             DB::commit();
         } catch (Exception $e){
             DB::rollBack();

@@ -3446,6 +3446,29 @@ class ExpedienteController extends Controller
                 $asignar->postventa = 1;
             }
             $asignar->save();
+
+            $toAlert = [2];
+            $msj = 'Se ha realizado una nueva escritura';
+
+            foreach($toAlert as $index => $id){
+                $senderData = DB::table('users')->select('foto_user', 'usuario')->where('id','=',Auth::user()->id)->get();
+
+                $dataAr = [
+                    'notificacion'=>[
+                        'usuario' => $senderData[0]->usuario,
+                        'foto' => $senderData[0]->foto_user,
+                        'fecha' => Carbon::now(),
+                        'msj' => $msj,
+                        'titulo' => 'Firma de escritura'
+                    ]
+                ];
+                User::findOrFail($id)->notify(new NotifyAdmin($dataAr));
+
+                $persona = Personal::findOrFail($id);
+
+                Mail::to($persona->email)->send(new NotificationReceived($msj));
+            }
+
         DB::commit();
         } catch (Exception $e) {
             DB::rollBack();

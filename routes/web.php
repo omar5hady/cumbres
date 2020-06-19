@@ -531,8 +531,24 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/estadoCuenta/excel','DepositoController@excelEstadoCuenta');
         Route::get('/estadoCuenta/estadoPDF/{id}','DepositoController@estadoPDF');
 
-        Route::get('/facturas/contratos/get','ContratoController@listarFacturaContratos');//by Rafael Rivera
+    //////////////////////////////// RUTAS MODULO facturas ////////////////////////////
 
+        //Contrato
+        Route::get('/facturas/contratos/get','FacturasController@listarFacturaContratos');//by Rafael Rivera
+        Route::post('/facturas/contratos/update','FacturasController@cargarFacturaContratos');//by Rafael Rivera
+        Route::get('/facturas/contratos/download/{name}','FacturasController@descargaFacturaC');//by Rafael Rivera
+        //Depositos
+        Route::get('/facturas/depositos/get','FacturasController@listarFacturaDepositos');//by Rafael Rivera
+        Route::post('/facturas/depositos/update','FacturasController@cargarFacturaDepositos');//by Rafael Rivera
+        Route::get('/facturas/depositos/download/{name}','FacturasController@descargaFacturaD');//by Rafael Rivera
+        //cobro de credito
+        Route::get('/facturas/liq/credito/get','FacturasController@listarFacturaLiqCredito');//by Rafael Rivera
+        Route::post('/facturas/liq/credito/update','FacturasController@cargarFacturaLiqCredito');//by Rafael Rivera
+        Route::get('/facturas/liq/credito/download/{name}','FacturasController@descargaFacturaLC');//by Rafael Rivera
+        //cobro de credito
+        Route::get('/facturas/dep/credito/get','FacturasController@listarFacturaDepCredito');//by Rafael Rivera
+        Route::post('/facturas/dep/credito/update','FacturasController@cargarFacturaDepCredito');//by Rafael Rivera
+        Route::get('/facturas/dep/credito/download/{name}','FacturasController@descargaFacturaDC');//by Rafael Rivera
 
     /************************** RUTAS ESTADISTICAS ***************************/
         Route::get('/estadisticas/datos_extra','EstadisticasController@estad_datos_extra');

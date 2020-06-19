@@ -33,6 +33,7 @@ use App\Mail\NotificationReceived;
 use App\User;
 use App\Notifications\NotifyAdmin;
 use Excel;
+use File;
 
 class ContratoController extends Controller
 {
@@ -3362,6 +3363,33 @@ class ContratoController extends Controller
                         //Mail::to($correo)->send(new NotificationReceived($msj));
                         User::findOrFail($personas->id)->notify(new NotifyAdmin($arregloAceptado));
                     }
+                    
+                }
+
+                
+            }
+
+            if($request->status == 3){
+                $toAlert = [2];
+                $msj = 'Se ha realizado una nueva firma de contrato';
+
+                foreach($toAlert as $index => $id){
+                    $senderData = DB::table('users')->select('foto_user', 'usuario')->where('id','=',Auth::user()->id)->get();
+
+                    $dataAr = [
+                        'notificacion'=>[
+                            'usuario' => $senderData[0]->usuario,
+                            'foto' => $senderData[0]->foto_user,
+                            'fecha' => Carbon::now(),
+                            'msj' => $msj,
+                            'titulo' => 'Firma de contrato'
+                        ]
+                    ];
+                    User::findOrFail($id)->notify(new NotifyAdmin($dataAr));
+
+                    $persona = Personal::findOrFail($id);
+
+                    Mail::to($persona->email)->send(new NotificationReceived($msj));
                 }
             }
         // } catch (Exception $e){
@@ -4356,20 +4384,5 @@ class ContratoController extends Controller
         $contrato = Contrato::findOrFail($request->id);
         $contrato->exp_bono = 1;
         $contrato->save();
-    }
-
-    public function listarFacturaContratos(Request $request){
-        $facturas = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-            ->join('clientes', 'clientes.id', '=', 'creditos.prospecto_id')
-            ->join('personal as c', 'c.id', '=', 'clientes.id')
-            ->select(
-                'contratos.id',//como es el mismo que el de credito seusara este id para las consultas
-                DB::raw('CONCAT(c.nombre, " ", c.apellidos) as nombre'),
-                'c.rfc',
-                'creditos.num_lote'
-            )
-            ->get();
-
-        return $facturas;
     }
 }

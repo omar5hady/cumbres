@@ -11,28 +11,42 @@
                         <i class="fa fa-align-justify"></i>Facturacion
                     </div>
                     <div class="card-body">
-                        <ul class="nav nav2 nav-tabs" id="myTab1" role="tablist">
+
+                        <ul class="nav nav2 nav-tabs" id="myTab1" >
                             <li class="nav-item">
-                                <a class="nav-link text-info active show" id="ingresar-tab" data-toggle="tab" href="#creditos" role="tab" aria-controls="creditos" aria-selected="true" v-text="'Creditos (' + 0 +')'"></a>
+                                <a @click="tab = 1" v-text="'Depositos de pagares (' + arrayDepositos.total +')'" 
+                                    class="nav-link text-info active show" id="deposito-tab" href="#depositosId" data-target="#depositosId"
+                                    data-toggle="tab" role="tab" aria-controls="depositosId" aria-selected="true" >
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-info" id="autorizado-tab" data-toggle="tab" href="#factura" role="tab" aria-controls="factura" aria-selected="false" v-text="'Contrato (' + 0 +')'"></a>
+                                <a @click="tab = 2" v-text="'Contratos (' + arrayContratos.total +')'" 
+                                    class="nav-link text-info" id="contrato-tab" href="#facturaId" data-target="#facturaId"
+                                    data-toggle="tab" role="tab" aria-controls="facturaId" aria-selected="false">
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-info" id="liquidacion-tab" data-toggle="tab" href="#liquidacion" role="tab" aria-controls="liquidacion" aria-selected="false" v-text="'Escrituras (' + 0 +')'"></a>
+                                <a @click="tab = 3" v-text="'Escrituras (' + arrayLiqCredit.total +')'" 
+                                class="nav-link text-info" id="escritura-tab" href="#escriturasId" data-target="#escriturasId"
+                                data-toggle="tab" role="tab" aria-controls="escriturasId" aria-selected="false" ></a>
+                            </li>
+                            <li class="nav-item">
+                                <a @click="tab = 4" v-text="'Deposito a credito (' + arrayDepCredit.total +')'" 
+                                class="nav-link text-info" id="escritura-tab" href="#depositoCreId" data-target="#depositoCreId"
+                                data-toggle="tab" role="tab" aria-controls="depositoCreId" aria-selected="false" ></a>
                             </li>
                         </ul>
 
-                        <div class="tab-content" id="myTab1Content">
+                        <div class="tab-content" id="nav-tabContent-facturas">
 
-                            <!-- Facturas de creditos -->
-                            <div class="tab-pane fade active show" id="creditos" role="tabpanel" aria-labelledby="ingresar-tab">
-                                <div class="row">
-                                    <select class="form-control col-md-3" v-model="criterio" @click="selectFraccionamientos()">
+                            <!-- Facturas de Depositos -->
+                            <div class="tab-pane fade show active" v-show="tab == 1">
+                                <div class="row"><!-- campos de busqueda-->
+                                    <select class="form-control col-md-3" v-model="criterio">
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
-                                        <option value="c.nombre">Cliente</option>
-                                        <option value="contratos.id">Folio Factura</option>
-                                        <option value="">Monto de Factura</option>
+                                        <option value="nombre">Cliente</option>
+                                        <option value="depositos.folio_factura">Folio Factura</option>
+                                        <option value="depositos.monto">Monto de Factura</option>
                                     </select>
 
                                     <template v-if="criterio=='lotes.fraccionamiento_id'">
@@ -40,27 +54,35 @@
                                             <option value="">Seleccione</option>
                                             <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                         </select>
-                                        <select class="form-control col-md-3" v-model="b_etapa"> 
+                                        <select class="form-control col-md-3" v-model="b_etapa">
                                             <option value="">Etapa</option>
-                                            <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                            <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.num_etapa" v-text="etapas.num_etapa"></option>
                                         </select>
                                     </template>
-                                    <input type="text" v-model="b_gen" class="form-control col-sm-3" placeholder="Texto a buscar">
+                                    <input type="text" v-on:keyup.enter="listarDepositos()" v-model="b_gen" class="form-control col-sm-3" placeholder="Cliente, Monto, Factura">
                                 </div>
-                                <div class="row text-right">
-                                    <button type="submit" @click="listarContratos()" class="btn btn-primary col-sm-1"><i class="fa fa-search"></i> Buscar</button>
+                                <div class="row"><!-- boton de busqueda-->
+                                    <div class="col-sm-3 text-info"><strong>Depositos</strong></div>
+                                    <div class="col-sm-9 text-right">
+                                        <button type="submit" @click="listarDepositos()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    </div>
                                 </div>
-                                <div class="row">
+                                <br>
+                                <div class="row"><!-- table-->
                                     <table class="table-responsive table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
                                                 <th>Folio</th>
                                                 <th>Cliente</th>
-                                                <th>Lote</th>
+                                                <th>RFC</th>
                                                 <th>Fraccionamiento</th>
                                                 <th>Etapa</th>
-                                                <th>RFC</th>
-                                                <th>Credito</th>
+                                                <th>Manzana</th>
+                                                <th>Lote</th>
+                                                <th>Cuenta</th>
+                                                <th>Monto</th>
+                                                <th>Concepto</th>
+                                                <th>Contrato</th>
                                                 <th>Factura</th>
                                                 <th>Folio Factura</th>
                                                 <th>Valor</th>
@@ -68,15 +90,19 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td>#</td>
-                                                <td>Cliente</td>
-                                                <td>Lote</td>
-                                                <td>Fraccionamiento</td>
-                                                <td>Etapa</td>
-                                                <td>RFC</td>
+                                            <tr v-for="deposito in arrayDepositos.data" :key="deposito.id">
+                                                <td v-text="deposito.id" class="text-center"></td>
+                                                <td v-text="deposito.nombre">Cliente</td>
+                                                <td v-text="deposito.rfc">RFC</td>
+                                                <td v-text="deposito.fraccionamiento">Fraccionamiento</td>
+                                                <td v-text="deposito.etapa">Etapa</td>
+                                                <td v-text="deposito.manzana">Etapa</td>
+                                                <td v-text="deposito.num_lote">Lote</td>
+                                                <td v-text="deposito.banco">Cuenta</td>
+                                                <td v-text="'$'+deposito.cant_depo.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">Monto</td>
+                                                <td v-text="deposito.concepto">Concepto</td>
                                                 <td>
-                                                    <button type="button" class="btn btn-info btn-sm">Ver contrato</button>
+                                                    <a :href="'/contratoCompraVenta/pdf/'+deposito.cId" target="_blank" class="btn btn-info btn-sm">Ver contrato</a>
                                                 </td>
                                                 <td>
                                                     <button id="btnFiles" class="dropdown-toggle btn-primary btn btn-sm" data-toggle="dropdown" type="button"
@@ -85,29 +111,79 @@
                                                     </button>
                                                     <div class="dropdown-menu" aria-labelleadby="btnFiles">
                                                         <a href="#" class="dropdown-item btn btn-primary text-center" style="background-color: #00B0BB !important;"
-                                                            data-toggle="modal" data-target="#modAdvFilesUp" @click="11">
+                                                            data-toggle="modal" data-target="#modAdvFilesUp" @click="setForm(deposito, 'deposito')">
                                                             <i class="fa fa-cloud-upload"></i> Subir archivo
                                                         </a>
-                                                        <a v-if="1==1" :href="'/advisor/download/'+1234" class="dropdown-item btn text-info">Descargar</a>
+                                                        <a v-if="deposito.factura" :href="'/facturas/contratos/download/'+deposito.factura" class="dropdown-item btn text-info">Descargar</a>
                                                     </div>
                                                 </td>
-                                                <td>folio</td>
-                                                <td>monto</td>
-                                                <td>F. de carga</td>
+                                                <td v-text="deposito.folio_factura">folio</td>
+                                                <td v-text="'$'+deposito.monto.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">monto</td>
+                                                <td v-if="deposito.f_carga_factura" v-text="this.moment(deposito.f_carga_factura).locale('es').format('DD/MMM/YYYY')">F. de carga</td>
+                                                <td v-else></td>
                                             </tr>
                                         </tbody>
                                     </table>
+                                </div>
+                                <div class="row"> <!-- Pagination-->
+                                    <nav>
+                                        <!--Botones de paginacion -->
+                                        <ul class="pagination">
+                                            <li class="page-item">
+                                                <a class="page-link" href="#" @click.prevent="listarDepositos(1)">Inicio</a>
+                                            </li>
+                                            <li v-if="arrayDepositos.current_page-3 >= 1">
+                                                <a class="page-link" href="#" 
+                                                @click.prevent="listarDepositos(arrayDepositos.current_page-3)" 
+                                                v-text="arrayDepositos.current_page-3" ></a>
+                                            </li>
+                                            <li v-if="arrayDepositos.current_page-2 >= 1">
+                                                <a class="page-link" href="#" 
+                                                @click.prevent="listarDepositos(arrayDepositos.current_page-2)" 
+                                                v-text="arrayDepositos.current_page-2" ></a>
+                                            </li>
+                                            <li v-if="arrayDepositos.current_page-1 >= 1">
+                                                <a class="page-link" href="#" 
+                                                @click.prevent="listarDepositos(arrayDepositos.current_page-1)" 
+                                                v-text="arrayDepositos.current_page-1" ></a>
+                                            </li>
+                                            
+                                            <li class="page-item active">
+                                                <a class="page-link" href="#" v-text="arrayDepositos.current_page" ></a>
+                                            </li>
+                                            
+                                            <li v-if="arrayDepositos.current_page+1 <= arrayDepositos.last_page">
+                                                <a class="page-link" href="#" 
+                                                @click.prevent="listarDepositos(arrayDepositos.current_page+1)" 
+                                                v-text="arrayDepositos.current_page+1" ></a>
+                                            </li>
+                                            <li v-if="arrayDepositos.current_page+2 <= arrayDepositos.last_page">
+                                                <a class="page-link" href="#" 
+                                                @click.prevent="listarDepositos(arrayDepositos.current_page+2)" 
+                                                v-text="arrayDepositos.current_page+2" ></a>
+                                            </li>
+                                            <li v-if="arrayDepositos.current_page+3 <= arrayDepositos.last_page">
+                                                <a class="page-link" href="#" 
+                                                @click.prevent="listarDepositos(arrayDepositos.current_page+3)" 
+                                                v-text="arrayDepositos.current_page+3" ></a>
+                                            </li>
+                                            
+                                            <li class="page-item">
+                                                <a class="page-link" href="#" @click.prevent="listarDepositos(arrayDepositos.last_page)">Ultimo</a>
+                                            </li>
+                                        </ul>
+                                    </nav>
                                 </div>
                             </div>
 
                             <!-- Facturas de contratos -->
-                            <div class="tab-pane fade" id="factura" role="tabpanel" aria-labelledby="autorizado-tab">
+                            <div class="tab-pane fade show active" v-show="tab == 2">
                                 <div class="row">
-                                    <select class="form-control col-md-3" v-model="criterio" @click="selectFraccionamientos()">
+                                    <select class="form-control col-md-3" v-model="criterio">
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
-                                        <option value="c.nombre">Cliente</option>
-                                        <option value="contratos.id">Folio Factura</option>
-                                        <option value="">Monto de Factura</option>
+                                        <option value="nombre">Cliente</option>
+                                        <option value="contratos.e_folio_factura">Folio Factura</option>
+                                        <option value="contratos.e_monto">Monto de Factura</option>
                                     </select>
 
                                     <template v-if="criterio=='lotes.fraccionamiento_id'">
@@ -115,26 +191,31 @@
                                             <option value="">Seleccione</option>
                                             <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                         </select>
-                                        <select class="form-control col-md-3" v-model="b_etapa"> 
+                                        <select class="form-control col-md-3" v-model="b_etapa">
                                             <option value="">Etapa</option>
-                                            <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                            <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.num_etapa" v-text="etapas.num_etapa"></option>
                                         </select>
                                     </template>
-                                    <input type="text" v-model="b_gen" class="form-control col-sm-3" placeholder="Texto a buscar">
+                                    <input type="text" v-on:keyup.enter="listarContratos()" v-model="b_gen" class="form-control col-sm-3" placeholder="Cliente, Monto, Factura">
                                 </div>
-                                <div class="row text-right">
-                                    <button type="submit" @click="listarContratos()" class="btn btn-primary col-sm-1"><i class="fa fa-search"></i> Buscar</button>
+                                <div class="row">
+                                    <div class="col-sm-3 text-info"><strong>Contratos</strong></div>
+                                    <div class="col-sm-9 text-right">
+                                        <button type="submit" @click="listarContratos()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    </div>
                                 </div>
+                                <br>
                                 <div class="row">
                                     <table class="table-responsive table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
                                                 <th>Folio</th>
                                                 <th>Cliente</th>
-                                                <th>Lote</th>
+                                                <th>RFC</th>
                                                 <th>Fraccionamiento</th>
                                                 <th>Etapa</th>
-                                                <th>RFC</th>
+                                                <th>Manzana</th>
+                                                <th>Lote</th>
                                                 <th>Contrato</th>
                                                 <th>Factura</th>
                                                 <th>Folio Factura</th>
@@ -143,15 +224,16 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td class="text-info text-center"><i class="fa fa-spinner fa-spin"></i></td>
-                                                <td>Cliente</td>
-                                                <td>Lote</td>
-                                                <td>Fraccionamiento</td>
-                                                <td>Etapa</td>
-                                                <td>RFC</td>
+                                            <tr v-for="contrato in arrayContratos.data" :key="contrato.id">
+                                                <td v-text="contrato.id" class="text-center"></td>
+                                                <td v-text="contrato.nombre">Cliente</td>
+                                                <td v-text="contrato.rfc">RFC</td>
+                                                <td v-text="contrato.fraccionamiento">Fraccionamiento</td>
+                                                <td v-text="contrato.etapa">Etapa</td>
+                                                <td v-text="contrato.manzana">Lote</td>
+                                                <td v-text="contrato.num_lote">Lote</td>
                                                 <td>
-                                                    <button type="button" class="btn btn-info btn-sm">Ver contrato</button>
+                                                    <a :href="'/contratoCompraVenta/pdf/'+contrato.id" target="_blank" class="btn btn-info btn-sm">Ver contrato</a>
                                                 </td>
                                                 <td>
                                                     <button id="btnFiles" class="dropdown-toggle btn-primary btn btn-sm" data-toggle="dropdown" type="button"
@@ -160,29 +242,79 @@
                                                     </button>
                                                     <div class="dropdown-menu" aria-labelleadby="btnFiles">
                                                         <a href="#" class="dropdown-item btn btn-primary text-center" style="background-color: #00B0BB !important;"
-                                                            data-toggle="modal" data-target="#modAdvFilesUp" @click="11">
+                                                            data-toggle="modal" data-target="#modAdvFilesUp" @click="setForm(contrato, 'contrato')">
                                                             <i class="fa fa-cloud-upload"></i> Subir archivo
                                                         </a>
-                                                        <a v-if="1==1" :href="'/advisor/download/'+1234" class="dropdown-item btn text-info">Descargar</a>
+                                                        <a v-if="contrato.e_factura" :href="'/facturas/contratos/download/'+contrato.e_factura" class="dropdown-item btn text-info">Descargar</a>
                                                     </div>
                                                 </td>
-                                                <td>folio</td>
-                                                <td>monto</td>
-                                                <td>F. de carga</td>
+                                                <td v-text="contrato.e_folio_factura">folio</td>
+                                                <td v-text="'$'+contrato.e_monto.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">monto</td>
+                                                <td v-if="contrato.e_f_carga_factura" v-text="this.moment(contrato.e_f_carga_factura).locale('es').format('DD/MMM/YYYY')">F. de carga</td>
+                                                <td v-else></td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </div>
+                                <div class="row"> <!-- Pagination-->
+                                    <nav>
+                                        <!--Botones de paginacion -->
+                                        <ul class="pagination">
+                                            <li class="page-item">
+                                                <a class="page-link" href="#" @click.prevent="listarContratos(1)">Inicio</a>
+                                            </li>
+                                            <li v-if="arrayContratos.current_page-3 >= 1">
+                                                <a class="page-link" href="#" 
+                                                @click.prevent="listarContratos(arrayContratos.current_page-3)" 
+                                                v-text="arrayContratos.current_page-3" ></a>
+                                            </li>
+                                            <li v-if="arrayContratos.current_page-2 >= 1">
+                                                <a class="page-link" href="#" 
+                                                @click.prevent="listarContratos(arrayContratos.current_page-2)" 
+                                                v-text="arrayContratos.current_page-2" ></a>
+                                            </li>
+                                            <li v-if="arrayContratos.current_page-1 >= 1">
+                                                <a class="page-link" href="#" 
+                                                @click.prevent="listarContratos(arrayContratos.current_page-1)" 
+                                                v-text="arrayContratos.current_page-1" ></a>
+                                            </li>
+                                            
+                                            <li class="page-item active">
+                                                <a class="page-link" href="#" v-text="arrayContratos.current_page" ></a>
+                                            </li>
+                                            
+                                            <li v-if="arrayContratos.current_page+1 <= arrayContratos.last_page">
+                                                <a class="page-link" href="#" 
+                                                @click.prevent="listarContratos(arrayContratos.current_page+1)" 
+                                                v-text="arrayContratos.current_page+1" ></a>
+                                            </li>
+                                            <li v-if="arrayContratos.current_page+2 <= arrayContratos.last_page">
+                                                <a class="page-link" href="#" 
+                                                @click.prevent="listarContratos(arrayContratos.current_page+2)" 
+                                                v-text="arrayContratos.current_page+2" ></a>
+                                            </li>
+                                            <li v-if="arrayContratos.current_page+3 <= arrayContratos.last_page">
+                                                <a class="page-link" href="#" 
+                                                @click.prevent="listarContratos(arrayContratos.current_page+3)" 
+                                                v-text="arrayContratos.current_page+3" ></a>
+                                            </li>
+                                            
+                                            <li class="page-item">
+                                                <a class="page-link" href="#" @click.prevent="listarContratos(arrayContratos.last_page)">Ultimo</a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </div>
                             </div>
 
-                            <!-- Facturas de firma de contrato -->
-                            <div class="tab-pane fade" id="factura" role="tabpanel" aria-labelledby="autorizado-tab">
-                                <div class="row">
-                                    <select class="form-control col-md-3" v-model="criterio" @click="selectFraccionamientos()">
+                            <!-- Escritura -->
+                            <div class="tab-pane fade show active" v-show="tab == 3">
+                                <div class="row"><!-- campos de busqueda-->
+                                    <select class="form-control col-md-3" v-model="criterio">
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
-                                        <option value="c.nombre">Cliente</option>
-                                        <option value="contratos.id">Folio Factura</option>
-                                        <option value="">Monto de Factura</option>
+                                        <option value="nombre">Cliente</option>
+                                        <option value="creditos.folio_factura">Folio Factura</option>
+                                        <option value="creditos.monto">Monto de Factura</option>
                                     </select>
 
                                     <template v-if="criterio=='lotes.fraccionamiento_id'">
@@ -190,26 +322,31 @@
                                             <option value="">Seleccione</option>
                                             <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                         </select>
-                                        <select class="form-control col-md-3" v-model="b_etapa"> 
+                                        <select class="form-control col-md-3" v-model="b_etapa">
                                             <option value="">Etapa</option>
-                                            <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                            <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.num_etapa" v-text="etapas.num_etapa"></option>
                                         </select>
                                     </template>
-                                    <input type="text" v-model="b_gen" class="form-control col-sm-3" placeholder="Texto a buscar">
+                                    <input type="text" v-on:keyup.enter="listarLiqCredit()" v-model="b_gen" class="form-control col-sm-3" placeholder="Cliente, Monto, Factura">
                                 </div>
-                                <div class="row text-right">
-                                    <button type="submit" @click="listarContratos()" class="btn btn-primary col-sm-1"><i class="fa fa-search"></i> Buscar</button>
+                                <div class="row"><!-- boton de busqueda-->
+                                    <div class="col-sm-3 text-info"><strong>Escrituras (cobro de credito)</strong></div>
+                                    <div class="col-sm-9 text-right">
+                                        <button type="submit" @click="listarLiqCredit()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    </div>
                                 </div>
-                                <div class="row">
+                                <br>
+                                <div class="row"><!-- table-->
                                     <table class="table-responsive table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
                                                 <th>Folio</th>
                                                 <th>Cliente</th>
-                                                <th>Lote</th>
+                                                <th>RFC</th>
                                                 <th>Fraccionamiento</th>
                                                 <th>Etapa</th>
-                                                <th>RFC</th>
+                                                <th>Manzana</th>
+                                                <th>Lote</th>
                                                 <th>Contrato</th>
                                                 <th>Factura</th>
                                                 <th>Folio Factura</th>
@@ -218,15 +355,16 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td>#</td>
-                                                <td>Cliente</td>
-                                                <td>Lote</td>
-                                                <td>Fraccionamiento</td>
-                                                <td>Etapa</td>
-                                                <td>RFC</td>
+                                            <tr v-for="liqCredit in arrayLiqCredit.data" :key="liqCredit.id">
+                                                <td v-text="liqCredit.id" class="text-center"></td>
+                                                <td v-text="liqCredit.nombre">Cliente</td>
+                                                <td v-text="liqCredit.rfc">RFC</td>
+                                                <td v-text="liqCredit.fraccionamiento">Fraccionamiento</td>
+                                                <td v-text="liqCredit.etapa">Etapa</td>
+                                                <td v-text="liqCredit.manzana">manzana</td>
+                                                <td v-text="liqCredit.num_lote">Lote</td>
                                                 <td>
-                                                    <button type="button" class="btn btn-info btn-sm">Ver contrato</button>
+                                                    <a :href="'/contratoCompraVenta/pdf/'+liqCredit.cId" target="_blank" class="btn btn-info btn-sm">Ver contrato</a>
                                                 </td>
                                                 <td>
                                                     <button id="btnFiles" class="dropdown-toggle btn-primary btn btn-sm" data-toggle="dropdown" type="button"
@@ -235,37 +373,224 @@
                                                     </button>
                                                     <div class="dropdown-menu" aria-labelleadby="btnFiles">
                                                         <a href="#" class="dropdown-item btn btn-primary text-center" style="background-color: #00B0BB !important;"
-                                                            data-toggle="modal" data-target="#modAdvFilesUp" @click="11">
+                                                            data-toggle="modal" data-target="#modAdvFilesUp" @click="setForm(liqCredit, 'liqDeposito')">
                                                             <i class="fa fa-cloud-upload"></i> Subir archivo
                                                         </a>
-                                                        <a v-if="1==1" :href="'/advisor/download/'+1234" class="dropdown-item btn text-info">Descargar</a>
+                                                        <a v-if="liqCredit.factura" :href="'/facturas/liq/credito/download/'+liqCredit.factura" class="dropdown-item btn text-info">Descargar</a>
                                                     </div>
                                                 </td>
-                                                <td>folio</td>
-                                                <td>monto</td>
-                                                <td>F. de carga</td>
+                                                <td v-text="liqCredit.folio_factura">folio</td>
+                                                <td v-text="'$'+liqCredit.monto.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">monto</td>
+                                                <td v-if="liqCredit.f_carga_factura" v-text="this.moment(liqCredit.f_carga_factura).locale('es').format('DD/MMM/YYYY')">F. de carga</td>
+                                                <td v-else></td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </div>
+                                <div class="row"> <!-- Pagination-->
+                                    <nav>
+                                        <!--Botones de paginacion -->
+                                        <ul class="pagination">
+                                            <li class="page-item">
+                                                <a class="page-link" href="#" @click.prevent="listarLiqCredit(1)">Inicio</a>
+                                            </li>
+                                            <li v-if="arrayLiqCredit.current_page-3 >= 1">
+                                                <a class="page-link" href="#" 
+                                                @click.prevent="listarLiqCredit(arrayLiqCredit.current_page-3)" 
+                                                v-text="arrayLiqCredit.current_page-3" ></a>
+                                            </li>
+                                            <li v-if="arrayLiqCredit.current_page-2 >= 1">
+                                                <a class="page-link" href="#" 
+                                                @click.prevent="listarLiqCredit(arrayLiqCredit.current_page-2)" 
+                                                v-text="arrayLiqCredit.current_page-2" ></a>
+                                            </li>
+                                            <li v-if="arrayLiqCredit.current_page-1 >= 1">
+                                                <a class="page-link" href="#" 
+                                                @click.prevent="listarLiqCredit(arrayLiqCredit.current_page-1)" 
+                                                v-text="arrayLiqCredit.current_page-1" ></a>
+                                            </li>
+                                            
+                                            <li class="page-item active">
+                                                <a class="page-link" href="#" v-text="arrayLiqCredit.current_page" ></a>
+                                            </li>
+                                            
+                                            <li v-if="arrayLiqCredit.current_page+1 <= arrayLiqCredit.last_page">
+                                                <a class="page-link" href="#" 
+                                                @click.prevent="listarLiqCredit(arrayLiqCredit.current_page+1)" 
+                                                v-text="arrayLiqCredit.current_page+1" ></a>
+                                            </li>
+                                            <li v-if="arrayLiqCredit.current_page+2 <= arrayLiqCredit.last_page">
+                                                <a class="page-link" href="#" 
+                                                @click.prevent="listarLiqCredit(arrayLiqCredit.current_page+2)" 
+                                                v-text="arrayLiqCredit.current_page+2" ></a>
+                                            </li>
+                                            <li v-if="arrayLiqCredit.current_page+3 <= arrayLiqCredit.last_page">
+                                                <a class="page-link" href="#" 
+                                                @click.prevent="listarLiqCredit(arrayLiqCredit.current_page+3)" 
+                                                v-text="arrayLiqCredit.current_page+3" ></a>
+                                            </li>
+                                            
+                                            <li class="page-item">
+                                                <a class="page-link" href="#" @click.prevent="listarLiqCredit(arrayLiqCredit.last_page)">Ultimo</a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </div>
                             </div>
+
+                            <!-- depositos de credito -->
+                            <div class="tab-pane fade show active" v-show="tab == 4">
+                                <div class="row">
+                                    <select class="form-control col-md-3" v-model="criterio">
+                                        <option value="lotes.fraccionamiento_id">Proyecto</option>
+                                        <option value="nombre">Cliente</option>
+                                        <option value="dep_creditos.folio_factura">Folio Factura</option>
+                                        <option value="dep_creditos.monto">Monto de Factura</option>
+                                    </select>
+
+                                    <template v-if="criterio=='lotes.fraccionamiento_id'">
+                                        <select class="form-control col-md-3" v-model="buscar" @click="selectEtapa(buscar)">
+                                            <option value="">Seleccione</option>
+                                            <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                        </select>
+                                        <select class="form-control col-md-3" v-model="b_etapa">
+                                            <option value="">Etapa</option>
+                                            <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.num_etapa" v-text="etapas.num_etapa"></option>
+                                        </select>
+                                    </template>
+                                    <input type="text" v-on:keyup.enter="listarDepCredit()" v-model="b_gen" class="form-control col-sm-3" placeholder="Cliente, Monto, Factura">
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-3 text-info"><strong>Depositos de credito</strong></div>
+                                    <div class="col-sm-9 text-right">
+                                        <button type="submit" @click="listarDepCredit()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <table class="table-responsive table2 table-bordered table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Folio</th>
+                                                <th>Cliente</th>
+                                                <th>RFC</th>
+                                                <th>Fraccionamiento</th>
+                                                <th>Etapa</th>
+                                                <th>Manzana</th>
+                                                <th>Lote</th>
+                                                <th>Cuenta</th>
+                                                <th>Monto</th>
+                                                <th>Concepto</th>
+                                                <th>Contrato</th>
+                                                <th>Factura</th>
+                                                <th>Folio Factura</th>
+                                                <th>Valor</th>
+                                                <th>F. de carga</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="deposito in arrayDepCredit.data" :key="deposito.id">
+                                                <td v-text="deposito.id" class="text-center"></td>
+                                                <td v-text="deposito.nombre">Cliente</td>
+                                                <td v-text="deposito.rfc">RFC</td>
+                                                <td v-text="deposito.fraccionamiento">Fraccionamiento</td>
+                                                <td v-text="deposito.etapa">Etapa</td>
+                                                <td v-text="deposito.manzana">manzana</td>
+                                                <td v-text="deposito.num_lote">Lote</td>
+                                                <td v-text="deposito.banco">Cuenta</td>
+                                                <td v-text="'$'+deposito.cant_depo.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">Monto</td>
+                                                <td v-text="deposito.concepto">Concepto</td>
+                                                    <a :href="'/contratoCompraVenta/pdf/'+deposito.cId" target="_blank" class="btn btn-info btn-sm">Ver contrato</a>
+                                                </td>
+                                                <td>
+                                                    <button id="btnFiles" class="dropdown-toggle btn-primary btn btn-sm" data-toggle="dropdown" type="button"
+                                                        aria-haspopup="true" aria-expanded="false">
+                                                        <i class="fa fa-cloud-upload"></i>
+                                                    </button>
+                                                    <div class="dropdown-menu" aria-labelleadby="btnFiles">
+                                                        <a href="#" class="dropdown-item btn btn-primary text-center" style="background-color: #00B0BB !important;"
+                                                            data-toggle="modal" data-target="#modAdvFilesUp" @click="setForm(deposito, 'pagDeposito')">
+                                                            <i class="fa fa-cloud-upload"></i> Subir archivo
+                                                        </a>
+                                                        <a v-if="deposito.factura" :href="'/facturas/dep/credito/download/'+deposito.factura" class="dropdown-item btn text-info">Descargar</a>
+                                                    </div>
+                                                </td>
+                                                <td v-text="deposito.folio_factura">folio</td>
+                                                <td v-text="'$'+deposito.monto.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">monto</td>
+                                                <td v-if="deposito.f_carga_factura" v-text="this.moment(deposito.f_carga_factura).locale('es').format('DD/MMM/YYYY')">F. de carga</td>
+                                                <td v-else></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="row"> <!-- Pagination-->
+                                    <nav>
+                                        <!--Botones de paginacion -->
+                                        <ul class="pagination">
+                                            <li class="page-item">
+                                                <a class="page-link" href="#" @click.prevent="listarDepCredit(1)">Inicio</a>
+                                            </li>
+                                            <li v-if="arrayDepCredit.current_page-3 >= 1">
+                                                <a class="page-link" href="#" 
+                                                @click.prevent="listarDepCredit(arrayDepCredit.current_page-3)" 
+                                                v-text="arrayDepCredit.current_page-3" ></a>
+                                            </li>
+                                            <li v-if="arrayDepCredit.current_page-2 >= 1">
+                                                <a class="page-link" href="#" 
+                                                @click.prevent="listarDepCredit(arrayDepCredit.current_page-2)" 
+                                                v-text="arrayDepCredit.current_page-2" ></a>
+                                            </li>
+                                            <li v-if="arrayDepCredit.current_page-1 >= 1">
+                                                <a class="page-link" href="#" 
+                                                @click.prevent="listarDepCredit(arrayDepCredit.current_page-1)" 
+                                                v-text="arrayDepCredit.current_page-1" ></a>
+                                            </li>
+                                            
+                                            <li class="page-item active">
+                                                <a class="page-link" href="#" v-text="arrayDepCredit.current_page" ></a>
+                                            </li>
+                                            
+                                            <li v-if="arrayDepCredit.current_page+1 <= arrayDepCredit.last_page">
+                                                <a class="page-link" href="#" 
+                                                @click.prevent="listarDepCredit(arrayDepCredit.current_page+1)" 
+                                                v-text="arrayDepCredit.current_page+1" ></a>
+                                            </li>
+                                            <li v-if="arrayDepCredit.current_page+2 <= arrayDepCredit.last_page">
+                                                <a class="page-link" href="#" 
+                                                @click.prevent="listarDepCredit(arrayDepCredit.current_page+2)" 
+                                                v-text="arrayDepCredit.current_page+2" ></a>
+                                            </li>
+                                            <li v-if="arrayDepCredit.current_page+3 <= arrayDepCredit.last_page">
+                                                <a class="page-link" href="#" 
+                                                @click.prevent="listarDepCredit(arrayDepCredit.current_page+3)" 
+                                                v-text="arrayDepCredit.current_page+3" ></a>
+                                            </li>
+                                            
+                                            <li class="page-item">
+                                                <a class="page-link" href="#" @click.prevent="listarDepCredit(arrayDepCredit.last_page)">Ultimo</a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
 
-            <!-- Upload adviser files -->
+            <!-- Upload bill files -->
             <div class="modal fade" id="modAdvFilesUp" tabindex="-1" role="dialog" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header" style="color: #fff; background-color: #00B0BB;">
-                            <h5 class="modal-title" id="">Subir documentación</h5>
+                            <h5 class="modal-title" id="">Subir Factura</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <form action="" method="post" enctype="multipart/form-data" id="formUpAdvFile" @submit="subirFactura">
+                        <form action="" method="post" enctype="multipart/form-data" id="formUpAdvFile" @submit="subirFacturaC">
                         <div class="modal-body">
                                 <div class="row">
                                     <label class="col-sm-4" for="">Factura</label>
@@ -279,7 +604,7 @@
                                 <br>
                                 <div class="row">
                                     <label class="col-sm-4" for="">Valor (monto)</label>
-                                    <input type="numbuer" name="upMonto" id="upMonto" step="0.01" style="right: 10px;" class="form-control col-sm-8" required>
+                                    <input type="number" name="upMonto" id="upMonto" step="0.01" style="right: 10px;" class="form-control col-sm-8" required>
                                 </div>
                         </div>
                         <div class="modal-footer">
@@ -309,9 +634,26 @@
                 buscar:'',
                 b_etapa:'',
                 b_gen:'',
-                page:1,
+                generalId:0,
+                tipoFactura:'',
+                tab:1,
                 arrayFraccionamientos:[],
                 arrayEtapas:[],
+                arrayContratos:[],
+                arrayDepositos:[],
+                arrayLiqCredit:[],
+                arrayDepCredit:[],
+                myAlerts:{
+                    popAlert : function(title = 'Alert',type = "success", description =''){
+                        swal({
+                            title: title,
+                            type: type,
+                            text: description,
+                            showConfirmButton:false,
+                            timer:1500,
+                        })
+                    }
+                },
             }
         },
         computed:{
@@ -346,19 +688,117 @@
                     console.log(error);
                 });
             },
-            listarContratos(){
+            setForm(datos, tipo){
+                this.tipoFactura = tipo;
+                this.generalId = datos.id;
+                
+                document.getElementById('upfil').value = "";
+                if(tipo == 'contrato'){
+                    document.getElementById('upFolio').value = datos.e_folio_factura;
+                    document.getElementById('upMonto').value = datos.e_monto;
+                }else{
+                    document.getElementById('upFolio').value = datos.folio_factura;
+                    document.getElementById('upMonto').value = datos.monto;
+                }
+            },
+            subirFacturaC(e){
+                e.preventDefault();
+
+                let me = this;
+                let formData = new FormData();
+
+                formData.append('id', this.generalId);
+                formData.append('upfil', e.target.upfil.files[0]);
+                formData.append('upFolio', e.target.upFolio.value);
+                formData.append('upMonto', e.target.upMonto.value);
+
+                switch(this.tipoFactura){
+                    case 'deposito':
+                        axios.post('/facturas/depositos/update', formData).then(
+                            () => {
+                                me.listarDepositos(me.arrayContratos.current_page)
+                                me.myAlerts.popAlert('Guardado correctamente')
+                            }
+                        ).catch(error => console.log(error));
+                        break;
+                    case 'contrato':
+                        axios.post('/facturas/depositos/update', formData).then(
+                            () => {
+                                me.listarContratos(me.arrayContratos.current_page)
+                                me.myAlerts.popAlert('Guardado correctamente')
+                            }
+                        ).catch(error => console.log(error));
+                        break;
+                    case 'liqDeposito':
+                        axios.post('/facturas/liq/credito/update', formData).then(
+                            () => {
+                                me.listarContratos(me.arrayContratos.current_page)
+                                me.myAlerts.popAlert('Guardado correctamente')
+                            }
+                        ).catch(error => console.log(error));
+                        break;
+                    case 'pagDeposito':
+                        axios.post('/facturas/dep/credito/update', formData).then(
+                            () => {
+                                me.listarContratos(me.arrayContratos.current_page)
+                                me.myAlerts.popAlert('Guardado correctamente')
+                            }
+                        ).catch(error => console.log(error));
+                        break;
+                }
+            },
+            //facturas contratos
+            listarContratos(page = 1){
                 let me = this;
                 
-                axios.get('/facturas/contratos/get?page='+this.page).then(
+                axios.get(
+                    '/facturas/contratos/get?page='+page+'&criterio='+this.criterio+'&buscar='+this.buscar+
+                    '&b_etapa='+this.b_etapa+'&b_gen='+this.b_gen
+                ).then(
                     response => me.arrayContratos = response.data
                 ).catch(error => console.log(error))
             },
-            subirFactura(e){
-
+            //facturas depositos
+            listarDepositos(page = 1){
+                let me = this;
+                
+                axios.get(
+                    '/facturas/depositos/get?page='+page+'&criterio='+this.criterio+'&buscar='+this.buscar+
+                    '&b_etapa='+this.b_etapa+'&b_gen='+this.b_gen
+                ).then(
+                    response => me.arrayDepositos = response.data
+                ).catch(error => console.log(error))
+            },
+            //liquidacion credito
+            listarLiqCredit(page = 1){
+                let me = this;
+                
+                axios.get(
+                    '/facturas/liq/credito/get?page='+page+'&criterio='+this.criterio+'&buscar='+this.buscar+
+                    '&b_etapa='+this.b_etapa+'&b_gen='+this.b_gen
+                ).then(
+                    response => me.arrayLiqCredit = response.data
+                ).catch(error => console.log(error))
+            },
+            //liquidacion credito
+            listarDepCredit(page = 1){
+                let me = this;
+                
+                axios.get(
+                    '/facturas/dep/credito/get?page='+page+'&criterio='+this.criterio+'&buscar='+this.buscar+
+                    '&b_etapa='+this.b_etapa+'&b_gen='+this.b_gen
+                ).then(
+                    response => me.arrayDepCredit = response.data
+                ).catch(error => console.log(error))
             }
         },
        
         mounted() {
+            this.selectFraccionamientos();
+            this.listarContratos();
+            this.listarDepositos();
+            this.listarLiqCredit();
+            this.listarDepCredit();
         }
     }
 </script>

@@ -78,7 +78,7 @@
                             </div>
                         </div>
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-sm">
+                            <table class="table2 table table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
                                         <th>Opciones</th>
@@ -207,7 +207,7 @@
                                 <div class="input-group">
                                     <select class="form-control" v-model="banco">
                                         <option value="">Seleccione</option>
-                                        <option v-for="banco in arrayBancos" :key="banco.num_cuenta" :value="banco.num_cuenta + '-' + banco.banco" v-text="banco.num_cuenta + '-' + banco.banco"></option>
+                                        <option v-for="banco in arrayBancos" :key="banco.num_cuenta + '-' + banco.banco" :value="banco.num_cuenta + '-' + banco.banco" v-text="banco.num_cuenta + '-' + banco.banco"></option>
                                     </select>
                                     
                                     <input type="text" pattern="\d*" v-on:keypress="isNumber($event)" v-model="b_deposito" maxlength="10" class="form-control" placeholder="Monto">
@@ -390,7 +390,7 @@
                                     <div class="col-md-9">
                                         <select class="form-control" v-model="banco">
                                             <option value="">Seleccione</option>
-                                            <option v-for="banco in arrayBancos" :key="banco.num_cuenta" :value="banco.num_cuenta + '-' + banco.banco" v-text="banco.num_cuenta + '-' + banco.banco"></option>
+                                            <option v-for="banco in arrayBancos" :key="banco.num_cuenta + '-' + banco.banco" :value="banco.num_cuenta + '-' + banco.banco" v-text="banco.num_cuenta + '-' + banco.banco"></option>
                                         </select>
                                     </div>
                                 </div>
@@ -445,7 +445,7 @@
                                     <div class="col-md-6">
                                         <select class="form-control" v-model="banco">
                                             <option value="">Seleccione</option>
-                                            <option v-for="banco in arrayBancos" :key="banco.num_cuenta" :value="banco.num_cuenta + '-' + banco.banco" v-text="banco.num_cuenta + '-' + banco.banco"></option>
+                                            <option v-for="banco in arrayBancos" :key="banco.num_cuenta + '-' + banco.banco" :value="banco.num_cuenta + '-' + banco.banco" v-text="banco.num_cuenta + '-' + banco.banco"></option>
                                         </select>
                                     </div>
                                 </div>
@@ -1361,6 +1361,14 @@
         color: red !important;
         font-weight: bold;
     }
-
+    .table2 {
+    margin: auto;
+    border-collapse: collapse;
+    overflow-x: auto;
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+    }
 
 </style>

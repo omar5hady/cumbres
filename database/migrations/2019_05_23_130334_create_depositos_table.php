@@ -25,6 +25,12 @@ class CreateDepositosTable extends Migration
             $table->string('banco',50)->nullable();
             $table->string('concepto',80)->nullable();
             $table->date('fecha_pago')->nullable();
+
+            $table->string('factura')->nullable();
+            $table->string('folio_factura',30)->nullable();
+            $table->double('monto', 8,2)->nullable()->default(0);
+            $table->date('f_carga_factura')->nullable();
+
             $table->timestamps();
 
             $table->foreign('pago_id')->references('id')->on('pagos_contratos')->onDelete('cascade');

@@ -23,6 +23,11 @@ class CreateDepCreditosTable extends Migration
             $table->timestamps();
 
             $table->foreign('inst_sel_id')->references('id')->on('inst_seleccionadas')->onDelete('cascade');
+
+            $table->string('factura')->nullable();
+            $table->string('folio_factura',30)->nullable();
+            $table->double('monto', 8,2)->nullable()->default(0);
+            $table->date('f_carga_factura')->nullable();
         });
     }
 
