@@ -85,10 +85,10 @@
                                         <th>Lote</th>
                                         <th>Cliente</th>
                                         <th>Contacto</th>
-                                        <th>Fecha de firma</th>
                                         <th>Fecha entrega (Obra)</th>
                                         <th>Paquete y/o Promocioón</th>
                                         <th>Equipamiento</th>
+                                        <th>Fecha de firma de escrituras</th>
                                         <th>Fecha entrega programada</th>
                                         <th>Hora entrega programada</th>
                                         <th>Finalizar Entrega</th>
@@ -97,7 +97,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="contratos in arrayContratos" :key="contratos.id">
+                                    <tr v-for="contratos in arrayContratos" :key="contratos.id" v-bind:style="{ backgroundColor : contratos.fecha_firma_esc == null ? '#C26F6F' : '#FFFFFF'}">
                                         <template>
                                             <td class="td2">
                                                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{contratos.folio}}</a>
@@ -125,7 +125,6 @@
                                                  <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+contratos.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
                                                  <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+contratos.email"> <i class="fa fa-envelope-o fa-lg"></i> </a>
                                             </td>
-                                            <td class="td2" v-text="this.moment(contratos.fecha_firma_esc).locale('es').format('DD/MMM/YYYY')"></td>
                                             <template>
                                                 <td class="td2" v-if="contratos.fecha_entrega_obra && contratos.diferencia_obra < 2">
                                                     <span v-text="this.moment(contratos.fecha_entrega_obra).locale('es').format('DD/MMM/YYYY')" class="badge badge-success"></span>
@@ -204,6 +203,8 @@
                                                 </td>
                                                 <td class="td2" v-else v-text="'Sin equipamiento'" ></td> 
                                             </template>
+                                                <td v-if="contratos.fecha_firma_esc != null" class="td2" v-text="this.moment(contratos.fecha_firma_esc).locale('es').format('DD/MMM/YYYY')"></td>
+                                                <td v-else class="td2" v-text="'Sin firma'"></td>
                                             <template>
                                                 <td class="td2" @click="abrirModal('programar_fecha', contratos)" v-if="contratos.fecha_program">
                                                     <span v-text="this.moment(contratos.fecha_program).locale('es').format('DD/MMM/YYYY')" class="badge badge-success"></span>
