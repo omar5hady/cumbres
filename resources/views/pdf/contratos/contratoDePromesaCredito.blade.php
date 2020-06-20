@@ -15,7 +15,7 @@ body{
 }
 
 @page{
-    margin: 65px;
+    margin: 55px;
     margin-right: 90px;
     margin-left: 90px;
 }

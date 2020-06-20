@@ -97,9 +97,7 @@ class ExpedienteController extends Controller
                 ->where('i.elegido', '=', 1)
                 ->where('contratos.integracion', '=', 0)
                 ->where('contratos.status', '!=', 0)
-                ->where('contratos.status', '!=', 2)
-                ->orderBy('licencias.visita_avaluo','asc')
-                ->paginate(8);
+                ->where('contratos.status', '!=', 2);
         } else {
             if ($criterio != 'lotes.fraccionamiento_id' && $criterio != 'c.nombre' && $criterio != 'v.nombre') {
                 $contratos = $query
@@ -107,8 +105,7 @@ class ExpedienteController extends Controller
                     ->where('contratos.integracion', '=', 0)
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
-                    ->where($criterio, 'like', '%' . $buscar . '%')
-                    ->paginate(8);
+                    ->where($criterio, 'like', '%' . $buscar . '%');
             } else {
 
                 if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa == ''  && $b_manzana == '' && $b_lote == '') {
@@ -117,8 +114,7 @@ class ExpedienteController extends Controller
                         ->where('contratos.integracion', '=', 0)
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
-                        ->where($criterio, '=', $buscar)
-                        ->paginate(8);
+                        ->where($criterio, '=', $buscar);
                 } else {
                     if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa != ''  && $b_manzana == '' && $b_lote == '') {
                         $contratos = $query
@@ -127,8 +123,7 @@ class ExpedienteController extends Controller
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where($criterio, '=', $buscar)
-                            ->where('lotes.etapa_id', '=', $b_etapa)
-                            ->paginate(8);
+                            ->where('lotes.etapa_id', '=', $b_etapa);
                     } else {
                         if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa == ''  && $b_manzana != '' && $b_lote == '') {
                             $contratos = $query
@@ -137,8 +132,7 @@ class ExpedienteController extends Controller
                                 ->where('contratos.status', '!=', 0)
                                 ->where('contratos.status', '!=', 2)
                                 ->where($criterio, '=', $buscar)
-                                ->where('creditos.manzana', 'like', '%' . $b_manzana . '%')
-                                ->paginate(8);
+                                ->where('creditos.manzana', 'like', '%' . $b_manzana . '%');
                         } else {
                             if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa == ''  && $b_manzana == '' && $b_lote != '') {
                                 $contratos = $query
@@ -147,8 +141,7 @@ class ExpedienteController extends Controller
                                     ->where('contratos.status', '!=', 0)
                                     ->where('contratos.status', '!=', 2)
                                     ->where($criterio, '=', $buscar)
-                                    ->where('creditos.num_lote', 'like', '%' . $b_lote . '%')
-                                    ->paginate(8);
+                                    ->where('creditos.num_lote', 'like', '%' . $b_lote . '%');
                             } else {
                                 if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa != ''  && $b_manzana != '' && $b_lote == '') {
                                     $contratos = $query
@@ -158,8 +151,7 @@ class ExpedienteController extends Controller
                                         ->where('contratos.status', '!=', 2)
                                         ->where($criterio, '=', $buscar)
                                         ->where('lotes.etapa_id', '=', $b_etapa)
-                                        ->where('creditos.manzana', 'like', '%' . $b_manzana . '%')
-                                        ->paginate(8);
+                                        ->where('creditos.manzana', 'like', '%' . $b_manzana . '%');
                                 } else {
                                     if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa != ''  && $b_manzana != '' && $b_lote != '') {
                                         $contratos = $query
@@ -170,8 +162,7 @@ class ExpedienteController extends Controller
                                             ->where($criterio, '=', $buscar)
                                             ->where('lotes.etapa_id', '=', $b_etapa)
                                             ->where('creditos.manzana', 'like', '%' . $b_manzana . '%')
-                                            ->where('creditos.num_lote', 'like', '%' . $b_lote . '%')
-                                            ->paginate(8);
+                                            ->where('creditos.num_lote', 'like', '%' . $b_lote . '%');
                                     } else {
                                         if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa != ''  && $b_manzana == '' && $b_lote != '') {
                                             $contratos = $query
@@ -181,8 +172,7 @@ class ExpedienteController extends Controller
                                                 ->where('contratos.status', '!=', 2)
                                                 ->where($criterio, '=', $buscar)
                                                 ->where('lotes.etapa_id', '=', $b_etapa)
-                                                ->where('creditos.num_lote', 'like', '%' . $b_lote . '%')
-                                                ->paginate(8);
+                                                ->where('creditos.num_lote', 'like', '%' . $b_lote . '%');
                                         } else {
                                             if ($criterio == 'c.nombre' && $buscar != '') {
                                                 $contratos = $query
@@ -195,8 +185,7 @@ class ExpedienteController extends Controller
                                                     ->where('i.elegido', '=', 1)
                                                     ->where('contratos.integracion', '=', 0)
                                                     ->where('contratos.status', '!=', 0)
-                                                    ->where('contratos.status', '!=', 2)
-                                                    ->paginate(8);
+                                                    ->where('contratos.status', '!=', 2);
                                             } else {
                                                 if ($criterio == 'v.nombre' && $buscar != '') {
                                                     $contratos = $query
@@ -209,8 +198,7 @@ class ExpedienteController extends Controller
                                                         ->where('i.elegido', '=', 1)
                                                         ->where('contratos.integracion', '=', 0)
                                                         ->where('contratos.status', '!=', 0)
-                                                        ->where('contratos.status', '!=', 2)
-                                                        ->paginate(8);
+                                                        ->where('contratos.status', '!=', 2);
                                                 }
                                             }
                                         }
@@ -222,6 +210,9 @@ class ExpedienteController extends Controller
                 }
             }
         }
+
+        $contratos = $contratos->orderBy('contratos.avaluo_preventivo','desc')
+                                ->orderBy('licencias.avance','desc')->paginate(8);
 
         if(sizeof($contratos)){
             foreach($contratos as $index => $contrato){
@@ -325,8 +316,7 @@ class ExpedienteController extends Controller
                 ->where('i.elegido', '=', 1)
                 ->where('contratos.integracion', '=', 0)
                 ->where('contratos.status', '!=', 0)
-                ->where('contratos.status', '!=', 2)
-                ->get();
+                ->where('contratos.status', '!=', 2);
         } else {
             if ($criterio != 'lotes.fraccionamiento_id' && $criterio != 'c.nombre' && $criterio != 'v.nombre') {
                 $contratos = $query
@@ -334,8 +324,7 @@ class ExpedienteController extends Controller
                     ->where('contratos.integracion', '=', 0)
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
-                    ->where($criterio, 'like', '%' . $buscar . '%')
-                    ->get();
+                    ->where($criterio, 'like', '%' . $buscar . '%');
             } else {
                 if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa == ''  && $b_manzana == '' && $b_lote == '') {
                     $contratos = $query
@@ -343,8 +332,7 @@ class ExpedienteController extends Controller
                         ->where('contratos.integracion', '=', 0)
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
-                        ->where($criterio, '=', $buscar)
-                        ->get();
+                        ->where($criterio, '=', $buscar);
                 } else {
                     if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa != ''  && $b_manzana == '' && $b_lote == '') {
                         $contratos = $query
@@ -353,8 +341,7 @@ class ExpedienteController extends Controller
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where($criterio, '=', $buscar)
-                            ->where('lotes.etapa_id', '=', $b_etapa)
-                            ->get();
+                            ->where('lotes.etapa_id', '=', $b_etapa);
                     } else {
                         if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa == ''  && $b_manzana != '' && $b_lote == '') {
                             $contratos = $query
@@ -363,8 +350,7 @@ class ExpedienteController extends Controller
                                 ->where('contratos.status', '!=', 0)
                                 ->where('contratos.status', '!=', 2)
                                 ->where($criterio, '=', $buscar)
-                                ->where('creditos.manzana', 'like', '%' . $b_manzana . '%')
-                                ->get();
+                                ->where('creditos.manzana', 'like', '%' . $b_manzana . '%');
                         } else {
                             if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa == ''  && $b_manzana == '' && $b_lote != '') {
                                 $contratos = $query
@@ -373,8 +359,7 @@ class ExpedienteController extends Controller
                                     ->where('contratos.status', '!=', 0)
                                     ->where('contratos.status', '!=', 2)
                                     ->where($criterio, '=', $buscar)
-                                    ->where('creditos.num_lote', 'like', '%' . $b_lote . '%')
-                                    ->get();
+                                    ->where('creditos.num_lote', 'like', '%' . $b_lote . '%');
                             } else {
                                 if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa != ''  && $b_manzana != '' && $b_lote == '') {
                                     $contratos = $query
@@ -384,8 +369,7 @@ class ExpedienteController extends Controller
                                         ->where('contratos.status', '!=', 2)
                                         ->where($criterio, '=', $buscar)
                                         ->where('lotes.etapa_id', '=', $b_etapa)
-                                        ->where('creditos.manzana', 'like', '%' . $b_manzana . '%')
-                                        ->get();
+                                        ->where('creditos.manzana', 'like', '%' . $b_manzana . '%');
                                 } else {
                                     if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa != ''  && $b_manzana != '' && $b_lote != '') {
                                         $contratos = $query
@@ -396,8 +380,7 @@ class ExpedienteController extends Controller
                                             ->where($criterio, '=', $buscar)
                                             ->where('lotes.etapa_id', '=', $b_etapa)
                                             ->where('creditos.manzana', 'like', '%' . $b_manzana . '%')
-                                            ->where('creditos.num_lote', 'like', '%' . $b_lote . '%')
-                                            ->get();
+                                            ->where('creditos.num_lote', 'like', '%' . $b_lote . '%');
                                     } else {
                                         if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa != ''  && $b_manzana == '' && $b_lote != '') {
                                             $contratos = $query
@@ -407,8 +390,7 @@ class ExpedienteController extends Controller
                                                 ->where('contratos.status', '!=', 2)
                                                 ->where($criterio, '=', $buscar)
                                                 ->where('lotes.etapa_id', '=', $b_etapa)
-                                                ->where('creditos.num_lote', 'like', '%' . $b_lote . '%')
-                                                ->get();
+                                                ->where('creditos.num_lote', 'like', '%' . $b_lote . '%');
                                         } else {
                                             if ($criterio == 'c.nombre' && $buscar != '') {
                                                 $contratos = $query
@@ -421,8 +403,7 @@ class ExpedienteController extends Controller
                                                     ->where('i.elegido', '=', 1)
                                                     ->where('contratos.integracion', '=', 0)
                                                     ->where('contratos.status', '!=', 0)
-                                                    ->where('contratos.status', '!=', 2)
-                                                    ->get();
+                                                    ->where('contratos.status', '!=', 2);
                                             } else {
                                                 if ($criterio == 'v.nombre' && $buscar != '') {
                                                     $contratos = $query
@@ -435,8 +416,7 @@ class ExpedienteController extends Controller
                                                         ->where('i.elegido', '=', 1)
                                                         ->where('contratos.integracion', '=', 0)
                                                         ->where('contratos.status', '!=', 0)
-                                                        ->where('contratos.status', '!=', 2)
-                                                        ->get();
+                                                        ->where('contratos.status', '!=', 2);
                                                 }
                                             }
                                         }
@@ -448,6 +428,9 @@ class ExpedienteController extends Controller
                 }
             }
         }
+
+        $contratos = $contratos->orderBy('contratos.avaluo_preventivo','desc')
+                                ->orderBy('licencias.avance','desc')->get();
 
 
         

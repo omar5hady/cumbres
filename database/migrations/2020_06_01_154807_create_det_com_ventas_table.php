@@ -16,6 +16,7 @@ class CreateDetComVentasTable extends Migration
         Schema::create('det_com_ventas', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('contrato_id');
+            
             $table->foreign('contrato_id')->references('id')->on('contratos');
             $table->float('porcentaje_comision');
             $table->double('comision_pagar')->default(0);
@@ -26,6 +27,12 @@ class CreateDetComVentasTable extends Migration
             $table->double('por_pagar')->default(0);
 
             $table->boolean('pendiente')->default(0);
+
+            $table->string('proyecto',100)->nullable();
+            $table->string('etapa',100)->nullable();
+            $table->string('manzana',100)->nullable();
+            $table->string('lote',10)->nullable();
+            $table->double('valor_venta')->default(0);
            
             $table->unsignedInteger('comision_id')->nullable();
             $table->foreign('comision_id')->references('id')->on('comisiones_ventas');

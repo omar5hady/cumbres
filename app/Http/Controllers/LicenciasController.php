@@ -53,6 +53,7 @@ class LicenciasController extends Controller
                     'lotes.casa_muestra',
                     'lotes.lote_comercial',
                     'lotes.id',
+                    'lotes.emp_constructora',
                     'lotes.fraccionamiento_id',
                     'lotes.etapa_id',
                     'lotes.modelo_id',
@@ -71,6 +72,7 @@ class LicenciasController extends Controller
                     'licencias.f_salida',
                     'lotes.arquitecto_id',
                     'licencias.perito_dro',
+                    'licencias.avance',
                     'fraccionamientos.nombre as fraccionamiento',
                     'licencias.cambios',
                     'licencias.foto_lic',
@@ -1216,6 +1218,8 @@ class LicenciasController extends Controller
                 'etapas.num_etapa',
                 'lotes.manzana',
                 'lotes.num_lote',
+                'lotes.emp_constructora',
+                'licencias.avance',
                 'lotes.sublote',
                 'modelos.nombre as modelo',
                 'empresas.nombre as empresa',
@@ -1385,12 +1389,12 @@ class LicenciasController extends Controller
                 $excel->sheet('licencias', function ($sheet) use ($licencias) {
 
                     $sheet->row(1, [
-                        'Fracc.','Manzana', 'Lote', 'Terreno', 'Construccion', 'Modelo', 'Arquitecto',
-                        'No. Inicio','Fecha Inicio', 'Siembra obra', 'Planos licencia', 'DRO', 'Ingreso', 'Salida', 'Num.Licencia', 'Credito puente'
+                        'Fracc.','Manzana', 'Lote', 'Terreno', 'Construccion', 'Modelo', 'Arquitecto', '% Avance',
+                        'No. Inicio','Fecha Inicio', 'Siembra obra', 'Planos licencia', 'DRO', 'Ingreso', 'Salida', 'Num.Licencia', 'Credito puente','Empresa constructora'
                     ]);
 
 
-                    $sheet->cells('A1:P1', function ($cells) {
+                    $sheet->cells('A1:R1', function ($cells) {
                         $cells->setBackground('#052154');
                         $cells->setFontColor('#ffffff');
                         // Set font family
@@ -1455,6 +1459,7 @@ class LicenciasController extends Controller
                             $licencia->construccion,
                             $licencia->modelo,
                             $licencia->arquitecto,
+                            $licencia->avance.'%',
                             $licencia->num_inicio,
                             $licencia->siembra,
                             $licencia->f_planos_obra,
@@ -1463,10 +1468,11 @@ class LicenciasController extends Controller
                             $licencia->f_ingreso,
                             $licencia->f_salida,
                             $licencia->num_licencia,
-                            $licencia->credito_puente
+                            $licencia->credito_puente,
+                            $licencia->emp_constructora
                         ]);
                     }
-                    $num = 'A1:P' . $cont;
+                    $num = 'A1:R' . $cont;
                     $sheet->setBorder($num, 'thin');
                 });
             }

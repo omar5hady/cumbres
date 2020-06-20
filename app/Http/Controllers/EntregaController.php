@@ -29,9 +29,14 @@ class EntregaController extends Controller
 
         try{
             DB::beginTransaction();
-            $entrega = new Entrega();
-            $entrega->id = $request->id;
-            $entrega->save();
+
+            $buscaEntrega = Entrega::select('id')->where('id','=',$request->id)->count();
+            if($buscaEntrega==0){
+                $entrega = new Entrega();
+                $entrega->id = $request->id;
+                $entrega->save();
+            }
+            
 
             $expediente = Expediente::findOrFail($request->id);
             if($expediente->fecha_firma_esc != NULL){

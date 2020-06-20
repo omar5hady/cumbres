@@ -570,6 +570,8 @@ Route::group(['middleware' => ['auth']],function(){
             Route::get('/reprotes/reporteRecursosPropios','ReportesController@reporteRecursosPropios');
             Route::get('/reprotes/excelReporteRecursosPropios','ReportesController@excelRecursosPropios');
 
+            Route::get('/reprotes/reporteCasasCreditoPuente','ReportesController@reporteCasasCreditoPuente');
+
 
     ///////////////////        RUTAS NOTARIA     //////////////////////////////////
         Route::get('/notaria','NotariaController@index');
@@ -612,6 +614,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/comision/storeComision','ComisionesVentaController@storeComision');
         Route::get('/comision/indexComisiones','ComisionesVentaController@indexComisiones');
         Route::get('/comision/detalleComision','ComisionesVentaController@getDetalle');
+
+        Route::put('/comision/desartarCambio','ComisionesVentaController@desartarCambio');
 
     ////////////////////////// RUTAS ASIGNAR GESTOR /////////////////////////////
 

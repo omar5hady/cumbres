@@ -25,6 +25,7 @@ class AvaluoController extends Controller
         $avaluo = new Avaluo();
         $avaluo->contrato_id = $request->folio;
         $avaluo->fecha_solicitud = $request->fecha_solicitud;
+        $avaluo->fecha_ava_sol = $request->fecha_solicitud;
         $avaluo->valor_requerido = $request->valor_requerido;
         $avaluo->save();
 
@@ -194,6 +195,16 @@ class AvaluoController extends Controller
                     ->where('contratos.status','!=',0);
                     break;
                 }
+                case 'contratos.id':{
+                    $avaluos = $query
+                    ->where('inst_seleccionadas.elegido','=','1')
+                    ->where('contratos.id','=',$buscar)
+                    ->where('avaluos.fecha_recibido','=',NULL)
+                    ->where('contratos.status','!=',2)
+                    ->where('contratos.status','!=',0);
+                    break;
+
+                }
             }
         }
 
@@ -302,6 +313,14 @@ class AvaluoController extends Controller
                     break;
                 }
                 case 'licencias.visita_avaluo':{
+                    $avaluos = $query
+                    ->where($criterio,'=',$buscar)
+                    ->where('inst_seleccionadas.elegido','=','1')
+                    ->where('avaluos.fecha_recibido','!=',NULL);
+                    break;
+                }
+
+                case 'contratos.id':{
                     $avaluos = $query
                     ->where($criterio,'=',$buscar)
                     ->where('inst_seleccionadas.elegido','=','1')

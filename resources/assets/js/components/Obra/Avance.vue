@@ -76,7 +76,7 @@
                                     <td v-text="avance.partida" style="width:30%"></td>
                                      <td style="width:8%">
                                         <input v-if="avance.cambio_avance == 1" pattern="\d*"  type="number" @keyup.enter="actualizarPorcentaje(avance.id,$event.target.value,avance.partida_id,lote_id)" :id="avance.id" :value="avance.avance" step=".1" min="0" max="1" v-on:keypress="isNumber($event)" class="form-control Fields" > 
-                                        <input v-else type="number" pattern="\d*" @keyup.enter="actualizarPorcentaje(avance.id,$event.target.value,avance.partida_id,lote_id)" :id="avance.id" :value="avance.avance" step=".1" min="0" max="1" v-on:keypress="isNumber($event)" class="form-control" >
+                                        <input v-else type="number" pattern="\d*" v-on:change="actualizarPorcentaje(avance.id,$event.target.value,avance.partida_id,lote_id)" :id="avance.id" :value="avance.avance" step=".1" min="0" max="1" v-on:keypress="isNumber($event)" class="form-control" >
                                     </td>
                                     <td v-text="formatNumber(avance.avance_porcentaje) + '%'"></td>
                                     
@@ -170,7 +170,8 @@
                                         </template>
                                         <td class="td2" v-text="avancepro.fecha_ini"></td>
                                         <td class="td2" v-text="avancepro.fecha_fin"></td>
-                                        <td class="td2" v-text="formatNumber(avancepro.porcentajeTotal) + '%'"></td>
+                                        <td class="td2" v-if="avancepro.porcentajeTotal > 100" v-text="formatNumber(100) + '%'"></td>
+                                        <td class="td2" v-else v-text="formatNumber(avancepro.porcentajeTotal) + '%'"></td>
                                         <td class="td2"> <button v-if="avancepro.paquete != NULL && avancepro.paquete != ''" title="Ver paquete" type="button" class="btn btn-info pull-right" @click="mostrarPaquete(avancepro.paquete)">Ver paquete</button> </td>
                                        <td style="width:7%">
                                             <a v-if="avancepro.archivo" class="btn btn-primary btn-sm" v-bind:href="'/downloadModelo/'+avancepro.archivo"><i class="icon-cloud-download"></i></a>

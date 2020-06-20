@@ -20,6 +20,7 @@ use App\Det_com_pendiente;
 use App\Det_com_venta;
 use App\Comision_venta;
 use App\Bono_venta;
+use App\Det_com_cambio;
 
 class ComisionesVentaController extends Controller
 {
@@ -32,6 +33,20 @@ class ComisionesVentaController extends Controller
         $isr = $vendedor->isr;
         $retencion = $vendedor->retencion;
 
+        $numVentas = Contrato::join('creditos','contratos.id','=','creditos.id')
+                    ->join('lotes','creditos.lote_id','lotes.id')
+                    ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                    ->join('vendedores', 'creditos.vendedor_id', '=', 'vendedores.id')
+                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                    ->join('personal as c', 'clientes.id', '=', 'c.id')
+                    ->select('contratos.id')
+                    ->where('contratos.status','!=',2)
+                    ->where('inst_seleccionadas.elegido', '=', '1')
+                    ->where('creditos.vendedor_id','=',$request->vendedor)
+                    ->whereMonth('contratos.fecha',$request->mes)
+                    ->whereYear('contratos.fecha',$request->anio)
+                    ->count();
+
         $sueldo = !Carbon::parse($vendedor->fecha_sueldo)->gt(Carbon::now());
         
         $ventas = $this->getVentas($request->vendedor, $request->mes, $request->anio);
@@ -40,10 +55,13 @@ class ComisionesVentaController extends Controller
         $individualizadas = $this->getIndividualizadas($request->vendedor, $request->mes, $request->anio);
         $pendientes = $this->getPendientes($request->vendedor);
 
-        $numVentas = $ventas->count();
+        $cambios = $this->getCambios($request->vendedor);
+
+        //$numVentas = $ventas->count();
         $numIndividualizadas = $individualizadas->count();
         $numCancelaciones = $cancelaciones->count();
         $numPendientes = $pendientes->count();
+        $numCambios = $cambios->count();
 
         return [
             'ventas' => $ventas, 
@@ -51,6 +69,7 @@ class ComisionesVentaController extends Controller
             'numIndividualizadas' => $numIndividualizadas,
             'numCancelaciones' => $numCancelaciones,
             'numPendientes' => $numPendientes,
+            'numCambios' => $numCambios,
             'retencion'=>$retencion,
             'isr'=>$isr,
             'acumuladoAnt'=>$acum,
@@ -59,7 +78,8 @@ class ComisionesVentaController extends Controller
             'sueldo'=>$sueldo,
             'canceladas'=>$cancelaciones,
             'individualizadas'=>$individualizadas,
-            'pendientes'=>$pendientes
+            'pendientes'=>$pendientes,
+            'cambios'=>$cambios
             
         ];
     }
@@ -137,7 +157,8 @@ class ComisionesVentaController extends Controller
 
         }
 
-        $comisiones = $comisiones->orderBy('comisiones_ventas.id','desc')
+        $comisiones = $comisiones->orderBy('comisiones_ventas.anio','desc')
+                    ->orderBy('comisiones_ventas.mes','desc')
                     ->orderBy('asesor','asc')->paginate();
         
 
@@ -154,147 +175,22 @@ class ComisionesVentaController extends Controller
         ];
     }
 
+    public function desartarCambio(Request $request){
+        $contrato = Contrato::FindOrFail($request->id);
+        $contrato->comision = 1;
+        $contrato->save();
+    }
+
     public function getDetalle(Request $request){
-        $ventas = Det_com_venta::join('contratos','contratos.id','=','det_com_ventas.contrato_id')
-                        ->join('creditos','creditos.id','=','contratos.id')
-                        ->join('lotes','creditos.lote_id','lotes.id')
-                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
-                        ->join('vendedores', 'creditos.vendedor_id', '=', 'vendedores.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
+        $ventas = $this->getVentasDetalle($request->comision_id);
 
-                        ->select(
-                            'contratos.id as folio',
-                            'det_com_ventas.id',
-                            'det_com_ventas.porcentaje_comision',
-                            'det_com_ventas.comision_pagar',
-                            'det_com_ventas.iva',
-                            'det_com_ventas.isr',
-                            'det_com_ventas.retencion',
-                            'det_com_ventas.este_pago',
-                            'det_com_ventas.por_pagar',
-                            'creditos.precio_venta','contratos.avance_lote',
-                            'creditos.fraccionamiento as proyecto',
-                            'inst_seleccionadas.tipo_credito',
-                            'inst_seleccionadas.institucion',
-                            'creditos.etapa','creditos.manzana',
-                            'creditos.num_lote',
-                            'contratos.porcentaje_exp',
-                            'contratos.fecha_exp',
-                            'contratos.fecha',
-                            'lotes.extra',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'lotes.extra_ext')
-                        ->where('inst_seleccionadas.elegido', '=', '1')
-                        ->where('det_com_ventas.comision_id', '=', $request->comision_id)
-                        ->get();
+        $individualizadas = $this->getIndividualizadasDetalle($request->comision_id);
 
-        $individualizadas = Det_com_individualizada::join('det_com_ventas','det_com_ventas.id','=','det_com_individualizadas.detalle_id')
-                        ->join('contratos','contratos.id','=','det_com_ventas.contrato_id')
-                        ->join('creditos','creditos.id','=','contratos.id')
-                        ->join('lotes','creditos.lote_id','lotes.id')
-                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
-                        ->join('vendedores', 'creditos.vendedor_id', '=', 'vendedores.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
+        $canceladas = $this->getCanceladasDetalle($request->comision_id);
 
-                        ->select(
-                            'contratos.id as folio',
-                            'det_com_ventas.id',
-                            'det_com_ventas.porcentaje_comision',
-                            'det_com_ventas.comision_pagar',
-                            'det_com_ventas.iva',
-                            'det_com_ventas.isr',
-                            'det_com_ventas.retencion',
-                            'det_com_ventas.este_pago',
-                            'det_com_ventas.por_pagar',
-                            'creditos.precio_venta','contratos.avance_lote',
-                            'creditos.fraccionamiento as proyecto',
-                            'inst_seleccionadas.tipo_credito',
-                            'inst_seleccionadas.institucion',
-                            'creditos.etapa','creditos.manzana',
-                            'creditos.num_lote',
-                            'contratos.porcentaje_exp',
-                            'contratos.fecha_exp',
-                            'contratos.fecha',
-                            'lotes.extra',
-                            //'det_com_individualizadas.pago',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'lotes.extra_ext')
-                        ->where('inst_seleccionadas.elegido', '=', '1')
-                        ->where('det_com_individualizadas.comision_id', '=', $request->comision_id)
-                        ->get();
-        $canceladas = Det_com_cancelada::join('det_com_ventas','det_com_ventas.id','=','det_com_canceladas.detalle_id')
-                        ->join('contratos','contratos.id','=','det_com_ventas.contrato_id')
-                        ->join('creditos','creditos.id','=','contratos.id')
-                        ->join('lotes','creditos.lote_id','lotes.id')
-                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
-                        ->join('vendedores', 'creditos.vendedor_id', '=', 'vendedores.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
+        $pendientes = $this->getPendienteDetalle($request->comision_id);
 
-                        ->select(
-                            'contratos.id as folio',
-                            'det_com_ventas.id',
-                            'det_com_ventas.porcentaje_comision',
-                            'det_com_ventas.comision_pagar',
-                            'det_com_ventas.iva',
-                            'det_com_ventas.isr',
-                            'det_com_ventas.retencion',
-                            'creditos.precio_venta','contratos.avance_lote',
-                            'creditos.fraccionamiento as proyecto',
-                            'inst_seleccionadas.tipo_credito',
-                            'inst_seleccionadas.institucion',
-                            'creditos.etapa','creditos.manzana',
-                            'creditos.num_lote',
-                            'contratos.porcentaje_exp',
-                            'contratos.fecha_exp',
-                            'contratos.fecha',
-                            'contratos.fecha_status',
-                            'lotes.extra',
-                            'det_com_canceladas.monto as este_pago',
-                            'det_com_canceladas.bono_cancel as bono',
-                            //'det_com_individualizadas.pago',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'lotes.extra_ext')
-                        ->where('inst_seleccionadas.elegido', '=', '1')
-                        ->where('det_com_canceladas.comision_id', '=', $request->comision_id)
-                        ->get();
-        $pendientes = Det_com_pendiente::join('det_com_ventas','det_com_ventas.id','=','det_com_pendientes.detalle_id')
-                        ->join('contratos','contratos.id','=','det_com_ventas.contrato_id')
-                        ->join('creditos','creditos.id','=','contratos.id')
-                        ->join('lotes','creditos.lote_id','lotes.id')
-                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
-                        ->join('vendedores', 'creditos.vendedor_id', '=', 'vendedores.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
-
-                        ->select(
-                            'contratos.id as folio',
-                            'det_com_ventas.id',
-                            'det_com_ventas.porcentaje_comision',
-                            'det_com_ventas.comision_pagar',
-                            'det_com_ventas.iva',
-                            'det_com_ventas.isr',
-                            'det_com_ventas.retencion',
-                            'creditos.precio_venta','contratos.avance_lote',
-                            'creditos.fraccionamiento as proyecto',
-                            'inst_seleccionadas.tipo_credito',
-                            'inst_seleccionadas.institucion',
-                            'creditos.etapa','creditos.manzana',
-                            'creditos.num_lote',
-                            'contratos.porcentaje_exp',
-                            'contratos.fecha_exp',
-                            'contratos.fecha',
-                            'lotes.extra',
-                            //'det_com_individualizadas.pago',
-                            'det_com_pendientes.monto_pagado as este_pago',
-                            'det_com_pendientes.por_pagar',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'lotes.extra_ext')
-                        ->where('inst_seleccionadas.elegido', '=', '1')
-                        ->where('det_com_pendientes.comision_id', '=', $request->comision_id)
-                        ->get();
+        $cambios = $this->getCambioDetalle($request->comision_id);
 
         return [
             'ventas' => $ventas,
@@ -305,6 +201,8 @@ class ComisionesVentaController extends Controller
             'numCanceladas' => $canceladas->count(),
             'pendientes' => $pendientes,
             'numPendientes' => $pendientes->count(),
+            'cambios' => $cambios,
+            'numCambios' => $cambios->count()
         ];
     }
 
@@ -335,6 +233,7 @@ class ComisionesVentaController extends Controller
             $individualizadas = $request->dataIndividualizadas;//Array de detalles de ventas en el mes
             $canceladas = $request->dataCanceladas;//Array de detalles de ventas en el mes
             $pendientes = $request->dataPendientes;//Array de detalles de ventas en el mes
+            $cambios = $request->dataCambios;
             //Recorro todos los elementos
 
             if(sizeof($detalle))
@@ -351,9 +250,60 @@ class ComisionesVentaController extends Controller
                     $det_comision->por_pagar = $det['por_pagar'];
                     $det_comision->comision_id = $comision_id;
 
+                    $det_comision->proyecto = $det['proyecto'];
+                    $det_comision->etapa = $det['etapa'];
+                    $det_comision->manzana = $det['manzana'];
+                    $det_comision->lote = $det['num_lote'];
+                    $det_comision->valor_venta = $det['precio_venta'];
+
                     if($det_comision->este_pago == 0){
                         $det_comision->pendiente = 1;
                     }
+
+                    $contrato = Contrato::findOrFail($det['id']);
+                    if($det_comision->por_pagar == 0)
+                        $contrato->comision = 2;
+                    else
+                        $contrato->comision = 1;
+                    $contrato->save();
+
+                    $det_comision->save();
+
+                }
+
+            if(sizeof($cambios))
+                foreach($cambios as $ep=>$det)
+                {
+                    $det_comision = new Det_com_venta();
+                    $det_comision->contrato_id = $det['id'];
+                    $det_comision->porcentaje_comision = $det['porcentaje_comision'];
+                    $det_comision->comision_pagar = $det['comision_pagar'];
+                    $det_comision->iva = $det['iva'];
+                    $det_comision->retencion = $det['retencion'];
+                    $det_comision->isr = $det['isr'];
+                    $det_comision->este_pago = $det['este_pago'];
+                    $det_comision->por_pagar = $det['por_pagar'];
+                    $det_comision->comision_id = $comision_id;
+
+                    $det_comision->proyecto = $det['proyecto'];
+                    $det_comision->etapa = $det['etapa'];
+                    $det_comision->manzana = $det['manzana'];
+                    $det_comision->lote = $det['num_lote'];
+                    $det_comision->valor_venta = $det['precio_venta'];
+
+                    if($det_comision->este_pago == 0){
+                        $det_comision->pendiente = 1;
+                    }
+
+                    $anterior = Det_com_venta::findOrFail($det['detalle_id']);
+                    $anterior->pendiente = 2;
+                    $anterior->save();
+
+                    $cambio = new Det_com_cambio();
+                    $cambio->monto = $det['pago_ant'];
+                    $cambio->descripcion = 'Reubicacion del Fracc. '.$det['proyecto_ant'].' Etapa '.$det['etapa_ant'].' Mz. '.$det['manzana_ant'].' Lt. '.$det['lote_ant'];
+                    $cambio->comision_id = $comision_id;
+                    $cambio->save();
 
                     $contrato = Contrato::findOrFail($det['id']);
                     if($det_comision->por_pagar == 0)
@@ -546,6 +496,7 @@ class ComisionesVentaController extends Controller
                                 'det_com_ventas.este_pago',
                                 'det_com_ventas.por_pagar'
                         )
+                                            ->where('det_com_ventas.pendiente','=',0)
                                             ->where('contratos.status','=',0)
                                             ->where('creditos.vendedor_id','=',$vendedor)
                                             ->whereMonth('contratos.fecha_status',$mes)
@@ -598,12 +549,14 @@ class ComisionesVentaController extends Controller
                                             ->where('contratos.status','=',3)
                                             ->where('contratos.comision','=',1)
                                             ->where('expedientes.liquidado','=',1)
+                                            ->where('det_com_ventas.pendiente','=',0)
                                             ->where('creditos.vendedor_id','=',$vendedor)
                                             ->whereMonth('expedientes.fecha_liquidacion',$mes)
                                             ->whereYear('expedientes.fecha_liquidacion',$anio)
                                             ->orWhere('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                             ->where('inst_seleccionadas.elegido', '=', '1')
                                             ->where('contratos.status','=',3)
+                                            ->where('det_com_ventas.pendiente','=',0)
                                             ->where('contratos.comision','=',1)
                                             ->where('creditos.vendedor_id','=',$vendedor)
                                             ->whereMonth('expedientes.fecha_firma_esc',$mes)
@@ -680,6 +633,235 @@ class ComisionesVentaController extends Controller
         }
         
         return $pendientes;
+    }
+
+    private function getCambios($vendedor){
+        $cambios = Det_com_venta::join('contratos','contratos.id','=','det_com_ventas.contrato_id')
+                        ->join('creditos','contratos.id','=','creditos.id')
+                        ->join('pagos_contratos','contratos.id','=','pagos_contratos.contrato_id')
+                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                        ->join('vendedores', 'creditos.vendedor_id', '=', 'vendedores.id')
+                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                        ->join('personal as c', 'clientes.id', '=', 'c.id')
+                        ->select('contratos.id',
+                                    'contratos.avance_lote',
+                                    'contratos.fecha',
+                                    'creditos.num_lote',
+                                    'creditos.fraccionamiento as proyecto',
+                                    'creditos.etapa',
+                                    'creditos.manzana',
+                                    'creditos.precio_venta',
+                                    DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                    'inst_seleccionadas.tipo_credito',
+                                    'inst_seleccionadas.institucion',
+                                    'det_com_ventas.id as detalle_id',
+                                    'det_com_ventas.porcentaje_comision',
+                                    'det_com_ventas.comision_pagar',
+                                    'det_com_ventas.iva',
+                                    'det_com_ventas.isr',
+                                    'det_com_ventas.valor_venta as precio_venta_ant',
+                                    'det_com_ventas.proyecto as proyecto_ant',
+                                    'det_com_ventas.etapa as etapa_ant',
+                                    'det_com_ventas.manzana as manzana_ant',
+                                    'det_com_ventas.lote as lote_ant',
+                                    'det_com_ventas.retencion',
+                                    'det_com_ventas.este_pago as pago_ant')
+                        ->where('contratos.comision','=',3)
+                        ->where('pagos_contratos.num_pago','=',0)
+                        ->where('pagos_contratos.pagado','>',1)
+                        ->where('pagos_contratos.tipo_pagare','=',0)
+                        ->where('inst_seleccionadas.elegido', '=', '1')
+                        ->where('creditos.vendedor_id','=',$vendedor)
+                        ->get();
+
+        if(sizeOf($cambios)){
+            foreach($cambios as $index => $cambio){
+                
+                $cambio->indiv = 0;
+
+                if($cambio->tipo_credito == 'Crédito Directo'){
+                    $expedientes = Expediente::select('liquidado')->where('id','=',$cambio->id)->where('liquidado','=',1)->get();
+                    if(sizeof($expedientes)){
+                        $cambio->indiv = 1;
+                    }
+                }
+                else{
+                    $expedientes = Expediente::select('liquidado')->where('id','=',$cambio->id)->where('fecha_firma_esc','!=',NULL)->get();
+                    if(sizeof($expedientes)){
+                        $cambio->indiv = 1;
+                    }
+                }
+
+            }
+        }
+
+        return $cambios;
+
+    }
+
+    private function getVentasDetalle($id){
+        $ventas = Det_com_venta::join('contratos','contratos.id','=','det_com_ventas.contrato_id')
+                        ->join('creditos','creditos.id','=','contratos.id')
+                        ->join('lotes','creditos.lote_id','lotes.id')
+                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                        ->join('vendedores', 'creditos.vendedor_id', '=', 'vendedores.id')
+                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                        ->join('personal as c', 'clientes.id', '=', 'c.id')
+
+                        ->select(
+                            'contratos.id as folio',
+                            'det_com_ventas.id',
+                            'det_com_ventas.porcentaje_comision',
+                            'det_com_ventas.comision_pagar',
+                            'det_com_ventas.iva',
+                            'det_com_ventas.isr',
+                            'det_com_ventas.retencion',
+                            'det_com_ventas.este_pago',
+                            'det_com_ventas.por_pagar',
+                            'det_com_ventas.valor_venta as precio_venta','contratos.avance_lote',
+                            'det_com_ventas.proyecto',
+                            'inst_seleccionadas.tipo_credito',
+                            'inst_seleccionadas.institucion',
+                            'det_com_ventas.etapa','det_com_ventas.manzana',
+                            'det_com_ventas.lote as num_lote',
+                            'contratos.porcentaje_exp',
+                            'contratos.fecha_exp',
+                            'contratos.fecha',
+                            'lotes.extra',
+                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                            'lotes.extra_ext')
+                        ->where('inst_seleccionadas.elegido', '=', '1')
+                        ->where('det_com_ventas.comision_id', '=', $id)
+                        ->get();
+
+        return $ventas;
+    }
+
+    private function getIndividualizadasDetalle($id){
+        $individualizadas = Det_com_individualizada::join('det_com_ventas','det_com_ventas.id','=','det_com_individualizadas.detalle_id')
+                        ->join('contratos','contratos.id','=','det_com_ventas.contrato_id')
+                        ->join('creditos','creditos.id','=','contratos.id')
+                        ->join('lotes','creditos.lote_id','lotes.id')
+                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                        ->join('vendedores', 'creditos.vendedor_id', '=', 'vendedores.id')
+                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                        ->join('personal as c', 'clientes.id', '=', 'c.id')
+
+                        ->select(
+                            'contratos.id as folio',
+                            'det_com_ventas.id',
+                            'det_com_ventas.porcentaje_comision',
+                            'det_com_ventas.comision_pagar',
+                            'det_com_ventas.iva',
+                            'det_com_ventas.isr',
+                            'det_com_ventas.retencion',
+                            'det_com_ventas.este_pago',
+                            'det_com_ventas.por_pagar',
+                            'creditos.precio_venta','contratos.avance_lote',
+                            'creditos.fraccionamiento as proyecto',
+                            'inst_seleccionadas.tipo_credito',
+                            'inst_seleccionadas.institucion',
+                            'creditos.etapa','creditos.manzana',
+                            'creditos.num_lote',
+                            'contratos.porcentaje_exp',
+                            'contratos.fecha_exp',
+                            'contratos.fecha',
+                            'lotes.extra',
+                            //'det_com_individualizadas.pago',
+                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                            'lotes.extra_ext')
+                        ->where('inst_seleccionadas.elegido', '=', '1')
+                        ->where('det_com_individualizadas.comision_id', '=', $id)
+                        ->get();
+
+        return $individualizadas;
+    }
+
+    private function getCanceladasDetalle($id){
+        $canceladas = Det_com_cancelada::join('det_com_ventas','det_com_ventas.id','=','det_com_canceladas.detalle_id')
+                        ->join('contratos','contratos.id','=','det_com_ventas.contrato_id')
+                        ->join('creditos','creditos.id','=','contratos.id')
+                        ->join('lotes','creditos.lote_id','lotes.id')
+                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                        ->join('vendedores', 'creditos.vendedor_id', '=', 'vendedores.id')
+                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                        ->join('personal as c', 'clientes.id', '=', 'c.id')
+
+                        ->select(
+                            'contratos.id as folio',
+                            'det_com_ventas.id',
+                            'det_com_ventas.porcentaje_comision',
+                            'det_com_ventas.comision_pagar',
+                            'det_com_ventas.iva',
+                            'det_com_ventas.isr',
+                            'det_com_ventas.retencion',
+                            'creditos.precio_venta','contratos.avance_lote',
+                            'creditos.fraccionamiento as proyecto',
+                            'inst_seleccionadas.tipo_credito',
+                            'inst_seleccionadas.institucion',
+                            'creditos.etapa','creditos.manzana',
+                            'creditos.num_lote',
+                            'contratos.porcentaje_exp',
+                            'contratos.fecha_exp',
+                            'contratos.fecha',
+                            'contratos.fecha_status',
+                            'lotes.extra',
+                            'det_com_canceladas.monto as este_pago',
+                            'det_com_canceladas.bono_cancel as bono',
+                            //'det_com_individualizadas.pago',
+                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                            'lotes.extra_ext')
+                        ->where('inst_seleccionadas.elegido', '=', '1')
+                        ->where('det_com_canceladas.comision_id', '=', $id)
+                        ->get();
+
+        return $canceladas;
+    }
+
+    private function getPendienteDetalle($id){
+        $pendientes = Det_com_pendiente::join('det_com_ventas','det_com_ventas.id','=','det_com_pendientes.detalle_id')
+                        ->join('contratos','contratos.id','=','det_com_ventas.contrato_id')
+                        ->join('creditos','creditos.id','=','contratos.id')
+                        ->join('lotes','creditos.lote_id','lotes.id')
+                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                        ->join('vendedores', 'creditos.vendedor_id', '=', 'vendedores.id')
+                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                        ->join('personal as c', 'clientes.id', '=', 'c.id')
+
+                        ->select(
+                            'contratos.id as folio',
+                            'det_com_ventas.id',
+                            'det_com_ventas.porcentaje_comision',
+                            'det_com_ventas.comision_pagar',
+                            'det_com_ventas.iva',
+                            'det_com_ventas.isr',
+                            'det_com_ventas.retencion',
+                            'creditos.precio_venta','contratos.avance_lote',
+                            'creditos.fraccionamiento as proyecto',
+                            'inst_seleccionadas.tipo_credito',
+                            'inst_seleccionadas.institucion',
+                            'creditos.etapa','creditos.manzana',
+                            'creditos.num_lote',
+                            'contratos.porcentaje_exp',
+                            'contratos.fecha_exp',
+                            'contratos.fecha',
+                            'lotes.extra',
+                            //'det_com_individualizadas.pago',
+                            'det_com_pendientes.monto_pagado as este_pago',
+                            'det_com_pendientes.por_pagar',
+                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                            'lotes.extra_ext')
+                        ->where('inst_seleccionadas.elegido', '=', '1')
+                        ->where('det_com_pendientes.comision_id', '=', $id)
+                        ->get();
+
+        return $pendientes;
+    }
+
+    private function getCambioDetalle($id){
+        $cambios = Det_com_cambio::select('monto as pago_ant','descripcion')->where('comision_id','=',$id)->get();
+
+        return $cambios;
     }
 
 

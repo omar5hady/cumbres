@@ -29,8 +29,8 @@ class AvanceController extends Controller
         $criterio = $request->criterio;
 
         $query = Avance::join('lotes','avances.lote_id','=','lotes.id')
-                    ->join('licencias','lotes.id','=','licencias.id')
-                    ->select('lotes.num_lote as lote', 'licencias.f_planos_obra',
+                    //->join('licencias','lotes.id','=','licencias.id')
+                    ->select('lotes.num_lote as lote', //'licencias.f_planos_obra',
                         DB::raw("SUM(avances.avance_porcentaje) as porcentajeTotal"), 
                         'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','lotes.aviso',
                         'lotes.etapa_servicios','lotes.fecha_ini','lotes.fecha_fin','lotes.paquete', 'lotes.contrato');
@@ -116,6 +116,17 @@ class AvanceController extends Controller
     
             }
             
+        }
+
+        if(sizeOf($avance)){
+            
+            foreach($avance as $index => $et){
+                $et->f_planos_obra = '';
+                $licencia = Licencia::select('f_planos_obra')->where('id','=',$et->lote_id)->get();
+                if(sizeof($licencia)){
+                    $et->f_planos_obra = $licencia[0]->f_planos_obra;
+                }
+            }
         }
             return [
                 'pagination' => [
@@ -216,6 +227,8 @@ class AvanceController extends Controller
         ->where('avances.lote_id','=', $avance->lote_id)->get();
         //actualizacion del campo avance en la tabla licencias con la suma del porcentaje total
         $licencia = Licencia::findOrFail($avance->lote_id);
+        if($suma[0]->porcentajeTotal > 100)
+            $suma[0]->porcentajeTotal = 100;
         $licencia->avance = $suma[0]->porcentajeTotal;
         $licencia->save();
     }

@@ -157,6 +157,7 @@
                     console.log(error);
                 });
             },
+
             selectAsesores(){
                 let me = this;
                 me.arrayAsesores=[];
@@ -197,6 +198,9 @@
                     me.arrayDatosVentas.forEach(element => {
                         me.totalVentas += element.cant;
                     });
+
+                    me.arrayDatosProspectos.sort((b, a) => a.cant - b.cant);
+                    me.arrayDatosVentas.sort((b, a) => a.cant - b.cant);
                 })
                 .catch(function (error) {
                     console.log(error);

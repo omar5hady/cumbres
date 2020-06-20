@@ -133,6 +133,7 @@
                                         <th>Construcción mts&sup2;</th>
                                         <th>Modelo</th>
                                         <th>Arquitecto</th>
+                                        <th>% Avance</th>
                                         <th v-if="rolId != '5'">No.</th>
                                         <th v-if="rolId != '5'">Fecha</th>
                                         <th v-if="rolId != '5'">Siembra de obra</th>
@@ -143,6 +144,7 @@
                                         <th>Num. Licencia</th>
                                         <th v-if="rolId != '5'">Credito puente</th>
                                         <th v-if="rolId == '5'">Catalogo de especificaciones</th>
+                                        <th>Empresa constructora</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -182,6 +184,7 @@
                                             <span v-if = "licencias.arquitecto!='Sin Asignar  '" class="badge badge-success" v-text="'Arq. '+licencias.arquitecto"></span>
                                             <span v-else class="badge badge-danger"> Por Asignar </span>
                                         </td>
+                                        <td v-text="licencias.avance + '%'"></td>
                                         <!-- SIEMBRA -->
                                         <template v-if="rolId != '5'">
                                              <td class="td2" v-if="!licencias.siembra" v-text="''"></td>
@@ -233,6 +236,7 @@
                                             <td class="td2" style="width:7%" v-if="licencias.archivo"><a class="btn btn-default btn-sm" v-bind:href="'/downloadModelo/'+licencias.archivo"><i class="icon-cloud-download"></i></a></td>
                                             <td class="td2" v-else ></td>
                                         </template>
+                                        <td class="td2" v-text="licencias.emp_constructora"></td>
                                         
                                         
                                     </tr>                               
