@@ -232,7 +232,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="depo in arrayHistorial" :key="depo.num_recibo">
+                                    <tr v-for="depo in arrayHistorial" :key="depo.depId">
                                         <td v-text="depo.id"></td>
                                         <td v-text="depo.nombre + ' ' +depo.apellidos"></td>
                                         <td v-text="depo.fraccionamiento"></td>

@@ -3390,6 +3390,7 @@ class ContratoController extends Controller
                     $persona = Personal::findOrFail($id);
 
                     Mail::to($persona->email)->send(new NotificationReceived($msj));
+                    
                 }
             }
         // } catch (Exception $e){

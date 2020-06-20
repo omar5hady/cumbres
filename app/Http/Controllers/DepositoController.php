@@ -656,7 +656,8 @@ class DepositoController extends Controller
             ->join('creditos','creditos.id','=','contratos.id')
             ->join('clientes','creditos.prospecto_id','=','clientes.id')
             ->join('personal','clientes.id','=','personal.id')
-            ->select('contratos.id', 
+            ->select('contratos.id',
+                    'depositos.id as depId',
                     'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
                     'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
                     'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
@@ -1005,6 +1006,7 @@ class DepositoController extends Controller
             $pago_contrato->save();
 
             $deposito->save();
+            
 
             $tCredito = Inst_seleccionada::select('tipo_credito')
                 ->where([

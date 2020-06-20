@@ -82,6 +82,7 @@
                                                 <th>Cuenta</th>
                                                 <th>Monto</th>
                                                 <th>Concepto</th>
+                                                <th>F. Deposito</th>
                                                 <th>Contrato</th>
                                                 <th>Factura</th>
                                                 <th>Folio Factura</th>
@@ -93,8 +94,10 @@
                                             <tr v-for="deposito in arrayDepositos.data" :key="deposito.id">
                                                 <td v-text="deposito.id" class="text-center"></td>
                                                 <td>
-                                                    <span v-if="deposito.dias >= 3 && !deposito.factura" v-text="deposito.nombre" class="badge badge-danger"></span>
-                                                    <span v-else v-text="deposito.nombre" class="badge badge-success"></span>
+                                                    <span v-if="newDiferencia(deposito.fecha_pago) <= 3 && !deposito.factura" v-text="deposito.nombre" class="badge badge-info"></span>
+                                                    <span v-else-if="newDiferencia(deposito.fecha_pago) > 3 && newDiferencia(deposito.fecha_pago) <= 7 && !deposito.factura" v-text="deposito.nombre" class="badge badge-warning"></span>
+                                                    <span v-else-if="newDiferencia(deposito.fecha_pago) > 7 && !deposito.factura" v-text="deposito.nombre" class="badge badge-danger"></span>
+                                                    <span v-else-if="deposito.factura" v-text="deposito.nombre" class="badge badge-success"></span>
                                                 </td>
                                                 <td v-text="deposito.rfc">RFC</td>
                                                 <td v-text="deposito.fraccionamiento">Fraccionamiento</td>
@@ -104,6 +107,7 @@
                                                 <td v-text="deposito.banco">Cuenta</td>
                                                 <td v-text="'$'+deposito.cant_depo.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">Monto</td>
                                                 <td v-text="deposito.concepto">Concepto</td>
+                                                <td v-text="this.moment(deposito.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
                                                 <td>
                                                     <a :href="'/contratoCompraVenta/pdf/'+deposito.cId" target="_blank" class="btn btn-info btn-sm">Ver contrato</a>
                                                 </td>
@@ -219,6 +223,7 @@
                                                 <th>Etapa</th>
                                                 <th>Manzana</th>
                                                 <th>Lote</th>
+                                                <th>F. firma contrato</th>
                                                 <th>Contrato</th>
                                                 <th>Factura</th>
                                                 <th>Folio Factura</th>
@@ -230,14 +235,17 @@
                                             <tr v-for="contrato in arrayContratos.data" :key="contrato.id">
                                                 <td v-text="contrato.id" class="text-center"></td>
                                                 <td>
-                                                    <span v-if="contrato.dias >= 3 && !contrato.e_factura && contrato.status == 3" v-text="contrato.nombre" class="badge badge-danger"></span>
-                                                    <span v-else v-text="contrato.nombre" class="badge badge-success"></span>
+                                                    <span v-if="newDiferencia(contrato.fecha_status) <= 3 && !contrato.e_factura" v-text="contrato.nombre" class="badge badge-info"></span>
+                                                    <span v-else-if="newDiferencia(contrato.fecha_status) > 3 && newDiferencia(contrato.fecha_status) <= 7 && !contrato.e_factura" v-text="contrato.nombre" class="badge badge-warning"></span>
+                                                    <span v-else-if="newDiferencia(contrato.fecha_status) > 7 && !contrato.e_factura" v-text="contrato.nombre" class="badge badge-danger"></span>
+                                                    <span v-else-if="contrato.e_factura" v-text="contrato.nombre" class="badge badge-success"></span>
                                                 </td>
                                                 <td v-text="contrato.rfc">RFC</td>
                                                 <td v-text="contrato.fraccionamiento">Fraccionamiento</td>
                                                 <td v-text="contrato.etapa">Etapa</td>
-                                                <td v-text="contrato.manzana">Lote</td>
+                                                <td v-text="contrato.manzana"></td>
                                                 <td v-text="contrato.num_lote">Lote</td>
+                                                <td v-text="this.moment(contrato.fecha_status).locale('es').format('DD/MMM/YYYY')"></td>
                                                 <td>
                                                     <a :href="'/contratoCompraVenta/pdf/'+contrato.id" target="_blank" class="btn btn-info btn-sm">Ver contrato</a>
                                                 </td>
@@ -353,6 +361,7 @@
                                                 <th>Etapa</th>
                                                 <th>Manzana</th>
                                                 <th>Lote</th>
+                                                <th>F. firma escritura</th>
                                                 <th>Contrato</th>
                                                 <th>Factura</th>
                                                 <th>Folio Factura</th>
@@ -364,14 +373,17 @@
                                             <tr v-for="liqCredit in arrayLiqCredit.data" :key="liqCredit.id">
                                                 <td v-text="liqCredit.id" class="text-center"></td>
                                                 <td>
-                                                    <span v-if="liqCredit.dias >= 3 && !liqCredit.factura" v-text="liqCredit.nombre" class="badge badge-danger"></span>
-                                                    <span v-else v-text="liqCredit.nombre" class="badge badge-success"></span>
+                                                    <span v-if="newDiferencia(liqCredit.fecha_firma_esc) <= 3 && !liqCredit.factura" v-text="liqCredit.nombre" class="badge badge-info"></span>
+                                                    <span v-else-if="newDiferencia(liqCredit.fecha_firma_esc) > 3 && newDiferencia(liqCredit.fecha_firma_esc) <= 7 && !liqCredit.factura" v-text="liqCredit.nombre" class="badge badge-warning"></span>
+                                                    <span v-else-if="newDiferencia(liqCredit.fecha_firma_esc) > 7 && !liqCredit.factura" v-text="liqCredit.nombre" class="badge badge-danger"></span>
+                                                    <span v-else-if="liqCredit.factura" v-text="liqCredit.nombre" class="badge badge-success"></span>
                                                 </td>
                                                 <td v-text="liqCredit.rfc">RFC</td>
                                                 <td v-text="liqCredit.fraccionamiento">Fraccionamiento</td>
                                                 <td v-text="liqCredit.etapa">Etapa</td>
                                                 <td v-text="liqCredit.manzana">manzana</td>
                                                 <td v-text="liqCredit.num_lote">Lote</td>
+                                                <td v-text="this.moment(liqCredit.fecha_firma_esc).locale('es').format('DD/MMM/YYYY')"></td>
                                                 <td>
                                                     <a :href="'/contratoCompraVenta/pdf/'+liqCredit.cId" target="_blank" class="btn btn-info btn-sm">Ver contrato</a>
                                                 </td>
@@ -501,8 +513,10 @@
                                             <tr v-for="deposito in arrayDepCredit.data" :key="deposito.id">
                                                 <td v-text="deposito.id" class="text-center"></td>
                                                 <td>
-                                                    <span v-if="deposito.dias >= 3 && !deposito.factura" v-text="deposito.nombre" class="badge badge-danger"></span>
-                                                    <span v-else v-text="deposito.nombre" class="badge badge-success"></span>
+                                                    <span v-if="newDiferencia(deposito.fecha_deposito) <= 3 && !deposito.factura" v-text="deposito.nombre" class="badge badge-info"></span>
+                                                    <span v-else-if="newDiferencia(deposito.fecha_deposito) > 3 && newDiferencia(deposito.fecha_deposito) <= 7 && !deposito.factura" v-text="deposito.nombre" class="badge badge-warning"></span>
+                                                    <span v-else-if="newDiferencia(deposito.fecha_deposito) > 7 && !deposito.factura" v-text="deposito.nombre" class="badge badge-danger"></span>
+                                                    <span v-else-if="deposito.factura" v-text="deposito.nombre" class="badge badge-success"></span>
                                                 </td>
                                                 <td v-text="deposito.rfc">RFC</td>
                                                 <td v-text="deposito.fraccionamiento">Fraccionamiento</td>
@@ -512,6 +526,7 @@
                                                 <td v-text="deposito.banco">Cuenta</td>
                                                 <td v-text="'$'+deposito.cant_depo.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">Monto</td>
                                                 <td v-text="deposito.concepto">Concepto</td>
+                                                <td v-text="this.moment(deposito.fecha_deposito).locale('es').format('DD/MMM/YYYY')"></td>
                                                 <td>
                                                     <a :href="'/contratoCompraVenta/pdf/'+deposito.cId" target="_blank" class="btn btn-info btn-sm">Ver contrato</a>
                                                 </td>
@@ -759,6 +774,24 @@
                         ).catch(error => console.log(error));
                         break;
                 }
+            },
+            newDiferencia(date){
+
+                let cDate = moment().format('YYYY-MM-DD');
+
+                var from = moment(date),
+                    to = moment(cDate),
+                    days = 0;
+                    
+                while (!from.isAfter(to,'day')) {
+                    // Si no es sabado ni domingo
+                    if (from.isoWeekday() !== 6 && from.isoWeekday() !== 7) {
+                        days++;
+                    }
+                    from.add(1, 'days');
+                }
+
+                return days;
             },
             //facturas contratos
             listarContratos(page = 1){

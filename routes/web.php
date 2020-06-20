@@ -525,6 +525,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/deposito/actualizar','DepositoController@update');
         Route::get('deposito/reciboPDF/{id}','DepositoController@reciboPDF');
         Route::delete('/deposito/eliminar','DepositoController@delete');
+        
 
     //////////////////////////////// RUTAS MODULO SALDOS ////////////////////////////
         Route::get('/estadoCuenta/index','DepositoController@indexEstadoCuenta');

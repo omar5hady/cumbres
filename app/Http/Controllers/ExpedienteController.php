@@ -3473,6 +3473,7 @@ class ExpedienteController extends Controller
                 $persona = Personal::findOrFail($id);
 
                 Mail::to($persona->email)->send(new NotificationReceived($msj));
+                
             }
 
         DB::commit();

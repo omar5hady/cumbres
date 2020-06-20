@@ -655,6 +655,7 @@ class InstSeleccionadasController extends Controller
 
                 Mail::to($persona->email)->send(new NotificationReceived($msj));
             }
+            
 
             DB::commit();
         } catch (Exception $e) {
