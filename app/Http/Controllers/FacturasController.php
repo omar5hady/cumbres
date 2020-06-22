@@ -72,14 +72,14 @@ class FacturasController extends Controller
         $contrato = Contrato::findOrFail($request->id);
 
         if($contrato->e_factura != ""){
-            try{
+            //try{
                 File::delete(public_path().'/files/facturas/contratos/'.$contrato->e_factura);
-            }catch (Exception $e){
-                return $e->getMessage();
-            }
+            //}catch (Exception $e){
+            //    return $e->getMessage();
+            //}
         }
 
-        try{
+        //try{
 
             $name = uniqId().'.'.$request->upfil->getClientOriginalExtension();
             $moved = $request->upfil->move(public_path('/files/facturas/contratos/'), $name);
@@ -92,9 +92,9 @@ class FacturasController extends Controller
                 $contrato->save();
             }
 
-        }catch (Exception $e){
-            DB::rollBack();
-        }
+        //}catch (Exception $e){
+        //    DB::rollBack();
+        //}
     }
 
     public function descargaFacturaC($name){
@@ -170,14 +170,14 @@ class FacturasController extends Controller
         $deposito = Deposito::findOrFail($request->id);
 
         if($deposito->factura != ""){
-            try{
+            //try{
                 File::delete(public_path().'/files/facturas/depositos/'.$deposito->factura);
-            }catch (Exception $e){
-                return $e->getMessage();
-            }
+            //}catch (Exception $e){
+            //    return $e->getMessage();
+            //}
         }
 
-        try{
+        //try{
 
             $name = uniqId().'.'.$request->upfil->getClientOriginalExtension();
             $moved = $request->upfil->move(public_path('/files/facturas/depositos/'), $name);
@@ -190,9 +190,9 @@ class FacturasController extends Controller
                 $deposito->save();
             }
 
-        }catch (Exception $e){
-            DB::rollBack();
-        }
+        //}catch (Exception $e){
+        //    DB::rollBack();
+        //}
     }
 
     public function descargaFacturaD($name){
@@ -261,14 +261,14 @@ class FacturasController extends Controller
         $deposito = Credito::findOrFail($request->id);
 
         if($deposito->factura != ""){
-            try{
+            //try{
                 File::delete(public_path().'/files/facturas/lcredito/'.$deposito->factura);
-            }catch (Exception $e){
-                return $e->getMessage();
-            }
+            //}catch (Exception $e){
+            //    return $e->getMessage();
+            //}
         }
 
-        try{
+        //try{
 
             $name = uniqId().'.'.$request->upfil->getClientOriginalExtension();
             $moved = $request->upfil->move(public_path('/files/facturas/lcredito/'), $name);
@@ -281,9 +281,9 @@ class FacturasController extends Controller
                 $deposito->save();
             }
 
-        }catch (Exception $e){
-            DB::rollBack();
-        }
+        //}catch (Exception $e){
+        //    DB::rollBack();
+        //}
     }
 
     public function descargaFacturaLC($name){
@@ -359,14 +359,14 @@ class FacturasController extends Controller
         $deposito = Dep_credito::findOrFail($request->id);
 
         if($deposito->factura != ""){
-            try{
+            //try{
                 File::delete(public_path().'/files/facturas/depocredito/'.$deposito->factura);
-            }catch (Exception $e){
-                return $e->getMessage();
-            }
+            //}catch (Exception $e){
+            //    return $e->getMessage();
+            //}
         }
 
-        try{
+        //try{
 
             $name = uniqId().'.'.$request->upfil->getClientOriginalExtension();
             $moved = $request->upfil->move(public_path('/files/facturas/depocredito/'), $name);
@@ -379,9 +379,9 @@ class FacturasController extends Controller
                 $deposito->save();
             }
 
-        }catch (Exception $e){
-            DB::rollBack();
-        }
+        //}catch (Exception $e){
+        //    DB::rollBack();
+        //}
     }
 
     public function descargaFacturaDC($name){

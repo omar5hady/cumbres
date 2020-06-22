@@ -12,35 +12,27 @@
                     </div>
                     <div class="card-body">
 
-                        <ul class="nav nav2 nav-tabs" id="myTab1" >
+                        <ul class="nav nav2 nav-tabs">
                             <li class="nav-item">
-                                <a @click="tab = 1" v-text="'Depositos de pagares (' + arrayDepositos.total +')'" 
-                                    class="nav-link text-info active show" id="deposito-tab" href="#depositosId" data-target="#depositosId"
-                                    data-toggle="tab" role="tab" aria-controls="depositosId" aria-selected="true" >
+                                <a @click="tab = 1" v-text="'Depositos de pagares (' + arrayDepositos.total +')'" class="nav-link text-info active show"  >
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a @click="tab = 2" v-text="'Contratos (' + arrayContratos.total +')'" 
-                                    class="nav-link text-info" id="contrato-tab" href="#facturaId" data-target="#facturaId"
-                                    data-toggle="tab" role="tab" aria-controls="facturaId" aria-selected="false">
+                                <a @click="tab = 2" v-text="'Contratos (' + arrayContratos.total +')'" class="nav-link text-info" >
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a @click="tab = 3" v-text="'Escrituras (' + arrayLiqCredit.total +')'" 
-                                class="nav-link text-info" id="escritura-tab" href="#escriturasId" data-target="#escriturasId"
-                                data-toggle="tab" role="tab" aria-controls="escriturasId" aria-selected="false" ></a>
+                                <a @click="tab = 3" v-text="'Escrituras (' + arrayLiqCredit.total +')'" class="nav-link text-info"  ></a>
                             </li>
                             <li class="nav-item">
-                                <a @click="tab = 4" v-text="'Deposito a credito (' + arrayDepCredit.total +')'" 
-                                class="nav-link text-info" id="escritura-tab" href="#depositoCreId" data-target="#depositoCreId"
-                                data-toggle="tab" role="tab" aria-controls="depositoCreId" aria-selected="false" ></a>
+                                <a @click="tab = 4" v-text="'Deposito a credito (' + arrayDepCredit.total +')'" class="nav-link text-info"  ></a>
                             </li>
                         </ul>
 
-                        <div class="tab-content" id="nav-tabContent-facturas">
+                        <!--div class="tab-content" id="nav-tabContent-facturas"-->
 
                             <!-- Facturas de Depositos -->
-                            <div class="tab-pane fade show active" v-show="tab == 1">
+                            <div class="container" v-if="tab == 1">
                                 <div class="row"><!-- campos de busqueda-->
                                     <select class="form-control col-md-3" v-model="criterio">
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
@@ -122,7 +114,7 @@
                                                             data-toggle="modal" data-target="#modAdvFilesUp" @click="setForm(deposito, 'deposito')">
                                                             <i class="fa fa-cloud-upload"></i> Subir archivo
                                                         </a>
-                                                        <a v-if="deposito.factura" :href="'/facturas/contratos/download/'+deposito.factura"  target="_blank" class="dropdown-item btn text-info">Descargar</a>
+                                                        <a v-if="deposito.factura" :href="'/facturas/depositos/download/'+deposito.factura"  target="_blank" class="dropdown-item btn text-info">Descargar</a>
                                                     </div>
                                                 </td>
                                                 <td v-text="deposito.folio_factura">folio</td>
@@ -185,7 +177,7 @@
                             </div>
 
                             <!-- Facturas de contratos -->
-                            <div class="tab-pane fade show active" v-show="tab == 2">
+                            <div class="container" v-else-if="tab == 2">
                                 <div class="row">
                                     <select class="form-control col-md-3" v-model="criterio">
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
@@ -323,7 +315,7 @@
                             </div>
 
                             <!-- Escritura -->
-                            <div class="tab-pane fade show active" v-show="tab == 3">
+                            <div class="container" v-else-if="tab == 3">
                                 <div class="row"><!-- campos de busqueda-->
                                     <select class="form-control col-md-3" v-model="criterio">
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
@@ -461,7 +453,7 @@
                             </div>
 
                             <!-- depositos de credito -->
-                            <div class="tab-pane fade show active" v-show="tab == 4">
+                            <div class="container" v-else-if="tab == 4">
                                 <div class="row">
                                     <select class="form-control col-md-3" v-model="criterio">
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
@@ -503,12 +495,8 @@
                                                 <th>Cuenta</th>
                                                 <th>Monto</th>
                                                 <th>Concepto</th>
-<<<<<<< HEAD
-                                                <th>F. Deposito</th>
-=======
                                                 <th>Fecha de deposito</th>
                                                 <th>Solicitud de contrato</th>
->>>>>>> fa2d39b2aa4819cae7ff1c65284ed4f565a2a628
                                                 <th>Factura</th>
                                                 <th>Folio Factura</th>
                                                 <th>Valor</th>
@@ -608,7 +596,7 @@
                                 </div>
                             </div>
 
-                        </div>
+                        <!--/div-->
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
