@@ -14,18 +14,18 @@
 
                         <ul class="nav nav2 nav-tabs">
                             <li class="nav-item">
-                                <a @click="tab = 1" v-text="'Depositos de pagares (' + arrayDepositos.total +')'" class="nav-link text-info active show"  >
+                                <a @click="tab = 1" v-text="'Depositos de pagares (' + arrayDepositos.total +')'" class="nav-link" v-bind:class="{ 'text-info': tab==1 }">
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a @click="tab = 2" v-text="'Contratos (' + arrayContratos.total +')'" class="nav-link text-info" >
+                                <a @click="tab = 2" v-text="'Contratos (' + arrayContratos.total +')'" class="nav-link" v-bind:class="{ 'text-info': tab==2 }">
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a @click="tab = 3" v-text="'Escrituras (' + arrayLiqCredit.total +')'" class="nav-link text-info"  ></a>
+                                <a @click="tab = 3" v-text="'Escrituras (' + arrayLiqCredit.total +')'" class="nav-link" v-bind:class="{ 'text-info': tab==3 }"></a>
                             </li>
                             <li class="nav-item">
-                                <a @click="tab = 4" v-text="'Deposito a credito (' + arrayDepCredit.total +')'" class="nav-link text-info"  ></a>
+                                <a @click="tab = 4" v-text="'Deposito a credito (' + arrayDepCredit.total +')'" class="nav-link" v-bind:class="{ 'text-info': tab==4 }"></a>
                             </li>
                         </ul>
 
