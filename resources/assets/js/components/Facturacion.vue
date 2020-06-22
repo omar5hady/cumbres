@@ -106,6 +106,7 @@
                                                 <td v-text="deposito.num_lote">Lote</td>
                                                 <td v-text="deposito.banco">Cuenta</td>
                                                 <td v-text="'$'+deposito.cant_depo.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">Monto</td>
+                                                <td></td>
                                                 <td v-text="deposito.concepto">Concepto</td>
                                                 <td v-text="this.moment(deposito.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
                                                 <td>
@@ -502,7 +503,7 @@
                                                 <th>Cuenta</th>
                                                 <th>Monto</th>
                                                 <th>Concepto</th>
-                                                <th>Contrato</th>
+                                                <th>F. Deposito</th>
                                                 <th>Factura</th>
                                                 <th>Folio Factura</th>
                                                 <th>Valor</th>
@@ -750,7 +751,7 @@
                         ).catch(error => console.log(error));
                         break;
                     case 'contrato':
-                        axios.post('/facturas/depositos/update', formData).then(
+                        axios.post('/facturas/contratos/update', formData).then(
                             () => {
                                 me.listarContratos(me.arrayContratos.current_page)
                                 me.myAlerts.popAlert('Guardado correctamente')
