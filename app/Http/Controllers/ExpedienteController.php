@@ -518,11 +518,16 @@ class ExpedienteController extends Controller
         setlocale(LC_TIME, 'es_MX.utf8');
         $hoy = Carbon::today()->toDateString();
 
-        $expediente = new Expediente();
-        $expediente->id = $request->folio;
-        $expediente->fecha_integracion = $hoy;
-        $expediente->gestor_id = $request->gestor_id;
-        $expediente->save();
+        
+        $buscar = Expediente::select('id')->where('id','=',$request->folio)->count();
+
+        if($buscar == 0){
+            $expediente = new Expediente();
+            $expediente->id = $request->folio;
+            $expediente->fecha_integracion = $hoy;
+            $expediente->gestor_id = $request->gestor_id;
+            $expediente->save(); 
+        }
 
         $contrato = Contrato::findOrFail($request->folio);
         $contrato->integracion = 1;
@@ -3436,7 +3441,7 @@ class ExpedienteController extends Controller
             }
             $asignar->save();
             
-            $toAlert = [2];
+            $toAlert = [24706, 24705];
             $msj = 'Se ha realizado una nueva firma de escritura';
 
             foreach($toAlert as $index => $id){

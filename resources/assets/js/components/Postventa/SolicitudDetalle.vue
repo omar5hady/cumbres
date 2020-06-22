@@ -1147,6 +1147,7 @@
                         })
                 }).catch(function (error){
                     console.log(error);
+                    me.proceso = false;
                 });
             },
 

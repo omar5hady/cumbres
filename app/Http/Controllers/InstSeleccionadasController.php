@@ -634,7 +634,7 @@ class InstSeleccionadasController extends Controller
 
             $deposito->save();
 
-            $toAlert = [2];
+            $toAlert = [24706];
             $msj = 'Se ha realizado un nuevo abono a crédito';
 
             foreach($toAlert as $index => $id){

@@ -83,7 +83,7 @@
                                                 <th>Monto</th>
                                                 <th>Concepto</th>
                                                 <th>F. Deposito</th>
-                                                <th>Contrato</th>
+                                                <th>Solicitud de contrato</th>
                                                 <th>Factura</th>
                                                 <th>Folio Factura</th>
                                                 <th>Valor</th>
@@ -122,7 +122,7 @@
                                                             data-toggle="modal" data-target="#modAdvFilesUp" @click="setForm(deposito, 'deposito')">
                                                             <i class="fa fa-cloud-upload"></i> Subir archivo
                                                         </a>
-                                                        <a v-if="deposito.factura" :href="'/facturas/contratos/download/'+deposito.factura" class="dropdown-item btn text-info">Descargar</a>
+                                                        <a v-if="deposito.factura" :href="'/facturas/contratos/download/'+deposito.factura"  target="_blank" class="dropdown-item btn text-info">Descargar</a>
                                                     </div>
                                                 </td>
                                                 <td v-text="deposito.folio_factura">folio</td>
@@ -225,7 +225,7 @@
                                                 <th>Manzana</th>
                                                 <th>Lote</th>
                                                 <th>F. firma contrato</th>
-                                                <th>Contrato</th>
+                                                <th>Solicitud de contrato</th>
                                                 <th>Factura</th>
                                                 <th>Folio Factura</th>
                                                 <th>Valor</th>
@@ -260,7 +260,7 @@
                                                             data-toggle="modal" data-target="#modAdvFilesUp" @click="setForm(contrato, 'contrato')">
                                                             <i class="fa fa-cloud-upload"></i> Subir archivo
                                                         </a>
-                                                        <a v-if="contrato.e_factura" :href="'/facturas/contratos/download/'+contrato.e_factura" class="dropdown-item btn text-info">Descargar</a>
+                                                        <a v-if="contrato.e_factura" :href="'/facturas/contratos/download/'+contrato.e_factura" target="_blank" class="dropdown-item btn text-info">Descargar</a>
                                                     </div>
                                                 </td>
                                                 <td v-text="contrato.e_folio_factura">folio</td>
@@ -363,7 +363,7 @@
                                                 <th>Manzana</th>
                                                 <th>Lote</th>
                                                 <th>F. firma escritura</th>
-                                                <th>Contrato</th>
+                                                <th>Solicitud de contrato</th>
                                                 <th>Factura</th>
                                                 <th>Folio Factura</th>
                                                 <th>Valor</th>
@@ -398,7 +398,7 @@
                                                             data-toggle="modal" data-target="#modAdvFilesUp" @click="setForm(liqCredit, 'liqDeposito')">
                                                             <i class="fa fa-cloud-upload"></i> Subir archivo
                                                         </a>
-                                                        <a v-if="liqCredit.factura" :href="'/facturas/liq/credito/download/'+liqCredit.factura" class="dropdown-item btn text-info">Descargar</a>
+                                                        <a v-if="liqCredit.factura" :href="'/facturas/liq/credito/download/'+liqCredit.factura"  target="_blank" class="dropdown-item btn text-info">Descargar</a>
                                                     </div>
                                                 </td>
                                                 <td v-text="liqCredit.folio_factura">folio</td>
@@ -503,7 +503,12 @@
                                                 <th>Cuenta</th>
                                                 <th>Monto</th>
                                                 <th>Concepto</th>
+<<<<<<< HEAD
                                                 <th>F. Deposito</th>
+=======
+                                                <th>Fecha de deposito</th>
+                                                <th>Solicitud de contrato</th>
+>>>>>>> fa2d39b2aa4819cae7ff1c65284ed4f565a2a628
                                                 <th>Factura</th>
                                                 <th>Folio Factura</th>
                                                 <th>Valor</th>
@@ -541,7 +546,7 @@
                                                             data-toggle="modal" data-target="#modAdvFilesUp" @click="setForm(deposito, 'pagDeposito')">
                                                             <i class="fa fa-cloud-upload"></i> Subir archivo
                                                         </a>
-                                                        <a v-if="deposito.factura" :href="'/facturas/dep/credito/download/'+deposito.factura" class="dropdown-item btn text-info">Descargar</a>
+                                                        <a v-if="deposito.factura" :href="'/facturas/dep/credito/download/'+deposito.factura"  target="_blank" class="dropdown-item btn text-info">Descargar</a>
                                                     </div>
                                                 </td>
                                                 <td v-text="deposito.folio_factura">folio</td>
@@ -747,6 +752,7 @@
                             () => {
                                 me.listarDepositos(me.arrayContratos.current_page)
                                 me.myAlerts.popAlert('Guardado correctamente')
+                                $('#modAdvFilesUp').modal('hide');
                             }
                         ).catch(error => console.log(error));
                         break;
@@ -755,6 +761,7 @@
                             () => {
                                 me.listarContratos(me.arrayContratos.current_page)
                                 me.myAlerts.popAlert('Guardado correctamente')
+                                $('#modAdvFilesUp').modal('hide');
                             }
                         ).catch(error => console.log(error));
                         break;
@@ -763,6 +770,7 @@
                             () => {
                                 me.listarContratos(me.arrayContratos.current_page)
                                 me.myAlerts.popAlert('Guardado correctamente')
+                                $('#modAdvFilesUp').modal('hide');
                             }
                         ).catch(error => console.log(error));
                         break;
@@ -771,6 +779,7 @@
                             () => {
                                 me.listarContratos(me.arrayContratos.current_page)
                                 me.myAlerts.popAlert('Guardado correctamente')
+                                $('#modAdvFilesUp').modal('hide');
                             }
                         ).catch(error => console.log(error));
                         break;

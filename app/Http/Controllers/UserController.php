@@ -1076,7 +1076,7 @@ class UserController extends Controller
                                 'users.hist_creditos','users.contratos','users.docs','users.equipamientos',
                                 //Saldo
                                 'users.edo_cuenta','users.depositos','users.gastos_admn','users.cobro_credito',
-                                'users.dev_exc','users.dev_cancel',
+                                'users.dev_exc','users.dev_cancel','users.facturas',
                                 //Gestoria
                                 'users.expediente','users.asig_gestor','users.seg_tramite','users.avaluos','users.bonos_rec',
                                 //Postventa
@@ -1086,7 +1086,10 @@ class UserController extends Controller
                                 //Acceso
                                 'users.usuarios','users.roles',
                                 //Reportes
-                                'users.mejora','users.rep_proy','users.rep_publi','users.inventario','rep_venta_canc'
+                                'users.mejora','users.rep_proy','users.rep_publi','users.inventario','rep_venta_canc',
+                                'rep_asesores',
+                                'rep_ini_term_ventas',
+                                'rep_recursos_propios'
                         )->where('users.id','=',$request->id)->get();
             
             return['privilegios' => $privilegios];
@@ -1165,6 +1168,7 @@ class UserController extends Controller
         $user->cobro_credito = $request->cobro_credito;
         $user->dev_exc = $request->dev_exc;
         $user->dev_cancel = $request->dev_cancel;
+        $user->facturas = $request->facturas;
         //Gestoria
         $user->expediente = $request->expediente;
         $user->asig_gestor = $request->asig_gestor;
@@ -1187,6 +1191,9 @@ class UserController extends Controller
         $user->rep_proy = $request->rep_proy;
         $user->inventario = $request->inventario;
         $user->rep_venta_canc = $request->rep_venta_canc;
+        $user->rep_asesores = $request->rep_asesores;
+        $user->rep_ini_term_ventas = $request->rep_ini_term_ventas;
+        $user->rep_recursos_propios = $request->rep_recursos_propios;
         $user->save();
 
     }
