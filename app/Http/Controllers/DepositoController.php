@@ -1026,7 +1026,7 @@ class DepositoController extends Controller
                 
                 if(($saldo[0]->monto - $saldo[0]->restante) >= 50000){
                     
-                    $toAlert1 = [2];
+                    $toAlert1 = [12];
                     $msj1 = "El contrato con folio $contrato->id ha acumulado un monto de $50,000.00 es momento de cambiar el tipo de crédito";
                     foreach($toAlert1 as $index => $id){
                         $senderData = DB::table('users')->select('foto_user', 'usuario')->where('id','=',Auth::user()->id)->get();
@@ -1050,7 +1050,7 @@ class DepositoController extends Controller
                 }
             }
 
-            $toAlert = [2];
+            $toAlert = [24706, 24705];
             $msj = 'Se ha realizado un nuevo depósito de pagare';
             foreach($toAlert as $index => $id){
                 $senderData = DB::table('users')->select('foto_user', 'usuario')->where('id','=',Auth::user()->id)->get();

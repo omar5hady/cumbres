@@ -271,6 +271,9 @@
                                                     <li class="nav-item">
                                                         <a class="nav-link" ><i class="icon-reload"></i> <input v-model="dev_exc" type="checkbox" value="1"/> Devolución por excedente</a>
                                                     </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" ><i class="icon-reload"></i> <input v-model="facturas" type="checkbox" value="1"/> Facturas</a>
+                                                    </li>
                                                 </ul>
                                     </div>
                                 </div> 
@@ -348,6 +351,15 @@
                                                     </li>
                                                     <li class="nav-item">
                                                         <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_venta_canc" type="checkbox" value="1"/> Reporte de ventas y cancelaciones</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_asesores" type="checkbox" value="1"/> Reporte de asesores</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_ini_term_ventas" type="checkbox" value="1"/> Reporte de inicio, termino, ventas y cobranza</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_recursos_propios" type="checkbox" value="1"/> Reporte de recursos propios</a>
                                                     </li>
                                                 </ul>
                                     </div>
@@ -820,6 +832,7 @@
                     cobro_credito:0,
                     dev_exc :0,
                     dev_cancel :0,
+                    facturas:0,
 
                     //Gestoria
                     expediente:0,
@@ -847,6 +860,9 @@
                     rep_publi:0,
                     inventario:0,
                     rep_venta_canc:0,
+                    rep_asesores:0,
+                    rep_ini_term_ventas:0,
+                    rep_recursos_propios:0,
 
                 pagination : {
                     'total' : 0,         
@@ -1044,6 +1060,7 @@
                 this.cobro_credito=0;
                 this.dev_exc=0;
                 this.dev_cancel=0;
+                this.facturas=0;
             },
             limpiarAcceso(){
                  //Acceso
@@ -1057,6 +1074,9 @@
                 this.rep_publi=0;
                 this.inventario=0;
                 this.rep_venta_canc = 0;
+                this.rep_asesores
+                this.rep_ini_term_ventas
+                this.rep_recursos_propios
             },
 
             selectPersonas(){
@@ -1154,6 +1174,7 @@
                     me.cobro_credito = usuarios[0].cobro_credito;
                     me.dev_cancel = usuarios[0].dev_cancel;
                     me.dev_exc = usuarios[0].dev_exc;
+                    me.facturas = usuarios[0].facturas;
 
                     //Gestoria
                     me.expediente = usuarios[0].expediente;
@@ -1182,6 +1203,9 @@
                     me.rep_publi = usuarios[0].rep_publi;
                     me.inventario = usuarios[0].inventario;
                     me.rep_venta_canc = usuarios[0].rep_venta_canc;
+                    me.rep_asesores = usuarios[0].rep_asesores;
+                    me.rep_ini_term_ventas = usuarios[0].rep_ini_term_ventas;
+                    me.rep_recursos_propios = usuarios[0].rep_recursos_propios;
 
                     me.rol_id = usuarios[0].rol_id;
 
@@ -1451,6 +1475,7 @@
                     'cobro_credito':this.cobro_credito,
                     'dev_cancel':this.dev_cancel,
                     'dev_exc':this.dev_exc,
+                    'facturas':this.facturas,
                         //Gestoria
                     'expediente':this.expediente,
                     'asig_gestor':this.asig_gestor,
@@ -1473,7 +1498,10 @@
                     'rep_proy':this.rep_proy,
                     'rep_publi':this.rep_publi,
                     'inventario':this.inventario,
-                    'rep_venta_canc':this.rep_venta_canc
+                    'rep_venta_canc':this.rep_venta_canc,
+                    'rep_asesores':this.rep_asesores,
+                    'rep_ini_term_ventas':this.rep_ini_term_ventas,
+                    'rep_recursos_propios':this.rep_recursos_propios,
 
                 }).then(function (response){
                     me.listarPersonal(1,'','nombre');

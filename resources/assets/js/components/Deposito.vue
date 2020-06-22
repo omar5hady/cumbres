@@ -406,8 +406,8 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarDeposito()">Guardar</button>
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarDeposito()">Actualizar</button>
+                            <button type="button" v-if="tipoAccion==1" :disabled="disabled == 1" class="btn btn-primary" @click="registrarDeposito(), disabled = 1">Guardar</button>
+                            <button type="button" v-if="tipoAccion==2" :disabled="disabled == 1" class="btn btn-primary" @click="actualizarDeposito(), disabled = 1">Actualizar</button>
                         </div>
                     </div>
                     <!-- /.modal-content -->
@@ -696,6 +696,8 @@
                 tipoAccion: 0,
                 errorDeposito : 0,
                 errorMostrarMsjDeposito : [],
+
+                disabled:0,
 
                 cliente:'',
                 referencia:'',
@@ -1007,6 +1009,7 @@
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarDepositos(); //se enlistan nuevamente los registros
+                    me.disabled=0;
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
@@ -1017,6 +1020,7 @@
                         })
                 }).catch(function (error){
                     console.log(error);
+                    me.disabled=0;
                 });
             },
             actualizarDeposito(){
@@ -1042,6 +1046,7 @@
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarDepositos(); //se enlistan nuevamente los registros
+                    me.disabled=0;
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -1052,6 +1057,7 @@
                         })
                 }).catch(function (error){
                     console.log(error);
+                    me.disabled=0;
                 });
             },
             eliminarDeposito(data =[]){

@@ -60,7 +60,7 @@ class FacturasController extends Controller
         }
         
 
-        $facturas = $facturas->paginate(30);
+        $facturas = $facturas->paginate(15);
 
         return $facturas;
     }
@@ -158,7 +158,7 @@ class FacturasController extends Controller
         }
         
 
-        $facturas = $facturas->where('pagos_contratos.tipo_pagare', '!=', 1)->distinct('depositos.id')->paginate(30);
+        $facturas = $facturas->where('pagos_contratos.tipo_pagare', '!=', 1)->distinct('depositos.id')->paginate(15);
 
         return $facturas;
     }
@@ -249,7 +249,7 @@ class FacturasController extends Controller
         
         //para que aparezca debe tener fecha de firma de escrituras != null en expediente
         $facturas = $facturas->whereNotNull('expedientes.fecha_firma_esc')
-        ->distinct('contratos.id')->paginate(30);
+        ->distinct('contratos.id')->paginate(15);
 
         return $facturas;
     }
@@ -347,7 +347,7 @@ class FacturasController extends Controller
         }
         
 
-        $facturas = $facturas->distinct('dep_creditos.id')->paginate(30);
+        $facturas = $facturas->distinct('dep_creditos.id')->paginate(15);
 
         return $facturas;
     }

@@ -3370,7 +3370,7 @@ class ContratoController extends Controller
             }
 
             if($request->status == 3){
-                $toAlert = [2];
+                $toAlert = [24706, 24705];
                 $msj = 'Se ha realizado una nueva firma de contrato';
 
                 foreach($toAlert as $index => $id){

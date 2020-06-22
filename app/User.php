@@ -88,6 +88,7 @@ class User extends Authenticatable
         'cobro_credito',
         'dev_cancel',
         'dev_exc',
+        'facturas',
 
         //Gestoria
         'expediente',
@@ -115,6 +116,11 @@ class User extends Authenticatable
         'rep_proy',
         'inventario',
         'rep_venta_canc',
+        'rep_asesores',
+        'rep_ini_term_ventas',
+        'rep_recursos_propios',
+
+        
 
         //Pagos Internos
         'seg_pago'
