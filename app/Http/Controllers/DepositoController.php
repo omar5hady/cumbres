@@ -19,7 +19,7 @@ use App\User;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\NotificationReceived;
 use App\Personal;
-use App\Inst_seleccionada;
+use App\inst_seleccionada;
 
 class DepositoController extends Controller
 {
@@ -1008,7 +1008,7 @@ class DepositoController extends Controller
             $deposito->save();
             
 
-            $tCredito = Inst_seleccionada::select('tipo_credito')
+            $tCredito = inst_seleccionada::select('tipo_credito')
                 ->where([
                     ['credito_id', '=', $contrato->id],
                     ['elegido', '=', 1]

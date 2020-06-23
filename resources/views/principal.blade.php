@@ -201,7 +201,7 @@
                               
                                 @if(Auth::user()->p_etapa == 1)
                                     <li @click="menu=111" class="nav-item">
-                                        <a class="nav-link" href="#"><i class="icon-bag"></i> Etapas</a>
+                                        <a class="nav-link" href="#"><i class="icon-bag"></i> Documentos anexos</a>
                                     </li>
                                 @endif
                                 @if(Auth::user()->modelos == 1)
@@ -625,6 +625,11 @@
                                         <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de recursos propios</a>
                                     </li>
                                 @endif
+                                @if(Auth::user()->rep_recursos_propios	 == 1 || Auth::user()->rol_id == 6 || Auth::user()->id == 26545 || Auth::user()->id == 26310 ) 
+                                <li @click="menu=244" class="nav-item">
+                                    <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de casas con crédito puente</a>
+                                </li>
+                            @endif
                                 @if(Auth::user()->rol_id == 1)
                                     <li @click="menu=240" class="nav-item">
                                         <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte acumulado</a>

@@ -992,6 +992,8 @@
 
                 this.restante = this.restante - this.cant_depo;
 
+                Swal.showLoading()
+
                 let me = this;
                 //Con axios se llama el metodo store de DepartamentoController
                 axios.post('/deposito/registrar',{
@@ -1010,6 +1012,7 @@
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarDepositos(); //se enlistan nuevamente los registros
                     me.disabled=0;
+                    Swal.enableLoading()	
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
@@ -1021,6 +1024,7 @@
                 }).catch(function (error){
                     console.log(error);
                     me.disabled=0;
+                    Swal.enableLoading()
                 });
             },
             actualizarDeposito(){

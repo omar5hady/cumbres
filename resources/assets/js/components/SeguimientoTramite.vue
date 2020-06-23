@@ -2712,6 +2712,7 @@
                 }
                 
                 let me = this;
+                Swal.showLoading()
                 //Con axios se llama el metodo update de LoteController
                 axios.put('/expediente/generarLiquidacion',{
                     'folio':this.id,
@@ -2732,6 +2733,7 @@
                     me.listarAutorizados(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
                     me.listarLiquidacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
                     me.listarProgramacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    Swal.enableLoading()
                     //window.alert("Cambios guardados correctamente");
                     const toast = Swal.mixin({
                         toast: true,
@@ -2745,6 +2747,7 @@
                     })
                 }).catch(function (error){
                     console.log(error);
+                    Swal.enableLoading()
                 });
             },
 
@@ -2754,6 +2757,7 @@
                 }
 
                 let me = this;
+                Swal.showLoading()
                 //Con axios se llama el metodo update de LoteController
                 axios.put('/expediente/generarInstruccionNot',{
                     'folio':this.id,
@@ -2771,6 +2775,7 @@
                     me.listarAutorizados(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
                     me.listarLiquidacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
                     me.listarProgramacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    Swal.enableLoading()
                     //window.alert("Cambios guardados correctamente");
                     const toast = Swal.mixin({
                         toast: true,
@@ -2784,6 +2789,7 @@
                     })
                 }).catch(function (error){
                     console.log(error);
+                    Swal.enableLoading()
                 });
             },
 
@@ -2793,6 +2799,7 @@
                 // }
                 
                 let me = this;
+                Swal.showLoading()
                 //Con axios se llama el metodo update de LoteController
                 axios.post('/expediente/generarPagares',{
                     'folio':this.id,
@@ -2814,6 +2821,7 @@
                     me.listarAutorizados(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
                     me.listarLiquidacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
                     me.listarProgramacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    Swal.enableLoading()
                     //window.alert("Cambios guardados correctamente");
                     const toast = Swal.mixin({
                         toast: true,
@@ -2827,6 +2835,7 @@
                     })
                 }).catch(function (error){
                     console.log(error);
+                    Swal.enableLoading()
                 });
             },
 
