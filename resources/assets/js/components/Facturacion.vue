@@ -14,18 +14,18 @@
 
                         <ul class="nav nav2 nav-tabs">
                             <li class="nav-item">
-                                <a @click="tab = 1" v-text="'Depositos de pagares (' + arrayDepositos.total +')'" class="nav-link" v-bind:class="{ 'text-info': tab==1 }">
+                                <a @click="tab = 1" v-text="'Depositos de pagares (' + arrayDepositos.total +')'" class="nav-link" v-bind:class="{ 'text-info active': tab==1 }">
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a @click="tab = 2" v-text="'Contratos (' + arrayContratos.total +')'" class="nav-link" v-bind:class="{ 'text-info': tab==2 }">
+                                <a @click="tab = 2" v-text="'Contratos (' + arrayContratos.total +')'" class="nav-link" v-bind:class="{ 'text-info active': tab==2 }">
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a @click="tab = 3" v-text="'Escrituras (' + arrayLiqCredit.total +')'" class="nav-link" v-bind:class="{ 'text-info': tab==3 }"></a>
+                                <a @click="tab = 3" v-text="'Escrituras (' + arrayLiqCredit.total +')'" class="nav-link" v-bind:class="{ 'text-info active': tab==3 }"></a>
                             </li>
                             <li class="nav-item">
-                                <a @click="tab = 4" v-text="'Deposito a credito (' + arrayDepCredit.total +')'" class="nav-link" v-bind:class="{ 'text-info': tab==4 }"></a>
+                                <a @click="tab = 4" v-text="'Deposito a credito (' + arrayDepCredit.total +')'" class="nav-link" v-bind:class="{ 'text-info active': tab==4 }"></a>
                             </li>
                         </ul>
 
@@ -39,6 +39,7 @@
                                         <option value="nombre">Cliente</option>
                                         <option value="depositos.folio_factura">Folio Factura</option>
                                         <option value="depositos.monto">Monto de Factura</option>
+                                        <option value="depositos.cant_depo">Monto de Deposito</option>
                                     </select>
 
                                     <template v-if="criterio=='lotes.fraccionamiento_id'">
@@ -51,7 +52,7 @@
                                             <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.num_etapa" v-text="etapas.num_etapa"></option>
                                         </select>
                                     </template>
-                                    <input type="text" v-on:keyup.enter="listarDepositos()" v-model="b_gen" class="form-control col-sm-3" placeholder="Cliente, Monto, Factura">
+                                    <input type="text" v-on:keyup.enter="listarDepositos()" v-model="b_gen" class="form-control col-sm-3" placeholder="Buscar">
                                 </div>
                                 <div class="row"><!-- boton de busqueda-->
                                     <div class="col-sm-3 text-info"><strong>Depositos</strong></div>
@@ -196,7 +197,7 @@
                                             <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.num_etapa" v-text="etapas.num_etapa"></option>
                                         </select>
                                     </template>
-                                    <input type="text" v-on:keyup.enter="listarContratos()" v-model="b_gen" class="form-control col-sm-3" placeholder="Cliente, Monto, Factura">
+                                    <input type="text" v-on:keyup.enter="listarContratos()" v-model="b_gen" class="form-control col-sm-3" placeholder="Buscar">
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-3 text-info"><strong>Contratos</strong></div>
@@ -334,7 +335,7 @@
                                             <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.num_etapa" v-text="etapas.num_etapa"></option>
                                         </select>
                                     </template>
-                                    <input type="text" v-on:keyup.enter="listarLiqCredit()" v-model="b_gen" class="form-control col-sm-3" placeholder="Cliente, Monto, Factura">
+                                    <input type="text" v-on:keyup.enter="listarLiqCredit()" v-model="b_gen" class="form-control col-sm-3" placeholder="Buscar">
                                 </div>
                                 <div class="row"><!-- boton de busqueda-->
                                     <div class="col-sm-3 text-info"><strong>Escrituras (cobro de credito)</strong></div>
@@ -460,6 +461,7 @@
                                         <option value="nombre">Cliente</option>
                                         <option value="dep_creditos.folio_factura">Folio Factura</option>
                                         <option value="dep_creditos.monto">Monto de Factura</option>
+                                        <option value="dep_creditos.cant_depo">Monto de Deposito</option>
                                     </select>
 
                                     <template v-if="criterio=='lotes.fraccionamiento_id'">
@@ -472,7 +474,7 @@
                                             <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.num_etapa" v-text="etapas.num_etapa"></option>
                                         </select>
                                     </template>
-                                    <input type="text" v-on:keyup.enter="listarDepCredit()" v-model="b_gen" class="form-control col-sm-3" placeholder="Cliente, Monto, Factura">
+                                    <input type="text" v-on:keyup.enter="listarDepCredit()" v-model="b_gen" class="form-control col-sm-3" placeholder="Buscar">
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-3 text-info"><strong>Depositos de credito</strong></div>

@@ -40,16 +40,13 @@ class FacturasController extends Controller
         if($request->buscar != '' || $request->b_gen != ''){
             if($request->criterio == "lotes.fraccionamiento_id"){
                 
-                $facturas = $facturas->where('lotes.fraccionamiento_id', '=', $request->buscar)
-                            ->when($request->b_etapa, function($query, $b){
-                                return $query->where('creditos.etapa', '=', $b);
-                            })
-                            ->when($request->b_gen, function($query, $b){
-                                return $query->where(DB::raw('CONCAT(nombre," ",apellidos)'), 'like', "%$b%")
-                                    ->orWhere('contratos.e_monto', 'like', "%$b%")
-                                    ->orWhere('contratos.e_folio_factura', 'like', "%$b%")
-                                    ->orWhere('creditos.num_lote', 'like', "%$b%");
-                            });
+                $facturas = $facturas->where('lotes.fraccionamiento_id', '=', $request->buscar);
+
+                if($request->b_etapa != "") $facturas = $facturas->where('creditos.etapa', '=', $request->b_etapa);
+
+                if($request->b_gen != ""){
+                    $facturas = $facturas->where('creditos.num_lote', '=', $request->b_gen);
+                }
             }else{
                 if($request->criterio == 'nombre'){
                     $facturas = $facturas->where(DB::raw('CONCAT(nombre," ",apellidos)'), 'like', "%$request->b_gen%");
@@ -135,19 +132,15 @@ class FacturasController extends Controller
 
         if($request->buscar != '' || $request->b_gen != ''){
             if($request->criterio == "lotes.fraccionamiento_id"){
+
+                $facturas = $facturas->where('lotes.fraccionamiento_id', '=', $request->buscar);
+
+                if($request->b_etapa != "") $facturas = $facturas->where('creditos.etapa', '=', $request->b_etapa);
+
+                if($request->b_gen != ""){
+                    $facturas = $facturas->where('creditos.num_lote', '=', $request->b_gen);
+                }
                 
-                $facturas = $facturas->where('lotes.fraccionamiento_id', '=', $request->buscar)
-                            ->when($request->b_etapa, function($query, $b){
-                                return $query->where('creditos.etapa', '=', $b);
-                            })
-                            ->when($request->b_gen, function($query, $b){
-                                return $query->where(DB::raw('CONCAT(nombre," ",apellidos)'), 'like', "%$b%")
-                                    ->orWhere('depositos.monto', 'like', "%$b%")
-                                    ->orWhere('depositos.folio_factura', 'like', "%$b%")
-                                    ->orWhere('depositos.cant_depo', 'like', "%$b%")
-                                    ->orWhere('depositos.concepto', 'like', "%$b%")
-                                    ->orWhere('creditos.num_lote', 'like', "%$b%");
-                            });
             }else{
                 if($request->criterio == 'nombre'){
                     $facturas = $facturas->where(DB::raw('CONCAT(nombre," ",apellidos)'), 'like', "%$request->b_gen%");
@@ -227,17 +220,14 @@ class FacturasController extends Controller
 
         if($request->buscar != '' || $request->b_gen != ''){
             if($request->criterio == "lotes.fraccionamiento_id"){
+                $facturas = $facturas->where('lotes.fraccionamiento_id', '=', $request->buscar);
+
+                if($request->b_etapa != "") $facturas = $facturas->where('creditos.etapa', '=', $request->b_etapa);
+
+                if($request->b_gen != ""){
+                    $facturas = $facturas->where('creditos.num_lote', '=', $request->b_gen);
+                }
                 
-                $facturas = $facturas->where('lotes.fraccionamiento_id', '=', $request->buscar)
-                            ->when($request->b_etapa, function($query, $b){
-                                return $query->where('creditos.etapa', '=', $b);
-                            })
-                            ->when($request->b_gen, function($query, $b){
-                                return $query->where(DB::raw('CONCAT(nombre," ",apellidos)'), 'like', "%$b%")
-                                    ->orWhere('creditos.monto', 'like', "%$b%")
-                                    ->orWhere('creditos.folio_factura', 'like', "%$b%")
-                                    ->orWhere('creditos.num_lote', 'like', "%$b%");
-                            });
             }else{
                 if($request->criterio == 'nombre'){
                     $facturas = $facturas->where(DB::raw('CONCAT(nombre," ",apellidos)'), 'like', "%$request->b_gen%");
@@ -323,20 +313,14 @@ class FacturasController extends Controller
 
         if($request->buscar != '' || $request->b_gen != ''){
             if($request->criterio == "lotes.fraccionamiento_id"){
-                
-                $facturas = $facturas->where('lotes.fraccionamiento_id', '=', $request->buscar)
-                            ->when($request->b_etapa, function($query, $b){
-                                return $query->where('creditos.etapa', '=', $b);
-                            })
-                            ->when($request->b_gen, function($query, $b){
-                                return $query->where(DB::raw('CONCAT(nombre," ",apellidos)'), 'like', "%$b%")
-                                    ->orWhere('dep_creditos.monto', 'like', "%$b%")
-                                    ->orWhere('dep_creditos.folio_factura', 'like', "%$b%")
-                                    ->orWhere('creditos.num_lote', 'like', "%$b%")
-                                    ->orWhere('dep_creditos.banco', 'like', "%$b%")
-                                    ->orWhere('dep_creditos.concepto', 'like', "%$b%")
-                                    ->orWhere('dep_creditos.cant_depo', 'like', "%$b%");
-                            });
+                $facturas = $facturas->where('lotes.fraccionamiento_id', '=', $request->buscar);
+
+                if($request->b_etapa != "") $facturas = $facturas->where('creditos.etapa', '=', $request->b_etapa);
+
+                if($request->b_gen != ""){
+                    $facturas = $facturas->where('creditos.num_lote', '=', $request->b_gen);
+                }
+
             }else{
                 if($request->criterio == 'nombre'){
                     $facturas = $facturas->where(DB::raw('CONCAT(nombre," ",apellidos)'), 'like', "%$request->b_gen%");
