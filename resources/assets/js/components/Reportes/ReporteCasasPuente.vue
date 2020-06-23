@@ -10,9 +10,9 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Casas con Crédito Puente &nbsp;&nbsp;
                         <!--   Boton Nuevo    -->
-                         <!-- <a class="btn btn-success" v-bind:href="'/reprotes/excelReporteRecursosPropios'">
+                        <a class="btn btn-success" v-bind:href="'/reprotes/excelCasasCreditoPuente?proyecto=' + proyecto + '&etapa=' + b_etapa">
                             <i class="fa fa-file-text"></i>&nbsp; Excel
-                        </a> -->
+                        </a>
                        
                     </div>
                     <div class="card-body">

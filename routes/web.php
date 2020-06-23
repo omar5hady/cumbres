@@ -571,6 +571,7 @@ Route::group(['middleware' => ['auth']],function(){
             Route::get('/reprotes/excelReporteRecursosPropios','ReportesController@excelRecursosPropios');
 
             Route::get('/reprotes/reporteCasasCreditoPuente','ReportesController@reporteCasasCreditoPuente');
+            Route::get('/reprotes/excelCasasCreditoPuente','ReportesController@excelCasasCreditoPuente');
 
 
     ///////////////////        RUTAS NOTARIA     //////////////////////////////////
