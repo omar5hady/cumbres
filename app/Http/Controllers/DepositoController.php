@@ -1050,27 +1050,29 @@ class DepositoController extends Controller
                 }
             }
 
-            $toAlert = [24706, 24705];
-            $msj = 'Se ha realizado un nuevo depósito de pagare';
-            foreach($toAlert as $index => $id){
-                $senderData = DB::table('users')->select('foto_user', 'usuario')->where('id','=',Auth::user()->id)->get();
+            if($request->banco != "0102030405-Scotiabank"){
+                $toAlert = [24706, 24705];
+                $msj = 'Se ha realizado un nuevo depósito de pagare';
+                foreach($toAlert as $index => $id){
+                    $senderData = DB::table('users')->select('foto_user', 'usuario')->where('id','=',Auth::user()->id)->get();
 
-                $dataAr = [
-                    'notificacion'=>[
-                        'usuario' => $senderData[0]->usuario,
-                        'foto' => $senderData[0]->foto_user,
-                        'fecha' => Carbon::now(),
-                        'msj' => $msj,
-                        'titulo' => 'Nuevo deposito'
-                    ]
-                ];
-                User::findOrFail($id)->notify(new NotifyAdmin($dataAr));
+                    $dataAr = [
+                        'notificacion'=>[
+                            'usuario' => $senderData[0]->usuario,
+                            'foto' => $senderData[0]->foto_user,
+                            'fecha' => Carbon::now(),
+                            'msj' => $msj,
+                            'titulo' => 'Nuevo deposito'
+                        ]
+                    ];
+                    User::findOrFail($id)->notify(new NotifyAdmin($dataAr));
 
-                $persona = Personal::findOrFail($id);
+                    $persona = Personal::findOrFail($id);
 
-                Mail::to($persona->email)->send(new NotificationReceived($msj));
+                    Mail::to($persona->email)->send(new NotificationReceived($msj));
+                }
             }
-            
+
             DB::commit();
         } catch (Exception $e){
             DB::rollBack();
