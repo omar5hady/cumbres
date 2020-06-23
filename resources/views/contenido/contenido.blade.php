@@ -440,6 +440,10 @@
             <recursos-propios></recursos-propios>
         </template>
 
+        <template v-if="menu==244">
+            <repcredito-puente></repcredito-puente>
+        </template>
+
         
 
         
