@@ -87,8 +87,8 @@
                                             <tr v-for="deposito in arrayDepositos.data" :key="deposito.id">
                                                 <td v-text="deposito.id" class="text-center"></td>
                                                 <td>
-                                                    <span v-if="newDiferencia(deposito.fecha_pago) <= 3 && !deposito.factura" v-text="deposito.nombre" class="badge badge-info"></span>
-                                                    <span v-else-if="newDiferencia(deposito.fecha_pago) > 3 && newDiferencia(deposito.fecha_pago) <= 7 && !deposito.factura" v-text="deposito.nombre" class="badge badge-warning"></span>
+                                                    <span v-if="newDiferencia(deposito.fecha_pago) < 1 && !deposito.factura" v-text="deposito.nombre" class="badge badge-info"></span>
+                                                    <span v-else-if="newDiferencia(deposito.fecha_pago) >= 1 && newDiferencia(deposito.fecha_pago) <= 7 && !deposito.factura" v-text="deposito.nombre" class="badge badge-warning"></span>
                                                     <span v-else-if="newDiferencia(deposito.fecha_pago) > 7 && !deposito.factura" v-text="deposito.nombre" class="badge badge-danger"></span>
                                                     <span v-else-if="deposito.factura" v-text="deposito.nombre" class="badge badge-success"></span>
                                                 </td>
@@ -509,8 +509,8 @@
                                             <tr v-for="deposito in arrayDepCredit.data" :key="deposito.id">
                                                 <td v-text="deposito.id" class="text-center"></td>
                                                 <td>
-                                                    <span v-if="newDiferencia(deposito.fecha_deposito) <= 3 && !deposito.factura" v-text="deposito.nombre" class="badge badge-info"></span>
-                                                    <span v-else-if="newDiferencia(deposito.fecha_deposito) > 3 && newDiferencia(deposito.fecha_deposito) <= 7 && !deposito.factura" v-text="deposito.nombre" class="badge badge-warning"></span>
+                                                    <span v-if="newDiferencia(deposito.fecha_deposito) < 1 && !deposito.factura" v-text="deposito.nombre" class="badge badge-info"></span>
+                                                    <span v-else-if="newDiferencia(deposito.fecha_deposito) >= 1 && newDiferencia(deposito.fecha_deposito) <= 7 && !deposito.factura" v-text="deposito.nombre" class="badge badge-warning"></span>
                                                     <span v-else-if="newDiferencia(deposito.fecha_deposito) > 7 && !deposito.factura" v-text="deposito.nombre" class="badge badge-danger"></span>
                                                     <span v-else-if="deposito.factura" v-text="deposito.nombre" class="badge badge-success"></span>
                                                 </td>

@@ -71,6 +71,10 @@
 
                             <div class="col-md-8">
                                 <button type="submit" @click="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                <a :href="'/postventa/excel?buscar='+buscar2 + '&b_etapa='+b_etapa2 + '&b_manzana='+b_manzana2+'&b_lote='+b_lote2+
+                                    '&criterio='+criterio2 +  '&b_desde='+b_desde +  '&b_hasta='+b_hasta" 
+                                    class="btn btn-success"><i class="fa fa-file-excel-o"></i> Excel
+                                </a>
                             </div>
                         </div>
                             
@@ -807,8 +811,6 @@
                     <!-- /.modal-dialog -->
                 </div>
             <!--Fin del modal-->
-            
-         
      </main>
 </template>
 
@@ -1007,7 +1009,6 @@
                     console.log(error);
                 });
             },
-
             listarEntregas(page, buscar, b_etapa, b_manzana, b_lote, criterio){
                 let me = this;
                 var url = '/postventa/indexEntregas?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio;
