@@ -25,6 +25,7 @@
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
                                         <option value="c.nombre">Cliente</option>
                                         <option value="contratos.id"># Folio</option>
+                                        <option value="contratos.fecha">Fecha de venta</option>
                                     </select>
 
                                     
@@ -40,8 +41,10 @@
 
                                     
 
-                                    <input v-else type="text"  v-model="buscar" @keyup.enter="listarContratos(1,buscar,buscar2,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <input v-else-if="criterio=='c.nombre'" type="text"  v-model="buscar" @keyup.enter="listarContratos(1,buscar,buscar2,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <input v-else-if="criterio=='contratos.fecha'" type="date"  v-model="buscar" @keyup.enter="listarContratos(1,buscar,buscar2,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
                                     <input v-if="criterio=='c.nombre'" type="text"  v-model="buscar2" @keyup.enter="listarContratos(1,buscar,buscar2,b_manzana,b_lote,criterio)" class="form-control" placeholder="Apellidos">
+                                    <input v-else-if="criterio=='contratos.fecha'" type="date"  v-model="buscar2" @keyup.enter="listarContratos(1,buscar,buscar2,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
                                    
                                 </div>
 

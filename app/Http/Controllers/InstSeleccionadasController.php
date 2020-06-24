@@ -467,7 +467,8 @@ class InstSeleccionadasController extends Controller
                 'personal.nombre','personal.apellidos', 
                 'inst_seleccionadas.id as inst_sel_id',
                 'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                'dep_creditos.cant_depo', 'dep_creditos.banco', 'dep_creditos.fecha_deposito'
+                'dep_creditos.cant_depo', 'dep_creditos.banco', 'dep_creditos.fecha_deposito',
+                'lotes.credito_puente'
             );
 
         

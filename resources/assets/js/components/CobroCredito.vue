@@ -217,7 +217,7 @@
                                 </div>
                             </div>
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-sm">
+                            <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
                                         <th># Ref</th>
@@ -231,6 +231,7 @@
                                         <th>Cuenta</th>
                                         <th>Fecha de deposito</th>
                                         <th>Monto</th>
+                                        <th>Crédito puente</th>
                                         <th>Observaciones</th>
                                     </tr>
                                 </thead>
@@ -247,6 +248,7 @@
                                         <td v-text="deposito.banco"></td>
                                         <td v-text="this.moment(deposito.fecha_deposito).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td v-text="'$'+formatNumber(deposito.cant_depo)"></td>
+                                        <td v-text="deposito.credito_puente"></td>
                                         <td class="td2">
                                             <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
                                                         @click="abrirModal('observaciones',deposito)">Observaciones</button>

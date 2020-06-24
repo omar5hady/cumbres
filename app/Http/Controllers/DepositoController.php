@@ -1341,6 +1341,21 @@ class DepositoController extends Controller
                                 break;
                     }
 
+                    case 'contratos.fecha':{
+                        if($buscar2 == ''){
+                            $contratos = $query
+                            ->where('i.elegido', '=', 1)
+                            ->where('contratos.fecha','=', $buscar );
+                        }
+                        else{
+                            $contratos = $query
+                            ->where('i.elegido', '=', 1)
+                            ->whereBetween('contratos.fecha', [$buscar, $buscar2] );
+                        }
+                        
+                        break;
+                    }
+
                     case 'lotes.fraccionamiento_id':{
                         if($credito == ''){
                             if($buscar != '' && $buscar2 == '' && $b_manzana == '' && $b_lote == ''){
@@ -1512,6 +1527,21 @@ class DepositoController extends Controller
                                 ->where('contratos.id','=', $buscar )
                                 ->where('contratos.status','=',$b_status);
                                 break;
+                    }
+
+                    case 'contratos.fecha':{
+                        if($buscar2 == ''){
+                            $contratos = $query
+                            ->where('i.elegido', '=', 1)
+                            ->where('contratos.fecha','=', $buscar );
+                        }
+                        else{
+                            $contratos = $query
+                            ->where('i.elegido', '=', 1)
+                            ->whereBetween('contratos.fecha', [$buscar, $buscar2] );
+                        }
+                        
+                        break;
                     }
 
                     case 'lotes.fraccionamiento_id':{
