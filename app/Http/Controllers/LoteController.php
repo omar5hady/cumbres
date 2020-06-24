@@ -1417,7 +1417,7 @@ class LoteController extends Controller
                         'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
                         'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
                         'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                        'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 
+                        'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'lotes.emp_constructora',
                         'v.nombre as v_nombre', 'apartados.fecha_apartado');
 
         $queryVendedores = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
@@ -1429,7 +1429,7 @@ class LoteController extends Controller
                     'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                     'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
                     'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
-                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste',
+                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste', 'lotes.emp_constructora',
                     'lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas');
 
                     // if($request->casa_muestra == 1){

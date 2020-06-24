@@ -127,7 +127,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="lote in arrayLote" :key="lote.id">
+                                    <tr v-for="lote in arrayLote" :key="lote.id" v-bind:style="{ color : lote.emp_constructora == 'Grupo Constructor Cumbres' ? '#2C36C2' : '#000000'}">
                                          
                                         <td class="td2" v-if="rolId != '2'" style="width:5%">
                                             <button v-if="lote.apartado == 0" title="Apartar" type="button" @click="abrirModal('lote','apartar',lote)" class="btn btn-warning btn-sm">
@@ -143,13 +143,13 @@
                                             
                                         </td>
                                         
-                                        <td class="td2" style="width:20%" v-text="lote.proyecto"></td>
-                                        <td class="td2" style="width:20%" v-text="lote.etapa"></td>
-                                        <td class="td2" v-text="lote.manzana"></td>
+                                        <td  style="width:20%" v-text="lote.proyecto"></td>
+                                        <td  style="width:20%" v-text="lote.etapa"></td>
+                                        <td  v-text="lote.manzana"></td>
                                             <td v-if="!lote.sublote" v-text="lote.num_lote"></td>
                                             <td v-else v-text="lote.num_lote + '-' + lote.sublote"></td>
-                                        <td class="td2" v-text="lote.avance + '%'"></td>
-                                        <td class="td2">
+                                        <td  v-text="lote.avance + '%'"></td>
+                                        <td >
                                             <span class="badge badge-success" v-text="lote.modelo"></span>
                                             <span v-if="lote.casa_muestra == 1" class="badge badge-danger">Casa muestra</span>
                                         </td>
@@ -762,7 +762,7 @@
     .td2 {
     white-space: nowrap;
     border-bottom: none;
-    color: rgb(20, 20, 20);
+    
     }
 
     .td2:first-of-type, th:first-of-type {
