@@ -416,6 +416,7 @@ Route::group(['middleware' => ['auth']],function(){
 
     ///////////////////         RUTAS POSTVENTA     ///////////////////////////
         Route::get('/postventa/index','EntregaController@indexPendientes');
+        Route::get('/postventa/excel','EntregaController@indexPendientesExcel');
         Route::get('/postventa/indexEntregas','EntregaController@indexEntregas');
         Route::get('/postventa/excelEntregas','EntregaController@excelEntregas');
         
