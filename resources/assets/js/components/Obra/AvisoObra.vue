@@ -42,6 +42,10 @@
                             <div class="form-group row">
                                 <div class="col-md-8">
                                     <div class="input-group">
+                                        <select class="form-control" v-model="b_empresa" >
+                                            <option value="">Empresa constructora</option>
+                                            <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                        </select>
                                         <button type="submit" @click="listarAvisos(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                         <a class="btn btn-success" v-bind:href="'/iniobra/excelAvisos?buscar=' + buscar + '&criterio=' + criterio" >
                                             <i class="icon-pencil"></i>&nbsp;Excel
@@ -794,8 +798,10 @@
                 arrayLotes:[],
                 arrayManzanaLotes: [],
                 arrayDatosLotes: [],
+                empresas:[],
                 lote_id:0,
                 lote:'',
+                b_empresa:'',
                 manzana:'',
                 construccion:'',
                 costo_directo:0,
@@ -927,11 +933,24 @@
             /**Metodo para mostrar los registros */
             listarAvisos(page, buscar, criterio){
                 let me = this;
-                var url = '/iniobra?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+                var url = '/iniobra?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio + '&empresa=' + me.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayAvisoObra = respuesta.ini_obra.data;
                     me.pagination = respuesta.pagination;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            getEmpresa(){
+                let me = this;
+                me.empresas=[];
+                var url = '/lotes/empresa/select';
+                axios.get(url).then(function (response) {
+                    var respuesta = response;
+                    me.empresas = respuesta.data.empresas;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -1503,6 +1522,7 @@
             this.selectLotes(this.manzana,this.fraccionamiento_id);
             this.selectDatosLotes(this.lote_id);
             this.selectProyectos();
+            this.getEmpresa();
           
         }
     }

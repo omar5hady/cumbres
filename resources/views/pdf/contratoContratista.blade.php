@@ -35,7 +35,12 @@
 <DIV id="header" >
 	<div class="table">
 	<div class="table-row">
-		<div class="table-cell"  STYLE="padding-left: -0.6in;"><IMG SRC="img/contratos/CONTRATOS_html_7790d2bb.png" ALIGN=BOTTOM STYLE="margin-top:5px"></div>
+		@if($cabecera[0]->emp_constructora == 'Grupo Constructor Cumbres')
+			<div class="table-cell"  STYLE="padding-left: -0.6in;"><IMG SRC="img/contratos/CONTRATOS_html_7790d2bb.png" ALIGN=BOTTOM STYLE="margin-top:5px"></div>
+		@endif
+		@if($cabecera[0]->emp_constructora == 'CONCRETANIA')
+			<div class="table-cell"  STYLE="padding-left: -0.6in;"><IMG SRC="img/contratos/logoConcretaniaObra.png" ALIGN=BOTTOM STYLE="margin-top:5px"></div>
+		@endif
 		<div class="table-cell"><br><br><br><br><FONT FACE="Arial Narrow, serif"><FONT SIZE=3><SPAN LANG="es-ES" "><I><B>{{$cabecera[0]->proyecto}}
 	&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	{{$cabecera[0]->clave}}</B></I></SPAN></FONT></FONT></div>
@@ -44,7 +49,7 @@
 
 	</SPAN><P LANG="en-GB" ALIGN=RIGHT STYLE="margin-left: 1.8in"><FONT FACE="Arial Narrow, serif"><FONT SIZE=1><SPAN LANG="es-ES"><I>	
 		 Contrato referente a {{$cabecera[0]->descripcion_corta}},
-	    Monto del Contrato ${{$cabecera[0]->total_importe}}</I></SPAN></FONT></FONT></P>
+	    Monto del Contrato ${{$cabecera[0]->total_importe2}}</I></SPAN></FONT></FONT></P>
 	<IMG SRC="img/contratos/CONTRATOS_html_5d82e5a4.png">
 
 </DIV>
@@ -53,7 +58,7 @@
 	<COL WIDTH=450>
 	<TR>
 	<br>
-	
+	@if($cabecera[0]->emp_constructora == 'Grupo Constructor Cumbres')
 		<TD WIDTH=450 HEIGHT=72 VALIGN=TOP BGCOLOR="#999999" STYLE="border: 1px solid #00000a; padding-top: 0in; padding-bottom: 0.2in; padding-left: 0.05in; padding-right: 0.09in">
 			<P LANG="es-ES" CLASS="western" ALIGN=JUSTIFY STYLE="margin-left: 0.07in">
 			</P>
@@ -75,6 +80,29 @@
 			CONTRATISTA”,</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES">
 			MISMO QUE SUJETAN AL TENOR DE LAS SIGUIENTES Y CLAUSULAS.</SPAN></FONT></FONT></P>
 		</TD>
+	@endif
+	@if($cabecera[0]->emp_constructora == 'CONCRETANIA')
+		<TD WIDTH=450 HEIGHT=72 VALIGN=TOP BGCOLOR="#999999" STYLE="border: 1px solid #00000a; padding-top: 0in; padding-bottom: 0.2in; padding-left: 0.05in; padding-right: 0.09in">
+			<P LANG="es-ES" CLASS="western" ALIGN=JUSTIFY STYLE="margin-left: 0.07in">
+			</P>
+			<P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY STYLE="margin-top: 0in; margin-left: 0.05in">
+			<FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES">CONTRATO
+			DE OBRA A PRECIO ALZADO Y TIEMPO DETERMINADO QUE CELEBRAN POR UNA
+			PARTE </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES"><B>CONCRETANIA, S.A. DE C.V.,</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES">
+			REPRESENTADA POR EL SR. </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES"><B>ING.
+			DAVID CALVILLO MARTINEZ,</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES">
+			EN SU CARACTER DE APODERADO LEGAL Y A QUIEN EN LO SUCESIVO SE LE
+			DENOMINA </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES"><B>“LA
+			CONTRATANTE”</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES">,
+			Y POR LA OTRA PARTE </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES"><B>{{$cabecera[0]->contratista}}
+			</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES">REPRESENTADA
+			POR {{$cabecera[0]->representante}}</SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES"><B>,
+			</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES">A
+			QUIEN EN LO SUBSECUENTE SE LE IDENTIFICARA COMO </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES"><B>“LA
+			CONTRATISTA”,</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES">
+			MISMO QUE SUJETAN AL TENOR DE LAS SIGUIENTES Y CLAUSULAS.</SPAN></FONT></FONT></P>
+		</TD>
+	@endif
 	</TR>
 </TABLE>
 
@@ -362,15 +390,28 @@ firma el presente contrato a los {{$cabecera[0]->f_ini2}}.</B></SPAN></FONT></FO
     <div class="table-row">
       <div class="table-cell" > <b>APDO .ING. DAVID CALVILLO MARTINEZ</div>
       <div class="table-cell" > <b>REP.{{$cabecera[0]->representante}}</div>
-    </div>
+	</div>
+	@if($cabecera[0]->emp_constructora == 'Grupo Constructor Cumbres')
     <div class="table-row">
         <div class="table-cell" > <b>GRUPO CONSTRUCTOR CUMBRES, SA DE CV</div>
         <div class="table-cell" > <b>{{$cabecera[0]->contratista}}</div>
-    </div>
-    <div class="table-row">
+	</div>
+	<div class="table-row">
         <div class="table-cell" > <b>Manuel Gutiérrez Nájera # 190 Col. Tequisquiapan</div>
         <div class="table-cell" > <b>{{$cabecera[0]->direccion}}</div>
     </div>
+	@endif
+	@if($cabecera[0]->emp_constructora == 'CONCRETANIA')
+    <div class="table-row">
+        <div class="table-cell" > <b>CONCRETANIA, SA DE CV</div>
+        <div class="table-cell" > <b>{{$cabecera[0]->contratista}}</div>
+	</div>
+	<div class="table-row">
+        <div class="table-cell" > <b>Manuel Gutiérrez Nájera # 180 Col. Tequisquiapan</div>
+        <div class="table-cell" > <b>{{$cabecera[0]->direccion}}</div>
+    </div>
+	@endif
+    
     <div class="table-row">
         <div class="table-cell" > <b>San Luis Potosí, S.L.P.</div>
         <div class="table-cell" > <b>{{$cabecera[0]->colonia}}, C.P. {{$cabecera[0]->codigoPostal}}</div>
@@ -394,8 +435,17 @@ firma el presente contrato a los {{$cabecera[0]->f_ini2}}.</B></SPAN></FONT></FO
 
 <DIV id="footer">
 	<IMG SRC="img/contratos/CONTRATOS_html_5d82e5a4.png">
+	@if($cabecera[0]->emp_constructora == 'Grupo Constructor Cumbres')
 	<P LANG="en-GB" ALIGN=CENTER><FONT SIZE=1 STYLE="font-size: 8pt; text-align:center;"><SPAN LANG="es-ES">MANUEL
-	GUTIERREZ NAJERA #190 COL TEQUIS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TEL Y FAX 01 (4) 833-46-83-85 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; San Luis Potosí, S.L.P.</SPAN></FONT></P></div>
+	GUTIERREZ NAJERA #190 COL TEQUIS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TEL Y FAX 01 (4) 833-46-83-85 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; San Luis Potosí, S.L.P.</SPAN></FONT>
+	</P>
+	@endif
+	@if($cabecera[0]->emp_constructora == 'CONCRETANIA')
+	<P LANG="en-GB" ALIGN=CENTER><FONT SIZE=1 STYLE="font-size: 8pt; text-align:center;"><SPAN LANG="es-ES">MANUEL
+	GUTIERREZ NAJERA #180 COL TEQUIS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TEL Y FAX 01 (4) 833-46-83-85 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; San Luis Potosí, S.L.P.</SPAN></FONT>
+	</P>
+	@endif
+</div>
 
 </BODY>
 
