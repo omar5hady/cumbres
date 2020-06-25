@@ -39,6 +39,11 @@
                                     <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
 
                                     <input v-else type="text"  v-model="buscar" @keyup.enter="listarContratos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
+
+                                    <button v-if="btn_status == 2" @click="btn_status=0" type="button" class="btn btn-secondary btn-primary">Todos</button>
+                                    <button v-if="btn_status == 0" @click="btn_status=1" type="button" class="btn btn-secondary btn-success">Activos</button>
+                                    <button v-if="btn_status == 1" @click="btn_status=2" type="button" class="btn btn-secondary btn-warning">Detenidos</button>
+
                                     <button type="submit" @click="listarContratos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     <a class="btn btn-success" v-bind:href="'/expediente/Excel?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio">
                                         <i class="icon-pencil"></i>&nbsp;Excel
@@ -492,7 +497,8 @@
                 buscar : '',
                 b_etapa: '',
                 b_manzana: '',
-                b_lote: ''
+                b_lote: '',
+                btn_status:2,
                
             }
         },
@@ -533,8 +539,10 @@
             /**Metodo para mostrar los registros */
             listarContratos(page, buscar, b_etapa, b_manzana, b_lote, criterio){
                 let me = this;
-                var url = '/expediente/listarContratos?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio;
+                var url = '/expediente/listarContratos?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + 
+                    b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio + '&btn_status=' + me.btn_status;
                 axios.get(url).then(function (response) {
+                    console.log(response);
                     var respuesta = response.data;
                     me.arrayContratos = respuesta.contratos.data;
                     me.pagination = respuesta.pagination;

@@ -211,6 +211,13 @@ class ExpedienteController extends Controller
             }
         }
 
+        //filtro por estatus (Detenido, activo)
+        if($request->btn_status==1){
+            $contratos = $contratos->where('contratos.detenido', '=', 1);
+        }elseif($request->btn_status==0){
+            $contratos = $contratos->where('contratos.detenido', '=', 0);
+        }
+
         $contratos = $contratos->orderBy('contratos.avaluo_preventivo','desc')
                                 ->orderBy('licencias.avance','desc')->paginate(8);
 
@@ -238,7 +245,7 @@ class ExpedienteController extends Controller
                 }
             }
         }
-
+        
         return [
             'pagination' => [
                 'total'        => $contratos->total(),
