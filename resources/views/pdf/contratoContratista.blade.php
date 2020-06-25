@@ -53,6 +53,7 @@
 	<COL WIDTH=450>
 	<TR>
 	<br>
+	
 		<TD WIDTH=450 HEIGHT=72 VALIGN=TOP BGCOLOR="#999999" STYLE="border: 1px solid #00000a; padding-top: 0in; padding-bottom: 0.2in; padding-left: 0.05in; padding-right: 0.09in">
 			<P LANG="es-ES" CLASS="western" ALIGN=JUSTIFY STYLE="margin-left: 0.07in">
 			</P>

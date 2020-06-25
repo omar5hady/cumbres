@@ -132,6 +132,7 @@ Vue.component('rep-ventascanc', require('./components/Reportes/VentasCancelacion
 Vue.component('rep-acumulado', require('./components/Reportes/ReporteAcumulado.vue'));
 Vue.component('recursos-propios', require('./components/Reportes/ReporteRecursosPropios.vue'));
 Vue.component('repcredito-puente', require('./components/Reportes/ReporteCasasPuente.vue'));
+Vue.component('reporte-modelos', require('./components/Reportes/ReporteModelos.vue'));
 
 
 Vue.component('avaluos', require('./components/Avaluos.vue'));

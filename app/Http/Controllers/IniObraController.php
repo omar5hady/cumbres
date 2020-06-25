@@ -468,6 +468,7 @@ class IniObraController extends Controller
             'contratistas.representante as representante','fraccionamientos.nombre as proyecto',
             'fraccionamientos.calle as calleFracc','fraccionamientos.colonia as coloniaFracc',
             'fraccionamientos.estado as estadoFracc','ini_obras.anticipo',
+            'ini_obras.emp_constructora',
             'ini_obras.total_anticipo','ini_obras.costo_indirecto_porcentaje','ini_obras.fraccionamiento_id',
             'ini_obras.contratista_id','ini_obras.descripcion_corta','ini_obras.descripcion_larga','ini_obras.iva','ini_obras.tipo')
         ->where('ini_obras.id','=',$id)

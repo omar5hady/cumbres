@@ -361,6 +361,10 @@
                                                     <li class="nav-item">
                                                         <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_recursos_propios" type="checkbox" value="1"/> Reporte de recursos propios</a>
                                                     </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_vent_modelos" type="checkbox" value="1"/> Reporte por modelo</a>
+                                                    </li>
+                                                    
                                                 </ul>
                                     </div>
                                 </div> 
@@ -863,6 +867,7 @@
                     rep_asesores:0,
                     rep_ini_term_ventas:0,
                     rep_recursos_propios:0,
+                    rep_vent_modelos:0,
 
                 pagination : {
                     'total' : 0,         
@@ -1074,9 +1079,10 @@
                 this.rep_publi=0;
                 this.inventario=0;
                 this.rep_venta_canc = 0;
-                this.rep_asesores
-                this.rep_ini_term_ventas
-                this.rep_recursos_propios
+                this.rep_asesores = 0;
+                this.rep_ini_term_ventas = 0;
+                this.rep_recursos_propios = 0;
+                this.rep_vent_modelos = 0;
             },
 
             selectPersonas(){
@@ -1206,6 +1212,7 @@
                     me.rep_asesores = usuarios[0].rep_asesores;
                     me.rep_ini_term_ventas = usuarios[0].rep_ini_term_ventas;
                     me.rep_recursos_propios = usuarios[0].rep_recursos_propios;
+                    me.rep_vent_modelos = usuarios[0].rep_vent_modelos;
 
                     me.rol_id = usuarios[0].rol_id;
 
@@ -1502,6 +1509,7 @@
                     'rep_asesores':this.rep_asesores,
                     'rep_ini_term_ventas':this.rep_ini_term_ventas,
                     'rep_recursos_propios':this.rep_recursos_propios,
+                    'rep_vent_modelos':this.rep_vent_modelos,
 
                 }).then(function (response){
                     me.listarPersonal(1,'','nombre');
@@ -1780,6 +1788,7 @@
                 me.mejora=0;
                 me.rep_proy = 0;
                 me.rep_publi = 0;
+                me.rep_vent_modelos =0;
 
                 me.rol_id =0;
 

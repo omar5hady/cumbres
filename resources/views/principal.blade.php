@@ -629,7 +629,13 @@
                                 <li @click="menu=244" class="nav-item">
                                     <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de casas con crédito puente</a>
                                 </li>
-                            @endif
+                                @endif
+                                @if(Auth::user()->rep_vent_modelos == 1)
+                                    
+                                    <li @click="menu=245" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte por modelo</a>
+                                    </li>
+                                @endif
                                 @if(Auth::user()->rol_id == 1)
                                     <li @click="menu=240" class="nav-item">
                                         <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte acumulado</a>

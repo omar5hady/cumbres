@@ -2251,7 +2251,7 @@
                                 'id':id
                             }); 
                             
-                            me.listarContratos(me.pagination.current_page,me.buscar,me.buscar3,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
+                            me.listarContratos(me.pagination.current_page,me.buscar2,me.buscar3,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2);
                             Swal({
                                 title: 'Hecho!',
                                 text: 'El expediente ha sido entregado',
@@ -2324,7 +2324,7 @@
                     'cliente_id':this.prospecto_id,
                 }).then(function (response){
                     me.listado = 0;
-                     me.listarContratos(me.pagination.current_page,me.buscar,me.buscar3,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
+                     me.listarContratos(me.pagination.current_page,me.buscar2,me.buscar3,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2);
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -2909,7 +2909,7 @@
 
                 }).then(function (response){
                      me.listado = 0;
-                     me.listarContratos(me.pagination.current_page,me.buscar,me.buscar3,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
+                     me.listarContratos(me.pagination.current_page,me.buscar2,me.buscar3,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2);
                     
                     //window.alert("Cambios guardados correctamente");
                     swal({
@@ -2931,7 +2931,7 @@
 
             cerrarDetalle(){
                 this.limpiarDatos();
-                this.listarContratos(this.pagination.current_page,this.buscar,this.buscar3,this.b_etapa,this.b_manzana,this.b_lote,this.criterio);
+                this.listarContratos(this.pagination.current_page,this.buscar2,this.buscar3,this.b_etapa2,this.b_manzana2,this.b_lote2,this.criterio2);
                 this.listado = 0;
             },
 
@@ -3201,7 +3201,7 @@
                 reverseButtons: true
                 }).then((result) => {
                 if (result.value) {
-                
+                Swal.showLoading()
                 axios.put('/contrato/status/fecha',{
                                 'id': this.id_contrato,
                                 'status': this.status,
@@ -3209,7 +3209,7 @@
                                 'lote_id':this.lote_id
                                 }).then(function (response){
                                 me.listado=4;
-                                
+                                Swal.enableLoading()
                                 swal(
                                 'Cambio de status!',
                                 'Cambios realizados con éxito.',
@@ -3217,6 +3217,7 @@
                                 )
                             }).catch(function (error){
                                 console.log(error);
+                                Swal.enableLoading()
                             });
 
                             } else if (
@@ -3715,7 +3716,7 @@
         
         },
         mounted() {          
-            this.listarContratos(1,this.buscar,this.buscar3,this.b_etapa,this.b_manzana,this.b_lote,this.criterio);
+            this.listarContratos(1,this.buscar2,this.buscar3,this.b_etapa2,this.b_manzana2,this.b_lote2,this.criterio2);
             this.selectFraccionamientos();
             this.selectAsesores();
             this.selectCreditos();

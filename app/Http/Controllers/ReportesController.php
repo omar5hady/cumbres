@@ -14,6 +14,7 @@ use Excel;
 use Carbon\Carbon;
 use App\Pago_contrato;
 use App\Historial_descartado;
+use App\Modelo;
 
 use App\Cliente;
 use App\Vendedor;
@@ -2264,6 +2265,141 @@ class ReportesController extends Controller
         )->download('xls');
 
        
+    }
+
+    public function reporteModelos(Request $request){
+
+        $fraccionamiento = $request->fraccionamiento;
+        $etapa = $request->etapa;
+        $diff_in_months = 0;
+        
+        $modelos = Modelo::select('nombre')
+        ->where('nombre','!=','Por Asignar');
+        if($fraccionamiento != ''){
+           $modelos =  $modelos->where('fraccionamiento_id','=',$fraccionamiento);
+        }
+        
+        $modelos = $modelos->orderBy('nombre','asc')->distinct()->get();
+
+        if($fraccionamiento != ''){
+            $vendidasFin = Contrato::join('creditos','contratos.id','=','creditos.id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->select('contratos.fecha')
+                                ->where('lotes.fraccionamiento_id','=',$fraccionamiento)
+                                ->where('contratos.status','=',3)
+                                ->orderBy('contratos.fecha','desc')
+                                ->get();
+
+                $fracc = Fraccionamiento::select('fecha_ini_venta')->where('id','=',$fraccionamiento)->get();
+                $fecha = $fracc[0]->fecha_ini_venta;
+
+                if($fecha){
+                        $to = Carbon::createFromFormat('Y-m-d', $vendidasFin[0]->fecha);
+                        $from = Carbon::createFromFormat('Y-m-d', $fecha);
+                        $diff_in_months = $to->diffInMonths($from);
+                }
+        }
+
+        if($etapa != ''){
+            $vendidasFin = Contrato::join('creditos','contratos.id','=','creditos.id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->select('contratos.fecha')
+                                ->where('lotes.fraccionamiento_id','=',$fraccionamiento)
+                                ->where('lotes.etapa_id','=',$etapa)
+                                ->where('contratos.status','=',3)
+                                ->orderBy('contratos.fecha','desc')
+                                ->get();
+
+                $fracc = Etapa::select('fecha_ini_venta')->where('id','=',$etapa)->where('fraccionamiento_id','=',$fraccionamiento)->get();
+                $fecha = $fracc[0]->fecha_ini_venta;
+                if($fecha){
+                        $to = Carbon::createFromFormat('Y-m-d', $vendidasFin[0]->fecha);
+                        $from = Carbon::createFromFormat('Y-m-d', $fecha);
+                        $diff_in_months = $to->diffInMonths($from);
+                }
+        }
+        
+
+        foreach($modelos as $index => $modelo){
+            $modelo->total = 0;
+
+            $lotes = Lote::join('modelos','lotes.modelo_id','=','modelos.id')->where('modelos.nombre','=',$modelo->nombre);
+            if($fraccionamiento != '')
+                $lotes = $lotes->where('lotes.fraccionamiento_id','=',$fraccionamiento);
+            if($etapa != '')
+                $lotes = $lotes->where('lotes.etapa_id','=',$etapa);
+            $lotes = $lotes->count();
+            $modelo->total = $lotes;
+
+            $indivContado   =   Contrato::join('expedientes','contratos.id','=','expedientes.id')
+                                ->join('creditos','contratos.id', '=', 'creditos.id')
+                                ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->where('contratos.status','=',3)
+                                ->where('expedientes.liquidado','=',1)
+                                ->where('inst_seleccionadas.elegido', '=', '1')
+                                ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
+                                ->where('modelos.nombre','=',$modelo->nombre);
+                                if($fraccionamiento != '')
+                                    $indivContado=$indivContado->where('lotes.fraccionamiento_id','=',$fraccionamiento);
+                                if($etapa != '')
+                                    $indivContado=$indivContado->where('lotes.etapa_id','=',$etapa);
+                                $indivContado = $indivContado->distinct('contratos.id')
+                                                            ->count('contratos.id');
+            
+            $indivCredito = Contrato::join('expedientes','contratos.id','=','expedientes.id')
+                                ->join('creditos','contratos.id', '=', 'creditos.id')
+                                ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->where('contratos.status','=',3)
+                                ->where('expedientes.fecha_firma_esc','!=',NULL)
+                                ->where('inst_seleccionadas.elegido', '=', '1')
+                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
+                                ->where('modelos.nombre','=',$modelo->nombre);
+                                if($fraccionamiento != '')
+                                    $indivCredito=$indivCredito->where('lotes.fraccionamiento_id','=',$fraccionamiento);
+                                if($etapa != '')
+                                    $indivCredito=$indivCredito->where('lotes.etapa_id','=',$etapa);
+                                $indivCredito=$indivCredito->distinct('contratos.id')
+                                ->count('contratos.id');
+
+            $contratos = Contrato::join('creditos','contratos.id', '=', 'creditos.id')
+                            ->join('lotes','creditos.lote_id','=','lotes.id')
+                            ->join('modelos','lotes.modelo_id','=','modelos.id')
+                            ->where('contratos.status','=',3)
+                            ->where('modelos.nombre','=',$modelo->nombre);
+                            if($fraccionamiento != '')
+                                $contratos=$contratos->where('lotes.fraccionamiento_id','=',$fraccionamiento);
+                            if($etapa != '')
+                                $contratos=$contratos->where('lotes.etapa_id','=',$etapa);
+                            $contratos=$contratos->orWhere('contratos.status','=',1)
+                            ->where('modelos.nombre','=',$modelo->nombre);
+                            if($fraccionamiento != '')
+                                $contratos=$contratos->where('lotes.fraccionamiento_id','=',$fraccionamiento);
+                            if($etapa != '')
+                                $contratos=$contratos->where('lotes.etapa_id','=',$etapa);
+                           
+                            $contratos=$contratos->distinct('contratos.id')
+                            ->count('contratos.id');
+
+            $modelo->indiv = $indivContado + $indivCredito;
+
+            $modelo->vendida = $contratos - ($indivContado + $indivCredito);
+
+            $modelo->total_vendidas = $contratos + ($indivContado + $indivCredito);
+
+            $modelo->disponible = $modelo->total - ($modelo->indiv + $modelo->vendida );
+
+            
+        }
+
+        return [
+            'modelos'=>$modelos, 
+            'diferencia'=>$diff_in_months,
+            ];
+
     }
     
 }

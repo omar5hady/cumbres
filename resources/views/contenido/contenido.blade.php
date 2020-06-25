@@ -444,6 +444,10 @@
             <repcredito-puente></repcredito-puente>
         </template>
 
+        <template v-if="menu==245">
+            <reporte-modelos></reporte-modelos>
+        </template>
+
         
 
         
