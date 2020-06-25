@@ -30,8 +30,12 @@ class IniObraController extends Controller
             ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
             ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
             'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto', 'ini_obras.documento','ini_obras.total_importe',
-            'ini_obras.total_superficie',
+            'ini_obras.total_superficie','ini_obras.emp_constructora',
             'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto');
+        
+        if($request->empresa != ''){
+            $query = $query->where('ini_obras.emp_constructora','=',$request->empresa);
+        }
          
         if ($buscar==''){
             $ini_obra = $query
@@ -486,7 +490,7 @@ class IniObraController extends Controller
         $cabecera[0]->total_anticipo = number_format((float)$cabecera[0]->total_anticipo,2,'.','');
         $cabecera[0]->total_costo_directo = number_format((float)$cabecera[0]->total_costo_directo,2,'.','');
         $cabecera[0]->total_costo_indirecto = number_format((float)$cabecera[0]->total_costo_indirecto,2,'.','');
-        $cabecera[0]->total_importe = number_format((float)$cabecera[0]->total_importe,2,'.','');
+        $cabecera[0]->total_importe2 = number_format((float)$cabecera[0]->total_importe,2,'.',',');
 
         $cabecera[0]->anticipoLetra = NumerosEnLetras::convertir($cabecera[0]->total_anticipo,'Pesos',true,'Centavos');
         $cabecera[0]->totalImporteLetra = NumerosEnLetras::convertir($cabecera[0]->total_importe,'Pesos',true,'Centavos');
@@ -511,6 +515,7 @@ class IniObraController extends Controller
         $relacion =  Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
         ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
         ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
+            'ini_obras.emp_constructora',
             'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto','ini_obras.total_importe',
             'contratistas.nombre as contratista','contratistas.rfc as rfc','contratistas.telefono as telefono',
             'contratistas.direccion as direccion','contratistas.colonia as colonia',
@@ -536,21 +541,35 @@ class IniObraController extends Controller
             $sheet->setSize('G7', 20, 20);
 
             $objDrawing = new PHPExcel_Worksheet_Drawing;
-            $objDrawing->setPath(public_path('img/contratos/CONTRATOS_html_7790d2bb.png')); //your image path
+            if($relacion[0]->emp_constructora == 'Grupo Constructor Cumbres')
+                $objDrawing->setPath(public_path('img/contratos/CONTRATOS_html_7790d2bb.png')); //your image path
+            if($relacion[0]->emp_constructora == 'CONCRETANIA');
+                $objDrawing->setPath(public_path('img/contratos/logoConcretaniaObra.png')); //your image path
             $objDrawing->setCoordinates('A1');
             $objDrawing->setWorksheet($sheet);
 
+            if($relacion[0]->emp_constructora == 'Grupo Constructor Cumbres')
+                $sheet->cell('A1', function($cell) {
 
-            $sheet->cell('A1', function($cell) {
+                    // manipulate the cell
+                    $cell->setValue(  'GRUPO CONSTRUCTOR CUMBRES, SA DE CV');
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(32);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                
+                });
+            if($relacion[0]->emp_constructora == 'CONCRETANIA');
+                $sheet->cell('A1', function($cell) {
 
-                // manipulate the cell
-                $cell->setValue(  'GRUPO CONSTRUCTOR CUMBRES, SA DE CV');
-                $cell->setFontFamily('Arial Narrow');
-                $cell->setFontSize(32);
-                $cell->setFontWeight('bold');
-                $cell->setAlignment('center');
-            
-            });
+                    // manipulate the cell
+                    $cell->setValue(  'CONCRETANIA, SA DE CV');
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(32);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                
+                });
             
             
             $sheet->row(3, [
@@ -585,7 +604,7 @@ class IniObraController extends Controller
 
 
             $sheet->row(7, [
-                'Descripcion', 'manzana', 'lote', 'M2', 'Costo directo', 'Indirectos',
+                'Descripcion', 'Manzana', 'Lote', 'M2', 'Costo directo', 'Indirectos',
                 'Importe'
             ]);
 
