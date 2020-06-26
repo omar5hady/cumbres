@@ -45,7 +45,7 @@
                                     <button v-if="btn_status == 1" @click="btn_status=2" type="button" class="btn btn-secondary btn-warning">Detenidos</button>
 
                                     <button type="submit" @click="listarContratos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                    <a class="btn btn-success" v-bind:href="'/expediente/Excel?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio">
+                                    <a class="btn btn-success" v-bind:href="'/expediente/Excel?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio + '&btn_status=' + btn_status">
                                         <i class="icon-pencil"></i>&nbsp;Excel
                                     </a>
                                 </div>
@@ -77,6 +77,7 @@
                                         <th>Crédito puente</th>
                                         <th>Conyuge</th>
                                         <th>Integracion</th>
+                                        <th>Entrega de vivienda</th>
                                         <th>Observaciones</th>
 
                                     </tr>
@@ -194,7 +195,12 @@
                                             </button>
                                             <label v-else>DETENIDO </label>
                                         </td>
-                                         
+                                        <td class="td2">
+                                            <button v-if="contratos.detenido == 0" title="Solicitar entrega de vivienda" type="button" class="btn btn-warning pull-right"
+                                               @click="generalId = contratos.folio" data-toggle="modal" data-target="#modalEntrega">Solicitar entrega
+                                            </button>
+                                            <label v-else>DETENIDO </label>
+                                        </td>
                                         <td class="td2">
                                             <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
                                                 @click="abrirModal3(contratos.folio)">Ver Observaciones</button>
@@ -435,7 +441,34 @@
                 <!-- /.modal-dialog -->
             </div>
             
-         
+            <!-- Modal solicitar entrega -->
+            <div class="modal fade" id="modalEntrega" role="dialog" aria-labelledby="modalEntregaLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header" style="background-color: #00ADEF; color:white;">
+                            <h5 class="modal-title" id="modalEntregaLabel">Solicitar Entrega</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form action="" @submit="solcEntrega" method="post">
+                            <div class="modal-body">
+                                <div class="row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
+                                    <div class="col-md-6">
+                                            <textarea id="solEntrObs" name="solEntrObs" rows="3" cols="30" v-model="btnObs" required class="form-control" placeholder="Observacion"></textarea>
+                                    </div>
+                                    <input type="hidden" id="solEntrId" name="solEntrId" value="">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                <button v-if="btnObs" type="submit" class="btn btn-primary">Solicitar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
      </main>
 </template>
 
@@ -447,6 +480,7 @@
     export default {
         data(){
             return{
+                btnObs:'',
                 proceso:false,
                 id: 0,
                 
@@ -499,7 +533,18 @@
                 b_manzana: '',
                 b_lote: '',
                 btn_status:2,
-               
+                generalId:0,
+                myAlerts:{
+                    popAlert : function(title = 'Alert',type = "success", description =''){
+                        swal({
+                            title: title,
+                            type: type,
+                            text: description,
+                            showConfirmButton:false,
+                            timer:1500,
+                        })
+                    }
+                },
             }
         },
         computed:{
@@ -542,7 +587,6 @@
                 var url = '/expediente/listarContratos?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + 
                     b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio + '&btn_status=' + me.btn_status;
                 axios.get(url).then(function (response) {
-                    console.log(response);
                     var respuesta = response.data;
                     me.arrayContratos = respuesta.contratos.data;
                     me.pagination = respuesta.pagination;
@@ -1021,6 +1065,21 @@
                 this.selectCiudades(this.estado);
                 this.selectNotarias(this.estado,this.ciudad);
 
+            },
+
+            solcEntrega(e){
+                e.preventDefault();
+                let me = this;
+
+                axios.post('/entrega/registrar',{
+                    'id': this.generalId,
+                    'comentario': e.target.solEntrObs.value
+                }).then(
+                    () => {
+                        me.listarContratos(1,me.buscar,me.b_etapa,me.b_manzana,me.b_lote,me.criterio)
+                        me.myAlerts.popAlert('Guardado correctamente')
+                    }
+                ).catch(error => console.log(error));
             }
         
         },

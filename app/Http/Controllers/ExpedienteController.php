@@ -287,36 +287,56 @@ class ExpedienteController extends Controller
         $criterio = $request->criterio;
 
         $query = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                ->join('personal as c', 'clientes.id', '=', 'c.id')
-                ->join('personal as v', 'vendedores.id', '=', 'v.id')
-                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                ->select(
-                    'contratos.id as folio',
-                    DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                    DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
-                    'creditos.fraccionamiento as proyecto',
-                    'creditos.etapa',
-                    'creditos.manzana',
-                    'creditos.num_lote',
-                    'contratos.fecha_status',
-                    'i.tipo_credito',
-                    'i.institucion',
-                    'contratos.avaluo_preventivo',
-                    'contratos.aviso_prev',
-                    'contratos.aviso_prev_venc',
-                    'lotes.regimen_condom',
-                    'licencias.avance as avance_lote',
-                    'licencias.visita_avaluo',
-                    DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
-                    DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
-                    'clientes.coacreditado',
-                    'contratos.integracion',
-                    'lotes.fraccionamiento_id'
-                );
+            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+            ->join('personal as c', 'clientes.id', '=', 'c.id')
+            ->join('personal as v', 'vendedores.id', '=', 'v.id')
+            ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+            //->leftjoin('avaluos','contratos.id','=','avaluos.contrato_id')
+            ->select(
+                'contratos.id as folio',
+                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
+                'creditos.fraccionamiento as proyecto',
+                'creditos.etapa',
+                'creditos.manzana',
+                'creditos.num_lote',
+                'licencias.avance as avance_lote',
+                'licencias.foto_predial',
+                'licencias.foto_lic',
+                'licencias.foto_acta',
+                'licencias.visita_avaluo',
+                'contratos.fecha_status',
+                'i.tipo_credito',
+                'i.institucion',
+                'contratos.avaluo_preventivo',
+                'contratos.aviso_prev',
+                'contratos.aviso_prev_venc',
+                'lotes.regimen_condom',
+                DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
+                DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                'clientes.coacreditado',
+                
+                'c.celular',
+                'clientes.email_institucional',
+                'c.email',
+
+                'lotes.credito_puente',
+                'contratos.integracion',
+                'lotes.fraccionamiento_id',
+                //'avaluos.pdf',
+                'contratos.detenido',
+                DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                            WHERE pagos_contratos.tipo_pagare = 0
+                            and pagos_contratos.contrato_id = contratos.id
+                            and pagos_contratos.pagado != 3) as totPagare"),
+                DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                            WHERE pagos_contratos.tipo_pagare = 0
+                            and pagos_contratos.contrato_id = contratos.id
+                            and pagos_contratos.pagado != 3) as totRest")
+        );
 
         if ($buscar == '') {
             $contratos = $query
@@ -436,8 +456,40 @@ class ExpedienteController extends Controller
             }
         }
 
+        //filtro por estatus (Detenido, activo)
+        if($request->btn_status==1){
+            $contratos = $contratos->where('contratos.detenido', '=', 1);
+        }elseif($request->btn_status==0){
+            $contratos = $contratos->where('contratos.detenido', '=', 0);
+        }
+
         $contratos = $contratos->orderBy('contratos.avaluo_preventivo','desc')
                                 ->orderBy('licencias.avance','desc')->get();
+        
+        if(sizeof($contratos)){
+            foreach($contratos as $index => $contrato){
+                $lastPagare = Pago_contrato::select('fecha_pago')->where('contrato_id','=',$contrato->folio)->orderBy('fecha_pago','desc')->get();
+
+                $avaluos = Avaluo::select('resultado','fecha_recibido',
+                                            'id as avaluoId',
+                                            'fecha_concluido',
+                                            'pdf')->where('contrato_id','=',$contrato->folio)->orderBy('created_at','desc')->get();
+
+                if(sizeof($avaluos)){
+                    $contrato->pdf = $avaluos[0]->pdf;
+                }
+                else{
+                    $contrato->pdf = '';
+                }
+                            
+                if(sizeof($lastPagare)){
+                    $contrato->ultimo_pagare = $lastPagare[0]->fecha_pago;
+                }
+                else{
+                    $contrato->ultimo_pagare = '';
+                }
+            }
+        }
 
 
         
@@ -445,10 +497,13 @@ class ExpedienteController extends Controller
             $excel->sheet('contratos', function($sheet) use ($contratos){              
                 $sheet->row(1, [
                     '# Folio', 'Cliente' ,'Asesor', 'Proyecto', 'Etapa', 'Manzana', 'Lote',
-                    '% Avance','Visita de avaluo' ,'Firma', 'Tipo de credito','Institucion Financiera','Solicitud de avaluo','Aviso preventivo',
+                    '% Avance','Visita de avaluo' ,'Firma', 'Tipo de credito','Institucion Financiera','Solicitud de avaluo',
+                    'Depositado', 'Fecha ultimo pagare',
+                    'Aviso preventivo',
+                    'Crédito puente',
                     'Regimen en condominio','Conyuge'
                 ]);
-                $sheet->cells('A1:O1', function ($cells) {
+                $sheet->cells('A1:S1', function ($cells) {
                     $cells->setBackground('#052154');
                     $cells->setFontColor('#ffffff');
                     // Set font family
@@ -506,13 +561,16 @@ class ExpedienteController extends Controller
                         $contrato->tipo_credito,
                         $contrato->institucion,
                         $avaluo_prev,
+                        ($contrato->totPagare-$contrato->totRest),
+                        $contrato->ultimo_pagare,
                         $aviso_prev,
+                        $contrato->credito_puente,
                         $regimen,
                         $contrato->nombre_conyuge
                    
                     ]);	
                 }
-                $num='A1:O' . $cont;
+                $num='A1:S' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
         }

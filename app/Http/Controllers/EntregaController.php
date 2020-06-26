@@ -38,11 +38,15 @@ class EntregaController extends Controller
             }
             
 
-            $expediente = Expediente::findOrFail($request->id);
-            if($expediente->fecha_firma_esc != NULL){
-                $expediente->postventa = 1;
+            $contrato = Contrato::findOrFail($request->id);
+            if($contrato->integracion == 1){
+                $expediente = Expediente::findOrFail($request->id);
+                if($expediente->fecha_firma_esc != NULL){
+                    $expediente->postventa = 1;
+                }
+                $expediente->save();
             }
-            $expediente->save();
+            
 
             $credito = Credito::findOrFail($request->id);
             $lote = $credito->num_lote;
@@ -103,7 +107,7 @@ class EntregaController extends Controller
             $hoy =  $fecha->toDateString();
 
             $query = Entrega::join('contratos','entregas.id','contratos.id')
-                ->join('expedientes','contratos.id','expedientes.id')
+                ->leftJoin('expedientes','contratos.id','expedientes.id')
                 ->join('creditos', 'contratos.id', '=', 'creditos.id')
                 ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                 ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
@@ -431,7 +435,7 @@ class EntregaController extends Controller
             $hoy =  $fecha->toDateString();
 
             $query = Entrega::join('contratos','entregas.id','contratos.id')
-                ->join('expedientes','contratos.id','expedientes.id')
+                ->leftJoin('expedientes', 'contratos.id','expedientes.id')
                 ->join('creditos', 'contratos.id', '=', 'creditos.id')
                 ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                 ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
@@ -1225,7 +1229,7 @@ class EntregaController extends Controller
         $b_lote = $request->b_lote;
 
         $query = Entrega::join('contratos','entregas.id','contratos.id')
-                ->join('expedientes','contratos.id','expedientes.id')
+                ->leftJoin('expedientes','contratos.id','expedientes.id')
                 ->join('creditos', 'contratos.id', '=', 'creditos.id')
                 ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                 ->join('etapas','lotes.etapa_id','=','etapas.id')
