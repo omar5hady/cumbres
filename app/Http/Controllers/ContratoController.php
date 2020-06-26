@@ -3369,9 +3369,11 @@ class ContratoController extends Controller
                 
             }
 
-            if($request->status == 3){
+            $typCredit = inst_seleccionada::where('credito_id', '=', $request->id)->where('elegido', '=', 1)->get();
+
+            if($request->status == 3 && $typCredit[0]->tipo_credito == "Crédito Directo"){
                 $toAlert = [24706, 24705];
-                $msj = 'Se ha realizado una nueva firma de contrato';
+                $msj = 'Se ha realizado una nueva firma de credito directo';
 
                 foreach($toAlert as $index => $id){
                     $senderData = DB::table('users')->select('foto_user', 'usuario')->where('id','=',Auth::user()->id)->get();

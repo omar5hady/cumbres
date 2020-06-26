@@ -3506,29 +3506,31 @@ class ExpedienteController extends Controller
             }
             $asignar->save();
             
-            $toAlert = [24706, 24705];
-            $msj = 'Se ha realizado una nueva firma de escritura';
+            $typCredit = inst_seleccionada::where('credito_id', '=', $request->id)->where('elegido', '=', 1)->get();
+            if($typCredit[0]->tipo_credito != "Crédito Directo"){
+                $toAlert = [24706, 24705];
+                $msj = 'Se ha realizado una nueva firma de credito escriturado';
 
-            foreach($toAlert as $index => $id){
-                $senderData = DB::table('users')->select('foto_user', 'usuario')->where('id','=',Auth::user()->id)->get();
+                foreach($toAlert as $index => $id){
+                    $senderData = DB::table('users')->select('foto_user', 'usuario')->where('id','=',Auth::user()->id)->get();
 
-                $dataAr = [
-                    'notificacion'=>[
-                        'usuario' => $senderData[0]->usuario,
-                        'foto' => $senderData[0]->foto_user,
-                        'fecha' => Carbon::now(),
-                        'msj' => $msj,
-                        'titulo' => 'Firma de escritura'
-                    ]
-                ];
-                User::findOrFail($id)->notify(new NotifyAdmin($dataAr));
+                    $dataAr = [
+                        'notificacion'=>[
+                            'usuario' => $senderData[0]->usuario,
+                            'foto' => $senderData[0]->foto_user,
+                            'fecha' => Carbon::now(),
+                            'msj' => $msj,
+                            'titulo' => 'Firma de escritura'
+                        ]
+                    ];
+                    User::findOrFail($id)->notify(new NotifyAdmin($dataAr));
 
-                $persona = Personal::findOrFail($id);
+                    $persona = Personal::findOrFail($id);
 
-                Mail::to($persona->email)->send(new NotificationReceived($msj));
-                
+                    Mail::to($persona->email)->send(new NotificationReceived($msj));
+                    
+                }
             }
-
         DB::commit();
         } catch (Exception $e) {
             DB::rollBack();

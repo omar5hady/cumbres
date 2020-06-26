@@ -18,11 +18,11 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a @click="tab = 2" v-text="'Contratos (' + arrayContratos.total +')'" class="nav-link" v-bind:class="{ 'text-info active': tab==2 }">
+                                <a @click="tab = 2" v-text="'Creditos Directos(' + arrayContratos.total +')'" class="nav-link" v-bind:class="{ 'text-info active': tab==2 }">
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a @click="tab = 3" v-text="'Escrituras (' + arrayLiqCredit.total +')'" class="nav-link" v-bind:class="{ 'text-info active': tab==3 }"></a>
+                                <a @click="tab = 3" v-text="'Creditos Escriturados(' + arrayLiqCredit.total +')'" class="nav-link" v-bind:class="{ 'text-info active': tab==3 }"></a>
                             </li>
                             <li class="nav-item">
                                 <a @click="tab = 4" v-text="'Deposito a credito (' + arrayDepCredit.total +')'" class="nav-link" v-bind:class="{ 'text-info active': tab==4 }"></a>
@@ -55,7 +55,7 @@
                                     <input type="text" v-on:keyup.enter="listarDepositos()" v-model="b_gen" class="form-control col-sm-3" placeholder="Buscar">
                                 </div>
                                 <div class="row"><!-- boton de busqueda-->
-                                    <div class="col-sm-3 text-info"><strong>Depositos</strong></div>
+                                    <div class="col-sm-3 text-info"><strong>Depositos de pagares</strong></div>
                                     <div class="col-sm-9 text-right">
                                         <button type="submit" @click="listarDepositos()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     </div>
@@ -99,7 +99,6 @@
                                                 <td v-text="deposito.num_lote">Lote</td>
                                                 <td v-text="deposito.banco">Cuenta</td>
                                                 <td v-text="'$'+deposito.cant_depo.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">Monto</td>
-                                                <td></td>
                                                 <td v-text="deposito.concepto">Concepto</td>
                                                 <td v-text="this.moment(deposito.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
                                                 <td>
@@ -200,7 +199,7 @@
                                     <input type="text" v-on:keyup.enter="listarContratos()" v-model="b_gen" class="form-control col-sm-3" placeholder="Buscar">
                                 </div>
                                 <div class="row">
-                                    <div class="col-sm-3 text-info"><strong>Contratos</strong></div>
+                                    <div class="col-sm-3 text-info"><strong>Creditos Directos</strong></div>
                                     <div class="col-sm-9 text-right">
                                         <button type="submit" @click="listarContratos()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     </div>
@@ -338,7 +337,7 @@
                                     <input type="text" v-on:keyup.enter="listarLiqCredit()" v-model="b_gen" class="form-control col-sm-3" placeholder="Buscar">
                                 </div>
                                 <div class="row"><!-- boton de busqueda-->
-                                    <div class="col-sm-3 text-info"><strong>Escrituras (cobro de credito)</strong></div>
+                                    <div class="col-sm-3 text-info"><strong>Creditos Escriturados</strong></div>
                                     <div class="col-sm-9 text-right">
                                         <button type="submit" @click="listarLiqCredit()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     </div>
@@ -477,7 +476,7 @@
                                     <input type="text" v-on:keyup.enter="listarDepCredit()" v-model="b_gen" class="form-control col-sm-3" placeholder="Buscar">
                                 </div>
                                 <div class="row">
-                                    <div class="col-sm-3 text-info"><strong>Depositos de credito</strong></div>
+                                    <div class="col-sm-3 text-info"><strong>Deposito a credito</strong></div>
                                     <div class="col-sm-9 text-right">
                                         <button type="submit" @click="listarDepCredit()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     </div>
