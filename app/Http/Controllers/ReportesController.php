@@ -2287,6 +2287,7 @@ class ReportesController extends Controller
                                 ->select('contratos.fecha')
                                 ->where('lotes.fraccionamiento_id','=',$fraccionamiento)
                                 ->where('contratos.status','=',3)
+                                ->where('lotes.habilitado','=',1)
                                 ->orderBy('contratos.fecha','desc')
                                 ->get();
 
@@ -2306,6 +2307,7 @@ class ReportesController extends Controller
                                 ->select('contratos.fecha')
                                 ->where('lotes.fraccionamiento_id','=',$fraccionamiento)
                                 ->where('lotes.etapa_id','=',$etapa)
+                                ->where('lotes.habilitado','=',1)
                                 ->where('contratos.status','=',3)
                                 ->orderBy('contratos.fecha','desc')
                                 ->get();
@@ -2323,7 +2325,7 @@ class ReportesController extends Controller
         foreach($modelos as $index => $modelo){
             $modelo->total = 0;
 
-            $lotes = Lote::join('modelos','lotes.modelo_id','=','modelos.id')->where('modelos.nombre','=',$modelo->nombre);
+            $lotes = Lote::join('modelos','lotes.modelo_id','=','modelos.id')->where('lotes.habilitado','=',1)->where('modelos.nombre','=',$modelo->nombre);
             if($fraccionamiento != '')
                 $lotes = $lotes->where('lotes.fraccionamiento_id','=',$fraccionamiento);
             if($etapa != '')
@@ -2388,7 +2390,7 @@ class ReportesController extends Controller
 
             $modelo->vendida = $contratos - ($indivContado + $indivCredito);
 
-            $modelo->total_vendidas = $contratos + ($indivContado + $indivCredito);
+            $modelo->total_vendidas = $modelo->indiv + $modelo->vendida;
 
             $modelo->disponible = $modelo->total - ($modelo->indiv + $modelo->vendida );
 
