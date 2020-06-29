@@ -292,6 +292,10 @@
                                         <a class="nav-link" href="#"><i class="fa fa-percent"></i> Catalogo de bonos</a>
                                     </li>
                                 @endif
+                                
+                                <li @click="menu=1002" class="nav-item">
+                                    <a class="nav-link" href="#"><i class="fa fa-dollar"></i> Precios de Terreno</a>
+                                </li>
                             </ul>
                         </li>
                     @endif

@@ -43,4 +43,8 @@ class Etapa extends Model
     public function serv_etapa(){
         return $this->hasMany('App\Serv_etapa');
     }
+
+    public function precios_terreno(){
+        return $this->hasMany('App\Precios_terreno');
+    }
 }

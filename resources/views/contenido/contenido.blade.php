@@ -311,6 +311,10 @@
         <template v-if="menu==1001">
             <facturacion></facturacion>
         </template>
+        
+        <template v-if="menu==1002">
+            <precios-terrenos></precios-terrenos>
+        </template>
 
         <template v-if="menu==209">
             <devolucion-cancelacion></devolucion-cancelacion>

@@ -307,6 +307,12 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/terreno/actualizar','TerrenoController@update');
         Route::delete('/terreno/eliminar','TerrenoController@destroy');
         
+    ////////////////////        RUTAS PRECIO TERRENO    /////////////////////////////////
+        Route::get('/precio/terrenos/list','PrecioTerrenoController@show');
+        Route::post('/precio/terrenos/storage','PrecioTerrenoController@storage');
+        Route::put('/precio/terrenos/edit','PrecioTerrenoController@edit');
+        Route::delete('/precio/terrenos/delete','PrecioTerrenoController@destroy');
+
     ////////////////////        RUTAS PRECIO ETAPA    /////////////////////////////////
         Route::get('/precio_etapa','PrecioEtapaController@index');
         Route::post('/precio_etapa/registrar','PrecioEtapaController@store');
