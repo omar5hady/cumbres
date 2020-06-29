@@ -66,7 +66,8 @@ class FacturasController extends Controller
         }
         
 
-        $facturas = $facturas->where('pagos_contratos.tipo_pagare', '!=', 1)->distinct('depositos.id')->paginate(15);
+        $facturas = $facturas->where('pagos_contratos.tipo_pagare', '!=', 1)
+                            ->where('depositos.banco', '!=', '0102030405-Scotiabank')->distinct('depositos.id')->paginate(15);
 
         return $facturas;
     }
