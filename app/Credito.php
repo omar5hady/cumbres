@@ -17,7 +17,7 @@ class Credito extends Model
                             'paquete','descripcion_paquete','costo_paquete','precio_venta','plazo',
                             'credito_solic','status','lote_id','precio_obra_extra',
                             'costo_protecciones', 'costo_cuota_mant', 'costo_alarma',
-                            'descuento_terreno', 'costo_descuento',
+                            'descuento_terreno', 'costo_descuento', 'valor_terreno', 'porcentaje_terreno',
                             'contrato','fraccionamiento','bono'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
     
 

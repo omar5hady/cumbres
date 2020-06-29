@@ -3506,7 +3506,7 @@ class ExpedienteController extends Controller
             }
             $asignar->save();
             
-            $typCredit = inst_seleccionada::where('credito_id', '=', $request->id)->where('elegido', '=', 1)->get();
+            $typCredit = inst_seleccionada::where('credito_id', '=', $request->folio)->where('elegido', '=', 1)->get();
             if($typCredit[0]->tipo_credito != "Crédito Directo"){
                 $toAlert = [24706, 24705];
                 $msj = 'Se ha realizado una nueva firma de credito escriturado';

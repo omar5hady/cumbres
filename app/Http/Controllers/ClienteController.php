@@ -2652,5 +2652,20 @@ class ClienteController extends Controller
         
         )->download('xlsx');
     }
+
+    public function getBirthdayPeople(Request $request){
+
+        $now = Carbon::now();
+        $people = Cliente::join('personal','clientes.id','=','personal.id')
+                    ->select('personal.nombre', 'personal.id', 'personal.apellidos', 'personal.celular','personal.email',
+                                'personal.f_nacimiento')
+                    ->whereMonth('personal.f_nacimiento',$now->month)
+                    ->whereDay('personal.f_nacimiento',$now->day)
+                    ->where('clientes.vendedor_id','=',Auth::user()->id)
+                    ->orderBy('personal.nombre','asc')
+                    ->get();
+
+        return ['people'=>$people];
+    }
     
 }

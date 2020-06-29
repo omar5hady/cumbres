@@ -63,8 +63,11 @@ class CreateCreditosTable extends Migration
 
             $table->string('factura')->nullable();
             $table->string('folio_factura',30)->nullable();
-            $table->double('monto', 8,2)->nullable()->default(0);
+            $table->double('monto', 10,2)->nullable()->default(0);
             $table->date('f_carga_factura')->nullable();
+
+            $table->double('valor_terreno',10,2)->default(0);
+            $table->float('porcentaje_terreno',6,2)->default(0);
         });
     }
 

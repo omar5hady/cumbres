@@ -92,7 +92,7 @@
                                                     <span v-else-if="newDiferencia(deposito.fecha_pago) > 7 && !deposito.factura" v-text="deposito.nombre" class="badge badge-danger"></span>
                                                     <span v-else-if="deposito.factura" v-text="deposito.nombre" class="badge badge-success"></span>
                                                 </td>
-                                                <td v-text="deposito.rfc">RFC</td>
+                                                <td style="text-transform:uppercase" v-text="deposito.rfc">RFC</td>
                                                 <td v-text="deposito.fraccionamiento">Fraccionamiento</td>
                                                 <td v-text="deposito.etapa">Etapa</td>
                                                 <td v-text="deposito.manzana">Etapa</td>
@@ -233,7 +233,7 @@
                                                     <span v-else-if="newDiferencia(contrato.fecha_status) > 7 && !contrato.e_factura" v-text="contrato.nombre" class="badge badge-danger"></span>
                                                     <span v-else-if="contrato.e_factura" v-text="contrato.nombre" class="badge badge-success"></span>
                                                 </td>
-                                                <td v-text="contrato.rfc">RFC</td>
+                                                <td style="text-transform:uppercase" v-text="contrato.rfc">RFC</td>
                                                 <td v-text="contrato.fraccionamiento">Fraccionamiento</td>
                                                 <td v-text="contrato.etapa">Etapa</td>
                                                 <td v-text="contrato.manzana"></td>
@@ -371,7 +371,7 @@
                                                     <span v-else-if="newDiferencia(liqCredit.fecha_firma_esc) > 7 && !liqCredit.factura" v-text="liqCredit.nombre" class="badge badge-danger"></span>
                                                     <span v-else-if="liqCredit.factura" v-text="liqCredit.nombre" class="badge badge-success"></span>
                                                 </td>
-                                                <td v-text="liqCredit.rfc">RFC</td>
+                                                <td style="text-transform:uppercase" v-text="liqCredit.rfc">RFC</td>
                                                 <td v-text="liqCredit.fraccionamiento">Fraccionamiento</td>
                                                 <td v-text="liqCredit.etapa">Etapa</td>
                                                 <td v-text="liqCredit.manzana">manzana</td>
@@ -513,7 +513,7 @@
                                                     <span v-else-if="newDiferencia(deposito.fecha_deposito) > 7 && !deposito.factura" v-text="deposito.nombre" class="badge badge-danger"></span>
                                                     <span v-else-if="deposito.factura" v-text="deposito.nombre" class="badge badge-success"></span>
                                                 </td>
-                                                <td v-text="deposito.rfc">RFC</td>
+                                                <td style="text-transform:uppercase" v-text="deposito.rfc">RFC</td>
                                                 <td v-text="deposito.fraccionamiento">Fraccionamiento</td>
                                                 <td v-text="deposito.etapa">Etapa</td>
                                                 <td v-text="deposito.manzana">manzana</td>
