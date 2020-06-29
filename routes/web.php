@@ -99,6 +99,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/asesores/formSubmitCV/{id}','VendedoresController@formSubmitCV');
         Route::get('/asesores/downloadFile/{fileName}' , 'VendedoresController@downloadFile'); //descarga de acta
 
+        Route::get('/getBirthdayPeople','ClienteController@getBirthdayPeople');
+
         //////////// REPORTE VENTAS POR VENDEDOR ///////////////
             Route::get('/vendedores/reporte','VendedoresController@ventasVendedorReporte');
 

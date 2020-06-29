@@ -9,6 +9,37 @@
       </li>
     </ol>
     <div class="container-fluid">
+        <div class="text-center" v-if="arrayCumple.length >= 1 && arrayCumple.length > 1"> <h6>Deséales un Feliz Cumpleaños a tus Clientes</h6> </div>
+        <div v-if="arrayCumple.length >= 1 && arrayCumple.length == 1"> <h6>Deséales un Feliz Cumpleaños a tus Clientes</h6> </div>
+        
+        <div class="row" v-if="arrayCumple.length >= 1">
+            <div v-for="cumple in arrayCumple" :key="cumple.id" class="col-xl-4 col-lg-5 col-md-4">
+                <div class="card">
+                    <div class="card-body p-3 d-flex align-items-center">
+                        <div class="bg-gradient-primary p-3 mfe-3">
+                            
+                                <i style="font-size:1.5rem; color:white;" class="fa fa-birthday-cake"></i>
+                            
+                        </div>
+                        <div>
+                            <div class="text-value text-primary">&nbsp;&nbsp;&nbsp;{{cumple.nombre + ' ' + cumple.apellidos}}</div>
+                            <div class="text-muted text-uppercase font-weight-bold small"> &nbsp;&nbsp;&nbsp; {{this.moment(cumple.f_nacimiento).locale('es').format('DD/MMM/YYYY')}}</div>
+                        </div>
+                    </div>
+                    <div class="card-footer px-3 py-2 text-right">
+                        <a title="Llamar" class="btn btn-info rounded" :href="'tel:'+cumple.celular"><i class="fa fa-phone fa-lg"></i></a>
+                        <a title="Enviar whatsapp" class="btn btn-success rounded" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+cumple.celular+'&text=Feliz cumpleaños'"><i class="fa fa-whatsapp fa-lg"></i></a>
+                    </div>
+                </div>
+                
+            </div>
+
+           
+            
+        </div>
+
+
+
         <div class="row">
             <div class="col-xl-4 col-lg-5 col-md-6">
                 <div class="card2 card-user2">
@@ -271,6 +302,7 @@ export default {
       email: "",
       foto_user: "",
       arrayUsuario: [],
+      arrayCumple:[],
       url: null
     };
   },
@@ -323,6 +355,22 @@ export default {
         });
     },
 
+    getBirthdayPeople(){
+        let me = this;
+        me.arrayCumple = [];
+        var url = "/getBirthdayPeople";
+        axios
+        .get(url)
+        .then(function(response) {
+          var respuesta = response.data;
+          me.arrayCumple = respuesta.people;
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+
+    },
+
     obtenerUsuario() {
       let me = this;
       me.arrayUsuario = [];
@@ -354,6 +402,7 @@ export default {
   },
   mounted() {
     this.obtenerUsuario();
+    this.getBirthdayPeople();
   }
 };
 </script>
@@ -422,6 +471,14 @@ export default {
 img {
     vertical-align: middle;
     border-style: none;
+}
+.bg-gradient-primary {
+    background: #00ADEF!important;
+    background: linear-gradient(45deg,#321fdb 0%,#00ADEF 100%)!important;
+    border-color: #00ADEF!important;
+}
+.p-3 {
+    padding: 1rem!important;
 }
 </style>
 
