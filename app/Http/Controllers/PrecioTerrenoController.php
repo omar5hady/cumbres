@@ -9,8 +9,7 @@ use App\Etapa;
 
 class PrecioTerrenoController extends Controller
 {
-    public function show(Request $request)
-    {
+    public function show(Request $request){
         $etapas = Etapa::join('fraccionamientos', 'etapas.fraccionamiento_id', '=', 'fraccionamientos.id')
             ->select(
                 'etapas.id',
@@ -33,12 +32,17 @@ class PrecioTerrenoController extends Controller
     }
 
     public function showPrecios(Request $request){
-        $precios = Precios_terreno::where('etapa_id', '=', $request->idEtapa)->get();
-
+        $precios = Precios_terreno::where('etapa_id', '=', $request->idEtapa)
+            ->orderBy('created_at', 'desc')
+        ->get();
         return $precios;
     }
 
     public function storage(Request $request){
+
+        Precios_terreno::where('etapa_id', '=', $request->idEtapa)
+        ->update(['estatus' => 0]);
+
         $precio = new Precios_terreno();
 
         $precio->etapa_id = $request->idEtapa;

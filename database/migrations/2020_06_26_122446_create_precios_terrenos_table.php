@@ -19,6 +19,8 @@ class CreatePreciosTerrenosTable extends Migration
             $table->unsignedInteger('etapa_id');
             $table->foreign('etapa_id')->references('id')->on('etapas');
 
+            $table->boolean('estatus')->default(1);
+
             $table->double('precio_m2', 10, 2)->default(0);
 
             $table->timestamps();

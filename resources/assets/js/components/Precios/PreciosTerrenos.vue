@@ -15,32 +15,85 @@
                     </button>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <select v-model="b_project" class="col-sm-2 form-control">
-                            <option value="">Fraccionaiento</option>
-                            <option v-for="fracc in arrayFraccionamientos" :key="fracc.id" :value="fracc.nombre" v-text="fracc.nombre"></option>
-                        </select>
-                        <input type="text" v-model="b_text" class="col-sm-2 form-control" placeholder="Buscar">
-                        <button @click="getModelos()" class="btn btn-sm btn-primary col-sm-1"><i class="fa fa-search"></i> Buscar</button>
-                    </div>
-                    <br>
-                    <div class="row" v-if="tipoVista == 1">
-                        <table class="table table-bordered table-striped table-sm">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Etapa</th>
-                                    <th>Fraccionaiento</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="modelo in arrayModelos.data" :key="modelo.id" @dblclick="tipoVista=2,arrayPrecios=modelo.precios_terreno, generalId = modelo.id" title="Doble clic">
-                                    <td v-text="modelo.id">#</td>
-                                    <td><a href="#" v-text="modelo.num_etapa"></a></td>
-                                    <td  v-text="modelo.fracc">Fraccionaiento</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    
+                    <div v-if="tipoVista == 1">
+                        <div class="row">
+                            <select v-model="b_project" class="col-sm-5 form-control">
+                                <option value="">Fraccionaiento</option>
+                                <option v-for="fracc in arrayFraccionamientos" :key="fracc.id" :value="fracc.nombre" v-text="fracc.nombre"></option>
+                            </select>
+                            <!--input type="text" v-model="b_text" class="col-sm-2 form-control" placeholder="Buscar"-->
+                            <button @click="getModelos()" class="btn btn-sm btn-primary col-sm-1"><i class="fa fa-search"></i> Buscar</button>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <table class="table table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Etapa</th>
+                                        <th>Fraccionaiento</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="modelo in arrayModelos.data" :key="modelo.id" @dblclick="tipoVista=2,arrayPrecios=modelo.precios_terreno, generalId = modelo.id" title="Doble clic">
+                                        <td v-text="modelo.id">#</td>
+                                        <td><a href="#" v-text="modelo.num_etapa"></a></td>
+                                        <td  v-text="modelo.fracc">Fraccionaiento</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>  
+
+                        <div class="row"> <!-- Pagination-->
+                            <nav>
+                                <!--Botones de paginacion -->
+                                <ul class="pagination">
+                                    <li class="page-item">
+                                        <a class="page-link" href="#" @click.prevent="getModelos(1)">Inicio</a>
+                                    </li>
+                                    <li v-if="arrayModelos.current_page-3 >= 1">
+                                        <a class="page-link" href="#" 
+                                        @click.prevent="getModelos(arrayModelos.current_page-3)" 
+                                        v-text="arrayModelos.current_page-3" ></a>
+                                    </li>
+                                    <li v-if="arrayModelos.current_page-2 >= 1">
+                                        <a class="page-link" href="#" 
+                                        @click.prevent="getModelos(arrayModelos.current_page-2)" 
+                                        v-text="arrayModelos.current_page-2" ></a>
+                                    </li>
+                                    <li v-if="arrayModelos.current_page-1 >= 1">
+                                        <a class="page-link" href="#" 
+                                        @click.prevent="getModelos(arrayModelos.current_page-1)" 
+                                        v-text="arrayModelos.current_page-1" ></a>
+                                    </li>
+                                    
+                                    <li class="page-item active">
+                                        <a class="page-link" href="#" v-text="arrayModelos.current_page" ></a>
+                                    </li>
+                                    
+                                    <li v-if="arrayModelos.current_page+1 <= arrayModelos.last_page">
+                                        <a class="page-link" href="#" 
+                                        @click.prevent="getModelos(arrayModelos.current_page+1)" 
+                                        v-text="arrayModelos.current_page+1" ></a>
+                                    </li>
+                                    <li v-if="arrayModelos.current_page+2 <= arrayModelos.last_page">
+                                        <a class="page-link" href="#" 
+                                        @click.prevent="getModelos(arrayModelos.current_page+2)" 
+                                        v-text="arrayModelos.current_page+2" ></a>
+                                    </li>
+                                    <li v-if="arrayModelos.current_page+3 <= arrayModelos.last_page">
+                                        <a class="page-link" href="#" 
+                                        @click.prevent="getModelos(arrayModelos.current_page+3)" 
+                                        v-text="arrayModelos.current_page+3" ></a>
+                                    </li>
+                                    
+                                    <li class="page-item">
+                                        <a class="page-link" href="#" @click.prevent="getModelos(arrayModelos.last_page)">Ultimo</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
                     </div>
                     
                     <div class="row" v-if="tipoVista == 2">
@@ -56,10 +109,10 @@
                             </thead>
                             <tbody>
                                 <tr v-for="precio in arrayPrecios" :key="precio.id">
-                                    <td>
+                                    <td v-if="precio.estatus">
                                         <button @click="destroy(precio)" type="button" class="btn btn-danger" title="Borra"><i class="fa fa-trash"></i></button>
                                         <button @click="setForm(precio)" type="button" class="btn btn-warning" title="Editar" data-toggle="modal" data-target="#mAddPrecio"><i class="fa fa-pencil-square-o"></i></button>
-                                    </td>
+                                    </td><td v-else></td>
                                     <td v-text="precio.id">#</td>
                                     <td v-text="precio.precio_m2">Precio mts²</td>
                                     <td>
@@ -112,7 +165,7 @@
         data (){
             return {
                 b_project:'',
-                b_text:'',
+                //b_text:'',
                 generalId:'',
                 action:'',
                 arrayModelos:[],

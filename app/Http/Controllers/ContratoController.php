@@ -25,6 +25,7 @@ use App\Licencia;
 use App\Expediente;
 use App\Gasto_admin;
 use App\Deposito;
+use App\Precios_terreno;
 use App\Lote;
 use App\Modelo;
 use NumerosEnLetras;
@@ -2548,6 +2549,22 @@ class ContratoController extends Controller
             $credito->descripcion_paquete = $request->descripcion_paquete;
             $credito->costo_paquete = $request->costo_paquete;
             $credito->precio_venta = $request->precio_venta;
+
+            //Guardar el cisto del lote
+                $etapa = Lote::join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
+                    ->select('etapas.id', 'lotes.terreno')
+                ->where('lotes.id', '=', $credito->lote_id)->get();
+
+                $precioT = Precios_terreno::where('etapa_id', '=', $etapa[0]->id)
+                    ->where('estatus', '=', 1)
+                ->first();
+
+                if($precioT){
+                    $credito->valor_terreno = ($precioT->precio_m2* $etapa[0]->terreno);
+                    $credito->porcentaje_terreno = ((($precioT->precio_m2*$etapa[0]->terreno)*100)/$credito->precio_venta);
+                }
+            //Guardar el cisto del lote
+
             $credito->save();
 
             if($vendedor->tipo == 1){

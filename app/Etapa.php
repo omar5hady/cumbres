@@ -45,6 +45,6 @@ class Etapa extends Model
     }
 
     public function precios_terreno(){
-        return $this->hasMany('App\Precios_terreno');
+        return $this->hasMany('App\Precios_terreno')->orderBy('created_at', 'desc');
     }
 }
