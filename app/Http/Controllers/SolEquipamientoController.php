@@ -67,7 +67,8 @@ class SolEquipamientoController extends Controller
                     'lotes.manzana',
                     'lotes.num_lote','licencias.avance',
                     DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
-                    DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'));
+                    DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin')
+        );
 
         $queryProveedor = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
                 ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
@@ -107,7 +108,7 @@ class SolEquipamientoController extends Controller
                     'lotes.manzana',
                     'lotes.num_lote','licencias.avance',
                     DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
-                    DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'));
+        DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'));
 
 
         if($rolID != 10){
@@ -361,6 +362,10 @@ class SolEquipamientoController extends Controller
                     }
                 }
             }
+        }
+
+        if($request->b_empresa != ''){
+            $equipamientos= $equipamientos->where('lotes.emp_constructora','=',$request->b_empresa);
         }
 
         $equipamientos = $equipamientos->orderBy('contratos.id','desc')

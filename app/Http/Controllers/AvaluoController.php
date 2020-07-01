@@ -83,7 +83,7 @@ class AvaluoController extends Controller
                         'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
                         'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
 
-                    );
+        );
 
                     if($request->b_status != ''){
                         $query = $query->where('avaluos.status','=',$request->b_status);
@@ -208,7 +208,9 @@ class AvaluoController extends Controller
             }
         }
 
-        
+        if($request->b_empresa != ''){
+            $avaluos= $avaluos->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
 
         $avaluos = $avaluos->orderBy('avaluos.fecha_recibido','asc')
                         ->paginate(12);

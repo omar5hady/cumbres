@@ -105,10 +105,15 @@ class EquipamientoController extends Controller
                     'contratos.aviso_prev_venc',
                     'lotes.fraccionamiento_id',
                     'lotes.id as lote_id'
-                );
+        );
 
-
+        //por el uso de "orWhere" se debe agregar al principo y al final de la qyery
+        if($request->b_empresa != ''){
+            $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
+        
         if ($buscar == '') {
+            
             $contratos = $query
                 ->where('contratos.status', '!=', 0)
                 ->where('contratos.status', '!=', 2)
@@ -329,6 +334,11 @@ class EquipamientoController extends Controller
                     break;
                 }
             }
+        }
+
+        //por el uso de "orWhere" se debe agregar al principo y al final de la qyery
+        if($request->b_empresa != ''){
+            $contratos= $contratos->where('lotes.emp_constructora','=',$request->b_empresa);
         }
 
         $contratos = $contratos->orderBy('contratos.equipamiento','asc')

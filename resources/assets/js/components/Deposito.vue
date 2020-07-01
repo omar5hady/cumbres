@@ -19,6 +19,7 @@
                             Historial de Depositos
                         </button>
                     </div>
+
                     <div class="card-header" v-if="deposito==1">
                         <i class="fa fa-align-justify"></i> Depositos
                         <!--   Boton Nuevo    -->
@@ -30,7 +31,16 @@
                         </button>
                         <!---->
                     </div>
+
                     <div class="card-body" v-if="deposito==0">
+                        <div class="form-group row">
+                            <div class="col-md-8">
+                                <select class="form-control" v-model="b_empresa" >
+                                    <option value="">Empresa constructora</option>
+                                    <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="form-group row">
                             <div class="col-md-8">
                                 <div class="input-group">
@@ -143,6 +153,7 @@
                             </ul>
                         </nav>
                     </div>
+
                     <div class="card-body" v-if="deposito==1">
                         <div class="form-group row">
                             
@@ -183,6 +194,7 @@
                             </table>
                         </div>
                     </div>
+
                     <div class="card-header" v-if="deposito==2">
                         <i class="fa fa-align-justify"></i> Historial de Depositos
                         <!--   Boton Nuevo    -->
@@ -192,7 +204,16 @@
                         <a :href="'/depositos/historial/excel?fecha1=' + b_fecha1 + '&fecha2=' + b_fecha2 + '&banco=' + banco + '&monto=' + b_deposito"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel Pagares</a>
                         <!---->
                     </div>
+                    
                     <div class="card-body" v-if="deposito==2">
+                        <div class="form-group row">
+                            <div class="col-md-8">
+                                <select class="form-control" v-model="b_empresa" >
+                                    <option value="">Empresa constructora</option>
+                                    <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="form-group row">
                             <div class="col-md-8">
                                 <div class="input-group">
@@ -780,6 +801,8 @@
                 b_deposito : '',
                 b_fecha1 : '',
                 b_fecha2 : '',
+                b_empresa:'',
+                empresas:[],
             }
         },
         computed:{
@@ -848,7 +871,8 @@
             listarHistorialDep(page){
                 let me = this;
                 me.deposito = 2;
-                var url = '/depositos/historial?page=' + page + '&fecha1=' + me.b_fecha1 + '&fecha2=' + me.b_fecha2 + '&banco=' + me.banco + '&monto=' + me.b_deposito;
+                var url = '/depositos/historial?page=' + page + '&fecha1=' + me.b_fecha1 + '&fecha2=' + me.b_fecha2 + 
+                    '&banco=' + me.banco + '&monto=' + me.b_deposito +'&b_empresa='+this.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayHistorial = respuesta.depositos.data;
@@ -883,7 +907,8 @@
                 me.monto_pagare=0;
                 me.pago_id=0;
                 me.diferencia=0;
-                var url = '/pagares?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&b_vencidos=' + b_vencidos + '&criterio=' + criterio;
+                var url = '/pagares?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + 
+                '&b_vencidos=' + b_vencidos + '&criterio=' + criterio +'&b_empresa='+this.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayPagares = respuesta.pagares.data;
@@ -1340,13 +1365,25 @@
                         break;
                     }
                 }
-            }
+            },
+            getEmpresa(){
+                let me = this;
+                me.empresas=[];
+                var url = '/lotes/empresa/select';
+                axios.get(url).then(function (response) {
+                    var respuesta = response;
+                    me.empresas = respuesta.data.empresas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
         },
         mounted() {
             this.listarPagares(1,this.buscar, this.buscar2, this.buscar3, this.b_vencidos, this.criterio);
             this.selectFraccionamiento();
             this.selectCuenta();
-
+            this.getEmpresa();
         }
     }
 </script>

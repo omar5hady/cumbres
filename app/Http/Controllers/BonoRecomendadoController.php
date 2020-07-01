@@ -68,7 +68,7 @@ class BonoRecomendadoController extends Controller
                                 'bonos_recomendados.manzana_rec',
                                 'bonos_recomendados.lote_rec',
                                 'bonos_recomendados.fecha_compra_rec'
-                    );      
+        );      
 
         
         switch($criterio){
@@ -106,6 +106,10 @@ class BonoRecomendadoController extends Controller
 
         if($request->status != ''){
             $bonos = $bonos->where('bonos_recomendados.status','=',$request->status);
+        }
+
+        if($request->b_empresa != ''){
+            $bonos= $bonos->where('l.emp_constructora','=',$request->b_empresa);
         }
 
         $bonos = $bonos->orderBy('bonos_recomendados.status','asc')

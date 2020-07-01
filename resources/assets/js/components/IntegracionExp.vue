@@ -15,6 +15,11 @@
                         <div class="form-group row">
                             <div class="col-md-10">
                                 <div class="input-group">
+                                    <select class="form-control" v-model="b_empresa" >
+                                        <option value="">Empresa constructora</option>
+                                        <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                    </select>
+
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
@@ -28,12 +33,15 @@
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
+                                </div>
+                            </div>
+                            <div class="col-md-10">
+                                <div class="input-group">
 
                                     <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa"> 
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
-
                                     
                                     <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
                                     <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
@@ -534,6 +542,8 @@
                 b_lote: '',
                 btn_status:2,
                 generalId:0,
+                b_empresa:'',
+                empresas:[],
                 myAlerts:{
                     popAlert : function(title = 'Alert',type = "success", description =''){
                         swal({
@@ -585,7 +595,7 @@
             listarContratos(page, buscar, b_etapa, b_manzana, b_lote, criterio){
                 let me = this;
                 var url = '/expediente/listarContratos?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + 
-                    b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio + '&btn_status=' + me.btn_status;
+                    b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio + '&btn_status=' + me.btn_status +'&b_empresa='+this.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayContratos = respuesta.contratos.data;
@@ -1080,13 +1090,26 @@
                         me.myAlerts.popAlert('Guardado correctamente')
                     }
                 ).catch(error => console.log(error));
-            }
+            },
+            getEmpresa(){
+                let me = this;
+                me.empresas=[];
+                var url = '/lotes/empresa/select';
+                axios.get(url).then(function (response) {
+                    var respuesta = response;
+                    me.empresas = respuesta.data.empresas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
         
         },
        
         mounted() {
             this.listarContratos(1,this.buscar,this.b_etapa,this.b_manzana,this.b_lote,this.criterio);
             this.selectFraccionamientos();
+            this.getEmpresa();
         }
     }
 </script>

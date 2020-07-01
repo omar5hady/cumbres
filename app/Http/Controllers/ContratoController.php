@@ -183,7 +183,11 @@ class ContratoController extends Controller
                     'contratos.avance_lote',
                     'contratos.observacion',
                     'contratos.exp_bono'
-                );
+        );
+
+        if($request->b_empresa != ''){
+            $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
 
         if(Auth::user()->rol_id != 2){
             if($b_status == ''){

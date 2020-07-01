@@ -17,9 +17,17 @@
                         </button>
                     </div>
                     
-            <!-- Listado de los gastos administrativos -->
+                <!-- Listado de los gastos administrativos -->
                 <template v-if="listado==0">
                     <div class="card-body">
+                        <div class="form-group row">
+                            <div class="col-md-8">
+                                <select class="form-control" v-model="b_empresa" >
+                                    <option value="">Empresa constructora</option>
+                                    <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="form-group row">
                             <div class="col-md-8">
                                 <div class="input-group">
@@ -116,78 +124,86 @@
                 </template>
 
                 <!-- Listado de los contratos -->
-            <template v-if="listado==1">
-                <div class="card-body">
-                    <div class="form-group row">
-                        <div class="col-md-8">
-                            <div class="input-group">
-                                <!--Criterios para el listado de busqueda -->
-                                <select class="form-control col-md-4" v-model="criterio2" @click="b='', b2=''">
-                                    <option value="creditos.fraccionamiento">Proyecto</option>
-                                    <option value="contratos.id"># Referencia</option>
-                                    <option value="personal.nombre">Cliente</option>
+                <template v-if="listado==1">
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <div class="col-md-8">
+                                <select class="form-control" v-model="b_empresa" >
+                                    <option value="">Empresa constructora</option>
+                                    <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
                                 </select>
-                                <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" @click="selectEtapa(b)" v-model="b" >
-                                    <option value="">Seleccionar</option>
-                                    <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.nombre" v-text="fraccionamientos.nombre"></option>
-                                </select>
-                                    <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" v-model="b2"  @keyup.enter="listarContratos(1,b,b2,b3,criterio2)" @click="selectManzana(b, b2)"> 
-                                    <option value="">Etapa</option>
-                                    <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.num_etapa" v-text="etapas.num_etapa"></option>
-                                </select>
-                                <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" v-model="b3" @keyup.enter="listarContratos(1,b,b2,b3,criterio2)"> 
-                                    <option value="">Manzana</option>
-                                    <option v-for="manzana in arrayManzana" :key="manzana.manzana" :value="manzana.manzana" v-text="manzana.manzana"></option>
-                                </select>
-                                
-                                <input type="text" v-if="criterio2=='contratos.id'|| criterio2=='personal.nombre'" v-model="b" @keyup.enter="listarContratos(1,b,b2,b3,criterio2)" class="form-control" placeholder="Texto a buscar">
-                                
-                                <button type="submit" @click="listarContratos(1,b,b2,b3,criterio2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                             </div>
                         </div>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-striped table-sm">
-                            <thead>
-                                <tr>
-                                   
-                                    <th># Ref</th>
-                                    <th>Cliente</th>
-                                    <th>Proyecto</th>
-                                    <th>Etapa</th>
-                                    <th>Manzana</th>
-                                    <th># Lote</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="contrato in arrayContratos" :key="contrato.id" @dblclick="abrirModal('registrar',contrato)">
-                                   
-                                    <td v-text="contrato.folio"></td>
-                                    <td v-text="contrato.nombre_cliente"></td>
-                                    <td v-text="contrato.fraccionamiento"></td>
-                                    <td v-text="contrato.etapa"></td>
-                                    <td v-text="contrato.manzana"></td>
-                                    <td v-text="contrato.num_lote"></td>
-                                </tr>                               
-                            </tbody>
-                        </table>
-                    </div>
-                    <nav>
-                        <!--Botones de paginacion -->
-                        <ul class="pagination">
-                            <li class="page-item" v-if="pagination2.current_page > 1">
-                                <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1,b,b2,b3,criterio2)">Ant</a>
-                            </li>
-                            <li class="page-item" v-for="page2 in pagesNumber2" :key="page2" :class="[page2 == isActived2 ? 'active' : '']">
-                                <a class="page-link" href="#" @click.prevent="cambiarPagina2(page2,b,b2,b3,criterio2)" v-text="page2"></a>
-                            </li>
-                            <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
-                                <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page + 1,b,b2,b3,criterio2)">Sig</a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>                 
-            </template>
+                        <div class="form-group row">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <!--Criterios para el listado de busqueda -->
+                                    <select class="form-control col-md-4" v-model="criterio2" @click="b='', b2=''">
+                                        <option value="creditos.fraccionamiento">Proyecto</option>
+                                        <option value="contratos.id"># Referencia</option>
+                                        <option value="personal.nombre">Cliente</option>
+                                    </select>
+                                    <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" @click="selectEtapa(b)" v-model="b" >
+                                        <option value="">Seleccionar</option>
+                                        <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.nombre" v-text="fraccionamientos.nombre"></option>
+                                    </select>
+                                        <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" v-model="b2"  @keyup.enter="listarContratos(1,b,b2,b3,criterio2)" @click="selectManzana(b, b2)"> 
+                                        <option value="">Etapa</option>
+                                        <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.num_etapa" v-text="etapas.num_etapa"></option>
+                                    </select>
+                                    <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" v-model="b3" @keyup.enter="listarContratos(1,b,b2,b3,criterio2)"> 
+                                        <option value="">Manzana</option>
+                                        <option v-for="manzana in arrayManzana" :key="manzana.manzana" :value="manzana.manzana" v-text="manzana.manzana"></option>
+                                    </select>
+                                    
+                                    <input type="text" v-if="criterio2=='contratos.id'|| criterio2=='personal.nombre'" v-model="b" @keyup.enter="listarContratos(1,b,b2,b3,criterio2)" class="form-control" placeholder="Texto a buscar">
+                                    
+                                    <button type="submit" @click="listarContratos(1,b,b2,b3,criterio2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                    
+                                        <th># Ref</th>
+                                        <th>Cliente</th>
+                                        <th>Proyecto</th>
+                                        <th>Etapa</th>
+                                        <th>Manzana</th>
+                                        <th># Lote</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="contrato in arrayContratos" :key="contrato.id" @dblclick="abrirModal('registrar',contrato)">
+                                    
+                                        <td v-text="contrato.folio"></td>
+                                        <td v-text="contrato.nombre_cliente"></td>
+                                        <td v-text="contrato.fraccionamiento"></td>
+                                        <td v-text="contrato.etapa"></td>
+                                        <td v-text="contrato.manzana"></td>
+                                        <td v-text="contrato.num_lote"></td>
+                                    </tr>                               
+                                </tbody>
+                            </table>
+                        </div>
+                        <nav>
+                            <!--Botones de paginacion -->
+                            <ul class="pagination">
+                                <li class="page-item" v-if="pagination2.current_page > 1">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1,b,b2,b3,criterio2)">Ant</a>
+                                </li>
+                                <li class="page-item" v-for="page2 in pagesNumber2" :key="page2" :class="[page2 == isActived2 ? 'active' : '']">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(page2,b,b2,b3,criterio2)" v-text="page2"></a>
+                                </li>
+                                <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page + 1,b,b2,b3,criterio2)">Sig</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>                 
+                </template>
                 
             </div>
             
@@ -362,7 +378,9 @@
                 b2: '',
                 b3: '',
 
-                listado: 0
+                listado: 0,
+                b_empresa:'',
+                empresas:[],
             }
         },
         computed:{
@@ -424,7 +442,8 @@
             /**Metodo para mostrar los registros */
             listarGastos(page, buscar,buscar2,buscar3,criterio){
                 let me = this;
-                var url = '/gastos/index?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&criterio=' + criterio;
+                var url = '/gastos/index?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + 
+                '&criterio=' + criterio +'&b_empresa='+this.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayGastos = respuesta.gastos.data;
@@ -437,7 +456,8 @@
 
             listarContratos(page,b,b2,b3,criterio2){
                 let me = this;
-                var url = '/gastos/indexContratos?page=' + page + '&b=' + b + '&b2=' + b2 + '&b3=' + b3 + '&criterio2=' + criterio2;
+                var url = '/gastos/indexContratos?page=' + page + '&b=' + b + '&b2=' + b2 + '&b3=' + b3 + '&criterio2=' + criterio2
+                +'&b_empresa='+this.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayContratos = respuesta.contratos.data;
@@ -472,11 +492,11 @@
             },
 
             cambiarPagina2(page2, b, b2, b3,  criterio2){
-            let me = this;
-            //Actualiza la pagina actual
-            me.pagination2.current_page = page2;
-            //Envia la petición para visualizar la data de esta pagina
-            me.listarContratos(page2,b, b2,b3,criterio2);
+                let me = this;
+                //Actualiza la pagina actual
+                me.pagination2.current_page = page2;
+                //Envia la petición para visualizar la data de esta pagina
+                me.listarContratos(page2,b, b2,b3,criterio2);
             },
 
             selectFraccionamiento(){
@@ -688,12 +708,24 @@
                         break;
                     }
                 }
-            }
+            },
+            getEmpresa(){
+                let me = this;
+                me.empresas=[];
+                var url = '/lotes/empresa/select';
+                axios.get(url).then(function (response) {
+                    var respuesta = response;
+                    me.empresas = respuesta.data.empresas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
         },
         mounted() {
             this.listarGastos(1,this.buscar, this.buscar2, this.buscar3, this.criterio);
             this.selectFraccionamiento();
-
+            this.getEmpresa();
         }
     }
 </script>

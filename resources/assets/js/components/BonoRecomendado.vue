@@ -16,6 +16,12 @@
                     <div class="card-body">
                         <div class="form-group row">
                             <div class="col-md-9">
+                                <select class="form-control" v-model="b_empresa" >
+                                    <option value="">Empresa constructora</option>
+                                    <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-9">
                                 <div class="input-group" v-if="criterio != 'fraccionamiento'">
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control" v-model="criterio">
@@ -622,7 +628,9 @@
                 proyecto_rec :'',
                 manzana_rec : '',
                 etapa_rec:'',
-                lote_rec:''
+                lote_rec:'',
+                b_empresa:'',
+                empresas:[],
             }
         },
         computed:{
@@ -658,7 +666,7 @@
             listarBonos(page){
                 let me = this;
                 var url = '/bono_recomendado/index?page=' + page  + '&criterio=' + me.criterio + '&buscar=' + me.buscar + '&b_etapa=' + me.b_etapa
-                                     + '&b_manzana=' + me.b_manzana + '&b_lote=' + me.b_lote + '&status=' + me.status;
+                                     + '&b_manzana=' + me.b_manzana + '&b_lote=' + me.b_lote + '&status=' + me.status +'&b_empresa='+this.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayBonos = respuesta.bonos.data;
@@ -1081,11 +1089,24 @@
                     }
                 }
 
-            }
+            },
+            getEmpresa(){
+                let me = this;
+                me.empresas=[];
+                var url = '/lotes/empresa/select';
+                axios.get(url).then(function (response) {
+                    var respuesta = response;
+                    me.empresas = respuesta.data.empresas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
         },
         mounted() {
             this.listarBonos(1);
             this.selectFraccionamientos();
+            this.getEmpresa();
         }
     }
 </script>

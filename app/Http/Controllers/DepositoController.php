@@ -36,6 +36,7 @@ class DepositoController extends Controller
 
         $query = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
             ->join('creditos','creditos.id','=','contratos.id')
+            ->join('lotes','creditos.lote_id','=','lotes.id')
             ->join('clientes','creditos.prospecto_id','=','clientes.id')
             ->join('personal','clientes.id','=','personal.id')
             ->leftjoin('expedientes','contratos.id','=','expedientes.id')
@@ -52,7 +53,7 @@ class DepositoController extends Controller
                     'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
                     'contratos.ext_empresa','contratos.colonia_empresa',
                     DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
-                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"));
+        DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"));
 
         if($vencido == 1){ //VENCIDOS
             if($buscar == ''){
@@ -279,6 +280,10 @@ class DepositoController extends Controller
                     }
                 }
             }
+        }
+
+        if($request->b_empresa != ''){
+            $pagares= $pagares->where('lotes.emp_constructora','=',$request->b_empresa);
         }
 
         $pagares = $pagares->orderBy('pagos_contratos.pagado', 'asc')
@@ -654,6 +659,7 @@ class DepositoController extends Controller
         $query = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
             ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
             ->join('creditos','creditos.id','=','contratos.id')
+            ->join('lotes','creditos.lote_id','=','lotes.id')
             ->join('clientes','creditos.prospecto_id','=','clientes.id')
             ->join('personal','clientes.id','=','personal.id')
             ->select('contratos.id',
@@ -661,7 +667,11 @@ class DepositoController extends Controller
                     'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
                     'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
                     'personal.nombre','personal.apellidos','depositos.cant_depo','depositos.num_recibo',
-                    'depositos.banco','depositos.concepto','depositos.fecha_pago');
+        'depositos.banco','depositos.concepto','depositos.fecha_pago');
+
+        if($request->b_empresa != ''){
+            $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
 
         if($fecha1 == '' && $fecha2 == ''){
             if($banco == '' && $monto == ''){
@@ -1698,6 +1708,10 @@ class DepositoController extends Controller
                     }
                 }
             }
+        }
+
+        if($request->b_empresa != ''){
+            $contratos= $contratos->where('lotes.emp_constructora','=',$request->b_empresa);
         }
 
         $contratos = $contratos->orderBy('contratos.saldo','desc')

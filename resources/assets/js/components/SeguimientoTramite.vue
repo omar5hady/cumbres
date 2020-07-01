@@ -38,6 +38,11 @@
                                 <div class="form-group row">
                                     <div class="col-md-10">
                                         <div class="input-group">
+                                            <select class="form-control" v-model="b_empresa" >
+                                                <option value="">Empresa constructora</option>
+                                                <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                            </select>
+
                                             <!--Criterios para el listado de busqueda -->
                                             <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
                                                 <option value="lotes.fraccionamiento_id">Proyecto</option>
@@ -52,11 +57,6 @@
                                                 <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                             </select>
 
-                                            <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa"> 
-                                                <option value="">Etapa</option>
-                                                <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
-                                            </select>
-
                                             <select class="form-control" v-else-if="criterio=='expedientes.gestor_id'" v-model="buscar"> 
                                                 <option value="">Gestor</option>
                                                 <option v-for="gestor in arrayGestores" :key="gestor.id" :value="gestor.id" v-text="gestor.nombre_gestor"></option>
@@ -66,13 +66,28 @@
                                         
                                         </div>
                                         <div class="input-group">
+
+                                            <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa"> 
+                                                <option value="">Etapa</option>
+                                                <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                            </select>
+
                                             <!--Criterios para el listado de busqueda -->
 
                                             <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
                                             <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
 
-                                            <button type="submit" @click="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                            <a :href="'/expediente/excelIngresarExp?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
+                                            <button type="submit" 
+                                                @click="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), 
+                                                    listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), 
+                                                    listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),
+                                                    listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" 
+                                                class="btn btn-primary"><i class="fa fa-search"></i> Buscar
+                                            </button>
+                                            <a :href="'/expediente/excelIngresarExp?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + 
+                                                b_lote +  '&criterio=' + criterio+'&b_empresa='+b_empresa"  class="btn btn-success">
+                                                <i class="fa fa-file-text"></i> Excel
+                                            </a>
                                         
                                         </div>
                                     </div>
@@ -220,6 +235,11 @@
                                 <div class="form-group row">
                                     <div class="col-md-10">
                                         <div class="input-group">
+                                            <select class="form-control" v-model="b_empresa" >
+                                                <option value="">Empresa constructora</option>
+                                                <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                            </select>
+
                                             <!--Criterios para el listado de busqueda -->
                                             <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
                                                 <option value="lotes.fraccionamiento_id">Proyecto</option>
@@ -234,12 +254,6 @@
                                                 <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                             </select>
 
-                                            <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa"> 
-                                                <option value="">Etapa</option>
-                                                <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
-                                            </select>
-
-
                                             <select class="form-control" v-else-if="criterio=='expedientes.gestor_id'" v-model="buscar"> 
                                                 <option value="">Gestor</option>
                                                 <option v-for="gestor in arrayGestores" :key="gestor.id" :value="gestor.id" v-text="gestor.nombre_gestor"></option>
@@ -249,13 +263,28 @@
                                         
                                         </div>
                                         <div class="input-group">
+
+                                            <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa"> 
+                                                <option value="">Etapa</option>
+                                                <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                            </select>
+
                                             <!--Criterios para el listado de busqueda -->
                                                                                         
                                             <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
                                             <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">                                           
 
-                                            <button type="submit" @click="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                            <a :href="'/expediente/excelAutorizados?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
+                                            <button type="submit" @click="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), 
+                                                    listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), 
+                                                    listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),
+                                                    listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" 
+                                                class="btn btn-primary"><i class="fa fa-search"></i> Buscar
+                                            </button>
+                                            <a :href="'/expediente/excelAutorizados?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + 
+                                                b_lote +  '&criterio=' + criterio+'&b_empresa='+b_empresa"  
+                                                class="btn btn-success">
+                                                <i class="fa fa-file-text"></i> Excel
+                                            </a>
                                         
                                         </div>
                                     </div>
@@ -433,6 +462,11 @@
                                 <div class="form-group row">
                                     <div class="col-md-10">
                                         <div class="input-group">
+                                            <select class="form-control" v-model="b_empresa" >
+                                                <option value="">Empresa constructora</option>
+                                                <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                            </select>
+
                                             <!--Criterios para el listado de busqueda -->
                                             <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
                                                 <option value="lotes.fraccionamiento_id">Proyecto</option>
@@ -440,18 +474,11 @@
                                                 <option v-if="rolId == 1 || rolId == 4 || rolId == 6" value="expedientes.gestor_id">Gestor</option>
                                                 <option value="contratos.id"># Folio</option>
                                             </select>
-
                                             
                                             <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @click="selectEtapa(buscar)">
                                                 <option value="">Seleccione</option>
                                                 <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                             </select>
-
-                                            <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa"> 
-                                                <option value="">Etapa</option>
-                                                <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
-                                            </select>
-
                                             
                                             <select class="form-control" v-else-if="criterio=='expedientes.gestor_id'" v-model="buscar"> 
                                                 <option value="">Gestor</option>
@@ -462,13 +489,27 @@
                                         
                                         </div>
                                         <div class="input-group">
+
+                                            <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa"> 
+                                                <option value="">Etapa</option>
+                                                <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                            </select>
                                             <!--Criterios para el listado de busqueda -->
                                             
                                             <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
                                             <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
 
-                                            <button type="submit" @click="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                            <a :href="'/expediente/excelLiquidacion?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
+                                            <button type="submit" @click="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), 
+                                                    listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), 
+                                                    listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),
+                                                    listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" 
+                                                class="btn btn-primary"><i class="fa fa-search"></i> Buscar
+                                            </button>
+                                            <a :href="'/expediente/excelLiquidacion?buscar=' + buscar + '&b_etapa=' + b_etapa + 
+                                                    '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio +
+                                                    '&b_empresa='+b_empresa"  
+                                                class="btn btn-success"><i class="fa fa-file-text"></i> Excel
+                                            </a>
                                         
                                         </div>
                                     </div>
@@ -652,6 +693,11 @@
                                 <div class="form-group row">
                                     <div class="col-md-10">
                                         <div class="input-group">
+                                            <select class="form-control" v-model="b_empresa" >
+                                                <option value="">Empresa constructora</option>
+                                                <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                            </select>
+
                                             <!--Criterios para el listado de busqueda -->
                                             <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
                                                 <option value="lotes.fraccionamiento_id">Proyecto</option>
@@ -666,11 +712,6 @@
                                                 <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                             </select>
 
-                                            <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa"> 
-                                                <option value="">Etapa</option>
-                                                <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
-                                            </select>
-
                                             <select class="form-control" v-else-if="criterio=='expedientes.gestor_id'" v-model="buscar"> 
                                                 <option value="">Gestor</option>
                                                 <option v-for="gestor in arrayGestores" :key="gestor.id" :value="gestor.id" v-text="gestor.nombre_gestor"></option>
@@ -680,13 +721,26 @@
                                         
                                         </div>
                                         <div class="input-group">
+
+                                            <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa"> 
+                                                <option value="">Etapa</option>
+                                                <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                            </select>
                                             <!--Criterios para el listado de busqueda -->
                                             
                                             <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
                                             <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
 
-                                            <button type="submit" @click="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                            <a :href="'/expediente/excelProgramacion?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
+                                            <button type="submit" @click="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), 
+                                                    listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), 
+                                                    listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),
+                                                    listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" 
+                                                class="btn btn-primary"><i class="fa fa-search"></i> Buscar
+                                            </button>
+                                            <a :href="'/expediente/excelProgramacion?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + 
+                                                    '&b_lote=' + b_lote +  '&criterio=' + criterio +'&b_empresa='+b_empresa"
+                                                class="btn btn-success"><i class="fa fa-file-text"></i> Excel
+                                            </a>
                                         
                                         </div>
                                     </div>
@@ -866,6 +920,11 @@
                                 <div class="form-group row">
                                     <div class="col-md-10">
                                         <div class="input-group">
+
+                                            <select class="form-control" v-model="b_empresa" >
+                                                <option value="">Empresa constructora</option>
+                                                <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                            </select>
                                             <!--Criterios para el listado de busqueda -->
                                             <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
                                                 <option value="lotes.fraccionamiento_id">Proyecto</option>
@@ -880,11 +939,6 @@
                                                 <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                             </select>
 
-                                            <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa"> 
-                                                <option value="">Etapa</option>
-                                                <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
-                                            </select>
-
                                             <select class="form-control" v-else-if="criterio=='expedientes.gestor_id'" v-model="buscar"> 
                                                 <option value="">Gestor</option>
                                                 <option v-for="gestor in arrayGestores" :key="gestor.id" :value="gestor.id" v-text="gestor.nombre_gestor"></option>
@@ -894,13 +948,25 @@
                                         
                                         </div>
                                         <div class="input-group">
+
+                                            <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa"> 
+                                                <option value="">Etapa</option>
+                                                <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                            </select>
+
                                             <!--Criterios para el listado de busqueda -->
                                             
                                             <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
                                             <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
 
 
-                                            <button type="submit" @click="listarEnviados(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                            <button type="submit" @click="listarEnviados(1,buscar,b_etapa,b_manzana,b_lote,criterio),
+                                                    listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), 
+                                                    listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), 
+                                                    listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),
+                                                    listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" 
+                                                class="btn btn-primary"><i class="fa fa-search"></i> Buscar
+                                            </button>
                                         
                                         </div>
                                     </div>
@@ -2115,7 +2181,8 @@
                     'to' : 0,
                 },
                 offset : 3,
-                
+                b_empresa:'',
+                empresas:[],
                
             }
         },
@@ -2875,7 +2942,8 @@
 
             listarIngresoExp(page, buscar, b_etapa, b_manzana, b_lote, criterio){
                 let me = this;
-                var url = '/expediente/ingresarIndex?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio;
+                var url = '/expediente/ingresarIndex?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + 
+                b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio+'&b_empresa='+this.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayPorIngresar = respuesta.contratos;
@@ -2889,7 +2957,8 @@
 
             listarAutorizados(page, buscar, b_etapa, b_manzana, b_lote, criterio){
                 let me = this;
-                var url = '/expediente/autorizadosIndex?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio;
+                var url = '/expediente/autorizadosIndex?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + 
+                b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio +'&b_empresa='+this.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayPreautorizados = respuesta.contratos;
@@ -2911,7 +2980,8 @@
 
             listarEnviados(page, buscar, b_etapa, b_manzana, b_lote, criterio){
                 let me = this;
-                var url = '/expediente/enviadosIndex?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio;
+                var url = '/expediente/enviadosIndex?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + 
+                b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio+'&b_empresa='+this.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayEnviados = respuesta.contratos.data;
@@ -2926,7 +2996,8 @@
 
             listarLiquidacion(page, buscar, b_etapa, b_manzana, b_lote, criterio){
                 let me = this;
-                var url = '/expediente/liquidacionIndex?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio;
+                var url = '/expediente/liquidacionIndex?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + 
+                b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio +'&b_empresa='+this.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLiquidados = respuesta.contratos;
@@ -2940,7 +3011,8 @@
 
             listarProgramacion(page, buscar, b_etapa, b_manzana, b_lote, criterio){
                 let me = this;
-                var url = '/expediente/ProgramacionIndex?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio;
+                var url = '/expediente/ProgramacionIndex?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + 
+                '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio +'&b_empresa='+this.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayProgramacion = respuesta.contratos;
@@ -3368,7 +3440,18 @@
                 this.usuario = '';
                 this.observacion = '';
             },
-
+            getEmpresa(){
+                let me = this;
+                me.empresas=[];
+                var url = '/lotes/empresa/select';
+                axios.get(url).then(function (response) {
+                    var respuesta = response;
+                    me.empresas = respuesta.data.empresas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
         
         },
        
@@ -3380,7 +3463,7 @@
             this.listarLiquidacion(1, this.buscar, this.b_etapa, this.b_manzana, this.b_lote, this.criterio);
             this.listarProgramacion(1, this.buscar, this.b_etapa, this.b_manzana, this.b_lote, this.criterio);
             this.listarEnviados(1, this.buscar, this.b_etapa, this.b_manzana, this.b_lote, this.criterio);
-            
+            this.getEmpresa();
         }
     }
 </script>

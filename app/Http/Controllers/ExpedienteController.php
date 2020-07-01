@@ -218,6 +218,10 @@ class ExpedienteController extends Controller
             $contratos = $contratos->where('contratos.detenido', '=', 0);
         }
 
+        if($request->b_empresa != ''){
+            $contratos= $contratos->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
+
         $contratos = $contratos->orderBy('contratos.avaluo_preventivo','desc')
                                 ->orderBy('licencias.avance','desc')->paginate(8);
 
@@ -751,6 +755,10 @@ class ExpedienteController extends Controller
             }
         }
 
+        if($request->b_empresa != ''){
+            $contratos= $contratos->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
+
         $contratos = $contratos->paginate(10);
 
         return [
@@ -1083,6 +1091,10 @@ class ExpedienteController extends Controller
             }
         }
 
+        if($request->b_empresa != ''){
+            $contratos= $contratos->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
+
         $contratos = $contratos->orderBy('contratos.id','asc')
                                 ->get();
 
@@ -1204,7 +1216,11 @@ class ExpedienteController extends Controller
                 'expedientes.fecha_integracion',
                 'expedientes.fecha_infonavit',
                 'lotes.calle','lotes.numero','lotes.interior'
-            );
+        );
+
+        if($request->b_empresa != ''){
+            $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
 
         if($rolId == 1 || $rolId == 4 || $rolId == 6 || Auth::user()->id == 24701){
             if ($buscar == ''){
@@ -1664,7 +1680,7 @@ class ExpedienteController extends Controller
                     'expedientes.total_liquidar',
                     'expedientes.fecha_infonavit',
                     'lotes.calle','lotes.numero','lotes.interior'
-                );
+        );
 
         if($rolId == 1 || $rolId == 4 || $rolId == 6 || Auth::user()->id == 24701){
             if ($buscar == ''){
@@ -2014,6 +2030,10 @@ class ExpedienteController extends Controller
             }
         }
 
+        if($request->b_empresa != ''){
+            $contratos= $contratos->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
+
         $contratos = $contratos->orderBy('contratos.id','asc')
                                 ->get();
 
@@ -2331,7 +2351,7 @@ class ExpedienteController extends Controller
                 'expedientes.hora_firma',
                 'expedientes.direccion_firma',
                 'lotes.calle','lotes.numero','lotes.interior'
-            );
+        );
        
         if($rolId == 1 || $rolId == 4 || $rolId == 6 || Auth::user()->id == 24701){
             if ($buscar == ''){
@@ -2709,6 +2729,10 @@ class ExpedienteController extends Controller
             }
         }
 
+        if($request->b_empresa != ''){
+            $contratos= $contratos->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
+
         $contratos = $contratos->orderBy('contratos.id','asc')
                                 ->get();
 
@@ -2839,7 +2863,7 @@ class ExpedienteController extends Controller
                 // //'avaluos.id as avaluoId',
                 // 'avaluos.fecha_concluido',
                 // 'avaluos.pdf'
-            );
+        );
        
         if($rolId == 1 || $rolId == 4 || $rolId == 6 || Auth::user()->id == 24701){
             if ($buscar == ''){
@@ -3229,6 +3253,10 @@ class ExpedienteController extends Controller
             }
         }
 
+        if($request->b_empresa != ''){
+            $contratos= $contratos->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
+
         $contratos = $contratos->distinct()
                                 ->orderBy('contratos.id','asc')
                                 ->paginate(10);
@@ -3612,7 +3640,11 @@ class ExpedienteController extends Controller
                 'avaluos.resultado','avaluos.fecha_recibido',
                 'avaluos.id as avaluoId','avaluos.fecha_concluido',
                 'avaluos.pdf'
-            );
+        );
+        
+        if($request->b_empresa != ''){
+            $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
 
         if($rolId == 1 || $rolId == 4 || $rolId == 6 || Auth::user()->id == 24701){
             if ($buscar == ''){
@@ -4043,7 +4075,11 @@ class ExpedienteController extends Controller
                 'avaluos.resultado','avaluos.fecha_recibido',
                 'avaluos.id as avaluoId','avaluos.fecha_concluido',
                 'avaluos.pdf'
-            );
+        );
+
+        if($request->b_empresa != ''){
+            $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
 
         if($rolId == 1 || $rolId == 4 || $rolId == 6 || Auth::user()->id == 24701){
             if ($buscar == ''){
@@ -4599,7 +4635,11 @@ class ExpedienteController extends Controller
                     'avaluos.resultado','avaluos.fecha_recibido',
                     'avaluos.id as avaluoId','avaluos.fecha_concluido',
                     'avaluos.pdf'
-                );
+        );
+
+        if($request->b_empresa != ''){
+            $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
 
         if($rolId == 1 || $rolId == 4 || $rolId == 6 || Auth::user()->id == 24701){
             if ($buscar == ''){
@@ -5178,7 +5218,11 @@ class ExpedienteController extends Controller
                 'avaluos.resultado','avaluos.fecha_recibido',
                 'avaluos.id as avaluoId','avaluos.fecha_concluido',
                 'avaluos.pdf'
-            );
+        );
+
+        if($request->b_empresa != ''){
+            $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
        
         if($rolId == 1 || $rolId == 4 || $rolId == 6 || Auth::user()->id == 24701){
             if ($buscar == ''){

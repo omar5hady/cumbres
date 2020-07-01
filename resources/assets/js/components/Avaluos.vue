@@ -17,6 +17,12 @@
                     <div v-if="listado == 1" class="card-body">
                         <div class="form-group row">
                             <div class="col-md-10">
+                                <select class="form-control" v-model="b_empresa" >
+                                    <option value="">Empresa constructora</option>
+                                    <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-10">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
@@ -772,8 +778,9 @@
                 b_manzana2: '',
                 b_lote2: '',
                 usuario:'',
-                b_status:''
-               
+                b_status:'',
+                b_empresa:'',
+                empresas:[],
             }
         },
         computed:{
@@ -884,7 +891,8 @@
             /**Metodo para mostrar los registros */
             listarAvaluos(page, buscar, b_etapa, b_manzana, b_lote, criterio){
                 let me = this;
-                var url = '/avaluos/index?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote + '&b_status=' + me.b_status +  '&criterio=' + criterio;
+                var url = '/avaluos/index?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + 
+                '&b_lote=' + b_lote + '&b_status=' + me.b_status +  '&criterio=' + criterio +'&b_empresa='+this.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayAvaluos = respuesta.avaluos.data;
@@ -1522,15 +1530,26 @@
                         break;
                     }
                 } 
-            }
-            
+            },
+            getEmpresa(){
+                let me = this;
+                me.empresas=[];
+                var url = '/lotes/empresa/select';
+                axios.get(url).then(function (response) {
+                    var respuesta = response;
+                    me.empresas = respuesta.data.empresas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
         
         },
        
         mounted() {
             this.listarAvaluos(1,this.buscar,this.b_etapa,this.b_manzana,this.b_lote,this.criterio);
             this.selectFraccionamientos();
-            
+            this.getEmpresa();
         }
     }
 </script>

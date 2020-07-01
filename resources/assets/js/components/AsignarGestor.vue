@@ -15,6 +15,11 @@
                         <div class="form-group row">
                             <div class="col-md-10">
                                 <div class="input-group">
+                                    <select class="form-control" v-model="b_empresa" >
+                                        <option value="">Empresa constructora</option>
+                                        <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                    </select>
+
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
@@ -28,6 +33,11 @@
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
+                            
+                                </div>
+                            </div>
+                            <div class="col-md-10">
+                                <div class="input-group">
 
                                     <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa"> 
                                         <option value="">Etapa</option>
@@ -189,8 +199,9 @@
                 buscar : '',
                 b_etapa: '',
                 b_manzana: '',
-                b_lote: ''
-               
+                b_lote: '',
+                b_empresa:'',
+                empresas:[],
             }
         },
         computed:{
@@ -230,7 +241,8 @@
             /**Metodo para mostrar los registros */
             listarContratos(page, buscar, b_etapa, b_manzana, b_lote, criterio){
                 let me = this;
-                var url = '/expediente/indexAsignarGestor?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio;
+                var url = '/expediente/indexAsignarGestor?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + 
+                '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio +'&b_empresa='+this.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayContratos = respuesta.contratos.data;
@@ -348,15 +360,26 @@
                             }               
                 }
              this.selectGestores();      
-            }
-            
+            },
+            getEmpresa(){
+                let me = this;
+                me.empresas=[];
+                var url = '/lotes/empresa/select';
+                axios.get(url).then(function (response) {
+                    var respuesta = response;
+                    me.empresas = respuesta.data.empresas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
         
         },
        
         mounted() {
             this.listarContratos(1,this.buscar,this.b_etapa,this.b_manzana,this.b_lote,this.criterio);
             this.selectFraccionamientos();
-            
+            this.getEmpresa();
         }
     }
 </script>

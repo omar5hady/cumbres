@@ -23,6 +23,16 @@
                 <!-------------------  Div para Contratos que tienen paquete o promoción  --------------------->
                     <div class="card-body" v-if="historial == 0">
                         <div class="form-group row">
+
+                            <div class="col-md-10">
+                                <div class="input-group">
+                                    <select class="form-control" v-model="b_empresa" >
+                                        <option value="">Empresa constructora</option>
+                                        <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                    </select>
+                                </div>
+                            </div>
+
                             <div class="col-md-10">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
@@ -143,6 +153,15 @@
                 <!-------------------  Div historial equipamientos  --------------------->
                     <div class="card-body" v-if="historial == 1">
                         <div class="form-group row">
+                            <div class="col-md-10">
+                                <div class="input-group">
+                                    <select class="form-control" v-model="b_empresa" >
+                                        <option value="">Empresa constructora</option>
+                                        <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            
                             <div class="col-md-10">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
@@ -745,7 +764,9 @@
                 status:'',
 
 
-                arrayHistorialEquipamientos : []
+                arrayHistorialEquipamientos : [],
+                b_empresa:'',
+                empresas:[],
                
             }
         },
@@ -815,7 +836,8 @@
             listarContratos(page, buscar, b_etapa, b_manzana, b_lote, criterio){
                 let me = this;
                 me.historial = 0;
-                var url = '/equipamiento/indexContrato?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio;
+                var url = '/equipamiento/indexContrato?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + 
+                    '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio +'&b_empresa='+this.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayContratos = respuesta.contratos.data;
@@ -840,7 +862,9 @@
             listarHistorial(page, buscar, b_etapa, b_manzana, b_lote, criterio){
                 let me = this;
                 me.historial = 1;
-                var url = '/equipamiento/indexHistorial?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio +  '&status=' + me.status;
+                var url = '/equipamiento/indexHistorial?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + 
+                    '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio +  '&status=' + 
+                    me.status +'&b_empresa='+this.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayHistorialEquipamientos = respuesta.equipamientos.data;
@@ -1329,13 +1353,26 @@
                             break;
                         }
                     }
-                }
+            },
+            getEmpresa(){
+                let me = this;
+                me.empresas=[];
+                var url = '/lotes/empresa/select';
+                axios.get(url).then(function (response) {
+                    var respuesta = response;
+                    me.empresas = respuesta.data.empresas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
             
         },
        
         mounted() {
             this.listarContratos(1,this.buscar,this.b_etapa,this.b_manzana,this.b_lote,this.criterio);
             this.selectFraccionamientos();
+            this.getEmpresa();
         }
     }
 </script>

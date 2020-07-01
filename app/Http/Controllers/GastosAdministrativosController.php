@@ -22,11 +22,16 @@ class GastosAdministrativosController extends Controller
 
         $query = Gasto_admin::join('contratos','gastos_admin.contrato_id','=','contratos.id')
             ->join('creditos','contratos.id','=','creditos.id')
+            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
             ->join('clientes','creditos.prospecto_id','=','clientes.id')
             ->join('personal','clientes.id','=','personal.id')
             ->select('contratos.id as folio','personal.nombre', 'personal.apellidos','creditos.fraccionamiento',
                     'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','gastos_admin.id as gastoId',
-                    'gastos_admin.concepto','gastos_admin.costo','gastos_admin.observacion','gastos_admin.fecha');
+        'gastos_admin.concepto','gastos_admin.costo','gastos_admin.observacion','gastos_admin.fecha');
+
+        if($request->b_empresa != ''){
+            $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
 
         if($buscar==''){
             $gastos = $query
@@ -323,10 +328,15 @@ class GastosAdministrativosController extends Controller
         $criterio2 = $request->criterio2;
 
         $query = Contrato::join('creditos','contratos.id','=','creditos.id')
+            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
             ->join('clientes','creditos.prospecto_id','=','clientes.id')
             ->join('personal','clientes.id','=','personal.id')
             ->select(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),'contratos.id as folio',
-                    'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.num_lote');
+        'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.num_lote');
+
+        if($request->b_empresa != ''){
+            $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
 
         if($b == ''){
             $contratos = $query

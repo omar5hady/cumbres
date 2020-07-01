@@ -16,6 +16,16 @@
                         <!---->
                     </div>
                     <div class="card-body">
+                        <div class="form-group row">
+                            <div class="col-md-10">
+                                <div class="input-group">
+                                    <select class="form-control" v-model="b_empresa" >
+                                        <option value="">Empresa constructora</option>
+                                        <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                         <div class="form-group row" v-if="criterio=='lotes.fraccionamiento_id'" >
                             <div class="col-md-10">
                                 <div class="input-group">
@@ -217,7 +227,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Vendedor</label>
                                     <div class="col-md-6">
-                                       <select v-model="vendedor_id" id="myselect" class="form-control"  @click="selectClientes(vendedor_id)" >
+                                       <select v-model="vendedor_id"  class="form-control"  @click="selectClientes(vendedor_id)" >
                                             <option value="0">Seleccione</option>
                                             <option v-for="vendedores in arrayVendedores" :key="vendedores.id" :value="vendedores.id" v-text="vendedores.n_completo"></option>
                                         </select>
@@ -226,7 +236,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Cliente</label>
                                     <div class="col-md-6">
-                                       <select v-model="cliente_id" id="myselect"  class="form-control" >
+                                       <select v-model="cliente_id"   class="form-control" >
                                             <option value="0">Seleccione</option>
                                             <option v-for="clientes in arrayClientes" :key="clientes.id" :value="clientes.id" v-text="clientes.n_completo"></option>
                                         </select>
@@ -236,7 +246,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Tipo de Crédito</label>
                                     <div class="col-md-6">
-                                       <select id="myselect" v-model="credito"  class="form-control" >
+                                       <select  v-model="credito"  class="form-control" >
                                             <option value="">Seleccione</option>
                                             <option v-for="creditos in arrayCreditos" :key="creditos.nombre" :value="creditos.nombre" v-text="creditos.nombre"></option>
                                         </select>
@@ -332,6 +342,8 @@
                 buscar : '',
                 b_apartado : '',
                 casa_muestra : 0,
+                b_empresa:'',
+                empresas:[],
             }
         },
         computed:{
@@ -370,7 +382,9 @@
             /**Metodo para mostrar los registros */
             listarLote(page, buscar, buscar2, buscar3, b_modelo, b_lote, criterio,rol){
                 let me = this;
-                var url = '/lotesDisponibles?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2+ '&buscar3=' + buscar3 + '&b_modelo='+ b_modelo + '&b_lote='+ b_lote + '&b_apartado='+ this.b_apartado +'&criterio=' + criterio + '&rolId=' + rol + '&casa_muestra=' + this.casa_muestra ; 
+                var url = '/lotesDisponibles?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2+ '&buscar3=' + buscar3 + 
+                    '&b_modelo='+ b_modelo + '&b_lote='+ b_lote + '&b_apartado='+ this.b_apartado +'&criterio=' + criterio + 
+                    '&rolId=' + rol + '&casa_muestra=' + this.casa_muestra +'&b_empresa='+this.b_empresa ; 
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLote = respuesta.lotes.data;
@@ -650,7 +664,7 @@
                 this.tituloModal3 = '';
                 this.tipoAccion = 1;
             },
-                cerrarModal4(){
+            cerrarModal4(){
                 this.modal4 = 0;
                 this.tituloModal4 = '';
                 this.buscar_fraccionamientoExcel = 0;
@@ -694,12 +708,25 @@
                 this.selectVendedores();
                 this.selectClientes(this.vendedor_id);
 
-            }
+            },
+            getEmpresa(){
+                let me = this;
+                me.empresas=[];
+                var url = '/lotes/empresa/select';
+                axios.get(url).then(function (response) {
+                    var respuesta = response;
+                    me.empresas = respuesta.data.empresas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
         },
         mounted() {
             this.listarLote(1,this.buscar,this.buscar2,this.buscar3,this.b_modelo,this.b_lote,this.criterio,this.rolId);
             this.selectFraccionamientos();
             this.selectCreditos();
+            this.getEmpresa();
         }
     }
 </script>

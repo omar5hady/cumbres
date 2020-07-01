@@ -18,6 +18,14 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
+                            <div class="col-md-8">
+                                <select class="form-control" v-model="b_empresa" >
+                                    <option value="">Empresa constructora</option>
+                                    <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <div class="col-md-10">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
@@ -444,8 +452,9 @@
                 b_manzana: '',
                 b_lote: '',
                 b_status: 3,
-                b_credito:''
-               
+                b_credito:'',
+                b_empresa:'',
+                empresas:[],               
             }
         },
         computed:{
@@ -485,7 +494,9 @@
             /**Metodo para mostrar los registros */
             listarContratos(page, buscar, buscar2, b_manzana, b_lote, criterio){
                 let me = this;
-                var url = '/estadoCuenta/index?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote + '&b_status=' + me.b_status + '&criterio=' + criterio + '&credito=' + this.b_credito;
+                var url = '/estadoCuenta/index?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&b_manzana=' + b_manzana + 
+                    '&b_lote=' + b_lote + '&b_status=' + me.b_status + '&criterio=' + criterio + '&credito=' + this.b_credito
+                    +'&b_empresa='+this.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayContratos = respuesta.contratos.data;
@@ -591,7 +602,7 @@
                 this.depeconomicos_cliente=0;
             },
 
-             abrirModal(accion,data =[]){
+            abrirModal(accion,data =[]){
                         switch(accion){
                             case 'ver_personal':
                             {
@@ -663,7 +674,19 @@
                                 this.depeconomicos_cliente=data['num_dep_economicos'];
                             }
                         }
-                }
+            },
+            getEmpresa(){
+                let me = this;
+                me.empresas=[];
+                var url = '/lotes/empresa/select';
+                axios.get(url).then(function (response) {
+                    var respuesta = response;
+                    me.empresas = respuesta.data.empresas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
             
         },
        
@@ -671,6 +694,7 @@
             this.listarContratos(1,this.buscar,this.buscar2,this.b_manzana,this.b_lote,this.criterio);
             this.selectFraccionamientos();
             this.selectCreditos();
+            this.getEmpresa();
         }
     }
 </script>
