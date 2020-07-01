@@ -402,7 +402,7 @@ class LicenciasController extends Controller
                 'lotes.firmado',
                 'lotes.fecha_fin',
                 'lotes.credito_puente'
-            );
+        );
 
         if ($buscar == '') {
             $lotes = $query
@@ -484,6 +484,10 @@ class LicenciasController extends Controller
         }
         elseif($status != '' &&  $status == 2){
             $lotes = $lotes->where('lotes.contrato','=',1)->where('lotes.firmado','=',1);
+        }
+
+        if($request->b_empresa != ''){
+            $lotes= $lotes->where('lotes.emp_constructora','=',$request->b_empresa);
         }
 
         $lotes = $lotes->orderBy('fraccionamientos.nombre', 'ASC')
@@ -540,7 +544,7 @@ class LicenciasController extends Controller
                 'lotes.firmado',
                 'lotes.fecha_fin',
                 'lotes.credito_puente'
-            );
+        );
 
         if ($buscar == '') {
             $lotes = $query
@@ -622,6 +626,10 @@ class LicenciasController extends Controller
         }
         elseif($status != '' &&  $status == 2){
             $lotes = $lotes->where('lotes.contrato','=',1)->where('lotes.firmado','=',1);
+        }
+
+        if($request->b_empresa != ''){
+            $lotes= $lotes->where('lotes.emp_constructora','=',$request->b_empresa);
         }
 
         $lotes = $lotes->orderBy('fraccionamientos.nombre', 'ASC')
