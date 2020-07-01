@@ -101,8 +101,14 @@
 
                     <div class="card-body" v-if="resumen==1">
                         <div class="form-group row">
-                            <div class="col-md-6">
+                            <div class="col-md-10">
                                 <div class="input-group">
+                                    
+                                    <select class="form-control" v-model="b_empresa" >
+                                        <option value="">Empresa constructora</option>
+                                        <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                    </select>
+                                    
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-4" v-model="criterio" @click="selectFraccionamientosConLote()">
                                       <option value="lotes.fraccionamiento_id">Fraccionamiento</option>
@@ -385,6 +391,8 @@
                 buscar2: '',
                 buscar3: '',
                 status: '',
+                b_empresa:'',
+                empresas:[],
             }
         },
         computed:{
@@ -475,7 +483,8 @@
             /**Metodo para mostrar los registros */
             listarAvancePromedio(page, buscar, buscar1, buscar2 ,criterio){
                 let me = this;
-                var url = '/avanceProm?page=' + page + '&buscar=' + buscar +  '&buscar1=' + buscar1 + '&buscar2=' + buscar2 + '&criterio=' + criterio;
+                var url = '/avanceProm?page=' + page + '&buscar=' + buscar +  '&buscar1=' + buscar1 + '&buscar2=' + buscar2 + 
+                '&criterio=' + criterio+'&b_empresa='+this.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayAvanceProm = respuesta.avance.data;
@@ -739,13 +748,25 @@
                 this.selectFraccionamientosConLote();
                 
                
-            }
+            },
+            getEmpresa(){
+                let me = this;
+                me.empresas=[];
+                var url = '/lotes/empresa/select';
+                axios.get(url).then(function (response) {
+                    var respuesta = response;
+                    me.empresas = respuesta.data.empresas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
         },
         mounted() {
             this.listarAvance(1,this.buscar,this.criterio);      
             this.listarAvancePromedio(1,this.buscar,this.buscar1,this.buscar2,this.criterio);
             this.selectFraccionamientosConLote();
-            
+            this.getEmpresa();
         }
     }
 </script>

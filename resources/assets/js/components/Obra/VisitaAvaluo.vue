@@ -15,6 +15,11 @@
                         <div class="form-group row">
                             <div class="col-md-10">
                                 <div class="input-group">
+                                    <select class="form-control" v-model="b_empresa" >
+                                        <option value="">Empresa constructora</option>
+                                        <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                    </select>
+
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
@@ -57,7 +62,9 @@
                                     </select>
 
                                     <button type="submit" @click="listarLotes(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                    <a class="btn btn-success" v-bind:href="'/licencias/excelVisita?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio + '&status=' + b_status" >
+                                    <a class="btn btn-success" v-bind:href="'/licencias/excelVisita?buscar=' + buscar + '&b_etapa=' + b_etapa + 
+                                            '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio + '&status=' + b_status +
+                                            '&b_empresa='+b_empresa" >
                                         <i class="icon-pencil"></i>&nbsp;Excel
                                     </a>
                                    
@@ -238,8 +245,9 @@
                 b_etapa: '',
                 b_manzana: '',
                 b_lote: '',
-                b_status : ''
-               
+                b_status : '',
+                b_empresa:'',
+                empresas:[],
             }
         },
         computed:{
@@ -279,7 +287,9 @@
             /**Metodo para mostrar los registros */
             listarLotes(page, buscar, b_etapa, b_manzana, b_lote, criterio){
                 let me = this;
-                var url = '/licencias/indexVisita?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio + '&status=' + me.b_status;
+                var url = '/licencias/indexVisita?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + 
+                '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio + '&status=' + me.b_status+
+                '&b_empresa='+this.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLotes = respuesta.lotes.data;
@@ -376,10 +386,6 @@
                 this.tituloModal = '';
                 
             },
-        
-         
-
-      
             abrirModal(accion,data =[]){
                 switch(accion){
                     
@@ -393,15 +399,26 @@
                         break;
                     }               
                 } 
-            }
-            
+            },
+            getEmpresa(){
+                let me = this;
+                me.empresas=[];
+                var url = '/lotes/empresa/select';
+                axios.get(url).then(function (response) {
+                    var respuesta = response;
+                    me.empresas = respuesta.data.empresas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
         
         },
        
         mounted() {
             this.listarLotes(1,this.buscar,this.b_etapa,this.b_manzana,this.b_lote,this.criterio);
             this.selectFraccionamientos();
-            
+            this.getEmpresa();
         }
     }
 </script>

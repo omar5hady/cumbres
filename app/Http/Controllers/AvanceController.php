@@ -33,17 +33,20 @@ class AvanceController extends Controller
                     ->select('lotes.num_lote as lote', //'licencias.f_planos_obra',
                         DB::raw("SUM(avances.avance_porcentaje) as porcentajeTotal"), 
                         'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','lotes.aviso',
-                        'lotes.etapa_servicios','lotes.fecha_ini','lotes.fecha_fin','lotes.paquete', 'lotes.contrato');
+        'lotes.etapa_servicios','lotes.fecha_ini','lotes.fecha_fin','lotes.paquete', 'lotes.contrato');
 
+        if($request->b_empresa != ''){
+            $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
 
         if($buscar=='' && $buscar1=='' && $buscar2==''){
-        $avance = $query
-            ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-            ->addSelect('fraccionamientos.nombre as proyecto')
-            ->join('modelos','lotes.modelo_id','=','modelos.id')
-            ->addSelect('modelos.nombre as modelos', 'modelos.archivo','modelos.espec_obra')
-            ->groupBy('avances.lote_id')
-            ->where('lotes.aviso', '!=', '0')
+            $avance = $query
+                ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                ->addSelect('fraccionamientos.nombre as proyecto')
+                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                ->addSelect('modelos.nombre as modelos', 'modelos.archivo','modelos.espec_obra')
+                ->groupBy('avances.lote_id')
+                ->where('lotes.aviso', '!=', '0')
             ->paginate(8);
         }
         else

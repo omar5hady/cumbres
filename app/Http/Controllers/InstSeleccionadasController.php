@@ -1163,7 +1163,7 @@ class InstSeleccionadasController extends Controller
                     'inst_seleccionadas.id as inst_sel_id', 'contratos.saldo',
                     'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
                     'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
-            );
+        );
 
         if($buscar == ''){
             $creditos = $query
@@ -1239,6 +1239,10 @@ class InstSeleccionadasController extends Controller
             }
         }
 
+        if($request->b_empresa != ''){
+            $creditos= $creditos->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
+
         $creditos = $creditos->orderBy('inst_seleccionadas.cobrado','asc')
                             ->orderBy('inst_seleccionadas.monto_credito','desc')
                             ->paginate(10);
@@ -1277,7 +1281,11 @@ class InstSeleccionadasController extends Controller
                 'inst_seleccionadas.id as inst_sel_id', 'contratos.saldo',
                 'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
                 'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
-            );
+        );
+
+        if($request->b_empresa != ''){
+            $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
 
         if($buscar == ''){
             $creditos = $query
@@ -1551,7 +1559,11 @@ class InstSeleccionadasController extends Controller
                 DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
                             WHERE pagos_contratos.contrato_id = contratos.id
                             GROUP BY pagos_contratos.contrato_id) as sumaRestante")
-            );
+        );
+
+        if($request->b_empresa != ''){
+            $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
        
         if ($buscar == '') {
             $devoluciones = $query
@@ -1634,7 +1646,7 @@ class InstSeleccionadasController extends Controller
     }
 
     public function excelHistDev(Request $request){
-        if(!$request->ajax())return redirect('/');
+        //if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $b_etapa = $request->b_etapa;
         $b_manzana = $request->b_manzana;
@@ -1699,7 +1711,11 @@ class InstSeleccionadasController extends Controller
                 DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
                             WHERE pagos_contratos.contrato_id = contratos.id
                             GROUP BY pagos_contratos.contrato_id) as sumaRestante")
-            );
+        );
+
+        if($request->b_empresa != ''){
+            $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
        
         if ($buscar == '') {
             $devoluciones = $query

@@ -53,7 +53,9 @@
                                     <button v-if="btn_status == 1" @click="btn_status=2" type="button" class="btn btn-secondary btn-warning">Detenidos</button>
 
                                     <button type="submit" @click="listarContratos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                    <a class="btn btn-success" v-bind:href="'/expediente/Excel?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio + '&btn_status=' + btn_status">
+                                    <a class="btn btn-success" v-bind:href="'/expediente/Excel?buscar=' + buscar + '&b_etapa=' + b_etapa + 
+                                        '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio + '&btn_status=' + btn_status+
+                                        '&b_empresa='+b_empresa">
                                         <i class="icon-pencil"></i>&nbsp;Excel
                                     </a>
                                 </div>

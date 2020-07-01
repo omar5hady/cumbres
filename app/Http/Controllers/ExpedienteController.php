@@ -467,6 +467,10 @@ class ExpedienteController extends Controller
             $contratos = $contratos->where('contratos.detenido', '=', 0);
         }
 
+        if($request->b_empresa != ''){
+            $contratos= $contratos->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
+
         $contratos = $contratos->orderBy('contratos.avaluo_preventivo','desc')
                                 ->orderBy('licencias.avance','desc')->get();
         

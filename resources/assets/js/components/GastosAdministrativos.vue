@@ -61,7 +61,10 @@
                             <div class="col-md-8">
                                 <div class="input-group">
                                     <button type="submit" @click="listarGastos(1,buscar, buscar2, buscar3, criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                    <a :href="'/gastos/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
+                                    <a :href="'/gastos/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + 
+                                            '&criterio=' + criterio +'&b_empresa='+b_empresa"
+                                        class="btn btn-success"><i class="fa fa-file-text"></i> Excel
+                                    </a>
                                 </div>
                             </div>
                         </div>

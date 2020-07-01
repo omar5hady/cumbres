@@ -81,7 +81,11 @@ class DevolucionController extends Controller
                 DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
                             WHERE pagos_contratos.contrato_id = contratos.id
                             GROUP BY pagos_contratos.contrato_id) as sumaRestante")
-            );
+        );
+
+        if($request->b_empresa != ''){
+            $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
        
         if ($buscar == '') {
             $contratos = $query
@@ -290,7 +294,11 @@ class DevolucionController extends Controller
                 DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
                             WHERE pagos_contratos.contrato_id = contratos.id
                             GROUP BY pagos_contratos.contrato_id) as sumaRestante")
-            );
+        );
+
+        if($request->b_empresa != ''){
+            $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
        
         if ($buscar == '') {
             $devoluciones = $query
@@ -456,7 +464,11 @@ class DevolucionController extends Controller
                 DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
                             WHERE pagos_contratos.contrato_id = contratos.id
                             GROUP BY pagos_contratos.contrato_id) as sumaRestante")
-            );
+        );
+
+        if($request->b_empresa != ''){
+            $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
        
         if ($buscar == '') {
             $contratos = $query
@@ -604,7 +616,7 @@ class DevolucionController extends Controller
                 $sheet->setBorder($num, 'thin');
             });
         }
-    )->download('xls');
+        )->download('xls');
 
     }
 
@@ -674,7 +686,11 @@ class DevolucionController extends Controller
                 DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
                             WHERE pagos_contratos.contrato_id = contratos.id
                             GROUP BY pagos_contratos.contrato_id) as sumaRestante")
-            );
+        );
+
+        if($request->b_empresa != ''){
+            $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
        
         if ($buscar == '') {
             $devoluciones = $query

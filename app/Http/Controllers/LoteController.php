@@ -1187,6 +1187,10 @@ class LoteController extends Controller
                 ->where('modelos.nombre','!=','Por Asignar');
         }
 
+        if($request->b_empresa != ''){
+            $lotes= $lotes->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
+
         $lotes = $lotes->orderBy('fraccionamientos.nombre','lotes.id')->paginate(15);
            
         
@@ -1305,6 +1309,10 @@ class LoteController extends Controller
                     ->whereBetween('lotes.ehl_solicitado', [$fecha, $fecha2])
                     ->where('modelos.nombre','!=','Por Asignar');
             }
+        }
+
+        if($request->b_empresa != ''){
+            $lotes= $lotes->where('lotes.emp_constructora','=',$request->b_empresa);
         }
 
         $lotes = $lotes->orderBy('lotes.ehl_solicitado','desc')
@@ -2915,6 +2923,10 @@ class LoteController extends Controller
         if($request->casa_muestra != ''){
             $lotes = $lotes->where('lotes.casa_muestra','=',$request->casa_muestra);
             //$queryVendedores = $queryVendedores->where('lotes.casa_muestra','=',1);
+        }
+
+        if($request->b_empresa != ''){
+            $lotes= $lotes->where('lotes.emp_constructora','=',$request->b_empresa);
         }
 
             $lotes = $lotes->orderBy('fraccionamientos.nombre','DESC')

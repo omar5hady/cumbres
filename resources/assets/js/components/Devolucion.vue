@@ -18,6 +18,11 @@
                         <div class="form-group row">
                             <div class="col-md-10">
                                 <div class="input-group">
+                                    <select class="form-control" v-model="b_empresa" >
+                                        <option value="">Empresa constructora</option>
+                                        <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                    </select>
+
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
@@ -50,7 +55,10 @@
                                     </select>
 
                                     <button type="submit" @click="listarContratos(1, buscar, b_etapa, b_manzana, b_lote, criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                    <a :href="'/devolucion/excel?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
+                                    <a :href="'/devolucion/excel?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' 
+                                            + b_lote +  '&criterio=' + criterio+'&b_empresa='+b_empresa"
+                                        class="btn btn-success"><i class="fa fa-file-text"></i> Excel
+                                    </a>
                                    
                                 </div>
                             </div>
@@ -123,6 +131,12 @@
                     <!-- listado de historial de devoluciones -->
                     <div v-if="listado == 2" class="card-body">
                         <div class="form-group row">
+                            <div class="col-md-8">
+                                <select class="form-control" v-model="b_empresa" >
+                                    <option value="">Empresa constructora</option>
+                                    <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                </select>
+                            </div>
                             <div class="col-md-10">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
@@ -151,7 +165,10 @@
 
                                     <input v-else type="text"  v-model="buscar_d" @keyup.enter="listarDevoluciones(1, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d)" class="form-control" placeholder="Texto a buscar">
                                     <button type="submit" @click="listarDevoluciones(1, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                    <a  :href="'/devoluciones/excel?buscar=' + buscar_d + '&b_etapa_d=' + b_etapa_d + '&b_manzana_d=' +b_manzana_d+ '&b_lote_d=' + b_lote_d +'&criterio_d=' + criterio_d "  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
+                                    <a  :href="'/devoluciones/excel?buscar=' + buscar_d + '&b_etapa_d=' + b_etapa_d + '&b_manzana_d=' +b_manzana_d+ 
+                                            '&b_lote_d=' + b_lote_d +'&criterio_d=' + criterio_d +'&b_empresa='+b_empresa"  
+                                        class="btn btn-success"><i class="fa fa-file-text"></i> Excel
+                                    </a>
                                    
                                 </div>
                             </div>
@@ -524,8 +541,9 @@
                 b_manzana_d:'',
                 b_lote_d:'',
                 criterio_d:'lotes.fraccionamiento_id',
-                listado : 1
-               
+                listado : 1,
+                b_empresa:'',
+                empresas:[],
             }
         },
         computed:{
@@ -602,7 +620,8 @@
             /**Metodo para mostrar los registros */
             listarContratos(page, buscar, b_etapa, b_manzana, b_lote, criterio){
                 let me = this;
-                var url = '/devolucion/index?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio;
+                var url = '/devolucion/index?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + 
+                '&b_lote=' + b_lote +  '&criterio=' + criterio+'&b_empresa='+this.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayContratos = respuesta.contratos.data;
@@ -616,7 +635,8 @@
 
             listarDevoluciones(page, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d){
                 let me = this;
-                var url = '/devolucion/indexDevoluciones?page=' + page + '&buscar=' + buscar_d + '&b_etapa=' + b_etapa_d + '&b_manzana=' + b_manzana_d + '&b_lote=' + b_lote_d +  '&criterio=' + criterio_d;
+                var url = '/devolucion/indexDevoluciones?page=' + page + '&buscar=' + buscar_d + '&b_etapa=' + b_etapa_d + 
+                '&b_manzana=' + b_manzana_d + '&b_lote=' + b_lote_d +  '&criterio=' + criterio_d+'&b_empresa='+this.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayDevoluciones = respuesta.devoluciones.data;
@@ -777,7 +797,7 @@
                 'cheque': this.cheque,
                 'cuenta': this.banco,
                 'observaciones': this.observaciones
-            }).then(function (response){
+                }).then(function (response){
                 me.proceso=false;
                 me.cerrarModal(); //al guardar el registro se cierra el modal
                 me.listarContratos(me.pagination.current_page,me.buscar,me.b_etapa, me.b_manzana, me.b_lote, me.criterio); //se enlistan nuevamente los registros
@@ -789,9 +809,9 @@
                     showConfirmButton: false,
                     timer: 1500
                     })
-            }).catch(function (error){
-                console.log(error);
-            });
+                }).catch(function (error){
+                    console.log(error);
+                });
             },
 
             cambiarPagina(page,buscar, b_etapa, b_manzana, b_lote, criterio){
@@ -916,15 +936,26 @@
                         break;
                     }
                 }
-            }
-            
+            },
+            getEmpresa(){
+                let me = this;
+                me.empresas=[];
+                var url = '/lotes/empresa/select';
+                axios.get(url).then(function (response) {
+                    var respuesta = response;
+                    me.empresas = respuesta.data.empresas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
         
         },
        
         mounted() {
             this.listarContratos(1,this.buscar,this.b_etapa,this.b_manzana,this.b_lote,this.criterio);
             this.selectFraccionamientos();
-            
+            this.getEmpresa();
         }
     }
 </script>
