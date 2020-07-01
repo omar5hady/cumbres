@@ -15,7 +15,8 @@ body{
 }
 
 @page{
-    margin: 55px;
+    margin: 70px;
+    margin-bottom :140px;
     margin-right: 90px;
     margin-left: 90px;
 }
@@ -427,9 +428,9 @@ B). La superficie de construcción que es de <strong>{{$contratoPromesa[0]->cons
                             <div colspan="2" class="table-cell3"></div>
                         </div>
                         <div class="table-row">
-                            <div colspan="2" class="table-cell3"></div>
-                            <div style="text-align: center;" class="table-cell3">{{mb_strtoupper($contratoPromesa[0]->nombre)}} {{mb_strtoupper($contratoPromesa[0]->apellidos)}}</div>
-                            <div colspan="2" class="table-cell3"></div>
+                            <div colspan="1" class="table-cell3"></div>
+                            <div colspan="3" style="text-align: center;" class="table-cell3">{{mb_strtoupper($contratoPromesa[0]->nombre)}} {{mb_strtoupper($contratoPromesa[0]->apellidos)}}</div>
+                            <div colspan="1" class="table-cell3"></div>
                         </div>
                     </div>
                 @else
