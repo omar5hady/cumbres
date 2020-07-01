@@ -208,7 +208,6 @@ class FacturasController extends Controller
                 'creditos.id',
                 'contratos.id as cId',
                 DB::raw('CONCAT(c.nombre, " ", c.apellidos) as nombre'),
-                //DB::raw("DATEDIFF('".Carbon::now()->format('Y-m-d')."', expedientes.fecha_firma_esc) as dias"),
                 'expedientes.fecha_firma_esc',
                 'c.rfc',
                 'creditos.num_lote',
@@ -244,7 +243,7 @@ class FacturasController extends Controller
         $facturas = $facturas->where('inst_seleccionadas.elegido', '=', 1)
             ->where('inst_seleccionadas.tipo_credito', '!=', "Crédito Directo")
             ->whereNotNull('expedientes.fecha_firma_esc')
-        ->distinct('contratos.id')->paginate(15);
+        ->distinct('creditos.id')->paginate(15);
 
         return $facturas;
     }

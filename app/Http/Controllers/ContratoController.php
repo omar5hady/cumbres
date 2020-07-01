@@ -2550,7 +2550,7 @@ class ContratoController extends Controller
             $credito->costo_paquete = $request->costo_paquete;
             $credito->precio_venta = $request->precio_venta;
 
-            //Guardar el cisto del lote
+            //Guardar el costo del lote
                 $etapa = Lote::join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
                     ->select('etapas.id', 'lotes.terreno')
                 ->where('lotes.id', '=', $credito->lote_id)->get();
@@ -2563,7 +2563,7 @@ class ContratoController extends Controller
                     $credito->valor_terreno = ($precioT->precio_m2* $etapa[0]->terreno);
                     $credito->porcentaje_terreno = ((($precioT->precio_m2*$etapa[0]->terreno)*100)/$credito->precio_venta);
                 }
-            //Guardar el cisto del lote
+            //Guardar el costo del lote
 
             $credito->save();
 
@@ -2654,6 +2654,7 @@ class ContratoController extends Controller
                 'lotes.fecha_termino_ventas',
                 'medios_publicitarios.nombre as medio_publicidad',
                 'lotes.ajuste',
+                'lotes.emp_constructora',
 
                 'inst_seleccionadas.institucion',
                 'personal.nombre',
@@ -3007,6 +3008,8 @@ class ContratoController extends Controller
                 'creditos.manzana',
                 'creditos.num_lote',
                 'creditos.superficie',
+                'creditos.valor_terreno',
+                'creditos.porcentaje_terreno',
                 'inst_seleccionadas.id as inst_credito',
                 'inst_seleccionadas.tipo_credito',
                 'creditos.precio_venta',
@@ -3014,6 +3017,7 @@ class ContratoController extends Controller
                 'creditos.fraccionamiento as proyecto',
                 'lotes.construccion',
                 'lotes.regimen_condom',
+                'lotes.emp_constructora',
 
                 'personal.nombre',
                 'personal.apellidos',
@@ -3058,6 +3062,8 @@ class ContratoController extends Controller
             $contratoPromesa[0]->credito_neto = $contratoPromesa[0]->credito_neto - $contratoPromesa[0]->avaluo_cliente;
         }
 
+        $contratoPromesa[0]->valor_construccion = $contratoPromesa[0]->precio_venta - $contratoPromesa[0]->valor_terreno;
+
         setlocale(LC_TIME, 'es_MX.utf8');
         if($contratoPromesa[0]->avaluo_cliente>=0){
             $contratoPromesa[0]->engancheTotalLetra = NumerosEnLetras::convertir(($contratoPromesa[0]->enganche_total - $contratoPromesa[0]->avaluo_cliente), 'Pesos', true, 'Centavos');
@@ -3065,8 +3071,10 @@ class ContratoController extends Controller
         else{
             $contratoPromesa[0]->engancheTotalLetra = NumerosEnLetras::convertir($contratoPromesa[0]->avaluo_cliente, 'Pesos', true, 'Centavos');
         }
-        
+        $contratoPromesa[0]->avaluoLetra = NumerosEnLetras::convertir($contratoPromesa[0]->avaluo_cliente, 'Pesos', true, 'Centavos');
         $contratoPromesa[0]->precioVentaLetra = NumerosEnLetras::convertir($contratoPromesa[0]->precio_venta, 'Pesos', true, 'Centavos');
+        $contratoPromesa[0]->valorTerrenoLetra = NumerosEnLetras::convertir($contratoPromesa[0]->valor_terreno, 'Pesos', true, 'Centavos');
+        $contratoPromesa[0]->valorConstruccionLetra = NumerosEnLetras::convertir($contratoPromesa[0]->valor_construccion, 'Pesos', true, 'Centavos');
         //$contratoPromesa[0]->precio_venta = number_format((float)$contratoPromesa[0]->precio_venta, 2, '.', ',');
 
         // if($contratoPromesa[0]->total_pagar <0)
@@ -3166,8 +3174,10 @@ class ContratoController extends Controller
             }
         }
 
-
-        $pdf = \PDF::loadview('pdf.contratos.contratoDePromesaCredito', ['contratoPromesa' => $contratoPromesa, 'pagos' => $pagos]);
+        if($contratoPromesa[0]->emp_constructora == 'Grupo Constructor Cumbres')
+            $pdf = \PDF::loadview('pdf.contratos.contratoDePromesaCredito', ['contratoPromesa' => $contratoPromesa, 'pagos' => $pagos]);
+        else
+            $pdf = \PDF::loadview('pdf.contratos.contratoDePromesaCredito2', ['contratoPromesa' => $contratoPromesa, 'pagos' => $pagos]);
         return $pdf->stream('contrato_promesa_credito.pdf');
     }
 
@@ -3583,11 +3593,27 @@ class ContratoController extends Controller
 
             $contrato->saldo = $credito->precio_venta + $sumaTotal;
 
+            //Guardar el costo del lote
+            $etapa = Lote::join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
+                ->select('etapas.id', 'lotes.terreno')
+                ->where('lotes.id', '=', $credito->lote_id)->get();
+
+                $precioT = Precios_terreno::where('etapa_id', '=', $etapa[0]->id)
+                    ->where('estatus', '=', 1)
+                ->first();
+
+                if($precioT){
+                    $credito->valor_terreno = ($precioT->precio_m2* $etapa[0]->terreno);
+                    $credito->porcentaje_terreno = ((($precioT->precio_m2*$etapa[0]->terreno)*100)/$credito->precio_venta);
+                }
+            //Guardar el costo del lote
+
             $lote->save();
             $credito->save();
             $personal->save();
             $cliente->save();
             $contrato->save();
+
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
