@@ -36,11 +36,24 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <div class="col-md-8">
+                            <div class="col-md-5">
                                 <div class="input-group">
                                     <input type="text"  v-model="b_paquete" @keyup.enter="listarRuvs(1)" class="form-control" placeholder="Paquete Ruv">
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <select class="form-control" v-model="b_empresa" >
+                                        <option value="">Empresa constructora</option>
+                                        <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                    </select>
                                     <button type="submit" @click="listarRuvs(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                    <a class="btn btn-success" v-bind:href="'/ruv/excelRuv?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote + '&b_paquete=' + b_paquete" >
+                                    <a class="btn btn-success" v-bind:href="'/ruv/excelRuv?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' 
+                                        + b_manzana + '&b_lote=' + b_lote + '&b_paquete=' + b_paquete + '&empresa=' + b_empresa" >
                                         <i class="icon-pencil"></i>&nbsp;Excel
                                     </a>
                                 </div>
@@ -310,6 +323,8 @@
                 b_manzana : '',
                 b_lote : '',
                 b_paquete : '',
+                b_empresa: '',
+                empresas: [],
 
                 fecha:'',
                 empresa:'',
@@ -353,7 +368,8 @@
             /**Metodo para mostrar los registros */
             listarRuvs(page){
                 let me = this;
-                var url = '/ruv/indexRuv?page=' + page + '&buscar=' + me.buscar + '&b_etapa=' + me.b_etapa + '&b_manzana=' + me.b_manzana + '&b_lote=' + me.b_lote + '&b_paquete=' + me.b_paquete; 
+                var url = '/ruv/indexRuv?page=' + page + '&buscar=' + me.buscar + '&b_etapa=' + me.b_etapa + '&b_manzana=' + me.b_manzana + 
+                '&b_lote=' + me.b_lote + '&b_paquete=' + me.b_paquete + '&empresa=' + me.b_empresa; 
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLotes = respuesta.lotes.data;
@@ -404,6 +420,19 @@
                     title: 'Observación Agregada Correctamente'
                     })
                 }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            getEmpresa(){
+                let me = this;
+                me.empresas=[];
+                var url = '/lotes/empresa/select';
+                axios.get(url).then(function (response) {
+                    var respuesta = response;
+                    me.empresas = respuesta.data.empresas;
+                })
+                .catch(function (error) {
                     console.log(error);
                 });
             },
@@ -724,6 +753,7 @@
         mounted() {
             this.listarRuvs(1);
             this.selectFraccionamientos();
+            this.getEmpresa();
         }
     }
 </script>

@@ -52,6 +52,10 @@ class RuvController extends Controller
             }
         }
 
+        if($request->empresa != ''){
+            $lotes = $lotes->where('lotes.emp_constructora','=',$request->empresa);
+        }
+
         $lotes = $lotes->orderBy('proyecto','asc')->orderBy('etapas.num_etapa','asc')
             ->orderBy('lotes.num_lote','asc')->paginate(10);
         
@@ -148,6 +152,10 @@ class RuvController extends Controller
     
             }
         }
+
+        if($request->empresa != ''){
+            $lotes = $lotes->where('lotes.emp_constructora','=',$request->empresa);
+        }
         
         $lotes = $lotes->orderBy('proyecto','asc')->orderBy('etapas.num_etapa','asc')
         ->orderBy('lotes.num_lote','asc')->paginate(10);
@@ -207,7 +215,7 @@ class RuvController extends Controller
                 ->select('lotes.id','lotes.num_lote','lotes.paq_ruv','fraccionamientos.nombre as proyecto',
                         'etapas.num_etapa','modelos.nombre as modelo','emp.empresa','ruvs.fecha_siembra',
                         'ruvs.fecha_carga','ruvs.num_cuv','ruvs.fecha_asignacion','fecha_revision',
-                        'ruvs.fecha_dtu',
+                        'ruvs.fecha_dtu', 'lotes.emp_constructora',
                         'personal.nombre','personal.apellidos','lotes.manzana');
 
         
@@ -233,6 +241,10 @@ class RuvController extends Controller
 
         if($paquete != ''){
             $lotes = $lotes->where('lotes.paq_ruv','like','%'.$paquete.'%');
+        }
+
+        if($request->empresa != ''){
+            $lotes = $lotes->where('lotes.emp_constructora','=',$request->empresa);
         }
        
         
@@ -353,6 +365,10 @@ class RuvController extends Controller
 
         if($paquete != ''){
             $lotes = $lotes->where('lotes.paq_ruv','like','%'.$paquete.'%');
+        }
+
+        if($request->empresa != ''){
+            $lotes = $lotes->where('lotes.emp_constructora','=',$request->empresa);
         }
        
         
