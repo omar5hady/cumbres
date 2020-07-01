@@ -2660,9 +2660,10 @@ class ClienteController extends Controller
                     ->select('personal.nombre', 'personal.id', 'personal.apellidos', 'personal.celular','personal.email',
                                 'personal.f_nacimiento')
                     ->whereMonth('personal.f_nacimiento',$now->month)
-                    ->whereDay('personal.f_nacimiento',$now->day)
-                    ->where('clientes.vendedor_id','=',Auth::user()->id)
-                    ->orderBy('personal.nombre','asc')
+                    ->whereDay('personal.f_nacimiento',$now->day);
+                    if(Auth::user()->rol_id != 1)
+                        $people = $people->where('clientes.vendedor_id','=',Auth::user()->id);
+                    $people = $people->orderBy('personal.nombre','asc')
                     ->get();
 
         return ['people'=>$people];

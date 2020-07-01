@@ -354,34 +354,66 @@ body {
 
 <br>
 
-<div class="table3">
-<div class="table-row">
-      <div colspan="2" class="table-cell3"><b>TRANSFERENCIA A NOMBRE DE: </div>
-      <div colspan="2" class="table-cell3"><b>GRUPO CONSTRUCTOR CUMBRES S.A DE C.V</div>
+@if($contratos[0]->emp_constructora == 'Grupo Constructor Cumbres')
+    <div class="table3">
+        <div class="table-row">
+        <div colspan="2" class="table-cell3"><b>TRANSFERENCIA A NOMBRE DE: </div>
+        <div colspan="2" class="table-cell3"><b>GRUPO CONSTRUCTOR CUMBRES S.A DE C.V</div>
+        </div>
+        <div class="table-row">
+        <div class="table-cell3"><b>BANCO:</div>
+        <div class="table-cell3"></div>
+        <div class="table-cell3"><b>BBVA</div>
+        <div class="table-cell3"></div>
+        </div>
+        <div class="table-row"> 
+        <div class="table-cell3"><b>NO. DE CUENTA:</div>
+        <div class="table-cell3"></div>
+        <div class="table-cell3"><b>0107059795</div>
+        <div class="table-cell3"></div>
+        </div>
+        <div class="table-row">
+        <div colspan="2" class="table-cell3"><b>CLABE PARA TRANSFERENCIA:</div>
+        <div colspan="2" class="table-cell3"><b>012700001070597953</div>
+        </div>
+        <div class="table-row">
+        <div class="table-cell3"><b>RFC:</div>
+        <div class="table-cell3"></div>
+        <div class="table-cell3"><b>GCC000106QS6</div>
+        <div class="table-cell3"></div>
+        </div>
     </div>
-    <div class="table-row">
-      <div class="table-cell3"><b>BANCO:</div>
-      <div class="table-cell3"></div>
-      <div class="table-cell3"><b>BANCOMER</div>
-      <div class="table-cell3"></div>
+@else
+    <div class="table3">
+        <div class="table-row">
+            <div colspan="2" class="table-cell3"><b>TRANSFERENCIA A NOMBRE DE: </div>
+            <div colspan="2" class="table-cell3"><b>CONCRETANIA S.A DE C.V</div>
+        </div>
+        <div class="table-row">
+            <div class="table-cell3"><b>BANCO:</div>
+            <div class="table-cell3"></div>
+            <div class="table-cell3"><b>BBVA</div>
+            <div class="table-cell3"></div>
+        </div>
+        <div class="table-row"> 
+            <div class="table-cell3"><b>NO. DE CUENTA:</div>
+            <div class="table-cell3"></div>
+            <div class="table-cell3"><b>0114171918</div>
+            <div class="table-cell3"></div>
+        </div>
+        <div class="table-row">
+            <div colspan="2" class="table-cell3"><b>CLABE PARA TRANSFERENCIA:</div>
+            <div colspan="2" class="table-cell3"><b>0127000011417191</div>
+        </div>
+        <div class="table-row">
+            <div class="table-cell3"><b>RFC:</div>
+            <div class="table-cell3"></div>
+            <div class="table-cell3"><b>CON180725REA</div>
+            <div class="table-cell3"></div>
+        </div>
     </div>
-    <div class="table-row"> 
-      <div class="table-cell3"><b>NO. DE CUENTA:</div>
-      <div class="table-cell3"></div>
-      <div class="table-cell3"><b>0107059795</div>
-      <div class="table-cell3"></div>
-    </div>
-    <div class="table-row">
-      <div colspan="2" class="table-cell3"><b>CLABE PARA TRANSFERENCIA:</div>
-      <div colspan="2" class="table-cell3"><b>012700001070597953</div>
-    </div>
-    <div class="table-row">
-      <div class="table-cell3"><b>RFC:</div>
-      <div class="table-cell3"></div>
-      <div class="table-cell3"><b>GCC000106QS6</div>
-      <div class="table-cell3"></div>
-    </div>
-  </div>
+
+@endif
 
   <br>
   <br>
