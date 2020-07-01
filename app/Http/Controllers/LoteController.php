@@ -2917,6 +2917,10 @@ class LoteController extends Controller
             //$queryVendedores = $queryVendedores->where('lotes.casa_muestra','=',1);
         }
 
+        if($request->b_empresa != ''){
+            $lotes= $lotes->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
+
             $lotes = $lotes->orderBy('fraccionamientos.nombre','DESC')
                     ->orderBy('etapas.num_etapa','ASC')
                     ->orderBy('lotes.manzana','ASC')

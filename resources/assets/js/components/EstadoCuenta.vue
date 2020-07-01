@@ -10,7 +10,9 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i>Estado de cuenta
                          <!--   Boton descargar excel    -->
-                        <a class="btn btn-success" v-bind:href="'/estadoCuenta/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote + '&b_status=' + b_status + '&criterio=' + criterio + '&credito=' + b_credito">
+                        <a class="btn btn-success" v-bind:href="'/estadoCuenta/excel?buscar=' + buscar + '&buscar2=' + buscar2 + 
+                            '&b_manzana=' + b_manzana + '&b_lote=' + b_lote + '&b_status=' + b_status + '&criterio=' + criterio + 
+                            '&credito=' + b_credito +'&b_empresa='+b_empresa">
                             <i class="fa fa-file-text"></i>&nbsp; Descargar excel
                         </a>
                         <!---->

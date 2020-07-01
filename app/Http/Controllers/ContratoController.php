@@ -3871,7 +3871,11 @@ class ContratoController extends Controller
                 'contratos.enganche_total',
                 'contratos.avance_lote',
                 'contratos.observacion'
-            );
+        );
+
+        if($request->b_empresa != ''){
+            $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
 
         if($b_status == ''){
             if ($buscar == '') {

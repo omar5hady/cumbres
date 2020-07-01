@@ -9,7 +9,10 @@
                 <div class="card scroll-box">
                     <div class="card-header" v-if="deposito==0">
                         <i class="fa fa-align-justify"></i> Pagares
-                        <a :href="'/pagares/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&b_vencidos=' + b_vencidos + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel Pagares</a>
+                        <a :href="'/pagares/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&b_vencidos=' + 
+                                b_vencidos + '&criterio=' + criterio+'&b_empresa='+b_empresa"
+                            class="btn btn-success"><i class="fa fa-file-text"></i> Excel Pagares
+                        </a>
                          <button type="button" class="btn btn-default" @click="abrirModal('depositos')">
                             Excel Depositos
                         </button>
@@ -201,7 +204,10 @@
                         <button type="button" @click="listarPagares(1,buscar, buscar2, buscar3, b_vencidos,criterio)" class="btn btn-secondary">
                             <i class="fa fa-mail-reply"></i>&nbsp;Regresar
                         </button>
-                        <a :href="'/depositos/historial/excel?fecha1=' + b_fecha1 + '&fecha2=' + b_fecha2 + '&banco=' + banco + '&monto=' + b_deposito"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel Pagares</a>
+                        <a :href="'/depositos/historial/excel?fecha1=' + b_fecha1 + '&fecha2=' + b_fecha2 + '&banco=' + banco + 
+                                '&monto=' + b_deposito+'&b_empresa='+b_empresa"
+                            class="btn btn-success"><i class="fa fa-file-text"></i> Excel Pagares
+                        </a>
                         <!---->
                     </div>
                     
