@@ -54,6 +54,8 @@
                             <div class="row"><!-- boton de busqueda-->
                                 <div class="col-sm-3 text-info"><strong>Depositos de pagares</strong></div>
                                 <div class="col-sm-9 text-right">
+                                    <button v-if="historial == 0" type="submit" @click="historial = 1,listarDepositos(), listarContratos(), listarDepCredit(), listarLiqCredit()" class="btn btn-warning"><i class="fa fa-exclamation-circle"></i> PENDIENTES</button>
+                                    <button v-if="historial == 1" type="submit" @click="historial = 0,listarDepositos(), listarContratos(), listarDepCredit(), listarLiqCredit()" class="btn btn-success"><i class="fa fa-check"></i> HISTORIAL</button>
                                     <button type="submit" @click="listarDepositos()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
@@ -198,6 +200,8 @@
                             <div class="row">
                                 <div class="col-sm-3 text-info"><strong>Creditos Directos</strong></div>
                                 <div class="col-sm-9 text-right">
+                                   <button v-if="historial == 0" type="submit" @click="historial = 1,listarDepositos(), listarContratos(), listarDepCredit(), listarLiqCredit()" class="btn btn-warning"><i class="fa fa-exclamation-circle"></i> PENDIENTES</button>
+                                    <button v-if="historial == 1" type="submit" @click="historial = 0,listarDepositos(), listarContratos(), listarDepCredit(), listarLiqCredit()" class="btn btn-success"><i class="fa fa-check"></i> HISTORIAL</button>
                                     <button type="submit" @click="listarContratos()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
@@ -336,6 +340,8 @@
                             <div class="row"><!-- boton de busqueda-->
                                 <div class="col-sm-3 text-info"><strong>Creditos Escriturados</strong></div>
                                 <div class="col-sm-9 text-right">
+                                    <button v-if="historial == 0" type="submit" @click="historial = 1,listarDepositos(), listarContratos(), listarDepCredit(), listarLiqCredit()" class="btn btn-warning"><i class="fa fa-exclamation-circle"></i> PENDIENTES</button>
+                                    <button v-if="historial == 1" type="submit" @click="historial = 0,listarDepositos(), listarContratos(), listarDepCredit(), listarLiqCredit()" class="btn btn-success"><i class="fa fa-check"></i> HISTORIAL</button>
                                     <button type="submit" @click="listarLiqCredit()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
@@ -473,6 +479,8 @@
                             <div class="row">
                                 <div class="col-sm-3 text-info"><strong>Deposito a credito</strong></div>
                                 <div class="col-sm-9 text-right">
+                                    <button v-if="historial == 0" type="submit" @click="historial = 1,listarDepositos(), listarContratos(), listarDepCredit(), listarLiqCredit()" class="btn btn-warning"><i class="fa fa-exclamation-circle"></i> PENDIENTES</button>
+                                    <button v-if="historial == 1" type="submit" @click="historial = 0,listarDepositos(), listarContratos(), listarDepCredit(), listarLiqCredit()" class="btn btn-success"><i class="fa fa-check"></i> HISTORIAL</button>
                                     <button type="submit" @click="listarDepCredit()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
@@ -649,6 +657,7 @@
                 generalId:0,
                 tipoFactura:'',
                 tab:1,
+                historial:0,
                 arrayFraccionamientos:[],
                 arrayEtapas:[],
                 arrayContratos:[],
@@ -788,7 +797,7 @@
                 
                 axios.get(
                     '/facturas/contratos/get?page='+page+'&criterio='+this.criterio+'&buscar='+this.buscar+
-                    '&b_etapa='+this.b_etapa+'&b_gen='+this.b_gen
+                    '&b_etapa='+this.b_etapa+'&b_gen='+this.b_gen+'&historial='+this.historial
                 ).then(
                     response => me.arrayContratos = response.data
                 ).catch(error => console.log(error))
@@ -799,7 +808,7 @@
                 
                 axios.get(
                     '/facturas/depositos/get?page='+page+'&criterio='+this.criterio+'&buscar='+this.buscar+
-                    '&b_etapa='+this.b_etapa+'&b_gen='+this.b_gen
+                    '&b_etapa='+this.b_etapa+'&b_gen='+this.b_gen+'&historial='+this.historial
                 ).then(
                     response => me.arrayDepositos = response.data
                 ).catch(error => console.log(error))
@@ -810,7 +819,7 @@
                 
                 axios.get(
                     '/facturas/liq/credito/get?page='+page+'&criterio='+this.criterio+'&buscar='+this.buscar+
-                    '&b_etapa='+this.b_etapa+'&b_gen='+this.b_gen
+                    '&b_etapa='+this.b_etapa+'&b_gen='+this.b_gen+'&historial='+this.historial
                 ).then(
                     response => me.arrayLiqCredit = response.data
                 ).catch(error => console.log(error))
@@ -821,7 +830,7 @@
                 
                 axios.get(
                     '/facturas/dep/credito/get?page='+page+'&criterio='+this.criterio+'&buscar='+this.buscar+
-                    '&b_etapa='+this.b_etapa+'&b_gen='+this.b_gen
+                    '&b_etapa='+this.b_etapa+'&b_gen='+this.b_gen+'&historial='+this.historial
                 ).then(
                     response => me.arrayDepCredit = response.data
                 ).catch(error => console.log(error))
