@@ -8,11 +8,12 @@ use Auth;
 
 class NotificationController extends Controller
 {
-    public function get(){
+    public function get(Request $request){
         // return Notification::all();
         $unreadNotifications = Auth::user()->unreadNotifications;
         $fechaActual = date('Y-m-d');
-
+        
+        if($request->op == 1)
         foreach($unreadNotifications as $notification){
             if($fechaActual != $notification->created_at->toDateString()){
                 $notification->markAsRead();
