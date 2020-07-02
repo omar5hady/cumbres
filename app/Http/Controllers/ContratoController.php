@@ -3006,6 +3006,7 @@ class ContratoController extends Controller
             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
             ->join('personal as v', 'clientes.vendedor_id', 'v.id')
             ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+            ->join('fraccionamientos', 'lotes.fraccionamiento_id', '=', 'fraccionamientos.id')
             ->select(
                 'creditos.id',
                 'creditos.prospecto_id',
@@ -3023,6 +3024,8 @@ class ContratoController extends Controller
                 'lotes.construccion',
                 'lotes.regimen_condom',
                 'lotes.emp_constructora',
+
+                'fraccionamientos.ciudad','fraccionamientos.estado',
 
                 'personal.nombre',
                 'personal.apellidos',
