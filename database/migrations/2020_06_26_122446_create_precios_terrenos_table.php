@@ -23,6 +23,8 @@ class CreatePreciosTerrenosTable extends Migration
 
             $table->double('precio_m2', 10, 2)->default(0);
 
+            $table->double('total_gastos', 10, 2)->default(0);
+
             $table->timestamps();
         });
     }

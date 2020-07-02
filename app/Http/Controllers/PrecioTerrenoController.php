@@ -47,6 +47,7 @@ class PrecioTerrenoController extends Controller
 
         $precio->etapa_id = $request->idEtapa;
         $precio->precio_m2 = $request->precio;
+        $precio->total_gastos = $request->tGastos;
 
         $precio->save();
 
@@ -58,6 +59,7 @@ class PrecioTerrenoController extends Controller
         $precio = Precios_terreno::findOrFail($request->idPrecio);
         
         $precio->precio_m2 = $request->precio;
+        $precio->total_gastos = $request->tGastos;
 
         $precio->save();
 
