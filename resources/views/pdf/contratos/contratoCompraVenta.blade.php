@@ -403,7 +403,7 @@ body {
         </div>
         <div class="table-row">
             <div colspan="2" class="table-cell3"><b>CLABE PARA TRANSFERENCIA:</div>
-            <div colspan="2" class="table-cell3"><b>0127000011417191</div>
+            <div colspan="2" class="table-cell3"><b>012700001141719181</div>
         </div>
         <div class="table-row">
             <div class="table-cell3"><b>RFC:</div>
