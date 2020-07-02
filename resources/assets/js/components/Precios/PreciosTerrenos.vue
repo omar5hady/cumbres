@@ -103,6 +103,7 @@
                                     <th>Opciones</th>
                                     <th>#</th>
                                     <th>Precio mts²</th>
+                                    <th>Total Gastos</th>
                                     <th>Fecha creacion</th>
                                     <th>Ultima act.</th>
                                 </tr>
@@ -115,6 +116,7 @@
                                     </td><td v-else></td>
                                     <td v-text="precio.id">#</td>
                                     <td v-text="precio.precio_m2">Precio mts²</td>
+                                    <td v-text="precio.total_gastos"></td>
                                     <td>
                                         <span v-if="precio.updated_at" v-text="this.moment(precio.created_at).locale('es').format('DD/MMM/YYYY H:mm:ss')"></span>
                                     </td>
@@ -146,6 +148,11 @@
                                 <label for="" class="col-sm-3">Costo m²</label>
                                 <input class="form-control col-sm-8" type="number" name="newPr" id="newPr" step="0.01" required>
                                 <input type="hidden" value="" id="idPrecio">
+                            </div>
+                            <br>
+                            <div class="row">
+                                <label for="" class="col-sm-3">Total de Gastos</label>
+                                <input class="form-control col-sm-8" type="number" name="toGst" id="toGst" step="0.01" required>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -198,6 +205,7 @@
             setForm(d){
                 document.getElementById('idPrecio').value = d.id;
                 document.getElementById('newPr').value = d.precio_m2;
+                document.getElementById('toGst').value = d.total_gastos;
                 this.action = "edit";
             },
             nuevoPrecio(e){
@@ -207,6 +215,7 @@
 
                 formData.append('idEtapa', this.generalId);
                 formData.append('precio', e.target.newPr.value);
+                formData.append('tGastos', e.target.toGst.value);
 
                 switch(this.action){
                     case 'add':{
@@ -226,9 +235,12 @@
                         axios.put('/precio/terrenos/edit', {
                             'idEtapa':this.generalId,
                             'precio': e.target.newPr.value,
+                            'tGastos': e.target.toGst.value,
                             'idPrecio': e.target.idPrecio.value
                         }).then(
                             response => {
+                                document.getElementById('addPrice').reset();
+                                $('#mAddPrecio').modal('hide');
                                 me.arrayPrecios = response.data;
                                 me.myAlerts.popAlert('Guardado correctamente');
                             }
