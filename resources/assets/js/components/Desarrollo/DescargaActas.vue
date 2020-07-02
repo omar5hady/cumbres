@@ -52,8 +52,12 @@
                         </div>
 
                         <div class="form-group row">
-                            <div class="col-md-6">
+                            <div class="col-md-8">
                                 <div class="input-group">
+                                    <select class="form-control" v-model="b_empresa" >
+                                        <option value="">Empresa constructora</option>
+                                        <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                    </select>
                                     <input type="date" v-model="b_fecha1" @keyup.enter="listarHistorialDep(1)" class="form-control" >
                                     <input type="date" v-model="b_fecha2" @keyup.enter="listarHistorialDep(1)" class="form-control" >
                                 </div>
@@ -66,7 +70,7 @@
                                     <button type="submit" @click="listarDescargas(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
 
                                     <a class="btn btn-success" v-bind:href="'/licencias/excelDescargas?busqueda=' + b_busqueda + '&proyecto=' + b_proyecto + 
-                                                '&etapa=' + b_etapa + '&manzana=' + b_manzana + '&lote=' + b_lote + '&fecha1=' + b_fecha1 + '&fecha2=' + b_fecha2" >
+                                                '&etapa=' + b_etapa + '&manzana=' + b_manzana + '&lote=' + b_lote + '&fecha1=' + b_fecha1 + '&fecha2=' + b_fecha2 + '&empresa=' + b_empresa" >
                                         <i class="icon-pencil"></i>&nbsp;Excel
                                     </a>
                                 </div>
@@ -172,6 +176,8 @@
                 b_fecha2 : '',
                 b_busqueda : 'licencias.fecha_licencia',
                 criterio : '',
+                b_empresa : '',
+                empresas : [],
             }
         },
         computed:{
@@ -207,7 +213,7 @@
             listarDescargas(page){
                 let me = this;
                 var url = '/licencias/indexDescargas?page=' + page + '&busqueda=' + me.b_busqueda + '&proyecto=' + me.b_proyecto + 
-                        '&etapa=' + me.b_etapa + '&manzana=' + me.b_manzana + '&lote=' + me.b_lote + '&fecha1=' + me.b_fecha1 + '&fecha2=' + me.b_fecha2;
+                        '&etapa=' + me.b_etapa + '&manzana=' + me.b_manzana + '&lote=' + me.b_lote + '&fecha1=' + me.b_fecha1 + '&fecha2=' + me.b_fecha2 + '&empresa=' + me.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLotes = respuesta.lotes.data;
@@ -226,6 +232,19 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayFraccionamientos = respuesta.fraccionamientos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            getEmpresa(){
+                let me = this;
+                me.empresas=[];
+                var url = '/lotes/empresa/select';
+                axios.get(url).then(function (response) {
+                    var respuesta = response;
+                    me.empresas = respuesta.data.empresas;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -307,6 +326,7 @@
         mounted() {
             this.listarDescargas(1);
             this.selectFraccionamientos();
+            this.getEmpresa();
         }
     }
 </script>

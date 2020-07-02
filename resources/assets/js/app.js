@@ -162,20 +162,33 @@ const app = new Vue({
         menu: 100,
         notifications: []
     },
-    created() {
-        let me = this;
-        axios.post('notification/get').then(function(response) {
-            // console.log(response.data);
-            me.notifications = response.data;
-        }).catch(function(error) {
-            console.log(error);
-        });
-
-        var userId = $('meta[name="userId"]').attr('content');
-
-        window.Echo.private('App.User.' + userId).listen(('PackageNotification'), (e) => {
-            me.notifications.unshift(notification);
-        });
-
-    }
+    
+    methods:{
+        callFunction: function () {
+            var v = this;
+            setInterval(function () {
+                v.created();
+            }, 30000);
+        },
+        created() {
+            let me = this;
+            axios.post('notification/get').then(function(response) {
+                // console.log(response.data);
+                me.notifications = response.data;
+            }).catch(function(error) {
+                console.log(error);
+            });
+    
+            var userId = $('meta[name="userId"]').attr('content');
+    
+            window.Echo.private('App.User.' + userId).listen(('PackageNotification'), (e) => {
+                me.notifications.unshift(notification);
+            });
+    
+        }
+    },
+    mounted () {
+        this.created();
+        this.callFunction();
+      }
 });

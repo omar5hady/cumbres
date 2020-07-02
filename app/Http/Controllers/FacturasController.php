@@ -45,6 +45,11 @@ class FacturasController extends Controller
                 'depositos.f_carga_factura'
         );
 
+        // if($request->historial == 1){
+        //     $facturas = $facturas->where('depositos.factura','!=',NULL)
+        //                         ->where('depositos.factura','!=','');
+        // }
+
         if($request->buscar != '' || $request->b_gen != ''){
             if($request->criterio == "lotes.fraccionamiento_id"){
 
@@ -61,9 +66,20 @@ class FacturasController extends Controller
                     $facturas = $facturas->where(DB::raw('CONCAT(nombre," ",apellidos)'), 'like', "%$request->b_gen%");
                 }else{$facturas = $facturas->where("$request->criterio", 'like', "%$request->b_gen%");}
             }
+            if($request->historial == 1){
+                $facturas = $facturas->where('depositos.factura','!=',NULL)
+                                ->where('depositos.factura','!=','');
+            }
         }else{
-            $facturas = $facturas->whereNull('depositos.factura');
+            if($request->historial == 0)
+                $facturas = $facturas->whereNull('depositos.factura');
+            else{
+                $facturas = $facturas->where('depositos.factura','!=',NULL)
+                                ->where('depositos.factura','!=','');
+            }
         }
+
+        
         
 
         $facturas = $facturas->where('pagos_contratos.tipo_pagare', '!=', 1)
@@ -148,8 +164,17 @@ class FacturasController extends Controller
                     $facturas = $facturas->where(DB::raw('CONCAT(nombre," ",apellidos)'), 'like', "%$request->b_gen%");
                 }else{$facturas = $facturas->where("$request->criterio", 'like', "%$request->b_gen%");}
             }
+            if($request->historial == 1){
+                $facturas = $facturas->where('contratos.e_factura','!=',NULL)
+                                            ->where('contratos.e_factura','!=','');
+            }
         }else{
-            $facturas = $facturas->where('contratos.status', '=', 3)->whereNull('contratos.e_factura');
+            if($request->historial == 0)
+                $facturas = $facturas->where('contratos.status', '=', 3)->whereNull('contratos.e_factura');
+            else{
+                $facturas = $facturas->where('contratos.status', '=', 3)->where('contratos.e_factura','!=',NULL)
+                                            ->where('contratos.e_factura','!=','');
+            }
         }
         
 
@@ -235,8 +260,15 @@ class FacturasController extends Controller
                     $facturas = $facturas->where(DB::raw('CONCAT(nombre," ",apellidos)'), 'like', "%$request->b_gen%");
                 }else{$facturas = $facturas->where("$request->criterio", 'like', "%$request->b_gen%");}
             }
+            if($request->historial == 1){
+                $facturas = $facturas->where('creditos.factura','!=',NULL)->where('creditos.factura','!=','');
+            }
         }else{
-            $facturas = $facturas->whereNull('creditos.factura');
+            if($request->historial == 0)
+                $facturas = $facturas->whereNull('creditos.factura');
+            else{
+                $facturas = $facturas->where('creditos.factura','!=',NULL)->where('creditos.factura','!=','');
+            }
         }
         
         //para que aparezca debe tener fecha de firma de escrituras != null en expediente
@@ -330,8 +362,15 @@ class FacturasController extends Controller
                     $facturas = $facturas->where(DB::raw('CONCAT(nombre," ",apellidos)'), 'like', "%$request->b_gen%");
                 }else{$facturas = $facturas->where("$request->criterio", 'like', "%$request->b_gen%");}
             }
+            if($request->historial == 1){
+                $facturas = $facturas->where('dep_creditos.factura','!=',NULL)->where('dep_creditos.factura','!=','');
+            }
         }else{
-            $facturas = $facturas->whereNull('dep_creditos.factura');
+            if($request->historial == 0)
+                $facturas = $facturas->whereNull('dep_creditos.factura');
+            else{
+                $facturas = $facturas->where('dep_creditos.factura','!=',NULL)->where('dep_creditos.factura','!=','');
+            }
         }
         
 

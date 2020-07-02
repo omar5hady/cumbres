@@ -1701,7 +1701,7 @@ class LicenciasController extends Controller
             ->join('etapas','lotes.etapa_id','=','etapas.id')
             ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
             ->select('licencias.id','licencias.fecha_licencia as fecha','licencias.fecha_acta','licencias.fecha_predial',
-                'licencias.num_licencia','licencias.num_acta', 'lotes.interior',
+                'licencias.num_licencia','licencias.num_acta', 'lotes.interior', 'lotes.emp_constructora',
                 'licencias.foto_lic as archivo','licencias.foto_acta','licencias.foto_predial','lotes.manzana','lotes.num_lote',
                 'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo', 'lotes.calle', 'lotes.numero',
                 'lotes.precio_base','lotes.obra_extra','lotes.ajuste','lotes.sobreprecio','lotes.excedente_terreno');
@@ -1936,6 +1936,10 @@ class LicenciasController extends Controller
                 break;
             }
         }
+
+        if($request->empresa != ''){
+            $lotes = $lotes->where('lotes.emp_constructora','=',$request->empresa);
+        }
         
         $lotes = $lotes->orderBy('fraccionamientos.nombre','asc')
                         ->orderBy('etapas.num_etapa','asc')
@@ -1974,7 +1978,7 @@ class LicenciasController extends Controller
             ->join('etapas','lotes.etapa_id','=','etapas.id')
             ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
             ->select('licencias.id','licencias.fecha_licencia as fecha','licencias.fecha_acta','licencias.fecha_predial',
-                'licencias.num_licencia','licencias.num_acta', 'lotes.interior',
+                'licencias.num_licencia','licencias.num_acta', 'lotes.interior', 'lotes.emp_constructora',
                 'licencias.foto_lic as archivo','licencias.foto_acta','licencias.foto_predial','lotes.manzana','lotes.num_lote',
                 'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo', 'lotes.calle', 'lotes.numero',
                 'lotes.precio_base','lotes.obra_extra','lotes.ajuste','lotes.sobreprecio','lotes.excedente_terreno');
@@ -2211,6 +2215,10 @@ class LicenciasController extends Controller
                 }  
                 break;
             }
+        }
+
+        if($request->empresa != ''){
+            $lotes = $lotes->where('lotes.emp_constructora','=',$request->empresa);
         }
         
         $lotes = $lotes->orderBy('fraccionamientos.nombre','asc')

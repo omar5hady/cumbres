@@ -66,9 +66,27 @@ export default {
                     console.log(error);
                 })
             },
+
+            created() {
+                let me = this;
+                axios.post('notification/get?op=1').then(function(response) {
+                    // console.log(response.data);
+                    me.arrayNotificaciones = response.data;
+                }).catch(function(error) {
+                    console.log(error);
+                });
+
+                var userId = $('meta[name="userId"]').attr('content');
+
+                window.Echo.private('App.User.' + userId).listen(('PackageNotification'), (e) => {
+                    me.notifications.unshift(notification);
+        });
+
+            }
     },
 
     mounted() {
+        this.created();
         this.listarNotificaciones();
     }
 

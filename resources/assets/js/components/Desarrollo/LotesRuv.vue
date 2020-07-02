@@ -40,6 +40,14 @@
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
                                     <input type="text" v-if="buscar!=''" v-model="b_manzana" @keyup.enter="listarLotes(1)" class="form-control" placeholder="Manzana a buscar">
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    <select class="form-control" v-model="b_empresa" >
+                                        <option value="">Empresa constructora</option>
+                                        <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                    </select>
                                     <button type="submit" @click="listarLotes(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
@@ -95,6 +103,14 @@
 
                     <div class="card-body" v-if="historial == 1">
                         <div class="form-group row">
+                            <div class="col-md-7">
+                                <div class="input-group">
+                                    <select class="form-control" v-model="b_empresa" >
+                                        <option value="">Empresa constructora</option>
+                                        <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                    </select>
+                                </div>
+                            </div>
                             <div class="col-md-7">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
@@ -266,7 +282,9 @@
                 b_manzana:'',
                 b_fecha:'',
                 b_fecha2:'',
-                paquete:''
+                paquete:'',
+                b_empresa:'',
+                empresas:[],
             }
         },
         computed:{
@@ -381,7 +399,7 @@
             listarLotes(page){
                 let me = this;
                 var url = '/ruv/indexLotes?page=' + page + '&buscar=' + me.buscar + '&b_etapa=' + me.b_etapa + '&b_manzana=' + me.b_manzana
-                                     + '&b_fecha=' + me.b_fecha + '&b_fecha2=' + me.b_fecha2;
+                                     + '&b_fecha=' + me.b_fecha + '&b_fecha2=' + me.b_fecha2 + '&empresa=' + me.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLotes = respuesta.lotes.data;
@@ -392,10 +410,24 @@
                 });
             },
 
+            getEmpresa(){
+                let me = this;
+                me.empresas=[];
+                var url = '/lotes/empresa/select';
+                axios.get(url).then(function (response) {
+                    var respuesta = response;
+                    me.empresas = respuesta.data.empresas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
             /**Metodo para mostrar los registros */
             listarHistorial(page){
                 let me = this;
-                var url = '/ruv/historialSolicitudes?page=' + page + '&buscar=' + me.buscar + '&b_etapa=' + me.b_etapa + '&b_manzana=' + me.b_manzana + '&fecha=' + me.b_fecha + '&fecha2=' + me.b_fecha2;
+                var url = '/ruv/historialSolicitudes?page=' + page + '&buscar=' + me.buscar + '&b_etapa=' + me.b_etapa + 
+                    '&b_manzana=' + me.b_manzana + '&fecha=' + me.b_fecha + '&fecha2=' + me.b_fecha2 + '&empresa=' + me.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayHistorial = respuesta.lotes.data;
@@ -516,6 +548,7 @@
             this.listarLotes(1);
             this.listarHistorial(1);
             this.selectFraccionamientos();
+            this.getEmpresa();
         }
     }
 </script>
