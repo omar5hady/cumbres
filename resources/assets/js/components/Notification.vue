@@ -89,7 +89,13 @@ export default {
 </script>
 <style>
 .app-header.navbar .dropdown-item2 {
-    min-width: 310px;
+    min-width: 350px;
 }
+
+@media (max-width:400px){
+      .app-header.navbar .dropdown-item2 {
+            min-width: 180px;
+      }
+    }
 </style>
 
