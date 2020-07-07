@@ -15,6 +15,10 @@ use Carbon\Carbon;
 use App\Pago_contrato;
 use App\Historial_descartado;
 use App\Modelo;
+use App\Solic_detalle;
+use App\Contratista;
+
+use App\Cat_detalle_subconcepto;
 
 use App\Cliente;
 use App\Vendedor;
@@ -2401,6 +2405,86 @@ class ReportesController extends Controller
             'modelos'=>$modelos, 
             'diferencia'=>$diff_in_months,
             ];
+
+    }
+
+    public function reporteDetalles(Request $request){
+        $contratistas = Contratista::select('id', 'nombre')->orderBy('nombre','asc')->get();
+
+
+        $solicitudes = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
+                                    ->join('descripcion_detalles as det','solic_detalles.id','=','det.solicitud_id')
+                                    ->join('cat_detalles as d','det.detalle_id','=','d.id')
+                                    ->join('cat_detalles_subconceptos as sub','d.id_sub','=','sub.id')
+                                    ->join('cat_detalles_generales as gral','sub.id_gral','=','gral.id')
+                                    ->join('contratistas as c','solic_detalles.contratista_id','=','c.id')
+                                    ->join('creditos as cr','contratos.id','=','cr.id')
+                                    ->join('lotes','cr.lote_id','=','lotes.id')
+                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                    ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id');
+
+
+        $resumen = $solicitudes->select('solic_detalles.cliente','solic_detalles.status','lotes.num_lote',
+                                            'fraccionamientos.nombre as proyecto','det.id', 'solic_detalles.created_at',
+                                            'etapas.num_etapa','lotes.manzana','d.detalle','sub.subconcepto','gral.general',
+                                            DB::raw("CONCAT(gral.general,'/ ',sub.subconcepto) AS detalles"),
+                                            'c.nombre','solic_detalles.contratista_id');
+
+                if($request->contratista != ''){
+                    $resumen = $resumen->where('c.id','=',$request->contratista);
+                }
+
+                if($request->proyecto != ''){
+                    $resumen = $resumen->where('fraccionamientos.id','=',$request->proyecto);
+                    if($request->etapa != '')
+                        $resumen = $resumen->where('etapas.id','=',$request->etapa);
+                }
+                                    
+        $resumen = $resumen->orderBy('solic_detalles.status','desc')
+                                    ->paginate(25);
+
+        $detalles = Cat_detalle_subconcepto::join('cat_detalles_generales as gral','cat_detalles_subconceptos.id_gral','=','gral.id')
+                                ->select('cat_detalles_subconceptos.subconcepto','gral.general','cat_detalles_subconceptos.id',
+                                        DB::raw("CONCAT(gral.general,'/ ',cat_detalles_subconceptos.subconcepto) AS detalles"))
+                                ->orderBy('gral.general','desc')
+                                ->orderBy('cat_detalles_subconceptos.subconcepto','desc')
+                                ->get();
+
+
+        if(sizeOf($resumen))
+            foreach($contratistas as $det => $contratista){
+                $contratista->cont=0;
+                // $contratista->detalle=[];
+                foreach($resumen as $index => $detalle){
+                    if($detalle->contratista_id == $contratista->id){
+                        $contratista->cont++;
+                    }
+                }
+            }
+
+        if(sizeOf($resumen))
+            foreach($detalles as $det => $detalle){
+                $detalle->cont=0;
+                // $contratista->detalle=[];
+                foreach($resumen as $index => $res){
+                    if($res->detalles == $detalle->detalles){
+                        $detalle->cont++;
+                    }
+                }
+            }
+            
+        
+        return ['contratistas'=>$contratistas,
+                'resumen'=>$resumen,
+                'pagination' => [
+                    'total'         => $resumen->total(),
+                    'current_page'  => $resumen->currentPage(),
+                    'per_page'      => $resumen->perPage(),
+                    'last_page'     => $resumen->lastPage(),
+                    'from'          => $resumen->firstItem(),
+                    'to'            => $resumen->lastItem(),
+                ],
+                'detalles'=>$detalles];
 
     }
     

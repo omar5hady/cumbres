@@ -452,6 +452,10 @@
             <reporte-modelos></reporte-modelos>
         </template>
 
+        <template v-if="menu==246">
+            <reporte-detalles></reporte-detalles>
+        </template>
+
         
 
         

@@ -205,6 +205,17 @@ class AvaluoController extends Controller
                     break;
 
                 }
+
+                case 'cliente':{
+                    $avaluos = $query
+                    ->where('inst_seleccionadas.elegido','=','1')
+                    ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
+                    ->where('avaluos.fecha_recibido','=',NULL)
+                    ->where('contratos.status','!=',2)
+                    ->where('contratos.status','!=',0);
+                    break;
+
+                }
             }
         }
 
@@ -329,6 +340,14 @@ class AvaluoController extends Controller
                     ->where('avaluos.fecha_recibido','!=',NULL);
                     break;
                 }
+
+                case 'cliente':{
+                    $avaluos = $query
+                    ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
+                    ->where('inst_seleccionadas.elegido','=','1')
+                    ->where('avaluos.fecha_recibido','!=',NULL);
+                    break;
+                }
             }
         }
 
@@ -372,8 +391,8 @@ class AvaluoController extends Controller
 
         if($buscar == ''){
             $avaluos = $query
-                    ->where('inst_seleccionadas.elegido','=','1')
-                    ->where('avaluos.fecha_recibido','!=',NULL);
+                    ->where('inst_seleccionadas.elegido','=','1');
+                    
         }
         else{
             switch($criterio){
@@ -381,8 +400,8 @@ class AvaluoController extends Controller
                     if($b_etapa == '' && $b_manzana =='' && $b_lote == ''){
                         $avaluos = $query
                         ->where('inst_seleccionadas.elegido','=','1')
-                        ->where('lotes.fraccionamiento_id','=',$buscar)
-                        ->where('avaluos.fecha_recibido','!=',NULL);
+                        ->where('lotes.fraccionamiento_id','=',$buscar);
+                        
                     }
                     elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
                         $avaluos = $query
@@ -429,6 +448,23 @@ class AvaluoController extends Controller
                 }
                 case 'licencias.visita_avaluo':{
                     $avaluos = $query
+                    ->where($criterio,'=',$buscar)
+                    ->where('inst_seleccionadas.elegido','=','1');
+                    
+                    break;
+                }
+
+                case 'contratos.id':{
+                    $avaluos = $query
+                    ->where($criterio,'=',$buscar)
+                    ->where('inst_seleccionadas.elegido','=','1');
+                    
+                    break;
+                }
+
+                case 'cliente':{
+                    $avaluos = $query
+                    ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
                     ->where('inst_seleccionadas.elegido','=','1')
                     ->where('avaluos.fecha_recibido','!=',NULL);
                     break;
@@ -436,7 +472,7 @@ class AvaluoController extends Controller
             }
         }
 
-        $avaluos = $avaluos->orderBy('avaluos.fecha_recibido','asc')
+        $avaluos = $avaluos->where('avaluos.fecha_recibido','!=',NULL)->orderBy('avaluos.fecha_recibido','asc')
                     ->get();
         
         return Excel::create('Avaluos', function($excel) use ($avaluos){

@@ -88,14 +88,36 @@ export default {
 }
 </script>
 <style>
-.app-header.navbar .dropdown-item2 {
-    min-width: 350px;
-}
 
-@media (max-width:400px){
-      .app-header.navbar .dropdown-item2 {
-            min-width: 250px;
-      }
+    .app-header.navbar .dropdown-item2 {
+        min-width: 350px;
     }
+
+     @media screen and (max-width:400px){
+        .dropdown-menu {
+                width: 280px;
+        }
+        .app-header.navbar .dropdown-item2 {
+            min-width: 250px;
+        }
+    }
+    
+    @media screen and (max-width:325px){
+        .dropdown-menu {
+                width: 220px;
+        }
+        .app-header.navbar .dropdown-item2 {
+            min-width: 200px;
+        }
+    }
+
+   
+
+    
+
+
+
+
+    
 </style>
 
