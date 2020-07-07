@@ -1255,7 +1255,7 @@
                         <!-- Botones del modal -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="enviarIngreso()">Ingresar</button>
+                            <button type="button" v-if="tipoAccion==2 && valor_escrituras >0" class="btn btn-primary" @click="enviarIngreso()">Ingresar</button>
                             <button type="button" v-if="tipoAccion==4" class="btn btn-primary" @click="inscribirInfonavit()">Inscribir</button>
                             <button type="button" v-if="tipoAccion==5" class="btn btn-primary" @click="setFechaConcluido()">Guardar</button>
                             <a v-bind:href="'/expediente/solicitudPDF/' + id" v-if="tipoAccion==3" type="button" target="_blank" class="btn btn-primary">Imprimir</a>

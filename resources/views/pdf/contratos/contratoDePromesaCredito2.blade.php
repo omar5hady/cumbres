@@ -16,7 +16,7 @@ body{
 
 @page{
     margin: 70px;
-    margin-bottom :140px;
+    margin-bottom :120px;
     margin-right: 90px;
     margin-left: 90px;
 }
@@ -64,7 +64,7 @@ b) Que su representante, el Ing. Alejandro Francisco Pérez Espinosa,
 <p>
 c) Que es única y legítimo propietario del Lote de terreno número <strong>{{$contratoPromesa[0]->num_lote}}</strong>, 
     de la manzana <strong>{{mb_strtoupper($contratoPromesa[0]->manzana)}}</strong> del Fraccionamiento <strong>{{mb_strtoupper($contratoPromesa[0]->proyecto)}}</strong>, 
-   en esta ciudad de SAN LUIS POTOSÍ, SAN LUIS POTOSÍ, cuya superficie es de <strong>{{$contratoPromesa[0]->superficie}} M2</strong>, mismo que en lo sucesivo y 
+   en esta ciudad de {{mb_strtoupper($contratoPromesa[0]->ciudad)}}, {{mb_strtoupper($contratoPromesa[0]->estado)}}, cuya superficie es de <strong>{{$contratoPromesa[0]->superficie}} M2</strong>, mismo que en lo sucesivo y 
    para todos los efectos del presente contrato se le denominará como <strong>EL LOTE</strong>. 
 </p>
 <br>
@@ -306,6 +306,16 @@ B). La superficie de construcción que es de <strong>{{$contratoPromesa[0]->cons
     en los incisos a) y b) de la cláusula tercera; 2).- No entregar en forma oportuna la 
     documentación a que se compromete en términos de la cláusula quinta. Esta última 
     causal podrá ejercerse aún antes de los 45 días señalados para el otorgamiento y entrega del crédito.
+</p>
+
+<p>
+    En caso de rescisión del presente contrato, por causa imputable a <strong>EL PROMITENTE COMPRADOR, 
+        LOS PROMITENTES VENDEDORES</strong> deberán reintegrar 
+    el importe recibido hasta la fecha por parte de <strong>EL PROMITENTE COMPRADOR</strong>, 
+    descontándose la cantidad de $ 25,000.00 (Veinticinco Mil Pesos 00/100 Moneda Nacional), 
+    como pena convencional por los daños y perjuicios ocasionados. El importe se reintegrara hasta 
+    que <strong>LOS PROMITENTES VENDEDORES</strong> recuperen la inversión realizada 
+    en la construcción. 
 </p>
 
 <br>

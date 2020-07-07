@@ -673,11 +673,11 @@
                                             <div class="col-md-6" v-if="tipo_economia!=0">
                                                 <div class="form-group">
                                                     <label for="">Empresa <span style="color:red;" v-show="empresa==0">(*)</span></label>
-                                                        <select v-if="listado==3" class="form-control" v-model="empresa" @click="getDatosEmpresa(empresa,0)">
+                                                        <select v-if="listado==3 || listado==4 && btn_actualizar==1" class="form-control" v-model="empresa" @click="getDatosEmpresa(empresa,0)">
                                                             <option value="">Seleccione</option>
-                                                            <option v-for="empresas in arryaEmpresas" :key="empresas.nombre" :value="empresas.nombre" v-text="empresas.nombre"></option>    
+                                                            <option v-for="empresas in arryaEmpresas" :key="empresas.id" :value="empresas.nombre" v-text="empresas.nombre"></option>    
                                                         </select>
-                                                        <input type="text" v-if="listado==4" class="form-control" :readonly="listado==4 && btn_actualizar==0" v-model="empresa">
+                                                        <input type="text" v-if="listado==4 && btn_actualizar==0" class="form-control" :readonly="listado==4 && btn_actualizar==0" v-model="empresa">
                                                 </div>
                                             </div>
 
@@ -975,11 +975,11 @@
                                             <div class="col-md-6" v-if="coacreditado==true">
                                                 <div class="form-group">
                                                     <label for="">Empresa <span style="color:red;" v-show="empresa_coa==0">(*)</span></label>
-                                                        <select v-if="listado==3" class="form-control" v-model="empresa_coa" @click="getDatosEmpresa(empresa_coa,1)">
+                                                        <select v-if="listado==3 || listado==4 && btn_actualizar==1" class="form-control" v-model="empresa_coa" @click="getDatosEmpresa(empresa_coa,1)">
                                                                 <option value="">Seleccione</option>
-                                                                <option v-for="empresas in arryaEmpresas" :key="empresas.nombre" :value="empresas.nombre" v-text="empresas.nombre"></option>    
+                                                                <option v-for="empresas in arryaEmpresas" :key="empresas.id" :value="empresas.nombre" v-text="empresas.nombre"></option>    
                                                         </select>
-                                                        <input type="text" v-if="listado==4" class="form-control" :readonly="listado==4 && btn_actualizar==0" v-model="empresa_coa">
+                                                        <input type="text" v-if="listado==4 && btn_actualizar==0" class="form-control" :readonly="listado==4 && btn_actualizar==0" v-model="empresa_coa">
                                                 </div>
                                             </div>
 
@@ -3083,6 +3083,7 @@
            
                
                 this.listarPagos(this.id);
+                this.selectEmpresas();
                 this.selectPaquetes(this.etapa, this.proyecto);
                 this.selectEstados();
                 this.listado=4;
