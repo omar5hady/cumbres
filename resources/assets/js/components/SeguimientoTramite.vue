@@ -411,18 +411,19 @@
 
                                                 <td class="td2" v-if="band==0" @dblclick="band=1">
                                                     
-                                                    <span v-if = "preautorizados.vigencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: ' 
+                                                    <span v-if="!preautorizados.fecha_vigencia"></span>
+                                                    <span v-else-if = "preautorizados.vigencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: ' 
                                                     + this.moment(preautorizados.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
 
-                                                    <span v-if = "preautorizados.vigencia < 0 && preautorizados.vigencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: ' 
+                                                    <span v-else-if = "preautorizados.vigencia <= 0 && preautorizados.vigencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: ' 
                                                     + this.moment(preautorizados.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
 
-                                                    <span v-if = "preautorizados.vigencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: ' 
+                                                    <span v-else-if = "preautorizados.vigencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: ' 
                                                     + this.moment(preautorizados.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
                                                     
                                                 </td>
                                                 <td class="td2" v-if="band==1">
-                                                    <input type="date"  @keyup.esc="band=0" @keyup.enter="actualizarVigencia(preautorizados.folio,$event.target.value)" :id="preautorizados.folio" :value="preautorizados.fecha_vigencia" class="form-control Fields" > 
+                                                    <input type="date"  @keyup.esc="band=0" v-on:change="actualizarVigencia(preautorizados.folio,$event.target.value)" :id="preautorizados.folio" :value="preautorizados.fecha_vigencia" class="form-control Fields" > 
                                                 </td>
                                                 
                                                 <td class="td2" v-text="'$'+formatNumber(preautorizados.precio_venta)"></td>
@@ -431,7 +432,7 @@
                                                 <td class="td2" v-text="this.moment(preautorizados.ultimo_pagare).locale('es').format('DD/MMM/YYYY')"></td>
                                                 <td class="td2" v-text="'$'+formatNumber(preautorizados.saldo)"></td>
                                                
-                                               <template v-if="preautorizados.fecha_infonavit">
+                                                <template v-if="preautorizados.fecha_infonavit">
                                                     <td v-if="preautorizados.fecha_infonavit!='0000-01-01'" class="td2" v-text="this.moment(preautorizados.fecha_infonavit).locale('es').format('DD/MMM/YYYY')"></td>
                                                     <td v-if="preautorizados.fecha_infonavit=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
                                                 </template>
@@ -634,19 +635,19 @@
                                                 <td class="td2" v-text="'$'+formatNumber(liquidacion.credito_solic)"></td>
 
                                                 <td class="td2" v-if="band==0" @dblclick="band=1">
-                                                    
-                                                    <span v-if = "liquidacion.vigencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: ' 
+                                                    <span v-if="!liquidacion.fecha_vigencia"></span>
+                                                    <span v-else-if = "liquidacion.vigencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: ' 
                                                     + this.moment(liquidacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
 
-                                                    <span v-if = "liquidacion.vigencia < 0 && liquidacion.vigencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: ' 
+                                                    <span v-else-if = "liquidacion.vigencia <= 0 && liquidacion.vigencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: ' 
                                                     + this.moment(liquidacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
 
-                                                    <span v-if = "liquidacion.vigencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: ' 
+                                                    <span v-else-if = "liquidacion.vigencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: ' 
                                                     + this.moment(liquidacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
                                                     
                                                 </td>
                                                 <td class="td2" v-if="band==1">
-                                                    <input type="date" @keyup.esc="band=0" @keyup.enter="actualizarVigencia(liquidacion.folio,$event.target.value)" :id="liquidacion.folio" :value="liquidacion.fecha_vigencia" class="form-control Fields" > 
+                                                    <input type="date" @keyup.esc="band=0" v-on:change="actualizarVigencia(liquidacion.folio,$event.target.value)" :id="liquidacion.folio" :value="liquidacion.fecha_vigencia" class="form-control Fields" > 
                                                 </td>
                                                 
                                                 <td class="td2" v-text="'$'+formatNumber(liquidacion.precio_venta)"></td>
@@ -856,18 +857,19 @@
                                                 
                                                 <td class="td2" v-if="band==0" @dblclick="band=1">
                                                     
-                                                    <span v-if = "programacion.vigencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: ' 
+                                                    <span v-if="!programacion.fecha_vigencia"></span>
+                                                    <span v-else-if = "programacion.vigencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: ' 
                                                     + this.moment(programacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
 
-                                                    <span v-if = "programacion.vigencia < 0 && programacion.vigencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: ' 
+                                                    <span v-else-if = "programacion.vigencia <= 0 && programacion.vigencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: ' 
                                                     + this.moment(programacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
 
-                                                    <span v-if = "programacion.vigencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: ' 
+                                                    <span v-else-if = "programacion.vigencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: ' 
                                                     + this.moment(programacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
                                                     
                                                 </td>
                                                 <td class="td2" v-if="band==1">
-                                                    <input type="date" @keyup.esc="band=0" @keyup.enter="actualizarVigencia(programacion.folio,$event.target.value)" :id="programacion.folio" :value="programacion.fecha_vigencia" class="form-control Fields" > 
+                                                    <input type="date" @keyup.esc="band=0" v-on:change="actualizarVigencia(programacion.folio,$event.target.value)" :id="programacion.folio" :value="programacion.fecha_vigencia" class="form-control Fields" > 
                                                 </td>
 
                                                 <td class="td2" v-text="'$'+formatNumber(programacion.precio_venta)"></td>
@@ -1079,19 +1081,19 @@
                                                 <td class="td2" v-text="'$'+formatNumber(programacion.credito_solic)"></td>
                                                 
                                                 <td class="td2" v-if="band==0" @dblclick="band=1">
-                                                    
-                                                    <span v-if = "programacion.vigencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: ' 
+                                                    <span v-if="!programacion.fecha_vigencia"></span>
+                                                    <span v-else-if = "programacion.vigencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: ' 
                                                     + this.moment(programacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
 
-                                                    <span v-if = "programacion.vigencia < 0 && programacion.vigencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: ' 
+                                                    <span v-else-if = "programacion.vigencia <= 0 && programacion.vigencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: ' 
                                                     + this.moment(programacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
 
-                                                    <span v-if = "programacion.vigencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: ' 
+                                                    <span v-else-if = "programacion.vigencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: ' 
                                                     + this.moment(programacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
                                                     
                                                 </td>
                                                 <td class="td2" v-if="band==1">
-                                                    <input type="date" @keyup.esc="band=0" @keyup.enter="actualizarVigencia(programacion.folio,$event.target.value)" :id="programacion.folio" :value="programacion.fecha_vigencia" class="form-control Fields" > 
+                                                    <input type="date" @keyup.esc="band=0" v-on:change="actualizarVigencia(programacion.folio,$event.target.value)" :id="programacion.folio" :value="programacion.fecha_vigencia" class="form-control Fields" > 
                                                 </td>
 
                                                 <td class="td2" v-text="'$'+formatNumber(programacion.precio_venta)"></td>

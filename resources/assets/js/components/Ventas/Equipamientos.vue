@@ -1077,7 +1077,7 @@
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
                 cancelButtonText: 'Cancelar',
-                confirmButtonText: 'Si, eliminar!'
+                confirmButtonText: 'Si, solicitar!'
                 }).then((result) => {
                 if (result.value) {
                     let me = this;
