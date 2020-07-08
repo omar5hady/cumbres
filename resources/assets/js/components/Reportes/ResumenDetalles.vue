@@ -76,11 +76,11 @@
                             </div>
                         </div>
                         <div class="form-group row" v-if="mostrar == 1">
-                            <!-- <div class="col-md-3">
-                                <a class="btn btn-success" v-bind:href="'/estadisticas/res_proyecto/excel?proyecto='+ b_proyecto + '&etapa='+ b_etapa">
+                            <div class="col-md-3">
+                                <a class="btn btn-success" v-bind:href="'/reportes/reporteDetallesExcel?proyecto='+ b_proyecto + '&etapa='+ b_etapa + '&contratista='+ b_contratista">
                                     <i class="fa fa-file-text"></i>&nbsp; Descargar excel
                                 </a>
-                            </div> -->
+                            </div>
                         </div>
                         <div class="table-responsive" v-if="mostrar == 1">
                         <table class="table2 table-bordered table-striped table-sm">

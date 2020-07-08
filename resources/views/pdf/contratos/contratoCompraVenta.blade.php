@@ -306,12 +306,14 @@ body {
 
 <div style="position: static; margin-top: -2px;">          
         <div class="table" style="color:black; margin-top: -1px;">
+            @if(count($pagos) > 0)
                 <div class="table-row">
-                @for($i=0; $i < count($pagos); $i++)
-                    <div class="table-cell">{{$pagos[$i]->fecha_pago}} PAGO NO.{{$pagos[$i]->num_pago + 1}}: <u>${{$pagos[$i]->monto_pago}}</u></div>
-                @endfor
-                    
+                    @for($i=0; $i < count($pagos); $i++)
+                        <div class="table-cell">{{$pagos[$i]->fecha_pago}} PAGO NO.{{$pagos[$i]->num_pago + 1}}: <u>${{$pagos[$i]->monto_pago}}</u></div>
+                    @endfor
+                        
                 </div>
+            @endif
                 <div class="table-row">
                     <div colspan="3" class="table-cell">ASESOR DE VENTAS: {{mb_strtoupper($contratos[0]->vendedor_nombre)}} {{mb_strtoupper($contratos[0]->vendedor_apellidos)}} ______________________</div>
                    

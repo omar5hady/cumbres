@@ -364,6 +364,9 @@
                                                     <li class="nav-item">
                                                         <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_vent_modelos" type="checkbox" value="1"/> Reporte por modelo</a>
                                                     </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_detalles_post" type="checkbox" value="1"/> Reporte de detalles</a>
+                                                    </li>
                                                     
                                                 </ul>
                                     </div>
@@ -868,6 +871,7 @@
                     rep_ini_term_ventas:0,
                     rep_recursos_propios:0,
                     rep_vent_modelos:0,
+                    rep_detalles_post:0,
 
                 pagination : {
                     'total' : 0,         
@@ -1083,6 +1087,7 @@
                 this.rep_ini_term_ventas = 0;
                 this.rep_recursos_propios = 0;
                 this.rep_vent_modelos = 0;
+                this.rep_detalles_post = 0;
             },
 
             selectPersonas(){
@@ -1213,6 +1218,7 @@
                     me.rep_ini_term_ventas = usuarios[0].rep_ini_term_ventas;
                     me.rep_recursos_propios = usuarios[0].rep_recursos_propios;
                     me.rep_vent_modelos = usuarios[0].rep_vent_modelos;
+                    me.rep_detalles_post = usuarios[0].rep_detalles_post;
 
                     me.rol_id = usuarios[0].rol_id;
 
@@ -1510,6 +1516,7 @@
                     'rep_ini_term_ventas':this.rep_ini_term_ventas,
                     'rep_recursos_propios':this.rep_recursos_propios,
                     'rep_vent_modelos':this.rep_vent_modelos,
+                    'rep_detalles_post':this.rep_detalles_post
 
                 }).then(function (response){
                     me.listarPersonal(1,'','nombre');
