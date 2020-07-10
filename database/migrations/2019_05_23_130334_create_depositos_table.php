@@ -26,10 +26,17 @@ class CreateDepositosTable extends Migration
             $table->string('concepto',80)->nullable();
             $table->date('fecha_pago')->nullable();
 
+            //factura de deposito
             $table->string('factura')->nullable();
             $table->string('folio_factura',30)->nullable();
             $table->double('monto', 8,2)->nullable()->default(0);
             $table->date('f_carga_factura')->nullable();
+
+            //factura de terreno
+            $table->string('factura_terreno')->nullable();
+            $table->string('folio_factura_terreno',30)->nullable();
+            $table->double('monto_terreno', 8,2)->nullable()->default(0);
+            $table->date('f_carga_factura_terreno')->nullable();
 
             $table->timestamps();
 

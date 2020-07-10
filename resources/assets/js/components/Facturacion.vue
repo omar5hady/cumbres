@@ -31,7 +31,12 @@
                         <!-- Facturas de Depositos -->
                         <div class="container" v-if="tab == 1">
                             <div class="row"><!-- campos de busqueda-->
-                                <select class="form-control col-md-3" v-model="criterio">
+                                <select class="form-control col-md-2" v-model="b_empresa" >
+                                    <option value="">Empresa constructora</option>
+                                    <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                </select>
+                                
+                                <select class="form-control col-md-2" v-model="criterio">
                                     <option value="lotes.fraccionamiento_id">Proyecto</option>
                                     <option value="nombre">Cliente</option>
                                     <option value="depositos.folio_factura">Folio Factura</option>
@@ -40,16 +45,16 @@
                                 </select>
 
                                 <template v-if="criterio=='lotes.fraccionamiento_id'">
-                                    <select class="form-control col-md-3" v-model="buscar" @click="selectEtapa(buscar)">
+                                    <select class="form-control col-md-2" v-model="buscar" @click="selectEtapa(buscar)">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
-                                    <select class="form-control col-md-3" v-model="b_etapa">
+                                    <select class="form-control col-md-2" v-model="b_etapa">
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.num_etapa" v-text="etapas.num_etapa"></option>
                                     </select>
                                 </template>
-                                <input type="text" v-on:keyup.enter="listarDepositos()" v-model="b_gen" class="form-control col-sm-3" placeholder="Buscar">
+                                <input type="text" v-on:keyup.enter="listarDepositos()" v-model="b_gen" class="form-control col-md-2" placeholder="Buscar">
                             </div>
                             <div class="row"><!-- boton de busqueda-->
                                 <div class="col-sm-3 text-info"><strong>Depositos de pagares</strong></div>
@@ -64,6 +69,12 @@
                                 <table class="table-responsive table2 table-bordered table-striped table-sm">
                                     <thead>
                                         <tr>
+                                            <th class="text-center" colspan="12">Datos de deposito</th>
+                                            <th class="text-center" colspan="">Factura</th>
+                                            <th class="text-center" colspan="3">Deposito</th>
+                                            <th class="text-center" colspan="3">Lote</th>
+                                        </tr>
+                                        <tr>
                                             <th>Folio</th>
                                             <th>Cliente</th>
                                             <th>RFC</th>
@@ -77,6 +88,9 @@
                                             <th>F. Deposito</th>
                                             <th>Solicitud de contrato</th>
                                             <th>Factura</th>
+                                            <th>Folio Factura</th>
+                                            <th>Valor</th>
+                                            <th>F. de carga</th>
                                             <th>Folio Factura</th>
                                             <th>Valor</th>
                                             <th>F. de carga</th>
@@ -113,13 +127,21 @@
                                                         data-toggle="modal" data-target="#modAdvFilesUp" @click="setForm(deposito, 'deposito')">
                                                         <i class="fa fa-cloud-upload"></i> Subir archivo
                                                     </a>
-                                                    <a v-if="deposito.factura" :href="'/facturas/depositos/download/'+deposito.factura"  target="_blank" class="dropdown-item btn text-info">Descargar</a>
+                                                    <a v-if="deposito.factura" :href="'/facturas/depositos/download/'+deposito.factura" class="dropdown-item btn text-info">Descargar Factura de Deposito</a>
+                                                    <a v-if="deposito.factura_terreno" :href="'/facturas/terreno/download/'+deposito.factura_terreno" class="dropdown-item btn text-info">Descargar Factura de Terreno</a>
                                                 </div>
                                             </td>
                                             <td v-text="deposito.folio_factura">folio</td>
                                             <td v-text="'$'+deposito.monto.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">monto</td>
                                             <td v-if="deposito.f_carga_factura" v-text="this.moment(deposito.f_carga_factura).locale('es').format('DD/MMM/YYYY')">F. de carga</td>
                                             <td v-else></td>
+                                            <template v-if="deposito.emp_constructora != 'Grupo Constructor Cumbres'">
+                                                <td v-text="deposito.folio_factura_terreno">folio</td>
+                                                <td v-text="'$'+deposito.monto_terreno.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">monto</td>
+                                                <td v-if="deposito.f_carga_factura_terreno" v-text="this.moment(deposito.f_carga_factura_terreno).locale('es').format('DD/MMM/YYYY')">F. de carga</td>
+                                                <td v-else></td>
+                                            </template>
+                                            <td v-else colspan="3"></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -175,10 +197,15 @@
                             </div>
                         </div>
 
-                        <!-- Facturas de contratos -->
+                        <!-- Creditos Directos -->
                         <div class="container" v-else-if="tab == 2">
                             <div class="row">
-                                <select class="form-control col-md-3" v-model="criterio">
+                                <select class="form-control col-md-2" v-model="b_empresa" >
+                                    <option value="">Empresa constructora</option>
+                                    <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                </select>
+
+                                <select class="form-control col-md-2" v-model="criterio">
                                     <option value="lotes.fraccionamiento_id">Proyecto</option>
                                     <option value="nombre">Cliente</option>
                                     <option value="contratos.e_folio_factura">Folio Factura</option>
@@ -186,16 +213,16 @@
                                 </select>
 
                                 <template v-if="criterio=='lotes.fraccionamiento_id'">
-                                    <select class="form-control col-md-3" v-model="buscar" @click="selectEtapa(buscar)">
+                                    <select class="form-control col-md-2" v-model="buscar" @click="selectEtapa(buscar)">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
-                                    <select class="form-control col-md-3" v-model="b_etapa">
+                                    <select class="form-control col-md-2" v-model="b_etapa">
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.num_etapa" v-text="etapas.num_etapa"></option>
                                     </select>
                                 </template>
-                                <input type="text" v-on:keyup.enter="listarContratos()" v-model="b_gen" class="form-control col-sm-3" placeholder="Buscar">
+                                <input type="text" v-on:keyup.enter="listarContratos()" v-model="b_gen" class="form-control col-md-2" placeholder="Buscar">
                             </div>
                             <div class="row">
                                 <div class="col-sm-3 text-info"><strong>Creditos Directos</strong></div>
@@ -221,7 +248,7 @@
                                             <th>Solicitud de contrato</th>
                                             <th>Factura</th>
                                             <th>Folio Factura</th>
-                                            <th>Valor</th>
+                                            <th>Valor a escriturar</th>
                                             <th>F. de carga</th>
                                         </tr>
                                     </thead>
@@ -318,7 +345,12 @@
                         <!-- Escritura -->
                         <div class="container" v-else-if="tab == 3">
                             <div class="row"><!-- campos de busqueda-->
-                                <select class="form-control col-md-3" v-model="criterio">
+                                <select class="form-control col-md-2" v-model="b_empresa" >
+                                    <option value="">Empresa constructora</option>
+                                    <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                </select>
+                            
+                                <select class="form-control col-md-2" v-model="criterio">
                                     <option value="lotes.fraccionamiento_id">Proyecto</option>
                                     <option value="nombre">Cliente</option>
                                     <option value="creditos.folio_factura">Folio Factura</option>
@@ -326,16 +358,16 @@
                                 </select>
 
                                 <template v-if="criterio=='lotes.fraccionamiento_id'">
-                                    <select class="form-control col-md-3" v-model="buscar" @click="selectEtapa(buscar)">
+                                    <select class="form-control col-md-2" v-model="buscar" @click="selectEtapa(buscar)">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
-                                    <select class="form-control col-md-3" v-model="b_etapa">
+                                    <select class="form-control col-md-2" v-model="b_etapa">
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.num_etapa" v-text="etapas.num_etapa"></option>
                                     </select>
                                 </template>
-                                <input type="text" v-on:keyup.enter="listarLiqCredit()" v-model="b_gen" class="form-control col-sm-3" placeholder="Buscar">
+                                <input type="text" v-on:keyup.enter="listarLiqCredit()" v-model="b_gen" class="form-control col-md-2" placeholder="Buscar">
                             </div>
                             <div class="row"><!-- boton de busqueda-->
                                 <div class="col-sm-3 text-info"><strong>Creditos Escriturados</strong></div>
@@ -456,7 +488,12 @@
                         <!-- depositos de credito -->
                         <div class="container" v-else-if="tab == 4">
                             <div class="row">
-                                <select class="form-control col-md-3" v-model="criterio">
+                                <select class="form-control col-md-2" v-model="b_empresa" >
+                                    <option value="">Empresa constructora</option>
+                                    <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                </select>
+                                
+                                <select class="form-control col-md-2" v-model="criterio">
                                     <option value="lotes.fraccionamiento_id">Proyecto</option>
                                     <option value="nombre">Cliente</option>
                                     <option value="dep_creditos.folio_factura">Folio Factura</option>
@@ -465,16 +502,16 @@
                                 </select>
 
                                 <template v-if="criterio=='lotes.fraccionamiento_id'">
-                                    <select class="form-control col-md-3" v-model="buscar" @click="selectEtapa(buscar)">
+                                    <select class="form-control col-md-2" v-model="buscar" @click="selectEtapa(buscar)">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
-                                    <select class="form-control col-md-3" v-model="b_etapa">
+                                    <select class="form-control col-md-2" v-model="b_etapa">
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.num_etapa" v-text="etapas.num_etapa"></option>
                                     </select>
                                 </template>
-                                <input type="text" v-on:keyup.enter="listarDepCredit()" v-model="b_gen" class="form-control col-sm-3" placeholder="Buscar">
+                                <input type="text" v-on:keyup.enter="listarDepCredit()" v-model="b_gen" class="form-control col-md-2" placeholder="Buscar">
                             </div>
                             <div class="row">
                                 <div class="col-sm-3 text-info"><strong>Deposito a credito</strong></div>
@@ -489,6 +526,12 @@
                                 <table class="table-responsive table2 table-bordered table-striped table-sm">
                                     <thead>
                                         <tr>
+                                            <th class="text-center" colspan="12">Datos de deposito</th>
+                                            <th class="text-center" colspan="">Factura</th>
+                                            <th class="text-center" colspan="3">Deposito</th>
+                                            <th class="text-center" colspan="3">Lote</th>
+                                        </tr>
+                                        <tr>
                                             <th>Folio</th>
                                             <th>Cliente</th>
                                             <th>RFC</th>
@@ -502,6 +545,9 @@
                                             <th>Fecha de deposito</th>
                                             <th>Solicitud de contrato</th>
                                             <th>Factura</th>
+                                            <th>Folio Factura</th>
+                                            <th>Valor</th>
+                                            <th>F. de carga</th>
                                             <th>Folio Factura</th>
                                             <th>Valor</th>
                                             <th>F. de carga</th>
@@ -538,13 +584,22 @@
                                                         data-toggle="modal" data-target="#modAdvFilesUp" @click="setForm(deposito, 'pagDeposito')">
                                                         <i class="fa fa-cloud-upload"></i> Subir archivo
                                                     </a>
-                                                    <a v-if="deposito.factura" :href="'/facturas/dep/credito/download/'+deposito.factura"  target="_blank" class="dropdown-item btn text-info">Descargar</a>
+                                                    <a v-if="deposito.factura" :href="'/facturas/dep/credito/download/'+deposito.factura"  target="_blank" class="dropdown-item btn text-info">Descargar Factura de Deposito</a>
+                                                    <a v-if="deposito.factura_terreno" :href="'/facturas/dep/credito/downloadt/'+deposito.factura_terreno" class="dropdown-item btn text-info">Descargar Factura de Terreno</a>
                                                 </div>
                                             </td>
                                             <td v-text="deposito.folio_factura">folio</td>
                                             <td v-text="'$'+deposito.monto.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">monto</td>
                                             <td v-if="deposito.f_carga_factura" v-text="this.moment(deposito.f_carga_factura).locale('es').format('DD/MMM/YYYY')">F. de carga</td>
                                             <td v-else></td>
+                                            
+                                            <template v-if="deposito.emp_constructora != 'Grupo Constructor Cumbres'">
+                                                <td v-text="deposito.folio_factura_terreno">folio</td>
+                                                <td v-text="'$'+deposito.monto_terreno.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">monto</td>
+                                                <td v-if="deposito.f_carga_factura_terreno" v-text="this.moment(deposito.f_carga_factura_terreno).locale('es').format('DD/MMM/YYYY')">F. de carga</td>
+                                                <td v-else></td>
+                                            </template>
+                                            <td v-else colspan="3"></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -606,7 +661,7 @@
 
             <!-- Upload bill files -->
             <div class="modal fade" id="modAdvFilesUp" tabindex="-1" role="dialog" aria-hidden="true">
-                <div class="modal-dialog" role="document">
+                <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header" style="color: #fff; background-color: #00B0BB;">
                             <h5 class="modal-title" id="">Subir Factura</h5>
@@ -630,9 +685,40 @@
                                     <label class="col-sm-4" for="">Valor (monto)</label>
                                     <input type="number" name="upMonto" id="upMonto" step="0.01" style="right: 10px;" class="form-control col-sm-8" required>
                                 </div>
+
+                                <template v-if="statusTerreno.emp_constructora == 'CONCRETANIA' && (statusTerreno.pendiente_terre != 0 || statusTerreno.factura_terreno)">
+                                    <hr>
+                                    <div class="row">
+                                        <label class="col-sm-4" for="">Factura de Terreno</label>
+                                        <input type="file" name="upfilTer" id="upfilTer" style="right: 10px;" class="form-control col-sm-8" required>
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <label class="col-sm-4" for="">Folio Factura de Terreno</label>
+                                        <input type="text" v-model="foliTer" name="upFolioTer" id="upFolioTer" style="right: 10px;" class="form-control col-sm-8" required>
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <label class="col-sm-4" for="">Valor (monto) de Factura de Terreno</label>
+                                        <input type="number" v-model="montoTer" name="upMontoTer" id="upMontoTer" step="0.0001" style="right: 10px;" class="form-control col-sm-8" required>
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <h5 class="text-info" v-text="'El porcentage de este deposito para la factura del terreno es: $'+statusTerreno.porc_deposito"></h5>
+                                            <h5 class="text-info" v-text="'El saldo pendiente a facturar para este terreno es: $'+statusTerreno.pendiente_terre"></h5>
+                                            <h4 class="text-danger" v-if="(statusTerreno.pendiente_terre - montoTer) < 0"
+                                                v-text="'El monto de la factura(s) no puede exceder el valor pendiente del terreno.'">
+                                            </h4>
+                                        </div>
+                                    </div>
+                                </template>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Guardar</button>
+                            <template v-if="statusTerreno.emp_constructora == 'CONCRETANIA'">
+                                <button v-if="(statusTerreno.pendiente_terre - montoTer) >= 0" type="submit" class="btn btn-primary">Guardar</button>
+                            </template>
+                            <button v-else type="submit" class="btn btn-primary">Guardar</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                         </div>
                         </form>
@@ -654,10 +740,15 @@
                 buscar:'',
                 b_etapa:'',
                 b_gen:'',
+                b_empresa:'',
                 generalId:0,
                 tipoFactura:'',
                 tab:1,
                 historial:0,
+                statusTerreno:'',
+                montoTer:0,
+                foliTer:'',
+                empresas:[],
                 arrayFraccionamientos:[],
                 arrayEtapas:[],
                 arrayContratos:[],
@@ -711,14 +802,27 @@
             setForm(datos, tipo){
                 this.tipoFactura = tipo;
                 this.generalId = datos.id;
-                
+                this.statusTerreno = datos;
+
+                if(datos.monto_terreno){
+                    this.montoTer = datos.monto_terreno;
+                }else this.montoTer = 0;
+
+                this.foliTer = datos.folio_factura_terreno;
+
                 document.getElementById('upfil').value = "";
                 if(tipo == 'contrato'){
                     document.getElementById('upFolio').value = datos.e_folio_factura;
-                    document.getElementById('upMonto').value = datos.e_monto;
+
+                    if(datos.e_monto == 0 && datos.cant_depo != ""){
+                        document.getElementById('upMonto').value = datos.e_monto;
+                    }else document.getElementById('upMonto').value = datos.e_monto;
                 }else{
                     document.getElementById('upFolio').value = datos.folio_factura;
-                    document.getElementById('upMonto').value = datos.monto;
+                    
+                    if(datos.monto == 0 && datos.cant_depo != ""){
+                        document.getElementById('upMonto').value = datos.cant_depo;
+                    }else document.getElementById('upMonto').value = datos.monto;
                 }
             },
             subirFacturaC(e){
@@ -734,6 +838,13 @@
 
                 switch(this.tipoFactura){
                     case 'deposito':
+
+                        if(this.montoTer != ""){
+                            formData.append('upfilTer', e.target.upfilTer.files[0]);
+                            formData.append('upFolioTer', e.target.upFolioTer.value);
+                            formData.append('upMontoTer', e.target.upMontoTer.value);
+                        }
+
                         axios.post('/facturas/depositos/update', formData).then(
                             () => {
                                 me.listarDepositos(me.arrayContratos.current_page)
@@ -761,9 +872,16 @@
                         ).catch(error => console.log(error));
                         break;
                     case 'pagDeposito':
+
+                        if(this.montoTer != ""){
+                            formData.append('upfilTer', e.target.upfilTer.files[0]);
+                            formData.append('upFolioTer', e.target.upFolioTer.value);
+                            formData.append('upMontoTer', e.target.upMontoTer.value);
+                        }
+
                         axios.post('/facturas/dep/credito/update', formData).then(
                             () => {
-                                me.listarContratos(me.arrayContratos.current_page)
+                                me.listarDepCredit(me.arrayDepCredit.current_page)
                                 me.myAlerts.popAlert('Guardado correctamente')
                                 $('#modAdvFilesUp').modal('hide');
                             }
@@ -797,7 +915,8 @@
                 
                 axios.get(
                     '/facturas/contratos/get?page='+page+'&criterio='+this.criterio+'&buscar='+this.buscar+
-                    '&b_etapa='+this.b_etapa+'&b_gen='+this.b_gen+'&historial='+this.historial
+                    '&b_etapa='+this.b_etapa+'&b_gen='+this.b_gen+'&historial='+this.historial+
+                    '&b_empresa='+this.b_empresa
                 ).then(
                     response => me.arrayContratos = response.data
                 ).catch(error => console.log(error))
@@ -808,7 +927,8 @@
                 
                 axios.get(
                     '/facturas/depositos/get?page='+page+'&criterio='+this.criterio+'&buscar='+this.buscar+
-                    '&b_etapa='+this.b_etapa+'&b_gen='+this.b_gen+'&historial='+this.historial
+                    '&b_etapa='+this.b_etapa+'&b_gen='+this.b_gen+'&historial='+this.historial+
+                    '&b_empresa='+this.b_empresa
                 ).then(
                     response => me.arrayDepositos = response.data
                 ).catch(error => console.log(error))
@@ -819,7 +939,8 @@
                 
                 axios.get(
                     '/facturas/liq/credito/get?page='+page+'&criterio='+this.criterio+'&buscar='+this.buscar+
-                    '&b_etapa='+this.b_etapa+'&b_gen='+this.b_gen+'&historial='+this.historial
+                    '&b_etapa='+this.b_etapa+'&b_gen='+this.b_gen+'&historial='+this.historial+
+                    '&b_empresa='+this.b_empresa
                 ).then(
                     response => me.arrayLiqCredit = response.data
                 ).catch(error => console.log(error))
@@ -830,11 +951,24 @@
                 
                 axios.get(
                     '/facturas/dep/credito/get?page='+page+'&criterio='+this.criterio+'&buscar='+this.buscar+
-                    '&b_etapa='+this.b_etapa+'&b_gen='+this.b_gen+'&historial='+this.historial
+                    '&b_etapa='+this.b_etapa+'&b_gen='+this.b_gen+'&historial='+this.historial+
+                    '&b_empresa='+this.b_empresa
                 ).then(
                     response => me.arrayDepCredit = response.data
                 ).catch(error => console.log(error))
-            }
+            },
+            getEmpresa(){
+                let me = this;
+                me.empresas=[];
+                var url = '/lotes/empresa/select';
+                axios.get(url).then(function (response) {
+                    var respuesta = response;
+                    me.empresas = respuesta.data.empresas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
         },
         mounted() {
             this.selectFraccionamientos();
@@ -842,6 +976,7 @@
             this.listarDepositos();
             this.listarLiqCredit();
             this.listarDepCredit();
+            this.getEmpresa();
         }
     }
 </script>
