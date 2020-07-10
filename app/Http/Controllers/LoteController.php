@@ -2168,7 +2168,6 @@ class LoteController extends Controller
         return ['lotes_etapas' => $lotes_etapas];
     }
 
-
     public function select_manzanas_disp(Request $request)
     {
         if(!$request->ajax())return redirect('/');

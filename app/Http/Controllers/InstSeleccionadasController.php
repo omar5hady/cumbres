@@ -654,7 +654,7 @@ class InstSeleccionadasController extends Controller
 
                 $persona = Personal::findOrFail($id);
 
-                Mail::to($persona->email)->send(new NotificationReceived($msj));
+                ///Mail::to($persona->email)->send(new NotificationReceived($msj));
             }
             
 

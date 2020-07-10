@@ -105,6 +105,9 @@ Vue.component('devolucion-cancelacion', require('./components/Devolucion.vue'));
 Vue.component('devolucion-credito', require('./components/CreditoDevolucion.vue'));
 Vue.component('bono-recomendado', require('./components/BonoRecomendado.vue'));
 
+// Componentes Tesoreria
+Vue.component('ingresos-concretania', require('./components/Tesoreria/IngresosConcretania.vue'));
+
 // Proveedores
 Vue.component('proveedor-seguimiento', require('./components/Proveedor/SegInstalacion.vue'));
 

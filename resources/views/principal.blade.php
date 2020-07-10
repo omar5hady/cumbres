@@ -163,11 +163,11 @@
                     @endif
 
                      <!-- Modulo para contratista ---->
-                     @if(Auth::user()->rol_id == 13 || Auth::user()->rol_id == 1)
+                     @if(Auth::user()->rol_id == 13 || Auth::user()->rol_id == 1 || Auth::user()->id == 25694)
                         <li class="nav-item nav-dropdown">
                             <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-plug"></i> Contratistas</a>
                             <ul class="nav-dropdown-items">
-                                @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 13)
+                                @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 13 || Auth::user()->id == 25694)
                                     <li @click="menu=217" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-archive"></i> Solicitudes</a>
                                     </li>
@@ -448,7 +448,12 @@
                                     <li @click="menu=1001" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-inbox"></i> Facturas</a>
                                     </li> 
-                                @endif                                   
+                                @endif    
+                                @if(Auth::user()->ingresos_concretania == 1)
+                                    <li @click="menu=247" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-money"></i> Ingresos Concretania</a>
+                                    </li>
+                                @endif
                             </ul>
                         </li>
                     @endif

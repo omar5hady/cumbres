@@ -67,6 +67,7 @@ class CreateCreditosTable extends Migration
             $table->date('f_carga_factura')->nullable();
 
             $table->double('valor_terreno',10,2)->default(0);
+            $table->double('saldo_terreno',10,2)->default(0);
             $table->float('porcentaje_terreno',6,2)->default(0);
         });
     }

@@ -456,6 +456,10 @@
             <reporte-detalles></reporte-detalles>
         </template>
 
+        <template v-if="menu==247">
+            <ingresos-concretania></ingresos-concretania>
+        </template>
+
         
 
         

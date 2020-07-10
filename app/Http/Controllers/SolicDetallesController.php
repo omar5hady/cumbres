@@ -301,7 +301,7 @@ class SolicDetallesController extends Controller
                  'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id',
                  'solic_detalles.fecha_program','solic_detalles.hora_program');
 
-        if(Auth::user()->rol_id == 1){
+        if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 12){
             if($buscar == ''){
                 $contratos = $query
                          ->where('contratos.entregado','=',1)

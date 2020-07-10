@@ -10,6 +10,8 @@ class Dep_credito extends Model
     protected $fillable = [
             'inst_sel_id','cant_depo',
             'banco','concepto','fecha_deposito',
+            'cuenta',
+            'fecha_ingreso_concretania',
     ];
  
  
