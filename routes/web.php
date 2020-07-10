@@ -556,6 +556,7 @@ Route::group(['middleware' => ['auth']],function(){
         //Depositos
         Route::get('/facturas/depositos/get','FacturasController@listarFacturaDepositos');//by Rafael Rivera
         Route::post('/facturas/depositos/update','FacturasController@cargarFacturaDepositos');//by Rafael Rivera
+        Route::get('/facturas/terreno/download/{name}','FacturasController@descargaFacturaTer');//by Rafael Rivera
         Route::get('/facturas/depositos/download/{name}','FacturasController@descargaFacturaD');//by Rafael Rivera
         //cobro de credito
         Route::get('/facturas/liq/credito/get','FacturasController@listarFacturaLiqCredito');//by Rafael Rivera
@@ -565,6 +566,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/facturas/dep/credito/get','FacturasController@listarFacturaDepCredito');//by Rafael Rivera
         Route::post('/facturas/dep/credito/update','FacturasController@cargarFacturaDepCredito');//by Rafael Rivera
         Route::get('/facturas/dep/credito/download/{name}','FacturasController@descargaFacturaDC');//by Rafael Rivera
+        Route::get('/facturas/dep/credito/downloadt/{name}','FacturasController@descargaFacturaDCT');//by Rafael Rivera
 
     /************************** RUTAS ESTADISTICAS ***************************/
         Route::get('/estadisticas/datos_extra','EstadisticasController@estad_datos_extra');
@@ -591,6 +593,8 @@ Route::group(['middleware' => ['auth']],function(){
             Route::get('/reportes/reporteDetallesExcel','ReportesController@reporteDetallesExcel');
 
             Route::get('/reportes/reporteModelos','ReportesController@reporteModelos');
+
+            Route::get('/reportes/revicionprevia','ReportesController@revicionPreviaRep');
 
 
     ///////////////////        RUTAS NOTARIA     //////////////////////////////////

@@ -34,6 +34,10 @@ class FacturasController extends Controller
                 'creditos.fraccionamiento',
                 'creditos.etapa',
                 'creditos.manzana',
+                'creditos.valor_terreno',
+                'creditos.porcentaje_terreno',
+
+                'depositos.pago_id',
 
                 'depositos.cant_depo',
                 'depositos.banco',
@@ -42,13 +46,27 @@ class FacturasController extends Controller
                 'depositos.factura',
                 'depositos.folio_factura',
                 'depositos.monto',
-                'depositos.f_carga_factura'
+                'depositos.f_carga_factura',
+
+                'depositos.factura_terreno',
+                'depositos.folio_factura_terreno',
+                'depositos.monto_terreno',
+                'depositos.f_carga_factura_terreno',
+
+                'lotes.emp_constructora',
+
+                'pagos_contratos.restante',
+                'pagos_contratos.monto_pago'
         );
 
         // if($request->historial == 1){
         //     $facturas = $facturas->where('depositos.factura','!=',NULL)
         //                         ->where('depositos.factura','!=','');
         // }
+
+        if($request->b_empresa != ''){
+            $facturas= $facturas->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
 
         if($request->buscar != '' || $request->b_gen != ''){
             if($request->criterio == "lotes.fraccionamiento_id"){
@@ -78,35 +96,65 @@ class FacturasController extends Controller
                                 ->where('depositos.factura','!=','');
             }
         }
-
         
-        
-
         $facturas = $facturas->where('pagos_contratos.tipo_pagare', '!=', 1)
-                            ->where('depositos.banco', '!=', '0102030405-Scotiabank')->distinct('depositos.id')->paginate(15);
+                            ->where('depositos.banco', '!=', '0102030405-Scotiabank')
+                            ->distinct('depositos.id')
+        ->paginate(15);
+
+        foreach($facturas as $index => $f){
+
+            $totalDep = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                ->join('dep_creditos', 'inst_seleccionadas.id', '=', 'dep_creditos.inst_sel_id')
+                ->select(
+                    DB::raw('SUM(cant_depo) as pendiente'),
+                    DB::raw('SUM(monto_terreno) as pagado')
+                )
+                ->where('contratos.id',$f->cId)
+                ->groupBy('inst_sel_id')
+            ->get();
+            
+            $saldoTotal = Deposito::select(
+                    DB::raw('SUM(cant_depo) as pendiente'),
+                    DB::raw('SUM(monto_terreno) as pagado')
+                )
+                ->where('pago_id',$f->pago_id)
+                ->groupBy('pago_id')
+            ->get();
+
+            if(sizeof($totalDep)){
+                $totalDep = $saldoTotal[0]->pagado + $totalDep[0]->pagado;
+            }else $totalDep = $saldoTotal[0]->pagado;
+
+            if($f->monto_terreno != 0){
+                $pendiente = ($f->valor_terreno - $totalDep)+$f->monto_terreno;
+            }else $pendiente = $f->valor_terreno - $totalDep;
+
+            $f->terreno_pagado = $totalDep;
+            $f->pendiente_terre = $pendiente;
+            $f->porc_deposito = $f->cant_depo*($f->porcentaje_terreno/100);
+        }
 
         return $facturas;
     }
 
     public function cargarFacturaDepositos(Request $request){
 
+        //return $request;
+
         setLocale(LC_TIME, 'es_MX.utf8');
 
         $deposito = Deposito::findOrFail($request->id);
 
-        if($deposito->factura != ""){
-            //try{
+        if($request->upFolio != ""){
+            if($deposito->factura != ""){
                 File::delete(public_path().'/files/facturas/depositos/'.$deposito->factura);
-            //}catch (Exception $e){
-            //    return $e->getMessage();
-            //}
-        }
-
-        //try{
+            }
 
             $name = uniqId().'.'.$request->upfil->getClientOriginalExtension();
             $moved = $request->upfil->move(public_path('/files/facturas/depositos/'), $name);
-            
+
             if($moved){
                 $deposito->factura = $name;
                 $deposito->folio_factura = $request->upFolio;
@@ -114,14 +162,34 @@ class FacturasController extends Controller
                 $deposito->f_carga_factura = Carbon::now()->format('Y-m-d');
                 $deposito->save();
             }
+        }
 
-        //}catch (Exception $e){
-        //    DB::rollBack();
-        //}
+        if($request->upFolioTer != ""){
+
+            if($deposito->factura_terreno != ""){
+                File::delete(public_path().'/files/facturas/terreno/'.$deposito->factura_terreno);
+            }
+
+            $name = uniqId().'.'.$request->upfilTer->getClientOriginalExtension();
+            $moved = $request->upfilTer->move(public_path('/files/facturas/terreno/'), $name);
+
+            if($moved){
+                $deposito->factura_terreno = $name;
+                $deposito->folio_factura_terreno = $request->upFolioTer;
+                $deposito->monto_terreno = $request->upMontoTer;
+                $deposito->f_carga_factura_terreno = Carbon::now()->format('Y-m-d');
+                $deposito->save();
+            }
+        }
     }
 
     public function descargaFacturaD($name){
         $pathtoFile = public_path().'/files/facturas/depositos/'.$name;
+        return response()->download($pathtoFile);
+    }
+
+    public function descargaFacturaTer($name){
+        $pathtoFile = public_path().'/files/facturas/terreno/'.$name;
         return response()->download($pathtoFile);
     }
     
@@ -177,8 +245,13 @@ class FacturasController extends Controller
             }
         }
         
+        if($request->b_empresa != ''){
+            $facturas= $facturas->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
 
-        $facturas = $facturas->where('inst_seleccionadas.elegido', '=', 1)->where('inst_seleccionadas.tipo_credito', '=', "Crédito Directo")->paginate(15);
+        $facturas = $facturas->where('inst_seleccionadas.elegido', '=', 1)
+            ->where('inst_seleccionadas.tipo_credito', '=', "Crédito Directo")
+        ->paginate(15);
 
         return $facturas;
     }
@@ -219,7 +292,6 @@ class FacturasController extends Controller
         $pathtoFile = public_path().'/files/facturas/contratos/'.$name;
         return response()->download($pathtoFile);
     }
-
 
     //Creditos Escriturados
     public function listarFacturaLiqCredito(Request $request){
@@ -269,6 +341,10 @@ class FacturasController extends Controller
             else{
                 $facturas = $facturas->where('creditos.factura','!=',NULL)->where('creditos.factura','!=','');
             }
+        }
+
+        if($request->b_empresa != ''){
+            $facturas= $facturas->where('lotes.emp_constructora','=',$request->b_empresa);
         }
         
         //para que aparezca debe tener fecha de firma de escrituras != null en expediente
@@ -328,6 +404,7 @@ class FacturasController extends Controller
             ->select(
                 'dep_creditos.id',
                 'contratos.id as cId',
+                'inst_seleccionadas.id as insId',
                 DB::raw('CONCAT(c.nombre, " ", c.apellidos) as nombre'),
                 //DB::raw("DATEDIFF('".Carbon::now()->format('Y-m-d')."', dep_creditos.fecha_deposito) as dias"),
                 'dep_creditos.fecha_deposito',
@@ -336,6 +413,8 @@ class FacturasController extends Controller
                 'creditos.fraccionamiento',
                 'creditos.etapa',
                 'creditos.manzana',
+                'creditos.valor_terreno',
+                'creditos.porcentaje_terreno',
 
                 'dep_creditos.banco',
                 'dep_creditos.concepto',
@@ -344,7 +423,13 @@ class FacturasController extends Controller
                 'dep_creditos.factura',
                 'dep_creditos.folio_factura',
                 'dep_creditos.monto',
-                'dep_creditos.f_carga_factura'
+                'dep_creditos.f_carga_factura',
+
+                'dep_creditos.factura_terreno',
+                'dep_creditos.folio_factura_terreno',
+                'dep_creditos.monto_terreno',
+                'dep_creditos.f_carga_factura_terreno',
+                'lotes.emp_constructora'
         );
 
         if($request->buscar != '' || $request->b_gen != ''){
@@ -372,28 +457,62 @@ class FacturasController extends Controller
                 $facturas = $facturas->where('dep_creditos.factura','!=',NULL)->where('dep_creditos.factura','!=','');
             }
         }
-        
 
-        $facturas = $facturas->distinct('dep_creditos.id')->paginate(15);
+        if($request->b_empresa != ''){
+            $facturas= $facturas->where('lotes.emp_constructora','=',$request->b_empresa);
+        }
+
+        $facturas = $facturas->distinct('dep_creditos.id')
+        ->paginate(15);
+
+        foreach($facturas as $index => $f){
+
+            $totalDep = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                ->join('pagos_contratos', 'contratos.id', '=', 'pagos_contratos.contrato_id')
+                ->join('depositos', 'pagos_contratos.id', '=', 'depositos.pago_id')
+                ->select(
+                    DB::raw('SUM(cant_depo) as pendiente'),
+                    DB::raw('SUM(monto_terreno) as pagado')
+                )
+                ->where('contratos.id',$f->cId)
+                ->groupBy('pago_id')
+            ->get();
+            
+            $saldoTotal = Dep_credito::select(
+                    DB::raw('SUM(cant_depo) as pendiente'),
+                    DB::raw('SUM(monto_terreno) as pagado')
+                )
+                ->where('inst_sel_id',$f->insId)
+                ->groupBy('inst_sel_id')
+            ->get();
+
+            if(sizeof($totalDep)){
+                $totalDep = $saldoTotal[0]->pagado + $totalDep[0]->pagado;
+            }else $totalDep = $saldoTotal[0]->pagado;
+
+            if($f->monto_terreno!=0){
+                $pendiente = ($f->valor_terreno - $totalDep)+$f->monto_terreno;
+            }else $pendiente = $f->valor_terreno - $totalDep;
+
+            $f->terreno_pagado = $totalDep;
+            $f->pendiente_terre = $pendiente;
+            $f->porc_deposito = $f->cant_depo*($f->porcentaje_terreno/100);
+        }
 
         return $facturas;
     }
 
     public function cargarFacturaDepCredito(Request $request){
-
+        
         setLocale(LC_TIME, 'es_MX.utf8');
 
         $deposito = Dep_credito::findOrFail($request->id);
 
-        if($deposito->factura != ""){
-            //try{
-                File::delete(public_path().'/files/facturas/depocredito/'.$deposito->factura);
-            //}catch (Exception $e){
-            //    return $e->getMessage();
-            //}
-        }
+        if($request->upFolio != ""){
 
-        //try{
+            if($deposito->factura != ""){
+                File::delete(public_path().'/files/facturas/depocredito/'.$deposito->factura);
+            }
 
             $name = uniqId().'.'.$request->upfil->getClientOriginalExtension();
             $moved = $request->upfil->move(public_path('/files/facturas/depocredito/'), $name);
@@ -405,14 +524,34 @@ class FacturasController extends Controller
                 $deposito->f_carga_factura = Carbon::now()->format('Y-m-d');
                 $deposito->save();
             }
+        }
 
-        //}catch (Exception $e){
-        //    DB::rollBack();
-        //}
+        if($request->upFolioTer != ""){
+
+            if($deposito->factura != ""){
+                File::delete(public_path().'/files/facturas/depocreditoterreno/'.$deposito->factura_terreno);
+            }
+
+            $name = uniqId().'.'.$request->upfilTer->getClientOriginalExtension();
+            $moved = $request->upfilTer->move(public_path('/files/facturas/depocreditoterreno/'), $name);
+            
+            if($moved){
+                $deposito->factura_terreno = $name;
+                $deposito->folio_factura_terreno = $request->upFolioTer;
+                $deposito->monto_terreno = $request->upMontoTer;
+                $deposito->f_carga_factura_terreno = Carbon::now()->format('Y-m-d');
+                $deposito->save();
+            }
+        }
     }
 
     public function descargaFacturaDC($name){
         $pathtoFile = public_path().'/files/facturas/depocredito/'.$name;
+        return response()->download($pathtoFile);
+    }
+
+    public function descargaFacturaDCT($name){
+        $pathtoFile = public_path().'/files/facturas/depocreditoterreno/'.$name;
         return response()->download($pathtoFile);
     }
 }
