@@ -1024,8 +1024,9 @@ class DepositoController extends Controller
 
             $pago_contrato->save();
 
-            $deposito->save();
             
+
+            $deposito->save();
 
             $tCredito = inst_seleccionada::select('tipo_credito')
                 ->where([
@@ -1034,6 +1035,7 @@ class DepositoController extends Controller
                 ])
             ->first();
             
+            //alerta cuando la suma de lo depositos alcanza 50mil y esta como apartado
             if($tCredito->tipo_credito == "Apartado"){
                 
                 $saldo = Pago_contrato::select(
@@ -1069,6 +1071,7 @@ class DepositoController extends Controller
                 }
             }
 
+            //alerta cuando se realiza un nuevo deposito
             if($request->banco != "0102030405-Scotiabank"){
                 $toAlert = [24706, 24705];
                 $msj = 'Se ha realizado un nuevo depósito de pagare';

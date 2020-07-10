@@ -19,6 +19,10 @@ use App\Modelo;
 use App\Cliente;
 use App\Vendedor;
 
+use App\Detalle_previo;
+use App\Revision_previa;
+use App\Contratista;
+
 class ReportesController extends Controller
 {
     public function reporteInventario(Request $request){
@@ -2403,5 +2407,24 @@ class ReportesController extends Controller
             ];
 
     }
-    
+
+    public function revicionPreviaRep(Request $request){
+        $revicion = Revision_previa::select('id', 'id_contratista')
+            ->orderBy('created_at')
+        ->paginate(15);
+
+        foreach($revicion as $index => $r){
+            
+            $contratista = Contratista::select('nombre')->where('id', '=', $r->id_contratista)->first();
+            $r->contratista = $contratista->nombre;
+            
+            $detalle = Detalle_previo::where('rev_previas_id', '=', $r->id)
+                //->groupBy('identificador')
+            ->get();
+            $r->detalle = $detalle;
+            $r->detalleC = $detalle->count();
+        }
+
+        return $revicion;
+    }
 }
