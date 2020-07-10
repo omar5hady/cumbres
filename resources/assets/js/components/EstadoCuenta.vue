@@ -50,7 +50,7 @@
                                     </select>
 
                                     
-
+                                    <input v-else-if="criterio=='contratos.id'" type="text"  v-model="buscar" @keyup.enter="listarContratos(1,buscar,buscar2,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
                                     <input v-else-if="criterio=='c.nombre'" type="text"  v-model="buscar" @keyup.enter="listarContratos(1,buscar,buscar2,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
                                     <input v-else-if="criterio=='contratos.fecha'" type="date"  v-model="buscar" @keyup.enter="listarContratos(1,buscar,buscar2,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
                                     <input v-if="criterio=='c.nombre'" type="text"  v-model="buscar2" @keyup.enter="listarContratos(1,buscar,buscar2,b_manzana,b_lote,criterio)" class="form-control" placeholder="Apellidos">

@@ -645,6 +645,11 @@
                                         <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte acumulado</a>
                                     </li>
                                 @endif
+                                @if(Auth::user()->rep_detalles_post == 1)
+                                    <li @click="menu=246" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de Detalles</a>
+                                    </li>
+                                @endif
                             </ul>
                         </li>
                     @endif

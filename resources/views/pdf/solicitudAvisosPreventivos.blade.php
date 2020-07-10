@@ -221,7 +221,7 @@ body {
         <div class="table" style="text-align:left; margin-top: 30px; margin-left: 20px;">
         
             <div class="table-row">
-                <div colspan="4" class="table-cell3"> TIPO DE CREDITO:<b> {{mb_strtoupper($solicitud[0]->tipo_credito)}} </div>  
+                <div colspan="4" class="table-cell3"> TIPO DE CREDITO:<b> {{mb_strtoupper($solicitud[0]->tipo_credito)}} ({{mb_strtoupper($solicitud[0]->institucion)}}) </div>  
             </div>
     
             <div class="table-row">

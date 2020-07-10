@@ -15,6 +15,10 @@ use Carbon\Carbon;
 use App\Pago_contrato;
 use App\Historial_descartado;
 use App\Modelo;
+use App\Solic_detalle;
+use App\Contratista;
+
+use App\Cat_detalle_subconcepto;
 
 use App\Cliente;
 use App\Vendedor;
@@ -2408,6 +2412,7 @@ class ReportesController extends Controller
 
     }
 
+<<<<<<< HEAD
     public function revicionPreviaRep(Request $request){
         $revicion = Revision_previa::select('id', 'id_contratista')
             ->orderBy('created_at')
@@ -2427,4 +2432,348 @@ class ReportesController extends Controller
 
         return $revicion;
     }
+=======
+    public function reporteDetalles(Request $request){
+        $contratistas = Contratista::select('id', 'nombre')->orderBy('nombre','asc')->get();
+
+
+        $solicitudes = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
+                                    ->join('descripcion_detalles as det','solic_detalles.id','=','det.solicitud_id')
+                                    ->join('cat_detalles as d','det.detalle_id','=','d.id')
+                                    ->join('cat_detalles_subconceptos as sub','d.id_sub','=','sub.id')
+                                    ->join('cat_detalles_generales as gral','sub.id_gral','=','gral.id')
+                                    ->join('contratistas as c','solic_detalles.contratista_id','=','c.id')
+                                    ->join('creditos as cr','contratos.id','=','cr.id')
+                                    ->join('lotes','cr.lote_id','=','lotes.id')
+                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                    ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id');
+
+
+        $resumen = $solicitudes->select('solic_detalles.cliente','solic_detalles.status','lotes.num_lote',
+                                            'fraccionamientos.nombre as proyecto','det.id', 'solic_detalles.created_at',
+                                            'etapas.num_etapa','lotes.manzana','d.detalle','sub.subconcepto','gral.general',
+                                            DB::raw("CONCAT(gral.general,'/ ',sub.subconcepto) AS detalles"),
+                                            'c.nombre','solic_detalles.contratista_id');
+
+                if($request->contratista != ''){
+                    $resumen = $resumen->where('c.id','=',$request->contratista);
+                }
+
+                if($request->proyecto != ''){
+                    $resumen = $resumen->where('fraccionamientos.id','=',$request->proyecto);
+                    if($request->etapa != '')
+                        $resumen = $resumen->where('etapas.id','=',$request->etapa);
+                }
+                                    
+        $resumen1 = $resumen->orderBy('solic_detalles.status','desc')
+                                    ->get();
+
+        $detalles = Cat_detalle_subconcepto::join('cat_detalles_generales as gral','cat_detalles_subconceptos.id_gral','=','gral.id')
+                                ->select('cat_detalles_subconceptos.subconcepto','gral.general','cat_detalles_subconceptos.id',
+                                        DB::raw("CONCAT(gral.general,'/ ',cat_detalles_subconceptos.subconcepto) AS detalles"))
+                                ->orderBy('gral.general','desc')
+                                ->orderBy('cat_detalles_subconceptos.subconcepto','desc')
+                                ->get();
+
+
+        if(sizeOf($resumen1))
+            foreach($contratistas as $det => $contratista){
+                $contratista->cont=0;
+                // $contratista->detalle=[];
+                foreach($resumen1 as $index => $detalle){
+                    if($detalle->contratista_id == $contratista->id){
+                        $contratista->cont++;
+                    }
+                }
+            }
+
+        if(sizeOf($resumen1))
+            foreach($detalles as $det => $detalle){
+                $detalle->cont=0;
+                // $contratista->detalle=[];
+                foreach($resumen1 as $index => $res){
+                    if($res->detalles == $detalle->detalles){
+                        $detalle->cont++;
+                    }
+                }
+            }
+
+            $resumen = $resumen->orderBy('solic_detalles.status','desc')
+                                    ->paginate();
+            
+        
+        return ['contratistas'=>$contratistas,
+                'resumen'=>$resumen,
+                'pagination' => [
+                    'total'         => $resumen->total(),
+                    'current_page'  => $resumen->currentPage(),
+                    'per_page'      => $resumen->perPage(),
+                    'last_page'     => $resumen->lastPage(),
+                    'from'          => $resumen->firstItem(),
+                    'to'            => $resumen->lastItem(),
+                ],
+                'detalles'=>$detalles];
+
+    }
+
+    public function reporteDetallesExcel(Request $request){
+        $contratistas = Contratista::select('id', 'nombre')->orderBy('nombre','asc')->get();
+
+
+        $solicitudes = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
+                                    ->join('descripcion_detalles as det','solic_detalles.id','=','det.solicitud_id')
+                                    ->join('cat_detalles as d','det.detalle_id','=','d.id')
+                                    ->join('cat_detalles_subconceptos as sub','d.id_sub','=','sub.id')
+                                    ->join('cat_detalles_generales as gral','sub.id_gral','=','gral.id')
+                                    ->join('contratistas as c','solic_detalles.contratista_id','=','c.id')
+                                    ->join('creditos as cr','contratos.id','=','cr.id')
+                                    ->join('lotes','cr.lote_id','=','lotes.id')
+                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                    ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id');
+
+
+        $resumen = $solicitudes->select('solic_detalles.cliente','solic_detalles.status','lotes.num_lote',
+                                            'det.fecha_concluido','det.revisado',
+                                            'fraccionamientos.nombre as proyecto','det.id', 'solic_detalles.created_at',
+                                            'etapas.num_etapa','lotes.manzana','d.detalle','sub.subconcepto','gral.general',
+                                            DB::raw("CONCAT(gral.general,'/ ',sub.subconcepto) AS detalles"),
+                                            'c.nombre','solic_detalles.contratista_id');
+
+                if($request->contratista != ''){
+                    $resumen = $resumen->where('c.id','=',$request->contratista);
+                }
+
+                if($request->proyecto != ''){
+                    $resumen = $resumen->where('fraccionamientos.id','=',$request->proyecto);
+                    if($request->etapa != '')
+                        $resumen = $resumen->where('etapas.id','=',$request->etapa);
+                }
+                                    
+        $resumen = $resumen->orderBy('solic_detalles.status','desc')
+                                    ->get();
+
+        $detalles = Cat_detalle_subconcepto::join('cat_detalles_generales as gral','cat_detalles_subconceptos.id_gral','=','gral.id')
+                                ->select('cat_detalles_subconceptos.subconcepto','gral.general','cat_detalles_subconceptos.id',
+                                        DB::raw("CONCAT(gral.general,'/ ',cat_detalles_subconceptos.subconcepto) AS detalles"))
+                                ->orderBy('gral.general','desc')
+                                ->orderBy('cat_detalles_subconceptos.subconcepto','desc')
+                                ->get();
+
+
+        if(sizeOf($resumen))
+            foreach($contratistas as $det => $contratista){
+                $contratista->cont=0;
+                // $contratista->detalle=[];
+                foreach($resumen as $index => $detalle){
+                    if($detalle->contratista_id == $contratista->id){
+                        $contratista->cont++;
+                    }
+                }
+            }
+
+        if(sizeOf($resumen))
+            foreach($detalles as $det => $detalle){
+                $detalle->cont=0;
+                // $contratista->detalle=[];
+                foreach($resumen as $index => $res){
+                    if($res->detalles == $detalle->detalles){
+                        $detalle->cont++;
+                    }
+                }
+            }
+
+        
+        
+
+
+                return Excel::create('Reporte de detalles', function($excel) use ($contratistas,$resumen,$detalles){
+                    $excel->sheet('Resumen', function($sheet) use ($resumen){
+        
+                        $sheet->mergeCells('A1:K1');
+                        $sheet->mergeCells('A2:K2');
+                        $sheet->mergeCells('C4:G4');
+        
+                        $sheet->cell('A1', function($cell) {
+        
+                            // manipulate the cell
+                            $cell->setValue(  'GRUPO CONSTRUCTOR CUMBRES, SA DE C.V.');
+                            $cell->setFontFamily('Arial Narrow');
+                            $cell->setFontSize(14);
+                            $cell->setFontWeight('bold');
+                            $cell->setAlignment('center');
+                        
+                        });
+                        $sheet->cell('A2', function($cell) {
+        
+                            // manipulate the cell
+                            $cell->setValue(  'REPORTE DE DETALLES');
+                            $cell->setFontFamily('Arial Narrow');
+                            $cell->setFontSize(14);
+                            $cell->setFontWeight('bold');
+                            $cell->setAlignment('center');
+                        
+                        });
+        
+                        $sheet->cell('B4', function($cell) {
+        
+                            // manipulate the cell
+                            $cell->setFontFamily('Arial Narrow');
+                            $cell->setFontSize(12);
+                            $cell->setAlignment('center');
+                        
+                        });
+        
+
+        
+                        $sheet->cell('C4', function($cell) {
+        
+                            // manipulate the cell
+                            $cell->setFontFamily('Arial Narrow');
+                            $cell->setFontSize(12);
+                            $cell->setAlignment('center');
+                        });
+        
+                        $sheet->row(5, [
+                            'No.',
+                            'Fraccionamiento',
+                            'Etapa',
+                            'Manzana',
+                            'Lote',
+                            'Cliente',
+                            'Fecha de solicitud',
+                            'Descripción del detalle',
+                            'Contratista',
+                            'Status'
+                        ]);
+                        
+        
+                        $sheet->cells('A5:J5', function ($cells) {
+                            // Set font family
+                            $cells->setFontFamily('Calibri');
+        
+                            // Set font size
+                            $cells->setFontSize(12);
+        
+                            // Set font weight to bold
+                            $cells->setFontWeight('bold');
+                            $cells->setAlignment('center');
+                        });
+        
+                        $cont=6;
+        
+                        
+        
+                        foreach($resumen as $index => $lote) {
+                            $cont++;
+        
+                            // $fecha = new Carbon($lote->created_at);
+                            // $lote->created_at = $fecha->formatLocalized('%d de %B de %Y');
+        
+                            $status='';
+                            if($lote->fecha_concluido == NULL)
+                                $status = 'Pendiente';
+                            elseif($lote->fecha_concluido != NULL && $lote->revisado == 0)
+                                $status = 'Sin revisar';
+                            elseif($lote->fecha_concluido != NULL && $lote->revisado == 1)
+                                $status = 'Rechazado';
+                            elseif($lote->fecha_concluido != NULL && $lote->revisado == 2)
+                                $status = 'Concluido';
+        
+                            $sheet->row($index+6, [
+                                $index+1,
+                                $lote->proyecto, 
+                                $lote->num_etapa,
+                                $lote->manzana,
+                                $lote->num_lote,
+                                $lote->cliente,
+                                $lote->created_at,
+                                $lote->detalles.'/ '.$lote->detalle,
+                                $lote->nombre,
+                                $status,
+                            ]);	
+                        }
+                    
+                        $num='A5:J' . $cont;
+                        $sheet->setBorder($num, 'thin');
+        
+                        
+                    });
+
+                ////////////////////////////////////////////////////////////////////////////////////////
+        
+                    $excel->sheet('Detalles', function($sheet) use ($detalles, $contratistas){
+        
+                       
+        
+                        $sheet->row(1, [
+                            'Detalle',
+                            '',
+
+                            '',
+                            'Contratista',
+                            ''
+                        ]);
+                        
+        
+                        $sheet->cells('A1:E1', function ($cells) {
+                            // Set font family
+                            $cells->setFontFamily('Calibri');
+        
+                            // Set font size
+                            $cells->setFontSize(12);
+        
+                            // Set font weight to bold
+                            $cells->setFontWeight('bold');
+                            $cells->setAlignment('center');
+                        });
+        
+                        $cont=2;
+                        $cont1=2;
+        
+                        
+        
+                        foreach($detalles as $index => $lote) {
+                            
+                            if($lote->cont!=0){
+                                
+                            
+                                $sheet->row($cont, [
+                                    $lote->detalles, 
+                                    $lote->cont,
+                                    
+                                ]);	
+                                $cont++;
+                            }
+                        }
+                    
+                        $num='A1:B' . $cont;
+                        $sheet->setBorder($num, 'thin');
+
+                        foreach($contratistas as $index => $lote) {
+                            
+                            if($lote->cont!=0){
+                                
+                                $letra1 = 'D'.$cont1;
+                                $letra2 = 'E'.$cont1;
+                                $nombre = $lote->nombre;
+
+                                $sheet->setCellValue($letra1, $nombre);
+                                $sheet->setCellValue($letra2, $lote->cont);
+                                $cont1++;
+                            }
+                        }
+                    
+                        $num='D1:E' . $cont1;
+                        $sheet->setBorder($num, 'thin');
+        
+                        
+                    });
+                    
+                }
+                
+                )->download('xls');    
+
+    }
+    
+>>>>>>> a77f2f15e580fda353cdad899fbec8d75fe7d38d
 }

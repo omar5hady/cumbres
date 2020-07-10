@@ -583,6 +583,8 @@ Route::group(['middleware' => ['auth']],function(){
 
             Route::get('/reprotes/reporteCasasCreditoPuente','ReportesController@reporteCasasCreditoPuente');
             Route::get('/reprotes/excelCasasCreditoPuente','ReportesController@excelCasasCreditoPuente');
+            Route::get('/reportes/reporteDetalles','ReportesController@reporteDetalles');
+            Route::get('/reportes/reporteDetallesExcel','ReportesController@reporteDetallesExcel');
 
             Route::get('/reportes/reporteModelos','ReportesController@reporteModelos');
 

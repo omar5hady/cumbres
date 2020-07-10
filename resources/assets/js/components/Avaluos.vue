@@ -29,6 +29,7 @@
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
                                         <option value="licencias.visita_avaluo">Fecha de visita</option>
                                         <option value="contratos.id">Folio</option>
+                                        <option value="cliente">Cliente</option>
                                     </select>
 
                                     
@@ -46,8 +47,8 @@
                                         <option value="">Manzana</option>
                                         <option v-for="manzana in arrayAllManzanas" :key="manzana.manzana" :value="manzana.manzana" v-text="manzana.manzana"></option>
                                     </select>
-                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
-                                    <input type="text" v-else-if="criterio=='contratos.id'" v-model="buscar" class="form-control" placeholder="# de Folio">
+                                    <input type="text" @keyup.enter="listarAvaluos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar" >
+                                    <input type="text" @keyup.enter="listarAvaluos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-else-if="criterio=='contratos.id' || criterio=='cliente'" v-model="buscar" class="form-control" placeholder="Texto a buscar">
 
                                     <input v-else type="date"  v-model="buscar" @keyup.enter="listarAvaluos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
                                    
@@ -199,6 +200,7 @@
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
                                         <option value="licencias.visita_avaluo">Fecha de visita</option>
                                         <option value="contratos.id">Folio</option>
+                                        <option value="cliente">Cliente</option>
                                     </select>
 
                                     
@@ -218,7 +220,7 @@
                                     </select>
                                     
                                     <input type="text" v-if="criterio2=='lotes.fraccionamiento_id'" v-model="b_lote2" class="form-control" placeholder="Lote a buscar">
-                                    <input type="text" v-else-if="criterio2=='contratos.id'" v-model="buscar2" class="form-control" placeholder="# de Folio">
+                                    <input type="text" v-else-if="criterio2=='contratos.id' || criterio2=='cliente'" v-model="buscar2" class="form-control" placeholder="Texto a buscar">
 
                                     <input v-else type="date"  v-model="buscar2" @keyup.enter="listarHistorialAvaluos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Texto a buscar">
                                    

@@ -120,6 +120,7 @@ class User extends Authenticatable
         'rep_ini_term_ventas',
         'rep_recursos_propios',
         'rep_vent_modelos',
+        'rep_detalles_post',
 
         
 

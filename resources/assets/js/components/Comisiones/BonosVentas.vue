@@ -24,6 +24,17 @@
                 <!-- Div Card Body para listar -->
                     <div class="card-body" v-if="historial == 0"> 
                         <div class="form-group row">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <!--Criterios para el listado de busqueda -->
+                                    <label class="form-control col-md-4" disabled>
+                                        Cliente:
+                                    </label>
+                                    <input type="text" v-model="b_cliente" @keyup.enter="listarPendientes(1)" class="form-control" placeholder="Cliente">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <div class="col-md-8">
                                 <div class="input-group">
                                     <select class="form-control"  @click="selectEtapas(b_proyecto)" v-model="b_proyecto" >
@@ -54,6 +65,8 @@
                                 </div>
                             </div>
                         </div>
+
+                        
                         <div class="table-responsive">
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
@@ -106,6 +119,17 @@
 
                 <!-- Div Card Body para listar historial-->
                     <div class="card-body" v-if="historial == 1"> 
+                        <div class="form-group row">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <!--Criterios para el listado de busqueda -->
+                                    <label class="form-control col-md-4" disabled>
+                                        Cliente:
+                                    </label>
+                                    <input type="text" v-model="b_cliente" @keyup.enter="listarHistorial(1)" class="form-control" placeholder="Cliente">
+                                </div>
+                            </div>
+                        </div>
                         <div class="form-group row">
                             <div class="col-md-8">
                                 <div class="input-group">
@@ -428,6 +452,7 @@
                 hoy:'',
                 folio : '',
                 bono_id:'',
+                b_cliente:'',
 
                 modal2:0,
                 proceso:0,
@@ -495,7 +520,8 @@
         methods : {
             listarPendientes(page){
                 let me = this;
-                var url = '/bonos_ventas/index_contratos?page=' + page + '&b_proyecto=' + this.b_proyecto + '&b_etapa=' + this.b_etapa + '&b_asesor=' + this.b_asesor_id;
+                var url = '/bonos_ventas/index_contratos?page=' + page + '&b_proyecto=' + this.b_proyecto + 
+                            '&b_etapa=' + this.b_etapa + '&b_asesor=' + this.b_asesor_id + '&cliente=' + this.b_cliente;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayPendientes = respuesta.contratos.data;
@@ -510,7 +536,7 @@
             listarHistorial(page){
                 let me = this;
                 var url = '/bonos_ventas/indexBonos?page=' + page + '&b_proyecto=' + this.b_proyecto + '&b_etapa=' + this.b_etapa
-                                        + '&b_manzana=' + this.b_manzana + '&b_lote=' + this.b_lote
+                                        + '&b_manzana=' + this.b_manzana + '&b_lote=' + this.b_lote  + '&cliente=' + this.b_cliente
                                          + '&b_asesor_id=' + this.b_asesor_id + '&desde=' + this.desde + '&hasta=' + this.hasta;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;

@@ -41,6 +41,7 @@ class BonoVentaController extends Controller
                                         'pc.num_pago','pc.fecha_pago','pc.pagado',
                                         'vendedores.tipo'
                             );
+                            
 
         if($request->b_proyecto == '' && $asesor == ''){
             $contratos = $contratos->where('pc.num_pago','=',0)
@@ -50,12 +51,14 @@ class BonoVentaController extends Controller
                                         ->where('contratos.exp_bono','=',1)
                                         ->where('contratos.status','=',3)
                                         ->where('creditos.bono','=',0)
+                                        ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $request->cliente . '%')
                                         ->orWhere('pc.num_pago','=',0)
                                         ->where('pc.pagado','=',3)
                                         ->where('pc.tipo_pagare','=',0)
                                         ->where('contratos.exp_bono','=',1)
                                         ->where('vendedores.tipo','=',0)
                                         ->where('creditos.bono','=',0)
+                                        ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $request->cliente . '%')
                                         ->where('contratos.status','=',3);
         }
         elseif($request->b_proyecto != '' && $asesor == '' && $request->b_etapa == ''){
@@ -66,6 +69,7 @@ class BonoVentaController extends Controller
                                         ->where('contratos.exp_bono','=',1)
                                         ->where('contratos.status','=',3)
                                         ->where('creditos.bono','=',0)
+                                        ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $request->cliente . '%')
                                         ->where('lotes.fraccionamiento_id','=',$request->b_proyecto)
                                         ->orWhere('pc.num_pago','=',0)
                                         ->where('pc.pagado','=',3)
@@ -73,6 +77,7 @@ class BonoVentaController extends Controller
                                         ->where('contratos.exp_bono','=',1)
                                         ->where('vendedores.tipo','=',0)
                                         ->where('creditos.bono','=',0)
+                                        ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $request->cliente . '%')
                                         ->where('contratos.status','=',3)
                                         ->where('lotes.fraccionamiento_id','=',$request->b_proyecto);
         }
@@ -84,6 +89,7 @@ class BonoVentaController extends Controller
                                         ->where('contratos.exp_bono','=',1)
                                         ->where('contratos.status','=',3)
                                         ->where('creditos.bono','=',0)
+                                        ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $request->cliente . '%')
                                         ->where('lotes.fraccionamiento_id','=',$request->b_proyecto)
                                         ->where('lotes.etapa_id','=',$request->b_etapa)
                                         ->orWhere('pc.num_pago','=',0)
@@ -92,6 +98,7 @@ class BonoVentaController extends Controller
                                         ->where('contratos.exp_bono','=',1)
                                         ->where('vendedores.tipo','=',0)
                                         ->where('creditos.bono','=',0)
+                                        ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $request->cliente . '%')
                                         ->where('contratos.status','=',3)
                                         ->where('lotes.fraccionamiento_id','=',$request->b_proyecto)
                                         ->where('lotes.etapa_id','=',$request->b_etapa);
@@ -104,6 +111,7 @@ class BonoVentaController extends Controller
                                             ->where('contratos.exp_bono','=',1)
                                             ->where('contratos.status','=',3)
                                             ->where('creditos.bono','=',0)
+                                            ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $request->cliente . '%')
                                             ->where('creditos.vendedor_id','=',$asesor)
                                             ->orWhere('pc.num_pago','=',0)
                                             ->where('pc.pagado','=',3)
@@ -111,6 +119,7 @@ class BonoVentaController extends Controller
                                             ->where('contratos.exp_bono','=',1)
                                             ->where('vendedores.tipo','=',0)
                                             ->where('creditos.bono','=',0)
+                                            ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $request->cliente . '%')
                                             ->where('contratos.status','=',3)
                                             ->where('creditos.vendedor_id','=',$asesor);
             }
@@ -122,6 +131,7 @@ class BonoVentaController extends Controller
                                         ->where('contratos.exp_bono','=',1)
                                         ->where('contratos.status','=',3)
                                         ->where('creditos.bono','=',0)
+                                        ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $request->cliente . '%')
                                         ->where('creditos.vendedor_id','=',$asesor)
                                         ->where('lotes.fraccionamiento_id','=',$request->b_proyecto)
                                         ->orWhere('pc.num_pago','=',0)
@@ -130,6 +140,7 @@ class BonoVentaController extends Controller
                                         ->where('contratos.exp_bono','=',1)
                                         ->where('vendedores.tipo','=',0)
                                         ->where('creditos.bono','=',0)
+                                        ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $request->cliente . '%')
                                         ->where('contratos.status','=',3)
                                         ->where('creditos.vendedor_id','=',$asesor)
                                         ->where('lotes.fraccionamiento_id','=',$request->b_proyecto);
@@ -142,6 +153,7 @@ class BonoVentaController extends Controller
                                         ->where('contratos.exp_bono','=',1)
                                         ->where('contratos.status','=',3)
                                         ->where('creditos.bono','=',0)
+                                        ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $request->cliente . '%')
                                         ->where('creditos.vendedor_id','=',$asesor)
                                         ->where('lotes.fraccionamiento_id','=',$request->b_proyecto)
                                         ->where('lotes.etapa_id','=',$request->b_etapa)
@@ -151,11 +163,14 @@ class BonoVentaController extends Controller
                                         ->where('contratos.exp_bono','=',1)
                                         ->where('vendedores.tipo','=',0)
                                         ->where('creditos.bono','=',0)
+                                        ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $request->cliente . '%')
                                         ->where('contratos.status','=',3)
                                         ->where('creditos.vendedor_id','=',$asesor)
                                         ->where('lotes.fraccionamiento_id','=',$request->b_proyecto)
                                         ->where('lotes.etapa_id','=',$request->b_etapa);
             }
+
+            
 
             $contratos = $contratos
                             ->orderBy('contratos.id','desc')
@@ -242,7 +257,8 @@ class BonoVentaController extends Controller
             $bonos = $bonos->where('creditos.vendedor_id','=',$request->b_asesor_id);
         }
 
-        $bonos = $bonos->orderBy('bonos_ventas.fecha_pago','desc')->paginate(8);
+        $bonos = $bonos->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $request->cliente . '%')
+                            ->orderBy('bonos_ventas.fecha_pago','desc')->paginate(8);
 
         if(sizeOf($bonos)){
             foreach($bonos as $index => $bono){
