@@ -654,6 +654,18 @@
                         </li>
                     @endif
 
+                    <li class="nav-item nav-dropdown">
+                        <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-book-open"></i> Cotizador de lotes</a>
+                        <ul class="nav-dropdown-items">
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" @click="menu=1003"><i class="icon-book-open"></i> Calculadora</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" @click="menu=1004"><i class="icon-book-open"></i> Opciones</a>
+                            </li>
+                        </ul>
+                    </li>
+
                     <!-- Manual para el administrador -->
                 @if(Auth::user()->rol_id == 1)
                     <li @click="menu=31" class="nav-item">

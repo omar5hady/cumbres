@@ -454,8 +454,11 @@ Route::group(['middleware' => ['auth']],function(){
             Route::get('/postventa/checklist/pdf/{folio}','RevisionPreviaController@DetallesPDF');
 
 
-        
-
+    ////////////////////////////     RUTAS temporales de lotes y calculadora de lotes     ///////////////////////////
+    Route::get('/calc/descuentos','CalculadoraLotesController@listarPorcentaje');
+    Route::put('/calc/descuentos/edita','CalculadoraLotesController@editaPorcentaje');
+    Route::get('/calc/lotes','CalculadoraLotesController@listaLotes');
+    Route::put('/calc/lote/edita','CalculadoraLotesController@editaLote');
 
     /**********************************RUTAS AVANCE*************************** */
         Route::get('/avance','AvanceController@index');

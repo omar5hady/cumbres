@@ -156,6 +156,8 @@ Vue.component('comision-bonos', require('./components/Comisiones/BonosVentas.vue
 Vue.component('solicitud-pagos', require('./components/PagosInternos/SolicPago.vue'));
 Vue.component('generar-solipago', require('./components/PagosInternos/GenerarSolicitud.vue'));
 
+Vue.component('cotizador-lote', require('./components/Cotizador.vue'));
+Vue.component('cotizador-opciones', require('./components/CotizadorOpciones.vue'));
 
 const app = new Vue({
     el: '#app',

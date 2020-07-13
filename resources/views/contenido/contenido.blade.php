@@ -456,7 +456,12 @@
             <reporte-detalles></reporte-detalles>
         </template>
 
-        
+        <template v-if="menu==1003">
+            <cotizador-lote></cotizador-lote>
+        </template>
+        <template v-if="menu==1004">
+            <cotizador-opciones></cotizador-opciones>
+        </template>
 
         
     @endif
