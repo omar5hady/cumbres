@@ -464,31 +464,27 @@ class FacturasController extends Controller
 
         $facturas = $facturas->distinct('dep_creditos.id')
         ->paginate(15);
-
+        
         foreach($facturas as $index => $f){
-
-            $totalDep = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+            $totalDep =0;
+            $totalDepCont = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                 ->join('pagos_contratos', 'contratos.id', '=', 'pagos_contratos.contrato_id')
                 ->join('depositos', 'pagos_contratos.id', '=', 'depositos.pago_id')
                 ->select(
-                    DB::raw('SUM(cant_depo) as pendiente'),
                     DB::raw('SUM(monto_terreno) as pagado')
                 )
                 ->where('contratos.id',$f->cId)
-                ->groupBy('pago_id')
             ->get();
             
             $saldoTotal = Dep_credito::select(
-                    DB::raw('SUM(cant_depo) as pendiente'),
                     DB::raw('SUM(monto_terreno) as pagado')
                 )
                 ->where('inst_sel_id',$f->insId)
-                ->groupBy('inst_sel_id')
             ->get();
 
-            if(sizeof($totalDep)){
-                $totalDep = $saldoTotal[0]->pagado + $totalDep[0]->pagado;
-            }else $totalDep = $saldoTotal[0]->pagado;
+            //if(sizeof($totalDepCont)){
+                $totalDep = $saldoTotal[0]->pagado + $totalDepCont[0]->pagado;
+            //}else $totalDep = $saldoTotal[0]->pagado;
 
             if($f->monto_terreno!=0){
                 $pendiente = ($f->valor_terreno - $totalDep)+$f->monto_terreno;
@@ -498,7 +494,6 @@ class FacturasController extends Controller
             $f->pendiente_terre = $pendiente;
             $f->porc_deposito = $f->cant_depo*($f->porcentaje_terreno/100);
         }
-
         return $facturas;
     }
 

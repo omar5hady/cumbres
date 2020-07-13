@@ -2545,7 +2545,9 @@ class DepositoController extends Controller
                     'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 'creditos.saldo_terreno',
                     'personal.nombre','personal.apellidos','depositos.concepto', 'creditos.valor_terreno',
                     'depositos.monto_terreno', 'depositos.fecha_ingreso_concretania', 'depositos.cuenta',
-                    'depositos.f_carga_factura_terreno','depositos.cuenta');
+                    'depositos.f_carga_factura_terreno','depositos.cuenta')
+            ->whereBetween('depositos.fecha_ingreso_concretania', [$request->fecha, $request->fecha2])
+            ->where('monto_terreno','>',0);
 
         $ingresosCreditos = Dep_credito::join('inst_seleccionadas','inst_seleccionadas.id','=','dep_creditos.inst_sel_id')
             ->join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
@@ -2557,17 +2559,42 @@ class DepositoController extends Controller
                     'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 'creditos.saldo_terreno',
                     'personal.nombre','personal.apellidos', 'dep_creditos.concepto', 'creditos.valor_terreno',
                     'dep_creditos.monto_terreno', 'dep_creditos.fecha_ingreso_concretania', 'dep_creditos.cuenta',
-                    'dep_creditos.f_carga_factura_terreno','dep_creditos.cuenta');
+                    'dep_creditos.f_carga_factura_terreno','dep_creditos.cuenta')
+            ->whereBetween('dep_creditos.fecha_ingreso_concretania', [$request->fecha, $request->fecha2])
+            ->where('monto_terreno','>',0);
+
+        
+
+        
+        if($request->buscar != '')                            
+        switch($request->criterio){
+            case 'cliente':{
+                $depositos = $depositos->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $request->buscar . '%');
+                $ingresosCreditos = $ingresosCreditos->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $request->buscar . '%');
+                break;
+            }
+            case 'fraccionamiento':{
+                $depositos = $depositos->where('lotes.fraccionamiento_id','=',$request->buscar);;
+                $ingresosCreditos = $ingresosCreditos->where('lotes.fraccionamiento_id','=',$request->buscar);;
+                
+                if($request->etapa != '')
+                    $depositos = $depositos->where('lotes.etapa_id','=',$request->etapa);
+                    $ingresosCreditos = $ingresosCreditos->where('lotes.etapa_id','=',$request->etapa);
+                if($request->manzana != '')
+                    $depositos = $depositos->where('lotes.manzana', 'like', '%'. $request->manzana . '%');
+                    $ingresosCreditos = $ingresosCreditos->where('lotes.manzana', 'like', '%'. $request->manzana . '%');
+                if($request->lote != '')
+                    $depositos = $depositos->where('lotes.num_lote','=',$request->lote);
+                    $ingresosCreditos = $ingresosCreditos->where('lotes.num_lote','=',$request->lote);
+                break;
+            }
+        }
 
             
 
         $depositos = $depositos
-                    ->whereBetween('depositos.fecha_ingreso_concretania', [$request->fecha, $request->fecha2])
-                    ->where('monto_terreno','>',0)
                     ->get();
         $ingresosCreditos = $ingresosCreditos
-                    ->whereBetween('dep_creditos.fecha_ingreso_concretania', [$request->fecha, $request->fecha2])
-                    ->where('monto_terreno','>',0)
                     ->get();
 
         $cont =1;

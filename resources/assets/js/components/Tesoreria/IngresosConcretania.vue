@@ -15,9 +15,14 @@
                         </button>
                         &nbsp;
                         <button v-if="historial == 0" type="button" @click="historial=1" class="btn btn-primary">
-                            <i class="fa fa-calendar-check-o"></i>&nbsp;Historial
+                            <i class="fa fa-calendar-check-o"></i>&nbsp;Historial de ingresos
                         </button>
-                        <button v-if="historial == 1" type="button" @click="historial=0" class="btn btn-default">
+
+                        <button v-if="historial == 0" type="button" @click="historial=2" class="btn btn-darkfont ">
+                            <i class="fa fa-money"></i>&nbsp;Estado de cuenta
+                        </button>
+
+                        <button v-if="historial == 1 || historial == 2" type="button" @click="historial=0" class="btn btn-default">
                             <i class="fa fa-mail-reply"></i>&nbsp;Regresar
                         </button>
                         <!---->
@@ -39,7 +44,7 @@
                         <div class="form-group row">
                             <div class="col-md-9">
                                 <div class="input-group">
-                                    <button type="submit" @click="listarLotes(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <button type="submit" @click="listarLotes()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </div>
@@ -94,14 +99,14 @@
                                         <option value="fraccionamiento">Fraccionamiento</option>
                                     </select>
                                     <template v-if="criterio == 'cliente'">
-                                        <input type="text" class="form-control" v-model="buscar" placeholder="Cliente">
+                                        <input type="text" class="form-control" v-model="buscar" placeholder="Cliente" @keyup.enter="listarHistorial()">
                                     </template>
                                     <template v-else-if="criterio == 'fraccionamiento'">
-                                        <select class="form-control" @click="selectEtapa(buscar)" v-model="buscar" >
+                                        <select class="form-control" @click="selectEtapa(buscar)" v-model="buscar" @keyup.enter="listarHistorial()" >
                                             <option value="">Seleccionar</option>
                                             <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                         </select>
-                                        <select class="form-control" v-model="b_etapa"> 
+                                        <select class="form-control" v-model="b_etapa" @keyup.enter="listarHistorial()"> 
                                             <option value="">Etapa</option>
                                             <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                         </select>
@@ -111,8 +116,8 @@
                             </div>
                             <div class="col-md-7" v-if="criterio=='fraccionamiento'">
                                 <div class="input-group">
-                                    <input type="text" class="form-control" v-model="b_manzana" placeholder="Manzana">
-                                    <input type="text" class="form-control" v-model="b_lote" placeholder="Lote">
+                                    <input type="text" class="form-control" v-model="b_manzana" placeholder="Manzana" @keyup.enter="listarHistorial()">
+                                    <input type="text" class="form-control" v-model="b_lote" placeholder="Lote" @keyup.enter="listarHistorial()">
                                 </div>
                             </div>
                             
@@ -136,11 +141,11 @@
                         <div class="form-group row">
                             <div class="col-md-5">
                                 <div class="input-group">
-                                    <select class="form-control" v-model="b_cuenta">
+                                    <select class="form-control" v-model="b_cuenta" @keyup.enter="listarHistorial()">
                                         <option value="">Seleccione</option>
                                         <option v-for="banco in arrayBancos" :key="banco.num_cuenta + '-' + banco.banco" :value="banco.num_cuenta + '-' + banco.banco" v-text="banco.num_cuenta + '-' + banco.banco"></option>
                                     </select>
-                                    <button type="submit" @click="listarHistorial(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <button type="submit" @click="listarHistorial()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </div>
@@ -188,6 +193,110 @@
                             </table>
                         </div>
                         
+                    </div>
+
+                    <div class="card-body" v-if="historial == 2">
+                        <div class="form-group row">
+                            <div class="col-md-7">
+                                <div class="input-group">
+                                    <!--Criterios para el listado de busqueda -->
+                                    <select class="form-control" v-model="criterio">
+                                        <option value="cliente">Cliente</option>
+                                        <option value="fraccionamiento">Fraccionamiento</option>
+                                    </select>
+                                    <template v-if="criterio == 'cliente'">
+                                        <input type="text" class="form-control" v-model="buscar" placeholder="Cliente" @keyup.enter="listarContratos()">
+                                    </template>
+                                    <template v-else-if="criterio == 'fraccionamiento'">
+                                        <select class="form-control" @click="selectEtapa(buscar)" v-model="buscar" @keyup.enter="listarContratos()">
+                                            <option value="">Seleccionar</option>
+                                            <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                        </select>
+                                        <select class="form-control" v-model="b_etapa" @keyup.enter="listarContratos()"> 
+                                            <option value="">Etapa</option>
+                                            <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                        </select>
+                                    </template>
+                                    
+                                </div>
+                            </div>
+                            <div class="col-md-7" v-if="criterio=='fraccionamiento'">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" v-model="b_manzana" placeholder="Manzana" @keyup.enter="listarContratos()">
+                                    <input type="text" class="form-control" v-model="b_lote" placeholder="Lote" @keyup.enter="listarContratos()">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-5">
+                                <div class="input-group">
+                                    <button type="submit" @click="listarContratos()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                        <div class="table-responsive">
+                            <table class="table2 table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Fraccionamiento</th>
+                                        <th>Etapa</th>
+                                        <th>Manzana</th>
+                                        <th># Lote</th>
+                                        <th>Cliente</th>
+                                        <th>Valor de venta</th>
+                                        <th>Valor de terreno</th>
+                                        <th>Total pagado</th>
+                                        <th>Por pagar</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="lote in arrayCuenta" :key="lote.id">
+                                        
+                                        <td v-text="lote.fraccionamiento"></td>
+                                        <td v-text="lote.etapa"></td>
+                                        <td v-text="lote.manzana"></td>
+                                        <td v-text="lote.num_lote"></td>
+                                        <td class="td2" v-text="lote.nombre + ' ' + lote.apellidos"></td>
+                                        <td class="td2" v-text="'$'+formatNumber(lote.precio_venta)"></td>
+                                        <td class="td2" v-text="'$'+formatNumber(lote.monto_terreno)"></td>
+                                        <td class="td2" v-text="'$'+formatNumber(lote.saldo_terreno)"></td>
+                                        <td class="td2" v-text="'$'+formatNumber(lote.monto_terreno - lote.saldo_terreno)"></td>
+                                        
+                                            <td class="td2" v-if="lote.status == '1'">
+                                                <span class="badge badge-warning">Pendiente</span>
+                                            </td>
+                                            <td class="td2" v-if="lote.status == '3'">
+                                                <span class="badge badge-success">Firmado</span>
+                                            </td>
+                                    </tr>  
+                                                            
+                                </tbody>
+                            </table>
+                        </div>
+                        <nav>
+                            <!--Botones de paginacion -->
+                            <ul class="pagination">
+                                <li class="page-item" v-if="pagination.last_page > 7 && pagination.current_page > 7">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(1)">Inicio</a>
+                                </li>
+                                <li class="page-item" v-if="pagination.current_page > 1">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1)">Ant</a>
+                                </li>
+                                <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page)" v-text="page"></a>
+                                </li>
+                                <li class="page-item" v-if="pagination.current_page < pagination.last_page">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1)">Sig</a>
+                                </li>
+                                <li class="page-item" v-if="pagination.last_page > 7 && pagination.current_page<pagination.last_page">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.last_page)">Ultimo</a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
 
                 </div>
@@ -331,6 +440,7 @@
                 arrayEtapas: [],
                 arrayBancos: [],
                 arrayFraccionamientos:[],
+                arrayCuenta:[],
                 modal : 0,
                 tituloModal : '',
                 tipoAccion: 0,
@@ -351,6 +461,16 @@
                 cuenta:'',
                 criterio:'cliente',
                 total:0,
+
+                 pagination : {
+                    'total' : 0,         
+                    'current_page' : 0,
+                    'per_page' : 0,
+                    'last_page' : 0,
+                    'from' : 0,
+                    'to' : 0,
+                },
+                offset : 3,
 
                 monto_terreno:0,
                 saldo:0,
@@ -373,6 +493,32 @@
                     total = 0;
                 total = Math.round(total*100)/100;
                 return total;
+            },
+            isActived: function(){
+                return this.pagination.current_page;
+            },
+            //Calcula los elementos de la paginación
+            pagesNumber:function(){
+                if(!this.pagination.to){
+                    return [];
+                }
+
+                var from = this.pagination.current_page - this.offset;
+                if(from < 1){
+                    from = 1;
+                }
+
+                var to = from + (this.offset * 2);
+                if(to >= this.pagination.last_page){
+                    to = this.pagination.last_page;
+                }
+
+                var pagesArray = [];
+                while(from <= to){
+                    pagesArray.push(from);
+                    from++;
+                }
+                return pagesArray;
             },
 
 
@@ -411,6 +557,14 @@
                 });
             },
 
+            cambiarPagina(page){
+                let me = this;
+                //Actualiza la pagina actual
+                me.pagination.current_page = page;
+                //Envia la petición para visualizar la data de esta pagina
+                me.listarContratos(page);
+            },
+
             selectEtapa(buscar){
                 let me = this;
                 if(me.modal == 0){
@@ -445,10 +599,10 @@
             },
 
             /**Metodo para mostrar los registros */
-            listarLotes(page){
+            listarLotes(){
                 let me = this;
                 me.lotes_ini = [];
-                var url = '/ingresosConcretania/pendeintesIngresar?&b_fecha=' + me.b_fecha + '&b_fecha2=' + me.b_fecha2;
+                var url = '/ingresosConcretania/pendeintesIngresar?b_fecha=' + me.b_fecha + '&b_fecha2=' + me.b_fecha2;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLotes = respuesta.pendientes;
@@ -458,10 +612,27 @@
                 });
             },
 
-            /**Metodo para mostrar los registros */
-            listarHistorial(page){
+            listarContratos(page){
                 let me = this;
-                var url = '/ingresosConcretania/historialIngresos?fecha=' + me.b_fecha + '&fecha2=' + me.b_fecha2;
+                me.lotes_ini = [];
+                var url = '/ingresosConcretania/indexEdoCuentaTerreno?page=' + page + '&buscar=' + me.buscar + '&etapa=' + me.b_etapa
+                + '&manzana=' + me.b_manzana + '&lote=' + me.b_lote + '&criterio=' + me.criterio;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayCuenta = respuesta.contratos.data;
+                    me.pagination = respuesta.pagination;
+                    
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            /**Metodo para mostrar los registros */
+            listarHistorial(){
+                let me = this;
+                var url = '/ingresosConcretania/historialIngresos?fecha=' + me.b_fecha + '&fecha2=' + me.b_fecha2 + '&buscar=' + me.buscar + '&etapa=' + me.b_etapa
+                + '&manzana=' + me.b_manzana + '&lote=' + me.b_lote + '&criterio=' + me.criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayHistorial = respuesta.ingresos;
@@ -469,6 +640,14 @@
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+
+            cambiarPagina(page){
+                let me = this;
+                //Actualiza la pagina actual
+                me.pagination.current_page = page;
+                //Envia la petición para visualizar la data de esta pagina
+                me.listarContratos(page);
             },
 
             registrarIngreso(){
@@ -506,7 +685,7 @@
                 me.proceso=false;
                 me.ver=1;
                 me.cerrarModal();
-                me.listarLotes(1);
+                me.listarLotes();
                 
             },
             
@@ -568,9 +747,10 @@
             }
         },
         mounted() {
-            this.listarLotes(1);
+            this.listarLotes();
             this.selectFraccionamientos();
             this.selectCuenta();
+            this.listarContratos();
         }
     }
 </script>
