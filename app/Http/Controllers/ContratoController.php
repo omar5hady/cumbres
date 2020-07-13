@@ -25,6 +25,7 @@ use App\Licencia;
 use App\Expediente;
 use App\Gasto_admin;
 use App\Deposito;
+use App\Dep_credito;
 use App\Precios_terreno;
 use App\Lote;
 use App\Modelo;
@@ -3597,7 +3598,27 @@ class ContratoController extends Controller
                     $sumaDeposito[0]->suma = 0;
                 }
 
-                $sumaTotal =  $sumaIntereses[0]->suma + $sumaGastos[0]->suma - $sumaDeposito[0]->suma;
+            $sumaDepositoCredit = Dep_credito::join('inst_seleccionadas','dep_creditos.inst_sel_id','=','inst_seleccionadas.id')
+                ->join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
+                ->join('contratos','creditos.id','=','contratos.id')
+                ->select(DB::raw("SUM(dep_creditos.cant_depo) as suma"))->where('contratos.id','=',$request->contrato_id)
+                ->where('inst_seleccionadas.elegido','=',1)
+                ->get();
+                if($sumaDepositoCredit[0]->suma == NULL){
+                    $sumaDepositoCredit[0]->suma = 0;
+                }
+
+            $sumaDepositoCredit2 = Dep_credito::join('inst_seleccionadas','dep_creditos.inst_sel_id','=','inst_seleccionadas.id')
+                ->join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
+                ->join('contratos','creditos.id','=','contratos.id')
+                ->select(DB::raw("SUM(dep_creditos.cant_depo) as suma"))->where('contratos.id','=',$request->contrato_id)
+                ->where('inst_seleccionadas.tipo','=',1)
+                ->get();
+                if($sumaDepositoCredit[0]->suma == NULL){
+                    $sumaDepositoCredit[0]->suma = 0;
+                }
+
+                $sumaTotal =  $sumaIntereses[0]->suma + $sumaGastos[0]->suma - $sumaDeposito[0]->suma + $sumaDepositoCredit[0]->suma + $sumaDepositoCredit2[0]->suma;
 
             $contrato->saldo = $credito->precio_venta + $sumaTotal;
 

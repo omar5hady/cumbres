@@ -1764,7 +1764,20 @@ class DepositoController extends Controller
         $contratos = $contratos->orderBy('contratos.saldo','desc')
                         ->orderBy('contratos.id','asc')
                         ->paginate(15);
-       
+        if(sizeOf($contratos)){
+            foreach($contratos as $index => $contrato){
+                $instEle = inst_seleccionada::select('monto_credito','cobrado')->where('credito_id','=',$contrato->folio)->where('elegido','=',1)->get();
+                $instEle2 = inst_seleccionada::select('monto_credito','cobrado')->where('credito_id','=',$contrato->folio)->where('tipo','=',1)->get();
+                $cobrado = 0;
+                $monto_credito = 0;
+                if(sizeOf($instEle2)){
+                    $cobrado = $instEle2[0]->cobrado;
+                    $monto_credito = $instEle2[0]->monto_credito;
+                }
+                $contrato->cobrado = $instEle[0]->cobrado + $cobrado;
+                $contrato->credito_solic = $instEle[0]->monto_credito + $monto_credito;
+            }
+        }
 
         return [
             'pagination' => [
@@ -2210,13 +2223,28 @@ class DepositoController extends Controller
                                 ->orderBy('contratos.id','asc')
                                 ->get();
 
+        if(sizeOf($contratos)){
+            foreach($contratos as $index => $contrato){
+                $instEle = inst_seleccionada::select('monto_credito','cobrado')->where('credito_id','=',$contrato->folio)->where('elegido','=',1)->get();
+                $instEle2 = inst_seleccionada::select('monto_credito','cobrado')->where('credito_id','=',$contrato->folio)->where('tipo','=',1)->get();
+                $cobrado = 0;
+                $monto_credito = 0;
+                if(sizeOf($instEle2)){
+                    $cobrado = $instEle2[0]->cobrado;
+                    $monto_credito = $instEle2[0]->monto_credito;
+                }
+                $contrato->cobrado = $instEle[0]->cobrado + $cobrado;
+                $contrato->credito_solic = $instEle[0]->monto_credito + $monto_credito;
+            }
+        }
+
         return Excel::create('Relacion estado de cuenta', function($excel) use ($contratos){
             $excel->sheet('Contratos', function($sheet) use ($contratos){
                 
                 $sheet->row(1, [
                     '# Ref', 'Cliente', 'Proyecto', 'Etapa', 'Manzana', '# Lote',
                     'Avance', 'Precio de Venta', 'Valor a escriturar','Pagares pendientes','Total enganche','Depositos',
-                    'Enganche pendiente','Crédito','Pendiente de crédito','Gastos administrativos', 'Descuento', 'Saldo'
+                    'Enganche pendiente','Crédito','Crédito cobrado','Gastos administrativos', 'Descuento', 'Saldo'
                 ]);
 
                 $sheet->cells('A1:R1', function ($cells) {
@@ -2270,7 +2298,7 @@ class DepositoController extends Controller
                         $depositos,
                         $contrato->pendiente_enganche,
                         $credito,
-                        $pendienteCredito,
+                        $contrato->cobrado,
                         $contrato->gastos,
                         $contrato->descuento,
                         $contrato->saldo,
