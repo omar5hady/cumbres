@@ -654,7 +654,7 @@ class InstSeleccionadasController extends Controller
 
                 $persona = Personal::findOrFail($id);
 
-                Mail::to($persona->email)->send(new NotificationReceived($msj));
+                ///Mail::to($persona->email)->send(new NotificationReceived($msj));
             }
             
 
@@ -1243,7 +1243,8 @@ class InstSeleccionadasController extends Controller
             $creditos= $creditos->where('lotes.emp_constructora','=',$request->b_empresa);
         }
 
-        $creditos = $creditos->orderBy('inst_seleccionadas.cobrado','asc')
+        $creditos = $creditos->where('contratos.status','!=',0)
+                            ->orderBy('inst_seleccionadas.cobrado','asc')
                             ->orderBy('inst_seleccionadas.monto_credito','desc')
                             ->paginate(10);
         

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Deposito;
 use App\Contrato;
+use App\Credito;
 use App\Pago_contrato;
 use Carbon\Carbon;
 use DB;
@@ -62,7 +63,8 @@ class DepositoController extends Controller
                     ->where('pagos_contratos.pagado','!=',3)
                     ->where('contratos.status','!=',0)
                     ->where('contratos.status','!=',2) 
-                    ->where('pagos_contratos.fecha_pago','<',$hoy);
+                    ->where('pagos_contratos.fecha_pago','<',$hoy)
+                    ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
             }
             else{
                 switch($criterio){
@@ -74,12 +76,14 @@ class DepositoController extends Controller
                             ->where('contratos.status','!=',2)
                             ->where('pagos_contratos.fecha_pago','<',$hoy)
                             ->where('personal.nombre','like', '%'. $buscar . '%')
+                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
                             ->orWhere('pagos_contratos.pagado','!=',2)
                             ->where('pagos_contratos.pagado','!=',3)
                             ->where('contratos.status','!=',0)
                             ->where('contratos.status','!=',2)
                             ->where('pagos_contratos.fecha_pago','<',$hoy)
-                            ->where('personal.apellidos','like', '%'. $buscar . '%');
+                            ->where('personal.apellidos','like', '%'. $buscar . '%')
+                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
                         break;
                     }
                     case 'pagos_contratos.fecha_pago':{
@@ -89,7 +93,8 @@ class DepositoController extends Controller
                             ->where('contratos.status','!=',0)
                             ->where('contratos.status','!=',2)
                             ->where('pagos_contratos.fecha_pago','<',$hoy)
-                            ->whereBetween($criterio, [$buscar,$buscar2]);
+                            ->whereBetween($criterio, [$buscar,$buscar2])
+                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
                         break;
                     }
                     case 'creditos.fraccionamiento':{
@@ -100,7 +105,8 @@ class DepositoController extends Controller
                                 ->where('contratos.status','!=',0)
                                 ->where('contratos.status','!=',2)
                                 ->where('pagos_contratos.fecha_pago','<',$hoy)
-                                ->where($criterio,'=',$buscar);
+                                ->where($criterio,'=',$buscar)
+                                ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
                         }
                         if($buscar!='' && $buscar2 !='' && $buscar3 == ''){
                             $pagares = $query
@@ -110,7 +116,8 @@ class DepositoController extends Controller
                                 ->where('contratos.status','!=',2)
                                 ->where('pagos_contratos.fecha_pago','<',$hoy)
                                 ->where($criterio,'=',$buscar)
-                                ->where('creditos.etapa','=',$buscar2);
+                                ->where('creditos.etapa','=',$buscar2)
+                                ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
                         }
                         if($buscar!='' && $buscar2 !='' && $buscar3 != ''){
                             $pagares = $query
@@ -121,7 +128,8 @@ class DepositoController extends Controller
                                 ->where('pagos_contratos.fecha_pago','<',$hoy)
                                 ->where($criterio,'=',$buscar)
                                 ->where('creditos.etapa','=',$buscar2)
-                                ->where('creditos.manzana','=',$buscar3);
+                                ->where('creditos.manzana','=',$buscar3)
+                                ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
                         }
                         break;
                     }
@@ -132,7 +140,8 @@ class DepositoController extends Controller
                             ->where('contratos.status','!=',0)
                             ->where('contratos.status','!=',2)
                             ->where('pagos_contratos.fecha_pago','<',$hoy)
-                            ->where($criterio,'=',$buscar);
+                            ->where($criterio,'=',$buscar)
+                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
                         break;
                     }
                 }
@@ -145,7 +154,9 @@ class DepositoController extends Controller
                     //
                 
                     ->where('contratos.status','=',0)
-                    ->orWhere('contratos.status','=',2);
+                    ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
+                    ->orWhere('contratos.status','=',2)
+                    ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
             }
             else{
                 switch($criterio){
@@ -155,15 +166,19 @@ class DepositoController extends Controller
                         
                             ->where('contratos.status','=',0)
                             ->where('personal.nombre','like', '%'. $buscar . '%')
+                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
 
                             ->orWhere('contratos.status','=',2)
                             ->where('personal.nombre','like', '%'. $buscar . '%')
+                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
 
                             ->orWhere('contratos.status','=',2)
                             ->where('personal.apellidos','like', '%'. $buscar . '%')
+                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
 
                             ->orWhere('contratos.status','=',0)
-                            ->where('personal.apellidos','like', '%'. $buscar . '%');
+                            ->where('personal.apellidos','like', '%'. $buscar . '%')
+                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
                         break;
                     }
                     case 'pagos_contratos.fecha_pago':{
@@ -171,9 +186,11 @@ class DepositoController extends Controller
                             
                             ->where('contratos.status','=',0)
                             ->whereBetween($criterio, [$buscar,$buscar2])
+                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
 
                             ->orWhere('contratos.status','=',2)
-                            ->whereBetween($criterio, [$buscar,$buscar2]);
+                            ->whereBetween($criterio, [$buscar,$buscar2])
+                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
                         break;
                     }
                     case 'creditos.fraccionamiento':{
@@ -182,8 +199,10 @@ class DepositoController extends Controller
                             
                                 ->where('contratos.status','=',0)
                                 ->where($criterio,'=',$buscar)
+                                ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
                                 ->orWhere('contratos.status','=',2)
-                                ->where($criterio,'=',$buscar);
+                                ->where($criterio,'=',$buscar)
+                                ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
                         }
                         if($buscar!='' && $buscar2 !='' && $buscar3 == ''){
                             $pagares = $query
@@ -191,9 +210,11 @@ class DepositoController extends Controller
                                 ->where('contratos.status','=',0)
                                 ->where($criterio,'=',$buscar)
                                 ->where('creditos.etapa','=',$buscar2)
+                                ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
                                 ->orWhere('contratos.status','=',2)
                                 ->where($criterio,'=',$buscar)
-                                ->where('creditos.etapa','=',$buscar2);
+                                ->where('creditos.etapa','=',$buscar2)
+                                ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
                         }
                         if($buscar!='' && $buscar2 !='' && $buscar3 != ''){
                             $pagares = $query
@@ -202,10 +223,12 @@ class DepositoController extends Controller
                                 ->where($criterio,'=',$buscar)
                                 ->where('creditos.etapa','=',$buscar2)
                                 ->where('creditos.manzana','=',$buscar3)
+                                ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
                                 ->orWhere('contratos.status','=',2)
                                 ->where($criterio,'=',$buscar)
                                 ->where('creditos.etapa','=',$buscar2)
-                                ->where('creditos.manzana','=',$buscar3);
+                                ->where('creditos.manzana','=',$buscar3)
+                                ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
                         }
                         break;
                     }
@@ -214,8 +237,10 @@ class DepositoController extends Controller
                             
                             ->where('contratos.status','=',0)
                             ->where($criterio,'=',$buscar)
+                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
                             ->orWhere('contratos.status','=',2)
-                            ->where($criterio,'=',$buscar);
+                            ->where($criterio,'=',$buscar)
+                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
                         break;
                     }
                 }
@@ -226,7 +251,9 @@ class DepositoController extends Controller
             if($buscar==''){
                 $pagares = $query
                             ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2);
+                            ->where('contratos.status','!=',2)
+                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
+                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
             }
             else{
                 switch($criterio){
@@ -235,8 +262,12 @@ class DepositoController extends Controller
                             ->where('personal.nombre','like', '%'. $buscar . '%')
                             ->where('contratos.status','!=',0)
                             ->where('contratos.status','!=',2)
+                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
+                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
                             ->orwhere('personal.apellidos','like', '%'. $buscar . '%')
+                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
                             ->where('contratos.status','!=',0)
+                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
                             ->where('contratos.status','!=',2);
                         break;
                     }
@@ -244,7 +275,9 @@ class DepositoController extends Controller
                         $pagares = $query
                             ->whereBetween($criterio, [$buscar,$buscar2])
                             ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2);
+                            ->where('contratos.status','!=',2)
+                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
+                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
                         break;
                     }
                     case 'creditos.fraccionamiento':{
@@ -252,6 +285,7 @@ class DepositoController extends Controller
                             $pagares = $query
                                 ->where($criterio,'=',$buscar)
                                 ->where('contratos.status','!=',0)
+                                ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
                                 ->where('contratos.status','!=',2);
                         }
                         if($buscar!='' && $buscar2 !='' && $buscar3 == ''){
@@ -259,6 +293,7 @@ class DepositoController extends Controller
                                 ->where($criterio,'=',$buscar)
                                 ->where('creditos.etapa','=',$buscar2)
                                 ->where('contratos.status','!=',0)
+                                ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
                                 ->where('contratos.status','!=',2);
                         }
                         if($buscar!='' && $buscar2 !='' && $buscar3 != ''){
@@ -267,6 +302,7 @@ class DepositoController extends Controller
                                 ->where('creditos.etapa','=',$buscar2)
                                 ->where('creditos.manzana','=',$buscar3)
                                 ->where('contratos.status','!=',0)
+                                ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
                                 ->where('contratos.status','!=',2);
                         }
                         break;
@@ -275,6 +311,7 @@ class DepositoController extends Controller
                         $pagares = $query
                             ->where($criterio,'=',$buscar)
                             ->where('contratos.status','!=',0)
+                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
                             ->where('contratos.status','!=',2);
                         break;
                     }
@@ -282,9 +319,7 @@ class DepositoController extends Controller
             }
         }
 
-        if($request->b_empresa != ''){
-            $pagares= $pagares->where('lotes.emp_constructora','=',$request->b_empresa);
-        }
+        
 
         $pagares = $pagares->orderBy('pagos_contratos.pagado', 'asc')
                         ->orderBy('pagos_contratos.fecha_pago', 'asc')
@@ -1066,7 +1101,7 @@ class DepositoController extends Controller
 
                         $persona = Personal::findOrFail($id);
 
-                        Mail::to($persona->email)->send(new NotificationReceived($msj1));
+                        // Mail::to($persona->email)->send(new NotificationReceived($msj1));
                     }
                 }
             }
@@ -1091,7 +1126,7 @@ class DepositoController extends Controller
 
                     $persona = Personal::findOrFail($id);
 
-                    Mail::to($persona->email)->send(new NotificationReceived($msj));
+                    // Mail::to($persona->email)->send(new NotificationReceived($msj));
                 }
             }
 
@@ -1729,7 +1764,20 @@ class DepositoController extends Controller
         $contratos = $contratos->orderBy('contratos.saldo','desc')
                         ->orderBy('contratos.id','asc')
                         ->paginate(15);
-       
+        if(sizeOf($contratos)){
+            foreach($contratos as $index => $contrato){
+                $instEle = inst_seleccionada::select('monto_credito','cobrado')->where('credito_id','=',$contrato->folio)->where('elegido','=',1)->get();
+                $instEle2 = inst_seleccionada::select('monto_credito','cobrado')->where('credito_id','=',$contrato->folio)->where('tipo','=',1)->get();
+                $cobrado = 0;
+                $monto_credito = 0;
+                if(sizeOf($instEle2)){
+                    $cobrado = $instEle2[0]->cobrado;
+                    $monto_credito = $instEle2[0]->monto_credito;
+                }
+                $contrato->cobrado = $instEle[0]->cobrado + $cobrado;
+                $contrato->credito_solic = $instEle[0]->monto_credito + $monto_credito;
+            }
+        }
 
         return [
             'pagination' => [
@@ -2175,13 +2223,28 @@ class DepositoController extends Controller
                                 ->orderBy('contratos.id','asc')
                                 ->get();
 
+        if(sizeOf($contratos)){
+            foreach($contratos as $index => $contrato){
+                $instEle = inst_seleccionada::select('monto_credito','cobrado')->where('credito_id','=',$contrato->folio)->where('elegido','=',1)->get();
+                $instEle2 = inst_seleccionada::select('monto_credito','cobrado')->where('credito_id','=',$contrato->folio)->where('tipo','=',1)->get();
+                $cobrado = 0;
+                $monto_credito = 0;
+                if(sizeOf($instEle2)){
+                    $cobrado = $instEle2[0]->cobrado;
+                    $monto_credito = $instEle2[0]->monto_credito;
+                }
+                $contrato->cobrado = $instEle[0]->cobrado + $cobrado;
+                $contrato->credito_solic = $instEle[0]->monto_credito + $monto_credito;
+            }
+        }
+
         return Excel::create('Relacion estado de cuenta', function($excel) use ($contratos){
             $excel->sheet('Contratos', function($sheet) use ($contratos){
                 
                 $sheet->row(1, [
                     '# Ref', 'Cliente', 'Proyecto', 'Etapa', 'Manzana', '# Lote',
                     'Avance', 'Precio de Venta', 'Valor a escriturar','Pagares pendientes','Total enganche','Depositos',
-                    'Enganche pendiente','Crédito','Pendiente de crédito','Gastos administrativos', 'Descuento', 'Saldo'
+                    'Enganche pendiente','Crédito','Crédito cobrado','Gastos administrativos', 'Descuento', 'Saldo'
                 ]);
 
                 $sheet->cells('A1:R1', function ($cells) {
@@ -2235,7 +2298,7 @@ class DepositoController extends Controller
                         $depositos,
                         $contrato->pendiente_enganche,
                         $credito,
-                        $pendienteCredito,
+                        $contrato->cobrado,
                         $contrato->gastos,
                         $contrato->descuento,
                         $contrato->saldo,
@@ -2382,4 +2445,183 @@ class DepositoController extends Controller
         $pdf = \PDF::loadview('pdf.contratos.estadoDeCuenta', ['contratos' => $contratos, 'depositos' => $depositos, 'gastos_admin' => $gastos_admin, 'depositos_credito' => $depositos_credito]);
         return $pdf->stream('EstadoDeCuenta.pdf');
     }
+
+    public function pendeintesIngresar(Request $request){
+        if(!$request->ajax())return redirect('/');
+        $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+            ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+            ->join('creditos','creditos.id','=','contratos.id')
+            ->join('lotes','creditos.lote_id','=','lotes.id')
+            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+            ->join('personal','clientes.id','=','personal.id')
+            ->select('contratos.id','depositos.id as depId',
+                    'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
+                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
+                    'personal.nombre','personal.apellidos','depositos.concepto',
+                    'depositos.monto_terreno', 
+                    'depositos.f_carga_factura_terreno','depositos.cuenta');
+
+        $ingresosCreditos = Dep_credito::join('inst_seleccionadas','inst_seleccionadas.id','=','dep_creditos.inst_sel_id')
+            ->join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+            ->join('contratos','contratos.id','=','creditos.id')
+            ->join('lotes','lotes.id','=','creditos.lote_id')
+            ->join('personal','personal.id','=','creditos.prospecto_id')
+            ->select('contratos.id', 'dep_creditos.id as depId',
+                    'dep_creditos.fecha_deposito as fecha_pago','creditos.fraccionamiento',
+                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                    'personal.nombre','personal.apellidos', 'dep_creditos.concepto',
+                    'dep_creditos.monto_terreno', 
+                    'dep_creditos.f_carga_factura_terreno','dep_creditos.cuenta');
+
+            if($request->b_fecha != '' && $request->b_fecha2 != ''){
+                $depositos = $depositos->whereBetween('depositos.f_carga_factura_terreno', [$request->b_fecha, $request->b_fecha2]);
+                $ingresosCreditos = $ingresosCreditos->whereBetween('dep_creditos.f_carga_factura_terreno', [$request->b_fecha, $request->b_fecha2]);
+            }
+
+        $depositos = $depositos
+                    ->where('monto_terreno','>',0)
+                    ->where('fecha_ingreso_concretania','=',NULL)
+                    ->get();
+        $ingresosCreditos = $ingresosCreditos
+                    ->where('monto_terreno','>',0)
+                    ->where('fecha_ingreso_concretania','=',NULL)
+                    ->get();
+
+        $cont =1;
+        if(sizeof($depositos))
+        foreach($depositos as $index => $dep){
+            $dep->cont = $cont;
+            $dep->tipo = 0;
+            $cont++;
+        }
+
+        if(sizeof($ingresosCreditos))
+        foreach($ingresosCreditos as $index => $dep){
+            $dep->cont = $cont;
+            $dep->tipo = 1;
+            $cont++;
+        }
+
+        $pendienteIngresar = collect($depositos)->merge(collect($ingresosCreditos));
+
+
+        return['depositos' => $depositos,
+                'ingresosCreditos' => $ingresosCreditos,
+                'pendientes' => $pendienteIngresar
+            ];
+    }
+
+    public function guardarIngreso(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        if($request->tipo == 0){
+            $deposito = Deposito::findOrFail($request->depId);
+            $deposito->cuenta = $request->cuenta;
+            $deposito->fecha_ingreso_concretania = $request->fecha_ingreso_concretania;
+            $deposito->save();
+        }
+        else{
+            $deposito = Dep_credito::findOrFail($request->depId);
+            $deposito->cuenta = $request->cuenta;
+            $deposito->fecha_ingreso_concretania = $request->fecha_ingreso_concretania;
+            $deposito->save();
+        }
+
+        $credito = Credito::findOrFail($request->id);
+        $credito->saldo_terreno += $request->monto_terreno;
+        $credito->save();
+
+    }
+
+    public function historialIngresos(Request $request){
+        //if(!$request->ajax())return redirect('/');
+        $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+            ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+            ->join('creditos','creditos.id','=','contratos.id')
+            ->join('lotes','creditos.lote_id','=','lotes.id')
+            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+            ->join('personal','clientes.id','=','personal.id')
+            ->select('contratos.id','depositos.id as depId',
+                    'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
+                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 'creditos.saldo_terreno',
+                    'personal.nombre','personal.apellidos','depositos.concepto', 'creditos.valor_terreno',
+                    'depositos.monto_terreno', 'depositos.fecha_ingreso_concretania', 'depositos.cuenta',
+                    'depositos.f_carga_factura_terreno','depositos.cuenta')
+            ->whereBetween('depositos.fecha_ingreso_concretania', [$request->fecha, $request->fecha2])
+            ->where('monto_terreno','>',0);
+
+        $ingresosCreditos = Dep_credito::join('inst_seleccionadas','inst_seleccionadas.id','=','dep_creditos.inst_sel_id')
+            ->join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+            ->join('contratos','contratos.id','=','creditos.id')
+            ->join('lotes','lotes.id','=','creditos.lote_id')
+            ->join('personal','personal.id','=','creditos.prospecto_id')
+            ->select('contratos.id', 'dep_creditos.id as depId',
+                    'dep_creditos.fecha_deposito as fecha_pago','creditos.fraccionamiento',
+                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 'creditos.saldo_terreno',
+                    'personal.nombre','personal.apellidos', 'dep_creditos.concepto', 'creditos.valor_terreno',
+                    'dep_creditos.monto_terreno', 'dep_creditos.fecha_ingreso_concretania', 'dep_creditos.cuenta',
+                    'dep_creditos.f_carga_factura_terreno','dep_creditos.cuenta')
+            ->whereBetween('dep_creditos.fecha_ingreso_concretania', [$request->fecha, $request->fecha2])
+            ->where('monto_terreno','>',0);
+
+        
+
+        
+        if($request->buscar != '')                            
+        switch($request->criterio){
+            case 'cliente':{
+                $depositos = $depositos->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $request->buscar . '%');
+                $ingresosCreditos = $ingresosCreditos->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $request->buscar . '%');
+                break;
+            }
+            case 'fraccionamiento':{
+                $depositos = $depositos->where('lotes.fraccionamiento_id','=',$request->buscar);;
+                $ingresosCreditos = $ingresosCreditos->where('lotes.fraccionamiento_id','=',$request->buscar);;
+                
+                if($request->etapa != '')
+                    $depositos = $depositos->where('lotes.etapa_id','=',$request->etapa);
+                    $ingresosCreditos = $ingresosCreditos->where('lotes.etapa_id','=',$request->etapa);
+                if($request->manzana != '')
+                    $depositos = $depositos->where('lotes.manzana', 'like', '%'. $request->manzana . '%');
+                    $ingresosCreditos = $ingresosCreditos->where('lotes.manzana', 'like', '%'. $request->manzana . '%');
+                if($request->lote != '')
+                    $depositos = $depositos->where('lotes.num_lote','=',$request->lote);
+                    $ingresosCreditos = $ingresosCreditos->where('lotes.num_lote','=',$request->lote);
+                break;
+            }
+        }
+
+            
+
+        $depositos = $depositos
+                    ->get();
+        $ingresosCreditos = $ingresosCreditos
+                    ->get();
+
+        $cont =1;
+        if(sizeof($depositos))
+        foreach($depositos as $index => $dep){
+            $dep->cont = $cont;
+            $dep->tipo = 0;
+            $cont++;
+        }
+
+        if(sizeof($ingresosCreditos))
+        foreach($ingresosCreditos as $index => $dep){
+            $dep->cont = $cont;
+            $dep->tipo = 1;
+            $cont++;
+        }
+
+        $ingresos = collect($depositos)->merge(collect($ingresosCreditos));
+
+
+        return[//'depositos' => $depositos,
+                //'ingresosCreditos' => $ingresosCreditos,
+                'ingresos' => $ingresos,
+                
+            ];
+    }
+
+    
+
 }

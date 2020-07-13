@@ -533,7 +533,7 @@
             },
 
             obtenerDTU(){
-                if(this.rolId == 1 || this.rolId == 5){  
+                if(this.rolId == 1 || this.rolId == 5 || this.rolId == 8 ){  
                     let me = this;
                     //Con axios se llama el metodo update de FraccionaminetoController
                     axios.put('/ruv/dtu',{
@@ -564,7 +564,7 @@
             },
 
             obtenerCuv(id){
-                if(this.rolId == 1 || this.rolId == 3){ 
+                if(this.rolId == 1 || this.rolId == 3 || this.rolId == 8){ 
                     let me = this;
                     (async function getFruit () {
                         const {value: numero} = await Swal({
@@ -684,7 +684,7 @@
                     
                     case 'cargaInfo':
                     {
-                        if(this.rolId == 1 || this.rolId == 3){  
+                        if(this.rolId == 1 || this.rolId == 3 || this.rolId == 8){  
                             this.modal =1;
                             this.tituloModal='Carga de Informacion RUV';
                             this.fecha='';
@@ -702,7 +702,7 @@
                     }
                     case 'asignacion':
                     {
-                        if(this.rolId == 1 || this.rolId == 3){  
+                        if(this.rolId == 1 || this.rolId == 3 || this.rolId == 8){  
                             this.modal =1;
                             this.tituloModal='Asignación de verificador';
                             this.fecha='';
@@ -721,7 +721,7 @@
                         break;
                     }
                     case 'dtu':{
-                        if(this.rolId == 1 || this.rolId == 5){  
+                        if(this.rolId == 1 || this.rolId == 5 ){  
                             this.modal= 1;
                             this.tituloModal='Obtención de DTU';
                             this.fecha='';

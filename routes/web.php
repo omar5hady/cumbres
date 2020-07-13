@@ -292,6 +292,14 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/solic_pago/pagarSolicitud','SolicitudPagosController@pagarSolicitud');
         Route::post('/solic_pago/cancelarSolicitud','SolicitudPagosController@cancelarSolicitud');
 
+    ///////////////////// RUTAS INGRESOS CONCRETANIA
+        Route::get('/ingresosConcretania/pendeintesIngresar','DepositoController@pendeintesIngresar');
+        Route::get('/ingresosConcretania/historialIngresos','DepositoController@historialIngresos');
+        Route::put('/ingresosConcretania/guardarIngreso','DepositoController@guardarIngreso');
+
+        Route::get('/ingresosConcretania/indexEdoCuentaTerreno','CreditoController@indexEdoCuentaTerreno');
+        
+
     ///////////////////       RUTAS LICENCIA-ACTA  ////////////////////////////////////
         Route::get('/acta_terminacion','LicenciasController@indexActa');
         Route::put('/acta_terminacion/actualizar','LicenciasController@updateActas');

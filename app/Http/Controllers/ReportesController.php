@@ -25,7 +25,6 @@ use App\Vendedor;
 
 use App\Detalle_previo;
 use App\Revision_previa;
-use App\Contratista;
 
 class ReportesController extends Controller
 {
@@ -2412,27 +2411,7 @@ class ReportesController extends Controller
 
     }
 
-<<<<<<< HEAD
-    public function revicionPreviaRep(Request $request){
-        $revicion = Revision_previa::select('id', 'id_contratista')
-            ->orderBy('created_at')
-        ->paginate(15);
 
-        foreach($revicion as $index => $r){
-            
-            $contratista = Contratista::select('nombre')->where('id', '=', $r->id_contratista)->first();
-            $r->contratista = $contratista->nombre;
-            
-            $detalle = Detalle_previo::where('rev_previas_id', '=', $r->id)
-                //->groupBy('identificador')
-            ->get();
-            $r->detalle = $detalle;
-            $r->detalleC = $detalle->count();
-        }
-
-        return $revicion;
-    }
-=======
     public function reporteDetalles(Request $request){
         $contratistas = Contratista::select('id', 'nombre')->orderBy('nombre','asc')->get();
 
@@ -2775,5 +2754,4 @@ class ReportesController extends Controller
 
     }
     
->>>>>>> a77f2f15e580fda353cdad899fbec8d75fe7d38d
 }

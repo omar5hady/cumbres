@@ -456,12 +456,20 @@
             <reporte-detalles></reporte-detalles>
         </template>
 
+<<<<<<< HEAD
         <template v-if="menu==1003">
             <cotizador-lote></cotizador-lote>
         </template>
         <template v-if="menu==1004">
             <cotizador-opciones></cotizador-opciones>
         </template>
+=======
+        <template v-if="menu==247">
+            <ingresos-concretania></ingresos-concretania>
+        </template>
+
+        
+>>>>>>> aa578cb3d0dc1890ebc7d73d538495102201d5bf
 
         
     @endif

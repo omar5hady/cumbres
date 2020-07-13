@@ -114,7 +114,7 @@
                                         <th>Depositos</th>
                                         <th>Pendiente enganche</th>
                                         <th>Crédito</th>
-                                        <th>Pendiente de cobro crédito</th>
+                                        <th>Crédito cobrado</th>
                                         <th>Gastos administrativos</th>
                                         <th>Fecha de firma de escrituras</th>
                                         <th>Descuento</th>
@@ -152,7 +152,7 @@
 
                                         <td class="td2" v-text="'$'+formatNumber(contratos.pendiente_enganche)"></td>
                                         <td class="td2" v-text="'$'+formatNumber(contratos.credito_solic)"></td>
-                                        <td class="td2" v-text="'$'+formatNumber(contratos.credito_solic - contratos.cobrado)"></td>
+                                        <td class="td2" v-text="'$'+formatNumber(contratos.cobrado)"></td>
                                         <td class="td2" v-text="'$'+formatNumber(contratos.gastos)"></td>
                                         <td v-if="contratos.fecha_firma_esc" v-text="this.moment(contratos.fecha_firma_esc).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td v-else></td>

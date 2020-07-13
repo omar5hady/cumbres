@@ -108,13 +108,13 @@
                                         <td class="td2" v-text="'$'+formatNumber(lote.precio_base+lote.ajuste+lote.obra_extra+lote.excedente_terreno+lote.sobreprecio)"></td>
                                         <td class="td2" v-text="this.moment(lote.fecha).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2">
-                                            <a v-if="criterio == 'licencias.fecha_predial' " title="Descargar predial" class="btn btn-success btn-sm" v-bind:href="'/downloadPredial/'+lote.archivo">
+                                            <a v-if="criterio == 'licencias.fecha_predial' " title="Descargar predial" class="btn btn-success btn-sm" v-bind:href="'/downloadPredial/'+lote.foto_predial">
                                                 <i class="fa fa-arrow-circle-down fa-lg"></i>
                                             </a>
                                             <a v-if="criterio == 'licencias.fecha_licencia' " title="Descargar licencia" class="btn btn-dark btn-sm" v-bind:href="'/downloadLicencias/'+lote.archivo">
                                                 <i class="fa fa-arrow-circle-down fa-lg"></i>
                                             </a>
-                                            <a v-if="criterio == 'licencias.fecha_acta' " title="Descargar acta de termino" class="btn btn-primary btn-sm" v-bind:href="'/downloadActa/'+lote.archivo">
+                                            <a v-if="criterio == 'licencias.fecha_acta' " title="Descargar acta de termino" class="btn btn-primary btn-sm" v-bind:href="'/downloadActa/'+lote.foto_acta">
                                                 <i class="fa fa-arrow-circle-down fa-lg"></i>
                                             </a>
                                         </td>

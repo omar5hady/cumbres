@@ -16,6 +16,7 @@ use App\Notifications\NotifyAdmin;
 use App\Obs_inst_selec;
 use Auth;
 use Carbon\Carbon;
+use App\Contrato;
 use Excel;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\NotificationReceived;
@@ -1016,6 +1017,51 @@ class CreditoController extends Controller
         $creditos = Credito::findOrFail($request->id);
         $creditos->costo_protecciones = $request->monto;
         $creditos->save();
+    }
+
+    public function indexEdoCuentaTerreno(Request $request){
+        $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
+                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                ->select('contratos.id','creditos.saldo_terreno','creditos.precio_venta',
+                            'creditos.valor_terreno as monto_terreno', 'contratos.status',
+                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana',
+                            'creditos.num_lote','personal.nombre','personal.apellidos');
+
+        if($request->buscar != '')                            
+            switch($request->criterio){
+                case 'cliente':{
+                    $contratos = $contratos->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $request->buscar . '%');
+                    break;
+                }
+                case 'fraccionamiento':{
+                    $contratos = $contratos->where('lotes.fraccionamiento_id','=',$request->buscar);
+                    if($request->etapa != '')
+                        $contratos = $contratos->where('lotes.etapa_id','=',$request->etapa);
+                    if($request->manzana != '')
+                        $contratos = $contratos->where('lotes.manzana', 'like', '%'. $request->manzana . '%');
+                    if($request->lote != '')
+                        $contratos = $contratos->where('lotes.num_lote','=',$request->lote);
+                    break;
+                }
+            }
+
+        $contratos = $contratos->where('lotes.emp_constructora','=','CONCRETANIA')
+                    ->where('contratos.status','!=',0)
+                    ->where('contratos.status','!=',2)
+                    ->orderBy('contratos.id')->paginate(10);
+
+        return [
+            'pagination' => [
+                'total'         => $contratos->total(),
+                'current_page'  => $contratos->currentPage(),
+                'per_page'      => $contratos->perPage(),
+                'last_page'     => $contratos->lastPage(),
+                'from'          => $contratos->firstItem(),
+                'to'            => $contratos->lastItem(),
+            ],
+            'contratos'=>$contratos
+        ];
     }
 
 }
