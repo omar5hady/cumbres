@@ -4,64 +4,85 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><strong><a style="color:#FFFFFF;" href="/">Home</a></strong></li>
         </ol>
-
-        <div class="container-fluid">
-            <!-- Ejemplo de tabla Listado -->
-            <div class="card scroll-box">
-                <div class="card-header">
-                    <i class="fa fa-align-justify"></i> Opciones
-                    &nbsp;
-                </div>
-                
-                <div class="card-body">
-                    <div class="row">
-                        <table class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Concepto</th>
-                                    <th>Porcentaje</th>
-                                    <th>Descripcion</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="item in arrayListA" :key="item.id">
-                                    <td v-text="item.clave">Concepto</td>
-                                    <td style="padding:0px;">
-                                        <input v-model="item.valor" v-on:keyup.enter="editaPorcentajes(item)" type="number" min="0" step=".01" class="form-control" style="height: 45px;">
-                                    </td>
-                                    <td v-text="item.descripcion"></td>
-                                </tr>
-                            </tbody>
-                        </table>
+        <div class="container-fluid row">
+        <div  class="card col-sm-4" >
+            <div class="container-fluid">
+                <!-- Ejemplo de tabla Listado -->
+                <div class="card scroll-box">
+                    <div class="card-header">
+                        <i class="fa fa-align-justify"></i> Interes y descuento
+                        &nbsp;
                     </div>
-                    <br>
-
-                    <div class="row">
-                        <table class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th># Lote</th>
-                                    <th>m²</th>
-                                    <th>costo m²</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="item in arrayLotes" :key="item.id">
-                                    <td v-text="item.num_lote">Concepto</td>
-                                    <td style="padding:0px;">
-                                        <input v-model="item.terrenom2" v-on:keyup.enter="editaLote(item)" type="number" min="0" step=".01" class="form-control" style="height: 45px;">
-                                    </td>
-                                    <td style="padding:0px;">
-                                        <input v-model="item.costom2" v-on:keyup.enter="editaLote(item)" type="number" min="0" step=".01" class="form-control" style="height: 45px;">
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    
+                    <div class="card-body">
+                        <div class="row">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Concepto</th>
+                                        <th>Porcentaje</th>
+                                        <th>Descripcion</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="item in arrayListA" :key="item.id">
+                                        <td v-text="item.clave">Concepto</td>
+                                        <td style="padding:0px;">
+                                            <input v-model="item.valor" v-on:keyup.enter="editaPorcentajes(item)" type="number" min="0" step=".01" class="form-control" style="height: 45px;">
+                                        </td>
+                                        <td v-text="item.descripcion"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <br>
                     </div>
-                </div>
 
+                </div>
+                <!-- Fin ejemplo de tabla Listado -->
             </div>
-            <!-- Fin ejemplo de tabla Listado -->
+        </div>
+        <div  class="card-header col-sm-1" ></div>
+        <div  class="card col-sm-7" >
+            <div class="container-fluid">
+                <!-- Ejemplo de tabla Listado -->
+                <div class="card scroll-box">
+                    <div class="card-header">
+                        <i class="fa fa-align-justify"></i> Lotes
+                        &nbsp;
+                    </div>
+                    
+                    <div class="card-header">
+                        
+
+                        <div class="row">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th># Lote</th>
+                                        <th>m²</th>
+                                        <th>costo m²</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="item in arrayLotes" :key="item.id">
+                                        <td v-text="item.num_lote">Concepto</td>
+                                        <td style="padding:0px;">
+                                            <input v-model="item.terrenom2" v-on:keyup.enter="editaLote(item)" type="number" min="0" step=".01" class="form-control" style="height: 45px;">
+                                        </td>
+                                        <td style="padding:0px;">
+                                            <input v-model="item.costom2" v-on:keyup.enter="editaLote(item)" type="number" min="0" step=".01" class="form-control" style="height: 45px;">
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- Fin ejemplo de tabla Listado -->
+            </div>
+        </div>
         </div>
     </main>
 </template>

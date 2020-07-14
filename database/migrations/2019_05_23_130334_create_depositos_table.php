@@ -26,13 +26,10 @@ class CreateDepositosTable extends Migration
             $table->string('concepto',80)->nullable();
             $table->date('fecha_pago')->nullable();
 
-<<<<<<< HEAD
             $table->string('cuenta',50)->nullable();
             $table->date('fecha_ingreso_concretania')->nullable();
 
-=======
             //factura de deposito
->>>>>>> 65300ca26640e75aee6b7bcca5f9c44618aca5f7
             $table->string('factura')->nullable();
             $table->string('folio_factura',30)->nullable();
             $table->double('monto', 8,2)->nullable()->default(0);
