@@ -99,7 +99,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="avaluos in arrayAvaluos" :key="avaluos.folio">
+                                    <tr v-for="avaluos in arrayAvaluos" :key="avaluos.avaluoId">
                                         <template>
                                             <td class="td2" >
                                                 <button title="Subir avaluo" type="button" @click="abrirModal('subirArchivo',avaluos)" class="btn btn-default btn-sm">
@@ -262,7 +262,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="avaluos in arrayHistorialAvaluos" :key="avaluos.folio">
+                                    <tr v-for="avaluos in arrayHistorialAvaluos" :key="avaluos.avaluoId">
                                         <template>
                                             <td class="td2" >
                                                 <button title="Subir avaluo" type="button" @click="abrirModal('subirArchivo',avaluos)" class="btn btn-default btn-sm">

@@ -101,7 +101,7 @@
                         </h4>
                         <!---->
                     </div>
-                    <div class="card-body">
+                    <div class="card-body" style="padding-bottom: 0px;">
                         <div>
                             <form method="post" @submit="formSubmit" enctype="multipart/form-data">
                                 <div class="row">
@@ -271,7 +271,45 @@
                             </form>
                         </div>
                     </div>
+                    <div class="card-body text-right" style="padding:0px;">
+                        <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
+                    </div>
                     <!---->
+                </div>
+            </div>
+        </div>
+
+        <!-- Manual -->
+        <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="manualIdTitle">Manual</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Dentro de la vista principal los usuarios podrán encontrar información relevante a su 
+                        perfil e información personal y medio de contacto, los usuarios podrán editar la información, 
+                        así como subir una imagen de perfil.
+                    </p>
+                    <p>
+                        En caso de que el usuario sea un asesor en la parte superior de la vista principal además 
+                        podrá encontrar tarjetas con el o los nombres de clientes que cumplan años ese día.
+                    </p>
+                    <p>
+                        Además, podrán encontrar en la parte superior derecha un submenú para acceder a la 
+                        página principal, agenda de Google y botón de cerrar sesión. 
+                    </p>
+                    <p>
+                        También podan encontrar un icono de campana el cual podrán ver las notificaciones nuevas y antiguas.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
                 </div>
             </div>
         </div>

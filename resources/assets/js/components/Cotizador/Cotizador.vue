@@ -359,9 +359,16 @@ export default {
 
             saldo = this.r_valor_venta-saldo;
 
-            let ineres = this.arrayListA[7].valor/100;
+            let ineres = 0;
 
-            if(dias > 180){
+            if(dias > 180 && dias <= 365){
+                ineres = this.arrayListA[7].valor/100;
+                montoInteres = ((saldo*ineres)/365)*dias;
+            }else if(dias > 365 && dias <= 730){
+                ineres = this.arrayListA[8].valor/100;
+                montoInteres = ((saldo*ineres)/365)*dias;
+            }else if(dias > 730 && dias <= 1095){
+                ineres = this.arrayListA[9].valor/100;
                 montoInteres = ((saldo*ineres)/365)*dias;
             }
 
