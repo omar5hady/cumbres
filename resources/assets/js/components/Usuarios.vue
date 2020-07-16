@@ -54,7 +54,7 @@
                                 </div>
                             </div>
                             <div class="table-responsive">
-                                <table class="table table-bordered table-striped table-sm">
+                                <table class="table2 table-bordered table-striped table-sm">
                                     <thead>
                                         <tr>
                                             <th>Opciones</th>
@@ -66,7 +66,7 @@
                                     </thead>
                                     <tbody>
                                         <tr v-for="Personal in arrayPersonal" :key="Personal.id" v-on:dblclick="getPrivilegios(Personal.id)">
-                                            <td width="10%">
+                                            <td class="td2" width="10%">
                                                 <button type="button" @click="abrirModal('Personal','actualizar',Personal)" class="btn btn-warning btn-sm">
                                                 <i class="icon-pencil"></i>
                                                 </button>
@@ -85,11 +85,11 @@
                                                 </button>
                                         
                                             </td>
-                                            <td v-text="Personal.nombre + ' ' + Personal.apellidos" ></td>
+                                            <td class="td2" v-text="Personal.nombre + ' ' + Personal.apellidos" ></td>
                                             
-                                            <td v-text="Personal.usuario"></td>
-                                            <td v-text="Personal.rol"></td>
-                                            <td>
+                                            <td class="td2" v-text="Personal.usuario"></td>
+                                            <td class="td2" v-text="Personal.rol"></td>
+                                            <td class="td2">
                                                 <span v-if = "Personal.condicion==1" class="badge badge-success">Activo</span>
                                                 <span v-if = "Personal.condicion==0" class="badge badge-danger">Inactivo</span>
                                             </td>
@@ -492,7 +492,7 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                            
 
                                     <!--Criterios para el listado de busqueda -->
                                   <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
@@ -695,7 +695,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </form>
+                            
                         </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">
@@ -1947,14 +1947,7 @@
     }
 </script>
 <style>
-    .row2 {
-        display: -ms-flexbox;
-        display: flex;
-        -ms-flex-wrap: wrap;
-        flex-wrap: wrap;
-        margin-right: -15px;
-        margin-left: -5px;
-    }
+    
     .form-control:disabled, .form-control[readonly] {
         background-color: rgba(0, 0, 0, 0.06);
         opacity: 1;
@@ -1964,7 +1957,6 @@
     .modal-content{
         width: 100% !important;
         position: absolute !important;
-        
     }
     .mostrar{
         display: list-item !important;
@@ -1972,6 +1964,7 @@
         position: fixed !important;
         background-color: #3c29297a !important;
         overflow-y: auto;
+        
     }
     .div-error{
         display:flex;
@@ -1981,9 +1974,24 @@
         color: red !important;
         font-weight: bold;
     }
+    .table2 {
+    margin: auto;
+    border-collapse: collapse;
+    overflow-x: auto;
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+    }
+
+    .td2, .th2 {
+    border: solid rgb(200, 200, 200) 1px;
+    padding: .5rem;
+    }
 
 input[type=number]::-webkit-inner-spin-button, 
 input[type=number]::-webkit-outer-spin-button { 
   -webkit-appearance: none; 
    margin: 0;  
 } 
+</style>

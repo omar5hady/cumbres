@@ -3489,10 +3489,10 @@
 
 
     .form-control:disabled, .form-control[readonly] {
-    background-color: rgba(0, 0, 0, 0.06);
-    opacity: 1;
-    font-size: 0.85rem;
-    color: #27417b;
+        background-color: rgba(0, 0, 0, 0.06);
+        opacity: 1;
+        font-size: 0.85rem;
+        color: #27417b;
     }
     .modal-content{
         width: 100% !important;
@@ -3515,41 +3515,41 @@
         font-weight: bold;
     }
     .table2 {
-    margin: auto;
-    border-collapse: collapse;
-    overflow-x: auto;
-    display: block;
-    width: fit-content;
-    max-width: 100%;
-    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+        margin: auto;
+        border-collapse: collapse;
+        overflow-x: auto;
+        display: block;
+        width: fit-content;
+        max-width: 100%;
+        box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
     }
 
     .td2, .th2 {
-    border: solid rgb(200, 200, 200) 1px;
-    padding: .5rem;
+        border: solid rgb(200, 200, 200) 1px;
+        padding: .5rem;
     }
 
     .badge2 {
-    display: inline-block;
-    padding: 0.25em 0.4em;
-    font-size: 90%;
-    font-weight: bold;
-    line-height: 1;
-    color: #fff;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: baseline;
-}
-
- @media (min-width: 300px){
-  .btnagregar{
-        margin-top: 2rem;
-        }
-
-    .nav2 {
-        overflow-x: scroll;
+        display: inline-block;
+        padding: 0.25em 0.4em;
+        font-size: 90%;
+        font-weight: bold;
+        line-height: 1;
+        color: #fff;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
     }
- }
+
+    @media (min-width: 300px){
+    .btnagregar{
+            margin-top: 2rem;
+            }
+
+        .nav2 {
+            overflow-x: scroll;
+        }
+    }
     .td2 {
     white-space: nowrap;
     border-bottom: none;

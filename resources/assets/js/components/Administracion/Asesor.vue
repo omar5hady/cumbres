@@ -376,6 +376,26 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group row" v-if="tipo_vendedor==1 && rol_id==2">
+                                    <label class="col-md-3 form-control-label" for="text-input">Retencion</label>
+                                    <div class="col-md-2">
+                                        <select class="form-control" v-model="retencion" >
+                                            <option value=0>No</option>
+                                            <option value=1>Si</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" v-if="tipo_vendedor==1 && rol_id==2">
+                                    <label class="col-md-3 form-control-label" for="text-input">ISR</label>
+                                    <div class="col-md-2">
+                                        <select class="form-control" v-model="isr" >
+                                            <option value=0>No</option>
+                                            <option value=1>Si</option>
+                                        </select>
+                                    </div>
+                                </div>
+
                                 <!-- Div para mostrar los errores que mande validerPersonal -->
                                 <div v-show="errorPersonal" class="form-group row div-error">
                                     <div class="text-center text-error">
@@ -837,6 +857,9 @@
                 archivoComprobante:'',
                 archivoCV:'',
 
+                isr:0,
+                retencion:0,
+
                 doc_ine:'',
                 doc_comprobante:'',
                 curriculum:'',
@@ -1260,7 +1283,9 @@
                     'condicion':this.condicion,
                     'tipo_vendedor':this.tipo_vendedor,
                     'inmobiliaria':this.inmobiliaria,
-                    'esquema': this.esquema
+                    'esquema': this.esquema,
+                    'isr':this.isr,
+                    'retencion':this.retencion
                     
                 }).then(function (response){
                     me.proceso=false;
@@ -1337,7 +1362,9 @@
                     'condicion':this.condicion,
                     'tipo_vendedor':this.tipo_vendedor,
                     'inmobiliaria':this.inmobiliaria,
-                    'esquema': this.esquema
+                    'esquema': this.esquema,
+                    'isr':this.isr,
+                    'retencion':this.retencion
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal();
@@ -1708,6 +1735,8 @@
                                 this.inmobiliaria='';
                                 this.tipo_vendedor=0;
                                 this.esquema = 2;
+                                this.isr=0;
+                                this.retencion = 0;
 
                                 this.activo='1';
                                 this.tipoAccion = 3;
@@ -1746,6 +1775,8 @@
                                 this.doc_ine = data['doc_ine'];
                                 this.doc_comprobante = data['doc_comprobante'];
                                 this.curriculum = data['curriculum'];
+                                this.isr=data['isr'];
+                                this.retencion = data['retencion'];
                                 break;
                             }
                         }

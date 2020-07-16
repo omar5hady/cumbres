@@ -97,7 +97,8 @@ class UserController extends Controller
             'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
             'personal.email','users.usuario','users.password',
             'users.condicion','users.rol_id','roles.nombre as rol','vendedores.inmobiliaria','vendedores.tipo',
-            'vendedores.esquema','vendedores.doc_ine','vendedores.doc_comprobante','vendedores.curriculum');
+            'vendedores.esquema','vendedores.doc_ine','vendedores.doc_comprobante','vendedores.curriculum',
+            'vendedores.isr','vendedores.retencion');
          
             if ($buscar==''){
                 $personas = $query;
