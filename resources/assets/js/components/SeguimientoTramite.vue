@@ -107,6 +107,7 @@
                                                 <th>Etapa</th>
                                                 <th>Manzana</th>
                                                 <th># Lote</th>
+                                                <th>Modelo</th>
                                                 <th>Dirección</th>
                                                 <th>Avance obra</th>
                                                 <th>Firma Contrato</th>
@@ -177,6 +178,7 @@
                                                         <a v-if ="ingresar.foto_acta" class="dropdown-item" v-bind:href="'/downloadActa/'+ingresar.foto_acta">Descargar Acta de termino</a>
                                                     </div>
                                                 </td>
+                                                <td class="td2" v-text="ingresar.modelo"></td>
                                                 <td class="td2" v-if="ingresar.interior" v-text="ingresar.calle + ' '+ ingresar.numero + ' '+ ingresar.interior"></td>
                                                 <td class="td2" v-else v-text="ingresar.calle + ' '+ ingresar.numero"></td>
                                                 <td class="td2" v-text="ingresar.avance_lote+ '%'"></td>
@@ -304,6 +306,7 @@
                                                 <th>Etapa</th>
                                                 <th>Manzana</th>
                                                 <th># Lote</th>
+                                                <th>Modelo</th>
                                                 <th>Dirección</th>
                                                 <th>Avance obra</th>
                                                 <th>Firma Contrato</th>
@@ -376,6 +379,7 @@
                                                         <a v-if ="preautorizados.foto_acta" class="dropdown-item" v-bind:href="'/downloadActa/'+preautorizados.foto_acta">Descargar Acta de termino</a>
                                                     </div>
                                                 </td>
+                                                <td class="td2" v-text="preautorizados.modelo"></td>
                                                 <td class="td2" v-text="preautorizados.calle + ' '+ preautorizados.numero + ' '+ preautorizados.interior"></td>
                                                 <td class="td2" v-text="preautorizados.avance_lote+ '%'"></td>
                                                 <td class="td2" v-text="preautorizados.fecha_status"></td>
@@ -530,6 +534,7 @@
                                                 <th>Etapa</th>
                                                 <th>Manzana</th>
                                                 <th># Lote</th>
+                                                <th>Modelo</th>
                                                 <th>Dirección</th>
                                                 <th>Avance obra</th>
                                                 <th>Firma Contrato</th>
@@ -602,6 +607,7 @@
                                                         <a v-if ="liquidacion.foto_acta" class="dropdown-item" v-bind:href="'/downloadActa/'+liquidacion.foto_acta">Descargar Acta de termino</a>
                                                     </div>
                                                 </td>
+                                                <td class="td2" v-text="liquidacion.modelo"></td>
                                                 <td class="td2" v-text="liquidacion.calle + ' '+ liquidacion.numero + ' '+ liquidacion.interior"></td>
                                                 <td class="td2" v-text="liquidacion.avance_lote+ '%'"></td>
                                                 <td class="td2" v-text="liquidacion.fecha_status"></td>
@@ -759,6 +765,7 @@
                                                 <th>Etapa</th>
                                                 <th>Manzana</th>
                                                 <th># Lote</th>
+                                                <th>Modelo</th>
                                                 <th>Dirección</th>
                                                 <th>Avance obra</th>
                                                 <th>Firma Contrato</th>
@@ -821,6 +828,7 @@
                                                         <a v-if ="programacion.foto_acta" class="dropdown-item" v-bind:href="'/downloadActa/'+programacion.foto_acta">Descargar Acta de termino</a>
                                                     </div>
                                                 </td>
+                                                <td class="td2" v-text="programacion.modelo"></td>
                                                 <td class="td2" v-text="programacion.calle + ' '+ programacion.numero + ' ' + programacion.interior"></td>
                                                 <td class="td2" v-text="programacion.avance_lote + '%'"></td>
                                                 <td class="td2" v-text="this.moment(programacion.fecha_status).locale('es').format('DD/MMM/YYYY')"></td>
@@ -986,6 +994,7 @@
                                                 <th>Etapa</th>
                                                 <th>Manzana</th>
                                                 <th># Lote</th>
+                                                <th>Modelo</th>
                                                 <th>Dirección</th>
                                                 <th>Avance obra</th>
                                                 <th>Firma Contrato</th>
@@ -1033,6 +1042,7 @@
                                                         <a v-if="programacion.num_licencia" class="dropdown-item"  v-text="'Licencia: '+programacion.num_licencia" v-bind:href="'/downloadLicencias/'+programacion.foto_lic"></a>
                                                     </div>
                                                 </td>
+                                                
                                                 <td class="td2" v-text="programacion.nombre_cliente"></td>
                                                 <td class="td2" v-text="programacion.nombre_vendedor"></td>
                                                 <td class="td2" v-text="programacion.proyecto"></td>
@@ -1046,6 +1056,7 @@
                                                         <a v-if ="programacion.foto_acta" class="dropdown-item" v-bind:href="'/downloadActa/'+programacion.foto_acta">Descargar Acta de termino</a>
                                                     </div>
                                                 </td>
+                                                <td class="td2" v-text="programacion.modelo"></td>
                                                 <td class="td2" v-text="programacion.calle + ' '+ programacion.numero + ' ' + programacion.interior"></td>
                                                 <td class="td2" v-text="programacion.avance_lote + '%'"></td>
                                                 <td class="td2" v-text="this.moment(programacion.fecha_status).locale('es').format('DD/MMM/YYYY')"></td>

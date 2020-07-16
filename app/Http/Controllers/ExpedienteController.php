@@ -56,6 +56,7 @@ class ExpedienteController extends Controller
                 'creditos.etapa',
                 'creditos.manzana',
                 'creditos.num_lote',
+                'creditos.modelo',
                 'licencias.avance as avance_lote',
                 'licencias.foto_predial',
                 'licencias.foto_lic',
@@ -307,6 +308,7 @@ class ExpedienteController extends Controller
                 'creditos.etapa',
                 'creditos.manzana',
                 'creditos.num_lote',
+                'creditos.modelo',
                 'licencias.avance as avance_lote',
                 'licencias.foto_predial',
                 'licencias.foto_lic',
@@ -504,7 +506,7 @@ class ExpedienteController extends Controller
         return Excel::create('expediente', function($excel) use ($contratos){
             $excel->sheet('contratos', function($sheet) use ($contratos){              
                 $sheet->row(1, [
-                    '# Folio', 'Cliente' ,'Asesor', 'Proyecto', 'Etapa', 'Manzana', 'Lote',
+                    '# Folio', 'Cliente' ,'Asesor', 'Proyecto', 'Etapa', 'Manzana', 'Lote', 'Modelo',
                     '% Avance','Visita de avaluo' ,'Firma', 'Tipo de credito','Institucion Financiera','Solicitud de avaluo',
                     'Depositado', 'Fecha ultimo pagare',
                     'Aviso preventivo',
@@ -563,6 +565,7 @@ class ExpedienteController extends Controller
                         $contrato->etapa,
                         $contrato->manzana,
                         $contrato->num_lote,
+                        $contrato->modelo,
                         $contrato->avance_lote.'%',
                         $contrato->visita_avaluo,
                         $contrato->fecha_status,
@@ -817,6 +820,7 @@ class ExpedienteController extends Controller
                 'creditos.etapa',
                 'creditos.manzana',
                 'creditos.num_lote',
+                'creditos.modelo',
                 'creditos.precio_venta',
                 'licencias.avance as avance_lote',
                 'licencias.foto_predial',
@@ -1193,6 +1197,7 @@ class ExpedienteController extends Controller
                 'creditos.etapa',
                 'creditos.manzana',
                 'creditos.num_lote',
+                'creditos.modelo',
                 'creditos.precio_venta',
                 'licencias.avance as avance_lote',
                 'licencias.foto_predial',
@@ -1651,6 +1656,7 @@ class ExpedienteController extends Controller
                     'creditos.etapa',
                     'creditos.manzana',
                     'creditos.num_lote',
+                    'creditos.modelo',
                     'creditos.precio_venta',
                     'licencias.avance as avance_lote',
                     'licencias.foto_predial',
@@ -2309,6 +2315,7 @@ class ExpedienteController extends Controller
                 'creditos.etapa',
                 'creditos.manzana',
                 'creditos.num_lote',
+                'creditos.modelo',
                 'creditos.precio_venta',
                 'licencias.avance as avance_lote',
                 'licencias.foto_predial',
@@ -2817,6 +2824,7 @@ class ExpedienteController extends Controller
                 'c.email',
                 'creditos.manzana',
                 'creditos.num_lote',
+                'creditos.modelo',
                 'creditos.precio_venta',
                 'licencias.avance as avance_lote',
                 'licencias.foto_predial',
@@ -3617,6 +3625,7 @@ class ExpedienteController extends Controller
                 'creditos.etapa',
                 'creditos.manzana',
                 'creditos.num_lote',
+                'creditos.modelo',
                 'creditos.precio_venta',
                 'licencias.avance as avance_lote',
                 'licencias.foto_predial',
@@ -3951,7 +3960,7 @@ class ExpedienteController extends Controller
             $excel->sheet('Por Ingresar', function($sheet) use ($contratos){
                 
                 $sheet->row(1, [
-                    '# Ref', 'Cliente', 'Asesor', 'Proyecto', 'Etapa', 'Manzana', '# Lote', 'Dirección',
+                    '# Ref', 'Cliente', 'Asesor', 'Proyecto', 'Etapa', 'Manzana', '# Lote', 'Modelo','Dirección',
                     'Avance obra', 'Firma contrato', 'Resultado avaluo', 'Aviso preventivo',
                     'Tipo de crédito', 'Institución de financiamiento', 'Valor de la vivienda', 'Crédito puente', 'Saldo'
                 ]);
@@ -4000,6 +4009,7 @@ class ExpedienteController extends Controller
                         $contrato->etapa,
                         $contrato->manzana,
                         $contrato->num_lote,
+                        $contrato->modelo,
                         $contrato->calle.' '.$contrato->numero,
                         $contrato->avance_lote,
                         $contrato->fecha_status,
@@ -4049,6 +4059,7 @@ class ExpedienteController extends Controller
                 'creditos.etapa',
                 'creditos.manzana',
                 'creditos.num_lote',
+                'creditos.modelo',
                 'creditos.precio_venta',
                 'licencias.avance as avance_lote',
                 'licencias.foto_predial',
@@ -4499,7 +4510,7 @@ class ExpedienteController extends Controller
             $excel->sheet('Autorizados', function($sheet) use ($contratos){
                 
                 $sheet->row(1, [
-                    '# Ref', 'Cliente', 'Asesor', 'Proyecto', 'Etapa', 'Manzana', '# Lote', 'Dirección',
+                    '# Ref', 'Cliente', 'Asesor', 'Proyecto', 'Etapa', 'Manzana', '# Lote', 'Modelo','Dirección',
                     'Avance obra', 'Firma contrato', 'Resultado avaluo', 'Aviso preventivo',
                     'Tipo de crédito', 'Institución de financiamiento', 'Monto autorizado', 'Fecha vigencia',
                     'Valor de la vivienda', 'Valor a escriturar','Crédito puente', 'Saldo'
@@ -4553,6 +4564,7 @@ class ExpedienteController extends Controller
                         $contrato->etapa,
                         $contrato->manzana,
                         $contrato->num_lote,
+                        $contrato->modelo,
                         $contrato->calle.' '.$contrato->numero,
                         $contrato->avance_lote,
                         $contrato->fecha_status,
@@ -4604,6 +4616,7 @@ class ExpedienteController extends Controller
                     'creditos.etapa',
                     'creditos.manzana',
                     'creditos.num_lote',
+                    'creditos.modelo',
                     'creditos.precio_venta',
                     'licencias.avance as avance_lote',
                     'licencias.foto_predial',
@@ -5058,7 +5071,7 @@ class ExpedienteController extends Controller
             $excel->sheet('Liquidacion', function($sheet) use ($contratos){
                 
                 $sheet->row(1, [
-                    '# Ref', 'Cliente', 'Asesor', 'Proyecto', 'Etapa', 'Manzana', '# Lote', 'Dirección',
+                    '# Ref', 'Cliente', 'Asesor', 'Proyecto', 'Etapa', 'Manzana', '# Lote', 'Modelo', 'Dirección',
                     'Avance obra', 'Firma contrato', 'Resultado avaluo', 'Aviso preventivo',
                     'Tipo de crédito', 'Institución de financiamiento', 'Monto autorizado', 'Fecha vigencia',
                     'Valor de la vivienda', 'Valor a escriturar','Crédito puente', 'Saldo','Inscripción Infonavit'
@@ -5121,6 +5134,7 @@ class ExpedienteController extends Controller
                         $contrato->etapa,
                         $contrato->manzana,
                         $contrato->num_lote,
+                        $contrato->modelo,
                         $contrato->calle.' '.$contrato->numero,
                         $contrato->avance_lote,
                         $contrato->fecha_status,
@@ -5173,6 +5187,7 @@ class ExpedienteController extends Controller
                 'creditos.etapa',
                 'creditos.manzana',
                 'creditos.num_lote',
+                'creditos.modelo',
                 'creditos.precio_venta',
                 'licencias.avance as avance_lote',
                 'licencias.foto_predial',
@@ -5666,7 +5681,7 @@ class ExpedienteController extends Controller
             $excel->sheet('Programación de firma', function($sheet) use ($contratos){
                 
                 $sheet->row(1, [
-                    '# Ref', 'Cliente', 'Asesor', 'Proyecto', 'Etapa', 'Manzana', '# Lote', 'Dirección',
+                    '# Ref', 'Cliente', 'Asesor', 'Proyecto', 'Etapa', 'Manzana', '# Lote', 'Modelo','Dirección',
                     'Avance obra', 'Firma contrato', 'Resultado avaluo', 'Aviso preventivo',
                     'Tipo de crédito', 'Institución de financiamiento', 'Monto autorizado', 'Fecha vigencia',
                     'Valor de la vivienda', 'Valor a escriturar','Crédito puente', 'Saldo','Inscripción Infonavit','Liquidación',
@@ -5740,6 +5755,7 @@ class ExpedienteController extends Controller
                         $contrato->etapa,
                         $contrato->manzana,
                         $contrato->num_lote,
+                        $contrato->modelo,
                         $contrato->calle.' '.$contrato->numero,
                         $contrato->avance_lote,
                         $contrato->fecha_status,

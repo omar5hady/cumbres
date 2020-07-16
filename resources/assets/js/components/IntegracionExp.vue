@@ -75,6 +75,7 @@
                                         <th>Etapa</th>
                                         <th>Manzana</th>
                                         <th>Lote</th>
+                                        <th>Modelo</th>
                                         <th>Avance</th>
                                         <th>Fecha de visita para avaluo</th>
                                         <th>Firma</th>
@@ -138,6 +139,7 @@
                                             </div>
 
                                         </td>
+                                        <td class="td2" v-text="contratos.modelo"></td>
                                         <td class="td2" v-text="contratos.avance_lote+'%'"></td>
                                         
                                         <td class="td2" v-if="contratos.visita_avaluo" v-text="this.moment(contratos.visita_avaluo).locale('es').format('DD/MMM/YYYY')"></td>
