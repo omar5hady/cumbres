@@ -81,39 +81,39 @@ body {
         <div class="table2" style="border: ridge #0B173B 1px; color:black; margin-top: 0.3em; float:left;">
                 <div class="table-row">
                     <div colspan="2" class="table-cell">PRECIO BASE </div> 
-                    <div class="table-cell">${{$liquidacion[0]->precio_base}}</div>
+                    <div class="table-cell">$ {{$liquidacion[0]->precio_base}}</div>
                     <div class="table-cell">M.N.</div>      
                 </div>
                 <div class="table-row">
                     <div colspan="2" class="table-cell">TERR. EXCEDENTE </div> 
-                    <div class="table-cell">${{$liquidacion[0]->precio_terreno_excedente}}</div>
+                    <div class="table-cell">$ {{$liquidacion[0]->precio_terreno_excedente}}</div>
                     <div class="table-cell">M.N.</div>      
                 </div>
                 <div class="table-row">
                     <div colspan="2" class="table-cell">OBRA EXTRA </div> 
-                    <div class="table-cell">${{$liquidacion[0]->precio_obra_extra}}</div>
+                    <div class="table-cell">$ {{$liquidacion[0]->precio_obra_extra}}</div>
                     <div class="table-cell">M.N.</div>      
                 </div>
                 <div class="table-row">
                     <div colspan="2" class="table-cell">SOBREPRECIO </div> 
-                    <div class="table-cell">${{$liquidacion[0]->sobreprecio}}</div>
+                    <div class="table-cell">$ {{$liquidacion[0]->sobreprecio}}</div>
                     <div class="table-cell">M.N.</div>      
                 </div>
                 <div class="table-row">
                     <div colspan="2" class="table-cell">PAQUETE </div> 
-                    <div class="table-cell">${{$liquidacion[0]->costo_paquete}}</div>
+                    <div class="table-cell">$ {{$liquidacion[0]->costo_paquete}}</div>
                     <div class="table-cell">M.N.</div>      
                 </div>
 
                 <div class="table-row">
                     <div colspan="2" class="table-cell"><strong> PRECIO DE VENTA </strong></div> 
-                    <div class="table-cell">${{$liquidacion[0]->precio_venta}}</div>
+                    <div class="table-cell">$ {{$liquidacion[0]->precio_venta}}</div>
                     <div class="table-cell">M.N.</div>      
                 </div>
 
                 <div class="table-row">
                     <div colspan="2" class="table-cell">INTERESES ORDINARIOS </div> 
-                    <div class="table-cell">${{$liquidacion[0]->interes_ord}}</div>
+                    <div class="table-cell">$ {{$liquidacion[0]->interes_ord}}</div>
                     <div class="table-cell">M.N.</div>      
                 </div>
 
@@ -123,20 +123,20 @@ body {
 
                 <div class="table-row">
                     <div colspan="2" class="table-cell">{{mb_strtoupper($liquidacion[0]->institucion)}}</div> 
-                    <div class="table-cell">${{$liquidacion[0]->credito_solic}}</div>
+                    <div class="table-cell">$ {{$liquidacion[0]->credito_solic}}</div>
                     <div class="table-cell">M.N.</div>      
                 </div>
 
                 <div class="table-row">
                     <div colspan="2" class="table-cell">DEPOSITOS DE ENGANCHE</div> 
-                    <div class="table-cell">${{$liquidacion[0]->sumaDepositos}}</div>
+                    <div class="table-cell">$ {{$liquidacion[0]->sumaDepositos}}</div>
                     <div class="table-cell">M.N.</div>      
                 </div>
 
             @if($liquidacion[0]->fovissste > 0)
                 <div class="table-row">
                     <div colspan="2" class="table-cell">FOVISSSTE</div> 
-                    <div class="table-cell">${{$liquidacion[0]->fovissste}}</div>
+                    <div class="table-cell">$ {{$liquidacion[0]->fovissste}}</div>
                     <div class="table-cell">M.N.</div>      
                 </div>
             @endif
@@ -144,10 +144,16 @@ body {
             @if($liquidacion[0]->infonavit > 0)
                 <div class="table-row">
                     <div colspan="2" class="table-cell">INFONAVIT</div> 
-                    <div class="table-cell">${{$liquidacion[0]->infonavit}}</div>
+                    <div class="table-cell">$ {{$liquidacion[0]->infonavit}}</div>
                     <div class="table-cell">M.N.</div>      
                 </div>
             @endif
+
+                <div class="table-row">
+                    <div colspan="2" class="table-cell"><strong>TOTAL INGRESOS </strong></div> 
+                    <div class="table-cell"><strong> $ {{$liquidacion[0]->sumaParcial}} </strong></div>
+                    <div class="table-cell">M.N.</div>      
+                </div>
 
             @if($gastos)
                 <div class="table-row">
@@ -158,14 +164,14 @@ body {
             @for($i=0; $i < count($gastos); $i++)
                 <div class="table-row">
                     <div colspan="2" class="table-cell">{{mb_strtoupper($gastos[$i]->concepto)}}</div> 
-                    <div class="table-cell">${{$gastos[$i]->costo}}</div>
+                    <div class="table-cell">$ {{$gastos[$i]->costo}}</div>
                     <div class="table-cell">M.N.</div>      
                 </div> 
             @endfor
 
                 <div class="table-row">
                     <div colspan="2" class="table-cell">DESCUENTO </div> 
-                    <div class="table-cell">${{$liquidacion[0]->descuento}}</div>
+                    <div class="table-cell">$ {{$liquidacion[0]->descuento}}</div>
                     <div class="table-cell">M.N.</div>      
                 </div>
 
@@ -176,8 +182,8 @@ body {
             @endif
 
                 <div class="table-row">
-                    <div colspan="2" class="table-cell">TOTAL A LIQUIDAR </div> 
-                    <div class="table-cell">$ {{$liquidacion[0]->totalRestante}}</div>
+                    <div colspan="2" class="table-cell"><strong>TOTAL A LIQUIDAR </strong></div> 
+                    <div class="table-cell"><strong>$ {{$liquidacion[0]->totalRestante}}</strong></div>
                     <div class="table-cell">M.N.</div>      
                 </div>
         </div>

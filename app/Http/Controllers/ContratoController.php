@@ -3618,7 +3618,7 @@ class ContratoController extends Controller
                     $sumaDepositoCredit[0]->suma = 0;
                 }
 
-                $sumaTotal =  $sumaIntereses[0]->suma + $sumaGastos[0]->suma - $sumaDeposito[0]->suma + $sumaDepositoCredit[0]->suma + $sumaDepositoCredit2[0]->suma;
+                $sumaTotal =  $sumaIntereses[0]->suma + $sumaGastos[0]->suma - $sumaDeposito[0]->suma - $sumaDepositoCredit[0]->suma - $sumaDepositoCredit2[0]->suma;
 
             $contrato->saldo = $credito->precio_venta + $sumaTotal;
 

@@ -2123,7 +2123,7 @@ class ExpedienteController extends Controller
             $contrato->saldo = $contrato->saldo - round($request->descuento,2);
             $contrato->save();
 
-            if($request->total_liquidar <= 0){
+            if(round($request->total_liquidar,2) <= 0){
                 $expediente->liquidado = 1;
 
                 $pagaresContrato = Pago_contrato::select('id','pagado','contrato_id')
@@ -3450,7 +3450,7 @@ class ExpedienteController extends Controller
         else
             $cantRestante = 0;
              
-       //$liquidacion[0]->totalRestante = $liquidacion[0]->saldo;
+       $liquidacion[0]->sumaParcial = $liquidacion[0]->credito_solic + $liquidacion[0]->fovissste + $liquidacion[0]->infonavit + $liquidacion[0]->sumaDepositos;
 
        $liquidacion[0]->totalRestante = 
             $liquidacion[0]->precio_venta + $liquidacion[0]->interes_ord - $liquidacion[0]->credito_solic -
@@ -3465,6 +3465,7 @@ class ExpedienteController extends Controller
         $liquidacion[0]->infonavit = number_format((float)$liquidacion[0]->infonavit, 2, '.', ',');
         $liquidacion[0]->descuento = number_format((float)$liquidacion[0]->descuento, 2, '.', ',');
         $liquidacion[0]->totalRestante = number_format((float)$liquidacion[0]->totalRestante, 2, '.', ',');
+        $liquidacion[0]->sumaParcial = number_format((float)$liquidacion[0]->sumaParcial, 2, '.', ',');
 
         $liquidacion[0]->precio_base = number_format((float)$liquidacion[0]->precio_base, 2, '.', ',');
         $liquidacion[0]->precio_terreno_excedente = number_format((float)$liquidacion[0]->precio_terreno_excedente, 2, '.', ',');
