@@ -91,6 +91,12 @@
                                             </td>
                                             <td class="td2" v-if="prospecto.status == '1'">
                                                 <span class="badge badge-warning">Pendiente</span>
+                                                <button type="button" @click="aprobar(prospecto.id)" class="btn btn-success btn-sm" title="Aprobar">
+                                                    <i class="fa fa-check-circle-o"></i>
+                                                </button>
+                                                <button type="button" @click="rechazar(prospecto.id)" class="btn btn-danger btn-sm" title="Rechazar">
+                                                    <i class="fa fa-window-close-o"></i>
+                                                </button>
                                             </td>
                                             <td class="td2" v-if="prospecto.status == '2'">
                                                 <span class="badge badge-success">Aprobado</span>
@@ -382,14 +388,14 @@
                 });
             },
   
-            aceptarSimulacion(){
+            aprobar(id){
                 let me = this;
                 //Con axios se llama el metodo update de DepartamentoController
                 axios.put('/creditos/aceptar',{
-                    'id': this.num_folio
+                    'id': id
                 }).then(function (response){
-                    me.listarSimulaciones(1,this.buscar,this.b_etapa,this.b_manzana,this.b_lote,this.criterio,this.criterio2);
-                    me.limpiarDatos();
+                    me.listarSimulaciones(1,me.buscar,me.b_etapa,me.b_manzana,me.b_lote,me.criterio,me.criterio2);
+                    
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -402,17 +408,14 @@
                     console.log(error);
                 });
             }, 
-            abrirPDF(){
-                window.open('pdf/CUENTA-BANCOMER.pdf', '_blank');
-            },
-            rechazarSimulacion(){
+            rechazar(id){
                 let me = this;
                 //Con axios se llama el metodo update de DepartamentoController
                 axios.put('/creditos/rechazar',{
-                    'id': this.num_folio
+                    'id': id
                 }).then(function (response){
-                    me.listarSimulaciones(1,this.buscar,this.b_etapa,this.b_manzana,this.b_lote,this.criterio,this.criterio2);
-                    me.limpiarDatos();
+                    me.listarSimulaciones(1,me.buscar,me.b_etapa,me.b_manzana,me.b_lote,me.criterio,me.criterio2);
+                    
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -425,6 +428,11 @@
                     console.log(error);
                 });
             }, 
+
+            abrirPDF(){
+                window.open('pdf/CUENTA-BANCOMER.pdf', '_blank');
+            },
+            
 
             isNumber: function(evt) {
                 evt = (evt) ? evt : window.event;
