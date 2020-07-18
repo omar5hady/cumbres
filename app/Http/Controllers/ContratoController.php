@@ -3074,7 +3074,7 @@ class ContratoController extends Controller
         $contratoPromesa[0]->valor_construccion = $contratoPromesa[0]->precio_venta - $contratoPromesa[0]->valor_terreno;
 
         setlocale(LC_TIME, 'es_MX.utf8');
-        if($contratoPromesa[0]->avaluo_cliente>=0){
+        if($contratoPromesa[0]->avaluo_cliente>=0 && $contratoPromesa[0]->enganche_total >0){
             $contratoPromesa[0]->engancheTotalLetra = NumerosEnLetras::convertir(($contratoPromesa[0]->enganche_total - $contratoPromesa[0]->avaluo_cliente), 'Pesos', true, 'Centavos');
         }
         else{
@@ -3132,7 +3132,10 @@ class ContratoController extends Controller
         for ($i = 0; $i < count($pagos); $i++) {
             $tiempo = new Carbon($pagos[$i]->fecha_pago);
             $pagos[$i]->fecha_pago = $tiempo->formatLocalized('%d de %B de %Y');
-            $pagos[$i]->montoPagoLetra = NumerosEnLetras::convertir($pagos[$i]->monto_pago, 'Pesos', true, 'Centavos');
+            if($pagos[$i]->monto_pago != 0)
+                $pagos[$i]->montoPagoLetra = NumerosEnLetras::convertir($pagos[$i]->monto_pago, 'Pesos', true, 'Centavos');
+            else
+                $pagos[$i]->montoPagoLetra = ' $0.00 (CERO PESOS 00/100 M.N.)';
             $pagos[$i]->monto_pago = number_format((float)$pagos[$i]->monto_pago, 2, '.', ',');
 
             switch ($i) {
