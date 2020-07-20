@@ -61,8 +61,8 @@
                                         <button type="submit" @click="listarProspectos(1,buscar,buscar2,buscar3,b_clasificacion,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     </div>
                                     
-                                        <a v-if="rolId == 2" :href="'/prospectos/excel?buscar=' + buscar+ '&b_clasificacion=' + b_clasificacion + '&criterio=' + criterio "  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
-                                        <a v-if="rolId != 2" :href="'/prospectos/excel/gerente?buscar=' + buscar+ '&buscar2='+ buscar2 + '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + '&criterio=' + criterio "  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
+                                        <a v-if="rolId == 2" :href="'/prospectos/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + '&b_publicidad=' + b_publicidad + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
+                                        <a v-if="rolId != 2" :href="'/prospectos/excel/gerente?buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + '&b_publicidad=' + b_publicidad + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
                                         <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Clientes en total: '+ contador"> </span>
                                 </div>
                                 <div class="col-md-8" v-else>
@@ -97,8 +97,8 @@
                                         </select>
                                     </div>
                                     <button type="submit" @click="listarProspectos(1,buscar,buscar2,buscar3,b_clasificacion,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                        <a v-if="rolId == 2" :href="'/prospectos/excel?buscar=' + buscar+ '&b_clasificacion=' + b_clasificacion + '&criterio=' + criterio "  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
-                                        <a v-if="rolId != 2" :href="'/prospectos/excel/gerente?buscar=' + buscar+ '&buscar2='+ buscar2 + '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + '&b_publicidad=' + b_publicidad + '&criterio=' + criterio "  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
+                                        <a v-if="rolId == 2" :href="'/prospectos/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + '&b_publicidad=' + b_publicidad + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
+                                        <a v-if="rolId != 2" :href="'/prospectos/excel/gerente?buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + '&b_publicidad=' + b_publicidad + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
                                         <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Clientes en total: '+ contador"> </span>
                                 </div>
                             </div>
