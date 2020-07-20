@@ -65,6 +65,7 @@
                                         <option value="0">Pendiente</option>
                                         <option value="1">En proceso</option>
                                         <option value="2">Concluido</option>
+                                        <option value="3">Cancelado</option>
                                     </select>
                                     <button type="submit" @click="listarSolicitudes(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2,status)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
@@ -75,6 +76,7 @@
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr> 
+                                        <th></th>
                                         <th># Folio</th>
                                         <th>Cliente</th>
                                         <th>Contacto</th>
@@ -95,6 +97,11 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="contratos in arraySolicitudes" :key="contratos.id" @dblclick="verDetalles(contratos.id)">
+                                        <td class="td2">
+                                            <button v-if="contratos.status == 0" title="Cancelar" type="button" @click="cancelarSolicitud(contratos.id)" class="btn btn-danger btn-sm">
+                                                <i class="icon-trash"></i>
+                                            </button>
+                                        </td>
                                         <td class="td2">
                                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{contratos.id}}</a>
                                             <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
@@ -146,14 +153,25 @@
                                                     <i class="fa fa-file-pdf-o"></i>&nbsp;Reporte
                                             </a> 
                                         </td>
-                                        <td class="td2">
-                                            Fecha: <input v-if="contratos.status != '2'"  type="date" v-on:change="actualizarFechaProgram($event.target.value,contratos.id)"  :id="contratos.id" :value="contratos.fecha_program" class="form-control" >
-                                            <label v-else v-text="this.moment(contratos.fecha_program).locale('es').format('DD/MMM/YYYY')"></label>
-                                        </td>
-                                        <td class="td2">                                           
-                                            Hora: <input v-if="contratos.status != '2'"  type="time" v-on:change="actualizarHoraProgram($event.target.value,contratos.id)" :id="contratos.id" :value="contratos.hora_program" class="form-control" >
-                                            <label v-else v-text="contratos.hora_program"></label>
-                                        </td>
+                                        <template v-if="contratos.status == 3">
+                                                
+                                            <td class="td2" colspan="2" v-if="contratos.status == '3'">
+                                                <span class="badge badge-danger">Cancelado</span>
+                                            </td>  
+                                        </template>
+                                        <template v-else>
+                                        
+                                            <td class="td2">
+                                                Fecha: <input v-if="contratos.status != '2'"  type="date" v-on:change="actualizarFechaProgram($event.target.value,contratos.id)"  :id="contratos.id" :value="contratos.fecha_program" class="form-control" >
+                                                <label v-else v-text="this.moment(contratos.fecha_program).locale('es').format('DD/MMM/YYYY')"></label>
+                                            </td>
+                                            <td class="td2">                                           
+                                                Hora: <input v-if="contratos.status != '2'"  type="time" v-on:change="actualizarHoraProgram($event.target.value,contratos.id)" :id="contratos.id" :value="contratos.hora_program" class="form-control" >
+                                                <label v-else v-text="contratos.hora_program"></label>
+                                            </td>
+                                            
+                                        </template>
+                                        
                                         <template>    
                                             <td class="td2" v-if="contratos.status == '2'">
                                                 <a title="Ver revision" type="button" 
@@ -166,7 +184,11 @@
                                             </td>
                                             <td class="td2" v-if="contratos.status == '1'">
                                                 <span class="badge badge-warning">En proceso</span>
-                                            </td>                                       
+                                            </td>  
+
+                                            <td class="td2" v-if="contratos.status == '3'">
+                                                <span class="badge badge-danger">Cancelado</span>
+                                            </td>                                          
                                         </template>
                                         
                                     </tr>
@@ -449,6 +471,15 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" v-if="arrayListadoDetalles.length" for="text-input">Observaciones generales</label>
+                                    <div class="col-md-6" v-if="arrayListadoDetalles.length">
+                                        <textarea v-model="obs_gen" cols="50" rows="4"></textarea>
+                                    </div>
+
+                                    
+                                </div>
+
                                 
                             </template>
                                 
@@ -673,6 +704,7 @@
                 dias_garantia : '',
                 garantia : '',
                 solicitud_id:0,
+                obs_gen:'',
 
                 arrayListadoDetalles : [],
 
@@ -1022,36 +1054,36 @@
                 },
 
                 revisarDetalle(id,resultado,comentario){
-                let me = this;
-                
-                
-                axios.put('/detalles/updateResultado',{
-                    'resultado':resultado,
-                    'solicitud_id': me.solicitud_id,
-                    'id' : id,
-                    'comentario':comentario
-                }).then(function (response){
+                    let me = this;
                     
-                    me.verDetalles(me.solicitud_id);
-                    me.modal2 = 0;
-                    me.observacion ='';
-                  
-                const toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000
+                    
+                    axios.put('/detalles/updateResultado',{
+                        'resultado':resultado,
+                        'solicitud_id': me.solicitud_id,
+                        'id' : id,
+                        'comentario':comentario
+                    }).then(function (response){
+                        
+                        me.verDetalles(me.solicitud_id);
+                        me.modal2 = 0;
+                        me.observacion ='';
+                    
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
 
+                        });
+
+                        toast({
+                        type: 'success',
+                        title: 'Cambios guardados'
+                        })
+                    }).catch(function (error){
+                        console.log(error);
                     });
-
-                    toast({
-                    type: 'success',
-                    title: 'Cambios guardados'
-                    })
-                }).catch(function (error){
-                    console.log(error);
-                });
-            },
+                },
 
                 getDatosLote(lote){
                     let me = this;
@@ -1133,6 +1165,7 @@
                     'sabado' : this.sabado,
                     'horario' : this.horario,
                     'celular' : this.celular,
+                    'obs_gen' : this.obs_gen
 
                 }).then(function (response){
                     me.proceso=false;
@@ -1149,6 +1182,43 @@
                     console.log(error);
                     me.proceso = false;
                 });
+            },
+
+            cancelarSolicitud(id){
+                let me = this;
+                    Swal.fire({
+                    title: 'Cancelar solicitud',
+                    text: "La solicitud quedara cancelada, ¿Desea Continuar?",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Si!'
+                    }).then((result) => {
+                    if (result.value) {
+                        //Con axios se llama el metodo update de LoteController
+                        axios.put('/detalles/finalizarReporte',{
+                            'solicitud_id': id,
+                            
+                        }).then(function (response){
+                            me.listarSolicitudes(me.pagination2.current_page,me.buscar2,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2,me.status);
+                            //window.alert("Cambios guardados correctamente");
+                            const toast = Swal.mixin({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000
+                                });
+                                toast({
+                                type: 'success',
+                                title: 'Solicitud anulada correctamente'
+                            })
+                        }).catch(function (error){
+                            console.log(error);
+                        });
+                    }
+                })
+                
             },
 
             /// SELECT PARA CATALOGO DE DETALLES
@@ -1344,6 +1414,7 @@
                         this.folio = '';
                         this.observacion = '';
                         this.lote_id = '';
+                        this.obs_gen = '';
                         break;
                     }
 

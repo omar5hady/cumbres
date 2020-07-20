@@ -548,7 +548,7 @@
                                 <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                                 <button type="button" v-if="tipoAccion == 1" class="btn btn-success" @click="progFecha()">Programar fecha</button>
                                 <button type="button" v-if="tipoAccion == 2" class="btn btn-success" @click="progHora()">Programar hora</button>
-                                <button type="button" v-if="tipoAccion == 3 && fecha_entrega_real != '' && hora_entrega_real != ''" class="btn btn-success" @click="finalizarEntrega()">Finalizar</button>
+                                <button type="button" v-if="tipoAccion == 3 && fecha_entrega_real != '' && hora_entrega_real != '' && fecha_entrega_real != null && hora_entrega_real != null" class="btn btn-success" @click="finalizarEntrega()">Finalizar</button>
                             </div>
                         </div>
                         <!-- /.modal-content -->
@@ -1483,7 +1483,7 @@
                                     this.tituloModal = "Finalizar entrega";
                                     this.tipoAccion = 3;
                                     this.cero_detalles = 0;
-                                    this.fecha_entrega_real = data['hora_entrega_prog'];
+                                    this.fecha_entrega_real = data['fecha_program'];
                                     this.hora_entrega_real = data['hora_entrega_prog'];
                                 }
                                 })
@@ -1494,7 +1494,7 @@
                                 this.tituloModal = "Finalizar entrega";
                                 this.tipoAccion = 3;
                                 this.cero_detalles = 0;
-                                this.fecha_entrega_real = data['hora_entrega_prog'];
+                                this.fecha_entrega_real = data['fecha_program'];
                                 this.hora_entrega_real = data['hora_entrega_prog'];
                             }
                             

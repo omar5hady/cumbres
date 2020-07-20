@@ -3409,6 +3409,9 @@ class ContratoController extends Controller
             }
 
             $typCredit = inst_seleccionada::where('credito_id', '=', $request->id)->where('elegido', '=', 1)->get();
+            $inst = inst_seleccionada::findOrFail($typCredit[0]->id);
+            $inst->status = 2;
+            $inst->save();
 
             if($request->status == 3 && $typCredit[0]->tipo_credito == "Crédito Directo"){
                 $toAlert = [24706, 24705];

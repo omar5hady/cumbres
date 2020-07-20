@@ -33,6 +33,7 @@ class SolicDetallesController extends Controller
             $solicitud->sabado = $request->sabado;
             $solicitud->horario = $request->horario;
             $solicitud->celular = $request->celular;
+            $solicitud->obs_gen = $request->obs_gen;
             
             $solicitud->save();
  
@@ -93,6 +94,7 @@ class SolicDetallesController extends Controller
                     'solic_detalles.sabado','solic_detalles.nom_contrato',
                     'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
                     'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at' ,
+                    'solic_detalles.obs_gen',
                     'solic_detalles.fecha_program','solic_detalles.hora_program');
 
         if($status == ''){
@@ -254,6 +256,7 @@ class SolicDetallesController extends Controller
                                     'contratistas.nombre', DB::raw('DATE(solic_detalles.created_at) as fecha'),
                                     'solic_detalles.lunes','solic_detalles.martes','solic_detalles.miercoles',
                                     'solic_detalles.jueves','solic_detalles.viernes','solic_detalles.sabado',
+                                    'solic_detalles.obs_gen',
                                     'solic_detalles.horario','entregas.fecha_entrega_real','lotes.calle', 'lotes.numero')
                             ->where('solic_detalles.id','=',$id)
                             ->get();
@@ -522,7 +525,7 @@ class SolicDetallesController extends Controller
             }
         }
 
-        $contratos = $contratos->orderBy('solic_detalles.fecha_program','ASC')
+        $contratos = $contratos->where('solic_detalles.status','!=',3)->orderBy('solic_detalles.fecha_program','ASC')
                                 ->paginate(10);
         
             return [
@@ -569,6 +572,12 @@ class SolicDetallesController extends Controller
         $totalSolicitud->costo = $total[0]->totalCosto;
         $totalSolicitud->save();
 
+    }
+
+    public function finalizarReporte(Request $request){
+        $solicitud = Solic_detalle::findOrFail($request->solicitud_id);
+        $solicitud->status = 3;
+        $solicitud->save();
     }
 
     public function updateFechaConcluido(Request $request){
@@ -697,6 +706,7 @@ class SolicDetallesController extends Controller
                                     'contratistas.nombre', DB::raw('DATE(solic_detalles.created_at) as fecha'),
                                     'solic_detalles.lunes','solic_detalles.martes','solic_detalles.miercoles',
                                     'solic_detalles.jueves','solic_detalles.viernes','solic_detalles.sabado',
+                                    'solic_detalles.obs_gen',
                                     'solic_detalles.horario','entregas.fecha_entrega_real','lotes.calle', 'lotes.numero')
                             ->where('solic_detalles.id','=',$id)
                             ->get();
