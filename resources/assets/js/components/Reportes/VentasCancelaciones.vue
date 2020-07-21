@@ -77,7 +77,7 @@
                                                 <td class="td2" v-text="lote.num_etapa"></td>
                                                 <td class="td2" v-text="lote.manzana"></td>
                                                 <td class="td2" v-text="lote.num_lote"></td>
-                                                <td class="td2" v-text="lote.nombre + ' ' + lote.apellidos"></td>
+                                                <td class="td2" v-text="lote.nombre.toUpperCase() + ' ' + lote.apellidos.toUpperCase()"></td>
                                                 <td class="td2" v-text="lote.fecha"></td>
                                                 <td class="td2" v-text="lote.tipo_credito"></td>
                                                 <td class="td2" v-text="lote.institucion"></td>
@@ -158,7 +158,7 @@
                                                 <td class="td2" v-text="cancelacion.num_etapa"></td>
                                                 <td class="td2" v-text="cancelacion.manzana"></td>
                                                 <td class="td2" v-text="cancelacion.num_lote"></td>
-                                                <td class="td2" v-text="cancelacion.nombre + ' ' + cancelacion.apellidos"></td>
+                                                <td class="td2" v-text="cancelacion.nombre.toUpperCase() + ' ' + cancelacion.apellidos.toUpperCase()"></td>
                                                 <td class="td2" v-text="cancelacion.fecha_status"></td>
                                                 <td class="td2" v-text="cancelacion.fecha"></td>
                                                 <td class="td2" v-text="cancelacion.tipo_credito"></td>

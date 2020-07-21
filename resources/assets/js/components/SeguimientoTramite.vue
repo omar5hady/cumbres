@@ -3277,6 +3277,7 @@
 
                     case 'liquidacion': 
                     {
+                         
                         this.modal2 = 1;
                         this.tituloModal='Generar Liquidación';
                         this.id = data['folio'];
@@ -3300,6 +3301,7 @@
 
                         this.mostrarPagares();
                         this.listarGastos();
+                        
                         break;
                     }
 
@@ -3327,6 +3329,16 @@
 
                     case 'firma_esc': 
                     {
+                        if(data['nombre_recomendado'] == null && data['publicidad_id'] == 1 || data['nombre_recomendado'] == '' && data['publicidad_id'] == 1){
+                            Swal({
+                                    title: 'Recomendado!',
+                                    text: 'No se encuentra registrado el nombre de la persona que lo recomienda',
+                                    type: 'info',
+                                    animation: false,
+                                    customClass: 'animated bounceInRight'
+                                })
+                        }
+                        else{
                         this.modal5 = 1;
                         this.tipoAccion = 1;
                         this.tituloModal='Instrucción Notarial';
@@ -3346,6 +3358,7 @@
                         this.notaria_id = 0;
                         this.estado = '';
                         this.ciudad = '';
+                        }
                     
 
                         break;

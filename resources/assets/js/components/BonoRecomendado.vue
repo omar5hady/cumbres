@@ -146,9 +146,9 @@
                                         <td class="td2" v-text="bono.num_etapa" ></td>
                                         <td class="td2" v-text="bono.manzana" ></td>
                                         <td class="td2" v-text="bono.num_lote" ></td>
-                                        <td class="td2" v-text="bono.nombre_cliente" ></td>
+                                        <td class="td2" v-text="bono.nombre_cliente.toUpperCase()" ></td>
                                         <td class="td2" v-text="this.moment(bono.fecha).locale('es').format('DD/MMM/YYYY')" ></td>
-                                        <td class="td2" v-text="bono.recomendado" ></td>
+                                        <td class="td2" v-text="bono.recomendado.toUpperCase()" ></td>
                                         <td class="td2" v-text="bono.proyecto_rec" ></td>
                                         <td class="td2" v-text="bono.etapa_rec" ></td>
                                         <td class="td2" v-text="bono.manzana_rec" ></td>

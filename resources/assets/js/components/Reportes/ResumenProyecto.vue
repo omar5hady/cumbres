@@ -168,7 +168,7 @@
                                     <td v-if="contrato.interior == null" class="td2" v-text="contrato.calle + ' Num. '+ contrato.numero"></td>
                                     <td v-else class="td2" v-text="contrato.calle + ' Num. '+ contrato.numero + '-' + contrato.interior"></td>
                                     <td class="td2" v-text="this.moment(contrato.fecha_status).locale('es').format('DD/MMM/YYYY')"></td>
-                                    <td class="td2" v-text="contrato.nombre_cliente"></td>
+                                    <td class="td2" v-text="contrato.nombre_cliente.toUpperCase()"></td>
                                     <td class="td2" v-text="contrato.institucion"></td>
                                     <td class="td2" v-text="contrato.tipo_credito"></td>
                                     <td v-if="contrato.fecha_firma_esc == null" class="td2" v-text="''"></td>
