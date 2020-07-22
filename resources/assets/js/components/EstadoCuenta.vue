@@ -123,7 +123,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="contratos in arrayContratos" :key="contratos.folio" v-on:dblclick="abrirPDF(contratos.folio)">
+                                    <tr v-for="contratos in arrayContratos" :key="contratos.folio" v-on:dblclick="abrirPDF(contratos.folio)" title="Doble click">
                                         <td class="td2">
                                             <button type="button" title="Ver datos del cliente" @click="abrirModal('ver_personal',contratos)" class="btn btn-primary btn-sm">
                                                 <i class="fa fa-eye"></i>
@@ -136,7 +136,9 @@
                                                     <a v-if="contratos.liquidado == 1" class="dropdown-item" target="_blank" v-bind:href="'/expediente/liquidacionPDF/'+contratos.folio">Liquidación</a>
                                                 </div>
                                             </td>
-                                        <td class="td2" v-text="contratos.nombre_cliente"></td>
+                                        <td class="td2">
+                                            <a href="#" v-text="contratos.nombre_cliente"></a>
+                                        </td>
                                         <td class="td2" v-text="contratos.fraccionamiento"></td>
                                         <td class="td2" v-text="contratos.etapa"></td>
                                         <td class="td2" v-text="contratos.manzana"></td>

@@ -179,10 +179,12 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="contrato in arrayContratos" :key="contrato.id" @dblclick="abrirModal('registrar',contrato)">
+                                    <tr v-for="contrato in arrayContratos" :key="contrato.id" @dblclick="abrirModal('registrar',contrato)" title="Doble clic">
                                     
                                         <td v-text="contrato.folio"></td>
-                                        <td v-text="contrato.nombre_cliente"></td>
+                                        <td>
+                                            <a href="#" v-text="contrato.nombre_cliente"></a>
+                                        </td>
                                         <td v-text="contrato.fraccionamiento"></td>
                                         <td v-text="contrato.etapa"></td>
                                         <td v-text="contrato.manzana"></td>

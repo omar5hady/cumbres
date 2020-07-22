@@ -116,8 +116,12 @@
                                             <i class="icon-eye"></i>
                                             </button> &nbsp;
                                         </td>
-                                        <td v-text="pagare.folio" v-on:dblclick="abrirPDF(pagare.folio)"></td>
-                                        <td v-text="pagare.nombre + ' ' +pagare.apellidos" v-on:dblclick="abrirModal('datosCliente',pagare)"></td>
+                                        <td v-on:dblclick="abrirPDF(pagare.folio)" title="Solicitud de compra venta">
+                                            <a href="#" v-text="pagare.folio" ></a>
+                                        </td>
+                                        <td v-on:dblclick="abrirModal('datosCliente',pagare)" title="Datos del cliente">
+                                            <a href="#" v-text="pagare.nombre + ' ' +pagare.apellidos"></a>
+                                        </td>
                                         <template>
                                              <td v-if="pagare.gestor == 'NULL'"> <b>Sin asignar</b></td>
                                              <td v-else v-text="pagare.gestor"></td>
