@@ -69,7 +69,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-on:dblclick="verAviso(avisoObra.id)" v-for="avisoObra in arrayAvisoObra" :key="avisoObra.id">
+                                        <tr v-on:dblclick="verAviso(avisoObra.id)" v-for="avisoObra in arrayAvisoObra" :key="avisoObra.id" title="Ver detalle">
                                             <td>
                                                 <button type="button" v-if="rolId!=9 && rolId != 11" class="btn btn-danger btn-sm" @click="eliminarContrato(avisoObra)">
                                                     <i class="icon-trash"></i>
@@ -85,7 +85,9 @@
                                                     <i class="fa fa-download"></i>
                                                 </a>
                                             </td>
-                                            <td v-text="avisoObra.clave"></td>
+                                            <td>
+                                                <a href="#" v-text="avisoObra.clave"></a>
+                                            </td>
                                             <td class="td2" v-text="avisoObra.contratista"></td>
                                             <td class="td2" v-text="avisoObra.proyecto"></td>
                                             <td class="td2">{{formatNumber(avisoObra.total_superficie)}} m&sup2;</td>

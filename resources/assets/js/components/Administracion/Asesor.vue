@@ -60,7 +60,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="Personal in arrayPersonal" :key="Personal.id"  @dblclick="mostrarProspectos(Personal.nombre, Personal.id)">
+                                    <tr v-for="Personal in arrayPersonal" :key="Personal.id"  @dblclick="mostrarProspectos(Personal.nombre, Personal.id)" title="Ver prospectos">
                                         <td width="10%">
                                             <button type="button" @click="abrirModal('Personal','actualizar',Personal)" class="btn btn-warning btn-sm">
                                             <i class="icon-pencil"></i>
@@ -77,7 +77,9 @@
                                             </template>
                                       
                                         </td>
-                                        <td v-text="Personal.nombre + ' ' + Personal.apellidos" ></td>
+                                        <td>
+                                            <a href="#" v-text="Personal.nombre + ' ' + Personal.apellidos"></a>
+                                        </td>
                                         
                                         <td v-text="Personal.usuario"></td>
                                         <td v-text="Personal.rol"></td>
@@ -186,7 +188,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="Personal in arrayProspectos" :key="Personal.id" @dblclick="abrirModal4('ver',Personal)">
+                                        <tr v-for="Personal in arrayProspectos" :key="Personal.id" @dblclick="abrirModal4('ver',Personal)" title="Ver Detalles">
                                             <td class="td2" width="10%">
                                                 <button type="button" @click="abrirModalCambio(Personal)" class="btn btn-primary btn-sm">
                                                     <i class="fa fa-exchange"></i>
@@ -196,7 +198,9 @@
                                                 </button>
                                             </td>
                                             <td class="td2" v-text="Personal.id" ></td>
-                                            <td class="td2" v-text="Personal.nombre + ' ' + Personal.apellidos" ></td>
+                                            <td class="td2">
+                                                <a href="#" v-text="Personal.nombre + ' ' + Personal.apellidos"></a>
+                                            </td>
                                             <td class="td2" v-text="Personal.lugar_contacto"></td>
                                             <td class="td2" v-text="Personal.proyecto"></td>
                                             <td class="td2" v-text="Personal.email"></td>

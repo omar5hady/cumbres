@@ -38,9 +38,11 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="prospecto in arraySimulaciones" :key="prospecto.id" @dblclick="mostrarDetalle(prospecto)">
+                                        <tr v-for="prospecto in arraySimulaciones" :key="prospecto.id" @dblclick="mostrarDetalle(prospecto)" title="Ver Detalle">
                                             <td v-text="prospecto.id"></td>
-                                            <td v-text="prospecto.nombre.toUpperCase() + ' ' + prospecto.apellidos.toUpperCase() "></td>
+                                            <td>
+                                                <a href="#" v-text="prospecto.nombre.toUpperCase() + ' ' + prospecto.apellidos.toUpperCase()"></a>
+                                            </td>
                                             <td v-text="prospecto.fraccionamiento"></td>
                                             <td v-text="prospecto.num_lote"></td>
                                             <td v-text="prospecto.modelo"></td>
@@ -126,7 +128,7 @@
                                             </td>
                                             <td v-text="prospecto.rfc.toUpperCase()"></td>
                                             <td v-text="prospecto.nss"></td>
-                                            <td v-text="prospecto.curp.toUpperCase()"></td>
+                                            <td v-text="prospecto.curp"></td>
                                             <td v-text="prospecto.proyecto"></td>
                                             <td> <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo', prospecto.id),listarObservacion(1,prospecto.id)">Ver todos</button> </td>
                                         </tr>                               

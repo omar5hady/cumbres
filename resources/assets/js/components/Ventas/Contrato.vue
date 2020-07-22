@@ -304,9 +304,11 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="contrato in arrayContratos" :key="contrato.id" v-on:dblclick="verContrato(contrato)" v-bind:style="{ backgroundColor : !contrato.detenido ? '#FFFFFF' : '#D23939'}">
+                                        <tr v-for="contrato in arrayContratos" :key="contrato.id" v-on:dblclick="verContrato(contrato)" v-bind:style="{ backgroundColor : !contrato.detenido ? '#FFFFFF' : '#D23939'}" title="Ver contrato">
                                             <td class="td2" v-text="contrato.id"></td>
-                                            <td class="td2" v-text="contrato.nombre.toUpperCase() + ' ' + contrato.apellidos.toUpperCase() "></td>
+                                            <td class="td2">
+                                                <a href="#" v-text="contrato.nombre.toUpperCase() + ' ' + contrato.apellidos.toUpperCase() "></a>
+                                            </td>
                                             <td class="td2" v-text="contrato.vendedor_nombre + ' ' + contrato.vendedor_apellidos "></td>
                                             <td class="td2" v-text="contrato.fraccionamiento"></td>
                                             <td class="td2" v-text="contrato.etapa"></td>
@@ -422,9 +424,11 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="prospecto in arraySimulaciones" :key="prospecto.id" v-on:dblclick="obtenerDatosCredito(prospecto.id)">
+                                        <tr v-for="prospecto in arraySimulaciones" :key="prospecto.id" v-on:dblclick="obtenerDatosCredito(prospecto.id)" title="Doble click">
                                             <td class="td2" v-text="prospecto.id"></td>
-                                            <td class="td2" v-text="prospecto.nombre + ' ' + prospecto.apellidos "></td>
+                                            <td class="td2">
+                                                <a href="#" v-text="prospecto.nombre.toUpperCase() + ' ' + prospecto.apellidos.toUpperCase() "></a>
+                                            </td>
                                             <td class="td2" v-text="prospecto.vendedor_nombre + ' ' + prospecto.vendedor_apellidos "></td>
                                             <td class="td2" v-text="prospecto.proyecto"></td>
                                             <td class="td2" v-text="prospecto.etapa"></td>

@@ -124,7 +124,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-on:dblclick="abrirModal2('lote','ver',act_terminacion)" v-for="act_terminacion in arrayActaDeTerminacion" :key="act_terminacion.id">
+                                    <tr v-on:dblclick="abrirModal2('lote','ver',act_terminacion)" v-for="act_terminacion in arrayActaDeTerminacion" :key="act_terminacion.id" title="Ver Detalle">
                                         <td class="td2">
                                             <input type="checkbox"  @click="select" :id="act_terminacion.id" :value="act_terminacion.id" v-model="allLic" >
                                         </td>
@@ -136,8 +136,12 @@
                                             <i class="icon-cloud-upload"></i>
                                             </button>
                                         </td>
-                                        <td class="td2" v-text="act_terminacion.proyecto"></td>
-                                        <td class="td2" v-text="act_terminacion.num_etapa"></td>
+                                        <td class="td2" >
+                                            <a href="#" v-text="act_terminacion.proyecto"></a>
+                                        </td>
+                                        <td class="td2" >
+                                            <a href="#" v-text="act_terminacion.num_etapa"></a>
+                                        </td>
                                         <td class="td2" v-text="act_terminacion.manzana"></td>
                                         <td class="td2" v-text="act_terminacion.num_lote"></td>
                                         <td class="td2" v-text="act_terminacion.terreno"></td>
