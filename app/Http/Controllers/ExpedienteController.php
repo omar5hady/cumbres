@@ -2309,6 +2309,8 @@ class ExpedienteController extends Controller
                 
                 'contratos.id as folio',
                 'contratos.saldo',
+                'contratos.publicidad_id',
+                'clientes.nombre_recomendado',
                 DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                 DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
                 'creditos.fraccionamiento as proyecto',

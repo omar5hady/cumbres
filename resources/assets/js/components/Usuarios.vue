@@ -65,8 +65,8 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="Personal in arrayPersonal" :key="Personal.id" v-on:dblclick="getPrivilegios(Personal.id)">
-                                            <td class="td2" width="10%">
+                                        <tr v-for="Personal in arrayPersonal" :key="Personal.id" v-on:dblclick="getPrivilegios(Personal.id)" title="Ver privilegios">
+                                            <td class="td2" width="20%">
                                                 <button type="button" @click="abrirModal('Personal','actualizar',Personal)" class="btn btn-warning btn-sm">
                                                 <i class="icon-pencil"></i>
                                                 </button>
@@ -85,7 +85,9 @@
                                                 </button>
                                         
                                             </td>
-                                            <td class="td2" v-text="Personal.nombre + ' ' + Personal.apellidos" ></td>
+                                            <td class="td2">
+                                                <a href="#" v-text="Personal.nombre + ' ' + Personal.apellidos"></a>
+                                            </td>
                                             
                                             <td class="td2" v-text="Personal.usuario"></td>
                                             <td class="td2" v-text="Personal.rol"></td>

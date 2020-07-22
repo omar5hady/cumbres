@@ -10,7 +10,7 @@ class Solic_detalle extends Model
     protected $primaryKey = 'id'; //Referenciar la llave primaria
     protected $fillable = [
                         'contrato_id', 'contratista_id', 'cliente', 'dias_entrega', 'lunes', 'martes',
-                        'miercoles', 'jueves', 'viernes', 'sabado', 'horario',
+                        'miercoles', 'jueves', 'viernes', 'sabado', 'horario','obs_gen',
                         'celular', 'costo', 'status', 'hora_program', 'fecha_program','nom_contrato'
     ];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
 

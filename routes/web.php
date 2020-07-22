@@ -817,6 +817,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/detalles/reporteDetalles/pdf/{folio}','SolicDetallesController@reportePDF');
         Route::get('/detalles/reporteDetalles/reporteConclusionPDF/{folio}','SolicDetallesController@reporteConclusionPDF');
         Route::put('/detalles/updateFecha','SolicDetallesController@updateFecha');
+        Route::put('/detalles/finalizarReporte','SolicDetallesController@finalizarReporte');
         Route::put('/detalles/updateHora','SolicDetallesController@updateHora');
         Route::put('/detalles/updateResultado','SolicDetallesController@updateResultado');
 

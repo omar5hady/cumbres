@@ -22,7 +22,7 @@
                             
                         </div>
                         <div>
-                            <div class="text-value text-primary">&nbsp;&nbsp;&nbsp;{{cumple.nombre + ' ' + cumple.apellidos}}</div>
+                            <div class="text-value text-primary">&nbsp;&nbsp;&nbsp;{{cumple.nombre.toUpperCase() + ' ' + cumple.apellidos.toUpperCase()}}</div>
                             <div class="text-muted text-uppercase font-weight-bold small"> &nbsp;&nbsp;&nbsp; {{this.moment(cumple.f_nacimiento).locale('es').format('DD/MMM/YYYY')}}</div>
                         </div>
                     </div>

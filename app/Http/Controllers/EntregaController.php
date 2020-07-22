@@ -358,8 +358,10 @@ class EntregaController extends Controller
                 }
             }
 
-            $contratos = $contratos->whereNotNull('entregas.fecha_program')
+            $contratos = $contratos//->whereNotNull('entregas.fecha_program')
+                
                 ->orderBy('licencias.avance','desc')
+                ->orderBy('lotes.fecha_program','desc')
                 ->orderBy('lotes.fecha_entrega_obra','desc')
             ->get();
 

@@ -167,10 +167,11 @@
                                         <td v-text="'$'+formatNumber(contratos.totPagare - contratos.totRest)"></td>
                                         <td class="td2" v-text="this.moment(contratos.ultimo_pagare).locale('es').format('DD/MMM/YYYY')"></td>
                                          <template v-if="contratos.aviso_prev">
-                                            <td @dblclick="abrirModal('fecha_recibido',contratos)" v-if="contratos.aviso_prev!='0000-01-01' && !contratos.aviso_prev_venc" class="td2" v-text="'Fecha solicitud: ' 
-                                                + this.moment(contratos.aviso_prev).locale('es').format('DD/MMM/YYYY')"></td>
+                                            <td @dblclick="abrirModal('fecha_recibido',contratos)" v-if="contratos.aviso_prev!='0000-01-01' && !contratos.aviso_prev_venc" class="td2" title="Doble click">
+                                                <a href="#" v-text="'Fecha solicitud: ' + this.moment(contratos.aviso_prev).locale('es').format('DD/MMM/YYYY')"></a>
+                                            </td>
 
-                                            <td  @dblclick="abrirModal('fecha_recibido',contratos)" v-if="contratos.aviso_prev!='0000-01-01' && contratos.aviso_prev_venc" class="td2">
+                                            <td  @dblclick="abrirModal('fecha_recibido',contratos)" v-if="contratos.aviso_prev!='0000-01-01' && contratos.aviso_prev_venc" class="td2" title="Doble click">
                                                 
                                                 <span v-if = "contratos.diferencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: ' 
                                                 + this.moment(contratos.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>

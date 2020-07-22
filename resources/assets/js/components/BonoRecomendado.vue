@@ -146,9 +146,9 @@
                                         <td class="td2" v-text="bono.num_etapa" ></td>
                                         <td class="td2" v-text="bono.manzana" ></td>
                                         <td class="td2" v-text="bono.num_lote" ></td>
-                                        <td class="td2" v-text="bono.nombre_cliente" ></td>
+                                        <td class="td2" v-text="bono.nombre_cliente.toUpperCase()" ></td>
                                         <td class="td2" v-text="this.moment(bono.fecha).locale('es').format('DD/MMM/YYYY')" ></td>
-                                        <td class="td2" v-text="bono.recomendado" ></td>
+                                        <td class="td2" v-text="bono.recomendado.toUpperCase()" ></td>
                                         <td class="td2" v-text="bono.proyecto_rec" ></td>
                                         <td class="td2" v-text="bono.etapa_rec" ></td>
                                         <td class="td2" v-text="bono.manzana_rec" ></td>
@@ -178,7 +178,9 @@
                                             <th class="td2" v-if="bono.fecha_aut2 == null && bono.fecha_aut1 == null && bono.fecha_pago == null"> Sin aprobar</th>
                                             <th class="td2" v-else-if="bono.fecha_aut2 == null && bono.fecha_aut1 != null  && bono.fecha_pago == null"> Sin autorizar</th>
                                             <th class="td2" v-else-if="bono.fecha_aut2 != null && bono.fecha_aut1 != null  && bono.fecha_pago == null"> <button type="button" @click="abrirModal('pagar',bono)" class="btn btn-success btn-sm" title=" Generar pago"> <i class="fa fa-money"> &nbsp; Generar pago </i> </button></th>
-                                            <th class="td2" @dblclick="abrirModal('detalle',bono)" v-else v-text="'Pagado el: ' + this.moment(bono.fecha_pago).locale('es').format('DD/MMM/YYYY')" ></th>
+                                            <th class="td2" @dblclick="abrirModal('detalle',bono)" v-else title="Doble click">
+                                                <a href="#" v-text="'Pagado el: ' + this.moment(bono.fecha_pago).locale('es').format('DD/MMM/YYYY')"></a>
+                                            </th>
                                         </template>
                                         <template v-else>
                                             <td class="td2" v-if="bono.fecha_aut1 == null"> <span class="badge2 badge-danger"> Cancelado</span> </td>

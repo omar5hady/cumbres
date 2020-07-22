@@ -81,7 +81,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="contratos in arrayContratos" :key="contratos.id" v-on:dblclick="abrirModal('devolucion',contratos)"> 
+                                    <tr v-for="contratos in arrayContratos" :key="contratos.id" v-on:dblclick="abrirModal('devolucion',contratos)" title="Doble click"> 
                                     <template v-if="(contratos.sumaPagares - contratos.sumaRestante -  contratos.sumGastos) > 0">
                                         <td class="td2">
                                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{contratos.id}}</a>
@@ -89,7 +89,9 @@
                                                 <a class="dropdown-item" @click="abrirPDF(contratos.id)">Estado de cuenta</a>
                                             </div>
                                         </td>
-                                        <td class="td2" v-text="contratos.nombre_cliente"></td>
+                                        <td class="td2">
+                                            <a href="#" v-text="contratos.nombre_cliente"></a>
+                                        </td>
                                         <td class="td2" v-text="contratos.proyecto"></td>
                                         <td class="td2" v-text="contratos.etapa"></td>
                                         <td class="td2" v-text="contratos.manzana"></td>
@@ -193,7 +195,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="devoluciones in arrayDevoluciones" :key="devoluciones.id" v-on:dblclick="abrirModal('info',devoluciones)"> 
+                                    <tr v-for="devoluciones in arrayDevoluciones" :key="devoluciones.id" v-on:dblclick="abrirModal('info',devoluciones)" title="Doble click"> 
                                     <template v-if="(devoluciones.sumaPagares - devoluciones.sumaRestante) > 0">
                                         <td class="td2">
                                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{devoluciones.id}}</a>
@@ -201,7 +203,9 @@
                                                 <a class="dropdown-item" @click="abrirPDF(devoluciones.id)">Estado de cuenta</a>
                                             </div>
                                         </td>
-                                        <td class="td2" v-text="devoluciones.nombre_cliente"></td>
+                                        <td class="td2">
+                                            <a href="#" v-text="devoluciones.nombre_cliente"></a>
+                                        </td>
                                         <td class="td2" v-text="devoluciones.proyecto"></td>
                                         <td class="td2" v-text="devoluciones.etapa"></td>
                                         <td class="td2" v-text="devoluciones.manzana"></td>

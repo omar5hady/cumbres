@@ -75,6 +75,7 @@
                     <div colspan="14" class="table-cell" style="text-align: center; font-size:10pt; color: white; background-color:#063058;"><b>&nbsp;&nbsp; Descripción del detalle a reparar </b></div>
                     <div colspan="4" class="table-cell" style="text-align: center; font-size: 10pt; color: white; background-color:#063058;"><b>&nbsp;&nbsp; Garantía </b></div>
                 </div>
+                
                 @for($i=0; $i < count($detalles); $i++)
                     <div class="table-row">
                         <div colspan="2" class="table-cell" style="text-align: center; "><b>&nbsp; {{$i+1}} </b></div>
@@ -83,7 +84,17 @@
                             &nbsp;&nbsp; @if($detalles[$i]->garantia == 1) Si @else No @endif
                         </b></div>
                     </div>
-                @endfor                          
+                @endfor
+            </div>
+
+            <div class="table" style="margin-top:25px;">
+                <div class="table-row">
+                    <div colspan="20" class="table-cell" style="text-align: center; font-size:10pt; color: white; background-color:#063058;"><b>&nbsp;&nbsp; Observaciones generales </b></div>
+                </div>
+                
+                <div class="table-row">    
+                    <div colspan="20" class="table-cell" style="text-align: center; ">{{$solicitud[0]->obs_gen}}</div>
+                </div>                      
             </div>
 
 

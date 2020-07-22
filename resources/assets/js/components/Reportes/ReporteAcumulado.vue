@@ -106,7 +106,7 @@
                                                 <td class="td2" v-text="lote.num_etapa"></td>
                                                 <td class="td2" v-text="lote.manzana"></td>
                                                 <td class="td2" v-text="lote.num_lote"></td>
-                                                <td class="td2" v-text="lote.nombre + ' ' + lote.apellidos"></td>
+                                                <td class="td2" v-text="lote.nombre.toUpperCase() + ' ' + lote.apellidos.toUpperCase()"></td>
                                                 <td class="td2" v-text="lote.fecha"></td>
                                                 <td class="td2" v-text="lote.tipo_credito"></td>
                                                 
@@ -193,7 +193,7 @@
                                             <tr v-for="(escrituras, index) in arrayEscrituras" :key="escrituras.id">
                                                 <td>{{index+1}}</td>
                                                 <td class="td2" v-text="escrituras.id"></td>
-                                                <td class="td2" v-text="escrituras.nombre + ' '+escrituras.apellidos"></td>
+                                                <td class="td2" v-text="escrituras.nombre.toUpperCase() + ' '+escrituras.apellidos.toUpperCase()"></td>
                                                 <td class="td2" v-text="escrituras.proyecto"></td>
                                                 <td class="td2" v-text="escrituras.num_etapa"></td>
                                                 <td class="td2" v-text="escrituras.manzana"></td>
@@ -237,7 +237,7 @@
                                             <tr v-for="(contadoSinEsc,index) in arraycontadoSinEscrituras" :key="contadoSinEsc.id">
                                                 <td>{{index+1}}</td>
                                                 <td class="td2" v-text="contadoSinEsc.id"></td>
-                                                <td class="td2" v-text="contadoSinEsc.nombre + ' '+contadoSinEsc.apellidos"></td>
+                                                <td class="td2" v-text="contadoSinEsc.nombre.toUpperCase() + ' '+contadoSinEsc.apellidos.toUpperCase()"></td>
                                                 <td class="td2" v-text="contadoSinEsc.proyecto"></td>
                                                 <td class="td2" v-text="contadoSinEsc.num_etapa"></td>
                                                 <td class="td2" v-text="contadoSinEsc.manzana"></td>
@@ -281,7 +281,7 @@
                                         <tbody>
                                             <tr v-for="(ingresoCobranza, index) in arrayIngresosCobranza" :key="ingresoCobranza.id">
                                                 <td>{{index + 1}}</td>
-                                                <td class="td2" v-text="ingresoCobranza.nombre + ' ' + ingresoCobranza.apellidos"></td>
+                                                <td class="td2" v-text="ingresoCobranza.nombre.toUpperCase() + ' ' + ingresoCobranza.apellidos.toUpperCase()"></td>
                                                 <td class="td2" v-text="ingresoCobranza.proyecto"></td>
                                                 <td class="td2" v-text="ingresoCobranza.num_etapa"></td>
                                                 <td class="td2" v-text="ingresoCobranza.manzana"></td>

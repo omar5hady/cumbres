@@ -192,10 +192,11 @@
                                                 </td>
                                                 <td v-if="ingresar.avaluo_preventivo=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
 
-                                                <td @dblclick="abrirModal('fecha_recibido',ingresar)" v-if="ingresar.aviso_prev!='0000-01-01' && !ingresar.aviso_prev_venc" class="td2" v-text="'Fecha solicitud: ' 
-                                                + this.moment(ingresar.aviso_prev).locale('es').format('DD/MMM/YYYY')"></td>
+                                                <td @dblclick="abrirModal('fecha_recibido',ingresar)" v-if="ingresar.aviso_prev!='0000-01-01' && !ingresar.aviso_prev_venc && ingresar.aviso_prev!=null" class="td2" title="Doble click">
+                                                    <a href="#" v-text="'Fecha solicitud: ' + this.moment(ingresar.aviso_prev).locale('es').format('DD/MMM/YYYY')"></a>
+                                                </td>
 
-                                                <td  @dblclick="abrirModal('fecha_recibido',ingresar)" v-if="ingresar.aviso_prev!='0000-01-01' && ingresar.aviso_prev_venc" class="td2">
+                                                <td  @dblclick="abrirModal('fecha_recibido',ingresar)" v-else-if="ingresar.aviso_prev!='0000-01-01' && ingresar.aviso_prev_venc" class="td2">
                                                     
                                                     <span v-if = "ingresar.diferencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: ' 
                                                     + this.moment(ingresar.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
@@ -208,7 +209,7 @@
                                                     
                                                 </td>
 
-                                            <td v-if="ingresar.aviso_prev=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
+                                            <td v-else-if="ingresar.aviso_prev=='0000-01-01' || ingresar.aviso_prev==null" class="td2" v-text="'No aplica'"></td>
                                             <td>
                                                 <button v-if="ingresar.detenido == 0" type="button" @click="abrirModal('ingresar',ingresar)" class="btn btn-primary btn-sm" title="Ingresar">
                                                     <i class="fa fa-send-o"></i>
@@ -392,10 +393,11 @@
                                                 </td>
                                                 <td v-if="preautorizados.avaluo_preventivo=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
 
-                                                <td @dblclick="abrirModal('fecha_recibido',preautorizados)" v-if="preautorizados.aviso_prev!='0000-01-01' && !preautorizados.aviso_prev_venc" class="td2" v-text="'Fecha solicitud: ' 
-                                                + this.moment(preautorizados.aviso_prev).locale('es').format('DD/MMM/YYYY')"></td>
+                                                <td @dblclick="abrirModal('fecha_recibido',preautorizados)" v-if="preautorizados.aviso_prev!='0000-01-01' && !preautorizados.aviso_prev_venc && preautorizados.aviso_prev!=null" class="td2" >
+                                                    <a href="#" v-text="'Fecha solicitud: ' + this.moment(preautorizados.aviso_prev).locale('es').format('DD/MMM/YYYY')"></a>
+                                                </td>
 
-                                                <td  @dblclick="abrirModal('fecha_recibido',preautorizados)" v-if="preautorizados.aviso_prev!='0000-01-01' && preautorizados.aviso_prev_venc" class="td2">
+                                                <td  @dblclick="abrirModal('fecha_recibido',preautorizados)" v-else-if="preautorizados.aviso_prev!='0000-01-01' && preautorizados.aviso_prev_venc" class="td2">
                                                     
                                                     <span v-if = "preautorizados.diferencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: ' 
                                                     + this.moment(preautorizados.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
@@ -408,12 +410,12 @@
                                                     
                                                 </td>
 
-                                                <td v-if="preautorizados.aviso_prev=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
+                                                <td v-else-if="preautorizados.aviso_prev=='0000-01-01' || preautorizados.aviso_prev==null" class="td2" v-text="'No aplica'"></td>
                                                 <td class="td2" v-text="preautorizados.tipo_credito"></td>
                                                 <td class="td2" v-text="preautorizados.institucion"></td>
                                                 <td class="td2" v-text="'$'+formatNumber(preautorizados.credito_solic)"></td>
 
-                                                <td class="td2" v-if="band==0" @dblclick="band=1">
+                                                <td class="td2" v-if="band==0" @dblclick="band=1" title="Doble click">
                                                     
                                                     <span v-if="!preautorizados.fecha_vigencia"></span>
                                                     <span v-else-if = "preautorizados.vigencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: ' 
@@ -617,10 +619,11 @@
                                                 </td>
                                                 <td v-else class="td2" v-text="'No aplica'"></td>
 
-                                                <td v-if="liquidacion.aviso_prev=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
+                                                <td v-if="liquidacion.aviso_prev=='0000-01-01' || liquidacion.aviso_prev==null" class="td2" v-text="'No aplica'"></td>
 
-                                                <td @dblclick="abrirModal('fecha_recibido',liquidacion)" v-else-if="liquidacion.aviso_prev!='0000-01-01' && !liquidacion.aviso_prev_venc" class="td2" v-text="'Fecha solicitud: ' 
-                                                + this.moment(liquidacion.aviso_prev).locale('es').format('DD/MMM/YYYY')"></td>
+                                                <td @dblclick="abrirModal('fecha_recibido',liquidacion)" v-else-if="liquidacion.aviso_prev!='0000-01-01' && !liquidacion.aviso_prev_venc" class="td2" title="Doble click">
+                                                    <a href="#" v-text="'Fecha solicitud: ' + this.moment(liquidacion.aviso_prev).locale('es').format('DD/MMM/YYYY')"></a>
+                                                </td>
                                                 
 
                                                 <td @dblclick="abrirModal('fecha_recibido',liquidacion)" v-else-if="liquidacion.aviso_prev!='0000-01-01' && liquidacion.aviso_prev_venc" class="td2">
@@ -640,7 +643,7 @@
                                                 <td class="td2" v-text="liquidacion.institucion"></td>
                                                 <td class="td2" v-text="'$'+formatNumber(liquidacion.credito_solic)"></td>
 
-                                                <td class="td2" v-if="band==0" @dblclick="band=1">
+                                                <td class="td2" v-if="band==0" @dblclick="band=1" title="Doble click">
                                                     <span v-if="!liquidacion.fecha_vigencia"></span>
                                                     <span v-else-if = "liquidacion.vigencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: ' 
                                                     + this.moment(liquidacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
@@ -841,11 +844,12 @@
                                                 </td>
                                                 <td v-if="programacion.avaluo_preventivo=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
 
-                                                <td v-if="programacion.aviso_prev=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
-                                                <td @dblclick="abrirModal('fecha_recibido',programacion)" v-if="programacion.aviso_prev!='0000-01-01' && !programacion.aviso_prev_venc" class="td2" v-text="'Fecha solicitud: ' 
-                                                + this.moment(programacion.aviso_prev).locale('es').format('DD/MMM/YYYY')"></td>
+                                                <td v-if="programacion.aviso_prev=='0000-01-01' || programacion.aviso_prev==null" class="td2" v-text="'No aplica'"></td>
+                                                <td @dblclick="abrirModal('fecha_recibido',programacion)" v-else-if="programacion.aviso_prev!='0000-01-01' && !programacion.aviso_prev_venc" class="td2" title="Doble click">
+                                                    <a href="#" v-text="'Fecha solicitud: ' + this.moment(programacion.aviso_prev).locale('es').format('DD/MMM/YYYY')"></a>
+                                                </td>
 
-                                                <td  @dblclick="abrirModal('fecha_recibido',programacion)" v-if="programacion.aviso_prev!='0000-01-01' && programacion.aviso_prev_venc" class="td2">
+                                                <td  @dblclick="abrirModal('fecha_recibido',programacion)" v-else-if="programacion.aviso_prev!='0000-01-01' && programacion.aviso_prev_venc" class="td2">
                                                     
                                                     <span v-if = "programacion.diferencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: ' 
                                                     + this.moment(programacion.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
@@ -3277,6 +3281,7 @@
 
                     case 'liquidacion': 
                     {
+                         
                         this.modal2 = 1;
                         this.tituloModal='Generar Liquidación';
                         this.id = data['folio'];
@@ -3300,6 +3305,7 @@
 
                         this.mostrarPagares();
                         this.listarGastos();
+                        
                         break;
                     }
 
@@ -3327,6 +3333,16 @@
 
                     case 'firma_esc': 
                     {
+                        if(data['nombre_recomendado'] == null && data['publicidad_id'] == 1 || data['nombre_recomendado'] == '' && data['publicidad_id'] == 1){
+                            Swal({
+                                    title: 'Recomendado!',
+                                    text: 'No se encuentra registrado el nombre de la persona que lo recomienda',
+                                    type: 'info',
+                                    animation: false,
+                                    customClass: 'animated bounceInRight'
+                                })
+                        }
+                        else{
                         this.modal5 = 1;
                         this.tipoAccion = 1;
                         this.tituloModal='Instrucción Notarial';
@@ -3346,6 +3362,7 @@
                         this.notaria_id = 0;
                         this.estado = '';
                         this.ciudad = '';
+                        }
                     
 
                         break;

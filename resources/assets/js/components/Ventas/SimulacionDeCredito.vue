@@ -40,7 +40,7 @@
                                     <tbody>
                                         <tr v-for="prospecto in arraySimulaciones" :key="prospecto.id" @dblclick="mostrarDetalle(prospecto)">
                                             <td v-text="prospecto.id"></td>
-                                            <td v-text="prospecto.nombre + ' ' + prospecto.apellidos "></td>
+                                            <td v-text="prospecto.nombre.toUpperCase() + ' ' + prospecto.apellidos.toUpperCase() "></td>
                                             <td v-text="prospecto.fraccionamiento"></td>
                                             <td v-text="prospecto.num_lote"></td>
                                             <td v-text="prospecto.modelo"></td>
@@ -112,7 +112,7 @@
                                                     <i class="icon-eye"></i>
                                                 </button>
                                             </td>
-                                            <td v-text="prospecto.nombre + ' ' + prospecto.apellidos "></td>
+                                            <td v-text="prospecto.nombre.toUpperCase() + ' ' + prospecto.apellidos.toUpperCase() "></td>
                                             <td >
                                                  <a title="Llamar" class="btn btn-dark" :href="'tel:'+prospecto.celular"><i class="fa fa-phone fa-lg"></i></a>
                                                  <a title="Enviar whatsapp" class="btn btn-success" :href="'https://api.whatsapp.com/send?phone=+52'+prospecto.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
@@ -124,9 +124,9 @@
                                               <td v-else> 
                                                 <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+prospecto.email+ ';'+prospecto.email_institucional"> <i class="fa fa-envelope-o fa-lg"></i> </a>
                                             </td>
-                                            <td v-text="prospecto.rfc"></td>
+                                            <td v-text="prospecto.rfc.toUpperCase()"></td>
                                             <td v-text="prospecto.nss"></td>
-                                            <td v-text="prospecto.curp"></td>
+                                            <td v-text="prospecto.curp.toUpperCase()"></td>
                                             <td v-text="prospecto.proyecto"></td>
                                             <td> <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo', prospecto.id),listarObservacion(1,prospecto.id)">Ver todos</button> </td>
                                         </tr>                               
