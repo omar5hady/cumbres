@@ -206,6 +206,11 @@ class ComisionesVentaController extends Controller
         ];
     }
 
+    public function excelDetalle(Request $request){
+        
+        
+    }
+
     public function storeComision(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 

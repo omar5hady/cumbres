@@ -3667,7 +3667,8 @@ class ContratoController extends Controller
             $terrenoExcedenteOld = 0;
 
                     $precioTerrenoOld = Precio_etapa::select('precio_excedente','id')
-                    ->where('etapa_id','=',$lote_ant->etapa_id)->get();
+                    ->where('etapa_id','=',$lote_ant->etapa_id)
+                    ->where('fraccionamiento_id','=',$lote_ant->fraccionamiento_id)->get();
 
                     $terrenoModelo = Modelo::select('terreno')
                     ->where('id','=',$lote_ant->modelo_id)
