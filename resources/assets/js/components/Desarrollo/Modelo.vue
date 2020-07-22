@@ -97,6 +97,7 @@
                                 </li>
                             </ul>
                         </nav>
+                        <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
@@ -298,6 +299,38 @@
             </div>
             <!--Fin del modal-->
             
+            <!-- Manual -->
+            <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="manualIdTitle">Manual</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            Para agregar un nuevo modelo solo debe de dar clic sobre el botón agregar y llenar los campos 
+                            que se solicitan en la ventana emergente.
+                        </p>
+                        <p>
+                            También podrá agregar archivos de especificaciones y en caso de que un modelo cuente con mas 
+                            de un archivo de especificación el sistema le permitirá agregar mas de uno, 
+                            posteriormente podrá asignar un archivo de especificación de modelo a cada lote dentro del módulo 
+                            “Desarrollo -> Especificaciones de Modelo”.
+                        </p>
+                        <p>
+                            En caso de que desee puede descargar las especificaciones cargadas desde el icono de descarga 
+                            que se encuentra de lado derecho.
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
 
         </main>
 </template>

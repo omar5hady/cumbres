@@ -189,6 +189,7 @@
                                 </li>
                             </ul>
                         </nav>
+                        <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
@@ -471,9 +472,39 @@
             </div>
             <!--Fin del modal-->
             
+            <!-- Manual -->
+            <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="manualIdTitle">Manual</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            Para asignar un modelo debe asegurarse de haber creado el o los modelos que desea asignar a 
+                            los lotes vea el módulo <strong>“Desarrollo -> Modelos”</strong>.
+                        </p>
+                        <p>
+                            Puede asignar el modelo a una seria de lote seleccionando la casilla que aparece de lado 
+                            izquierdo y presionando el botón de asignar modelo, o puede asignar el modelo dando clic 
+                            sobre el icono del lote (lapis) de editar y seleccionando el modelo deseado para ese lote en específico.
+                        </p>
+                        <p>
+                            Para <strong>activar un lote</strong> y ponerlo a la venta debe asegurarse de que la etapa y el modelo que le 
+                            fue asignado al lote cuente con un precio y un precio de terreno excedente asignado vea el 
+                            módulo <strong>“Precios -> Precios de etapa”</strong>.
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
 
-
-                    
         </main>
 </template>
 

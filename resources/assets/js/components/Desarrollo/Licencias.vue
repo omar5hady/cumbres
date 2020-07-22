@@ -263,6 +263,7 @@
                                 </li>
                             </ul>
                         </nav>
+                        <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
@@ -704,7 +705,33 @@
                 <!-- /.modal-dialog -->
             </div>
             <!--Fin del modal-->
-                            
+
+            <!-- Manual -->
+            <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="manualIdTitle">Manual</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            Para poder agregar una licencia a un lote debe asegurarse de tener creado(s) los lotes deseados, 
+                            puede crearlos desde el módulo “Desarrollo->Lotes”.
+                        </p>
+                        <p>
+                            Para poder ver los botones que permite asignar la licencia debe asegurarse de seleccionar al menos 
+                                un lote de la lista dando clic sobre la casilla que aparece del lado izquierdo.
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                    </div>
+                </div>
+            </div>     
     </main>
 </template>
 

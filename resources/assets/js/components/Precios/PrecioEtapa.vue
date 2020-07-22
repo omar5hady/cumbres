@@ -79,6 +79,7 @@
                                 </li>
                             </ul>
                         </nav>
+                        <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
@@ -162,7 +163,46 @@
             </div>
             <!--Fin del modal-->
         
-
+            <!-- Manual -->
+            <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="manualIdTitle">Manual</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            Dentro de precios de etapa podrá asignar el precio especifico de un modelo asignado a una etapa, 
+                            asignar el precio a un modelo es necesario ya que el sistema utilizara este dato par realizar el 
+                            calculo del precio del lote en el momento de la venta.
+                        </p>
+                        <p>
+                            Para poder <strong>asignar un precio a un modelo</strong> debe haber creado ya una o mas etapas y sus respectivos 
+                            modelos vea los módulos de <strong>“Desarrollo -> Etapas”</strong> y <strong>“Desarrollo -> Modelos”</strong>.
+                        </p>
+                        <p>
+                            Para agregar un precio a un modelo debe dar clic en el botón <strong>Nuevo</strong> que se encuentra en la esquina superior 
+                            izquierda, y debe llenar los campos según sea su necesidad.
+                        </p>
+                        <p>
+                            También podrá <strong>asignar un precio a los metros cuadrados excedentes</strong>, así el sistema podrá 
+                            calcular el costo de los metros excedentes de un terreno en caso de que cuente con ellos.
+                        </p>
+                        <p>
+                            Recuerde que el sistema le permitirá asignar mas de un precio a un modelo, sin embargo, 
+                            el sistema solo podrá tomar un precio y tomara en automático aquel que sea creado primero, 
+                            por lo que no es una práctica recomendable. 
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
         </main>
 </template>
 

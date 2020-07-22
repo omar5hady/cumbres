@@ -198,6 +198,7 @@
                                 </li>
                             </ul>
                         </nav>
+                        <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
@@ -552,7 +553,36 @@
             </div>
             <!--Fin del modal-->
 
-
+            <!-- Manual -->
+            <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="manualIdTitle">Manual</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            Dentro del modulo de actas de terminación podrá asignar los datos de las actas de terminación, 
+                            así como subir un archivo del acta de terminación correspondiente al lote.
+                        </p>
+                        <p>
+                            Para que un lote(s) aparezca(n) dentro del listado de acta de terminación, 
+                            debe de asegurarse de haber creado anteriormente el lote desde el módulo de “Desarrollo->Lotes”.
+                        </p>
+                        <p>
+                            Para que aparezca el botón de “asignar actas” debe seleccionar un lote o mas dando clic en la 
+                            casilla que aparece del lado izquierdo del renglón del lote (puede seleccionar cuantos desee).
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
                     
         </main>
 </template>

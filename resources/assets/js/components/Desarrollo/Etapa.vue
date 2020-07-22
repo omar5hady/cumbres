@@ -83,6 +83,7 @@
                                 </li>
                             </ul>
                         </nav>
+                        <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
@@ -162,6 +163,32 @@
             </div>
             <!--Fin del modal-->
             
+            <!-- Manual -->
+            <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="manualIdTitle">Manual</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            Para crear una nueva etapa solo debe dar clic sobre el botón de “Nuevo” y seleccionar el 
+                            fraccionamiento o proyecto al cual pertenecerá la nueva etapa.
+                        </p>
+                        <p>
+                            Un proyecto puede constar de más de una etapa y usted puede agregar cuantas etapas considere 
+                            sean necesarias para su proyecto, es recomendable que lleve el orden de sus etapas con el número de etapa.
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
 
         </main>
 </template>

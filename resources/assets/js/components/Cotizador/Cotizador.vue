@@ -159,7 +159,9 @@
                                     <td class="text-center"><strong>De 91 a 120 días</strong></td>
                                     <td class="text-center"><strong>De 121 a 150 días</strong></td>
                                     <td class="text-center"><strong>De 151 a 180 días</strong></td>
-                                    <td class="text-center"><strong>De 181 días en adelante</strong></td>
+                                    <td class="text-center"><strong>De 181 días a 365 días</strong></td>
+                                    <td class="text-center"><strong>De 1 año a 2 años</strong></td>
+                                    <td class="text-center"><strong>De más de 2 años a 3 años</strong></td>
                                 </tr>
                                 <tr>
                                     <td class="text-center">%7 de Descuento</td>
@@ -169,7 +171,9 @@
                                     <td class="text-center">%3 de Descuento</td>
                                     <td class="text-center">%2 de Descuento</td>
                                     <td class="text-center">%1 de Descuento</td>
-                                    <td class="text-center">%11 de Interes de tasa aanual</td>
+                                    <td class="text-center">%11 de Interes de tasa anual</td>
+                                    <td class="text-center">%15 de Interes de tasa anual</td>
+                                    <td class="text-center">%18 de Interes de tasa anual</td>
                                 </tr>
                             </tbody>
                         </table>
