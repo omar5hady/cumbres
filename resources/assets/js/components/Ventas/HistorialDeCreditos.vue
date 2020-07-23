@@ -55,9 +55,11 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="historial in arrayHistorialCreditos" :key="historial.id" @dblclick="abrirModal('actualizar', historial)">
+                                        <tr v-for="historial in arrayHistorialCreditos" :key="historial.id" @dblclick="abrirModal('actualizar', historial)" title="Actualizar credito">
                                             <td class="td2" v-text="historial.id_credito" @click="abrirModal('registrar', historial)"></td>
-                                            <td class="td2" v-text="historial.nombre + ' ' + historial.apellidos"></td>
+                                            <td class="td2">
+                                                <a href="#" v-text="historial.nombre + ' ' + historial.apellidos"></a>
+                                            </td>
                                             <td class="td2" v-text="historial.vendedor_nombre + ' ' + historial.vendedor_apellidos "></td>
                                             <td class="td2" v-text="historial.institucion"></td>
                                             <td class="td2" v-text="historial.tipo_credito"></td>

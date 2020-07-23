@@ -780,6 +780,7 @@ class LoteController extends Controller
         if($request->habilitado == 1){
             
             $precioTerreno = Precio_etapa::select('precio_excedente','id')
+            ->where('fraccionamiento_id','=',$request->fraccionamiento_id)
             ->where('etapa_id','=',$request->etapa_id)->get();
      
             $precioBase = Precio_modelo::select('precio_modelo')

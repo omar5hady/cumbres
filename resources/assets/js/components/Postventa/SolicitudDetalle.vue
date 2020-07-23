@@ -96,7 +96,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="contratos in arraySolicitudes" :key="contratos.id" @dblclick="verDetalles(contratos.id)">
+                                    <tr v-for="contratos in arraySolicitudes" :key="contratos.id" @dblclick="verDetalles(contratos.id)" title="Doble click">
                                         <td class="td2">
                                             <button v-if="contratos.status == 0" title="Cancelar" type="button" @click="cancelarSolicitud(contratos.id)" class="btn btn-danger btn-sm">
                                                 <i class="icon-trash"></i>
@@ -113,7 +113,9 @@
                                                 
                                             </div>
                                         </td>
-                                        <td class="td2" v-text="contratos.cliente"></td>
+                                        <td class="td2">
+                                            <a href="#" v-text="contratos.cliente"></a>
+                                        </td>
                                         <td class="td2">
                                             <a title="Llamar" class="btn btn-dark" :href="'tel:'+contratos.celular"><i class="fa fa-phone fa-lg"></i></a>
                                             <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+contratos.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>

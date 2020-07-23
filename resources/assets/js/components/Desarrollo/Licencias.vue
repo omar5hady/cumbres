@@ -148,7 +148,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-on:dblclick="abrirModal2('lote','ver',licencias)" v-for="licencias in arrayLicencias" :key="licencias.id">
+                                    <tr v-on:dblclick="abrirModal2('lote','ver',licencias)" v-for="licencias in arrayLicencias" :key="licencias.id" title="Ver detalle">
 
                                         <td v-if="rolId != '5'" class="td2">
                                         <input type="checkbox"  @click="select" :id="licencias.id" :value="licencias.id" v-model="allLic" >
@@ -166,8 +166,12 @@
                                             </a>
                                         
                                         </td>
-                                        <td class="td2" v-text="licencias.proyecto"></td>
-                                        <td class="td2" v-text="licencias.num_etapa"></td>
+                                        <td class="td2">
+                                            <a href="#" v-text="licencias.proyecto"></a>
+                                        </td>
+                                        <td class="td2">
+                                            <a href="#" v-text="licencias.num_etapa"></a>
+                                        </td>
                                         <td class="td2" v-text="licencias.manzana"></td>
                                         <td class="td2" v-text="licencias.num_lote"></td>
                                         <td class="td2" v-text="formatNumber(licencias.terreno)"></td>

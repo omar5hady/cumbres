@@ -138,7 +138,7 @@
                         <table class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <td class="text-center" colspan="8">
+                                    <td class="text-center" colspan="10">
                                         <strong class="badge badge-warning">
                                             Nota: la presente cotización tiene vigencia de 14 días. Los gastos de escrituración son a cargo de la parte compradora.
                                         </strong>
@@ -147,7 +147,7 @@
                             </thead>
                             <thead>
                                 <tr>
-                                    <th colspan="8">Plan Comercial de Pagos</th>
+                                    <th colspan="10">Plan Comercial de Pagos</th>
                                 </tr>
                             </thead>
                             <tbody>

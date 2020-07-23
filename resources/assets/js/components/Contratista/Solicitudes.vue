@@ -84,10 +84,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="contratos in arrayContratos" :key="contratos.solicitudID" @dblclick="listado=2,listarDetalles(contratos.solicitudID)">
-                                       <td v-text="contratos.solicitudID"></td>
+                                    <tr v-for="contratos in arrayContratos" :key="contratos.solicitudID" @dblclick="listado=2,listarDetalles(contratos.solicitudID)" title="Ver Detalle">
+                                       <td>
+                                           <a href="#" v-text="contratos.solicitudID"></a>
+                                       </td>
                                        <!-- <td v-text="contratos.cliente"></td> -->
-                                       <td v-text="contratos.proyecto"></td>
+                                       <td>
+                                           <a href="#" v-text="contratos.proyecto"></a>
+                                       </td>
                                        <td v-text="contratos.etapa"></td>
                                        <td v-text="contratos.manzana"></td>   
                                        <td v-text="contratos.num_lote"></td>   
