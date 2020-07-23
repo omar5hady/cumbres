@@ -17,3 +17,6 @@ public_html/js/app.js
 *.jpg
 *.png
 *.jfif
+*.pdf
+*.xlsx
+*.PNG
