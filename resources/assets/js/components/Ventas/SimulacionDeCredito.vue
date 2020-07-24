@@ -3325,76 +3325,87 @@
             },
             actualizarProspectoBTN(prospecto){
               
-                //let me= this;
+                if(prospecto['nombre_recomendado'] == null && prospecto['publicidad_id'] == 1 || prospecto['nombre_recomendado'] == '' && prospecto['publicidad_id'] == 1){
+                    Swal({
+                            title: 'Recomendado!',
+                            text: 'No se encuentra registrado el nombre de la persona que lo recomienda, Favor de capturarlo',
+                            type: 'info',
+                            animation: false,
+                            customClass: 'animated bounceInRight'
+                        })
+                }
+                else{
+                    var arrayDatosProspecto=[];
+                    /*var url = '/clientes/obtenerDatos?id=' + id;
+
+                    axios.get(url).then(function (response) {
+                        var respuesta = response.data;
+                        me.arrayDatosProspecto = respuesta.personas;*/
+
+                        this.nombre= prospecto['nombre'];
+                        this.apellidos= prospecto['apellidos'];
+                        this.direccion=prospecto['direccion'];
+                        this.cp = prospecto['cp'];
+                        this.colonia=prospecto['colonia'];
+                        this.estado=prospecto['estado'];
+                        this.ciudad=prospecto['ciudad'];
+                        this.sexo= prospecto['sexo'];
+                        this.telefono= prospecto['telefono'];
+                        this.celular= prospecto['celular'];
+                        this.email_inst= prospecto['email_institucional'];
+                        this.email = prospecto['email'];
+                        this.empresa=prospecto['empresa'];
+                        this.fecha_nac=prospecto['f_nacimiento'];
+                        this.curp=prospecto['curp'];
+                        this.rfc=prospecto['rfc'];
+                        this.homoclave=prospecto['homoclave'];
+                        this.nss=prospecto['nss'];
+                        this.lugar_contacto=prospecto['lugar_contacto'];
+                        this.clasificacion=prospecto['clasificacion'];
+                        this.proyecto_interes_id=prospecto['proyecto_interes_id'];
+                        this.publicidad_id=prospecto['publicidad_id'];
+                        this.tipo_casa=prospecto['tipo_casa'];
+                        this.e_civil=prospecto['edo_civil'];
+                        this.parentesco_coa=prospecto['parentesco_coa'];
+                        this.coacreditado=prospecto['coacreditado'];
+                        this.conyugeNom = prospecto['n_completo_coa'];
+                        this.proyecto = prospecto['proyecto'];
+                        this.fecha_nac_coa = prospecto['f_nacimiento_coa'];
+                        this.rfc_coa = prospecto['rfc_coa'];
+                        this.homoclave_coa = prospecto['homoclave_coa'];
+                        this.curp_coa = prospecto['curp_coa'];
+                        this.nss_coa = prospecto['nss_coa'];
+                        this.telefono_coa = prospecto['telefono_coa'];
+                        this.celular_coa = prospecto['celular_coa'];
+                        this.email_coa = prospecto['email_coa'];
+                        this.email_institucional_coa = prospecto['email_institucional_coa'];
+                        this.nacionalidad = prospecto['nacionalidad'];
+                        this.nacionalidad_coa = prospecto['nacionalidad_coa'];
+                        this.puesto = prospecto['puesto'];
+                        this.ciudad_coa = prospecto['ciudad_coa'];
+                        this.estado_coa = prospecto['estado_coa'];
+                        this.cp_coa = prospecto['cp_coa'];
+                        this.direccion_coa = prospecto['direccion_coa'];
+                        this.colonia_coa = prospecto['colonia_coa'];
+                        this.empresa_coa = prospecto['empresa_coa'];
+                        this.dep_economicos='';
+                        this.rang0_10=0;
+                        this.rang11_20=0;
+                        this.rang21=0;
+                        this.num_habitantes=0;
+                        this.valHab=0;
+                        this.selectEtapa(this.proyecto_interes_id);
+                        
+                        this.id=prospecto['id'];
+                        this.listado=3;
+
+                /* })
+                    .catch(function (error) {
+                        console.log(error);
+                    });*/
+                }
                 
-                var arrayDatosProspecto=[];
-                /*var url = '/clientes/obtenerDatos?id=' + id;
-
-                 axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayDatosProspecto = respuesta.personas;*/
-
-                    this.nombre= prospecto['nombre'];
-                    this.apellidos= prospecto['apellidos'];
-                    this.direccion=prospecto['direccion'];
-                    this.cp = prospecto['cp'];
-                    this.colonia=prospecto['colonia'];
-                    this.estado=prospecto['estado'];
-                    this.ciudad=prospecto['ciudad'];
-                    this.sexo= prospecto['sexo'];
-                    this.telefono= prospecto['telefono'];
-                    this.celular= prospecto['celular'];
-                    this.email_inst= prospecto['email_institucional'];
-                    this.email = prospecto['email'];
-                    this.empresa=prospecto['empresa'];
-                    this.fecha_nac=prospecto['f_nacimiento'];
-                    this.curp=prospecto['curp'];
-                    this.rfc=prospecto['rfc'];
-                    this.homoclave=prospecto['homoclave'];
-                    this.nss=prospecto['nss'];
-                    this.lugar_contacto=prospecto['lugar_contacto'];
-                    this.clasificacion=prospecto['clasificacion'];
-                    this.proyecto_interes_id=prospecto['proyecto_interes_id'];
-                    this.publicidad_id=prospecto['publicidad_id'];
-                    this.tipo_casa=prospecto['tipo_casa'];
-                    this.e_civil=prospecto['edo_civil'];
-                    this.parentesco_coa=prospecto['parentesco_coa'];
-                    this.coacreditado=prospecto['coacreditado'];
-                    this.conyugeNom = prospecto['n_completo_coa'];
-                    this.proyecto = prospecto['proyecto'];
-                    this.fecha_nac_coa = prospecto['f_nacimiento_coa'];
-                    this.rfc_coa = prospecto['rfc_coa'];
-                    this.homoclave_coa = prospecto['homoclave_coa'];
-                    this.curp_coa = prospecto['curp_coa'];
-                    this.nss_coa = prospecto['nss_coa'];
-                    this.telefono_coa = prospecto['telefono_coa'];
-                    this.celular_coa = prospecto['celular_coa'];
-                    this.email_coa = prospecto['email_coa'];
-                    this.email_institucional_coa = prospecto['email_institucional_coa'];
-                    this.nacionalidad = prospecto['nacionalidad'];
-                    this.nacionalidad_coa = prospecto['nacionalidad_coa'];
-                    this.puesto = prospecto['puesto'];
-                    this.ciudad_coa = prospecto['ciudad_coa'];
-                    this.estado_coa = prospecto['estado_coa'];
-                    this.cp_coa = prospecto['cp_coa'];
-                    this.direccion_coa = prospecto['direccion_coa'];
-                    this.colonia_coa = prospecto['colonia_coa'];
-                    this.empresa_coa = prospecto['empresa_coa'];
-                    this.dep_economicos='';
-                    this.rang0_10=0;
-                    this.rang11_20=0;
-                    this.rang21=0;
-                    this.num_habitantes=0;
-                    this.valHab=0;
-                    this.selectEtapa(this.proyecto_interes_id);
-                    
-                    this.id=prospecto['id'];
-                    this.listado=3;
-
-               /* })
-                .catch(function (error) {
-                    console.log(error);
-                });*/
+                
                
 
             },
