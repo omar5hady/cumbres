@@ -1726,17 +1726,6 @@ class ComisionesVentaController extends Controller
                         $i++;
                     }
 
-                    if($total_bono != 0){
-                        $sheet->row($i, [
-                            '','- Bonos cancelados', $total_bono
-                        ]);
-                        $i++;
-                    }
-                    $sheet->row($i, [
-                        '','- Sueldo del Mes', $apoyo
-                    ]);
-                    $i++;
-
                     if($restante != 0){
                         $sheet->row($i, [
                             '','- Acumulado anterior', $restante
