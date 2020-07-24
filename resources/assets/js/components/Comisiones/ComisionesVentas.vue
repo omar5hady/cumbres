@@ -1012,7 +1012,6 @@
                                 </div>
                             </div>
 
-                           
                             <div class="form-group row line-separator"></div>
 
                             <!-- VENTAS -->
@@ -1571,6 +1570,53 @@
                         <!-- Botones del modal -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                            <a class="btn btn-success" v-bind:href=" 
+                                '/comision/excel?' + 
+                                'mes=' + mes +
+                                '&anio=' + anio +
+                                '&asesor=' + asesor +
+                                '&tipoVendedor=' + tipoVendedor +
+                                //Ventas
+                                '&numVentas=' + numVentas +
+                                
+                                '&total_comision=' + total_comision +
+                                '&total_pagado=' + total_pagado +
+                                '&total_porPagar=' + total_porPagar +
+                                '&total_iva=' + total_iva +
+                                '&total_retencion=' + total_retencion +
+                                '&total_isr=' + total_isr +
+                                //Individualizadas
+                                '&numIndividualizadas=' + numIndividualizadas +
+                                '&total_comision_indiv=' + total_comision_indiv +
+                                '&total_pagado_indiv=' + total_pagado_indiv +
+                                '&total_iva_indiv=' + total_iva_indiv +
+                                '&total_retencion_indiv=' + total_retencion_indiv +
+                                '&total_isr_indiv=' + total_isr_indiv +
+                                //Canceladas
+                                '&numCancelaciones=' + numCancelaciones +
+                                '&total_anticipo=' + total_anticipo +
+                                '&total_bono=' + total_bono +
+                                //Pendientes
+                                '&numPendientes=' + numPendientes +
+                                '&total_comision_pendiente=' + total_comision_pendiente +
+                                '&total_pagado_pendiente=' + total_pagado_pendiente +
+                                '&total_porPagar_pendiente=' + total_porPagar_pendiente +
+                                '&total_iva_pendiente=' + total_iva_pendiente +
+                                '&total_retencion_pendiente=' + total_retencion_pendiente +
+                                '&total_isr_pendiente=' + total_isr_pendiente +
+                                //Cambios
+                                '&numCambios=' + numCambios +
+                                '&total_anticipo_cambio=' + total_anticipo_cambio +
+
+                                //Datos
+                                '&total=' + total +
+                                '&apoyo=' + apoyo +
+                                '&restante=' + restante +
+                                '&total_a_pagar=' + total_a_pagar + 
+                                '&comision_id=' + id
+                            " >
+                                &nbsp;Descargar
+                            </a>
                          </div>
                     </div> 
                     <!-- /.modal-content -->
@@ -2352,6 +2398,7 @@
                         this.restante = data['restanteAnt'];
                         this.total_bono = data['total_bono'];
                         this.total_anticipo = data['total_anticipo'];
+                        this.tipoVendedor = data['tipo_vendedor'];
                         this.detalleComision(this.id);
                         
 
@@ -2369,7 +2416,6 @@
     }
 </script>
 <style>
-
     .modal-content{
         width: 100% !important;
         position: absolute !important;
@@ -2393,6 +2439,11 @@
     .text-error{
         color: red !important;
         font-weight: bold;
+    }
+    @media (min-width: 1020px) {
+        .modal-lg {
+            max-width: 1020px;
+        }
     }
     @media (min-width: 600px){
         .btnagregar{

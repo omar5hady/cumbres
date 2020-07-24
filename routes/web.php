@@ -637,6 +637,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/comision/generarBono','ComisionesController@generarBono');
         Route::put('/comision/noAplica','ComisionesController@noAplicaComision');
 
+        
+
 
         /////////////////////////////////////////////
         Route::get('/comision/getComision','ComisionesVentaController@getComision');
@@ -645,6 +647,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/comision/detalleComision','ComisionesVentaController@getDetalle');
 
         Route::put('/comision/desartarCambio','ComisionesVentaController@desartarCambio');
+
+        Route::get('/comision/excel','ComisionesVentaController@excelDetalle');
 
     ////////////////////////// RUTAS ASIGNAR GESTOR /////////////////////////////
 

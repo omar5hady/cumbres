@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Storage;
 use App\DropboxFiles;
 use Spatie\Dropbox\Client;
 use App\Solic_detalle;
+use Auth;
+
  
 class DropboxFilesController extends Controller
 {

@@ -97,15 +97,13 @@ class ExpedienteController extends Controller
             $contratos = $query
                 ->where('i.elegido', '=', 1)
                 ->where('contratos.integracion', '=', 0)
-                ->where('contratos.status', '!=', 0)
-                ->where('contratos.status', '!=', 2);
+                ->where('contratos.status', '=', 3);
         } else {
             if ($criterio != 'lotes.fraccionamiento_id' && $criterio != 'c.nombre' && $criterio != 'v.nombre') {
                 $contratos = $query
                     ->where('i.elegido', '=', 1)
                     ->where('contratos.integracion', '=', 0)
-                    ->where('contratos.status', '!=', 0)
-                    ->where('contratos.status', '!=', 2)
+                    ->where('contratos.status', '=', 3)
                     ->where($criterio, 'like', '%' . $buscar . '%');
             } else {
 
@@ -113,16 +111,14 @@ class ExpedienteController extends Controller
                     $contratos = $query
                         ->where('i.elegido', '=', 1)
                         ->where('contratos.integracion', '=', 0)
-                        ->where('contratos.status', '!=', 0)
-                        ->where('contratos.status', '!=', 2)
+                        ->where('contratos.status', '=', 3)
                         ->where($criterio, '=', $buscar);
                 } else {
                     if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa != ''  && $b_manzana == '' && $b_lote == '') {
                         $contratos = $query
                             ->where('i.elegido', '=', 1)
                             ->where('contratos.integracion', '=', 0)
-                            ->where('contratos.status', '!=', 0)
-                            ->where('contratos.status', '!=', 2)
+                            ->where('contratos.status', '=', 3)
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa);
                     } else {
@@ -130,8 +126,7 @@ class ExpedienteController extends Controller
                             $contratos = $query
                                 ->where('i.elegido', '=', 1)
                                 ->where('contratos.integracion', '=', 0)
-                                ->where('contratos.status', '!=', 0)
-                                ->where('contratos.status', '!=', 2)
+                                ->where('contratos.status', '=', 3)
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.manzana', 'like', '%' . $b_manzana . '%');
                         } else {
@@ -139,8 +134,7 @@ class ExpedienteController extends Controller
                                 $contratos = $query
                                     ->where('i.elegido', '=', 1)
                                     ->where('contratos.integracion', '=', 0)
-                                    ->where('contratos.status', '!=', 0)
-                                    ->where('contratos.status', '!=', 2)
+                                    ->where('contratos.status', '=', 3)
                                     ->where($criterio, '=', $buscar)
                                     ->where('creditos.num_lote', 'like', '%' . $b_lote . '%');
                             } else {
@@ -148,8 +142,7 @@ class ExpedienteController extends Controller
                                     $contratos = $query
                                         ->where('i.elegido', '=', 1)
                                         ->where('contratos.integracion', '=', 0)
-                                        ->where('contratos.status', '!=', 0)
-                                        ->where('contratos.status', '!=', 2)
+                                        ->where('contratos.status', '=', 3)
                                         ->where($criterio, '=', $buscar)
                                         ->where('lotes.etapa_id', '=', $b_etapa)
                                         ->where('creditos.manzana', 'like', '%' . $b_manzana . '%');
@@ -158,8 +151,7 @@ class ExpedienteController extends Controller
                                         $contratos = $query
                                             ->where('i.elegido', '=', 1)
                                             ->where('contratos.integracion', '=', 0)
-                                            ->where('contratos.status', '!=', 0)
-                                            ->where('contratos.status', '!=', 2)
+                                            ->where('contratos.status', '=', 3)
                                             ->where($criterio, '=', $buscar)
                                             ->where('lotes.etapa_id', '=', $b_etapa)
                                             ->where('creditos.manzana', 'like', '%' . $b_manzana . '%')
@@ -169,8 +161,7 @@ class ExpedienteController extends Controller
                                             $contratos = $query
                                                 ->where('i.elegido', '=', 1)
                                                 ->where('contratos.integracion', '=', 0)
-                                                ->where('contratos.status', '!=', 0)
-                                                ->where('contratos.status', '!=', 2)
+                                                ->where('contratos.status', '=', 3)
                                                 ->where($criterio, '=', $buscar)
                                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                                 ->where('creditos.num_lote', 'like', '%' . $b_lote . '%');
@@ -179,27 +170,23 @@ class ExpedienteController extends Controller
                                                 $contratos = $query
                                                     ->where('i.elegido', '=', 1)
                                                     ->where('contratos.integracion', '=', 0)
-                                                    ->where('contratos.status', '!=', 0)
-                                                    ->where('contratos.status', '!=', 2)
+                                                    ->where('contratos.status', '=', 3)
                                                     ->where($criterio, 'like', '%' . $buscar . '%')
                                                     ->orWhere('c.apellidos', 'like', '%' . $buscar . '%')
                                                     ->where('i.elegido', '=', 1)
                                                     ->where('contratos.integracion', '=', 0)
-                                                    ->where('contratos.status', '!=', 0)
-                                                    ->where('contratos.status', '!=', 2);
+                                                    ->where('contratos.status', '=', 3);
                                             } else {
                                                 if ($criterio == 'v.nombre' && $buscar != '') {
                                                     $contratos = $query
                                                         ->where('i.elegido', '=', 1)
                                                         ->where('contratos.integracion', '=', 0)
-                                                        ->where('contratos.status', '!=', 0)
-                                                        ->where('contratos.status', '!=', 2)
+                                                        ->where('contratos.status', '=', 3)
                                                         ->where($criterio, 'like', '%' . $buscar . '%')
                                                         ->orWhere('v.apellidos', 'like', '%' . $buscar . '%')
                                                         ->where('i.elegido', '=', 1)
                                                         ->where('contratos.integracion', '=', 0)
-                                                        ->where('contratos.status', '!=', 0)
-                                                        ->where('contratos.status', '!=', 2);
+                                                        ->where('contratos.status', '=', 3);
                                                 }
                                             }
                                         }
