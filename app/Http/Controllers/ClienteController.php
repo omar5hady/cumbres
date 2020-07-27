@@ -625,8 +625,7 @@ class ClienteController extends Controller
                 'personal.telefono','personal.celular','personal.email','clientes.sexo',
                 'clientes.email_institucional','clientes.edo_civil','clientes.nss','clientes.curp','clientes.tipo_casa','clientes.lugar_nacimiento',
                 DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"))
-            ->where('nombre','like','%'.$filtro.'%')
-            ->orWhere('apellidos','like','%'.$filtro.'%')
+                ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $filtro. '%')
             ->get();
             }else{
                 $coacreditados = Cliente::join('personal','clientes.id','=','personal.id')
@@ -635,9 +634,7 @@ class ClienteController extends Controller
                     'clientes.email_institucional','clientes.edo_civil','clientes.nss','clientes.curp','clientes.tipo_casa','clientes.lugar_nacimiento',
                     DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"))
                 ->where('vendedor_id','=',Auth::user()->id)
-                ->where('nombre','like','%'.$filtro.'%')
-                ->orWhere('apellidos','like','%'.$filtro.'%')
-                ->where('vendedor_id','=',Auth::user()->id)
+                ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $filtro. '%')
                 ->get();
             }
         

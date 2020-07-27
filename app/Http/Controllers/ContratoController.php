@@ -3190,7 +3190,8 @@ class ContratoController extends Controller
             $pdf = \PDF::loadview('pdf.contratos.contratoDePromesaCredito', ['contratoPromesa' => $contratoPromesa, 'pagos' => $pagos]);
         else
             $pdf = \PDF::loadview('pdf.contratos.contratoDePromesaCredito2', ['contratoPromesa' => $contratoPromesa, 'pagos' => $pagos]);
-        return $pdf->stream('contrato_promesa_credito.pdf');
+        return //['contratoPromesa' => $contratoPromesa, 'pagos' => $pagos];
+        $pdf->stream('contrato_promesa_credito.pdf');
     }
 
     public function statusContrato(Request $request)
