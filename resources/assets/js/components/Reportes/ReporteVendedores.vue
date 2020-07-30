@@ -92,7 +92,7 @@
                                         <th>Ventas en 30 dias</th>
                                         <th>Ventas en 60 dias</th>
                                         <th>Ventas en 90 dias</th>
-                                        <th>Cancelaciones</th>
+                                        <th>Canceladas</th>
                                         <th>A</th>
                                         <th>B</th>
                                         <th>C</th>

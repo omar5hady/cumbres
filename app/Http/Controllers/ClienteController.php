@@ -625,8 +625,7 @@ class ClienteController extends Controller
                 'personal.telefono','personal.celular','personal.email','clientes.sexo',
                 'clientes.email_institucional','clientes.edo_civil','clientes.nss','clientes.curp','clientes.tipo_casa','clientes.lugar_nacimiento',
                 DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"))
-            ->where('nombre','like','%'.$filtro.'%')
-            ->orWhere('apellidos','like','%'.$filtro.'%')
+                ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $filtro. '%')
             ->get();
             }else{
                 $coacreditados = Cliente::join('personal','clientes.id','=','personal.id')
@@ -635,9 +634,7 @@ class ClienteController extends Controller
                     'clientes.email_institucional','clientes.edo_civil','clientes.nss','clientes.curp','clientes.tipo_casa','clientes.lugar_nacimiento',
                     DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"))
                 ->where('vendedor_id','=',Auth::user()->id)
-                ->where('nombre','like','%'.$filtro.'%')
-                ->orWhere('apellidos','like','%'.$filtro.'%')
-                ->where('vendedor_id','=',Auth::user()->id)
+                ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $filtro. '%')
                 ->get();
             }
         
@@ -725,7 +722,7 @@ class ClienteController extends Controller
                 'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
                 'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
                 'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
-                'clientes.nacionalidad','clientes.puesto', 'clientes.estado','clientes.ciudad',
+                'clientes.nacionalidad','clientes.puesto', 'clientes.estado','clientes.ciudad', 'clientes.nombre_recomendado',
                 
                 'clientes.sexo_coa', 'clientes.tipo_casa_coa','clientes.email_institucional_coa','clientes.empresa_coa',
                 'clientes.edo_civil_coa','clientes.nss_coa','clientes.curp_coa','clientes.nombre_coa','clientes.apellidos_coa',

@@ -202,7 +202,7 @@ sin que esa circunstancia releva a este último de ser el responsable de realiza
          @elseif($contratoPromesa[0]->fovisste > 0) y la cantidad de <strong>${{strtoupper($contratoPromesa[0]->fovissteLetra)}}</strong> que le otorga FOVISSTE 
          @endif, 
          al que se refiere la cláusula segunda del presente convenio, misma que deberá ser liquidada dentro de los 45 días naturales siguientes a la conclusión de la construcción de LA VIVIENDA. 
-         @if($contratoPromesa[0]->precio_venta != $contratoPromesa[0]->credito_neto && $contratoPromesa[0]->enganche_total >= 10000 ) 
+         @if($contratoPromesa[0]->precio_venta != $contratoPromesa[0]->credito_neto && $contratoPromesa[0]->enganche_total >= 10000 && $contratoPromesa[0]->total_pagar > 0) 
          
             b).El resto, mediante 
             <strong>{{$pagos[0]->totalDePagos}}</strong>pagos, 
@@ -210,7 +210,7 @@ sin que esa circunstancia releva a este último de ser el responsable de realiza
                 <strong>${{strtoupper($pagos[$i]->montoPagoLetra)}},</strong>
                 que será liquidado a más tardar el día <strong>{{$pagos[$i]->fecha_pago}}</strong>
             @endfor, respectivamente.
-         @elseif($contratoPromesa[0]->enganche_total < 10000 && $contratoPromesa[0]->enganche_total > 0 )
+         @elseif($contratoPromesa[0]->enganche_total < 10000 && $contratoPromesa[0]->enganche_total > 0.001 )
             b).El resto, mediante <strong>{{$pagos[0]->totalDePagos}}</strong>pagos por la cantidad de 
             <strong>${{$contratoPromesa[0]->engancheTotalLetra}}</strong> que será liquidado a más tardar el día 
             <strong>{{$pagos[0]->fecha_pago}}</strong>, respectivamente.

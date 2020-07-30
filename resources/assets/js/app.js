@@ -163,6 +163,9 @@ Vue.component('generar-solipago', require('./components/PagosInternos/GenerarSol
 Vue.component('cotizador-lote', require('./components/Cotizador/Cotizador.vue'));
 Vue.component('cotizador-opciones', require('./components/Cotizador/CotizadorOpciones.vue'));
 
+//Estimaciones
+Vue.component('estimaciones', require('./components/Obra/Estimaciones.vue'));
+
 const app = new Vue({
     el: '#app',
     data: {

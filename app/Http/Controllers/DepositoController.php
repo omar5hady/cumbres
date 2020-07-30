@@ -2317,6 +2317,10 @@ class DepositoController extends Controller
     }
 
     public function estadoPDF ($id){
+        setlocale(LC_TIME, 'es_MX.utf8');
+        $tiempo = new Carbon();
+        $tiempo = $tiempo->formatLocalized('%d de %B de %Y');
+
         $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
         ->leftJoin('creditos','contratos.id','=','creditos.id')
         ->leftJoin('lotes','creditos.lote_id','=','lotes.id')
@@ -2442,7 +2446,7 @@ class DepositoController extends Controller
             $contratos[0]->precio_venta = ' 0.00';
         }
         
-        $pdf = \PDF::loadview('pdf.contratos.estadoDeCuenta', ['contratos' => $contratos, 'depositos' => $depositos, 'gastos_admin' => $gastos_admin, 'depositos_credito' => $depositos_credito]);
+        $pdf = \PDF::loadview('pdf.contratos.estadoDeCuenta', ['contratos' => $contratos, 'depositos' => $depositos, 'gastos_admin' => $gastos_admin, 'depositos_credito' => $depositos_credito, 'fecha'=> $tiempo]);
         return $pdf->stream('EstadoDeCuenta.pdf');
     }
 

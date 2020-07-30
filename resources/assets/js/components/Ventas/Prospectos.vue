@@ -771,14 +771,14 @@
                                 </div>
 
 
-                                <div class="col-md-4" v-if="publicidad_id == 1 && rolId == 2">
+                                <!-- <div class="col-md-4" v-if="publicidad_id == 1 && rolId == 2">
                                     <div class="form-group">
                                         <label for="">Nombre de la persona que te recomendo </label>
                                         <input disabled type="text" class="form-control" v-model="nombre_recomendado" placeholder="Nombre">
                                     </div>
-                                </div>
+                                </div> -->
 
-                                <div class="col-md-4" v-else-if="publicidad_id == 1 && rolId != 2">
+                                <div class="col-md-4" v-if="publicidad_id == 1">
                                     <div class="form-group">
                                         <label for="">Nombre de la persona que te recomendo </label>
                                         <input type="text" class="form-control" v-model="nombre_recomendado" placeholder="Nombre">

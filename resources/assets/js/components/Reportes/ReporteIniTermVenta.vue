@@ -44,6 +44,8 @@
                                         <th>En Proceso Vendidas No Cobradas</th>
                                         <th>En Proceso Disponible</th>
                                         <th>Disponibles Sin Avance</th>
+                                        <th>Casa muestra terminada</th>
+                                        <th>Casa muestra en proceso</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -60,6 +62,8 @@
                                             <td class="td2 text-center" v-text="lote.procVendidaNoCobrada"></td>
                                             <td class="td2 text-center" v-text="lote.procesoDisponible"></td>
                                             <td class="td2 text-center" v-text="lote.sinAvanceDisponible"></td>
+                                            <td class="td2 text-center" v-text="lote.muestraTerminada"></td>
+                                            <td class="td2 text-center" v-text="lote.muestraProceso"></td>
                                         </template>
                                         
                                     </tr>                             
@@ -77,6 +81,8 @@
                                         <th v-text="total7" class="td2 text-center"></th>
                                         <th v-text="total8" class="td2 text-center"></th>
                                         <th v-text="total9" class="td2 text-center"></th>
+                                        <th v-text="total10" class="td2 text-center"></th>
+                                        <th v-text="total11" class="td2 text-center"></th>
                                     </tr>       
                                 </thead>
                             </table>
@@ -110,6 +116,8 @@
                 total7:0,
                 total8:0,
                 total9:0,
+                total10:0,
+                total11:0,
                 fecha:'',
             }
         },
@@ -132,6 +140,8 @@
                     me.total7 = respuesta.total7;
                     me.total8 = respuesta.total8;
                     me.total9 = respuesta.total9;
+                    me.total10 = respuesta.total10;
+                    me.total11 = respuesta.total11;
                     
                     me.fecha = moment().locale('es').format('DD-MMMM-YYYY');
 

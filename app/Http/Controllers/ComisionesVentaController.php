@@ -206,11 +206,6 @@ class ComisionesVentaController extends Controller
         ];
     }
 
-    public function excelDetalle(Request $request){
-        
-        
-    }
-
     public function storeComision(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
@@ -867,6 +862,900 @@ class ComisionesVentaController extends Controller
         $cambios = Det_com_cambio::select('monto as pago_ant','descripcion')->where('comision_id','=',$id)->get();
 
         return $cambios;
+    }
+
+    public function excelDetalle(Request $request){
+
+        $arrayVentas = $this->getVentasDetalle($request->comision_id);
+        $arrayIndividualizadas = $this->getIndividualizadasDetalle($request->comision_id);
+        $arrayCanceladas = $this->getCanceladasDetalle($request->comision_id);
+        $arrayPendientes = $this->getPendienteDetalle($request->comision_id);
+        $arrayCambios = $this->getCambioDetalle($request->comision_id);
+        
+        $anio = $request->anio;
+        $asesor = $request->asesor;
+        $mes = '';
+        
+        switch($request->mes){
+            case 1:{
+                $mes = 'Enero';
+                break;
+            }
+            case 2:{
+                $mes = 'Febrero';
+                break;
+            }
+            case 3:{
+                $mes = 'Marzo';
+                break;
+            }
+            case 4:{
+                $mes = 'Abril';
+                break;
+            }
+            case 5:{
+                $mes = 'Mayo';
+                break;
+            }
+            case 6:{
+                $mes = 'Junio';
+                break;
+            }
+            case 7:{
+                $mes = 'Julio';
+                break;
+            }
+            case 8:{
+                $mes = 'Agosto';
+                break;
+            }
+            case 9:{
+                $mes = 'Septiembre';
+                break;
+            }
+            case 10:{
+                $mes = 'Octubre';
+                break;
+            }
+            case 11:{
+                $mes = 'Noviembre';
+                break;
+            }
+            case 12:{
+                $mes = 'Diciembre';
+                break;
+            }
+        }
+        $tipoVendedor = $request->tipoVendedor;
+        
+        //Ventas
+            $numVentas = $request->numVentas;
+            $total_comision = $request->total_comision;
+            $total_pagado = $request->total_pagado;
+            $total_porPagar = $request->total_porPagar;
+            $total_iva = $request->total_iva;
+            $total_retencion = $request->total_retencion;
+            $total_isr = $request->total_isr;
+        //Individualizadas
+            $numIndividualizadas = $request->numIndividualizadas;
+            $total_comision_indiv = $request->total_comision_indiv;
+            $total_pagado_indiv = $request->total_pagado_indiv;
+            $total_iva_indiv = $request->total_iva_indiv;
+            $total_retencion_indiv = $request->total_retencion_indiv;
+            $total_isr_indiv = $request->total_isr_indiv;
+        //Canceladas
+            $numCancelaciones = $request->numCancelaciones;
+            $total_anticipo = $request->total_anticipo;
+            $total_bono = $request->total_bono;
+        //Pendientes
+            $numPendientes = $request->numPendientes;
+            $total_comision_pendiente = $request->total_comision_pendiente;
+            $total_pagado_pendiente = $request->total_pagado_pendiente;
+            $total_porPagar_pendiente = $request->total_porPagar_pendiente;
+            $total_iva_pendiente = $request->total_iva_pendiente;
+            $total_retencion_pendiente = $request->total_retencion_pendiente;
+            $total_isr_pendiente = $request->total_isr_pendiente;
+        //Cambios
+            $numCambios = $request->numCambios;
+            $total_anticipo_cambio = $request->total_anticipo_cambio;
+
+        //Datos
+            $total = $request->total;
+            $apoyo = $request->apoyo;
+            $restante = $request->restante;
+            $total_a_pagar = $request->total_a_pagar;
+        
+        if($tipoVendedor == 0){
+            return Excel::create('Comision', function($excel) 
+                use (
+                    $mes,$anio,$asesor,$tipoVendedor,$numVentas,$arrayVentas,$total_comision,
+                    $total_pagado,$total_porPagar,$total_iva,$total_retencion,$total_isr,$numIndividualizadas,
+                    $arrayIndividualizadas,$total_comision_indiv,$total_pagado_indiv,$total_iva_indiv,$total_retencion_indiv,
+                    $total_isr_indiv,$numCancelaciones,$arrayCanceladas,$total_anticipo,$total_bono,$numPendientes,
+                    $arrayPendientes,$total_comision_pendiente,$total_pagado_pendiente,$total_porPagar_pendiente,$total_iva_pendiente,
+                    $total_retencion_pendiente,$total_isr_pendiente,$numCambios,$arrayCambios,$total_anticipo_cambio,
+                    $total,$apoyo,$restante,$total_a_pagar){
+                $excel->sheet('Comision', function($sheet) 
+                use (
+                    $mes,$anio,$asesor,$tipoVendedor,$numVentas,$arrayVentas,$total_comision,
+                    $total_pagado,$total_porPagar,$total_iva,$total_retencion,$total_isr,$numIndividualizadas,
+                    $arrayIndividualizadas,$total_comision_indiv,$total_pagado_indiv,$total_iva_indiv,$total_retencion_indiv,
+                    $total_isr_indiv,$numCancelaciones,$arrayCanceladas,$total_anticipo,$total_bono,$numPendientes,
+                    $arrayPendientes,$total_comision_pendiente,$total_pagado_pendiente,$total_porPagar_pendiente,$total_iva_pendiente,
+                    $total_retencion_pendiente,$total_isr_pendiente,$numCambios,$arrayCambios,$total_anticipo_cambio,
+                    $total,$apoyo,$restante,$total_a_pagar)
+                {
+                    $sheet->mergeCells('A1:M1');
+                    $sheet->mergeCells('A2:J2');
+                    $sheet->cell('A1:L1', function($cell) {
+                        // manipulate the cell
+                        $cell->setFontFamily('Arial Narrow');
+                        $cell->setFontSize(12);
+                        $cell->setFontWeight('bold');
+                        $cell->setAlignment('center');
+                    });
+                    $sheet->setCellValue('A1', 'Comision del mes de '.$mes. ' del año '.$anio); 
+                    $sheet->setCellValue('A2', 'Asesor: '. $asesor); 
+
+                    $i = 4;
+
+                    $sheet->setColumnFormat(array(
+                        'C' => '$#,##0.00',
+                        'H' => '$#,##0.00',
+                        'L' => '$#,##0.00',
+                        'M' => '$#,##0.00',
+                        'N' => '$#,##0.00',
+                        'I' => '$#,##0.00',
+                    ));
+                    
+                /////////// VENTAS
+                    if($numVentas > 0){
+                        $sheet->cell('A'.$i.':'.'Z'.$i, function($cell) {
+                            // manipulate the cell
+                            $cell->setFontFamily('Arial Narrow');
+                            $cell->setFontSize(13);
+                            $cell->setFontWeight('bold');
+                            $cell->setAlignment('center');
+                        });
+                        $sheet->row($i, [
+                            'Ventas : '.$numVentas
+                        ]);
+                        $i++;
+                        $sheet->cell('A'.$i.':'.'Z'.$i, function($cell) {
+                            // manipulate the cell
+                            $cell->setFontFamily('Arial Narrow');
+                            $cell->setFontSize(12);
+                            $cell->setFontWeight('bold');
+                            $cell->setAlignment('center');
+                        });
+                        $sheet->row($i, [
+                            'Fecha', 'Folio', 'Proyecto', 'Etapa', 'Manzana', 'Lote', 'Cliente', 
+                            'Precio venta', 'Crédito', '% Avance', '% De Comisión', 'Comision a pagar',
+                            'Este pago', 'Por pagar'
+                        ]);
+                        $i++;
+                        $cont=$i;
+                        foreach($arrayVentas as $index => $venta) {
+                            
+                            $sheet->row($cont, [
+                                $venta->fecha,
+                                $venta->folio,
+                                $venta->proyecto,
+                                $venta->etapa,
+                                $venta->manzana,
+                                $venta->num_lote,
+                                $venta->nombre_cliente,
+                                $venta->precio_venta,
+                                $venta->tipo_credito.'('.$venta->institucion.')',
+                                $venta->avance_lote.'%',
+                                $venta->porcentaje_comision.'%',
+                                $venta->comision_pagar ,
+                                $venta->este_pago,
+                                $venta->por_pagar
+                            ]);
+                            $cont++;
+                        }
+                        
+                        $sheet->row($cont, [
+                            '', '', '', '', '', '', '', 
+                            '', '', '', 'Total: ',
+                            $total_comision, $total_pagado, $total_porPagar
+                        ]);
+
+                        $num='A'.($i-1).':N' . $cont;
+                        $sheet->setBorder($num, 'thin');
+
+                        $i=$cont+2;
+                    }
+                /////////// INDIVIDUALIZADAS
+                    if($numIndividualizadas > 0){
+                        $sheet->cell('A'.$i.':'.'Z'.$i, function($cell) {
+                            // manipulate the cell
+                            $cell->setFontFamily('Arial Narrow');
+                            $cell->setFontSize(13);
+                            $cell->setFontWeight('bold');
+                            $cell->setAlignment('center');
+                        });
+                        $sheet->row($i, [
+                            'Individualizadas : '.$numIndividualizadas
+                        ]);
+                        $i++;
+                        $sheet->cell('A'.$i.':'.'Z'.$i, function($cell) {
+                            // manipulate the cell
+                            $cell->setFontFamily('Arial Narrow');
+                            $cell->setFontSize(12);
+                            $cell->setFontWeight('bold');
+                            $cell->setAlignment('center');
+                        });
+                        $sheet->row($i, [
+                            'Fecha', 'Folio', 'Proyecto', 'Etapa', 'Manzana', 'Lote', 'Cliente', 
+                            'Precio venta', 'Crédito', '% Avance', '% De Comisión', 'Comision a pagar',
+                            'Este pago', 'Por pagar'
+                        ]);
+                        $i++;
+                        $cont=$i;
+                        foreach($arrayIndividualizadas as $index => $venta) {
+                            
+                            $sheet->row($cont, [
+                                $venta->fecha,
+                                $venta->folio,
+                                $venta->proyecto,
+                                $venta->etapa,
+                                $venta->manzana,
+                                $venta->num_lote,
+                                $venta->nombre_cliente,
+                                $venta->precio_venta,
+                                $venta->tipo_credito.'('.$venta->institucion.')',
+                                $venta->avance_lote.'%',
+                                $venta->porcentaje_comision.'%',
+                                $venta->comision_pagar ,
+                                $venta->este_pago,
+                                0
+                            ]);
+                            $cont++;
+                        }
+                        
+                        $sheet->row($cont, [
+                            '', '', '', '', '', '', '', 
+                            '', '', '', 'Total: ',
+                            $total_comision_indiv, $total_pagado_indiv, 0
+                        ]);
+
+                        $num='A'.($i-1).':N' . $cont;
+                        $sheet->setBorder($num, 'thin');
+
+                        $i=$cont+2;
+                    }
+                ////////// CANCELADAS
+                    if($numCancelaciones > 0){
+                        $sheet->cell('A'.$i.':'.'Z'.$i, function($cell) {
+                            // manipulate the cell
+                            $cell->setFontFamily('Arial Narrow');
+                            $cell->setFontSize(13);
+                            $cell->setFontWeight('bold');
+                            $cell->setAlignment('center');
+                        });
+                        $sheet->row($i, [
+                            'Ventas Canceladas : '.$numIndividualizadas
+                        ]);
+                        $i++;
+                        $sheet->cell('A'.$i.':'.'Z'.$i, function($cell) {
+                            // manipulate the cell
+                            $cell->setFontFamily('Arial Narrow');
+                            $cell->setFontSize(12);
+                            $cell->setFontWeight('bold');
+                            $cell->setAlignment('center');
+                        });
+                        $sheet->row($i, [
+                            'Folio', 'Proyecto', 'Etapa', 'Manzana', 'Lote', 'Cliente', 'Fecha de cancelación',
+                            'Anticipo', 'Bono'
+                        ]);
+                        $i++;
+                        $cont=$i;
+                        foreach($arrayCanceladas as $index => $venta) {
+                            
+                            $sheet->row($cont, [
+                                $venta->folio,
+                                $venta->proyecto,
+                                $venta->etapa,
+                                $venta->manzana,
+                                $venta->num_lote,
+                                $venta->nombre_cliente,
+                                $venta->fecha_status,
+                                $venta->este_pago,
+                                $venta->bono
+                            ]);
+                            $cont++;
+                        }
+                        
+                        $sheet->row($cont, [
+                            '', '', '', '', '', '',
+                            'Total: ',
+                            $total_anticipo, $total_bono
+                        ]);
+
+                        $num='A'.($i-1).':I' . $cont;
+                        $sheet->setBorder($num, 'thin');
+
+                        $i=$cont+2;
+                    }
+
+                ////////// Pendientes
+                    if($numPendientes > 0){
+                        $sheet->cell('A'.$i.':'.'Z'.$i, function($cell) {
+                            // manipulate the cell
+                            $cell->setFontFamily('Arial Narrow');
+                            $cell->setFontSize(13);
+                            $cell->setFontWeight('bold');
+                            $cell->setAlignment('center');
+                        });
+                        $sheet->row($i, [
+                            'Pendientes : '.$numPendientes
+                        ]);
+                        $i++;
+                        $sheet->cell('A'.$i.':'.'Z'.$i, function($cell) {
+                            // manipulate the cell
+                            $cell->setFontFamily('Arial Narrow');
+                            $cell->setFontSize(12);
+                            $cell->setFontWeight('bold');
+                            $cell->setAlignment('center');
+                        });
+                        $sheet->row($i, [
+                            'Fecha', 'Folio', 'Proyecto', 'Etapa', 'Manzana', 'Lote', 'Cliente', 
+                            'Precio venta', 'Crédito', '% Avance', '% De Comisión', 'Comision a pagar',
+                            'Este pago', 'Por pagar'
+                        ]);
+                        $i++;
+                        $cont=$i;
+                        foreach($arrayPendientes as $index => $venta) {
+                            
+                            $sheet->row($cont, [
+                                $venta->fecha,
+                                $venta->folio,
+                                $venta->proyecto,
+                                $venta->etapa,
+                                $venta->manzana,
+                                $venta->num_lote,
+                                $venta->nombre_cliente,
+                                $venta->precio_venta,
+                                $venta->tipo_credito.'('.$venta->institucion.')',
+                                $venta->avance_lote.'%',
+                                $venta->porcentaje_comision.'%',
+                                $venta->comision_pagar ,
+                                $venta->este_pago,
+                                $venta->por_pagar,
+                            ]);
+                            $cont++;
+                        }
+                        
+                        $sheet->row($cont, [
+                            '', '', '', '', '', '', '', 
+                            '', '', '', 'Total: ',
+                            $total_comision_pendiente, $total_pagado_pendiente, $total_porPagar_pendiente
+                        ]);
+
+                        $num='A'.($i-1).':N' . $cont;
+                        $sheet->setBorder($num, 'thin');
+
+                        $i=$cont+2;
+                    }
+
+                ////////// Cambios
+                    if($numCambios > 0){
+                        $sheet->cell('A'.$i.':'.'Z'.$i, function($cell) {
+                            // manipulate the cell
+                            $cell->setFontFamily('Arial Narrow');
+                            $cell->setFontSize(13);
+                            $cell->setFontWeight('bold');
+                            $cell->setAlignment('center');
+                        });
+                        $sheet->row($i, [
+                            '','Cambios : '.$numCambios
+                        ]);
+                        $i++;
+                        $sheet->cell('A'.$i.':'.'C'.$i, function($cell) {
+                            // manipulate the cell
+                            $cell->setFontFamily('Arial Narrow');
+                            $cell->setFontSize(12);
+                            $cell->setFontWeight('bold');
+                            $cell->setAlignment('center');
+                        });
+                        $sheet->row($i, [
+                            '','Descripción', 'Monto'
+                        ]);
+                        $i++;
+                        $cont=$i;
+                        foreach($arrayCambios as $index => $venta) {
+                            
+                            $sheet->row($cont, [
+                                '',
+                                $venta->descripcion,
+                                $venta->pago_ant
+                            ]);
+                            $cont++;
+                        }
+                        
+                        $sheet->row($cont, [
+                            '','Total',  $total_anticipo_cambio
+                        ]);
+
+                        $num='B'.($i-1).':C' . $cont;
+                        $sheet->setBorder($num, 'thin');
+
+                        $i=$cont+2;
+                    }
+
+                //////// TOTALES
+                    $cont=$i;
+                    $sheet->cell('B'.$i.':'.'B'.($i+6), function($cell) {
+                        // manipulate the cell
+                        $cell->setFontFamily('Arial Narrow');
+                        $cell->setFontSize(12);
+                        $cell->setFontWeight('bold');
+                        $cell->setAlignment('left');
+                    });
+                    $sheet->row($i, [
+                        '','Total : ', $total
+                    ]);
+                    $i++;
+                    if($total_anticipo_cambio != 0){
+                        $sheet->row($i, [
+                            '','- Cambios : ', $total_anticipo_cambio
+                        ]);
+                        $i++;
+                    }
+
+                    if($total_anticipo != 0){
+                        $sheet->row($i, [
+                            '','- Ventas canceladas', $total_anticipo
+                        ]);
+                        $i++;
+                    }
+
+                    if($total_bono != 0){
+                        $sheet->row($i, [
+                            '','- Bonos cancelados', $total_bono
+                        ]);
+                        $i++;
+                    }
+                    $sheet->row($i, [
+                        '','- Sueldo del Mes', $apoyo
+                    ]);
+                    $i++;
+
+                    if($restante != 0){
+                        $sheet->row($i, [
+                            '','- Acumulado anterior', $restante
+                        ]);
+                        $i++;
+                    }
+
+                    $sheet->row($i, [
+                        '','Total a pagar', $total_a_pagar
+                    ]);
+
+                    $sheet->cell('C'.$i, function($cell) {
+                        // manipulate the cell
+                        $cell->setFontFamily('Arial Narrow');
+                        $cell->setFontSize(11);
+                        $cell->setFontWeight('bold');
+                        $cell->setAlignment('right');
+                    });
+
+                    $num='B'.$cont.':C' . $i;
+                    $sheet->setBorder($num, 'thin');
+
+                    $i=$cont+2;
+                    
+    
+                    
+                });
+                }
+            )->download('xls');
+        }
+        else{
+            return Excel::create('Comision', function($excel) 
+                use (
+                    $mes,$anio,$asesor,$tipoVendedor,$numVentas,$arrayVentas,$total_comision,
+                    $total_pagado,$total_porPagar,$total_iva,$total_retencion,$total_isr,$numIndividualizadas,
+                    $arrayIndividualizadas,$total_comision_indiv,$total_pagado_indiv,$total_iva_indiv,$total_retencion_indiv,
+                    $total_isr_indiv,$numCancelaciones,$arrayCanceladas,$total_anticipo,$total_bono,$numPendientes,
+                    $arrayPendientes,$total_comision_pendiente,$total_pagado_pendiente,$total_porPagar_pendiente,$total_iva_pendiente,
+                    $total_retencion_pendiente,$total_isr_pendiente,$numCambios,$arrayCambios,$total_anticipo_cambio,
+                    $total,$apoyo,$restante,$total_a_pagar){
+                $excel->sheet('Comision', function($sheet) 
+                use (
+                    $mes,$anio,$asesor,$tipoVendedor,$numVentas,$arrayVentas,$total_comision,
+                    $total_pagado,$total_porPagar,$total_iva,$total_retencion,$total_isr,$numIndividualizadas,
+                    $arrayIndividualizadas,$total_comision_indiv,$total_pagado_indiv,$total_iva_indiv,$total_retencion_indiv,
+                    $total_isr_indiv,$numCancelaciones,$arrayCanceladas,$total_anticipo,$total_bono,$numPendientes,
+                    $arrayPendientes,$total_comision_pendiente,$total_pagado_pendiente,$total_porPagar_pendiente,$total_iva_pendiente,
+                    $total_retencion_pendiente,$total_isr_pendiente,$numCambios,$arrayCambios,$total_anticipo_cambio,
+                    $total,$apoyo,$restante,$total_a_pagar)
+                {
+                    $sheet->mergeCells('A1:M1');
+                    $sheet->mergeCells('A2:J2');
+                    $sheet->cell('A1:L1', function($cell) {
+                        // manipulate the cell
+                        $cell->setFontFamily('Arial Narrow');
+                        $cell->setFontSize(12);
+                        $cell->setFontWeight('bold');
+                        $cell->setAlignment('center');
+                    });
+                    $sheet->setCellValue('A1', 'Comision del mes de '.$mes. ' del año '.$anio); 
+                    $sheet->setCellValue('A2', 'Asesor: '. $asesor); 
+
+                    $i = 4;
+
+                    $sheet->setColumnFormat(array(
+                        'C' => '$#,##0.00',
+                        'H' => '$#,##0.00',
+                        'L' => '$#,##0.00',
+                        'M' => '$#,##0.00',
+                        'N' => '$#,##0.00',
+                        'O' => '$#,##0.00',
+                        'P' => '$#,##0.00',
+                        'Q' => '$#,##0.00',
+                        'I' => '$#,##0.00',
+                    ));
+                    
+                /////////// VENTAS
+                    if($numVentas > 0){
+                        $sheet->cell('A'.$i.':'.'Z'.$i, function($cell) {
+                            // manipulate the cell
+                            $cell->setFontFamily('Arial Narrow');
+                            $cell->setFontSize(13);
+                            $cell->setFontWeight('bold');
+                            $cell->setAlignment('center');
+                        });
+                        $sheet->row($i, [
+                            'Ventas : '.$numVentas
+                        ]);
+                        $i++;
+                        $sheet->cell('A'.$i.':'.'Z'.$i, function($cell) {
+                            // manipulate the cell
+                            $cell->setFontFamily('Arial Narrow');
+                            $cell->setFontSize(12);
+                            $cell->setFontWeight('bold');
+                            $cell->setAlignment('center');
+                        });
+                        $sheet->row($i, [
+                            'Fecha', 'Folio', 'Proyecto', 'Etapa', 'Manzana', 'Lote', 'Cliente', 
+                            'Precio venta', 'Crédito', '% Avance', '% De Comisión', 'Comision a pagar',
+                            'IVA','Retención','ISR',
+                            'Este pago', 'Por pagar'
+                        ]);
+                        $i++;
+                        $cont=$i;
+                        foreach($arrayVentas as $index => $venta) {
+                            
+                            $sheet->row($cont, [
+                                $venta->fecha,
+                                $venta->folio,
+                                $venta->proyecto,
+                                $venta->etapa,
+                                $venta->manzana,
+                                $venta->num_lote,
+                                $venta->nombre_cliente,
+                                $venta->precio_venta,
+                                $venta->tipo_credito.'('.$venta->institucion.')',
+                                $venta->avance_lote.'%',
+                                $venta->porcentaje_comision.'%',
+                                $venta->comision_pagar ,
+                                $venta->iva ,
+                                $venta->retencion ,
+                                $venta->isr,
+                                $venta->este_pago,
+                                $venta->por_pagar
+                            ]);
+                            $cont++;
+                        }
+                        
+                        $sheet->row($cont, [
+                            '', '', '', '', '', '', '', 
+                            '', '', '', 'Total: ',
+                            $total_comision, 
+                            $total_iva, $total_retencion,
+                            $total_isr,
+                            $total_pagado, $total_porPagar
+                        ]);
+
+                        $num='A'.($i-1).':Q' . $cont;
+                        $sheet->setBorder($num, 'thin');
+
+                        $i=$cont+2;
+                    }
+                /////////// INDIVIDUALIZADAS
+                    if($numIndividualizadas > 0){
+                        $sheet->cell('A'.$i.':'.'Z'.$i, function($cell) {
+                            // manipulate the cell
+                            $cell->setFontFamily('Arial Narrow');
+                            $cell->setFontSize(13);
+                            $cell->setFontWeight('bold');
+                            $cell->setAlignment('center');
+                        });
+                        $sheet->row($i, [
+                            'Individualizadas : '.$numIndividualizadas
+                        ]);
+                        $i++;
+                        $sheet->cell('A'.$i.':'.'Z'.$i, function($cell) {
+                            // manipulate the cell
+                            $cell->setFontFamily('Arial Narrow');
+                            $cell->setFontSize(12);
+                            $cell->setFontWeight('bold');
+                            $cell->setAlignment('center');
+                        });
+                        $sheet->row($i, [
+                            'Fecha', 'Folio', 'Proyecto', 'Etapa', 'Manzana', 'Lote', 'Cliente', 
+                            'Precio venta', 'Crédito', '% Avance', '% De Comisión', 'Comision a pagar',
+                            'IVA', 'Retención', 'ISR',
+                            'Este pago', 'Por pagar'
+                        ]);
+                        $i++;
+                        $cont=$i;
+                        foreach($arrayIndividualizadas as $index => $venta) {
+                            
+                            $sheet->row($cont, [
+                                $venta->fecha,
+                                $venta->folio,
+                                $venta->proyecto,
+                                $venta->etapa,
+                                $venta->manzana,
+                                $venta->num_lote,
+                                $venta->nombre_cliente,
+                                $venta->precio_venta,
+                                $venta->tipo_credito.'('.$venta->institucion.')',
+                                $venta->avance_lote.'%',
+                                $venta->porcentaje_comision.'%',
+                                $venta->comision_pagar ,
+                                $venta->iva ,
+                                $venta->retencion ,
+                                $venta->isr,
+                                $venta->este_pago,
+                                0
+                            ]);
+                            $cont++;
+                        }
+                        
+                        $sheet->row($cont, [
+                            '', '', '', '', '', '', '', 
+                            '', '', '', 'Total: ',
+                            $total_comision_indiv, 
+                            $total_iva_indiv,
+                            $total_retención_indiv,
+                            $total_isr_indiv,
+                            $total_pagado_indiv, 0
+                        ]);
+
+                        $num='A'.($i-1).':Q' . $cont;
+                        $sheet->setBorder($num, 'thin');
+
+                        $i=$cont+2;
+                    }
+                ////////// CANCELADAS
+                    if($numCancelaciones > 0){
+                        $sheet->cell('A'.$i.':'.'Z'.$i, function($cell) {
+                            // manipulate the cell
+                            $cell->setFontFamily('Arial Narrow');
+                            $cell->setFontSize(13);
+                            $cell->setFontWeight('bold');
+                            $cell->setAlignment('center');
+                        });
+                        $sheet->row($i, [
+                            'Ventas Canceladas : '.$numIndividualizadas
+                        ]);
+                        $i++;
+                        $sheet->cell('A'.$i.':'.'Z'.$i, function($cell) {
+                            // manipulate the cell
+                            $cell->setFontFamily('Arial Narrow');
+                            $cell->setFontSize(12);
+                            $cell->setFontWeight('bold');
+                            $cell->setAlignment('center');
+                        });
+                        $sheet->row($i, [
+                            'Folio', 'Proyecto', 'Etapa', 'Manzana', 'Lote', 'Cliente', 'Fecha de cancelación',
+                            'Anticipo', 'Bono'
+                        ]);
+                        $i++;
+                        $cont=$i;
+                        foreach($arrayCanceladas as $index => $venta) {
+                            
+                            $sheet->row($cont, [
+                                $venta->folio,
+                                $venta->proyecto,
+                                $venta->etapa,
+                                $venta->manzana,
+                                $venta->num_lote,
+                                $venta->nombre_cliente,
+                                $venta->fecha_status,
+                                $venta->este_pago,
+                                $venta->bono
+                            ]);
+                            $cont++;
+                        }
+                        
+                        $sheet->row($cont, [
+                            '', '', '', '', '', '',
+                            'Total: ',
+                            $total_anticipo, $total_bono
+                        ]);
+
+                        $num='A'.($i-1).':I' . $cont;
+                        $sheet->setBorder($num, 'thin');
+
+                        $i=$cont+2;
+                    }
+
+                ////////// Pendientes
+                    if($numPendientes > 0){
+                        $sheet->cell('A'.$i.':'.'Z'.$i, function($cell) {
+                            // manipulate the cell
+                            $cell->setFontFamily('Arial Narrow');
+                            $cell->setFontSize(13);
+                            $cell->setFontWeight('bold');
+                            $cell->setAlignment('center');
+                        });
+                        $sheet->row($i, [
+                            'Pendientes : '.$numPendientes
+                        ]);
+                        $i++;
+                        $sheet->cell('A'.$i.':'.'Z'.$i, function($cell) {
+                            // manipulate the cell
+                            $cell->setFontFamily('Arial Narrow');
+                            $cell->setFontSize(12);
+                            $cell->setFontWeight('bold');
+                            $cell->setAlignment('center');
+                        });
+                        $sheet->row($i, [
+                            'Fecha', 'Folio', 'Proyecto', 'Etapa', 'Manzana', 'Lote', 'Cliente', 
+                            'Precio venta', 'Crédito', '% Avance', '% De Comisión', 'Comision a pagar',
+                            'IVA', 'Retención', 'ISR',
+                            'Este pago', 'Por pagar'
+                        ]);
+                        $i++;
+                        $cont=$i;
+                        foreach($arrayPendientes as $index => $venta) {
+                            
+                            $sheet->row($cont, [
+                                $venta->fecha,
+                                $venta->folio,
+                                $venta->proyecto,
+                                $venta->etapa,
+                                $venta->manzana,
+                                $venta->num_lote,
+                                $venta->nombre_cliente,
+                                $venta->precio_venta,
+                                $venta->tipo_credito.'('.$venta->institucion.')',
+                                $venta->avance_lote.'%',
+                                $venta->porcentaje_comision.'%',
+                                $venta->comision_pagar ,
+                                $venta->iva ,
+                                $venta->retencion ,
+                                $venta->isr,
+                                $venta->este_pago,
+                                $venta->por_pagar,
+                            ]);
+                            $cont++;
+                        }
+                        
+                        $sheet->row($cont, [
+                            '', '', '', '', '', '', '', 
+                            '', '', '', 'Total: ',
+                            $total_comision_pendiente, 
+                            $total_iva_pendiente,
+                            $total_retencion_pendiente,
+                            $total_isr_pendiente,
+                            $total_pagado_pendiente, $total_porPagar_pendiente
+                        ]);
+
+                        $num='A'.($i-1).':Q' . $cont;
+                        $sheet->setBorder($num, 'thin');
+
+                        $i=$cont+2;
+                    }
+
+                ////////// Cambios
+                    if($numCambios > 0){
+                        $sheet->cell('A'.$i.':'.'Z'.$i, function($cell) {
+                            // manipulate the cell
+                            $cell->setFontFamily('Arial Narrow');
+                            $cell->setFontSize(13);
+                            $cell->setFontWeight('bold');
+                            $cell->setAlignment('center');
+                        });
+                        $sheet->row($i, [
+                            '','Cambios : '.$numCambios
+                        ]);
+                        $i++;
+                        $sheet->cell('A'.$i.':'.'C'.$i, function($cell) {
+                            // manipulate the cell
+                            $cell->setFontFamily('Arial Narrow');
+                            $cell->setFontSize(12);
+                            $cell->setFontWeight('bold');
+                            $cell->setAlignment('center');
+                        });
+                        $sheet->row($i, [
+                            '','Descripción', 'Monto'
+                        ]);
+                        $i++;
+                        $cont=$i;
+                        foreach($arrayCambios as $index => $venta) {
+                            
+                            $sheet->row($cont, [
+                                '',
+                                $venta->descripcion,
+                                $venta->pago_ant
+                            ]);
+                            $cont++;
+                        }
+                        
+                        $sheet->row($cont, [
+                            '','Total',  $total_anticipo_cambio
+                        ]);
+
+                        $num='B'.($i-1).':C' . $cont;
+                        $sheet->setBorder($num, 'thin');
+
+                        $i=$cont+2;
+                    }
+
+                //////// TOTALES
+                    $cont=$i;
+                    $sheet->cell('B'.$i.':'.'B'.($i+6), function($cell) {
+                        // manipulate the cell
+                        $cell->setFontFamily('Arial Narrow');
+                        $cell->setFontSize(12);
+                        $cell->setFontWeight('bold');
+                        $cell->setAlignment('left');
+                    });
+                    $sheet->row($i, [
+                        '','Total : ', $total
+                    ]);
+                    $i++;
+                    if($total_anticipo_cambio != 0){
+                        $sheet->row($i, [
+                            '','- Cambios : ', $total_anticipo_cambio
+                        ]);
+                        $i++;
+                    }
+
+                    if($total_anticipo != 0){
+                        $sheet->row($i, [
+                            '','- Ventas canceladas', $total_anticipo
+                        ]);
+                        $i++;
+                    }
+
+                    if($restante != 0){
+                        $sheet->row($i, [
+                            '','- Acumulado anterior', $restante
+                        ]);
+                        $i++;
+                    }
+
+                    $sheet->row($i, [
+                        '','Total a pagar', $total_a_pagar
+                    ]);
+
+                    $sheet->cell('C'.$i, function($cell) {
+                        // manipulate the cell
+                        $cell->setFontFamily('Arial Narrow');
+                        $cell->setFontSize(11);
+                        $cell->setFontWeight('bold');
+                        $cell->setAlignment('right');
+                    });
+
+                    $num='B'.$cont.':C' . $i;
+                    $sheet->setBorder($num, 'thin');
+
+                    $i=$cont+2;
+                    
+    
+                    
+                });
+                }
+            )->download('xls');
+        }
     }
 
 

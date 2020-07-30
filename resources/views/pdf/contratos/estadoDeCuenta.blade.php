@@ -19,6 +19,7 @@
     
 <div style="display: inline-block; float: right;" >
     <IMG SRC="img/contratos/logoContrato.jpg" width="180" height="180">
+        
 </div>
 
 <p style="text-align: center;">GRUPO CONSTRUCTOR CUMBRES, S.A DE C.V.</p>
@@ -26,6 +27,13 @@
 
 
     <div style="position: static; margin: 30px;">
+        <div class="table1" style="margin-top: 0.3em;">
+            <div class="table-row">
+            <div class="table-cell">{{$fecha}}</div>         
+            </div>
+        </div>
+        <br>
+        
         <div class="table1" style="margin-top: 0.3em;">
                 <div class="table-row">
                     <div class="table-cell">Referencia:</div>    
