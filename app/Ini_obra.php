@@ -10,7 +10,9 @@ class Ini_obra extends Model
     protected $primaryKey = 'id'; //Referenciar la llave primaria
     protected $fillable = ['fraccionamiento_id','contratista_id','f_ini','f_fin','clave',
                            'total_costo_directo','total_costo_idirecto','total_importe','anticipo','total_anticipo',
-                            'tipo','iva','descripcion_corta','descripcion_larga','total_superficie','documento'];
+                            'tipo','iva','descripcion_corta','descripcion_larga','total_superficie','documento',
+                            'porc_garantia_ret','garantia_ret','num_casas'
+                        ];
 
     public function fraccionamiento(){
         return $this->hasMany('App\Fraccionamiento');
@@ -23,6 +25,10 @@ class Ini_obra extends Model
 
     public function ini_obra_lote(){
         return $this->hasMany('App\Ini_obra_lote');
+    }
+
+    public function estimaciones(){
+        return $this->hasMany('App\Estimaciones');
     }
 
    

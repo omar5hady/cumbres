@@ -166,7 +166,7 @@
                                     </div>
                                     <div class="collapse" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion" style="">
                                     <!--Datos Prospecto-->
-                                    <div class="form-group row border border-primary" style="margin-right:0px; margin-left:0px;">
+                                        <div class="form-group row border border-primary" style="margin-right:0px; margin-left:0px;">
                                             <div class="col-md-12">
                                                 <div class="form-group">
                                                 <center> <h3></h3> </center>

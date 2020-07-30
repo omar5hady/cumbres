@@ -14,11 +14,10 @@ use PHPExcel_Worksheet_Drawing;
 use App\Credito;
 use File;
 use Auth;
+use App\Estimacion;
 
 class IniObraController extends Controller
-{
- 
-    
+{ 
     public function index(Request $request)
     {
         if (!$request->ajax()) return redirect('/');
@@ -791,6 +790,122 @@ class IniObraController extends Controller
 
         $pathtoFile = public_path() . '/files/contratos/obra/' . $fileName;
         return response()->download($pathtoFile);
+    }
+
+    public function getSinEstimaciones(Request $request){
+        if(!$request->ajax())return redirect('/');
+        $query = Ini_obra::select('id','clave','num_casas','total_importe')
+        ->where('num_casas','=',0)
+        ->where('clave', 'like', '%'. $request->buscar . '%')
+        ->orderBy('clave','asc')
+        ->get();
+
+        return['contratos'=>$query];
+    }
+
+    public function import(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        //validate the xls file
+        $this->validate($request, array(
+            'file'      => 'required'
+        ));
+ 
+        if($request->hasFile('file')){
+            $extension = File::extension($request->file->getClientOriginalName());
+            if ($extension == "xlsx" || $extension == "xls" || $extension == "csv") {
+ 
+                $lotes = Ini_obra_lote::select('ini_obra_id')
+                ->where('ini_obra_id','=',$request->contrato)
+                ->where('lote','!=',NULL)->count();   
+                
+                $contrato = Ini_obra::findOrFail($request->contrato);
+                $contrato->num_casas = $lotes;
+                $contrato->porc_garantia_ret = $request->porcentaje_garantia;
+                $contrato->garantia_ret = $request->garantia_ret;
+                $contrato->save();
+
+                $path = $request->file->getRealPath();
+                $data = Excel::load($path, function($reader) {
+                })->get();
+
+                if(!empty($data) && $data->count()){
+ 
+                    foreach ($data as $key => $value) {
+                        $insert[] = [
+                            'aviso_id' => $request->contrato,
+                            'partida' => $value->partida,
+                            'pu_prorrateado' => $value->pu_prorrateado
+                        ];
+                    }
+ 
+                    if(!empty($insert)){
+                        $insertData = DB::table('estimaciones')->insert($insert);
+                        if ($insertData) {
+                            Session::flash('success', 'Your Data has successfully imported');
+                        }else {                        
+                            Session::flash('error', 'Error inserting the data..');
+                            return back();
+                        }
+                    }
+                }
+                return back();
+            }else {
+                Session::flash('error', 'File is a '.$extension.' file.!! Please upload a valid xls/csv file..!!');
+                return back();
+            }
+        }
+    }
+
+    public function indexEstimaciones(Request $request)
+    {
+        if (!$request->ajax()) return redirect('/');
+ 
+        $buscar = $request->buscar;
+        $criterio = $request->criterio;
+
+        $query = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
+            ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
+            ->select('ini_obras.id','ini_obras.clave','ini_obras.total_importe', 'ini_obras.garantia_ret',
+            'ini_obras.total_anticipo', 'ini_obras.num_casas',
+            'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto');
+        
+        
+         
+        if ($buscar==''){
+            $ini_obra = $query;
+        }
+        else{
+            $ini_obra = $query
+            ->where('ini_obras.clave','like','%'.$request->buscar.'%')
+            ->where('ini_obras.num_casas','!=',0)
+            ->orWhere('contratistas.nombre','like','%'.$request->buscar.'%')
+            ->where('ini_obras.num_casas','!=',0);
+        }
+
+        $ini_obra = $ini_obra
+            ->where('ini_obras.num_casas','!=',0)
+            ->orderBy('ini_obras.clave', 'desc')->paginate(12);
+        
+         
+        return [
+            'pagination' => [
+                'total'        => $ini_obra->total(),
+                'current_page' => $ini_obra->currentPage(),
+                'per_page'     => $ini_obra->perPage(),
+                'last_page'    => $ini_obra->lastPage(),
+                'from'         => $ini_obra->firstItem(),
+                'to'           => $ini_obra->lastItem(),
+            ],
+            'estimaciones' => $ini_obra
+        ];
+    }
+
+    public function getPartidas(Request $request){
+        $estimaciones = Estimacion::select('id', 'partida','pu_prorrateado','cant_tope')
+                        ->where('aviso_id','=',$request->clave)
+                        ->orderBy('id','asc')->get();
+
+        return ['estimaciones' => $estimaciones];
     }
 
 

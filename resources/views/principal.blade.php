@@ -349,6 +349,12 @@
                                         <a class="nav-link" href="#"><i class="fa fa-home"></i> Viviendas por entregar</a>
                                     </li>
                                 @endif
+
+                                @if(Auth::user()->rol_id == 1)
+                                <li @click="menu=248" class="nav-item">
+                                    <a class="nav-link" href="#"><i class="fa fa-home"></i> Estimaciones</a>
+                                </li>
+                            @endif
                             </ul>
                         </li>
                     @endif

@@ -405,6 +405,12 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/formSubmitContratoObra/{id}','IniObraController@formSubmitContratoObra'); //carga de Avaluo
         Route::get('/downloadContratoObra/{fileName}' , 'IniObraController@downloadFile'); //descarga de Avaluo
 
+    /////////////////////////// RUTAS ESTIMACIONES ////////////////
+        Route::get('/estimaciones/getSinEstimaciones','IniObraController@getSinEstimaciones');
+        Route::post('/estimaciones/import','IniObraController@import');
+        Route::get('/estimaciones/indexEstimaciones','IniObraController@indexEstimaciones');
+        Route::get('/estimaciones/getPartidas','IniObraController@getPartidas');
+
 
     ////////////////////        RUTAS PARTIDAS   /////////////////////////////////
         Route::get('/partidas','PartidaController@index');

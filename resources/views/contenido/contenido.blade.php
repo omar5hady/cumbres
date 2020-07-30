@@ -466,6 +466,10 @@
             <ingresos-concretania></ingresos-concretania>
         </template>
 
+        <template v-if="menu==248">
+            <estimaciones></estimaciones>
+        </template>
+
         
 
         
