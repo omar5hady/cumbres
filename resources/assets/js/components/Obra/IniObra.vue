@@ -98,6 +98,7 @@
                                 </li>
                             </ul>
                         </nav>
+                        <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
                     </div>
 
 
@@ -186,6 +187,7 @@
                                 </li>
                             </ul>
                         </nav>
+                        <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
                     </div>
 
 
@@ -263,7 +265,37 @@
             </div>
             <!--Fin del modal-->
             
-
+            <!-- Manual -->
+            <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="manualIdTitle">Manual</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            Para agregar un inicio de obra debe seleccionar aquellos lotes que desee enviar a inicio de obra 
+                            dando clic sobre la casilla de selección múltiple, al finalizar la selección de clic sobre el botón de 
+                            “Enviar a inicio de obra”.
+                        </p>
+                        <p>
+                            <strong>Para que un lote pueda llegar al módulo de inicio de obra</strong> se le debe de asignar etapa y modelo, 
+                            asi como habilitar el lote.
+                        </p>
+                        <p>
+                            Una vez asignado el aviso de obra el lote se envía (o se habilita) al módulo de aviso de obra 
+                            donde podrá ser agregado a un inicio de obra.
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
         </main>
 </template>
 

@@ -173,6 +173,7 @@
                                 </li>
                             </ul>
                         </nav>
+                        <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
                     </div>        
                 </template>
                 <!-------------------  Fin Div historial equipamientos  --------------------->
@@ -1156,6 +1157,34 @@
                 </div>
             <!--Fin del modal-->
             
+            <!-- Manual -->
+            <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="manualIdTitle">Manual</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            Dentro del modulo de obra podrá dar seguimiento al proceso de instalación de un equipamiento, 
+                            el listado que se muestra es de aquellas solicitudes que se realizaron con anterioridad 
+                            (vea el módulo de <strong>“Ventas -> Solic. Equipamiento”</strong>).
+                        </p>
+                        <p>
+                            Una vez terminada la instalación dentro de la columna “Status” podrá ver la leyenda de 
+                            “En Revisión” lo cual le habilitará el botón de “Realizar recepción” donde podrá realizar 
+                            la revisión de la instalación y en caso de ser necesario podrá además rechazar la instalación.
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
          
      </main>
 </template>

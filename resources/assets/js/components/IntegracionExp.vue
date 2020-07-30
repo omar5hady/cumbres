@@ -243,6 +243,7 @@
                                 </li>
                             </ul>
                         </nav>
+                        <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
@@ -479,6 +480,52 @@
                                 <button v-if="btnObs" type="submit" class="btn btn-primary">Solicitar</button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Manual -->
+            <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="manualIdTitle">Manual</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            <strong>Solicitud de avaluó</strong>, puede asignar una fecha de solicitud de avaluó o indicar que un lote no 
+                            aplica para solicitud de avaluó, puede dar clic sobre los iconos
+                            <button type="button" class="btn btn-warning btn-sm" title="Solicitar avaluo">
+                                <i class="fa fa-file-text-o"></i>
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm" title="No aplica">
+                                <i class="fa fa-times-circle"></i>
+                            </button>
+                            para indicar la opción deseada.
+                        </p>
+                        <p>
+                            <strong>Aviso preventivo</strong>, puede asignar una fecha de aviso preventivo o indicar que un lote no aplica 
+                            para aviso preventivo, puede dar clic sobre los iconos 
+                            <button type="button" class="btn btn-warning btn-sm" title="Solicitar avaluo">
+                                <i class="fa fa-file-text-o"></i>
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm" title="No aplica">
+                                <i class="fa fa-times-circle"></i>
+                            </button> 
+                            para indicar la opción deseada.
+                        </p>
+                        <p>
+                            <strong>Integración de expediente</strong>, para enviar un lote a integración de expediente debe dar clic 
+                            sobre el botón de “Integrar” asigne un gestor al lote y confirmar la integración, 
+                            el lote será enviado a seguimiento de tramite (vea modulo <strong>“Desarrollo -> Seguimiento de trámite”</strong>).
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
                     </div>
                 </div>
             </div>

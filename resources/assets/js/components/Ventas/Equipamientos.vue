@@ -118,7 +118,7 @@
                                             <td class="td2" v-if="contratos.fecha_entrega" v-text="this.moment(contratos.fecha_entrega).locale('es').format('DD/MMM/YYYY')"></td>
                                             <td class="td2" v-else v-text="'Sin fecha'"></td>
                                             <td class="td2">
-                                                <button type="button" @click="abrirModal('solicitar',contratos)" class="btn btn-default btn-sm"> Solicitar </button>
+                                                <button type="button" @click="abrirModal('solicitar',contratos)" class="btn btn-info btn-sm"> Solicitar </button>
                                                 <button v-if="contratos.equipamiento != 2" type="button" @click="terminarSolicitud(contratos.folio)" class="btn btn-success btn-sm" title="Finalizar">
                                                     <i class="fa fa-check"></i>
                                                 </button>
@@ -150,6 +150,7 @@
                                 </li>
                             </ul>
                         </nav>
+                        <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
                     </div>
                 <!-------------------  Fin Div para Contratos que tienen paquete o promoción  --------------------->
 
@@ -266,13 +267,21 @@
                                                 <input type="text" pattern="\d*" @keyup.enter="actCosto(equipamientos.id,$event.target.value)" :id="equipamientos.id" :value="equipamientos.costo|currency" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
                                             </td>
                                             <template>
-                                                <td @click="abrirModal('anticipo', equipamientos)" v-if="equipamientos.fecha_anticipo && equipamientos.anticipo_cand==0" class="td2" v-text=" this.moment(equipamientos.fecha_anticipo).locale('es').format('DD/MMM/YYYY') + ': '+ '$'+formatNumber(equipamientos.anticipo)"></td>
+                                                <td @click="abrirModal('anticipo', equipamientos)" v-if="equipamientos.fecha_anticipo && equipamientos.anticipo_cand==0" class="td2">
+                                                    <a href="#" v-text=" this.moment(equipamientos.fecha_anticipo).locale('es').format('DD/MMM/YYYY') + ': '+ '$'+formatNumber(equipamientos.anticipo)"></a>
+                                                </td>
                                                 <td v-else-if="equipamientos.fecha_anticipo && equipamientos.anticipo_cand==1" class="td2" v-text=" this.moment(equipamientos.fecha_anticipo).locale('es').format('DD/MMM/YYYY') + ': '+ '$'+formatNumber(equipamientos.anticipo)"></td>
-                                                <td @click="abrirModal('anticipo', equipamientos)" v-else class="td2" v-text="'Sin anticipo'"></td>    
+                                                <td @click="abrirModal('anticipo', equipamientos)" v-else class="td2">
+                                                    <a href="#" v-text="'Sin anticipo'"></a>
+                                                </td>    
                                             </template>
                                             <template>
-                                                <td @click="abrirModal('colocacion', equipamientos)" v-if="equipamientos.fecha_colocacion" class="td2" v-text=" this.moment(equipamientos.fecha_colocacion).locale('es').format('DD/MMM/YYYY')"></td>
-                                                <td @click="abrirModal('colocacion', equipamientos)" v-else class="td2" v-text="'Sin fecha'"></td>    
+                                                <td @click="abrirModal('colocacion', equipamientos)" v-if="equipamientos.fecha_colocacion" class="td2">
+                                                    <a href="#" v-text=" this.moment(equipamientos.fecha_colocacion).locale('es').format('DD/MMM/YYYY')"></a>
+                                                </td>
+                                                <td @click="abrirModal('colocacion', equipamientos)" v-else class="td2">
+                                                    <a href="#" v-text="'Sin fecha'"></a>
+                                                </td>    
                                             </template>
                                             <template>
                                                 <td v-if="equipamientos.fin_instalacion" class="td2" v-text=" this.moment(equipamientos.fin_instalacion).locale('es').format('DD/MMM/YYYY')"></td>
@@ -364,6 +373,7 @@
                                 </li>
                             </ul>
                         </nav>
+                        <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
                     </div>
                 <!-------------------  Fin Div para Contratos que tienen paquete o promoción  --------------------->
 
@@ -677,7 +687,55 @@
                 </div>
             <!--Fin del modal-->
             
-         
+            <!-- Manual -->
+            <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="manualIdTitle">Manual</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            Dentro del módulo de solicitud de equipamiento podrá visualizar una lista de los lotes que
+                             podrían aplicar a una instalación de equipamiento.
+                        </p>
+                        <p>
+                            <strong>Saber si un lote requiere una solicitud de equipamiento</strong>, debe observar dentro de 
+                            la columna “Equipamiento”, podrá observar una descripción que le indicará que equipos 
+                            deberá solicitar para su instalación.
+                        </p>
+                        <p>
+                            <strong>Solicitar equipamiento</strong>, para solicitar el equipamiento debe dar clic sobre el botón con 
+                            la leyenda de “Solicitar”, a continuación, aparecerá una ventana donde se le 
+                            permitirá seleccionar un proveedor, así como el artículo que se debe instalar, 
+                            debe dar clic sobre el botón de “Solicitar”, ahora la solicitud estará creada 
+                            (podrá realizar tantas solitudes como sean necesarias, en caso de que no se encuentre 
+                            el equipamiento o el proveedor dentro de la lista ve a el módulo <strong>“Administración -> Proveedores”</strong>).
+                        </p>
+                        <p>
+                            <strong>Una vez solicitados los equipamientos</strong> a instalar puede dar doble clic sobre el registro 
+                            y podrá agregar el costo total del equipamiento a instalar, también podrá colocar una 
+                            “Fecha programada“ para la instalación, ver el estatus de la instalación, ver los saldos 
+                            pendientes, generar la liquidación (solo en caso de que ya esté terminado), 
+                            “Imprimir la recepción” (solo en caso de que ya esté terminado) y agregar observaciones 
+                            si así se requiere.
+                        </p>
+                        <p>
+                            <strong>Nota:</strong> tome en cuenta que el proveedor también podrá editar las fechas tentativas de 
+                            instalación, así como las fechas definitivas de instalación si así lo requiere 
+                            (vea el modulo de “Proveedores -> Seguimiento de instalación”).
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
      </main>
 </template>
 

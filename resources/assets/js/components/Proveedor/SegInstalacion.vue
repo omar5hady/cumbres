@@ -94,12 +94,20 @@
                                                 <td v-else class="td2" v-text="'Sin anticipo'"></td>    
                                             </template>
                                             <template>
-                                                <td @click="abrirModal('colocacion', equipamientos)" v-if="equipamientos.fecha_colocacion" class="td2" v-text=" this.moment(equipamientos.fecha_colocacion).locale('es').format('DD/MMM/YYYY')"></td>
-                                                <td @click="abrirModal('colocacion', equipamientos)" v-else class="td2" v-text="'Sin fecha'"></td>    
+                                                <td @click="abrirModal('colocacion', equipamientos)" v-if="equipamientos.fecha_colocacion" class="td2">
+                                                    <a href="#" v-text=" this.moment(equipamientos.fecha_colocacion).locale('es').format('DD/MMM/YYYY')"></a>
+                                                </td>
+                                                <td @click="abrirModal('colocacion', equipamientos)" v-else class="td2" >
+                                                    <a href="#" v-text="'Sin fecha'"></a>
+                                                </td>    
                                             </template>
                                             <template>
-                                                <td @click="abrirModal('fin_instalacion', equipamientos)" v-if="equipamientos.fin_instalacion" class="td2" v-text=" this.moment(equipamientos.fin_instalacion).locale('es').format('DD/MMM/YYYY')"></td>
-                                                <td @click="abrirModal('fin_instalacion', equipamientos)" v-else class="td2" v-text="'Sin fecha'"></td>    
+                                                <td @click="abrirModal('fin_instalacion', equipamientos)" v-if="equipamientos.fin_instalacion" class="td2" >
+                                                    <a href="#" v-text=" this.moment(equipamientos.fin_instalacion).locale('es').format('DD/MMM/YYYY')"></a>
+                                                </td>
+                                                <td @click="abrirModal('fin_instalacion', equipamientos)" v-else class="td2">
+                                                    <a href="#" v-text="'Sin fecha'"></a>
+                                                </td>    
                                             </template>
                                             <template>
                                                 <td v-if="equipamientos.status == '0'" class="td2">
@@ -157,6 +165,7 @@
                                 </li>
                             </ul>
                         </nav>
+                        <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
                     </div>
                 <!-------------------  Fin Div para Contratos que tienen paquete o promoción  --------------------->
 
@@ -318,6 +327,43 @@
                 </div>
             <!--Fin del modal-->
             
+            <!-- Manual -->
+            <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="manualIdTitle">Manual</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            Dentro del listado de “Seguimiento de instalación” podrá ver el listado de aquellas 
+                            solicitudes de instalación de algún lote (pueden ser una o más por lote).
+                        </p>
+                        <p>
+                            <strong>Fechas,</strong> se pueden asignar las fechas tentativas de instalación y esta indicara que la 
+                            solicitud se encuentra en proceso, también puede indicar una fecha definitiva de 
+                            instalación para indicar que la instalación fuese realizada con éxito, una vez colocada 
+                            la “Fecha fin de instalación” el registro pasara a estatus de “En revisión” a 
+                            espera de la revisión de obra (vea el modulo de <strong>“Obra -> Solic. Equipamiento”</strong>),
+                        </p>
+                        <p>
+                            <strong>Instalación rechazada</strong>, en caso de que una instalación sea rechazada debe asignar una nueva 
+                            “Fecha programada de instalación” y al finalizar la instalación una “Fecha fin de instalación”, 
+                            esto permitirá volver a realizar la revisión.
+                        </p>
+                        <p>
+                            <strong>Nota:</strong> el módulo también permitirá ver saldos.
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
          
      </main>
 </template>

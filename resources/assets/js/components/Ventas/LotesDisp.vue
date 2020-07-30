@@ -209,6 +209,7 @@
                                 </li>
                             </ul>
                         </nav>
+                        <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
@@ -287,7 +288,35 @@
                 </div>
                 <!-- /.modal-dialog -->
             </div>
-            <!--Fin del modal-->                   
+            <!--Fin del modal-->     
+
+            <!-- Manual -->
+            <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="manualIdTitle">Manual</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            Dentro de casa disponibles usted podrá consultar aquellas casas que estén disponibles para su venta, 
+                            además dentro del modulo podrá realizar los apartados de las casas (debe contar con los permisos vea el 
+                            modulo de <strong>“Acceso -> Usuarios”</strong>).
+                        </p>
+                        <p>
+                            Además, este módulo les permitirá a los asesores ver todo lo referente a un terreno como 
+                            sus costos, promociones y comisiones.
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                    </div>
+                </div>
+            </div>              
         </main>
 </template>
 

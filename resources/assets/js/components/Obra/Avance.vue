@@ -97,6 +97,7 @@
                                 </li>
                             </ul>
                         </nav>
+                        <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
                     </div>
 
                     <div class="card-body" v-if="resumen==1">
@@ -203,6 +204,7 @@
                                 </li>
                             </ul>
                         </nav>
+                        <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
@@ -330,7 +332,51 @@
             </div>
             <!--Fin del modal-->
             
-            
+            <!-- Manual -->
+            <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="manualIdTitle">Manual</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong>Cuando un lote es agregado a un nuevo aviso de obra</strong> el lote o lotes agregados al nuevo aviso de obra, podrá ser 
+                            visto en el listado del módulo de <strong>avance</strong>.
+                            <br><strong>(el lote solo podrá ser visto en el listado si es agregado en un nuevo inicio de obra)</strong>
+                        </p>
+                        <p>Para <strong>ver el avancé de un inicio de obra especifico</strong> y sus lotes pueda usar los botones de opciones podrá ver 
+                            el listado de las partidas.
+                        </p>
+                        <p>
+                            Puede <strong>registrar el avancé de una partida</strong> colocando una cantidad del 0 al 1 
+                            (puede utilizar decimales para indicar el porcentaje del avancé de la partida Ejemplo: 50% = 0.5), 
+                            puede guardar los cambios presionando la tecla enter.
+                        </p>
+                        <p>
+                            Puede agregar una <strong>fecha de visita de avaluó</strong> desde la vista de avancé.
+                        </p>
+                        <p>
+                            Puede identificar aquellas partidas que tienen asignado un costo asignado y que por lo tanto afectan el registro del avance.
+                            <br><strong>Ejemplo 1,</strong> partidas con color naranja serán aquellas partidas que afectan directamente al avance (debe ser registrado el avance de esta partida).
+                            <br><strong>Ejemplo 2,</strong> partidas con color verde serán aquellas partidas que afectan directamente al avance, pero ya se les registro algún porcentaje de avance.
+                        </p>
+                        <p>
+                            Si <strong>la casilla donde coloca el “avance” muestra un color rojo</strong> esto indica que el avance fue modificado en más de una ocasión.
+                        </p>
+                        <p>
+                            <strong>Nota:</strong> aquellos avances que presenten un remarcado color verde en Fraccionamiento, 
+                            Modelo, Manzana y Lote indicaran que son lotes que cuentan con un contrato.
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
 
         </main>
 </template>
