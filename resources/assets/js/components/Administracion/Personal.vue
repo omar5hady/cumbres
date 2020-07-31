@@ -97,6 +97,7 @@
                                 </li>
                             </ul>
                         </nav>
+                        <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
@@ -239,7 +240,31 @@
             </div>
             <!--Fin del modal-->
             
-
+            <!-- Manual -->
+            <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="manualIdTitle">Manual</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>El módulo “personal” le ayudará a encontrar de manera rápida cualquier persona registrada en el sistema 
+                            ya sea usuario del sistema o algún cliente registrado, también podrá ver y editar su información.
+                        </p>
+                        <p>Puede registrar una nueva persona, pero debe tomar en cuenta que para asignar o cambiar privilegios deberá 
+                            de realizar esta acción desde el módulo de <strong>“Acceso -> Usuarios”</strong>, en caso de ser cliente solo podrá ser asignado a un 
+                            vendedor dentro del módulo de “ventas->mis prospectos”.
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
         </main>
 </template>
 

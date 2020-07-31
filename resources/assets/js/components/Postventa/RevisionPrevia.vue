@@ -144,6 +144,7 @@
                                 </li>
                             </ul>
                         </nav>
+                        <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
                     </div>
                 </template>
                 <!---------- Check list --------------->
@@ -1289,6 +1290,37 @@
                 </div>
             <!--Fin del modal-->
          
+            <!-- Manual -->
+            <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="manualIdTitle">Manual</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            Dentro de revisión previa podrán registrar si en la revisión previa a la entrega de una 
+                            vivienda existe algún falla que se debe corregir.
+                        </p>
+                        <p>
+                            Para realizar la revisión solo debe seleccionar el registro del lote que desea, 
+                            debe dar clic sobre el botón de “realizar revisión” y a continuación podrá ver un 
+                            “CHECK-LIST” que le permitirá seleccionar las habitaciones de una casa, puede dar 
+                            clic sobre el nombre de la habitación que desee y en caso de que exista algún desperfecto 
+                            deberá dar clic sobre el elemento de la lista que se relacione con el desperfecto, 
+                            enseguida aparecerá debajo un campo que le permitirá capturar una descripción breve de la falla. <br>
+                            Al finalizar solo debe agregar una observación y dar clic sobre el botón de guardar.
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
      </main>
 </template>
 

@@ -167,6 +167,7 @@
                                 </li>
                             </ul>
                         </nav>
+                        <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
                     </div>
                 <!-------------------  Fin Div para Contratos que tienen paquete o promoción  --------------------->
 
@@ -232,7 +233,34 @@
                 </div>
             <!--Fin del modal-->
             
-         
+            <!-- Manual -->
+            <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="manualIdTitle">Manual</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            Dentro del modulo de equipamiento podrá dar seguimiento la o las instalaciones de un equipamiento, 
+                            adicional podrá bloquear el anticipo en caso de que así lo desee.
+                        </p>
+                        <p>
+                            <strong>Bloquear un anticipo,</strong> un anticipo se bloquea con la finalidad de que los usuario no puedan 
+                            modificar el monto ya asignado, puede bloquear el monto dando clic sobre el icono de candado 
+                            que aparece en la columna “Anticipo”.
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
      </main>
 </template>
 

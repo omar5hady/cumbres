@@ -112,6 +112,7 @@
                                     </li>
                                 </ul>
                             </nav>
+                            <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
                         </div>
                     </template>
                     
@@ -736,7 +737,47 @@
             </div>
             <!--Fin del modal-->
            
-            
+            <!-- Manual -->
+            <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="manualIdTitle">Manual</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            Para poder agregar o ver un lote que desea agregar a un aviso de obra asegúrese de que el lote 
+                            cuenta con el inicio de obra (vea <strong>“Obra -> Inicio de obra”</strong>).
+                        </p>
+                        <p>
+                            <strong>Cuando un lote es agregado a un nuevo aviso de obra</strong>, el lote o lotes agregados al 
+                            nuevo aviso de obra, podrá ser visto en el listado del módulo partidas, 
+                            donde podrá asignar o registrar los costos del proyecto. 
+                            (el lote solo podrá ser visto en el listado si es agregado en un nuevo inicio de obra)
+                        </p>
+                        <p>
+                            En caso de que al guardar cualquier cambio no suceda nada (no parece la ventana que indica 
+                            la que los cambios fueron guardados correctamente), actualicé la página y asegúrese de 
+                            estar llenando correctamente los cambios.
+                        </p>
+                        <p>
+                            Para agregar un <strong>nuevo contratista</strong> al listado acceda al módulo de “<strong>Obra -> Contratistas</strong>”.
+                        </p>
+                        <p>
+                            <strong>Nota:</strong> al agregar un nuevo lote a un nuevo aviso de obra podrá encontrar un listado con la etiqueta “Lote”, 
+                            donde podrá visualizar, el número de lote, el nombre de la compañía propietaria del lote y la fecha de 
+                            término de aviso de obra.
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
 
         </main>
 </template>

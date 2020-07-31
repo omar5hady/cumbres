@@ -268,6 +268,7 @@
                                 </li>
                             </ul>
                         </nav>
+                        <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
                     </div>
                 <!-------------------  Fin Div para Contratos que tienen paquete o promoción  --------------------->
 
@@ -452,6 +453,7 @@
                                 </li>
                             </ul>
                         </nav>
+                        <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
                     </div>
                 <!-------------------  Fin Div para Contratos que tienen paquete o promoción  --------------------->
 
@@ -811,6 +813,48 @@
                     <!-- /.modal-dialog -->
                 </div>
             <!--Fin del modal-->
+
+            <!-- Manual -->
+            <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="manualIdTitle">Manual</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            Dentro del modulo de entregas de vivienda podrá agendar la fecha y la hora en la que se 
+                            realizará la entrega de la vivienda.
+                        </p>
+                        <p>
+                            Reprogramaciones, en caso de necesitar una re reprogramación puede cambiar la fecha y 
+                            la hora dando doble clic sobre la fecha y la hora, solo debe indicar la causa 
+                            (si es a causa del cliente o es a casusa de un contratista) deberá agregar una observación y guardar.
+                        </p>
+                        <p>
+                            Podrá ver el estatus del equipamiento y en caso de que lo desee puede ver la 
+                            ultima fecha del proceso de instalación dando clic sobre el botón de la columna de  
+                            “Equipamiento”.
+                        </p>
+                        <p>
+                            En caso de que alguna vivienda o registro (renglón) se muestre con un color de 
+                            fondo color rojo indicara que ese registro (lote) no cuenta aún con la firma de escritura.
+                        </p>
+                        <p>
+                            Una vez concretada la venta podrá dar clic sobre el botón de “Finalizar”, 
+                            vera una ventana donde debe de indicar la fecha, hora, si existen detalles 
+                            por arreglar y un comentario para finalizar.
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
      </main>
 </template>
 
@@ -1248,7 +1292,7 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayUltimaFecha = respuesta.fecha_ultima;
-                        if(me.arrayUltimaFecha[0].fin_instalacion == null){
+                        if(me.arrayUltimaFecha[0] == null){
                             me.fecha = "Sin fecha";
                             }
                         else{

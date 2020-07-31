@@ -195,6 +195,7 @@
                                     </li>
                                 </ul>
                             </nav>
+                            <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
                         </div>
                     </template>
                     
@@ -1171,6 +1172,73 @@
                 <!-- /.modal-dialog -->
             </div>
             
+            <!-- Manual -->
+            <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="manualIdTitle">Manual</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            El modulo de mis prospectos permitirá llevar un registro ordenado de aquellos clientes que cada asesor registre o este atendiendo.
+                        </p>
+                        <p>
+                            Para agregar un nuevo prospecto o cliente solo debe dar clic sobre el botón de “Agregar” que se encuentra 
+                            en la parte superior izquierda de la pantalla, posterior aparecerá una nueva ventana donde deberá llenar 
+                            los campos según se requiera.
+                        </p>
+                        <p>
+                            Es importante saber que los registros de los prospectos o clientes debe ser único, además los clientes 
+                            serán asignados al asesor que los registre y podrán ser reasignados solo por el coordinador de 
+                            ventas del asesor.
+                        </p>
+                        <p>
+                            Los prospectos serán identificados mediante su RFC por lo que es importante que al realizar la 
+                            captura se verifique que el RFC sea el correcto, en caso de que el prospecto fuese registrado 
+                            con anterioridad el sistema arrojara un mensaje indicando el nombre del prospecto que actualmente 
+                            se encuentre registrado con ese RFC.
+                        </p>
+                        <p>
+                            En la columna de “Nombre” podrá observar un color de fondo en el nombre del prospecto que indicara 
+                            el estatus de la atención que el asesor esta prestando al prospecto, es decir, si el asesor no 
+                            agrega nuevas observaciones relacionadas al seguimiento de la atención del prospecto el color 
+                            podrá cambiar de entre los siguientes colores para indicar un estado. <br>
+                            Rojo = más de 15 días sin comentarios de seguimiento.<br>
+                            Naranja = más de 7 días sin comentarios de seguimiento.<br>
+                            Sin color = menos de 7 días sin comentarios de seguimiento.
+                        </p>
+                        <p>
+                            <strong>Cónyuge o coacreditado</strong>, en caso de que el prospecto cuente con un conyugue o coacreditado se debe 
+                            registrar el conyugue o coacreditado (con la misma importancia que el prospecto ya que es un requisito 
+                            para concretar la venta), dentro del campo “Buscar coacreditado...” debe escribir el nombre del coacreditado 
+                            para asegurarse de que no se encuentre registrado en caso contrario puede realizar el registro de la misma 
+                            manera como se registra un prospecto, solo debe seleccionar en el apartado de “Clasificación” la opción de 
+                            “coacreditado”. También puede dar clic sobre el icono 
+                            <button type="button" class="btn btn-success btn-sm">
+                                <i class="icon-plus"></i>
+                            </button>
+                            y llenar los campos de la ventana que aparecerán.
+                        </p>
+                        <p v-if="rolId != 2">
+                            <strong>Reasignar un prospecto</strong>, para reasignar un prospecto solo debe dar clic sobre el icono  
+                            <button type="button" class="btn btn-primary btn-sm">
+                                <i class="fa fa-exchange"></i>
+                            </button>
+                            , en seguida aparecerá una ventana donde podrá seleccionar el nombre del asesor al que desea reasignar el prospecto 
+                            asignar una clasificación al prospecto y agregar un comentario, para finalizar solo debe dar clic 
+                            sobre el botón “Reasignar” para finalizar (podrá reasignar los asesores en el momento que usted desee).
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
         </main>
 </template>
 

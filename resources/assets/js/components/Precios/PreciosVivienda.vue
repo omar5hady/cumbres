@@ -102,10 +102,36 @@
                                 </li>
                             </ul>
                         </nav>
+                        <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
-            </div>             
+            </div>
+            
+            <!-- Manual -->
+            <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="manualIdTitle">Manual</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            En caso de que sea necesario realizar un ajuste al precio de una vivienda o lote en específico, 
+                            podrá agregar el precio buscando el lote o vivienda en listado, para agregar el precio solo 
+                            debe editar el moto en la columna “ajuste” y presionar la tecla enter para guardar, 
+                            el precio será sumado al costo total del lote.
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
         </main>
 </template>
 

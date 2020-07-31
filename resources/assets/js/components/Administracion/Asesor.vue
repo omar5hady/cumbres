@@ -111,6 +111,7 @@
                                 </li>
                             </ul>
                         </nav>
+
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
@@ -816,6 +817,35 @@
                 <!-- /.modal-dialog -->
             </div>
             <!--Fin del modal-->
+
+            <!-- Manual -->
+            <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="manualIdTitle">Manual</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong>El usuario “Descartado”</strong> es un asesor por defecto donde se almacenarán todos los usuarios que se 
+                            han descartado y por lo tanto no son un buen candidato para una venta.
+                        </p>
+                        <p>
+                            <strong>Doble clic: </strong>Recuerde que puede hacer doble clic sobre el renglón o el nombre del asesor para ver o 
+                            editar los clientes y coacreditados que se le han asignado.
+                        </p>
+                        <p>
+                            <strong>Re-Asignar:</strong> Recuerde que al re-asignar un cliente el anterior asesor no tendrá acceso a la información del cliente.
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
 
         </main>
 </template>
