@@ -15,7 +15,7 @@ use Auth;
 class BonoRecomendadoController extends Controller
 {
     public function store($id,$etapa,$cliente,$fecha){
-        if(!$request->ajax() )return redirect('/');
+        
         $bono = new Bono_recomendado();
         $bono->id = $id;
 
