@@ -163,7 +163,7 @@
                     @endif
 
                      <!-- Modulo para contratista ---->
-                     @if(Auth::user()->rol_id == 13 || Auth::user()->rol_id == 1 || Auth::user()->id == 25694)
+                     @if(Auth::user()->rol_id == 13 || Auth::user()->rol_id == 1 || Auth::user()->rol_id == 12)
                         <li class="nav-item nav-dropdown">
                             <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-plug"></i> Contratistas</a>
                             <ul class="nav-dropdown-items">

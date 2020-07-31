@@ -15,6 +15,7 @@ use Auth;
 class BonoRecomendadoController extends Controller
 {
     public function store($id,$etapa,$cliente,$fecha){
+        if(!$request->ajax() )return redirect('/');
         $bono = new Bono_recomendado();
         $bono->id = $id;
 
@@ -147,7 +148,7 @@ class BonoRecomendadoController extends Controller
     }
 
     public function aprobarBono(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $fecha = Carbon::now();
 
         $bono = Bono_recomendado::findOrFail($request->id);
@@ -163,7 +164,7 @@ class BonoRecomendadoController extends Controller
     }
 
     public function cancelarBono(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
         $bono = Bono_recomendado::findOrFail($request->id);
         $bono->status = 5;
@@ -177,7 +178,7 @@ class BonoRecomendadoController extends Controller
     }
 
     public function autorizarBono(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $fecha = Carbon::now();
 
         $bono = Bono_recomendado::findOrFail($request->id);
@@ -193,7 +194,7 @@ class BonoRecomendadoController extends Controller
     }
 
     public function generarPago(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
         $bono = Bono_recomendado::findOrFail($request->id);
         $bono->fecha_pago = $request->fecha_pago;
@@ -208,7 +209,7 @@ class BonoRecomendadoController extends Controller
     }
 
     public function update(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
         $bono = Bono_recomendado::findOrFail($request->id);
         $bono->monto = $request->monto;

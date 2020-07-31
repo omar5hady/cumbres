@@ -1362,6 +1362,9 @@ class ClienteController extends Controller
             }
         }
          
+        $personas = $personas->orderBy('personal.nombre', 'asc')
+                        ->orderBy('personal.apellidos', 'asc')
+                        ->get();
          
  
         return Excel::create('resumen_cliente', function($excel) use ($personas){

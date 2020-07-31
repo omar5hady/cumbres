@@ -587,9 +587,10 @@ class DevolucionController extends Controller
 
                 
                 $cont=1;
+                $cont1=2;
 
                 foreach($contratos as $index => $devolucion) {
-                    $cont++;
+                    
 
                     setlocale(LC_TIME, 'es_MX.utf8');
                     $fecha1 = new Carbon($devolucion->fecha_status);
@@ -597,8 +598,9 @@ class DevolucionController extends Controller
 
                     $depositos = $devolucion->sumaPagares - $devolucion->sumaRestante;
                     $pendiente = $devolucion->sumaPagares - $devolucion->sumaRestante -  $devolucion->sumGastos;
-                    if(($devolucion->sumaPagares - $devolucion->sumaRestante) > 0){
-                        $sheet->row($index+2, [
+                    
+                    if(($devolucion->sumaPagares - $devolucion->sumaRestante) > 0.01){
+                        $sheet->row($cont1, [
                             $devolucion->id, 
                             $devolucion->nombre_cliente,
                             $devolucion->proyecto,
@@ -610,6 +612,8 @@ class DevolucionController extends Controller
                             $devolucion->fecha_status
 
                         ]);	
+                        $cont1++;
+                        $cont++;
                     }
                 }
                 $num='A1:I' . $cont;
