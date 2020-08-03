@@ -12,6 +12,7 @@
         "laravel/tinker": "^1.0",
         "maatwebsite/excel": "~2.1.0",
         "pusher/pusher-php-server": "^3.3",
+        "spatie/data-transfer-object": "^1.13",
         "spatie/flysystem-dropbox": "^1.2",
         "villca/numeros-en-letras": "^1.2"
     },
