@@ -616,7 +616,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-2 form-control-label" for="text-input">RFC</label>
                                     <div class="col-md-4">
-                                        <input :disabled="tipoAccion==2" type="text" maxlength="10" style="text-transform:uppercase" v-model="rfcProspecto" class="form-control" placeholder="RFC" >
+                                        <input disabled type="text" maxlength="10" style="text-transform:uppercase" v-model="rfcProspecto" class="form-control" placeholder="RFC" >
                                     </div>
                                     <div class="col-md-2" >
                                         <input :disabled="tipoAccion==2" type="text" maxlength="3" style="text-transform:uppercase" v-model="homoclaveProspecto" class="form-control" placeholder="Homoclave" >

@@ -17,7 +17,7 @@ class CreateEstimacionesTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('aviso_id')->nullable();
             $table->foreign('aviso_id')->references('id')->on('ini_obras');
-            $table->string('partida',50);
+            $table->string('partida',191);
             $table->double('pu_prorrateado',10,2)->default(0);
             $table->double('cant_tope',10,2)->default(0);
             $table->timestamps();

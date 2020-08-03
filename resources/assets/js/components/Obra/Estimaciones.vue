@@ -156,12 +156,12 @@
                                             <tr v-for="(contrato,index) in arrayPartidas" :key="contrato.id">
                                                 <td class="td2" v-text="index+1"></td>
                                                 <td class="td2" v-text="contrato.partida"></td>
-                                                <td class="td2" v-text="contrato.pu_prorrateado"></td>
+                                                <td class="td2" v-text="'$'+formatNumber(contrato.pu_prorrateado)"></td>
                                                 <td class="td2" v-text="num_casas"></td>
                                                 <td class="td2" v-text="'$'"></td>
                                                 <td class="td2" v-text="'$'"></td>
-                                                <td class="td2" v-text="'$'"></td>
-                                                <td class="td2" v-text="'$'"></td>
+                                                <td class="td2" v-text="num_casas"></td>
+                                                <td class="td2" v-text="'$'+formatNumber( contrato.tope=(contrato.pu_prorrateado * num_casas) )"></td>
                                                 <td class="td2" v-text="'$'"></td>
                                                 <td class="td2" v-text="'$'"></td>
                                                 <td class="td2" v-text="'$'"></td>

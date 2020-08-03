@@ -139,7 +139,7 @@
                                      <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">RFC</label>
                                     <div class="col-md-3">
-                                        <input type="text" maxlength="10" style="text-transform:uppercase" v-model="rfc" class="form-control" placeholder="RFC" :disabled="tipoAccion == 3">
+                                        <input  type="text" maxlength="10" style="text-transform:uppercase" v-model="rfc" class="form-control" placeholder="RFC" disabled>
                                     </div>
                                     <div class="col-md-3">
                                         <input type="text" maxlength="3" style="text-transform:uppercase" v-model="homoclave" class="form-control" placeholder="Homoclave" :disabled="tipoAccion == 3">
