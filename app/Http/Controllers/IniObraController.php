@@ -13,6 +13,7 @@ use Excel;
 use PHPExcel_Worksheet_Drawing;
 use App\Credito;
 use File;
+use Session;
 use Auth;
 use App\Estimacion;
 

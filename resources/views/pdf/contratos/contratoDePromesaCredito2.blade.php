@@ -194,7 +194,11 @@ B). La superficie de construcción que es de <strong>{{$contratoPromesa[0]->cons
     de los que la cantidad de  ${{strtoupper($contratoPromesa[0]->valorTerrenoLetra)}} equivalente al {{$contratoPromesa[0]->porcentaje_terreno}}% 
     del precio, corresponde al valor de <strong>EL LOTE</strong>, en tanto que la cantidad 
     de ${{strtoupper($contratoPromesa[0]->valorConstruccionLetra)}} equivalente al {{100-$contratoPromesa[0]->porcentaje_terreno}}% 
-    del precio le corresponde al valor de la vivienda. Ese precio lo deberá pagar <strong>EL PROMITENTE COMPRADOR </strong>
+    del precio le corresponde al valor de la vivienda. 
+</p>
+
+<p>
+    Ese precio lo deberá pagar <strong>EL PROMITENTE COMPRADOR </strong>
     a <strong>LOS PROMITENTES VENDEDORES</strong>  de la siguiente manera: 
     a).La cantidad de 
     @if($contratoPromesa[0]->precio_venta >= $contratoPromesa[0]->credito_neto || $contratoPromesa[0]->precio_venta == $contratoPromesa[0]->credito_neto )
@@ -203,7 +207,13 @@ B). La superficie de construcción que es de <strong>{{$contratoPromesa[0]->cons
         <strong>${{strtoupper($contratoPromesa[0]->precioVentaLetra)}},</strong>
     @endif
     mediante el crédito que le otorgara 
-    <strong>{{mb_strtoupper($contratoPromesa[0]->institucion)}}</strong> misma que deberá ser liquidada dentro de los 45 días naturales siguientes a la 
+    <strong>{{mb_strtoupper($contratoPromesa[0]->institucion)}}</strong> 
+    @if($contratoPromesa[0]->infonavit > 0) 
+        y la cantidad de <strong>${{strtoupper($contratoPromesa[0]->infonavitLetra)}}</strong> que le otorga INFONAVIT 
+    @elseif($contratoPromesa[0]->fovisste > 0) 
+        y la cantidad de <strong>${{strtoupper($contratoPromesa[0]->fovissteLetra)}}</strong> que le otorga FOVISSTE 
+    @endif,
+    misma que deberá ser liquidada dentro de los 45 días naturales siguientes a la 
     conclusión de la construcción de LA VIVIENDA. 
     @if($contratoPromesa[0]->precio_venta != $contratoPromesa[0]->credito_neto && $contratoPromesa[0]->enganche_total >= 10000) b).El resto, mediante 
         <strong>{{$pagos[0]->totalDePagos}}</strong>pagos, 
@@ -237,7 +247,11 @@ B). La superficie de construcción que es de <strong>{{$contratoPromesa[0]->cons
 <p>
     <strong>CUARTA.- </strong> El contrato definitivo de compraventa que las partes se han obligado a 
     celebrar, está sujeto a la condición suspensiva consistente en que 
-    <strong>{{mb_strtoupper($contratoPromesa[0]->institucion)}}</strong>, otorgue a <strong>EL PROMITENTE COMPRADOR</strong> 
+    <strong>{{mb_strtoupper($contratoPromesa[0]->institucion)}} 
+    @if($contratoPromesa[0]->infonavit > 0) e INFONAVIT
+    @elseif($contratoPromesa[0]->fovisste > 0) y FOVISSTE
+    @endif,</strong>
+     otorgue a <strong>EL PROMITENTE COMPRADOR</strong> 
     un crédito con garantía hipotecaria hasta por la cantidad necesaria para cubrir el precio total de la 
     operación de compraventa pactado en la cláusula tercera y que dicho precio se aplique o libere, 
     en pago directo a <strong>LOS  PROMITENTES VENDEDORES</strong>, de tal forma que se 

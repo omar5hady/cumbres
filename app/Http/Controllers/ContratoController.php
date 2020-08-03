@@ -2862,6 +2862,7 @@ class ContratoController extends Controller
             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
             ->join('personal as v', 'clientes.vendedor_id', 'v.id')
             ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+            ->join('fraccionamientos', 'lotes.fraccionamiento_id', '=', 'fraccionamientos.id')
             ->select(
                 'creditos.id',
                 'creditos.prospecto_id',
@@ -2869,12 +2870,18 @@ class ContratoController extends Controller
                 'creditos.manzana',
                 'creditos.num_lote',
                 'creditos.superficie',
+                'creditos.valor_terreno',
+                'creditos.porcentaje_terreno',
                 'inst_seleccionadas.id as inst_credito',
                 'inst_seleccionadas.tipo_credito',
                 'creditos.fraccionamiento as proyecto',
                 'lotes.construccion',
                 'lotes.regimen_condom',
+                'lotes.emp_constructora',
                 'creditos.precio_venta',
+
+                'fraccionamientos.estado as est_proy',
+                'fraccionamientos.ciudad as ciudad_proy',
 
                 'personal.nombre',
                 'personal.apellidos',
@@ -2907,9 +2914,13 @@ class ContratoController extends Controller
             ->where('inst_seleccionadas.tipo_credito', '=', 'Crédito Directo')
             ->get();
 
+        $contratosDom[0]->valor_construccion = $contratosDom[0]->enganche_total - $contratosDom[0]->valor_terreno;
+
         setlocale(LC_TIME, 'es_MX.utf8');
         $contratosDom[0]->engacheTotalLetra = NumerosEnLetras::convertir($contratosDom[0]->enganche_total, 'Pesos', true, 'Centavos');
         $contratosDom[0]->enganche_total = number_format((float)$contratosDom[0]->enganche_total, 2, '.', ',');
+        $contratosDom[0]->valorTerrenoLetra = NumerosEnLetras::convertir($contratosDom[0]->valor_terreno, 'Pesos', true, 'Centavos');
+        $contratosDom[0]->valorConstruccionLetra = NumerosEnLetras::convertir($contratosDom[0]->valor_construccion, 'Pesos', true, 'Centavos');
 
         $fechaContrato = new Carbon($contratosDom[0]->fecha);
         $contratosDom[0]->fecha = $fechaContrato->formatLocalized('%d días de %B de %Y');
@@ -2993,8 +3004,10 @@ class ContratoController extends Controller
             }
         }
 
-
-        $pdf = \PDF::loadview('pdf.contratos.contratoConReservaDeDominio', ['contratosDom' => $contratosDom, 'pagos' => $pagos]);
+        if($contratosDom[0]->emp_constructora == 'Grupo Constructor Cumbres')
+            $pdf = \PDF::loadview('pdf.contratos.contratoConReservaDeDominio', ['contratosDom' => $contratosDom, 'pagos' => $pagos]);
+        else
+            $pdf = \PDF::loadview('pdf.contratos.contratoContado', ['contratosDom' => $contratosDom, 'pagos' => $pagos]);
         return $pdf->stream('contrato_reserva_de_dominio.pdf');
     }
 
