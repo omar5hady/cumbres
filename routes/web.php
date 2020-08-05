@@ -298,6 +298,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/ingresosConcretania/guardarIngreso','DepositoController@guardarIngreso');
 
         Route::get('/ingresosConcretania/indexEdoCuentaTerreno','CreditoController@indexEdoCuentaTerreno');
+        Route::get('/ingresosConcretania/indexEdoCuentaTerreno/excel','CreditoController@indexEdoCuentaTerrenoExcel');
         
 
     ///////////////////       RUTAS LICENCIA-ACTA  ////////////////////////////////////

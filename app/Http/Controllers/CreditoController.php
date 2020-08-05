@@ -1064,4 +1064,91 @@ class CreditoController extends Controller
         ];
     }
 
+    public function indexEdoCuentaTerrenoExcel(Request $request){
+
+        $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
+                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                ->select('contratos.id','creditos.saldo_terreno','creditos.precio_venta',
+                            'creditos.valor_terreno as monto_terreno', 'contratos.status',
+                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana',
+                            'creditos.num_lote','personal.nombre','personal.apellidos');
+
+        if($request->buscar != '')                            
+            switch($request->criterio){
+                case 'cliente':{
+                    $contratos = $contratos->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $request->buscar . '%');
+                    break;
+                }
+                case 'fraccionamiento':{
+                    $contratos = $contratos->where('lotes.fraccionamiento_id','=',$request->buscar);
+                    if($request->etapa != '')
+                        $contratos = $contratos->where('lotes.etapa_id','=',$request->etapa);
+                    if($request->manzana != '')
+                        $contratos = $contratos->where('lotes.manzana', 'like', '%'. $request->manzana . '%');
+                    if($request->lote != '')
+                        $contratos = $contratos->where('lotes.num_lote','=',$request->lote);
+                    break;
+                }
+            }
+
+        $contratos = $contratos->where('lotes.emp_constructora','=','CONCRETANIA')
+                    ->where('contratos.status','!=',0)
+                    ->where('contratos.status','!=',2)
+                    ->orderBy('contratos.id')
+        ->get();
+                    
+        return Excel::create('Historial de simulaciones', function($excel) use ($contratos){
+            $excel->sheet('creditos', function($sheet) use ($contratos){
+                
+                $sheet->row(1, [
+                    'Fraccionamiento', 'Etapa', 'Manzana', '# Lote', 'Cliente', 'Valor de venta',
+                    'Valor de terreno', 'Total pagado', 'Por pagar'
+                ]);
+
+                $sheet->cells('A1:I1', function ($cells) {
+                    $cells->setBackground('#052154');
+                    $cells->setFontColor('#ffffff');
+                    // Set font family
+                    $cells->setFontFamily('Calibri');
+
+                    // Set font size
+                    $cells->setFontSize(13);
+
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+                
+                $cont=1;
+                
+                $sheet->setColumnFormat(array(
+                    'F' => '$#,##0.00',
+                    'G' => '$#,##0.00',
+                    'H' => '$#,##0.00',
+                    'I' => '$#,##0.00',
+                ));
+
+                foreach($contratos as $index => $contrato) {
+                   
+                    $cont++;
+                    
+                    $sheet->row($index+2, [
+                        $contrato->fraccionamiento,
+                        $contrato->etapa,
+                        $contrato->manzana,
+                        $contrato->num_lote,
+                        $contrato->nombre.' '.$contrato->apellidos,
+                        $contrato->precio_venta,
+                        $contrato->monto_terreno,
+                        $contrato->saldo_terreno,
+                        $contrato->monto_terreno+$contrato->saldo_terreno,
+                    ]);	
+                }
+                $num='A1:I' . $cont;
+                $sheet->setBorder($num, 'thin');
+            });
+        })->download('xls');
+    }
+
 }

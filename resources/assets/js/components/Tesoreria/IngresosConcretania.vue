@@ -25,6 +25,12 @@
                         <button v-if="historial == 1 || historial == 2" type="button" @click="historial=0" class="btn btn-default">
                             <i class="fa fa-mail-reply"></i>&nbsp;Regresar
                         </button>
+                        <a v-if="historial == 1 || historial == 2" :href="'/ingresosConcretania/indexEdoCuentaTerreno/excel?buscar=' + 
+                                buscar + '&etapa=' + b_etapa + '&manzana=' + b_manzana + '&lote=' + 
+                                b_lote + '&criterio=' + criterio"
+                            class="btn btn-success">
+                            <i class="fa fa-file-excel-o"></i>&nbsp;Excel
+                        </a>
                         <!---->
                     </div>
                     <div class="card-body" v-if="historial == 0">
@@ -520,8 +526,6 @@
                 }
                 return pagesArray;
             },
-
-
         },
         methods : {
             
