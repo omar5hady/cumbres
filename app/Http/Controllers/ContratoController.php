@@ -3039,7 +3039,7 @@ class ContratoController extends Controller
                 'lotes.regimen_condom',
                 'lotes.emp_constructora',
 
-                'fraccionamientos.ciudad','fraccionamientos.estado',
+                'fraccionamientos.ciudad as ciudad_proy','fraccionamientos.estado as estado_proy',
 
                 'personal.nombre',
                 'personal.apellidos',

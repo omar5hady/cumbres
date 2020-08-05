@@ -411,6 +411,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/estimaciones/indexEstimaciones','IniObraController@indexEstimaciones');
         Route::get('/estimaciones/getPartidas','IniObraController@getPartidas');
 
+        Route::post('/estimaciones/store','IniObraController@storeEstimacion');
+
 
     ////////////////////        RUTAS PARTIDAS   /////////////////////////////////
         Route::get('/partidas','PartidaController@index');

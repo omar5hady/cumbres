@@ -85,7 +85,7 @@
 
                     <template v-if="listado == 0">
                        <div class="card-body"> 
-                            <div class="form-group row border border-primary" style="margin-right:0px; margin-left:0px;">
+                            <!-- <div class="form-group row border border-primary" style="margin-right:0px; margin-left:0px;"> -->
 
 
                                 <div class="col-md-12">
@@ -128,11 +128,60 @@
                                              {{num_casas}}
                                         </div>
                                     </div>
-                                </div> 
+                                </div>
 
+                                <template v-if="nueva == 0">
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <label class="col-md-2 form-control-label" for="text-input">Número de estimacion</label>
+                                            <div class="col-md-2">
+                                                <select class="form-control" v-model="b_estimacion" @click="getPartidas(aviso_id)">
+                                                    <option value="">Seleccione</option>
+                                                    <option v-for="estimacion in arrayNumEstim" :key="estimacion.num_estimacion" :value="estimacion.num_estimacion" v-text="estimacion.num_estimacion"></option>
+                                                </select>
+                                            </div>
 
+                                            <div class="col-md-2">
+                                                <button type="button" @click="nueva = 1"  class="btn btn-primary">
+                                                    <i class="icon-plus"></i>&nbsp;Nueva estimación
+                                                </button>
+                                            </div>
 
-                                <div class="table-responsive">
+                                        </div>
+                                    </div> 
+                                </template> 
+
+                                <template v-if="nueva == 1">
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <label class="col-md-2 form-control-label" for="text-input">Número de estimacion</label>
+                                            <div class="col-md-2">
+                                                <input type="number" disabled v-model="num_estimacion" min="0" step="1" class="form-control" placeholder="Núm. Estimación">
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="form-group row">
+                                                    <div class="col-md-2">
+                                                        <button type="button" @click="storeEstimacion(arrayPartidas)"  class="btn btn-success">
+                                                            <i class="icon-check"></i>&nbsp;Guardar
+                                                        </button>
+                                                    </div>
+
+                                                    <div class="col-md-1"></div>
+                                                    
+                                                    <div class="col-md-2">
+                                                        <button type="button" @click="nueva = 0"  class="btn btn-warning">
+                                                            <i class="icon-close"></i>&nbsp;Cancelar
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div> 
+                                </template>
+
+                                <div class="table-responsive" >
                                     <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
@@ -140,7 +189,8 @@
                                                 <th>Paquete</th>
                                                 <th>P.U. Prorrateado</th>
                                                 <th>No. de Viviendas</th>
-                                                <th colspan="2">Estimación No.</th>
+                                                <th colspan="2" v-if="numero != 0 && nueva == 0">Estimación No. {{numero}}</th>
+                                                <th colspan="2" v-else-if="nueva == 1">Estimación No. {{num_estimacion}}</th>
                                                 <th colspan="2">Cantidad Tope</th>
                                                 <th colspan="2">Acumulado</th>
                                                 <th colspan="2">Por Estimar</th>
@@ -149,23 +199,39 @@
                                             </tr>
                                             <tr>
                                                 <th colspan="12"></th>
-                                                
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr v-for="(contrato,index) in arrayPartidas" :key="contrato.id">
+                                            <tr v-for="(partida,index) in arrayPartidas" :key="partida.id">
                                                 <td class="td2" v-text="index+1"></td>
-                                                <td class="td2" v-text="contrato.partida"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(contrato.pu_prorrateado)"></td>
+                                                <td class="td2" v-text="partida.partida"></td>
+                                                <td class="td2" v-text="'$'+formatNumber(partida.pu_prorrateado)"></td>
                                                 <td class="td2" v-text="num_casas"></td>
-                                                <td class="td2" v-text="'$'"></td>
-                                                <td class="td2" v-text="'$'"></td>
+                                                <template v-if="nueva == 0">
+                                                    <td class="td2" v-if="numero != 0" v-text="partida.vol"></td>
+                                                    <td class="td2" v-if="numero != 0" v-text="'$' + formatNumber( partida.costoA )"></td>
+                                                </template>
+                                                <template v-else>
+                                                    <td class="td2">
+                                                        <input type="number" v-on:change="validar(index)"  v-model="partida.num_estimacion" min="0" step="1" class="form-control" placeholder="Núm. volumen">
+                                                    </td>
+                                                    <td class="td2" v-text="'$' + formatNumber( partida.costo = partida.num_estimacion * partida.pu_prorrateado )"></td>
+                                                </template>
+                                                
                                                 <td class="td2" v-text="num_casas"></td>
-                                                <td class="td2" v-text="'$'+formatNumber( contrato.tope=(contrato.pu_prorrateado * num_casas) )"></td>
-                                                <td class="td2" v-text="'$'"></td>
-                                                <td class="td2" v-text="'$'"></td>
-                                                <td class="td2" v-text="'$'"></td>
-                                                <td class="td2" v-text="'$'"></td>
+                                                <td class="td2" v-text="'$'+ formatNumber( partida.tope=(partida.pu_prorrateado * num_casas) )"></td>
+                                                <td class="td2"> 
+                                                    {{ partida.acumVolTotal=parseInt(partida.acumVol) + parseInt(partida.num_estimacion) }} 
+                                                </td>
+                                                <td class="td2">
+                                                    $ {{formatNumber( partida.acumCostoTotal=parseFloat(partida.acumCosto) + parseFloat(partida.costo) )}}
+                                                </td>
+                                                <td class="td2">
+                                                    {{ partida.porEstimarVol=parseInt(num_casas) - parseInt(partida.num_estimacion) - parseInt(partida.acumVol) }}
+                                                </td>
+                                                <td class="td2">
+                                                    $ {{formatNumber( partida.porEstimarCosto=parseFloat(partida.tope) - parseFloat(partida.acumCosto) - parseFloat(partida.costo) )}}
+                                                </td>
                                             </tr>                               
                                         </tbody>
                                     </table>
@@ -173,7 +239,7 @@
 
                                                          
                                 
-                            </div>
+                            <!-- </div> -->
                         </div>
                     </template>
                         
@@ -276,7 +342,12 @@
         data(){
             return{
                 listado:1,
+                nueva:0,
+                arrayNumEstim:[],
+                b_estimacion:'',
+                num_estimacion:0,
                 id:0,
+                aviso_id:0,
                 proceso:false,
                 arrayEstimaciones:[],
                 
@@ -298,6 +369,8 @@
                 garantia_ret:0,
                 importe_garantia:0,
                 num_casas:0,
+                numero:0,
+                actual:0,
                 offset2 : 3,
                 
                 modal: 0,
@@ -307,6 +380,11 @@
 
                 file:'',
                 proceso:false,
+
+                acumuladoVol:0,
+                acumCosto:0,
+                porEstimarVol:0,
+                porEstimarCosto:0,
                                
                
                
@@ -344,16 +422,6 @@
                 }
                 return pagesArray2;
             },
-            // totalComision: function(){
-            //     var totalComision =0.0;
-            //     for(var i=0;i<this.arrayVentas.length;i++){
-            //         totalComision += parseFloat(this.arrayVentas[i].comision_pagar)
-            //     }
-            //     if(totalComision < 0)
-            //         totalComision = 0;
-            //     totalComision = Math.round(totalComision*100)/100;
-            //     return totalComision;
-            // },
           
         },
        
@@ -478,14 +546,30 @@
             getPartidas(id){
                 let me = this;
                 me.arrayCreditos=[];
-                var url = '/estimaciones/getPartidas?clave='+id;
+                var url = '/estimaciones/getPartidas?clave='+id+'&numero='+this.b_estimacion;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayPartidas = respuesta.estimaciones;
+                    me.numero = respuesta.numero;
+                    me.num_estimacion = respuesta.num_est;
+                    me.arrayNumEstim = respuesta.numeros;
+                    me.b_estimacion = me.arrayNumEstim[0].num_estimacion;
+                    me.actual = respuesta.actual;
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+
+            validar(index){
+                let me = this;
+                var acumulado = parseInt (me.arrayPartidas[index].porEstimarVol);
+                var volumen = 0;
+                if(acumulado<0){
+                    volumen = parseInt( me.arrayPartidas[index].num_estimacion );
+                    me.arrayPartidas[index].num_estimacion = volumen + acumulado;
+                }
+                
             },
 
             verDetalle(contrato){
@@ -496,7 +580,8 @@
                 this.importe_garantia = contrato['garantia_ret'];
                 this.listado = 0;
                 this.num_casas = contrato['num_casas'];
-                this.getPartidas(contrato['id'])
+                this.aviso_id = (contrato['id']);
+                this.getPartidas(contrato['id']);
             },
 
             abrirModal(accion,data =[]){
@@ -520,6 +605,49 @@
                     }
                     
                 }
+            },
+
+            storeEstimacion(data){
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                
+                Swal({
+                    title: '¿Desea continuar?',
+                    animation: false,
+                    customClass: 'animated bounceInDown',
+                    text: "Estos cambios no se pueden revertir",
+                    type: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Cancelar',
+                    
+                    confirmButtonText: 'Si, guardar!'
+                    }).then((result) => {
+
+                    if (result.value) {
+                        me.arrayPartidas.forEach(element => {
+                            if(element.num_estimacion != 0){
+                                axios.post('/estimaciones/store',{
+                                    'estimacion_id' : element.id,
+                                    'costo' : element.costo,
+                                    'vol' : element.num_estimacion,
+                                    'num_estimacion' : this.num_estimacion
+                                }); 
+                                me.nueva = 0;
+                                me.b_estimacion = '';
+                                me.getPartidas(me.aviso_id);
+                                Swal({
+                                    title: 'Hecho!',
+                                    text: 'Estimacion guardada correctamente',
+                                    type: 'success',
+                                    animation: false,
+                                    customClass: 'animated bounceInRight'
+                                })
+                            }
+                        });
+                    }
+                })
             }
         
         },
@@ -582,6 +710,7 @@
     .td2:last-of-type, th:last-of-type {
        border-right: none;
     } 
+    
     .badge2 {
         display: inline-block;
         padding: 0.25em 0.4em;

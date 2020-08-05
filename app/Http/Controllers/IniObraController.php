@@ -16,6 +16,7 @@ use File;
 use Session;
 use Auth;
 use App\Estimacion;
+use App\Hist_estimacion;
 
 class IniObraController extends Controller
 { 
@@ -343,7 +344,6 @@ class IniObraController extends Controller
         $ini_obra = Ini_obra::findOrFail($request->id);
         $ini_obra->delete();
      }
-
 
     public function ActualizarIniObra(Request $request)
     {
@@ -906,8 +906,86 @@ class IniObraController extends Controller
                         ->where('aviso_id','=',$request->clave)
                         ->orderBy('id','asc')->get();
 
-        return ['estimaciones' => $estimaciones];
+        $actual = Hist_estimacion::select('num_estimacion')
+                        ->where('estimacion_id','=',$estimaciones[0]->id)
+                        ->orderBy('num_estimacion','desc')->distinct()->get();
+
+        $est = Hist_estimacion::select('num_estimacion')
+                ->where('estimacion_id','=',$estimaciones[0]->id);
+
+        if($request->numero == ''){
+            
+            $est = $est->orderBy('num_estimacion','desc')->distinct()->get();
+        }
+        else{
+            $est = $est->where('num_estimacion','<=',$request->numero)->orderBy('num_estimacion','desc')->distinct()->get();
+        }
+        
+
+        if(sizeof($est) == 0)
+            $num_est = 0;
+        else
+            $num_est = $est[0]->num_estimacion;
+
+        $num = $num_est + 1;
+        
+        
+        foreach($estimaciones as $index => $estimacion){
+            $estimacion->num_estimacion = 0;
+            $estimacion->costo = 0;
+            $estimacion->vol = 0;
+            $estimacion->acumVol = 0;
+            $estimacion->acumCosto = 0;
+            $estimacion->porEstimarCosto = 0;
+            $estimacion->porEstimarVol = 0;
+            $estimacion->costoA = 0;
+            
+
+            if($num_est != 0){
+                $acum = Hist_estimacion::select(
+                        DB::raw("SUM(vol) as volumen"),
+                        DB::raw("SUM(costo) as totalCosto")
+                    )
+                    ->where('estimacion_id','=',$estimacion->id)
+                    ->where('num_estimacion','<=',$num_est)
+                    ->get();
+                if( $acum[0]->volumen > 0 ){
+                    $estimacion->acumVol = $acum[0]->volumen;
+                    $estimacion->acumCosto = $acum[0]->totalCosto;
+                }
+
+                $historial = Hist_estimacion::select(
+                    'vol', 'costo', 'num_estimacion'
+                )
+                ->where('estimacion_id','=',$estimacion->id)
+                ->where('num_estimacion','=',$num_est)
+                ->get();
+
+                if( sizeOf($historial) > 0 ){
+                    $estimacion->vol = $historial[0]->vol;
+                    $estimacion->costoA = $historial[0]->costo;
+                    //$estimacion->costo = $historial[0]->costo;
+                    //$estimacion->num_estimacion = $historial[0]->vol;
+                }
+            }
+        }
+
+        return [
+            'estimaciones' => $estimaciones, 
+            'num_est' => $num ,
+            'numero' => $num_est,
+            'numeros' => $actual,
+            'actual' => $actual[0]->num_estimacion
+        ];
     }
 
+    public function storeEstimacion(Request $request){
+        $estimacion = new Hist_estimacion();
+        $estimacion->estimacion_id = $request->estimacion_id;
+        $estimacion->num_estimacion = $request->num_estimacion;
+        $estimacion->vol = $request->vol;
+        $estimacion->costo = $request->costo;
+        $estimacion->save();
+    }
 
 }

@@ -18,6 +18,20 @@
                         <div class="form-group row">
                             <div class="col-md-8">
                                 <div class="input-group">
+                                    <select class="form-control" v-model="b_empresa" >
+                                        <option value="">Empresa constructora</option>
+                                        <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                    </select>
+                                    <select class="form-control" v-model="b_empresa2" >
+                                        <option value="">Empresa terreno</option>
+                                        <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-8">
+                                <div class="input-group">
                                     <select class="form-control" v-model="b_proyecto" @click="selectEtapa(b_proyecto)">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
@@ -92,6 +106,9 @@
                 b_fecha1 : '',
                 b_fecha2 : '',
                 b_proyecto : '',
+                b_empresa:'',
+                b_empresa2:'',
+                empresas:[],
                 b_etapa : '',
                 fecha1 : '',
                 fecha2 : '',
@@ -109,7 +126,8 @@
             /**Metodo para mostrar los registros */
             listarDescargas(){
                 let me = this;
-                var url = '/reprotes/inventario?fecha1=' + me.b_fecha1 + '&fecha2=' + me.b_fecha2 + '&proyecto=' + me.b_proyecto + '&etapa=' + me.b_etapa;
+                var url = '/reprotes/inventario?fecha1=' + me.b_fecha1 + '&fecha2=' + me.b_fecha2 + '&proyecto=' + me.b_proyecto 
+                        + '&etapa=' + me.b_etapa + '&empresa=' + me.b_empresa + '&empresa2=' + me.b_empresa2;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLotes = respuesta.resumen;
@@ -122,6 +140,19 @@
                     me.fecha1 = moment(me.b_fecha1).locale('es').format('DD/MMM/YYYY');
                     me.fecha2 = moment(me.b_fecha2).locale('es').format('DD/MMM/YYYY');
 
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            getEmpresa(){
+                let me = this;
+                me.empresas=[];
+                var url = '/lotes/empresa/select';
+                axios.get(url).then(function (response) {
+                    var respuesta = response;
+                    me.empresas = respuesta.data.empresas;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -165,6 +196,7 @@
         },
         mounted() {
             this.selectFraccionamientos();
+            this.getEmpresa();
         }
     }
 </script>
