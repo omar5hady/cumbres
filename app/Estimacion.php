@@ -16,4 +16,8 @@ class Estimacion extends Model
     public function ini_obra(){
         return $this->belongsTo('App\Ini_obra');
     }
+
+    public function hist_estimacion(){
+        return $this->hasMany('App\Hist_estimacion');
+    }
 }
