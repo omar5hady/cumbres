@@ -1098,15 +1098,15 @@ class CreditoController extends Controller
                     ->orderBy('contratos.id')
         ->get();
                     
-        return Excel::create('Historial de simulaciones', function($excel) use ($contratos){
-            $excel->sheet('creditos', function($sheet) use ($contratos){
+        return Excel::create('Relación de los ingresos de Concretania', function($excel) use ($contratos){
+            $excel->sheet('Estado de cuenta', function($sheet) use ($contratos){
                 
                 $sheet->row(1, [
                     'Fraccionamiento', 'Etapa', 'Manzana', '# Lote', 'Cliente', 'Valor de venta',
-                    'Valor de terreno', 'Total pagado', 'Por pagar'
+                    'Valor de terreno', 'Total pagado', 'Por pagar', 'Estatus'
                 ]);
 
-                $sheet->cells('A1:I1', function ($cells) {
+                $sheet->cells('A1:J1', function ($cells) {
                     $cells->setBackground('#052154');
                     $cells->setFontColor('#ffffff');
                     // Set font family
@@ -1130,6 +1130,13 @@ class CreditoController extends Controller
                 ));
 
                 foreach($contratos as $index => $contrato) {
+
+                    if($contrato->status == 1)
+                        $contrato->status = "Pendiente";
+                    elseif($contrato->status == 3)
+                        $contrato->status = "Firmado";
+                    else
+                        $contrato->status = "";
                    
                     $cont++;
                     
@@ -1143,9 +1150,10 @@ class CreditoController extends Controller
                         $contrato->monto_terreno,
                         $contrato->saldo_terreno,
                         $contrato->monto_terreno+$contrato->saldo_terreno,
+                        $contrato->status,
                     ]);	
                 }
-                $num='A1:I' . $cont;
+                $num='A1:J' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
         })->download('xls');
