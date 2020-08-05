@@ -1330,6 +1330,7 @@ class DepositoController extends Controller
                         'contratos.enganche_total',
                         'contratos.saldo',
                         'i.monto_credito as credito_solic',
+                        'i.tipo_credito',
                         'i.cobrado',
                         'i.segundo_credito',
                         DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),

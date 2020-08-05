@@ -210,9 +210,21 @@ body {
                     <div class="table-cell">MODELO: <u>{{mb_strtoupper($contratos[0]->modelo)}}</u></div>
                 </div>
                 <div class="table-row">
-                    <div class="table-cell">SUPERFICIE DE TERRENO: <u>{{$contratos[0]->terreno}} M2</u></div>
-                    <div class="table-cell">SUPERFICIE DE CONSTRUCCION: <u>{{$contratos[0]->construccion}} M2</u></div>
-                    <div class="table-cell"></div>
+                    <div class="table-cell">SUPERFICIE DE TERRENO: 
+                        <u>{{$contratos[0]->terreno}} M2 
+                            @if($contratos[0]->emp_constructora == "CONCRETANIA")
+                                ( {{$contratos[0]->porcentaje_terreno}}% )
+                            @endif
+                        </u>
+                    </div>
+                    <div class="table-cell" colspan="2">SUPERFICIE DE CONSTRUCCION: 
+                        <u>{{$contratos[0]->construccion}} M2
+                            @if($contratos[0]->emp_constructora == "CONCRETANIA")
+                                ( {{100-$contratos[0]->porcentaje_terreno}}% )
+                            @endif
+                        </u>
+                    </div>
+                    
                 </div> 
                 <div class="table-row">
                     <div colspan="3" class="table-cell">PAQUETE: {{mb_strtoupper($contratos[0]->paquete)}} </div>
