@@ -2637,6 +2637,7 @@ class ContratoController extends Controller
                 'creditos.superficie',
                 'creditos.terreno_excedente',
                 'creditos.precio_terreno_excedente',
+                'creditos.porcentaje_terreno',
                 'creditos.promocion',
                 'creditos.descripcion_promocion',
                 'creditos.descuento_promocion',
