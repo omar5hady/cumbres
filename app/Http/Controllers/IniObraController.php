@@ -906,7 +906,7 @@ class IniObraController extends Controller
                         ->where('aviso_id','=',$request->clave)
                         ->orderBy('id','asc')->get();
 
-        $actual = Hist_estimacion::select('num_estimacion')
+        $act = Hist_estimacion::select('num_estimacion')
                         ->where('estimacion_id','=',$estimaciones[0]->id)
                         ->orderBy('num_estimacion','desc')->distinct()->get();
 
@@ -928,6 +928,12 @@ class IniObraController extends Controller
             $num_est = $est[0]->num_estimacion;
 
         $num = $num_est + 1;
+
+        if(sizeof($act) == 0)
+            $actual = 0;
+        else
+            $actual = $act[0]->num_estimacion;
+
         
         
         foreach($estimaciones as $index => $estimacion){
@@ -974,8 +980,8 @@ class IniObraController extends Controller
             'estimaciones' => $estimaciones, 
             'num_est' => $num ,
             'numero' => $num_est,
-            'numeros' => $actual,
-            'actual' => $actual[0]->num_estimacion
+            'numeros' => $act,
+            'actual' => $actual
         ];
     }
 

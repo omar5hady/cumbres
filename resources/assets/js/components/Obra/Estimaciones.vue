@@ -465,6 +465,7 @@
                         })
                     me.proceso=false;
                     me.cerrarModal();
+                    me.indexEstimaciones(me.pagination2.current_page)
                     //me.listarLote(1,'','','','lote');
 
                 })
