@@ -47,10 +47,10 @@
                                             <tr v-if="activo == 1">
                                                 <th colspan="8" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
                                                 <th colspan="1" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
-                                                <th colspan="8" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
+                                                <th colspan="10" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
                                             </tr>
                                             <tr v-else></tr>
-                                                <th colspan="17" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
+                                                <th colspan="19" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
                                             <tr @dblclick="cambiar()" >
                                                 <th>Fraccionamiento</th>
                                                 <th>Etapa</th>
@@ -61,7 +61,16 @@
                                                 <th>Crédito</th>
                                                 <th>Institución</th>
                                                 <th v-if="activo == 1">Promocion/paquete</th>
-                                                <th>Valor de escrituración</th>
+                                                <th colspan="3" class="text-center">
+                                                    Valor de escrituración
+                                                    <tr>
+                                                        <th>Precio venta</th>
+                                                        <th>Valor de terreno</th>
+                                                        <th>Valor de construcción</th>
+                                                    </tr>
+                                                </th>
+                                                
+                                                
                                                 <th></th>
                                                 <th>Descuento precio de casa o equipamiento</th>
                                                 <th class="td2">Descuento en el terreno</th>
@@ -87,7 +96,15 @@
                                                     <td class="td2" v-else-if="lote.descripcion_promocion == null && lote.descripcion_paquete != null" v-text="'Paquete: '+lote.descripcion_paquete"></td>
                                                     <td class="td2" v-else v-text="'Promo: ' + lote.descripcion_promocion + ' / Paquete:' + lote.descripcion_paquete"></td>
                                                 </template>
-                                                <td class="td2" v-text="'$'+formatNumber(lote.precio_venta)"></td>
+                                                <template v-if="lote.emp_constructora != 'CONCRETANIA'">
+                                                    <td colspan="3" class="td2" v-text="'$'+formatNumber(lote.precio_venta)"></td>
+                                                </template>
+                                                <template v-else>
+                                                    <td class="td2" v-text="'$'+formatNumber(lote.precio_venta)"></td>
+                                                    <td class="td2" v-text="'$'+formatNumber(lote.valor_terreno)"></td>
+                                                    <td class="td2" v-text="'$'+formatNumber(lote.precio_venta - lote.valor_terreno)"></td>
+                                                </template>
+                                                
                                                 <td></td>
                                                 <td class="td2">
                                                     <input type="text" pattern="\d*" @keyup.enter="actualizarDescuento(lote.id,$event.target.value)" :id="lote.id" :value="lote.costo_descuento|currency" step="1"  v-on:keypress="isNumber($event)" class="form-control" >
@@ -136,7 +153,7 @@
                                     <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
-                                                <th colspan="11" class="text-center"> Cancelaciones en el periodo ({{cont2}}) </th>
+                                                <th colspan="13" class="text-center"> Cancelaciones en el periodo ({{cont2}}) </th>
                                             </tr>
                                             <tr>
                                                 <th>Fraccionamiento</th>
@@ -149,7 +166,14 @@
                                                 <th>Crédito</th>
                                                 <th>Institución</th>
                                                 <th>Promoción / Paquete</th>
-                                                <th>Valor de escrituración</th>
+                                                <th colspan="3" class="text-center">
+                                                    Valor de escrituración
+                                                    <tr>
+                                                        <th>Precio venta</th>
+                                                        <th>Valor de terreno</th>
+                                                        <th>Valor de construcción</th>
+                                                    </tr>
+                                                </th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -169,7 +193,14 @@
                                                     <td class="td2" v-else-if="cancelacion.descripcion_promocion == null && cancelacion.descripcion_paquete != null" v-text="'Paquete: '+cancelacion.descripcion_paquete"></td>
                                                     <td class="td2" v-else v-text="'Promo: ' + cancelacion.descripcion_promocion + ' / Paquete:' + cancelacion.descripcion_paquete"></td>
                                                 </template>
-                                                <td class="td2" v-text="'$'+formatNumber(cancelacion.precio_venta)"></td>
+                                                <template v-if="cancelacion.emp_constructora != 'CONCRETANIA'">
+                                                    <td class="td2" v-text="'$'+formatNumber(cancelacion.precio_venta)"></td>
+                                                </template>
+                                                <template v-else>
+                                                    <td class="td2" v-text="'$'+formatNumber(cancelacion.precio_venta)"></td>
+                                                    <td class="td2" v-text="'$'+formatNumber(cancelacion.valor_terreno)"></td>
+                                                    <td class="td2" v-text="'$'+formatNumber(cancelacion.precio_venta - cancelacion.valor_terreno)"></td>
+                                                </template>
                                             </tr>                             
                                         </tbody>
                                     </table>

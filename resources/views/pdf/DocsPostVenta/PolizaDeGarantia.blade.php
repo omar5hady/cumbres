@@ -34,7 +34,7 @@ width: 710px;
 <body>
 
 <div style="margin: 20px;">
-    <h2 style="text-align: center;">POLIZA DE GARANTIA</h2>
+    <h3 style="text-align: center;">POLIZA DE GARANTIA</h3>
     <p style="text-align: center;">REPARACION DE DAÑOS Y VICIOS OCULTOS DE VIVIENDA</p><br>
 
     <p>GARANTÍA QUE OTORGA <b>GRUPO CONSTRUCTOR CUMBRES S.A. DE C.V.,</b> EN LO SUCESIVO <i>"LA CONSTRUCTORA"</i>, REPRESENTADA
@@ -48,7 +48,7 @@ width: 710px;
         ASUMIÓ EL COMPROMISO PARA RESPONDER DIRECTAMENTE <i>"EL ACREDITADO"</i>, DE LAS SIGUIENTES:
     </p>
 <br>
-    <h2 style="text-align: center;">O B L I G A C I O N E S</h2><br>
+    <h3 style="text-align: center;">O B L I G A C I O N E S</h3><br>
 
     <p><u><b>PRIMERA</b></u>.- <i>"LA CONSTRUCTORA"</i> SE OBLIGA A RESPONDER POR LAS FALLAS TÉCNICAS Y VICIOS OCULTOS QUE APARECIEREN EN LA VIVIENDA DESCRITA EN ÉSTA 
         PÓLIZA, DURANTE UN TÉRMINO QUE NO EXCEDERÁ DE DOS AÑOS, CONTANDO A PARTIR DE LA FECHA DE LA ENTREG DE LA VIVIENDA.
@@ -75,7 +75,7 @@ width: 710px;
             <div class="table-cell" style="text-align:center;"></div>
             <div class="table-cell" style="text-align:center;"><br> {{mb_strtoupper($contratos[0]->nombre_cliente)}}</div>
         </div>
-    </div><br><br>
+    </div>
 
     <p style="text-align:center;"><b>DIRECCION DE LA VIVIENDA:</b> {{mb_strtoupper($contratos[0]->calle)}} NO. {{$contratos[0]->numero}}, FRACC. "{{mb_strtoupper($contratos[0]->proyecto)}}", {{$contratos[0]->ciudadFraccionamiento}}.</p>
 </div>
@@ -126,7 +126,7 @@ width: 710px;
         </div>
     </div>
     
-    <br><br><br><br>
+    <br><br>
 
     <p style="text-align:center;"><b>DIRECCION DE LA VIVIENDA:</b> {{mb_strtoupper($contratos[0]->calle)}} NO. {{$contratos[0]->numero}}, FRACC. "{{mb_strtoupper($contratos[0]->proyecto)}}", {{$contratos[0]->ciudadFraccionamiento}}.</p>
 
@@ -357,7 +357,7 @@ width: 710px;
         </div>
     </div>
     
-    <br><br><br>
+    <br>
 
     <p style="text-align:center;"><b>DIRECCION DE LA VIVIENDA:</b> {{mb_strtoupper($contratos[0]->calle)}} NO. {{$contratos[0]->numero}}, FRACC. "{{mb_strtoupper($contratos[0]->proyecto)}}", {{$contratos[0]->ciudadFraccionamiento}}.</p>
 </div>
@@ -403,7 +403,7 @@ width: 710px;
         </div>
     </div>
     
-    <br><br><br><br>
+    <br><br>
 
     <p style="text-align:center;"><b>DIRECCION DE LA VIVIENDA:</b> {{mb_strtoupper($contratos[0]->calle)}} NO. {{$contratos[0]->numero}}, FRACC. "{{mb_strtoupper($contratos[0]->proyecto)}}", {{$contratos[0]->ciudadFraccionamiento}}.</p>
 
@@ -464,7 +464,7 @@ width: 710px;
     </div>
     
     <br><br><br><br><br>
-    <br><br><br><br><br>
+    <br><br><br>
 
     <p style="text-align:center;"><b>DIRECCION DE LA VIVIENDA:</b> {{mb_strtoupper($contratos[0]->calle)}} NO. {{$contratos[0]->numero}}, FRACC. "{{mb_strtoupper($contratos[0]->proyecto)}}", {{$contratos[0]->ciudadFraccionamiento}}.</p>
 </div>

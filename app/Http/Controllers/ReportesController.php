@@ -1095,6 +1095,7 @@ class ReportesController extends Controller
                         ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
                         ->join('etapas as et','lotes.etapa_id','=','et.id')
                         ->select('lotes.manzana','lotes.num_lote','f.nombre as proyecto','et.num_etapa','p.nombre', 'p.apellidos',
+                                'lotes.emp_constructora','creditos.valor_terreno',
                                 'creditos.descripcion_promocion','creditos.descripcion_paquete', 'lotes.firmado',
                                 'creditos.costo_descuento', 'creditos.descuento_terreno', 'creditos.costo_alarma',
                                 'creditos.costo_cuota_mant', 'creditos.costo_protecciones','contratos.id',
@@ -1120,6 +1121,7 @@ class ReportesController extends Controller
                         ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
                         ->join('etapas as et','lotes.etapa_id','=','et.id')
                         ->select('lotes.manzana','lotes.num_lote','f.nombre as proyecto','et.num_etapa','p.nombre', 'p.apellidos',
+                                'lotes.emp_constructora','creditos.valor_terreno',
                                 'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta',
                                 'creditos.descripcion_promocion','creditos.descripcion_paquete',
                                 'contratos.fecha_status')
@@ -1149,6 +1151,7 @@ class ReportesController extends Controller
                         ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
                         ->join('etapas as et','lotes.etapa_id','=','et.id')
                         ->select('lotes.manzana','lotes.num_lote','f.nombre as proyecto','et.num_etapa','p.nombre', 'p.apellidos',
+                                'lotes.emp_constructora','creditos.valor_terreno',
                                 'creditos.costo_descuento', 'creditos.descuento_terreno', 'creditos.costo_alarma',
                                 'creditos.costo_cuota_mant', 'creditos.costo_protecciones','contratos.id',
                                 'creditos.descripcion_promocion','creditos.descripcion_paquete', 'contratos.status','lotes.firmado',
@@ -1175,6 +1178,7 @@ class ReportesController extends Controller
                         ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
                         ->join('etapas as et','lotes.etapa_id','=','et.id')
                         ->select('lotes.manzana','lotes.num_lote','f.nombre as proyecto','et.num_etapa','p.nombre', 'p.apellidos',
+                                'lotes.emp_constructora','creditos.valor_terreno',
                                 'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta',
                                 'creditos.descripcion_promocion','creditos.descripcion_paquete', 'lotes.firmado',
                                 'contratos.fecha_status')
@@ -1252,6 +1256,8 @@ class ReportesController extends Controller
                     'N' => '$#,##0.00',
                     'O' => '$#,##0.00',
                     'P' => '$#,##0.00',
+                    'Q' => '$#,##0.00',
+                    'R' => '$#,##0.00',
                 ));
 
                 $sheet->row(8, [
@@ -1266,6 +1272,8 @@ class ReportesController extends Controller
                     'Institución',
                     'Promoción / Paquete',
                     'Valor de escrituración',
+                    'Valor de terreno',
+                    'Valor de construccion',
                     'Descuento precio de casa o equipamiento',
                     'Descuento en el terreno',
                     'Costo de Alarma',
@@ -1274,7 +1282,7 @@ class ReportesController extends Controller
                 ]);
                 
 
-                $sheet->cells('A8:Q8', function ($cells) {
+                $sheet->cells('A8:T8', function ($cells) {
                     // Set font family
                     $cells->setFontFamily('Calibri');
 
@@ -1324,6 +1332,8 @@ class ReportesController extends Controller
                         $lote->institucion,
                         $paquete,
                         $lote->precio_venta,
+                        $lote->valor_terreno,
+                        $lote->precio_venta - $lote->valor_terreno,
                         $lote->costo_descuento,
                         $lote->descuento_terreno,
                         $lote->costo_alarma,
@@ -1333,7 +1343,7 @@ class ReportesController extends Controller
                     ]);	
                 }
             
-                $num='A8:Q' . $cont;
+                $num='A8:S' . $cont;
                 $sheet->setBorder($num, 'thin');
 
                 
@@ -1391,6 +1401,8 @@ class ReportesController extends Controller
 
                 $sheet->setColumnFormat(array(
                     'L' => '$#,##0.00',
+                    'M' => '$#,##0.00',
+                    'N' => '$#,##0.00',
                 ));
 
                 $sheet->row(8, [
@@ -1405,7 +1417,9 @@ class ReportesController extends Controller
                     'Crédito',
                     'Institución',
                     'Promoción / Paquete',
-                    'Valor de escrituración'
+                    'Valor de escrituración',
+                    'Valor de terreno',
+                    'Valor de construccion'
                 ]);
                 
 
@@ -1452,10 +1466,12 @@ class ReportesController extends Controller
                         $lote->institucion,
                         $paquete,
                         $lote->precio_venta,
+                        $lote->valor_terreno,
+                        $lote->precio_venta - $lote->valor_terreno
                     ]);	
                 }
             
-                $num='A8:L' . $cont;
+                $num='A8:N' . $cont;
                 $sheet->setBorder($num, 'thin');
 
                 
