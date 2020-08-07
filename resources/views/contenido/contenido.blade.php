@@ -4,15 +4,8 @@
 
     @if(Auth::check())
 
-        <template v-if="menu==0">
-            <h1>Escritorio</h1>
-        </template>
-        
-        <template v-if="menu==10">
-            <h1>Contenido del menu 10</h1>
-        </template>
         <template v-if="menu==20">
-            <h1>Contenido del menu 20</h1>
+            <perfil-user user-id="{{Auth::user()->id}}"></perfil-user>
         </template>
         <template v-if="menu==100">
             <perfil-user user-id="{{Auth::user()->id}}"></perfil-user>
@@ -347,8 +340,7 @@
         <template v-if="menu==216">
             <obra-entrega></obra-entrega>
         </template>
-
-        
+     
         <template v-if="menu==217">
             <contratista-solicitud></contratista-solicitud>
         </template>
@@ -382,7 +374,6 @@
         <template v-if="menu==225">
             <res-puplicidad></res-puplicidad>
         </template>
-
 
         <template v-if="menu==226">
             <comision-expediente></comision-expediente>

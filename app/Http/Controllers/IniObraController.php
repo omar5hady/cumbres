@@ -906,8 +906,9 @@ class IniObraController extends Controller
                         ->where('aviso_id','=',$request->clave)
                         ->orderBy('id','asc')->get();
 
-        $act = Hist_estimacion::select('num_estimacion')
-                        ->where('estimacion_id','=',$estimaciones[0]->id)
+        $act = Hist_estimacion::join('estimaciones','hist_estimaciones.estimacion_id','=','estimaciones.id')
+                        ->select('num_estimacion')
+                        ->where('estimaciones.aviso_id','=',$request->clave)
                         ->orderBy('num_estimacion','desc')->distinct()->get();
 
         $est = Hist_estimacion::select('num_estimacion')
