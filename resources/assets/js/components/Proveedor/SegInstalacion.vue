@@ -61,10 +61,12 @@
                                         <th>Anticipo</th>
                                         <th>Fecha programada de instalación</th>
                                         <th>Fecha fin de instalación</th>
+                                        <th>Dias transcurridos</th>
                                         <th>Status</th>
                                         <th>Liquidación</th>
                                         <th>Total pagado</th>
                                         <th>Pendiente</th>
+                                        <th>Imprimir Recepción</th>
                                         <th>Observaciones</th>
                                         
                                     </tr>
@@ -102,13 +104,16 @@
                                                 </td>    
                                             </template>
                                             <template>
-                                                <td @click="abrirModal('fin_instalacion', equipamientos)" v-if="equipamientos.fin_instalacion" class="td2" >
-                                                    <a href="#" v-text=" this.moment(equipamientos.fin_instalacion).locale('es').format('DD/MMM/YYYY')"></a>
+                                                <td v-if="equipamientos.fin_instalacion" class="td2" >
+                                                    <span v-text=" this.moment(equipamientos.fin_instalacion).locale('es').format('DD/MMM/YYYY')"></span>
                                                 </td>
                                                 <td @click="abrirModal('fin_instalacion', equipamientos)" v-else class="td2">
                                                     <a href="#" v-text="'Sin fecha'"></a>
                                                 </td>    
                                             </template>
+                                            <td class="text-center">
+                                                <span v-if="equipamientos.dias_rev >= 1" v-text="equipamientos.dias_rev"></span>
+                                            </td>
                                             <template>
                                                 <td v-if="equipamientos.status == '0'" class="td2">
                                                     <span class="badge badge-warning">Rechazado</span>
@@ -135,6 +140,25 @@
                                             </template>
                                             <td class="td2" v-text="'$'+formatNumber(equipamientos.anticipo + equipamientos.liquidacion)"></td>
                                             <td class="td2" v-text="'$'+formatNumber(equipamientos.costo - equipamientos.anticipo - equipamientos.liquidacion)"></td>
+
+                                                <td >
+                                                    <a v-if="equipamientos.tipoRecepcion == 1 && equipamientos.recepcion == 1"
+                                                        class="btn btn-warning btn-sm"  target="_blank" 
+                                                        v-bind:href="'/equipamiento/recepcionCocina/'+equipamientos.id">
+                                                        Ver Recepción
+                                                    </a>
+                                                    <a v-else-if="equipamientos.tipoRecepcion == 2 && equipamientos.recepcion == 1"
+                                                        class="btn btn-warning btn-sm"  target="_blank" 
+                                                        v-bind:href="'/equipamiento/recepcionClosets/'+equipamientos.id">
+                                                        Ver Recepción
+                                                    </a>
+                                                    <a v-else-if="equipamientos.tipoRecepcion == 0 && equipamientos.recepcion == 1"
+                                                        class="btn btn-warning btn-sm"  target="_blank" 
+                                                        v-bind:href="'/equipamiento/recepcionGeneral/'+equipamientos.id">
+                                                        Ver Recepción
+                                                    </a>                                                    
+                                                </td>
+
                                             <td> 
                                                 <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
                                                     @click="abrirModal('observaciones', equipamientos),listarObservacion(1,equipamientos.id)">Ver observaciones

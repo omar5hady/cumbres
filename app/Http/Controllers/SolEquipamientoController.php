@@ -17,7 +17,7 @@ use App\Credito;
 class SolEquipamientoController extends Controller
 {
     public function indexHistorial(Request $request){
-        if(!$request->ajax())return redirect('/');
+        //if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $b_etapa = $request->b_etapa;
         $b_manzana = $request->b_manzana;
@@ -38,6 +38,7 @@ class SolEquipamientoController extends Controller
                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                 ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
                 ->join('personal as c', 'clientes.id', '=', 'c.id')
+                ->leftjoin('recep_equipamientos', 'solic_equipamientos.id', '=', 'recep_equipamientos.id')
 
             ->select('solic_equipamientos.fecha_solicitud',
                     'solic_equipamientos.id',
@@ -67,7 +68,8 @@ class SolEquipamientoController extends Controller
                     'lotes.manzana',
                     'lotes.num_lote','licencias.avance',
                     DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
-                    DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin')
+                    DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'),
+                    DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion, recep_equipamientos.fecha_revision) as dias_rev')
         );
 
         $queryProveedor = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
@@ -81,6 +83,7 @@ class SolEquipamientoController extends Controller
                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                 ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
                 ->join('personal as c', 'clientes.id', '=', 'c.id')
+                ->leftjoin('recep_equipamientos', 'solic_equipamientos.id', '=', 'recep_equipamientos.id')
 
             ->select('solic_equipamientos.fecha_solicitud',
                     'solic_equipamientos.id',
@@ -108,7 +111,9 @@ class SolEquipamientoController extends Controller
                     'lotes.manzana',
                     'lotes.num_lote','licencias.avance',
                     DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
-        DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'));
+                    DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'),
+                    DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion, recep_equipamientos.fecha_revision) as dias_rev')
+        );
 
 
         if($rolID != 10){
@@ -271,53 +276,46 @@ class SolEquipamientoController extends Controller
         else{
             if($buscar == ''){
                 $equipamientos = $queryProveedor
-                        ->where('proveedores.id','=',$userID)
-                        ->where('contratos.entregado','=',0);
+                        ->where('proveedores.id','=',$userID);
             }
             else{
                 switch($criterio){
                     case 'c.nombre':{
                         $equipamientos = $queryProveedor
                                 ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%')
-                                ->where('proveedores.id','=',$userID)
-                                ->where('contratos.entregado','=',0);
+                                ->where('proveedores.id','=',$userID);
                         break;
                     }
                     case 'contratos.id':{
                         $equipamientos = $queryProveedor
                                 ->where($criterio, '=', $buscar)
-                                ->where('proveedores.id','=',$userID)
-                                ->where('contratos.entregado','=',0);
+                                ->where('proveedores.id','=',$userID);
                         break;
                     }
                     case 'proveedores.proveedor':{
                         $equipamientos = $queryProveedor
                                 ->where($criterio, 'like', '%'. $buscar . '%')
-                                ->where('proveedores.id','=',$userID)
-                                ->where('contratos.entregado','=',0);
+                                ->where('proveedores.id','=',$userID);
                         break;
                     }
                     case 'lotes.fraccionamiento_id':{
                         if($b_etapa == '' && $b_manzana == '' && $b_lote == ''){
                             $equipamientos = $queryProveedor
                                     ->where($criterio, '=', $buscar)
-                                    ->where('proveedores.id','=',$userID)
-                                    ->where('contratos.entregado','=',0);
+                                    ->where('proveedores.id','=',$userID);
                         }
                         elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
                             $equipamientos = $queryProveedor
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $b_etapa)
-                                    ->where('proveedores.id','=',$userID)
-                                    ->where('contratos.entregado','=',0);
+                                    ->where('proveedores.id','=',$userID);
                         }
                         elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
                             $equipamientos = $queryProveedor
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $b_etapa)
                                     ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                                    ->where('proveedores.id','=',$userID)
-                                    ->where('contratos.entregado','=',0);
+                                    ->where('proveedores.id','=',$userID);
                         }
                         elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
                             $equipamientos = $queryProveedor
@@ -325,38 +323,33 @@ class SolEquipamientoController extends Controller
                                     ->where('lotes.etapa_id', '=', $b_etapa)
                                     ->where('lotes.num_lote', '=', $b_lote)
                                     ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                                    ->where('proveedores.id','=',$userID)
-                                    ->where('contratos.entregado','=',0);
+                                    ->where('proveedores.id','=',$userID);
                         }
                         elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
                             $equipamientos = $queryProveedor
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $b_etapa)
                                     ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('proveedores.id','=',$userID)
-                                    ->where('contratos.entregado','=',0);
+                                    ->where('proveedores.id','=',$userID);
                         }
                         elseif($b_etapa == '' && $b_manzana != '' && $b_lote != ''){
                             $equipamientos = $queryProveedor
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.num_lote', '=', $b_lote)
                                     ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                                    ->where('proveedores.id','=',$userID)
-                                    ->where('contratos.entregado','=',0);
+                                    ->where('proveedores.id','=',$userID);
                         }
                         elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
                             $equipamientos = $queryProveedor
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('proveedores.id','=',$userID)
-                                    ->where('contratos.entregado','=',0);
+                                    ->where('proveedores.id','=',$userID);
                         }
                         elseif($b_etapa == '' && $b_manzana != '' && $b_lote == ''){
                             $equipamientos = $queryProveedor
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                                    ->where('proveedores.id','=',$userID)
-                                    ->where('contratos.entregado','=',0);
+                                    ->where('proveedores.id','=',$userID);
                         }
                         break;
                     }
