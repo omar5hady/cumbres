@@ -20,6 +20,7 @@ use NumerosEnLetras;
 use App\User;
 use App\Notifications\NotifyAdmin;
 use App\Ini_obra;
+use App\Solic_equipamiento;
 use App\Obs_expediente;
 
 class EntregaController extends Controller
@@ -689,6 +690,19 @@ class EntregaController extends Controller
             }
 
            $contratos = $contratos->orderBy('licencias.avance','desc')->orderBy('lotes.fecha_entrega_obra','desc')->paginate(8);
+
+           if(sizeOf($contratos)){
+               foreach($contratos as $index => $contrato){
+                    $equipamiento = Solic_equipamiento::select('fecha_colocacion','fin_instalacion')
+                            ->where('contrato_id','=',$contrato->folio)
+                            ->orderBy('fecha_colocacion','desc')->get();
+                    if(sizeof($equipamiento)){
+                        $contrato->fecha_colocacion = $equipamiento[0]->fecha_colocacion;
+                        $contrato->fin_instalacion = $equipamiento[0]->fin_instalacion;
+                    }
+               }
+               
+           }
            
             return [
                 'pagination' => [
