@@ -17,7 +17,7 @@ use App\Credito;
 class SolEquipamientoController extends Controller
 {
     public function indexHistorial(Request $request){
-        //if(!$request->ajax())return redirect('/');
+        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $b_etapa = $request->b_etapa;
         $b_manzana = $request->b_manzana;
