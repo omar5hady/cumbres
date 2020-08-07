@@ -69,7 +69,7 @@ class SolEquipamientoController extends Controller
                     'lotes.num_lote','licencias.avance',
                     DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
                     DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'),
-                    DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion, recep_equipamientos.fecha_revision) as dias_rev')
+                    DB::raw('DATEDIFF(recep_equipamientos.fecha_revision, solic_equipamientos.fin_instalacion) as dias_rev')
         );
 
         $queryProveedor = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
@@ -112,7 +112,7 @@ class SolEquipamientoController extends Controller
                     'lotes.num_lote','licencias.avance',
                     DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
                     DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'),
-                    DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion, recep_equipamientos.fecha_revision) as dias_rev')
+                    DB::raw('DATEDIFF(recep_equipamientos.fecha_revision, solic_equipamientos.fin_instalacion) as dias_rev')
         );
 
 

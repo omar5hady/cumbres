@@ -112,7 +112,8 @@
                                                 </td>    
                                             </template>
                                             <td class="text-center">
-                                                <span v-if="equipamientos.dias_rev >= 1" v-text="equipamientos.dias_rev"></span>
+                                                <span v-if="equipamientos.dias_rev >= 1 || equipamientos.dias_rev <= -1" v-text="equipamientos.dias_rev"></span>
+                                                <span v-else>0</span>
                                             </td>
                                             <template>
                                                 <td v-if="equipamientos.status == '0'" class="td2">
