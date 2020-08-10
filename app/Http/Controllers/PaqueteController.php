@@ -49,7 +49,8 @@ class PaqueteController extends Controller
                 ->where('etapas.id', '=', $buscar2);
         }
 
-        $paquetes = $paquetes->orderBy('fraccionamientos.nombre','asc')
+        $paquetes = $paquetes->orderBy('is_active', 'desc')
+                                ->orderBy('fraccionamientos.nombre','asc')
                                 ->orderBy('etapas.num_etapa','asc')
                                 ->orderBy('paquetes.nombre','asc')
                                 ->paginate(20);

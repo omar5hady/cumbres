@@ -45,9 +45,10 @@ class PromocionController extends Controller
             
         }
 
-        $promociones = $promociones->orderBy('fraccionamientos.nombre', 'asc')
+        $promociones = $promociones->orderBy('is_active', 'desc')
+                                    ->orderBy('fraccionamientos.nombre', 'asc')
                                     ->orderBy('etapas.num_etapa', 'asc')
-                                    ->orderBy('is_active', 'desc')->paginate(20);
+                                    ->paginate(20);
 
         if(sizeOf($promociones)){
             foreach($promociones as $index => $promo){
