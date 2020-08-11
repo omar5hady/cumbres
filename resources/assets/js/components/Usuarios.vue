@@ -333,6 +333,9 @@
                                                     <li class="nav-item">
                                                         <a class="nav-link"><i class="fa fa-home"></i> <input v-model="entregas" type="checkbox" value="1"/> Viviendas por entregar</a>
                                                     </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="fa fa-home"></i> <input v-model="estimaciones" type="checkbox" value="1"/> Estimaciones</a>
+                                                    </li>
                                                 </ul>
                                     </div>
                                 </div> 
@@ -826,6 +829,7 @@
                     aviso_obra:0,
                     partidas:0,
                     avance:0,
+                    estimaciones:0,
 
                     //Ventas
                     lotes_disp:0,
@@ -1035,6 +1039,7 @@
                 this.avance=0;
                 this.equipamientos=0;
                 this.entregas=0;
+                this.estimaciones=0;
             },
             limpiarVentas(){
                  //Ventas
@@ -1174,6 +1179,7 @@
                     me.aviso_obra=usuarios[0].aviso_obra;
                     me.partidas=usuarios[0].partidas;
                     me.avance=usuarios[0].avance;
+                    me.estimaciones=usuarios[0].estimaciones;
 
                     //Ventas
                     me.lotes_disp=usuarios[0].lotes_disp;
@@ -1480,6 +1486,7 @@
                     'aviso_obra':this.aviso_obra,
                     'partidas':this.partidas,
                     'avance':this.avance,
+                    'estimaciones':this.estimaciones,
                         //Ventas
                     'lotes_disp':this.lotes_disp,
                     'mis_prospectos':this.mis_prospectos,
@@ -1785,6 +1792,7 @@
                 me.aviso_obra=0;
                 me.partidas=0;
                 me.avance=0;
+                me.estimaciones=0;
 
                     //Ventas
                 me.lotes_disp=0;

@@ -1071,7 +1071,7 @@ class UserController extends Controller
                                 'users.precios_etapas','users.precios_viviendas','users.sobreprecios','users.paquetes','users.promociones',
                                 'users.agregar_sobreprecios',
                                 //Obra
-                                'users.contratistas','users.ini_obra','users.aviso_obra','users.partidas','users.avance',
+                                'users.contratistas','users.ini_obra','users.aviso_obra','users.partidas','users.avance', 'users.estimaciones',
                                 //Ventas
                                 'users.lotes_disp','users.mis_prospectos','users.simulacion_credito','users.hist_simulaciones',
                                 'users.hist_creditos','users.contratos','users.docs','users.equipamientos',
@@ -1154,6 +1154,7 @@ class UserController extends Controller
         $user->aviso_obra = $request->aviso_obra;
         $user->partidas = $request->partidas;
         $user->avance = $request->avance;
+        $user->estimaciones = $request->estimaciones;
         //Ventas
         $user->lotes_disp = $request->lotes_disp;
         $user->mis_prospectos = $request->mis_prospectos;

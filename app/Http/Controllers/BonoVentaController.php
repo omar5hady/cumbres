@@ -285,7 +285,8 @@ class BonoVentaController extends Controller
                                     ->select('contratos.id')
                                     ->whereBetween('contratos.fecha', [$fechaIni, $fechaFin])
                                     ->where('creditos.vendedor_id','=',$bono->vendedor_id)
-                                    ->where('contratos.status','=',3)->count();
+                                    // ->where('contratos.status','=',3)
+                                    ->count();
 
                 $bono->ventaAnt = Contrato::join('creditos','contratos.id','=','creditos.id')
                                     ->select('contratos.id')
@@ -355,6 +356,7 @@ class BonoVentaController extends Controller
                 DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS asesor"),
                 DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS cliente"),
                 'bonos_ventas.id',
+                'bonos_ventas.num_bono',
                 'bonos_ventas.fecha_pago',
                 'bonos_ventas.monto',
                 'bonos_ventas.descripcion',

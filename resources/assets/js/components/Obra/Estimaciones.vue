@@ -135,7 +135,7 @@
                                         <div class="form-group row">
                                             <label class="col-md-2 form-control-label" for="text-input">Número de estimacion</label>
                                             <div class="col-md-2">
-                                                <select class="form-control" v-model="b_estimacion" @click="getPartidas(aviso_id)">
+                                                <select class="form-control" v-model="b_estimacion" @click="getPartidas(aviso_id), n_excel = b_estimacion">
                                                     <option value="">Seleccione</option>
                                                     <option v-for="estimacion in arrayNumEstim" :key="estimacion.num_estimacion" :value="estimacion.num_estimacion" v-text="estimacion.num_estimacion"></option>
                                                 </select>
@@ -145,6 +145,12 @@
                                                 <button type="button" @click="nueva = 1"  class="btn btn-primary">
                                                     <i class="icon-plus"></i>&nbsp;Nueva estimación
                                                 </button>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <a  :href="'/estimaciones/excelEstimaciones?clave='+aviso_id+'&numero='+numero+'&num_casas='+num_casas"  
+                                                    class="btn btn-success"><i class="fa fa-file-text"></i> Excel
+                                                </a>
                                             </div>
 
                                         </div>
@@ -232,7 +238,32 @@
                                                 <td class="td2">
                                                     $ {{formatNumber( partida.porEstimarCosto=parseFloat(partida.tope) - parseFloat(partida.acumCosto) - parseFloat(partida.costo) )}}
                                                 </td>
-                                            </tr>                               
+                                            </tr>
+
+                                            <tr>
+                                                <th colspan="2" class="text-right">Gran Total: </th>
+                                                <th class="td2">$ {{formatNumber(total1 = totalPU)}}</th>
+                                                <template v-if="nueva == 0">
+                                                    <template v-if="(total2 = totalEst2) > 0">
+                                                        <th colspan="2"></th>
+                                                        <th class="td2">$ {{formatNumber(total2)}}</th>
+                                                    </template>
+                                                    <template v-else>
+                                                        <th></th>
+                                                    </template>
+                                                </template>
+                                                <template v-else>
+                                                    <th colspan="2"></th>
+                                                    <th class="td2">$ {{formatNumber(total2 = totalEst)}}</th>
+                                                </template>
+                                                <th>Importe: </th>
+                                                <th class="td2">$ {{formatNumber(total3 = totalTope)}}</th>
+                                                <th></th>
+                                                <th class="td2">$ {{formatNumber(to5al4 = totalAcum)}}</th>
+                                                <th></th>
+                                                <th class="td2">$ {{formatNumber(total3 = totalPorEst)}}</th>
+
+                                            </tr>                         
                                         </tbody>
                                     </table>
                                 </div>
@@ -346,6 +377,7 @@
                 arrayNumEstim:[],
                 b_estimacion:'',
                 num_estimacion:0,
+                n_excel:0,
                 id:0,
                 aviso_id:0,
                 proceso:false,
@@ -385,6 +417,12 @@
                 acumCosto:0,
                 porEstimarVol:0,
                 porEstimarCosto:0,
+
+                total1:0,
+                total2:0,
+                total3:0,
+                total4:0,
+                total5:0
                                
                
                
@@ -421,6 +459,57 @@
                     from++;
                 }
                 return pagesArray2;
+            },
+
+            totalPU: function(){
+                var total =0.0;
+                for(var i=0;i<this.arrayPartidas.length;i++){
+                    total += parseFloat(this.arrayPartidas[i].pu_prorrateado)
+                }
+                total = Math.round(total*100)/100;
+                return total;
+            },
+
+            totalEst2: function(){
+                var total =0.0;
+                for(var i=0;i<this.arrayPartidas.length;i++){
+                    total += parseFloat(this.arrayPartidas[i].costoA)
+                }
+                total = Math.round(total*100)/100;
+                return total;
+            },
+
+            totalEst: function(){
+                var total =0.0;
+                for(var i=0;i<this.arrayPartidas.length;i++){
+                    total += parseFloat(this.arrayPartidas[i].costo)
+                }
+                total = Math.round(total*100)/100;
+                return total;
+            },
+            totalTope: function(){
+                var total =0.0;
+                for(var i=0;i<this.arrayPartidas.length;i++){
+                    total += parseFloat(this.arrayPartidas[i].tope)
+                }
+                total = Math.round(total*100)/100;
+                return total;
+            },
+            totalAcum: function(){
+                var total =0.0;
+                for(var i=0;i<this.arrayPartidas.length;i++){
+                    total += parseFloat(this.arrayPartidas[i].acumCostoTotal)
+                }
+                total = Math.round(total*100)/100;
+                return total;
+            },
+            totalPorEst: function(){
+                var total =0.0;
+                for(var i=0;i<this.arrayPartidas.length;i++){
+                    total += parseFloat(this.arrayPartidas[i].porEstimarCosto)
+                }
+                total = Math.round(total*100)/100;
+                return total;
             },
           
         },

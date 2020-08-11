@@ -70,6 +70,7 @@ class User extends Authenticatable
         'aviso_obra',
         'partidas',
         'avance',
+        'estimaciones',
 
         //Ventas
         'lotes_disp',

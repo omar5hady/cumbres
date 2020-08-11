@@ -411,6 +411,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/estimaciones/import','IniObraController@import');
         Route::get('/estimaciones/indexEstimaciones','IniObraController@indexEstimaciones');
         Route::get('/estimaciones/getPartidas','IniObraController@getPartidas');
+        Route::get('/estimaciones/excelEstimaciones','IniObraController@excelEstimaciones');
 
         Route::post('/estimaciones/store','IniObraController@storeEstimacion');
 

@@ -83,6 +83,7 @@ class CreateUsersTable extends Migration
             $table->boolean('aviso_obra')->default(0);
             $table->boolean('partidas')->default(0);
             $table->boolean('avance')->default(0);
+            $table->boolean('estimaciones')->default(0);
 
             //Ventas
             $table->boolean('lotes_disp')->default(0);

@@ -108,6 +108,11 @@ body {
                 <div class="table-row">
                     <div colspan="4" class="table-cell1">Por la cantidad de $1'000.00 (Mil Pesos 00/100 M.N.) </div>
                 </div>
+                @if($bonos[0]->num_bono == 2)
+                <div class="table-row">
+                    <div colspan="4" class="table-cell1"> <strong>Segundo pago</strong> </div>
+                </div>
+                @endif
 
 
                 
@@ -120,7 +125,7 @@ body {
                         <div colspan="2" class="table-cell1"> </div>
                     </div>
                     <div class="table-row"> 
-                        <div colspan="5" class="table-cell1"> <br><br> <br> </div>
+                        <div colspan="5" class="table-cell1"> <br> <br> </div>
                     </div>
                     <div class="table-row">
                         <div colspan="2" class="table-cell1"></div>

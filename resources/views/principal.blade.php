@@ -350,7 +350,7 @@
                                     </li>
                                 @endif
 
-                                @if(Auth::user()->rol_id == 1)
+                                @if(Auth::user()->estimaciones == 1)
                                 <li @click="menu=248" class="nav-item">
                                     <a class="nav-link" href="#"><i class="fa fa-home"></i> Estimaciones</a>
                                 </li>
