@@ -30,6 +30,7 @@ class InstSeleccionadasController extends Controller
         $buscar4 = $request->buscar4;
         $b_cobrados = $request->b_cobrados;
         $criterio = $request->criterio;
+        $empresa = $request->empresa;
 
         $query = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
             ->join('contratos','contratos.id','=','creditos.id')
@@ -40,7 +41,7 @@ class InstSeleccionadasController extends Controller
                     'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
                     'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
                     'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                    'lotes.fecha_termino_ventas',
+                    'lotes.fecha_termino_ventas', 'lotes.emp_constructora',
                     'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
             ->where('lotes.firmado','=',$request->firmado);
 
@@ -48,11 +49,13 @@ class InstSeleccionadasController extends Controller
             if($buscar == '' && $criterio != 'personal.nombre'){
                 $creditos = $query
                     ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                    ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                     ->where('inst_seleccionadas.elegido', '=', 1)
                     ->where('contratos.status', '=', 3)
                     ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                     ->orWhere('inst_seleccionadas.tipo', '=', 1)
                     ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                    ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                     ->where('contratos.status', '=', 3)
                     ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo');
             }
@@ -66,11 +69,13 @@ class InstSeleccionadasController extends Controller
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         elseif ($buscar2 != '' && $buscar == '') {
                             $creditos = $query
@@ -79,11 +84,13 @@ class InstSeleccionadasController extends Controller
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
                                 ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         else{
                             $creditos = $query
@@ -93,13 +100,15 @@ class InstSeleccionadasController extends Controller
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
                                 ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
     
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         break;
     
@@ -112,11 +121,13 @@ class InstSeleccionadasController extends Controller
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
                                 ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 == '') {
                             $creditos = $query
@@ -126,12 +137,14 @@ class InstSeleccionadasController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.etapa', '=', $buscar2)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 == '') {
                             $creditos = $query
@@ -142,13 +155,15 @@ class InstSeleccionadasController extends Controller
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.manzana', '=', $buscar3)
                                 ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.manzana', '=', $buscar3)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 != '') {
                             $creditos = $query
@@ -160,6 +175,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('creditos.manzana', '=', $buscar3)
                                 ->where('creditos.num_lote', '=', $buscar4)
                                 ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
     
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
@@ -168,7 +184,8 @@ class InstSeleccionadasController extends Controller
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.manzana', '=', $buscar3)
                                 ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         elseif ($buscar2 == '' && $buscar3 == '' && $buscar4 != '') {
                             $creditos = $query
@@ -178,12 +195,14 @@ class InstSeleccionadasController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.num_lote', '=', $buscar4)
                                 ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 != '') {
                             $creditos = $query
@@ -194,13 +213,15 @@ class InstSeleccionadasController extends Controller
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.num_lote', '=', $buscar4)
                                 ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         break;
                     }
@@ -212,11 +233,13 @@ class InstSeleccionadasController extends Controller
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
                                 ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                     }
     
                 }
@@ -226,11 +249,13 @@ class InstSeleccionadasController extends Controller
             if($buscar == '' && $criterio != 'personal.nombre'){
                 $creditos = $query
                     ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                    ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                     ->where('inst_seleccionadas.elegido', '=', 1)
                     ->where('contratos.status', '=', 3)
                     ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                     ->orWhere('inst_seleccionadas.tipo', '=', 1)
                     ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                    ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                     ->where('contratos.status', '=', 3)
                     ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo');
             }
@@ -244,11 +269,13 @@ class InstSeleccionadasController extends Controller
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         elseif ($buscar2 != '' && $buscar == '') {
                             $creditos = $query
@@ -257,11 +284,13 @@ class InstSeleccionadasController extends Controller
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
                                 ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         else{
                             $creditos = $query
@@ -271,13 +300,15 @@ class InstSeleccionadasController extends Controller
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
                                 ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
     
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         break;
     
@@ -290,11 +321,13 @@ class InstSeleccionadasController extends Controller
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
                                 ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 == '') {
                             $creditos = $query
@@ -304,12 +337,14 @@ class InstSeleccionadasController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.etapa', '=', $buscar2)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 == '') {
                             $creditos = $query
@@ -320,13 +355,15 @@ class InstSeleccionadasController extends Controller
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.manzana', '=', $buscar3)
                                 ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.manzana', '=', $buscar3)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 != '') {
                             $creditos = $query
@@ -338,6 +375,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('creditos.manzana', '=', $buscar3)
                                 ->where('creditos.num_lote', '=', $buscar4)
                                 ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
     
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
@@ -346,7 +384,8 @@ class InstSeleccionadasController extends Controller
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.manzana', '=', $buscar3)
                                 ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         elseif ($buscar2 == '' && $buscar3 == '' && $buscar4 != '') {
                             $creditos = $query
@@ -356,12 +395,14 @@ class InstSeleccionadasController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.num_lote', '=', $buscar4)
                                 ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 != '') {
                             $creditos = $query
@@ -372,13 +413,15 @@ class InstSeleccionadasController extends Controller
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.num_lote', '=', $buscar4)
                                 ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         break;
                     }
@@ -390,17 +433,17 @@ class InstSeleccionadasController extends Controller
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
                                 ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                     }
                 }
             }
         }
-
-        
 
         $creditos = $creditos->orderBy('inst_seleccionadas.cobrado','asc')
                             ->orderBy('inst_seleccionadas.monto_credito','desc')
@@ -697,6 +740,7 @@ class InstSeleccionadasController extends Controller
         $buscar4 = $request->buscar4;
         $b_cobrados = $request->b_cobrados;
         $criterio = $request->criterio;
+        $empresa = $request->empresa;
 
         $query = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
                     ->join('contratos','contratos.id','=','creditos.id')
@@ -707,7 +751,7 @@ class InstSeleccionadasController extends Controller
                             'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
                             'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
                             'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                            'lotes.fecha_termino_ventas',
+                            'lotes.fecha_termino_ventas', 'lotes.emp_constructora',
                             'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
                             ->where('lotes.firmado','=',$request->firmado);
 
@@ -715,11 +759,13 @@ class InstSeleccionadasController extends Controller
             if($buscar == '' && $criterio != 'personal.nombre'){
                 $creditos = $query
                     ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                    ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                     ->where('inst_seleccionadas.elegido', '=', 1)
                     ->where('contratos.status', '=', 3)
                     ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                     ->orWhere('inst_seleccionadas.tipo', '=', 1)
                     ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                    ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                     ->where('contratos.status', '=', 3)
                     ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo');
             }
@@ -733,11 +779,13 @@ class InstSeleccionadasController extends Controller
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         elseif ($buscar2 != '' && $buscar == '') {
                             $creditos = $query
@@ -746,11 +794,13 @@ class InstSeleccionadasController extends Controller
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
                                 ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         else{
                             $creditos = $query
@@ -760,13 +810,15 @@ class InstSeleccionadasController extends Controller
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
                                 ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
     
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         break;
     
@@ -779,11 +831,13 @@ class InstSeleccionadasController extends Controller
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
                                 ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 == '') {
                             $creditos = $query
@@ -793,12 +847,14 @@ class InstSeleccionadasController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.etapa', '=', $buscar2)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 == '') {
                             $creditos = $query
@@ -809,13 +865,15 @@ class InstSeleccionadasController extends Controller
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.manzana', '=', $buscar3)
                                 ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.manzana', '=', $buscar3)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 != '') {
                             $creditos = $query
@@ -827,6 +885,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('creditos.manzana', '=', $buscar3)
                                 ->where('creditos.num_lote', '=', $buscar4)
                                 ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
     
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
@@ -835,7 +894,8 @@ class InstSeleccionadasController extends Controller
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.manzana', '=', $buscar3)
                                 ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         elseif ($buscar2 == '' && $buscar3 == '' && $buscar4 != '') {
                             $creditos = $query
@@ -845,12 +905,14 @@ class InstSeleccionadasController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.num_lote', '=', $buscar4)
                                 ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 != '') {
                             $creditos = $query
@@ -861,13 +923,15 @@ class InstSeleccionadasController extends Controller
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.num_lote', '=', $buscar4)
                                 ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         break;
                     }
@@ -879,11 +943,13 @@ class InstSeleccionadasController extends Controller
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
                                 ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                     }
     
                 }
@@ -893,11 +959,13 @@ class InstSeleccionadasController extends Controller
             if($buscar == '' && $criterio != 'personal.nombre'){
                 $creditos = $query
                     ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                    ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                     ->where('inst_seleccionadas.elegido', '=', 1)
                     ->where('contratos.status', '=', 3)
                     ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                     ->orWhere('inst_seleccionadas.tipo', '=', 1)
                     ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                    ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                     ->where('contratos.status', '=', 3)
                     ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo');
             }
@@ -911,11 +979,13 @@ class InstSeleccionadasController extends Controller
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         elseif ($buscar2 != '' && $buscar == '') {
                             $creditos = $query
@@ -924,11 +994,13 @@ class InstSeleccionadasController extends Controller
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
                                 ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         else{
                             $creditos = $query
@@ -938,13 +1010,15 @@ class InstSeleccionadasController extends Controller
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
                                 ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
     
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         break;
     
@@ -957,11 +1031,13 @@ class InstSeleccionadasController extends Controller
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
                                 ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 == '') {
                             $creditos = $query
@@ -971,12 +1047,14 @@ class InstSeleccionadasController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.etapa', '=', $buscar2)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 == '') {
                             $creditos = $query
@@ -987,13 +1065,15 @@ class InstSeleccionadasController extends Controller
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.manzana', '=', $buscar3)
                                 ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.manzana', '=', $buscar3)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 != '') {
                             $creditos = $query
@@ -1005,6 +1085,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('creditos.manzana', '=', $buscar3)
                                 ->where('creditos.num_lote', '=', $buscar4)
                                 ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
     
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
@@ -1013,7 +1094,8 @@ class InstSeleccionadasController extends Controller
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.manzana', '=', $buscar3)
                                 ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         elseif ($buscar2 == '' && $buscar3 == '' && $buscar4 != '') {
                             $creditos = $query
@@ -1023,12 +1105,14 @@ class InstSeleccionadasController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.num_lote', '=', $buscar4)
                                 ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 != '') {
                             $creditos = $query
@@ -1039,13 +1123,15 @@ class InstSeleccionadasController extends Controller
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.num_lote', '=', $buscar4)
                                 ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                         }
                         break;
                     }
@@ -1057,11 +1143,13 @@ class InstSeleccionadasController extends Controller
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
                                 ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
+                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
                     }
                 }
             }

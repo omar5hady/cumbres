@@ -34,6 +34,14 @@
                     </div>
                     <div class="card-body" v-if="deposito==0">
                         <div class="form-group row">
+                            <div class="col-md-5">
+                                <select class="form-control" v-model="b_empresa" >
+                                    <option value="">Empresa constructora</option>
+                                    <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <div class="col-md-12">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
@@ -70,7 +78,11 @@
                                         <button v-if="b_cobrados==1" type="submit" @click="b_cobrados=0" class="btn btn-success"><i class="fa fa-check-square"></i> Cobrados / Abonados</button>
                                         <button v-if="b_cobrados==0" type="submit" @click="b_cobrados=1" class="btn btn-danger"><i class="fa fa-window-close-o"></i> Pendiente</button>                           
                                         <button type="submit" @click="listarCreditos(1,buscar, buscar2, buscar3, buscar4, b_cobrados, criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                        <a  :href="'/cobroCredito/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&buscar4=' + buscar4 + '&b_cobrados=' + b_cobrados + '&firmado=' + b_firmado + '&criterio=' + criterio "  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
+                                        <a  :href="'/cobroCredito/excel?buscar=' + buscar + '&buscar2=' + buscar2 + 
+                                            '&buscar3=' + buscar3 + '&buscar4=' + buscar4 + '&b_cobrados=' + b_cobrados + '&empresa='+ b_empresa + 
+                                            '&firmado=' + b_firmado + '&criterio=' + criterio"  class="btn btn-success">
+                                            <i class="fa fa-file-text"></i> Excel
+                                        </a>
                                         <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
                                     </div>
                                 </div>
@@ -201,7 +213,7 @@
                                         <input type="number" step="0.01" v-model="bMonto" @keyup.enter="listarHistorialCreditos(1)" class="form-control" placeholder="Monto">
                                         <select class="form-control" v-model="banco">
                                             <option value="">Seleccione</option>
-                                            <option v-for="banco in arrayBancos" :key="banco.num_cuenta" :value="banco.num_cuenta + '-' + banco.banco" v-text="banco.num_cuenta + '-' + banco.banco"></option>
+                                            <option v-for="banco in arrayBancos" :key="banco.num_cuenta+banco.banco" :value="banco.num_cuenta + '-' + banco.banco" v-text="banco.num_cuenta + '-' + banco.banco"></option>
                                         </select>
                                 
                                     </div>
@@ -333,7 +345,7 @@
                                     <div class="col-md-9">
                                         <select class="form-control" v-model="banco">
                                             <option value="">Seleccione</option>
-                                            <option v-for="banco in arrayBancos" :key="banco.num_cuenta" :value="banco.num_cuenta + '-' + banco.banco + '-' + banco.sucursal" v-text="banco.num_cuenta + '-' + banco.banco + '-' + banco.sucursal"></option>
+                                            <option v-for="banco in arrayBancos" :key="banco.num_cuenta+banco.banco" :value="banco.num_cuenta + '-' + banco.banco + '-' + banco.sucursal" v-text="banco.num_cuenta + '-' + banco.banco + '-' + banco.sucursal"></option>
                                         </select>
                                     </div>
                                 </div>
@@ -458,6 +470,8 @@
                 errorMostrarMsjDeposito : [],
                 arrayObservacion: [],
                 disabled:0,
+                empresas:[],
+                b_empresa:'',
 
                 cliente:'',
                 proyecto:'',
@@ -592,7 +606,7 @@
                 me.diferencia=0;
                 var url = '/cobroCredito/indexCreditos?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + 
                             '&buscar3=' + buscar3 + '&buscar4=' + buscar4 + '&b_cobrados=' + b_cobrados + '&firmado=' + me.b_firmado + 
-                            '&criterio=' + criterio;
+                            '&criterio=' + criterio + '&empresa=' + this.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayCreditos = respuesta.creditos.data;
@@ -878,6 +892,18 @@
 
                 return this.errorDeposito;
             },
+            getEmpresa(){
+                let me = this;
+                me.empresas=[];
+                var url = '/lotes/empresa/select';
+                axios.get(url).then(function (response) {
+                    var respuesta = response;
+                    me.empresas = respuesta.data.empresas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            }, 
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
             abrirModal(accion,data =[]){
                 this.selectCuenta();
@@ -919,6 +945,7 @@
             this.listarCreditos(1,this.buscar, this.buscar2, this.buscar3, this.buscar4, this.b_cobrados, this.criterio);
             this.selectFraccionamiento();
             this.selectCuenta();
+            this.getEmpresa();
 
         }
     }
