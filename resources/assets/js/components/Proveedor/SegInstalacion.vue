@@ -264,13 +264,6 @@
                             </div>
                             <div class="modal-body">
 
-                                <div class="form-group row" v-if="tipoAccion == 1">
-                                    <label class="col-md-2 form-control-label" for="text-input">Fecha de instalación</label>
-                                    <div class="col-md-3">
-                                        <input type="date" v-model="fin_instalacion" class="form-control">
-                                    </div>
-                                </div>
-
                                 <div class="form-group row" v-if="tipoAccion == 2">
                                     <label class="col-md-2 form-control-label" for="text-input">Fecha programada para instalación</label>
                                     <div class="col-md-3">
@@ -298,7 +291,7 @@
                             <!-- Botones del modal -->
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                                <button type="button" v-if="tipoAccion ==1" class="btn btn-success" @click="setInstalacion()">Guardar</button>
+                                <button type="button" v-if="tipoAccion ==1" class="btn btn-success" @click="setInstalacion()">Finalizar instalación</button>
                                 <button type="button" v-if="tipoAccion == 2" class="btn btn-success" @click="actColocacion()">Guardar</button>
                             </div>
                         </div>
@@ -726,9 +719,6 @@
 
                 if(!this.observacion) //Si la variable Fraccionamiento esta vacia
                     this.errorMostrarMsjColocacion.push("Debe ingresar una observación.");
-
-                if(!this.fin_instalacion) //Si la variable Fraccionamiento esta vacia
-                    this.errorMostrarMsjColocacion.push("Ingresar fecha de colocación.");
 
 
                 if(this.errorMostrarMsjColocacion.length)//Si el mensaje tiene almacenado algo en el array

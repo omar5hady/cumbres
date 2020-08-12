@@ -539,7 +539,7 @@
         <!----------     FIN Postventa      --->
 
         <!-- Modulo pagos internos --->
-            @if(Auth::user()->rol_id != 2)
+            @if(Auth::user()->rol_id != 2 && Auth::user()->rol_id != 10 && Auth::user()->rol_id != 13)
                 <li class="nav-item nav-dropdown">
                     <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-laptop"></i> Pagos Internos</a>
                     <ul class="nav-dropdown-items">

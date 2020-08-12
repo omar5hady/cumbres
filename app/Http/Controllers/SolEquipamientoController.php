@@ -440,9 +440,9 @@ class SolEquipamientoController extends Controller
 
     public function setInstalacion(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-        
+        $tiempo = new Carbon();
         $solicitud = Solic_equipamiento::findOrFail($request->id);
-        $solicitud->fin_instalacion = $request->fin_instalacion;
+        $solicitud->fin_instalacion = $tiempo;
         $solicitud->status = 3;
         $solicitud->save();
 
