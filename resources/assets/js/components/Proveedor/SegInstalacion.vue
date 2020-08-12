@@ -14,6 +14,20 @@
                 <!-------------------  Div historial equipamientos  --------------------->
                     <div class="card-body">
                         <div class="form-group row">
+                            <div class="col-md-5">
+                                <div class="input-group">
+                                    <select class="form-control col-md-4" v-model="status">
+                                        <option value="">Todos</option>
+                                        <option value="1">Pendiente</option>
+                                        <option value="2">En proceso</option>
+                                        <option value="3">Revisión</option>
+                                        <option value="4">Aprobados</option>
+                                        <option value="0">Rechazados</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <div class="col-md-8">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
@@ -437,6 +451,7 @@
                 fecha_colocacion:'',
                 fin_instalacion:'',
                 observacion:'',
+                status:'',
 
                 errorColocacion : 0,
                 errorMostrarMsjColocacion : [],
@@ -509,7 +524,7 @@
 
             listarHistorial(page, buscar, b_etapa, b_manzana, b_lote, criterio){
                 let me = this;
-                var url = '/equipamiento/indexHistorial?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio;
+                var url = '/equipamiento/indexHistorial?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio + '&status=' + this.status;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayHistorialEquipamientos = respuesta.equipamientos.data;

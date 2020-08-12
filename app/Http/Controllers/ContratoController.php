@@ -3606,6 +3606,10 @@ class ContratoController extends Controller
                 if($sumaIntereses[0]->suma == NULL){
                     $sumaIntereses[0]->suma = 0;
                 }
+            $sumaDescuento = Expediente::select(DB::raw("SUM(descuento) as suma"))->where('id','=',$request->contrato_id)->get();
+                if($sumaDescuento[0]->suma == NULL){
+                    $sumaDescuento[0]->suma = 0;
+                }
 
             $sumaGastos = Gasto_admin::select(DB::raw("SUM(costo) as suma"))->where('contrato_id','=',$request->contrato_id)->get();
                 if($sumaGastos[0]->suma == NULL){
@@ -3639,7 +3643,7 @@ class ContratoController extends Controller
                     $sumaDepositoCredit[0]->suma = 0;
                 }
 
-                $sumaTotal =  $sumaIntereses[0]->suma + $sumaGastos[0]->suma - $sumaDeposito[0]->suma - $sumaDepositoCredit[0]->suma - $sumaDepositoCredit2[0]->suma;
+                $sumaTotal =  $sumaIntereses[0]->suma + $sumaGastos[0]->suma - $sumaDeposito[0]->suma - $sumaDepositoCredit[0]->suma - $sumaDepositoCredit2[0]->suma - $sumaDescuento[0]->suma;
 
             $contrato->saldo = $credito->precio_venta + $sumaTotal;
 

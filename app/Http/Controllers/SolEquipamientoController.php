@@ -355,6 +355,9 @@ class SolEquipamientoController extends Controller
                     }
                 }
             }
+
+            if($status != '')
+                $equipamientos= $equipamientos->where('solic_equipamientos.status','=',$status);
         }
 
         if($request->b_empresa != ''){
@@ -408,6 +411,7 @@ class SolEquipamientoController extends Controller
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $solicitud = Solic_equipamiento::findOrFail($request->id);
         $solicitud->fecha_colocacion = $request->fecha_colocacion;
+        $solicitud->fin_instalacion = NULL;
         $solicitud->status = 2;
         $solicitud->save();
 
