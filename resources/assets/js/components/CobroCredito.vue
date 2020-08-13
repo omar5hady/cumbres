@@ -110,6 +110,7 @@
                                         <th>Fecha de termino</th>
                                         <th>Fecha de pagare</th>
                                         <th>Observaciones</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -136,6 +137,14 @@
                                         <td class="td2">
                                             <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
                                                         @click="abrirModal('observaciones',credito)">Observaciones</button>
+                                        </td>
+                                        <td>
+                                            <button v-if="credito.cobrado != 0" type="button" @click="finalizarCobro(credito.inst_sel_id)" class="btn btn-success btn-sm" title="Finalizar cobro">
+                                                <i class="icon-check"></i>
+                                            </button>
+                                            <button v-if="credito.cobrado == 0" type="button" @click="eliminar(credito.inst_sel_id)" class="btn btn-danger btn-sm" title="Eliminar">
+                                                <i class="icon-trash"></i>
+                                            </button>
                                         </td>
                                     </tr>                               
                                 </tbody>
@@ -798,6 +807,87 @@
                 }).catch(function (error){
                     console.log(error);
                 });
+            },
+            finalizarCobro(id){
+
+                let me = this;
+                Swal({
+                        title: 'Estas seguro?',
+                        animation: false,
+                        customClass: 'animated bounceInDown',
+                        text: "El crédito finalizará su proceso de cobro",
+                        type: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        cancelButtonText: 'Cancelar',
+                        
+                        confirmButtonText: 'Si, finalizar!'
+                        }).then((result) => {
+
+                        if (result.value) {
+                        
+                            axios.put('/cobroCredito/finalizar',{
+                                'id':id,
+                            }).then(function (response){
+                                me.cerrarModal(); //al guardar el registro se cierra el modal
+                                me.listarCreditos(1,me.buscar, me.buscar2, me.buscar3, me.buscar4, me.b_cobrados, me.criterio);
+                                //window.alert("Cambios guardados correctamente");
+                                swal({
+                                    position: 'top-end',
+                                    type: 'success',
+                                    title: 'Cobro finalizado correctamente',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                    })
+                            }).catch(function (error){
+                                console.log(error);
+                            });
+                        }
+                    })
+            
+                
+            },
+
+            eliminar(id){
+
+                let me = this;
+                Swal({
+                        title: 'Estas seguro?',
+                        animation: false,
+                        customClass: 'animated bounceInDown',
+                        text: "El crédito sera eliminado",
+                        type: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        cancelButtonText: 'Cancelar',
+                        
+                        confirmButtonText: 'Si, eliminar!'
+                        }).then((result) => {
+
+                        if (result.value) {
+                        
+                            axios.delete('/cobroCredito/eliminar',{
+                                params: {'id': id}
+                            }).then(function (response){
+                                me.cerrarModal(); //al guardar el registro se cierra el modal
+                                me.listarCreditos(1,me.buscar, me.buscar2, me.buscar3, me.buscar4, me.b_cobrados, me.criterio);
+                                //window.alert("Cambios guardados correctamente");
+                                swal({
+                                    position: 'top-end',
+                                    type: 'success',
+                                    title: 'Cobro finalizado correctamente',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                    })
+                            }).catch(function (error){
+                                console.log(error);
+                            });
+                        }
+                    })
+            
+                
             },
             verAbono(data=[]){
                 this.cliente=data['nombre']+' '+data['apellidos'];

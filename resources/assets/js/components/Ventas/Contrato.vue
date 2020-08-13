@@ -2523,7 +2523,7 @@
                     
                     me.modelo = me.arrayDatosLotes[0]['modelo'];
                     me.superficie = me.arrayDatosLotes[0]['terreno'];
-                    me.precioBase = me.arrayDatosLotes[0]['precio_base'] + me.arrayDatosLotes[0]['ajuste'];
+                    me.precioBase = me.arrayDatosLotes[0]['precio_base'];
                     me.precioExcedente = Math.round(me.arrayDatosLotes[0]['excedente_terreno']*100)/100;
                     me.precioVenta = me.arrayDatosLotes[0]['precio_venta'];
                     me.promocion = me.arrayDatosLotes[0]['promocion'];

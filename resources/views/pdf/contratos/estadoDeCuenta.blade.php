@@ -232,9 +232,9 @@
                     <div class="table-cell">$ {{$contratos[0]->descuento}}</div>
                 </div>
 
-                <div class="table-row">
+                {{-- <div class="table-row">
                     <div colspan="8" class="table-cell">Obs: {{$contratos[0]->obs_descuento}} </div>
-                </div>
+                </div> --}}
 
                 <div class="table-row">
                     <div colspan="4" class="table-cell"></div>   

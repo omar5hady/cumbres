@@ -502,6 +502,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/creditos_select/actualizar','CreditoController@updateDatosCredito');
         Route::get('/inst_select/observacion','ObservacionInstSeleccionadaController@index');
         Route::put('/creditos_select/setFechaVigencia','CreditoController@updateFechaVigencia');
+        
     
         Route::get('/serviciosTelecom/pdf/{id}','ServicioController@servicioTelecomPdf')->name('servicios.pdf');
         Route::get('/cartaServicios/pdf/{id}','ServicioController@cartaDeServicioPdf')->name('CartaDeservicios.pdf');
@@ -728,6 +729,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/cobroCredito/registrar','InstSeleccionadasController@storeDepositoCredito');
         Route::put('/cobroCredito/update','InstSeleccionadasController@updateDepositoCredito');
         Route::get('/cobroCredito/excel','InstSeleccionadasController@excelCobroCredito');
+        Route::put('/cobroCredito/finalizar','InstSeleccionadasController@finalizar');
+        Route::delete('/cobroCredito/eliminar','InstSeleccionadasController@eliminar');
 
         Route::get('/archivos/indexDocs','ModeloController@indexDocs');
         Route::get('/archivos/reglamentoEtapa/{etapa_id}','EtapaController@descargaReglamentoDocs');

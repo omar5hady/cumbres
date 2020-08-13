@@ -3743,7 +3743,7 @@ class ContratoController extends Controller
                 }
             $lote_new->precio_base = $precio_modelo[0]->precio_modelo;
             $lote_new->precio_base = round(($lote_new->precio_base), 2);
-            $precio_venta = round(($sobreprecios[0]->sobreprecios + $lote_new->precio_base  + $lote_new->ajuste + $lote_new->excedente_terreno + $lote_new->obra_extra),2);
+            $precio_venta = round(($sobreprecios[0]->sobreprecios + $lote_new->precio_base + $lote_new->ajuste + $lote_new->excedente_terreno + $lote_new->obra_extra),2);
             $terreno_tam_excedente = round(($lote_new->terreno - $modelo[0]->terreno),2);
             $lote_new->contrato = 1;
 

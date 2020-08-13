@@ -1582,6 +1582,21 @@ class InstSeleccionadasController extends Controller
         }       
     }
 
+    public function finalizar(Request $request){
+        if(!$request->ajax())return redirect('/');
+
+        $credito = inst_seleccionada::findOrFail($request->id);
+        $credito->monto_credito = $credito->cobrado;
+        $credito->save();
+    }
+
+    public function eliminar(Request $request){
+        if(!$request->ajax())return redirect('/');
+
+        $credito = inst_seleccionada::findOrFail($request->id);
+        $credito->delete();
+    }
+
     public function indexHistorialDev(Request $request){
         if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
