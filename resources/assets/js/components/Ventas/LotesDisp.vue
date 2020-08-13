@@ -782,17 +782,7 @@
         color: red !important;
         font-weight: bold;
     }
-    .badge2 {
-    display: inline-block;
-    padding: 0.25em 0.4em;
-    font-size: 90%;
-    font-weight: bold;
-    line-height: 1;
-    color: #080808c9;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: baseline;
-}
+    
 .table2 {
     margin: auto;
     border-collapse: collapse;
@@ -831,4 +821,15 @@
     .td2:last-of-type, th:last-of-type {
     border-right: none;
     }  
+    .badge2 {
+    display: inline-block;
+    padding: 0.25em 0.4em;
+    font-size: 90%;
+    font-weight: bold;
+    line-height: 1;
+    color: #080808c9 !important;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+}
 </style>

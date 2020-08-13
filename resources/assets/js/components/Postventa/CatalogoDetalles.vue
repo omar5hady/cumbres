@@ -45,7 +45,7 @@
                                             <button type="button" @click="abrirModal('subconcepto','actualizar',sub)" class="btn btn-warning btn-sm">
                                             <i class="icon-pencil"></i>
                                             </button>
-                                            <button type="button" class="btn btn-success btn-sm" @click="abrirModal2('detalle','registrar',sub), listarDetalle(1, sub.id)" title="Asignar detalle">
+                                            <button type="button" class="btn btn-success2 btn-sm" @click="abrirModal2('detalle','registrar',sub), listarDetalle(1, sub.id)" title="Asignar detalle">
                                             <i class="icon-share"></i>
                                             </button>
                                         </td>
@@ -180,7 +180,7 @@
                                     <tbody>
                                         <tr v-for="detalle in arrayDetalles" :key="detalle.id">
                                             <td style="width:10%">
-                                                <button type="button" v-if="detalle.activo == 1" class="btn btn-success btn-sm" @click="eliminarDetalle(detalle)">
+                                                <button type="button" v-if="detalle.activo == 1" class="btn btn-success2 btn-sm" @click="eliminarDetalle(detalle)">
                                                 <i class="fa fa-check"></i>
                                                 </button>
                                                 <button type="button" v-if="detalle.activo == 0" class="btn btn-danger btn-sm" @click="activarDetalle(detalle)">
@@ -693,20 +693,20 @@
         color: red !important;
         font-weight: bold;
     }    
-    .btn-success {
+    .btn-success2 {
         color: #fff;
         background-color: #2c309e;
         border-color: #313a98;
     }
-    .btn-success:active, .btn-success.active, .show > .btn-success.dropdown-toggle {
+    .btn-success2:active, .btn-success2.active, .show > .btn-success2.dropdown-toggle {
         background-color: #2c309e;
         background-image: none;
         border-color: #313a98;
     }
-    .btn-success:focus, .btn-success.focus {
+    .btn-success2:focus, .btn-success2.focus {
         box-shadow: 0 0 0 3px rgba(77, 100, 189, 0.5);
     }
-    .btn-success:hover {
+    .btn-success2:hover {
         color: #fff;
         background-color: #2c309e;
         border-color: #313a98;
