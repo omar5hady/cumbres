@@ -73,11 +73,13 @@
                                         <th>Fecha de solicitud</th>
                                         <th>Equipamiento</th>
                                         <th>Anticipo</th>
+                                        <th>Comp. de pago 1</th>
                                         <th>Fecha programada de instalación</th>
                                         <th>Fecha fin de instalación</th>
                                         <th>Dias transcurridos</th>
                                         <th>Status</th>
                                         <th>Liquidación</th>
+                                        <th>Comp. de pago 2</th>
                                         <th>Total pagado</th>
                                         <th>Pendiente</th>
                                         <th>Imprimir Recepción</th>
@@ -108,6 +110,12 @@
                                             <template>
                                                 <td v-if="equipamientos.fecha_anticipo" class="td2" v-text=" this.moment(equipamientos.fecha_anticipo).locale('es').format('DD/MMM/YYYY') + ': '+ '$'+formatNumber(equipamientos.anticipo)"></td>
                                                 <td v-else class="td2" v-text="'Sin anticipo'"></td>    
+                                                <td class="text-center">
+                                                    <a v-if="equipamientos.comp_pago_1" :href="'/equipamiento/indexHistorial/downloadFile1/'+equipamientos.comp_pago_1" class="btn btn-sm btn-primary" title="Descargar archivo">
+                                                        <i class="fa fa-cloud-download"></i>
+                                                    </a>
+                                                    <i v-else class="fa fa-cloud" title="Sin archivo disponible"></i>
+                                                </td>
                                             </template>
                                             <template>
                                                 <td @click="abrirModal('colocacion', equipamientos)" v-if="equipamientos.fecha_colocacion" class="td2">
@@ -152,6 +160,12 @@
                                             <template>
                                                 <td v-if="equipamientos.fecha_liquidacion" class="td2" v-text="this.moment(equipamientos.fecha_liquidacion).locale('es').format('DD/MMM/YYYY')+ ': '+ '$'+formatNumber(equipamientos.liquidacion)"></td>
                                                 <td v-else class="td2" v-text="'Sin programar'"></td>    
+                                                <td class="text-center">
+                                                    <a v-if="equipamientos.comp_pago_2" :href="'/equipamiento/indexHistorial/downloadFile2/'+equipamientos.comp_pago_2" class="btn btn-sm btn-primary" title="Descargar archivo">
+                                                        <i class="fa fa-cloud-download"></i>
+                                                    </a>
+                                                    <i v-else class="fa fa-cloud" title="Sin archivo disponible"></i>
+                                                </td>
                                             </template>
                                             <td class="td2" v-text="'$'+formatNumber(equipamientos.anticipo + equipamientos.liquidacion)"></td>
                                             <td class="td2" v-text="'$'+formatNumber(equipamientos.costo - equipamientos.anticipo - equipamientos.liquidacion)"></td>

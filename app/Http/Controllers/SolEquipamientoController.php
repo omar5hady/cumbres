@@ -13,6 +13,7 @@ use App\Obs_solic_equipamiento;
 use App\User;
 use App\Notifications\NotifyAdmin;
 use App\Credito;
+use File;
 
 class SolEquipamientoController extends Controller
 {
@@ -69,7 +70,10 @@ class SolEquipamientoController extends Controller
                     'lotes.num_lote','licencias.avance',
                     DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
                     DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'),
-                    DB::raw('DATEDIFF(recep_equipamientos.fecha_revision, solic_equipamientos.fin_instalacion) as dias_rev')
+                    DB::raw('DATEDIFF(recep_equipamientos.fecha_revision, solic_equipamientos.fin_instalacion) as dias_rev'),
+
+                    'solic_equipamientos.comp_pago_1',
+                    'solic_equipamientos.comp_pago_2'
         );
 
         $queryProveedor = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
@@ -112,7 +116,10 @@ class SolEquipamientoController extends Controller
                     'lotes.num_lote','licencias.avance',
                     DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
                     DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'),
-                    DB::raw('DATEDIFF(recep_equipamientos.fecha_revision, solic_equipamientos.fin_instalacion) as dias_rev')
+                    DB::raw('DATEDIFF(recep_equipamientos.fecha_revision, solic_equipamientos.fin_instalacion) as dias_rev'),
+
+                    'solic_equipamientos.comp_pago_1',
+                    'solic_equipamientos.comp_pago_2'
         );
 
 
@@ -564,5 +571,62 @@ class SolEquipamientoController extends Controller
         $observacion->comentario ='Equipamiento reubicado del lote: '.$datosAnt[0]->num_lote.' manzana: '.$datosAnt[0]->manzana.' proyecto: '.$datosAnt[0]->proyecto;
         $observacion->usuario = Auth::user()->usuario;
         $observacion->save();
+    }
+
+    public function upComprPago1(Request $request){
+
+        if(!$request->ajax())return redirect('/');
+        
+        $sol_equip = Solic_equipamiento::findOrFail($request->id);
+
+        if($sol_equip->comp_pago_1 != ""){// check if iexist an oter file added before
+            $delete = $this->deleteFile($sol_equip->comp_pago_1, '/files/sol_esquip/sol_1/');
+        }
+        
+        $name = $this->saveFiles($request->file,'/files/sol_esquip/sol_1/');// if it was deleted we save the new file
+
+        if($name != "ERROR"){
+            $sol_equip->comp_pago_1 = $name;
+            $sol_equip->save();
+        }
+    }
+
+    public function downloadPago1($fileName){
+        return response()->download(public_path().'/files/sol_esquip/sol_1/'.$fileName);
+    }
+
+    public function upComprPago2(Request $request){
+        if(!$request->ajax())return redirect('/');
+        
+        $sol_equip = Solic_equipamiento::findOrFail($request->id);
+
+        if($sol_equip->comp_pago_2 != ""){// check if iexist an oter file added before
+            $delete = $this->deleteFile($sol_equip->comp_pago_2, '/files/sol_esquip/sol_2/');
+        }
+        
+        $name = $this->saveFiles($request->file,'/files/sol_esquip/sol_2/');// if it was deleted we save the new file
+
+        if($name != "ERROR"){
+            $sol_equip->comp_pago_2 = $name;
+            $sol_equip->save();
+        }
+    }
+
+    public function downloadPago2($fileName){
+        return response()->download(public_path().'/files/sol_esquip/sol_2/'.$fileName);
+    }
+
+    private function saveFiles($file, $path){
+        
+        $name = uniqId().'.'.$file->getClientOriginalExtension();
+        $moved = $file->move(public_path($path), $name);
+
+        if($moved) return $name;
+        else return "ERROR";
+    }
+
+    private function deleteFile($file, $path){
+        if(File::delete(public_path().$path.$file)) return true;
+        else return false;
     }
 }

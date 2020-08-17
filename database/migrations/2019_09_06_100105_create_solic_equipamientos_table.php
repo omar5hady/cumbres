@@ -35,6 +35,8 @@ class CreateSolicEquipamientosTable extends Migration
 
             $table->boolean('anticipo_cand')->default(0);
             $table->boolean('liquidacion_cand')->default(0);
+            $table->string('comp_pago_1',95)->nullable();
+            $table->string('comp_pago_2',95)->nullable();
 
             $table->timestamps();
 

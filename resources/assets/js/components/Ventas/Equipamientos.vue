@@ -225,6 +225,7 @@
                                         <th>Equipamiento</th>
                                         <th>&nbsp; Costo del equipamiento &nbsp;</th>
                                         <th>Anticipo</th>
+                                        <th>Comp. de pago 1</th>
                                         <th>Fecha programada</th>
                                         <th>Fecha fin de instalación</th>
                                         <th>Status</th>
@@ -232,6 +233,7 @@
                                         <th>Total pagado</th>
                                         <th>Pendiente</th>
                                         <th>Liquidacion</th>
+                                        <th>Comp. de pago 2</th>
                                         <th>Imprimir Recepción</th>
                                         <th>Observaciones</th>
                                         
@@ -274,6 +276,14 @@
                                                 <td @click="abrirModal('anticipo', equipamientos)" v-else class="td2">
                                                     <a href="#" v-text="'Sin anticipo'"></a>
                                                 </td>    
+                                                <td class="text-center">
+                                                    <button @click="generalId = equipamientos.id, upType = 1" data-toggle="modal" data-target="#cargaPago1" class="btn btn-sm btn-info" title="Subir archivo">
+                                                        <i class="fa fa-cloud-upload"></i>
+                                                    </button>
+                                                    <a v-if="equipamientos.comp_pago_1" :href="'/equipamiento/indexHistorial/downloadFile1/'+equipamientos.comp_pago_1" class="btn btn-sm btn-primary" title="Descargar archivo">
+                                                        <i class="fa fa-cloud-download"></i>
+                                                    </a>
+                                                </td>
                                             </template>
                                             <template>
                                                 <td @click="abrirModal('colocacion', equipamientos)" v-if="equipamientos.fecha_colocacion" class="td2">
@@ -318,7 +328,7 @@
                                             </td>
                                             <td class="td2" v-text="'$'+formatNumber(equipamientos.anticipo + equipamientos.liquidacion)"></td>
                                             <td class="td2" v-text="'$'+formatNumber(equipamientos.costo - equipamientos.anticipo - equipamientos.liquidacion)"></td>
-                                            <template>
+                                            <template><!--Liquidacion-->
                                                 <td v-if="equipamientos.fecha_liquidacion && equipamientos.liquidacion_cand == 0"  @click="abrirModal('liquidacion', equipamientos)" class="td2" v-text=" this.moment(equipamientos.fecha_liquidacion).locale('es').format('DD/MMM/YYYY') + ': '+ '$'+formatNumber(equipamientos.liquidacion)"></td>
                                                 <td v-else-if="equipamientos.fecha_liquidacion && equipamientos.liquidacion_cand == 1" class="td2" v-text=" this.moment(equipamientos.fecha_liquidacion).locale('es').format('DD/MMM/YYYY') + ': '+ '$'+formatNumber(equipamientos.liquidacion)"></td>
                                                 <td v-else-if="equipamientos.status == 4">
@@ -328,8 +338,16 @@
                                                     </button>
                                                 </td>    
                                                 <td v-else v-text="'Sin Liquidación'"></td>
+                                                <td class="text-center">
+                                                    <button @click="generalId = equipamientos.id, upType = 2" data-toggle="modal" data-target="#cargaPago1" class="btn btn-sm btn-info" title="Subir archivo">
+                                                        <i class="fa fa-cloud-upload"></i>
+                                                    </button>
+                                                    <a v-if="equipamientos.comp_pago_2" :href="'/equipamiento/indexHistorial/downloadFile2/'+equipamientos.comp_pago_2" class="btn btn-sm btn-primary" title="Descargar archivo">
+                                                        <i class="fa fa-cloud-download"></i>
+                                                    </a>
+                                                </td>
                                             </template>
-                                            <template>
+                                            <template><!--Imprimir Recepción-->
                                                 <td v-if="equipamientos.tipoRecepcion == 1 && equipamientos.recepcion == 1">
                                                     <a class="btn btn-warning btn-sm"  target="_blank" v-bind:href="'/equipamiento/recepcionCocina/'+equipamientos.id">Ver Recepción</a>
                                                 </td>
@@ -686,6 +704,33 @@
                     <!-- /.modal-dialog -->
                 </div>
             <!--Fin del modal-->
+
+            <!-- carga de archivos -->
+            <div class="modal fade" id="cargaPago1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header" style="color:white; background-color: #00ADEF;">
+                        <h5 class="modal-title" id="manualIdTitle" v-text="'Comprobante de pago '+upType+'.'"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form @submit="uploadOrder" id="upFilesForm" method="POST" enctype="multipart/form-data">
+                        <div class="modal-body">
+                            <div class="row">
+                                <label for="upFile" class="col-sm-2">Archivo</label>
+                                <input type="file" name="upFile" id="upFile" class="form-control col-sm-8" required>
+                            </div>
+                            
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Subir</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                    </div>
+                </div>
+            </div>
             
             <!-- Manual -->
             <div class="modal fade" id="manualId" tabindex="-1" role="dialog" aria-labelledby="manualIdTitle" aria-hidden="true">
@@ -828,7 +873,19 @@
                 arrayHistorialEquipamientos : [],
                 b_empresa:'',
                 empresas:[],
-               
+                generalId:0,
+                upType:0,
+                myAlerts:{
+                    popAlert : function(title = 'Alert',type = "success", description =''){
+                        swal({
+                            title: title,
+                            type: type,
+                            text: description,
+                            showConfirmButton:false,
+                            timer:1500,
+                        })
+                    }
+                },             
             }
         },
         computed:{
@@ -903,6 +960,7 @@
                     var respuesta = response.data;
                     me.arrayContratos = respuesta.contratos.data;
                     me.pagination = respuesta.pagination;
+
                     for(var i=0;i<me.pagination.total;i++){
                        
                         if(me.arrayContratos[i].paquete == null || me.arrayContratos[i].paquete == ""){
@@ -1427,7 +1485,29 @@
                     console.log(error);
                 });
             },
-            
+            uploadOrder(e){
+                e.preventDefault();
+                let formData = new FormData();
+                let url;
+                let me = this;
+
+                formData.append('id', this.generalId);
+                formData.append('file', e.target.upFile.files[0]);
+
+                if(this.upType == 1) 
+                    url = '/equipamiento/indexHistorial/upfile1';
+                else
+                    url = '/equipamiento/indexHistorial/upfile2';
+
+
+                axios.post(url, formData).then(
+                    () => {
+                        me.listarHistorial(1,me.buscar,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
+                        me.myAlerts.popAlert('Guardado correctamente');
+                        document.getElementById("upFilesForm").reset();
+                    }
+                ).catch(error => console.log(error));
+            },
         },
        
         mounted() {
