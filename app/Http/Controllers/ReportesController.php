@@ -9,6 +9,7 @@ use App\Fraccionamiento;
 use App\Credito;
 use App\Contrato;
 use App\Expediente;
+use App\Dep_credito;
 use App\Lote;
 use Excel;
 use Carbon\Carbon;
@@ -17,6 +18,7 @@ use App\Historial_descartado;
 use App\Modelo;
 use App\Solic_detalle;
 use App\Contratista;
+use App\inst_seleccionada;
 
 use App\Cat_detalle_subconcepto;
 
@@ -1485,23 +1487,117 @@ class ReportesController extends Controller
     public function reporteAcumulado(Request $request){
         $mes = $request->mes;
         $anio = $request->anio;
+        $expCreditos = $this->getRepExpedientes($mes, $anio);
+        $expContado = $this->getRepExpContado($mes, $anio);
+        $sinEntregar = $this->getSinEntregarRep($mes,$anio);
+        
+        $escrituras = $this->getEscriturasRep($mes, $anio);
+        $contadoSinEscrituras = $this->getContadoSinEscrituras($mes, $anio);
+        $ingresosCobranza = $this->getIngresosCobranza($mes,$anio);
+        
+        return ['expCreditos'=>$expCreditos,
+                'expContado'=>$expContado,
+                'pendientes'=>$sinEntregar,
+                'escrituras'=>$escrituras,
+                'contadoSinEscrituras'=>$contadoSinEscrituras,
+                'ingresosCobranza'=>$ingresosCobranza
 
-        $expCreditos = Expediente::join('contratos','expedientes.id','=','contratos.id')
-                ->join('creditos','contratos.id','=','creditos.id')
-                ->join('inst_seleccionadas as ins', 'creditos.id', '=', 'ins.credito_id')
+            ];
+
+    }
+
+    private function getRepExpedientes($mes, $anio){//$mes, $anio){
+
+        $mes2 = $mes + 1;
+        $fecha = $anio.'-'.$mes2.'-01';
+        $depositos = Dep_credito::join('inst_seleccionadas as ins','dep_creditos.inst_sel_id','=','ins.id')
+                ->join('creditos','ins.credito_id','=','creditos.id')
+                ->join('contratos','creditos.id','=','contratos.id')
                 ->join('lotes','creditos.lote_id','=','lotes.id')
                 ->join('personal as p','creditos.prospecto_id','=','p.id')
                 ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
                 ->join('etapas as et','lotes.etapa_id','=','et.id')
-                ->select('contratos.id','p.nombre','p.apellidos','f.nombre as proyecto','et.num_etapa',
-                        'lotes.manzana','ins.tipo_credito','ins.institucion','expedientes.created_at')
-                ->where('contratos.status','=',3)
-                ->where('ins.elegido','=',1)
-                ->where('ins.tipo_credito','!=','Crédito Directo')
-                ->whereMonth('expedientes.created_at',$mes)
-                ->whereYear('expedientes.created_at',$anio)
-                ->orderBy('expedientes.created_at','asc')->get();
+                ->select(//'dep_creditos.inst_sel_id',
+                            'contratos.id','p.nombre','p.apellidos',
+                            'f.nombre as proyecto','et.num_etapa',
+                            'lotes.manzana','lotes.num_lote',
+                            DB::raw("SUM(dep_creditos.cant_depo) as totalDep")
+                            )
+                ->where('dep_creditos.fecha_deposito','<',$fecha)
+                ->groupBy('ins.credito_id')
+                ->distinct()->get();
 
+        if(sizeOf($depositos)){
+            foreach($depositos as $index => $deposito){
+                $inst = inst_seleccionada::select('monto_credito','segundo_credito','tipo_credito','institucion')
+                        ->where('elegido','=',1)
+                        ->where('credito_id','=',$deposito->id)->get();
+                
+                $act = Dep_credito::join('inst_seleccionadas as ins','dep_creditos.inst_sel_id','=','ins.id')
+                        ->join('creditos','ins.credito_id','=','creditos.id')
+                        ->join('contratos','creditos.id','=','contratos.id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('personal as p','creditos.prospecto_id','=','p.id')
+                        ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
+                        ->join('etapas as et','lotes.etapa_id','=','et.id')
+                        ->select('dep_creditos.fecha_deposito')
+                        ->where('ins.credito_id','=',$deposito->id)
+                        ->whereYear('dep_creditos.fecha_deposito',$anio)
+                        ->whereMonth('dep_creditos.fecha_deposito',$mes)->get();
+                
+                $deposito->totalCredito = round($inst[0]->monto_credito + $inst[0]->segundo_credito,2);
+                $deposito->totalDep = round($deposito->totalDep,2);
+                $deposito->tipo_credito = $inst[0]->tipo_credito;
+                $deposito->institucion = $inst[0]->institucion;
+                $deposito->flag = 0;
+                $deposito->mes = 0;
+                if($deposito->totalCredito == $deposito->totalDep)
+                    $deposito->flag = 1;
+                if(sizeOf($act)){
+                    $deposito->mes = 1;
+                }
+            
+            }
+        }
+
+        return $depositos;
+    }
+
+    private function getSinEntregarRep($mes,$anio){
+        $sinEntregar = inst_seleccionada::join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
+                ->join('contratos','creditos.id','=','contratos.id')
+                ->join('expedientes','contratos.id','=','expedientes.id')
+                ->join('lotes','creditos.lote_id','=','lotes.id')
+                ->join('personal as p','creditos.prospecto_id','=','p.id')
+                ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
+                ->join('etapas as et','lotes.etapa_id','=','et.id')
+                ->select(//'dep_creditos.inst_sel_id',
+                            'inst_seleccionadas.id as crd_id',
+                            'contratos.id','p.nombre','p.apellidos',
+                            'f.nombre as proyecto','et.num_etapa',
+                            'inst_seleccionadas.tipo_credito','inst_seleccionadas.institucion',
+                            'lotes.manzana','lotes.num_lote'
+                            )
+                ->where('inst_seleccionadas.tipo','=',0)
+                ->where('inst_seleccionadas.elegido','=',1)
+                ->where('inst_seleccionadas.status','=',2)
+                ->where('expedientes.fecha_firma_esc','!=', NULL)
+                ->where('contratos.status','=',3)
+                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
+                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                ->orWhere('inst_seleccionadas.tipo','=',1)
+                ->where('inst_seleccionadas.elegido','=',0)
+                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
+                ->where('inst_seleccionadas.status','=',2)
+                ->where('expedientes.fecha_firma_esc','!=', NULL)
+                ->where('contratos.status','=',3)
+                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
+                ->orderBy('contratos.fecha','asc')->get();
+
+        return $sinEntregar;
+    }
+    
+    private function getRepExpContado($mes, $anio){
         $expContado = Expediente::join('contratos','expedientes.id','=','contratos.id')
                 ->join('creditos','contratos.id','=','creditos.id')
                 ->join('inst_seleccionadas as ins', 'creditos.id', '=', 'ins.credito_id')
@@ -1510,28 +1606,19 @@ class ReportesController extends Controller
                 ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
                 ->join('etapas as et','lotes.etapa_id','=','et.id')
                 ->select('contratos.id','p.nombre','p.apellidos','f.nombre as proyecto','et.num_etapa',
-                        'lotes.manzana','ins.tipo_credito','ins.institucion','expedientes.created_at')
+                        'lotes.num_lote',
+                        'lotes.manzana','ins.tipo_credito','ins.institucion','expedientes.fecha_firma_esc')
                 ->where('contratos.status','=',3)
                 ->where('ins.elegido','=',1)
                 ->where('ins.tipo_credito','=','Crédito Directo')
-                ->whereMonth('expedientes.created_at',$mes)
-                ->whereYear('expedientes.created_at',$anio)
-                ->orderBy('expedientes.created_at','asc')->get();
+                ->whereMonth('expedientes.fecha_firma_esc',$mes)
+                ->whereYear('expedientes.fecha_firma_esc',$anio)
+                ->orderBy('expedientes.fecha_firma_esc','asc')->get();
 
-        $sinEntregar = Contrato::join('creditos','contratos.id','=','creditos.id')
-                ->join('inst_seleccionadas as ins', 'creditos.id', '=', 'ins.credito_id')
-                ->join('lotes','creditos.lote_id','=','lotes.id')
-                ->join('personal as p','creditos.prospecto_id','=','p.id')
-                ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
-                ->join('etapas as et','lotes.etapa_id','=','et.id')
-                ->select('contratos.id','p.nombre','p.apellidos','f.nombre as proyecto','et.num_etapa',
-                        'lotes.manzana','ins.tipo_credito','ins.institucion','contratos.fecha')
-                ->where('contratos.status','=',3)
-                ->where('contratos.integracion','=',0)
-                ->where('ins.elegido','=',1)
-                ->where('ins.tipo_credito','=','Crédito Directo')
-                ->orderBy('contratos.fecha','asc')->get();
-        
+        return $expContado;
+    }
+
+    private function getEscriturasRep($mes, $anio){
         $escrituras = Expediente::join('contratos','expedientes.id','=','contratos.id')
                 ->join('creditos','contratos.id','=','creditos.id')
                 ->join('inst_seleccionadas as ins', 'creditos.id', '=', 'ins.credito_id')
@@ -1548,26 +1635,34 @@ class ReportesController extends Controller
                 ->whereMonth('expedientes.fecha_firma_esc',$mes)
                 ->whereYear('expedientes.fecha_firma_esc',$anio)
                 ->orderBy('expedientes.fecha_firma_esc','desc')->get();
+        
+        return $escrituras;
+    }
 
+    private function getContadoSinEscrituras($mes, $anio){
         $contadoSinEscrituras = Expediente::join('contratos','expedientes.id','=','contratos.id')
-                ->join('creditos','contratos.id','=','creditos.id')
-                ->join('inst_seleccionadas as ins', 'creditos.id', '=', 'ins.credito_id')
-                ->join('lotes','creditos.lote_id','=','lotes.id')
-                ->join('personal as p','creditos.prospecto_id','=','p.id')
-                ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
-                ->join('etapas as et','lotes.etapa_id','=','et.id')
-                ->join('personal as g','expedientes.gestor_id','=','g.id')
-                ->select('contratos.id','p.nombre','p.apellidos','f.nombre as proyecto','et.num_etapa',
-                        'lotes.manzana','lotes.num_lote','ins.tipo_credito','ins.institucion',
-                        DB::raw("CONCAT(g.nombre,' ',g.apellidos) AS nombre_gestor"),'contratos.fecha',
-                        'expedientes.fecha_firma_esc','expedientes.valor_escrituras','expedientes.notaria')
-                ->where('contratos.status','=',3)
-                ->where('contratos.saldo','<=',0)
-                ->where('ins.elegido','=',1)
-                ->where('expedientes.fecha_firma_esc','=',NULL)
-                ->where('ins.tipo_credito','=','Crédito Directo')
-                ->orderBy('contratos.fecha')->get();
+            ->join('creditos','contratos.id','=','creditos.id')
+            ->join('inst_seleccionadas as ins', 'creditos.id', '=', 'ins.credito_id')
+            ->join('lotes','creditos.lote_id','=','lotes.id')
+            ->join('personal as p','creditos.prospecto_id','=','p.id')
+            ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
+            ->join('etapas as et','lotes.etapa_id','=','et.id')
+            ->join('personal as g','expedientes.gestor_id','=','g.id')
+            ->select('contratos.id','p.nombre','p.apellidos','f.nombre as proyecto','et.num_etapa',
+                    'lotes.manzana','lotes.num_lote','ins.tipo_credito','ins.institucion',
+                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) AS nombre_gestor"),'contratos.fecha',
+                    'expedientes.fecha_firma_esc','expedientes.valor_escrituras','expedientes.notaria')
+            ->where('contratos.status','=',3)
+            ->where('contratos.saldo','<=',0)
+            ->where('ins.elegido','=',1)
+            ->where('expedientes.fecha_firma_esc','=',NULL)
+            ->where('ins.tipo_credito','=','Crédito Directo')
+            ->orderBy('contratos.fecha')->get();
+    
+        return $contadoSinEscrituras;
+    }
 
+    private function getIngresosCobranza($mes, $anio){
         $ingresosCobranza = Contrato::join('creditos','contratos.id','=','creditos.id')
                 ->join('inst_seleccionadas as ins', 'creditos.id', '=', 'ins.credito_id')
                 ->join('dep_creditos as dep','ins.id','=','dep.inst_sel_id')
@@ -1580,19 +1675,7 @@ class ReportesController extends Controller
                 ->whereMonth('dep.fecha_deposito',$mes)
                 ->whereYear('dep.fecha_deposito',$anio)
                 ->orderBy('dep.fecha_deposito')->get();
-        
-
-        
-        
-        return ['expCreditos'=>$expCreditos,
-                'expContado'=>$expContado,
-                'pendientes'=>$sinEntregar,
-                'escrituras'=>$escrituras,
-                'contadoSinEscrituras'=>$contadoSinEscrituras,
-                'ingresosCobranza'=>$ingresosCobranza
-
-            ];
-
+        return $ingresosCobranza;
     }
 
     public function reporteRecursosPropios(Request $request){

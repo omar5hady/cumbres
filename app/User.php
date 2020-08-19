@@ -123,7 +123,7 @@ class User extends Authenticatable
         'rep_recursos_propios',
         'rep_vent_modelos',
         'rep_detalles_post',
-
+        'rep_acumulado',
         
 
         //Pagos Internos

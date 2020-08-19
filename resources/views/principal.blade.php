@@ -651,7 +651,7 @@
                                         <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte por modelo</a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->rol_id == 1)
+                                @if(Auth::user()->rep_acumulado == 1)
                                     <li @click="menu=240" class="nav-item">
                                         <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte acumulado</a>
                                     </li>
