@@ -24,7 +24,11 @@ body {
 <div style="clear:both;">
 
     <div style="float: left; margin-top: 20px; margin-left: 50px;" >
-    <IMG SRC="img/contratos/logoContrato.jpg" width="110" height="110">
+    @if($cliente[0]->emp_constructora == 'Grupo Constructor Cumbres')
+        <IMG SRC="img/contratos/logoContrato.jpg" width="110" height="110">
+    @else
+        <IMG SRC="img/contratos/logoContratoC1.png" width="110" height="110">
+    @endif
     </div>
 
 <div style="text-align: justify; margin:60px">

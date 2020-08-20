@@ -1290,8 +1290,10 @@ class DepositoController extends Controller
         $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
                             ->join('contratos','contratos.id','=','pagos_contratos.contrato_id')
                             ->join('creditos','creditos.id','=','contratos.id')
+                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                             ->join('personal','personal.id','=','creditos.prospecto_id')
                             ->select('depositos.id', 'depositos.pago_id', 'depositos.cant_depo','depositos.interes_mor','depositos.interes_ord',
+                                    'lotes.emp_constructora',
                                      'depositos.obs_mor','depositos.obs_ord','depositos.num_recibo','depositos.banco','depositos.concepto','depositos.fecha_pago'
                                      ,'creditos.manzana', 'creditos.num_lote','personal.nombre','personal.apellidos','creditos.fraccionamiento')
                                     ->where('depositos.id','=',$id)
@@ -2338,6 +2340,7 @@ class DepositoController extends Controller
                 'expedientes.fecha_liquidacion',
                 'expedientes.fecha_firma_esc',
                 'lotes.credito_puente',
+                'lotes.emp_constructora',
                 'contratos.enganche_total',
                 'contratos.fecha',
                 'contratos.saldo',

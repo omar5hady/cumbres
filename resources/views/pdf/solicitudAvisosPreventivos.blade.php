@@ -27,55 +27,78 @@ body {
 <div style="border: black 2px solid;" >
     <div style="clear:both;">
         
-            <div style="float: left; margin-top: 5px; margin-left: 20px;">
-            <IMG SRC="img/contratos/logoContrato.jpg" width="130" height="130" >
+        <div style="float: left; margin-top: 5px; margin-left: 20px;">
+            @if(!$solicitud[0]->emp_constructora == 'Grupo Constructor Cumbres')
+                <IMG SRC="img/contratos/logoContrato.jpg" width="130" height="130" >
+            @else
+                <IMG SRC="img/contratos/logoContratoC1.png" width="130" height="130" >
+            @endif
+        </div>  
+
+        <div  class="table" >
+            <div class="table-row">
+                <div  class="table-cell1"></div>
+                <div colspan="7" class="table-cell1"><b>SOLICITUD DE AVISOS PREVENTIVOS</div>
+            </div> 
+
+            <div class="table-row">
+                <div colspan="8" class="table-cell1"><br></div>
             </div>
-    <div  class="table" >
-        <div class="table-row">
-            <div  class="table-cell1"></div>
-            <div colspan="7" class="table-cell1"><b>SOLICITUD DE AVISOS PREVENTIVOS</div>
-            
-        </div> 
 
-        <div class="table-row">
-            <div colspan="8" class="table-cell1"><br></div>
+            @if(!$solicitud[0]->emp_constructora == 'Grupo Constructor Cumbres')
+                <div class="table-row">
+                    <div  class="table-cell1"></div>
+                    <div colspan="7" class="table-cell2"> <b>GRUPO CONSTRUCTOR CUMBRES, S.A. DE C.V.</div>
+                </div>
+            @else
+                <div class="table-row">
+                    <div  class="table-cell1"></div>
+                    <div colspan="7" class="table-cell2"> <b>CONCRETANIA, S.A. DE C.V.</div>
+                </div>
+            @endif
+
+        @if(!$solicitud[0]->emp_constructora == 'Grupo Constructor Cumbres')
+            <div class="table-row">
+                <div class="table-cell2"></div>
+                    <div colspan="8" class="table-cell2"> <b>Manuel Gutiérrez Najera No. 190 esquina  </div>  
+                </div>
+
+            <div class="table-row">
+                <div class="table-cell2"></div>
+                    <div colspan="8" class="table-cell2"> <b>con Nicolas Zapata Col. Tequisquiapan </div>  
+                </div>
+        @else
+            <div class="table-row">
+                <div class="table-cell2"></div>
+                    <div colspan="8" class="table-cell2"> <b>Manuel Gutiérrez Najera No. 180  </div>  
+                </div>
+
+            <div class="table-row">
+                <div class="table-cell2"></div>
+                    <div colspan="8" class="table-cell2"> <b>Col. Tequisquiapan </div>  
+                </div>
+        @endif
+            <div class="table-row">
+                <div class="table-cell2"></div>
+                <div colspan="8" class="table-cell2"> <b>C.P. 78230 Teléfono (444) 8-33-46-83 al 85</div>  
+            </div>
+            <div class="table-row">
+                <div class="table-cell2"></div>
+                <div colspan="8" class="table-cell2"> <b>San Luis Potosí, S.L.P.</div>  
+            </div>
         </div>
 
-      <div class="table-row">
-            <div  class="table-cell1"></div>
-            <div colspan="7" class="table-cell2"> <b>GRUPO CONSTRUCTOR CUMBRES, S.A. DE C.V.</div>
-    </div>
+        <div class="table">
+        
+            <div class="table-row">
+                <div class="table-cell3"></div>
+                <div class="table-cell3"></div>
+                <div class="table-cell3"></div>
+                <div class="table-cell3"></div>
+                <div colspan="4" class="table-cell4"> <b>{{mb_strtoupper($solicitud[0]->aviso_prev)}} </div>  
+            </div>
 
-    <div class="table-row">
-        <div class="table-cell2"></div>
-            <div colspan="8" class="table-cell2"> <b>Manuel Gutiérrez Najera No. 190 esquina  </div>  
         </div>
-
-<div class="table-row">
-        <div class="table-cell2"></div>
-            <div colspan="8" class="table-cell2"> <b>con Nicolas Zapata Col. Tequisquiapan </div>  
-        </div>
-        <div class="table-row">
-             <div class="table-cell2"></div>
-             <div colspan="8" class="table-cell2"> <b>C.P. 78230 Teléfono (444) 8-33-46-83 al 85</div>  
-        </div>
-        <div class="table-row">
-            <div class="table-cell2"></div>
-            <div colspan="8" class="table-cell2"> <b>San Luis Potosí, S.L.P.</div>  
-        </div>
-    </div>
-
-    <div class="table">
-    
-        <div class="table-row">
-            <div class="table-cell3"></div>
-            <div class="table-cell3"></div>
-            <div class="table-cell3"></div>
-            <div class="table-cell3"></div>
-            <div colspan="4" class="table-cell4"> <b>{{mb_strtoupper($solicitud[0]->aviso_prev)}} </div>  
-        </div>
-
-    </div>
 
     <div class="table" style="text-align:left; margin-top: 30px; margin-left: 20px;">
     
@@ -169,7 +192,11 @@ body {
         <div style="clear:both;">
             
                 <div style="float: left; margin-top: 5px; margin-left: 20px;">
-                <IMG SRC="img/contratos/logoContrato.jpg" width="130" height="130" >
+                @if(!$solicitud[0]->emp_constructora == 'Grupo Constructor Cumbres')
+                    <IMG SRC="img/contratos/logoContrato.jpg" width="130" height="130" >
+                @else
+                    <IMG SRC="img/contratos/logoContratoC1.png" width="130" height="130" >
+                @endif
                 </div>
         <div  class="table" >
             <div class="table-row">
@@ -184,17 +211,29 @@ body {
     
           <div class="table-row">
                 <div  class="table-cell1"></div>
+                @if(!$solicitud[0]->emp_constructora == 'Grupo Constructor Cumbres')
                 <div colspan="7" class="table-cell2"> <b>GRUPO CONSTRUCTOR CUMBRES, S.A. DE C.V.</div>
+                @else
+                <div colspan="7" class="table-cell2"> <b>CONCRETANIA, S.A. DE C.V.</div>
+                @endif
         </div>
     
         <div class="table-row">
             <div class="table-cell2"></div>
+                @if(!$solicitud[0]->emp_constructora == 'Grupo Constructor Cumbres')
                 <div colspan="8" class="table-cell2"> <b>Manuel Gutiérrez Najera No. 190 esquina  </div>  
+                @else
+                <div colspan="8" class="table-cell2"> <b>Manuel Gutiérrez Najera No. 180 </div>  
+                @endif
             </div>
     
     <div class="table-row">
             <div class="table-cell2"></div>
+                @if(!$solicitud[0]->emp_constructora == 'Grupo Constructor Cumbres')
                 <div colspan="8" class="table-cell2"> <b>con Nicolas Zapata Col. Tequisquiapan </div>  
+                @else 
+                <div colspan="8" class="table-cell2"> <b>Col. Tequisquiapan </div>  
+                @endif
             </div>
             <div class="table-row">
                  <div class="table-cell2"></div>

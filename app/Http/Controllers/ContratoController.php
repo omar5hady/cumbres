@@ -2814,6 +2814,7 @@ class ContratoController extends Controller
     {
 
         $cliente = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
             ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
             ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
@@ -2828,6 +2829,7 @@ class ContratoController extends Controller
                 'personal.colonia',
                 'clientes.estado',
                 'clientes.ciudad',
+                'lotes.emp_constructora',
                 'contratos.fecha'
             )
             ->where('contratos.id', '=', $id)->get();

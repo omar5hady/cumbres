@@ -716,6 +716,7 @@ class RecepEquipamientoController extends Controller
             'creditos.num_lote',
             'proveedores.proveedor',
             'lotes.casa_muestra',
+            'lotes.emp_constructora',
             'recep_equipamientos.supervisor',
             'recep_equipamientos.observacion',
             'recep_equipamientos.fecha_revision'
@@ -806,6 +807,7 @@ class RecepEquipamientoController extends Controller
             'creditos.num_lote',
             'proveedores.proveedor',
             'lotes.casa_muestra',
+            'lotes.emp_constructora',
             'recep_equipamientos.supervisor',
             'recep_equipamientos.observacion',
             'recep_equipamientos.fecha_revision'
@@ -846,6 +848,7 @@ class RecepEquipamientoController extends Controller
             'creditos.num_lote',
             'proveedores.proveedor',
             'lotes.casa_muestra',
+            'lotes.emp_constructora',
             'recep_equipamientos.supervisor',
             'recep_equipamientos.observacion',
             'recep_equipamientos.fecha_revision'

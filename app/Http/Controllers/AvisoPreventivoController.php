@@ -73,6 +73,7 @@ class AvisoPreventivoController extends Controller
             'lotes.credito_puente',
             'lotes.calle',
             'lotes.numero',
+            'lotes.emp_constructora',
             'lotes.interior',
             'notarias.notaria',
             'notarias.titular',

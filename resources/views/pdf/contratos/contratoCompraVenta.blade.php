@@ -358,7 +358,11 @@ body {
 
 
 <div style="display: inline-block; float: right;" >
-    <IMG SRC="img/contratos/logoContrato1.png" width="170" height="170">
+    @if($contratos[0]->emp_constructora == 'Grupo Constructor Cumbres')
+        <IMG SRC="img/contratos/logoContrato1.png" width="170" height="170">
+    @else 
+        <IMG SRC="img/contratos/logoContratoC2.png" width="170" height="170">
+    @endif
 </div>
 
 <div style="page-break-after:always;"></div>

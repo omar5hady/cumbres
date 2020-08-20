@@ -28,27 +28,46 @@ body {
 
 <div style="clear:both;">
 <div style="float: left; margin-top: 5px; margin-left: 20px;">
+    @if($depositos[0]->emp_constructora == 'Grupo Constructor Cumbres')
         <IMG SRC="img/contratos/logoContrato.jpg" width="110" height="110" >
+    @else 
+        <IMG SRC="img/contratos/logoContratoC1.png" width="110" height="110" >
+    @endif
         </div>
 
  <div style="float: right; margin-top: 5px; " class="table" >
       <div class="table-row">
          <div class="table-cell2"></div>
-         <div colspan="4" class="table-cell2"><b>GRUPO CONSTRUCTOR CUMBRES, S.A. DE C.V.</div>
+        @if($depositos[0]->emp_constructora == 'Grupo Constructor Cumbres')
+            <div colspan="4" class="table-cell2"><b>GRUPO CONSTRUCTOR CUMBRES, S.A. DE C.V.</div>
+        @else
+            <div colspan="4" class="table-cell2"><b>CONCRETANIA, S.A. DE C.V.</div>
+        @endif
          <div class="table-cell2"></div>
          <div class="table-cell2"></div>
          <div class="table-cell2"></div>
          <div class="table-cell2 color" ><b>{{mb_strtoupper($depositos[0]->id)}}</div>
 
     </div>
-    <div class="table-row">
-             <div class="table-cell2"></div>
-            <div colspan="8" class="table-cell2"> <b>Manuel Gutiérrez Najera no. 190 esquina  </div>  
-        </div>
-        <div class="table-row">
-            <div class="table-cell2"></div>
-            <div colspan="8" class="table-cell2"> <b>con Nicolas Zapata Col. Tequisquiapan </div>  
-        </div>
+        @if($depositos[0]->emp_constructora == 'Grupo Constructor Cumbres')
+            <div class="table-row">
+                <div class="table-cell2"></div>
+                <div colspan="8" class="table-cell2"> <b>Manuel Gutiérrez Najera no. 190 esquina  </div>  
+            </div>
+            <div class="table-row">
+                <div class="table-cell2"></div>
+                <div colspan="8" class="table-cell2"> <b>con Nicolas Zapata Col. Tequisquiapan </div>  
+            </div>
+        @else
+            <div class="table-row">
+                <div class="table-cell2"></div>
+                <div colspan="8" class="table-cell2"> <b>Manuel Gutiérrez Najera no. 180 </div>  
+            </div>
+            <div class="table-row">
+                <div class="table-cell2"></div>
+                <div colspan="8" class="table-cell2"> <b>Col. Tequisquiapan </div>  
+            </div>
+        @endif
         <div class="table-row">
              <div class="table-cell2"></div>
             <div colspan="8" class="table-cell2"> <b>C.P. 78230 Teléfono (444)8334683 al 85</div>  
@@ -149,27 +168,46 @@ body {
 
 <div style="clear:both;">
 <div style="float: left; margin-top: 5px; margin-left: 20px;">
+    @if($depositos[0]->emp_constructora == 'Grupo Constructor Cumbres')
         <IMG SRC="img/contratos/logoContrato.jpg" width="110" height="110" >
+    @else 
+        <IMG SRC="img/contratos/logoContratoC1.png" width="110" height="110" >
+    @endif
         </div>
 
  <div style="float: right; margin-top: 5px; " class="table" >
       <div class="table-row">
          <div class="table-cell2"></div>
-         <div colspan="4" class="table-cell2"><b>GRUPO CONSTRUCTOR CUMBRES, S.A. DE C.V.</div>
+        @if($depositos[0]->emp_constructora == 'Grupo Constructor Cumbres')
+            <div colspan="4" class="table-cell2"><b>GRUPO CONSTRUCTOR CUMBRES, S.A. DE C.V.</div>
+        @else
+            <div colspan="4" class="table-cell2"><b>CONCRETANIA, S.A. DE C.V.</div>
+        @endif
          <div class="table-cell2"></div>
          <div class="table-cell2"></div>
          <div class="table-cell2"></div>
          <div class="table-cell2 color" ><b>{{mb_strtoupper($depositos[0]->id)}}</div>
 
     </div>
-    <div class="table-row">
-             <div class="table-cell2"></div>
+    @if($depositos[0]->emp_constructora == 'Grupo Constructor Cumbres')
+        <div class="table-row">
+            <div class="table-cell2"></div>
             <div colspan="8" class="table-cell2"> <b>Manuel Gutiérrez Najera no. 190 esquina  </div>  
         </div>
         <div class="table-row">
             <div class="table-cell2"></div>
             <div colspan="8" class="table-cell2"> <b>con Nicolas Zapata Col. Tequisquiapan </div>  
         </div>
+    @else
+        <div class="table-row">
+            <div class="table-cell2"></div>
+            <div colspan="8" class="table-cell2"> <b>Manuel Gutiérrez Najera no. 180  </div>  
+        </div>
+        <div class="table-row">
+            <div class="table-cell2"></div>
+            <div colspan="8" class="table-cell2"> <b>Col. Tequisquiapan </div>  
+        </div>
+    @endif
         <div class="table-row">
              <div class="table-cell2"></div>
             <div colspan="8" class="table-cell2"> <b>C.P. 78230 Teléfono (444)8334683 al 85</div>  

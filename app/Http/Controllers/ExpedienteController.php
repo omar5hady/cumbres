@@ -3361,6 +3361,7 @@ class ExpedienteController extends Controller
             'clientes.coacreditado',
             'contratos.integracion',
             'lotes.fraccionamiento_id',
+            'lotes.emp_constructora',
             'expedientes.valor_escrituras',
             'expedientes.fecha_liquidacion',
             'expedientes.liquidado',

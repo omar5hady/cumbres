@@ -256,7 +256,7 @@ class SolicDetallesController extends Controller
                                     'contratistas.nombre', DB::raw('DATE(solic_detalles.created_at) as fecha'),
                                     'solic_detalles.lunes','solic_detalles.martes','solic_detalles.miercoles',
                                     'solic_detalles.jueves','solic_detalles.viernes','solic_detalles.sabado',
-                                    'solic_detalles.obs_gen',
+                                    'solic_detalles.obs_gen', 'lotes.emp_constructora',
                                     'solic_detalles.horario','entregas.fecha_entrega_real','lotes.calle', 'lotes.numero')
                             ->where('solic_detalles.id','=',$id)
                             ->get();
@@ -706,7 +706,7 @@ class SolicDetallesController extends Controller
                                     'contratistas.nombre', DB::raw('DATE(solic_detalles.created_at) as fecha'),
                                     'solic_detalles.lunes','solic_detalles.martes','solic_detalles.miercoles',
                                     'solic_detalles.jueves','solic_detalles.viernes','solic_detalles.sabado',
-                                    'solic_detalles.obs_gen',
+                                    'solic_detalles.obs_gen','lotes.emp_constructora',
                                     'solic_detalles.horario','entregas.fecha_entrega_real','lotes.calle', 'lotes.numero')
                             ->where('solic_detalles.id','=',$id)
                             ->get();
