@@ -1610,6 +1610,7 @@ class RevisionPreviaController extends Controller
                         'expedientes.fecha_firma_esc',
                         'lotes.fecha_entrega_obra',
                         'lotes.emp_constructora',
+                        'lotes.emp_terreno',
                         'lotes.id as loteId',
                         'entregas.revision_previa',
                         'entregas.fecha_program',

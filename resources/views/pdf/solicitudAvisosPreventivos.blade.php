@@ -28,10 +28,10 @@ body {
     <div style="clear:both;">
         
         <div style="float: left; margin-top: 5px; margin-left: 20px;">
-            @if(!$solicitud[0]->emp_constructora == 'Grupo Constructor Cumbres')
-                <IMG SRC="img/contratos/logoContrato.jpg" width="130" height="130" >
-            @else
+            @if($solicitud[0]->emp_constructora == 'CONCRETANIA' && $solicitud[0]->emp_terreno == 'CONCRETANIA')
                 <IMG SRC="img/contratos/logoContratoC1.png" width="130" height="130" >
+            @else
+                <IMG SRC="img/contratos/logoContrato.jpg" width="130" height="130" >
             @endif
         </div>  
 
@@ -45,29 +45,19 @@ body {
                 <div colspan="8" class="table-cell1"><br></div>
             </div>
 
-            @if(!$solicitud[0]->emp_constructora == 'Grupo Constructor Cumbres')
-                <div class="table-row">
-                    <div  class="table-cell1"></div>
-                    <div colspan="7" class="table-cell2"> <b>GRUPO CONSTRUCTOR CUMBRES, S.A. DE C.V.</div>
-                </div>
-            @else
+            @if($solicitud[0]->emp_constructora == 'CONCRETANIA' && $solicitud[0]->emp_terreno == 'CONCRETANIA')
                 <div class="table-row">
                     <div  class="table-cell1"></div>
                     <div colspan="7" class="table-cell2"> <b>CONCRETANIA, S.A. DE C.V.</div>
                 </div>
+            @else
+                <div class="table-row">
+                    <div  class="table-cell1"></div>
+                    <div colspan="7" class="table-cell2"> <b>GRUPO CONSTRUCTOR CUMBRES, S.A. DE C.V.</div>
+                </div>
             @endif
 
-        @if(!$solicitud[0]->emp_constructora == 'Grupo Constructor Cumbres')
-            <div class="table-row">
-                <div class="table-cell2"></div>
-                    <div colspan="8" class="table-cell2"> <b>Manuel Gutiérrez Najera No. 190 esquina  </div>  
-                </div>
-
-            <div class="table-row">
-                <div class="table-cell2"></div>
-                    <div colspan="8" class="table-cell2"> <b>con Nicolas Zapata Col. Tequisquiapan </div>  
-                </div>
-        @else
+        @if($solicitud[0]->emp_constructora == 'CONCRETANIA' && $solicitud[0]->emp_terreno == 'CONCRETANIA')
             <div class="table-row">
                 <div class="table-cell2"></div>
                     <div colspan="8" class="table-cell2"> <b>Manuel Gutiérrez Najera No. 180  </div>  
@@ -76,6 +66,17 @@ body {
             <div class="table-row">
                 <div class="table-cell2"></div>
                     <div colspan="8" class="table-cell2"> <b>Col. Tequisquiapan </div>  
+                </div>
+        @else
+
+            <div class="table-row">
+                <div class="table-cell2"></div>
+                    <div colspan="8" class="table-cell2"> <b>Manuel Gutiérrez Najera No. 190 esquina  </div>  
+                </div>
+
+            <div class="table-row">
+                <div class="table-cell2"></div>
+                    <div colspan="8" class="table-cell2"> <b>con Nicolas Zapata Col. Tequisquiapan </div>  
                 </div>
         @endif
             <div class="table-row">
@@ -192,11 +193,11 @@ body {
         <div style="clear:both;">
             
                 <div style="float: left; margin-top: 5px; margin-left: 20px;">
-                @if(!$solicitud[0]->emp_constructora == 'Grupo Constructor Cumbres')
-                    <IMG SRC="img/contratos/logoContrato.jpg" width="130" height="130" >
-                @else
-                    <IMG SRC="img/contratos/logoContratoC1.png" width="130" height="130" >
-                @endif
+                    @if($solicitud[0]->emp_constructora == 'CONCRETANIA' && $solicitud[0]->emp_terreno == 'CONCRETANIA')
+                        <IMG SRC="img/contratos/logoContratoC1.png" width="130" height="130" >
+                    @else
+                        <IMG SRC="img/contratos/logoContrato.jpg" width="130" height="130" >
+                    @endif
                 </div>
         <div  class="table" >
             <div class="table-row">
@@ -211,28 +212,28 @@ body {
     
           <div class="table-row">
                 <div  class="table-cell1"></div>
-                @if(!$solicitud[0]->emp_constructora == 'Grupo Constructor Cumbres')
-                <div colspan="7" class="table-cell2"> <b>GRUPO CONSTRUCTOR CUMBRES, S.A. DE C.V.</div>
+                @if($solicitud[0]->emp_constructora == 'CONCRETANIA' && $solicitud[0]->emp_terreno == 'CONCRETANIA')
+                    <div colspan="7" class="table-cell2"> <b>CONCRETANIA, S.A. DE C.V.</div>
                 @else
-                <div colspan="7" class="table-cell2"> <b>CONCRETANIA, S.A. DE C.V.</div>
+                    <div colspan="7" class="table-cell2"> <b>GRUPO CONSTRUCTOR CUMBRES, S.A. DE C.V.</div>
                 @endif
         </div>
     
         <div class="table-row">
             <div class="table-cell2"></div>
-                @if(!$solicitud[0]->emp_constructora == 'Grupo Constructor Cumbres')
-                <div colspan="8" class="table-cell2"> <b>Manuel Gutiérrez Najera No. 190 esquina  </div>  
+                @if($solicitud[0]->emp_constructora == 'CONCRETANIA' && $solicitud[0]->emp_terreno == 'CONCRETANIA')
+                    <div colspan="8" class="table-cell2"> <b>Manuel Gutiérrez Najera No. 180 </div>  
                 @else
-                <div colspan="8" class="table-cell2"> <b>Manuel Gutiérrez Najera No. 180 </div>  
+                    <div colspan="8" class="table-cell2"> <b>Manuel Gutiérrez Najera No. 190 esquina  </div>  
                 @endif
             </div>
     
     <div class="table-row">
             <div class="table-cell2"></div>
-                @if(!$solicitud[0]->emp_constructora == 'Grupo Constructor Cumbres')
-                <div colspan="8" class="table-cell2"> <b>con Nicolas Zapata Col. Tequisquiapan </div>  
+                @if($solicitud[0]->emp_constructora == 'CONCRETANIA' && $solicitud[0]->emp_terreno == 'CONCRETANIA')
+                    <div colspan="8" class="table-cell2"> <b>Col. Tequisquiapan </div>  
                 @else 
-                <div colspan="8" class="table-cell2"> <b>Col. Tequisquiapan </div>  
+                    <div colspan="8" class="table-cell2"> <b>con Nicolas Zapata Col. Tequisquiapan </div>  
                 @endif
             </div>
             <div class="table-row">

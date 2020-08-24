@@ -31,10 +31,10 @@ body {
 
 <div style="clear:both;">
     <div style="float: left; margin-top: 2px; margin-left: 20px;" >
-        @if($liquidacion[0]->emp_constructora == 'Grupo Constructor Cumbres')
-            <IMG SRC="img/contratos/logoContrato.jpg" width="110" height="110">
-        @else 
+        @if($liquidacion[0]->emp_constructora == 'CONCRETANIA' && $liquidacion[0]->emp_terreno == 'CONCRETANIA')
             <IMG SRC="img/contratos/logoContratoC1.png" width="110" height="110">
+        @else 
+            <IMG SRC="img/contratos/logoContrato.jpg" width="110" height="110">
         @endif
     </div>
     <p style="text-align:right;">San Luis Potosí, San Luis Potosí, a {{$liquidacion[0]->fecha_liquidacion}}</p>

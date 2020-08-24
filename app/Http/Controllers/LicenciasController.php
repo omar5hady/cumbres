@@ -54,6 +54,7 @@ class LicenciasController extends Controller
                     'lotes.lote_comercial',
                     'lotes.id',
                     'lotes.emp_constructora',
+                    'lotes.emp_terreno',
                     'lotes.fraccionamiento_id',
                     'lotes.etapa_id',
                     'lotes.modelo_id',
@@ -1227,6 +1228,7 @@ class LicenciasController extends Controller
                 'lotes.manzana',
                 'lotes.num_lote',
                 'lotes.emp_constructora',
+                'lotes.emp_terreno',
                 'licencias.avance',
                 'lotes.sublote',
                 'modelos.nombre as modelo',
@@ -1978,7 +1980,7 @@ class LicenciasController extends Controller
             ->join('etapas','lotes.etapa_id','=','etapas.id')
             ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
             ->select('licencias.id','licencias.fecha_licencia as fecha','licencias.fecha_acta','licencias.fecha_predial',
-                'licencias.num_licencia','licencias.num_acta', 'lotes.interior', 'lotes.emp_constructora',
+                'licencias.num_licencia','licencias.num_acta', 'lotes.interior', 'lotes.emp_constructora', 'lotes.emp_terreno',
                 'licencias.foto_lic as archivo','licencias.foto_acta','licencias.foto_predial','lotes.manzana','lotes.num_lote',
                 'etapas.num_etapa','fraccionamientos.nombre as proyecto', 'modelos.nombre as modelo', 'lotes.calle', 'lotes.numero',
                 'lotes.precio_base','lotes.obra_extra','lotes.ajuste','lotes.sobreprecio','lotes.excedente_terreno');

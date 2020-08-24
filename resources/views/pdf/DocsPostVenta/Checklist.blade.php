@@ -32,10 +32,10 @@ body {
 <div class="contenedor">
     <div style="width: 720px;">
         <div style="display: inline-block; margin-top:-15px; float: left;" >
-            @if($contratos[0]->emp_constructora == 'Grupo Constructor Cumbres')
-                <IMG SRC="img/checklist.png" width="345" height="75">
-            @else 
+            @if($contratos[0]->emp_constructora == 'CONCRETANIA' && $contratos[0]->emp_terreno == 'CONCRETANIA')
                 <IMG SRC="img/checklistC.png" width="345" height="75">
+            @else 
+                <IMG SRC="img/checklist.png" width="345" height="75">
             @endif
         </div>
 

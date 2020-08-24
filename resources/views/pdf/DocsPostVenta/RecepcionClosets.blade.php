@@ -30,10 +30,10 @@ body {
 <div class="contenedor">
     <div style="width: 720px;">
         <div style="display: inline-block; float: left;" >
-        @if($resultados[0]->emp_constructora == 'Grupo Constructor Cumbres')
-            <IMG SRC="img/logo2.png" width="250" height="50">
-        @else 
+        @if($resultados[0]->emp_constructora == 'CONCRETANIA' && $resultados[0]->emp_terreno == 'CONCRETANIA' )
             <IMG SRC="img/logo2C.png" width="250" height="50">
+        @else 
+            <IMG SRC="img/logo2.png" width="250" height="50">
         @endif
         </div>
         <div style="display: inline-block; float: right;" >
