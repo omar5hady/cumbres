@@ -10,9 +10,9 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Reporte acumulado mensual &nbsp;&nbsp;
                         <!--   Boton Nuevo    -->
-                        <a class="btn btn-success" v-bind:href="'/reprotes/reporteVentasExcel?mes=' + mes + '&anio=' + anio">
+                        <!-- <a class="btn btn-success" v-bind:href="'/reprotes/reporteVentasExcel?mes=' + mes + '&anio=' + anio">
                             <i class="fa fa-file-text"></i>&nbsp; Excel
-                        </a>
+                        </a> -->
                         <!-- <a :href="'/etapa/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel </a> -->
                         <!---->
                     </div>
@@ -101,13 +101,80 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr v-for="lote in arrayExpCreditos" :key="lote.id">
+                                            <tr v-for="lote in arrayExpCreditos" :key="lote.id" v-if="lote.flag == 1 && lote.mes == 1" >
+                                                <td class="td2" v-text="lote.id"></td>
+                                                <td class="td2" v-text="lote.nombre.toUpperCase() + ' ' + lote.apellidos.toUpperCase()"></td>
                                                 <td class="td2" v-text="lote.proyecto"></td>
                                                 <td class="td2" v-text="lote.num_etapa"></td>
                                                 <td class="td2" v-text="lote.manzana"></td>
                                                 <td class="td2" v-text="lote.num_lote"></td>
+                                                <td class="td2" v-text="lote.tipo_credito"></td>
+                                                
+                                            </tr>                             
+                                        </tbody>
+                                    </table>
+                                    <br>
+
+                                    <table class="table2 table-bordered table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="7" class="text-center">Expedientes de contado </th>
+                                            </tr>
+                                            <tr></tr>
+                                            <tr>
+                                                <th colspan="2" class="text-center"> </th>
+                                                <th colspan="4" class="text-center"> Ubicación / Plantio </th>
+                                                <th class="text-center"> </th>
+                                            </tr>
+                                            <tr>
+                                                <th># Referencia</th>
+                                                <th>Cliente</th>
+                                                <th>Fraccionamiento</th>
+                                                <th>Etapa</th>
+                                                <th>Manzana</th>
+                                                <th>Lote</th>
+                                                <th>Canal de Ventas</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="lote in arrayExpContado" :key="lote.id" >
+                                                <td class="td2" v-text="lote.id"></td>
                                                 <td class="td2" v-text="lote.nombre.toUpperCase() + ' ' + lote.apellidos.toUpperCase()"></td>
-                                                <td class="td2" v-text="lote.fecha"></td>
+                                                <td class="td2" v-text="lote.proyecto"></td>
+                                                <td class="td2" v-text="lote.num_etapa"></td>
+                                                <td class="td2" v-text="lote.manzana"></td>
+                                                <td class="td2" v-text="lote.num_lote"></td>
+                                                <td class="td2" v-text="lote.tipo_credito"></td>
+                                                
+                                            </tr>                             
+                                        </tbody>
+                                    </table>
+
+                                    <table class="table2 table-bordered table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="7" class="text-center">Pendientes </th>
+                                            </tr>
+                                            <tr></tr>
+                                            
+                                            <tr>
+                                                <th># Referencia</th>
+                                                <th>Cliente</th>
+                                                <th>Fraccionamiento</th>
+                                                <th>Etapa</th>
+                                                <th>Manzana</th>
+                                                <th>Lote</th>
+                                                <th>Canal de Ventas</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="lote in arrayPendientes" :key="lote.crd_id" >
+                                                <td class="td2" v-text="lote.id"></td>
+                                                <td class="td2" v-text="lote.nombre.toUpperCase() + ' ' + lote.apellidos.toUpperCase()"></td>
+                                                <td class="td2" v-text="lote.proyecto"></td>
+                                                <td class="td2" v-text="lote.num_etapa"></td>
+                                                <td class="td2" v-text="lote.manzana"></td>
+                                                <td class="td2" v-text="lote.num_lote"></td>
                                                 <td class="td2" v-text="lote.tipo_credito"></td>
                                                 
                                             </tr>                             

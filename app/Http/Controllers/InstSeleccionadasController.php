@@ -41,7 +41,7 @@ class InstSeleccionadasController extends Controller
                     'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
                     'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
                     'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                    'lotes.fecha_termino_ventas', 'lotes.emp_constructora',
+                    'lotes.fecha_termino_ventas', 'lotes.emp_constructora', 'lotes.emp_terreno',
                     'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
             ->where('lotes.firmado','=',$request->firmado);
 
@@ -751,7 +751,7 @@ class InstSeleccionadasController extends Controller
                             'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
                             'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
                             'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                            'lotes.fecha_termino_ventas', 'lotes.emp_constructora',
+                            'lotes.fecha_termino_ventas', 'lotes.emp_constructora', 'lotes.emp_terreno',
                             'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
                             ->where('lotes.firmado','=',$request->firmado);
 

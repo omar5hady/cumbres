@@ -2662,6 +2662,7 @@ class ContratoController extends Controller
                 'medios_publicitarios.nombre as medio_publicidad',
                 'lotes.ajuste',
                 'lotes.emp_constructora',
+                'lotes.emp_terreno',
 
                 'inst_seleccionadas.institucion',
                 'personal.nombre',
@@ -2814,6 +2815,7 @@ class ContratoController extends Controller
     {
 
         $cliente = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
             ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
             ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
@@ -2828,6 +2830,8 @@ class ContratoController extends Controller
                 'personal.colonia',
                 'clientes.estado',
                 'clientes.ciudad',
+                'lotes.emp_constructora',
+                'lotes.emp_terreno',
                 'contratos.fecha'
             )
             ->where('contratos.id', '=', $id)->get();
@@ -2879,6 +2883,7 @@ class ContratoController extends Controller
                 'lotes.construccion',
                 'lotes.regimen_condom',
                 'lotes.emp_constructora',
+                'lotes.emp_terreno',
                 'creditos.precio_venta',
 
                 'fraccionamientos.estado as est_proy',
@@ -3039,6 +3044,7 @@ class ContratoController extends Controller
                 'lotes.construccion',
                 'lotes.regimen_condom',
                 'lotes.emp_constructora',
+                'lotes.emp_terreno',
 
                 'fraccionamientos.ciudad as ciudad_proy','fraccionamientos.estado as estado_proy',
 

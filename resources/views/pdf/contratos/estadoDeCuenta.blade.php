@@ -18,11 +18,19 @@
 <body>
     
 <div style="display: inline-block; float: right;" >
-    <IMG SRC="img/contratos/logoContrato.jpg" width="180" height="180">
+    @if($contratos[0]->emp_constructora == 'CONCRETANIA' && $contratos[0]->emp_terreno == 'CONCRETANIA')
+        <IMG SRC="img/contratos/logoContratoC1.png" width="160" height="160">
+    @else
+        <IMG SRC="img/contratos/logoContrato.jpg" width="160" height="160">
+    @endif
         
 </div>
 
-<p style="text-align: center;">GRUPO CONSTRUCTOR CUMBRES, S.A DE C.V.</p>
+@if($contratos[0]->emp_constructora == 'CONCRETANIA' && $contratos[0]->emp_terreno == 'CONCRETANIA')
+    <p style="text-align: center;">CONCRETANIA, S.A DE C.V.</p>
+@else 
+    <p style="text-align: center;">GRUPO CONSTRUCTOR CUMBRES, S.A DE C.V.</p>
+@endif
 <p style="text-align: center;"> <strong> ESTADO DE CUENTA </strong></p>
 
 

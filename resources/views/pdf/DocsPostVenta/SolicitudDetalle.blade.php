@@ -33,7 +33,11 @@
     <div class="contenedor">
         <div style="width: 720px;">
             <div style="display: inline-block; margin-top:-15px; float: left;" >
-                <IMG SRC="img/reportdetalles.png" width="720" height="100">
+                @if($solicitud[0]->emp_constructora == 'CONCRETANIA' && $solicitud[0]->emp_terreno == 'CONCRETANIA')
+                    <IMG SRC="img/reportdetallesC.png" width="720" height="100">
+                @else 
+                    <IMG SRC="img/reportdetalles.png" width="720" height="100">
+                @endif
             </div>
 
             <div class="table" style="float:left; margin-top:110px;">

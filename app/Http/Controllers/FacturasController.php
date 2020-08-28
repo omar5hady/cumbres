@@ -54,6 +54,7 @@ class FacturasController extends Controller
                 'depositos.f_carga_factura_terreno',
 
                 'lotes.emp_constructora',
+                'lotes.emp_terreno',
 
                 'pagos_contratos.restante',
                 'pagos_contratos.monto_pago'

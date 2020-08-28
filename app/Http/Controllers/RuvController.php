@@ -215,7 +215,7 @@ class RuvController extends Controller
                 ->select('lotes.id','lotes.num_lote','lotes.paq_ruv','fraccionamientos.nombre as proyecto',
                         'etapas.num_etapa','modelos.nombre as modelo','emp.empresa','ruvs.fecha_siembra',
                         'ruvs.fecha_carga','ruvs.num_cuv','ruvs.fecha_asignacion','fecha_revision',
-                        'ruvs.fecha_dtu', 'lotes.emp_constructora',
+                        'ruvs.fecha_dtu', 'lotes.emp_constructora', 'lotes.emp_terreno',
                         'personal.nombre','personal.apellidos','lotes.manzana');
 
         

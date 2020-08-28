@@ -1441,7 +1441,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="form-group row" v-if="credito=='Cofinavit'">
+                                    <div class="form-group row" v-if="credito=='Cofinavit' || credito == 'COFINAVIT I.A'">
                                         <label  class="col-md-2 form-control-label" for="text-input">Infonavit</label>
                                         <div class="col-md-2">
                                             <input type="text" pattern="\d*" v-model="infonavit" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
