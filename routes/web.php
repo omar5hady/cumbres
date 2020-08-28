@@ -517,6 +517,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/users/foto/{id}','UserController@updateProfile');
         Route::put('/users/update/password','UserController@updatePassword');
 
+        Route::get('/comments/reminder/', 'UserController@reminderCommentario');
+
     /**************************** RUTAS MODULO CONTRATOS  ***************************/
         Route::get('/contratos','ContratoController@indexContrato');
         Route::get('/creditos_aprobados','ContratoController@indexCreditosAprobados');

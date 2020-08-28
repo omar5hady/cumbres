@@ -411,6 +411,7 @@ class ClienteController extends Controller
             $observacion = new Cliente_observacion();
             $observacion->cliente_id = $persona->id;
             $observacion->comentario = $request->observacion;
+            $observacion->prox_cita = $request->makeRemember;
             $observacion->usuario = Auth::user()->usuario;
             $observacion->save();
 
@@ -560,6 +561,7 @@ class ClienteController extends Controller
             $observacion = new Cliente_observacion();
             $observacion->cliente_id = $cliente->id;
             $observacion->comentario = $request->observacion;
+            $observacion->prox_cita = $request->makeRemember;
             $observacion->usuario = Auth::user()->usuario;
             $observacion->save();
  
@@ -644,7 +646,7 @@ class ClienteController extends Controller
     public function listarObservacion(Request $request){
         if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
-        $observacion = Cliente_observacion::select('comentario','usuario','created_at')
+        $observacion = Cliente_observacion::select('comentario','usuario','created_at', 'prox_cita')
                     ->where('cliente_id','=', $buscar)->orderBy('created_at','desc')->paginate(40);
 
         return [

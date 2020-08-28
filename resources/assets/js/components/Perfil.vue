@@ -8,7 +8,21 @@
         </strong>
       </li>
     </ol>
+    
     <div class="container-fluid">
+        <div class="row">
+            <div v-for="rem in arrayReminders" :key="rem.id" class="col-sm-12 alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>¡No lo olvides! : </strong> {{rem.comentario}} 
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <br>
+                Nombre de cliente: {{rem.apellidos+" "+rem.nombre}}<br>
+                Email <a :href="'mailto:'+rem.email" v-text="rem.email"></a>
+                Tel <a :href="'tel:+'+rem.celular" v-text="rem.celular"></a>
+            </div>
+        </div>
+
         <div class="text-center" v-if="arrayCumple.length >= 1 && arrayCumple.length > 1"> <h6>Deséales un Feliz Cumpleaños a tus Clientes</h6> </div>
         <div v-if="arrayCumple.length >= 1 && arrayCumple.length == 1"> <h6>Deséales un Feliz Cumpleaños a tus Clientes</h6> </div>
         
@@ -341,7 +355,8 @@ export default {
       foto_user: "",
       arrayUsuario: [],
       arrayCumple:[],
-      url: null
+      url: null,
+      arrayReminders:[],
     };
   },
 
@@ -436,11 +451,21 @@ export default {
         .catch(function(error) {
           console.log(error);
         });
+    },
+
+    getReminder(){
+        axios.get('/comments/reminder/').then(
+            response => {
+                console.log(response);
+                this.arrayReminders = response.data;
+            }
+        ).catch(error => console.log(error));
     }
   },
   mounted() {
     this.obtenerUsuario();
     this.getBirthdayPeople();
+    this.getReminder();
   }
 };
 </script>

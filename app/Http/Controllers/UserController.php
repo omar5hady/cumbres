@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use File;
 use Excel;
 use Carbon\Carbon;
+use App\Cliente;
 
 class UserController extends Controller
 {
@@ -1377,5 +1378,17 @@ class UserController extends Controller
             
             )->download('xlsx');
 
+    }
+
+    public function reminderCommentario(){
+
+        $reminders = Cliente::join('clientes_observaciones', 'clientes.id','=','clientes_observaciones.cliente_id')
+            ->join('personal','clientes.id','=','personal.id')
+            ->select('clientes_observaciones.id','celular','apellidos', 'nombre','email', 'comentario','clientes.vendedor_id')
+            ->where('prox_cita','=', Carbon::now()->format('Y-m-d'))
+            ->where('clientes.vendedor_id','=', Auth::user()->id)
+        ->get();
+
+        return $reminders;
     }
 }
