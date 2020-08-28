@@ -28,6 +28,7 @@
                                             <option value="clientes.curp">CURP</option>
                                             <option value="clientes.nss">NSS</option>
                                             <option value="fraccionamientos.nombre">Proyecto</option>
+                                            <option value="personal.celular">Celular</option>
                                             <option v-if="rolId != 2" value="clientes.created_at">Fecha de alta</option>
                                             <option v-if="rolId != 2" value="clientes.vendedor_id">Asesor</option>
                                         </select>
@@ -74,6 +75,7 @@
                                             <option value="clientes.curp">CURP</option>
                                             <option value="clientes.nss">NSS</option>
                                             <option value="fraccionamientos.nombre">Proyecto</option>
+                                            <option value="personal.celular">Celular</option>
                                             <option value="clientes.created_at">Fecha de alta</option>
                                             <option v-if="rolId != 2" value="clientes.vendedor_id">Asesor</option>
                                         </select>
