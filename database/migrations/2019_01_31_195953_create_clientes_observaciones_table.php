@@ -19,6 +19,8 @@ class CreateClientesObservacionesTable extends Migration
             $table->text('comentario');
             $table->string('usuario',50);
 
+            $table->date('prox_cita')->nullable();
+
             $table->timestamps();
 
             $table->foreign('cliente_id')->references('id')->on('clientes')->onDelete('cascade');

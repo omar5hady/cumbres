@@ -514,6 +514,21 @@
                                         <textarea rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observaciones"></textarea>
                                     </div>
                                 </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <!--label for="">Crear recordatorio</label-->
+                                        <button v-if="makeReminder == 1" @click="makeReminder = 0" class="btn-sm btn btn-primary">
+                                            Crear recordatorio
+                                            <i class="fa fa-toggle-on" style="font-size:24px"></i>
+                                        </button>
+                                        <button v-else @click="makeReminder = 1" class="btn-sm btn btn-primary">
+                                            Crear recordatorio
+                                            <i class="fa fa-toggle-off" style="font-size:24px"></i>
+                                        </button>
+                                        <br><br>
+                                        <input v-if="makeReminder" v-model="makeRemember" type="date" class="form-control">
+                                    </div>
+                                </div>
                                  
                                  <div class="col-md-12">
                                     <!-- Div para mostrar los errores que mande validerFraccionamiento -->
@@ -862,7 +877,20 @@
                                     </div>
                                     <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo', nombre, apellidos),listarObservacion(1,id)">Ver todos</button>
                                 </div>
-
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <button v-if="makeReminder == 1" @click="makeReminder = 0" class="btn-sm btn btn-primary">
+                                            Crear recordatorio
+                                            <i class="fa fa-toggle-on" style="font-size:24px"></i>
+                                        </button>
+                                        <button v-else @click="makeReminder = 1" class="btn-sm btn btn-primary">
+                                            Crear recordatorio
+                                            <i class="fa fa-toggle-off" style="font-size:24px"></i>
+                                        </button>
+                                        <br><br>
+                                        <input v-if="makeReminder" v-model="makeRemember" type="date" class="form-control">
+                                    </div>
+                                </div>
                                 
                                  <div class="col-md-12">
                                     <!-- Div para mostrar los errores que mande validerFraccionamiento -->
@@ -1148,6 +1176,7 @@
                                             <th>Usuario</th>
                                             <th>Observacion</th>
                                             <th>Fecha</th>
+                                            <th>Cita</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -1156,6 +1185,7 @@
                                             <td v-text="observacion.usuario" ></td>
                                             <td v-text="observacion.comentario" ></td>
                                             <td v-text="observacion.created_at"></td>
+                                            <td v-text="observacion.prox_cita"></td>
                                         </tr>                               
                                     </tbody>
                                 </table>
@@ -1344,8 +1374,9 @@
                 arrayFraccionamientosVue : [],
                 arrayObservacion: [],
                 arrayAsesores : [],
-                fraccionamiento:''
-                
+                fraccionamiento:'',
+                makeRemember:'',
+                makeReminder:0,
             }
         },
         components:{
@@ -1671,7 +1702,7 @@
                 this.rfc = p1 + p2;
 
                 this.selectRFC(this.rfc);
-        },
+            },
             limpiarBusqueda(){
                 let me=this;
                 me.buscar= "";
@@ -1916,9 +1947,11 @@
                     'tipo_casa_coa':this.tipo_casa_coa,
                     'lugar_nacimiento_coa': this.lugar_nacimiento_coa,
                     'nombre_recomendado':this.nombre_recomendado,
+                    'makeRemember':this.makeRemember,
                 }).then(function (response){
                     me.proceso=false;
                     me.listado=1;
+                    me.makeRemember = "";
                     me.limpiarDatos();
                     me.listarProspectos(1,me.buscar,me.buscar2,me.buscar3,me.b_clasificacion,me.criterio);
                     //Se muestra mensaje Success
@@ -2035,9 +2068,11 @@
                     'edo_civil_coa':this.e_civil_coa,
                     'tipo_casa_coa':this.tipo_casa_coa,
                     'lugar_nacimiento_coa': this.lugar_nacimiento_coa,
+                    'makeRemember':this.makeRemember,
                 }).then(function (response){
                     me.proceso=false;
                     me.listado=1;
+                    me.makeRemember = "";
                     me.limpiarDatos();
                     me.listarProspectos(me.pagination.current_page,me.buscar,me.buscar2,me.buscar3,me.b_clasificacion,me.criterio);
                     
