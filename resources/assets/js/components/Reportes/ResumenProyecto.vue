@@ -293,6 +293,7 @@
                 enganche:0,
                 directo:0,
                 credito:0,
+                contratos:0,
                 saldo:0,
                 monto_cobrado:0,
                 lotes:0,
@@ -352,12 +353,13 @@
                     me.lotes = respuesta.lotes;
                     me.disponibles = respuesta.disponibles;
                     me.vendidas = respuesta.vendidas;
+                    me.contratos = respuesta.contratos;
                     me.individualizadas = respuesta.individualizadas;
                     me.habilitados = respuesta.habilitados;
                     me.fecha_inicio = respuesta.fecha_inicio;
                     me.meses = respuesta.diferencia;
 
-                    me.promedioMensual = ((me.individualizadas + me.vendidas)/me.meses).toFixed(2);
+                    me.promedioMensual = ((me.individualizadas + me.vendidas + me.contratos)/me.meses).toFixed(2);
 
                     me.precio_venta = respuesta.sumas[0].precio - respuesta.sumas[0].descuento + respuesta.sumas[0].paquete;
                     me.enganche = respuesta.sumas[0].enganche;

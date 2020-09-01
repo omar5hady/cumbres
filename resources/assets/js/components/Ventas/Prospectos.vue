@@ -1966,6 +1966,7 @@
                         })
                 }).catch(function (error){
                     console.log(error);
+                    this.proceso=false;
                 });
             },
 

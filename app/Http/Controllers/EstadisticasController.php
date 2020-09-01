@@ -2132,7 +2132,8 @@ class EstadisticasController extends Controller
                                 ->select('lotes.id')
                                 ->where('lotes.fraccionamiento_id','=',$proyecto)
                                 ->where('contratos.status','=',1)
-                                ->where('contratos.integracion','=',0)->distinct()
+                                ->where('contratos.integracion','=',0)
+                                ->distinct()
                                 ->count();
                 
                 $individualizadas = Expediente::join('contratos','expedientes.id','=','contratos.id')
@@ -2242,6 +2243,7 @@ class EstadisticasController extends Controller
         return[ 'lotes'=>$lotes, 
                 'disponibles'=>$disponibles,
                 'vendidas'=>$vendidas,
+                'contratos'=>$contratos,
                 'individualizadas'=>$individualizadas,
                 'sumas'=>$sumas,
                 'directo'=>$sumaDirecto,
