@@ -20,6 +20,8 @@ class CreateHistEstimacionesTable extends Migration
             $table->integer('num_estimacion');
             $table->integer('vol');
             $table->double('costo',10,2)->default(0);
+
+            $table->double('total_estimacion',10,2)->default(0);
             $table->timestamps();
         });
     }

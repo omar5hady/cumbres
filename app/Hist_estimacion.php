@@ -12,7 +12,8 @@ class Hist_estimacion extends Model
         'estimacion_id',
         'num_estimacion',
         'vol',
-        'costo'
+        'costo',
+        'total_estimacion'
     ];
 
 
