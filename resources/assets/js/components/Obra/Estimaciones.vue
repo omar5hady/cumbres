@@ -15,6 +15,12 @@
                         <button v-if="listado==0" type="button" @click="indexEstimaciones(1),listado=1" class="btn btn-success">
                             <i class="fa fa-mail-reply"></i> Regresar
                         </button>
+
+                        <button v-if="listado == 1" type="button" @click="abrirModal('resumen')" class="btn btn-dark">
+                            <i class="icon-share-alt"></i>&nbsp;Resumen de estimaciones
+                        </button>
+
+
                     </div>
 
             <!----------------- Listado Contratos ------------------------------>
@@ -109,6 +115,12 @@
                                         <label class="col-md-2 form-control-label" for="text-input">Importe del Anticipo</label>
                                         <div class="col-md-4">
                                              $ {{formatNumber(total_anticipo)}}
+                                        </div>
+                                        <div class="col-md-1">
+                                        </div>
+                                        <label class="col-md-2 form-control-label" for="text-input">Avance Global</label>
+                                        <div class="col-md-2">
+                                                {{(formatNumber(total_acum_actual/total_importe)*100)}}%
                                         </div>
                                     </div>
                                 </div> 
@@ -512,7 +524,7 @@
                                     </div>
                                 </div>
                             </template>
-                            <template v-else>
+                            <template v-else-if="tipoAccion == 2">
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Cantidad</label>
                                     <div class="col-md-4">
@@ -534,6 +546,38 @@
                                     </div>
                                 </div>
                             </template>
+
+                             <template v-else-if="tipoAccion == 3">
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Fraccionamiento</label>
+                                    <div class="col-md-5">
+                                        <select class="form-control" v-model="fraccionamiento">
+                                            <option value="">Seleccione</option>
+                                            <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Contratista</label>
+                                    <div class="col-md-5">
+                                        <select class="form-control" v-model="contratista">
+                                            <option value=''> Seleccione </option>
+                                            <option v-for="contratista in arrayContratistas" :key="contratista.id" :value="contratista.id" v-text="contratista.nombre"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Emp. Constructora</label>
+                                    <div class="col-md-5">
+                                        <select class="form-control" v-model="constructora" >
+                                            <option value="">Empresa constructora</option>
+                                            <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </template>
                                 
                                 
                             </form>
@@ -545,6 +589,11 @@
                                 type="button" class="btn btn-primary" @click="storeAnticipos()">Guardar Anticipo</button>
                             <button v-if="tipoAccion == 2 && fg_cantidad != 0 " 
                                 type="button" class="btn btn-primary" @click="storeFondoG()">Guardar FG</button>
+                            
+                            <a v-if="tipoAccion == 3" class="btn btn-success" v-bind:href="'/estimaciones/prueba?fraccionamiento='+ fraccionamiento 
+                                    + '&constructora='+ constructora + '&contratista='+ contratista">
+                                    <i class="fa fa-file-text"></i>&nbsp; Descargar excel
+                                </a>
                         </div>
                     </div> 
                     <!-- /.modal-content -->
@@ -569,6 +618,10 @@
         },
         data(){
             return{
+                contratista:'',
+                fraccionamiento:'',
+                constructora:'',
+
                 listado:1,
                 nueva:0,
                 arrayNumEstim:[],
@@ -581,8 +634,11 @@
                 aviso_id:0,
                 proceso:false,
                 arrayEstimaciones:[],
+                arrayFraccionamientos:[],
+                empresas:[],
                 
                 arrayContratos:[],
+                arrayContratistas:[],
 
                 arrayPartidas:[],
                 pagination2 : {
@@ -833,6 +889,51 @@
                
             },
 
+            selectContratistas(){
+                let me = this;
+                me.arrayContratistas = [];
+                var url = '/select_contratistas';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayContratistas = respuesta.contratista;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            selectFraccionamientos(){
+                let me = this;
+                if(me.modal == 0){
+                me.buscar=""
+                me.buscar2=""
+                me.buscar3=""
+                }
+                
+                me.arrayFraccionamientos=[];
+                var url = '/select_fraccionamiento';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayFraccionamientos = respuesta.fraccionamientos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            getEmpresa(){
+                let me = this;
+                me.empresas=[];
+                var url = '/lotes/empresa/select';
+                axios.get(url).then(function (response) {
+                    var respuesta = response;
+                    me.empresas = respuesta.data.empresas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
             formatNumber(value) {
                 let val = (value/1).toFixed(2)
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
@@ -956,6 +1057,20 @@
                         this.fg_cantidad = 0;
                         this.monto_fg = 0;
                         this.fecha_fg = '';
+                        break;
+                    }
+
+                    case 'resumen':
+                    {
+                        this.selectFraccionamientos();
+                        this.getEmpresa();
+                        this.selectContratistas();
+                        this.modal1 = 1;
+                        this.tipoAccion = 3;
+                        this.tituloModal = 'Resumen de estimaciones';
+                        this.fraccionamiento = '';
+                        this.contratista = '';
+                        this.constructora = '';
                         break;
                     }
                     

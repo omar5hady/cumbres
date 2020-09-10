@@ -417,6 +417,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/estimaciones/storeAnticipo','IniObraController@storeAnticipo');
         Route::post('/estimaciones/storeFG','IniObraController@storeFG');
 
+        
+        Route::get('/estimaciones/prueba','EstimacionController@prueba');
+
 
     ////////////////////        RUTAS PARTIDAS   /////////////////////////////////
         Route::get('/partidas','PartidaController@index');

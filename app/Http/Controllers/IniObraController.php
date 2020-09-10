@@ -923,7 +923,6 @@ class IniObraController extends Controller
                                 ->where('estimaciones.aviso_id','=',$request->clave);
 
         if($request->numero == ''){
-            
             $est = $est->orderBy('num_estimacion','desc')->distinct()->get();
         }
         else{
@@ -1407,11 +1406,7 @@ class IniObraController extends Controller
 
             
             });
-        }
-
-            
-            
-            )->download('xls');
+        })->download('xls');
     }
 
     public function storeEstimacion(Request $request){
@@ -1441,14 +1436,14 @@ class IniObraController extends Controller
         $anticipo->save();
     }
 
-    private function getAnticipos($aviso){
+    public function getAnticipos($aviso){
         $anticipos = Anticipo_estimacion::select('id','fecha_anticipo','monto_anticipo')
                     ->where('aviso_id','=',$aviso)->orderBy('fecha_anticipo','asc')->get();
         
         return $anticipos;
     }
 
-    private function getFG($aviso){
+    public function getFG($aviso){
         $fondos = Fg_estimacion::select('id','cantidad','monto_fg','fecha_fg')
                     ->where('aviso_id','=',$aviso)->orderBy('id','asc')->get();
         
