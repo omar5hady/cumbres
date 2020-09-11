@@ -74,7 +74,7 @@
                                         <td v-if="fraccionamiento.tipo_proyecto==1" v-text="'Lotificación'"></td>
                                         <td v-if="fraccionamiento.tipo_proyecto==2" v-text="'Departamento'"></td>
                                         <td v-if="fraccionamiento.tipo_proyecto==3" v-text="'Terreno'"></td>
-                                        <td v-text="fraccionamiento.calle"></td>
+                                        <td v-text="fraccionamiento.calle + ' No. ' + fraccionamiento.numero"></td>
                                         <td v-text="fraccionamiento.colonia"></td>
                                         <td v-text="fraccionamiento.estado"></td>
                                         <td v-text="fraccionamiento.delegacion"></td>
@@ -133,8 +133,12 @@
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Calle</label>
-                                    <div class="col-md-9">
+                                    <div class="col-md-4">
                                         <input type="text" v-model="calle" class="form-control" placeholder="Calle">
+                                    </div>
+                                    <label class="col-md-2 form-control-label" for="text-input">Num. </label>
+                                    <div class="col-md-3">
+                                        <input type="number" min="0" v-model="numero" class="form-control" placeholder="Numero">
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -302,6 +306,7 @@
                 ciudad : '',
                 delegacion: '',
                 cp: 0,
+                numero : 0,
                 fecha_ini_venta:'',
                 archivo_planos: '',
                 archivo_escrituras: '',
@@ -486,6 +491,7 @@
                     'estado': this.estado,
                     'ciudad': this.ciudad,
                     'delegacion' : this.delegacion,
+                    'numero' : this.numero,
                     'cp' : this.cp
                 }).then(function (response){
                     me.proceso=false;
@@ -522,6 +528,7 @@
                     'delegacion' : this.delegacion,
                     'cp' : this.cp,
                     'id' : this.id,
+                    'numero' : this.numero,
                     'fecha_ini_venta' : this.fecha_ini_venta
                 }).then(function (response){
                     
@@ -636,6 +643,7 @@
                                 this.ciudad ='';
                                 this.delegacion = '';
                                 this.cp = 0;
+                                this.numero = 0;
                                 this.tipoAccion = 1;
                                 break;
                             }
@@ -654,6 +662,7 @@
                                 this.ciudad=data['ciudad'];
                                 this.delegacion=data['delegacion'];
                                 this.cp=data['cp'];
+                                this.numero = data['numero'];
                                 this.selectCiudades(this.estado);
                                 break;
                             }

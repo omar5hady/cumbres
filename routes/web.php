@@ -402,9 +402,13 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/licencias/indexVisita','LicenciasController@indexVisita');
         Route::get('/licencias/excelVisita','LicenciasController@excelVisita');
         Route::put('/licencias/progFechaVisita','LicenciasController@AsigFechaVisita');
+        Route::get(' /avisoObra/siroc','IniObraController@imprimirSiroc');
+       
 
-        Route::post('/formSubmitContratoObra/{id}','IniObraController@formSubmitContratoObra'); //carga de Avaluo
-        Route::get('/downloadContratoObra/{fileName}' , 'IniObraController@downloadFile'); //descarga de Avaluo
+        Route::post('/formSubmitContratoObra/{id}','IniObraController@formSubmitContratoObra'); 
+        Route::post('/formSubmitRegistroObra/{id}','IniObraController@formSubmitRegistroObra'); 
+        Route::get('/downloadContratoObra/{fileName}' , 'IniObraController@downloadFile'); 
+        Route::get('/downloadRegistroObra/{fileName}' , 'IniObraController@downloadRegistroObra'); 
 
     /////////////////////////// RUTAS ESTIMACIONES ////////////////
         Route::get('/estimaciones/getSinEstimaciones','IniObraController@getSinEstimaciones');

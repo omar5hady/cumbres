@@ -27,6 +27,8 @@ class CreateIniObrasTable extends Migration
             $table->float('costo_indirecto_porcentaje')->default(0);
             $table->double('total_anticipo');
             $table->string('descripcion_corta')->nullable();
+            $table->string('calle1')->nullable();
+            $table->string('calle2')->nullable();
             $table->string('descripcion_larga')->nullable();
             $table->double('total_superficie')->nullable();
             $table->boolean('iva')->default(0);
@@ -38,6 +40,7 @@ class CreateIniObrasTable extends Migration
             $table->integer('num_casas')->default(0);
 
             $table->string('documento')->nullable();
+            $table->string('registro_obra')->nullable();
 
             $table->timestamps();
 

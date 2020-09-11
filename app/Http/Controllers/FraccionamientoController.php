@@ -122,6 +122,7 @@ class FraccionamientoController extends Controller
             $usuario_id = Auth::user()->id;
             $fraccionamiento = new Fraccionamiento();
             $fraccionamiento->nombre = $proyecto;
+            $fraccionamiento->numero = $request->numero;
             $fraccionamiento->tipo_proyecto = $request->tipo_proyecto;
             $fraccionamiento->calle = $request->calle;
             $fraccionamiento->colonia = $request->colonia;
@@ -185,6 +186,7 @@ class FraccionamientoController extends Controller
         $fraccionamiento->nombre = $proyecto;
         $fraccionamiento->tipo_proyecto = $request->tipo_proyecto;
         $fraccionamiento->calle = $request->calle;
+        $fraccionamiento->numero = $request->numero;
         $fraccionamiento->colonia = $request->colonia;
         $fraccionamiento->estado = $request->estado;
         $fraccionamiento->ciudad = $request->ciudad;

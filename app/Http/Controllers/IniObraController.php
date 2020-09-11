@@ -33,7 +33,7 @@ class IniObraController extends Controller
             ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
             ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
             'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto', 'ini_obras.documento','ini_obras.total_importe',
-            'ini_obras.total_superficie','ini_obras.emp_constructora',
+            'ini_obras.total_superficie','ini_obras.emp_constructora', 'ini_obras.calle1', 'ini_obras.calle2', 'ini_obras.registro_obra',
             'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto');
         
         if($request->empresa != ''){
@@ -175,7 +175,7 @@ class IniObraController extends Controller
         $id = $request->id;
         $ini_obra = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
         ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
-        ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
+        ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin', 'ini_obras.calle1', 'ini_obras.calle2',
             'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto','ini_obras.total_importe',
             'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto','ini_obras.anticipo',
             'ini_obras.total_anticipo','ini_obras.costo_indirecto_porcentaje','ini_obras.fraccionamiento_id',
@@ -215,6 +215,8 @@ class IniObraController extends Controller
             $ini_obra->clave = $request->clave;
             $ini_obra->f_ini = $fecha_ini;
             $ini_obra->f_fin = $fecha_fin;
+            $ini_obra->calle1 = $request->calle1;
+            $ini_obra->calle2 = $request->calle2;
             $ini_obra->total_importe = $request->total_importe;
             $ini_obra->total_costo_directo = $request->total_costo_directo;
             $ini_obra->total_costo_indirecto =  $request->total_costo_indirecto;
@@ -361,6 +363,8 @@ class IniObraController extends Controller
             $ini_obra->clave = $request->clave;
             $ini_obra->f_ini = $fecha_ini;
             $ini_obra->f_fin = $fecha_fin;
+            $ini_obra->calle1 = $request->calle1;
+            $ini_obra->calle2 = $request->calle2;
             $ini_obra->total_importe = $request->total_importe;
             $ini_obra->total_costo_directo = $request->total_costo_directo;
             $ini_obra->total_costo_indirecto =  $request->total_costo_indirecto;
@@ -788,10 +792,55 @@ class IniObraController extends Controller
         }
     }
 
+    public function formSubmitRegistroObra(Request $request, $id)
+    {
+        if(!$request->ajax() || Auth::user()->rol_id == 11 || Auth::user()->rol_id == 9)return redirect('/');
+        $pdfAnterior = Ini_obra::select('registro_obra', 'id')
+            ->where('id', '=', $id)
+            ->get();
+        if ($pdfAnterior->isEmpty() == 1) {
+            $fileName = time() . '.' . $request->pdf->getClientOriginalExtension();
+            $moved =  $request->pdf->move(public_path('/files/contratos/registro_obra/'), $fileName);
+
+            if ($moved) {
+                if (!$request->ajax()) return redirect('/');
+                $documento = Ini_obra::findOrFail($request->id);
+                $documento->registro_obra = $fileName;
+                $documento->save(); //Insert
+
+            }
+
+            return back();
+        } else {
+            $pathAnterior = public_path() . '/files/contratos/registro_obra/' . $pdfAnterior[0]->documento;
+            File::delete($pathAnterior);
+
+            $fileName = time() . '.' . $request->pdf->getClientOriginalExtension();
+            $moved =  $request->pdf->move(public_path('/files/contratos/registro_obra/'), $fileName);
+
+            if ($moved) {
+                if (!$request->ajax()) return redirect('/');
+                $documento = Ini_obra::findOrFail($request->id);
+                $documento->registro_obra = $fileName;
+                $documento->save(); //Insert
+
+            }
+
+            return back();
+        }
+    }
+
     public function downloadFile($fileName)
     {
 
         $pathtoFile = public_path() . '/files/contratos/obra/' . $fileName;
+        return response()->download($pathtoFile);
+    }
+
+    public function downloadRegistroObra($fileName)
+    {
+
+        $pathtoFile = public_path() . '/files/contratos/registro_obra/' . $fileName;
         return response()->download($pathtoFile);
     }
 
@@ -1448,6 +1497,218 @@ class IniObraController extends Controller
                     ->where('aviso_id','=',$aviso)->orderBy('id','asc')->get();
         
         return $fondos;
+    }
+
+    public function imprimirSiroc(Request $request){
+        $aviso = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
+            ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
+            ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
+                'ini_obras.total_importe',
+                'ini_obras.total_superficie',
+                'ini_obras.emp_constructora', 
+                'ini_obras.calle1', 
+                'ini_obras.calle2',
+                'contratistas.nombre as contratista',
+                'fraccionamientos.nombre as proyecto',
+                'fraccionamientos.calle',
+                'fraccionamientos.colonia',
+                'fraccionamientos.estado',
+                'fraccionamientos.ciudad',
+                'fraccionamientos.cp',
+                'fraccionamientos.numero',
+                'ini_obras.tipo'
+            )
+            ->where('ini_obras.id','=',$request->id)->get();
+        
+        return Excel::create('SIROC '.$aviso[0]->clave , function($excel) use ($aviso){
+            $excel->sheet($aviso[0]->clave, function($sheet) use ($aviso){
+                
+                /////////// MergeCells
+                    $sheet->mergeCells('A1:H1'); $sheet->setBorder('A1:H1', 'thick');
+                    $sheet->mergeCells('A6:H6'); $sheet->setBorder('A6:H6', 'thick');
+                    $sheet->mergeCells('A14:H14'); $sheet->setBorder('A14:H14', 'thick');
+                    $sheet->mergeCells('A20:H20'); $sheet->setBorder('A20:H20', 'thick');
+                    $sheet->mergeCells('A38:H38'); $sheet->setBorder('A38:H38', 'thick');
+                    $sheet->mergeCells('A39:H44'); $sheet->setBorder('A39:H44', 'thin');
+
+                   
+
+                    $sheet->mergeCells('A3:B3'); $sheet->setBorder('C3:C4', 'thin');
+                    $sheet->mergeCells('A4:B4'); 
+
+                    $sheet->mergeCells('A8:B8'); $sheet->setBorder('C8:C12', 'thin');
+                    $sheet->mergeCells('A9:B9');
+                    $sheet->mergeCells('A10:B10');
+                    $sheet->mergeCells('A11:B11');
+                    $sheet->mergeCells('A12:B12');
+                    
+
+                    $sheet->mergeCells('A18:B18');  $sheet->setBorder('C16:C18', 'thin');
+                    $sheet->mergeCells('A16:B16');
+                    $sheet->mergeCells('A17:B17');
+
+                    $sheet->mergeCells('C3:H3');
+                    $sheet->mergeCells('C4:H4');
+                    $sheet->mergeCells('C8:H8');
+                    $sheet->mergeCells('C9:H9');
+                    $sheet->mergeCells('C10:H10');
+                    $sheet->mergeCells('C11:H11');
+                    $sheet->mergeCells('C12:H12');
+
+                    $sheet->mergeCells('C18:H18');
+                    $sheet->mergeCells('C16:H16');
+                    $sheet->mergeCells('C17:H17');
+                    $sheet->mergeCells('C25:H25'); $sheet->setBorder('C25', 'thin');
+
+                    $sheet->mergeCells('E31:G31'); $sheet->setBorder('C25', 'thin');
+                    $sheet->mergeCells('E34:G34'); $sheet->setBorder('E31', 'thin');
+                    $sheet->mergeCells('E36:F36'); $sheet->setBorder('C34', 'thin');
+
+                    $sheet->mergeCells('A22:B22');
+                    $sheet->mergeCells('A24:B24');
+                    $sheet->mergeCells('A26:B26');
+                    $sheet->mergeCells('A29:B29');
+                    $sheet->mergeCells('A33:B33'); $sheet->setBorder('C36', 'thin');
+                    $sheet->mergeCells('A36:B36'); $sheet->setBorder('G36', 'thin');
+
+                    $sheet->setBorder('D22', 'thick');
+                    $sheet->setBorder('F22', 'thick');
+                    $sheet->setBorder('D27', 'thick');
+                    $sheet->setBorder('F27', 'thick');
+                    $sheet->setBorder('H27', 'thick');
+                    
+                    
+                    $sheet->setSize('A1', 35, 20);
+                    $sheet->setSize('C1', 20, 20);
+                    $sheet->setSize('D1', 4, 20);
+                    $sheet->setSize('F1', 4, 20);
+                    $sheet->setSize('E1', 25, 20);
+                    $sheet->setSize('H1', 4, 20);
+                    $sheet->setSize('G1', 25, 20);
+
+    
+                $sheet->cell('A1', function($cell) {
+                    // manipulate the cell
+                    $cell->setValue(  'SIROC');
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(14);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                });
+
+                $sheet->cell('A6', function($cell) {
+                    // manipulate the cell
+                    $cell->setValue(  'DIRECCION DE LA OBRA');
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(11);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                });
+
+                $sheet->cell('A38', function($cell) {
+                    // manipulate the cell
+                    $cell->setValue(  'OBSERVACIONES');
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(11);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                });
+
+                $sheet->cell('A14', function($cell) {
+                    // manipulate the cell
+                    $cell->setValue(  'UBICACIÓN DE LA OBRA');
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(11);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                });
+
+                $sheet->cell('A20', function($cell) {
+                    // manipulate the cell
+                    $cell->setValue(  'OBRA');
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(11);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                });
+                
+                $ciudad = $aviso[0]->ciudad.', '.$aviso[0]->estado;
+    
+                $sheet->setCellValue('A3', 'NOMBRE CONTRATISTA: ' ); 
+                $sheet->setCellValue('A4', 'REFERENCIA CONTRATO: ' ); 
+                $sheet->setCellValue('A8', 'CALLE:' ); 
+                $sheet->setCellValue('A9', 'NUMERO INT/EXT: ' ); 
+                $sheet->setCellValue('A10', 'COLONIA: ' ); 
+                $sheet->setCellValue('A11', 'CIUDAD/EDO: ' ); 
+                $sheet->setCellValue('A12', 'CODIGO POSTAL: ' ); 
+                $sheet->setCellValue('A16', 'ENTRE CALLE: ' ); 
+                $sheet->setCellValue('A17', 'ENTRE CALLE: ' ); 
+                $sheet->setCellValue('A18', 'ENTRE CALLE: ' ); 
+
+                $sheet->setCellValue('A22', 'CLASE DE OBRA: ' ); 
+                $sheet->setCellValue('A24', 'TIPO DE OBRA: ' ); 
+                $sheet->setCellValue('A26', 'TIPO DE PATRON: ' ); 
+                $sheet->setCellValue('A29', 'MONTO DE LA OBRA: ' ); 
+                $sheet->setCellValue('A33', 'SUPERFICIE DE CONSTRUCCIÓN: ' ); 
+                $sheet->setCellValue('A36', 'FECHA DE INICIO: ' );  
+
+                $sheet->setCellValue('C3', strtoupper($aviso[0]->contratista) ); 
+                $sheet->setCellValue('C4', strtoupper($aviso[0]->clave) ); 
+                $sheet->setCellValue('C8', strtoupper($aviso[0]->calle) ); 
+                $sheet->setCellValue('C9', 'NO. '.$aviso[0]->numero); 
+                $sheet->setCellValue('C10', strtoupper($aviso[0]->colonia) ); 
+                $sheet->setCellValue('C11', strtoupper($ciudad) ); 
+                $sheet->setCellValue('C12', strtoupper($aviso[0]->cp) ); 
+
+                if($aviso[0]->calle1 != null && $aviso[0]->calle2 != null){
+                    $sheet->setCellValue('C16', strtoupper($aviso[0]->calle1) ); 
+                    $sheet->setCellValue('C17', strtoupper($aviso[0]->calle2) ); 
+                }
+
+                $sheet->setCellValue('C22', 'PRIVADA' ); 
+                $sheet->setCellValue('D22', 'X' ); 
+                $sheet->setCellValue('E22', 'PUBLICA' ); 
+                
+                $sheet->setCellValue('C25', 'EDIFICACION DE '.strtoupper($aviso[0]->tipo) ); 
+
+                $sheet->setCellValue('C27', 'PROPIETARIO' ); 
+                $sheet->setCellValue('D27', 'X' ); 
+                $sheet->setCellValue('E27', 'CONTRATISTA' ); 
+                $sheet->setCellValue('G27', 'SUBCONTRATISTA' );
+
+                $sheet->setCellValue('D31', '$' );
+                $sheet->setCellValue('E31',  $aviso[0]->total_importe);
+
+                $sheet->setCellValue('C34', $aviso[0]->total_superficie ); 
+                $sheet->setCellValue('E34', 'm2' );
+
+                $sheet->setCellValue('C36', $aviso[0]->f_ini ); 
+                $sheet->setCellValue('E36', 'FECHA DE TERMINO: ' ); 
+                $sheet->setCellValue('G36', $aviso[0]->f_fin ); 
+                
+
+    
+                $sheet->setColumnFormat(array(
+                    'E31' => '#,##0.00',
+                ));
+
+                $sheet->setColumnFormat(array(
+                    'C34' => '#,##0.00',
+                ));
+    
+                // $sheet->cell('G'.$contador01, function ($cell) {
+                //     // Set font weight to bold
+                    
+                //     $cell->setAlignment('left');
+                // });
+                
+    
+                // $sheet->setBorder($num, 'thin');
+            });
+            }
+            
+            )->download('xls');
+            
     }
 
 }
