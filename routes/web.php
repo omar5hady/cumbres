@@ -402,13 +402,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/licencias/indexVisita','LicenciasController@indexVisita');
         Route::get('/licencias/excelVisita','LicenciasController@excelVisita');
         Route::put('/licencias/progFechaVisita','LicenciasController@AsigFechaVisita');
-        Route::get(' /avisoObra/siroc','IniObraController@imprimirSiroc');
-       
 
-        Route::post('/formSubmitContratoObra/{id}','IniObraController@formSubmitContratoObra'); 
-        Route::post('/formSubmitRegistroObra/{id}','IniObraController@formSubmitRegistroObra'); 
-        Route::get('/downloadContratoObra/{fileName}' , 'IniObraController@downloadFile'); 
-        Route::get('/downloadRegistroObra/{fileName}' , 'IniObraController@downloadRegistroObra'); 
+        Route::post('/formSubmitContratoObra/{id}','IniObraController@formSubmitContratoObra'); //carga de Avaluo
+        Route::get('/downloadContratoObra/{fileName}' , 'IniObraController@downloadFile'); //descarga de Avaluo
 
     /////////////////////////// RUTAS ESTIMACIONES ////////////////
         Route::get('/estimaciones/getSinEstimaciones','IniObraController@getSinEstimaciones');
@@ -418,11 +414,6 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/estimaciones/excelEstimaciones','IniObraController@excelEstimaciones');
 
         Route::post('/estimaciones/store','IniObraController@storeEstimacion');
-        Route::post('/estimaciones/storeAnticipo','IniObraController@storeAnticipo');
-        Route::post('/estimaciones/storeFG','IniObraController@storeFG');
-
-        
-        Route::get('/estimaciones/prueba','EstimacionController@prueba');
 
 
     ////////////////////        RUTAS PARTIDAS   /////////////////////////////////

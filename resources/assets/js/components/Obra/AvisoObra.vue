@@ -65,9 +65,6 @@
                                             <th>Importe total</th>
                                             <th>Fecha de inicio </th>
                                             <th>Fecha de termino</th>
-                                            <th>
-                                               
-                                            </th>
                                             
                                         </tr>
                                     </thead>
@@ -97,17 +94,6 @@
                                             <td class="td2" v-text="'$'+formatNumber(avisoObra.total_importe)"></td>
                                             <td class="td2" v-text="avisoObra.f_ini"></td>
                                             <td class="td2" v-text="avisoObra.f_fin"></td>
-                                            <td>
-                                                <a class="btn btn-success" v-bind:href="'/avisoObra/siroc?id='+ avisoObra.id">
-                                                    <i class="fa fa-file-text"></i>&nbsp; SIROC
-                                                </a>
-                                                <button title="Subir registro de obra" type="button" @click="abrirModal('subirArchivo2',avisoObra)" class="btn btn-default btn-sm">
-                                                    <i class="icon-cloud-upload"></i>
-                                                </button>
-                                                <a title="Descargar registro de obra" class="btn btn-default btn-sm" v-if="avisoObra.registro_obra != '' && avisoObra.registro_obra != null"  v-bind:href="'/downloadRegistroObra/'+avisoObra.registro_obra">
-                                                    <i class="fa fa-download"></i>
-                                                </a>
-                                            </td>
                                         </tr>                               
                                     </tbody>
                                 </table>
@@ -183,7 +169,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-4">
+                                <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Manzana</label>
                                         <div class="form-inline">
@@ -194,22 +180,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="">Entre calle </label>
-                                        <input class="form-control"  type="text" v-model="calle1">
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="">Y Calle </label>
-                                        <input class="form-control"  type="text" v-model="calle2">
-                                    </div>
-                                </div>
-
-                                
 
                                  <div class="col-md-12">
                                     <!-- Div para mostrar los errores que mande validerFraccionamiento -->
@@ -431,7 +401,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-4">
+                                <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Manzana</label>
                                         <div class="form-inline">
@@ -440,20 +410,6 @@
                                             <option v-for="manzana in arrayManzanaLotes" :key="manzana.id" :value="manzana.manzana" v-text="manzana.manzana"></option>
                                         </select>
                                         </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="">Entre calle </label>
-                                        <input class="form-control"  type="text" v-model="calle1">
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="">Y Calle </label>
-                                        <input class="form-control"  type="text" v-model="calle2">
                                     </div>
                                 </div>
 
@@ -758,27 +714,13 @@
                                 <span aria-hidden="true">×</span>
                             </button>
                         </div>
-
-                        <div v-if="tipoAccion == 1" class="modal-body">
+                        <div class="modal-body">
                             <div>
                                 <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
 
                                         <strong>Seleccionar contrato</strong>
 
                                         <input type="file" class="form-control" v-on:change="onImageChange">
-                                        <br/>
-                                        <button type="submit" class="btn btn-success">Cargar</button>
-                                </form>
-                            </div>
-                        </div>
-
-                        <div v-else class="modal-body">
-                            <div>
-                                <form  method="post" @submit="formSubmit2" enctype="multipart/form-data">
-
-                                        <strong>Seleccionar archivo</strong>
-
-                                        <input type="file" class="form-control" v-on:change="onImageChange2">
                                         <br/>
                                         <button type="submit" class="btn btn-success">Cargar</button>
                                 </form>
@@ -859,8 +801,6 @@
                 etapa_id:0,
                 fraccionamiento_id : 0,
                 num_etapa : 0,
-                calle1:'',
-                calle2:'',
                 descripcion_larga:'',
                 descripcion_corta:'',
                 tipo:'Vivienda',
@@ -1011,46 +951,6 @@
            
                 formData.append('pdf', this.pdf);
                 axios.post('/formSubmitContratoObra/'+this.id, formData)
-                .then(function (response) {
-                   
-                    currentObj.success = response.data.success;
-                    swal({
-                        position: 'top-end',
-                        type: 'success',
-                        title: 'Archivo guardado correctamente',
-                        showConfirmButton: false,
-                        timer: 2000
-                        })
-                    me.cerrarModal();
-
-                })
-
-                .catch(function (error) {
-
-                    currentObj.output = error;
-
-                });
-
-            },
-
-            onImageChange2(e){
-
-                console.log(e.target.files[0]);
-
-                this.pdf = e.target.files[0];
-
-            },
-
-            formSubmit2(e) {
-
-                e.preventDefault();
-
-                let currentObj = this;
-            
-                let formData = new FormData();
-           
-                formData.append('pdf', this.pdf);
-                axios.post('/formSubmitRegistroObra/'+this.id, formData)
                 .then(function (response) {
                    
                     currentObj.success = response.data.success;
@@ -1374,8 +1274,6 @@
                     'clave': this.clave,
                     'f_ini': this.f_ini,
                     'f_fin': this.f_fin,
-                    'calle1': this.calle1,
-                    'calle2': this.calle2,
                     'total_importe' :this.total_importe,
                     'total_costo_directo':this.total_costo_directo,
                     'total_costo_indirecto':this.total_costo_indirecto,
@@ -1425,8 +1323,6 @@
                     'id':this.id,
                     'fraccionamiento_id': this.fraccionamiento_id,
                     'contratista_id': this.contratista_id,
-                    'calle1': this.calle1,
-                    'calle2': this.calle2,
                     'clave': this.clave,
                     'f_ini': this.f_ini,
                     'f_fin': this.f_fin,
@@ -1470,8 +1366,6 @@
                 this.contratista_id=0;
                 this.f_fin='';
                 this.clave='';
-                this.calle1 = '';
-                this.calle2 = '';
                 this.fraccionamiento_id=0;
                 this.anticipo=0;
                 this.total_anticipo=0;
@@ -1576,8 +1470,6 @@
                     me.clave= me.arrayAvisoT[0]['clave'];
                     me.f_ini= me.arrayAvisoT[0]['f_ini'];
                     me.f_fin= me.arrayAvisoT[0]['f_fin'];
-                    me.calle1 = me.arrayAvisoT[0]['calle1'];
-                    me.calle2 = me.arrayAvisoT[0]['calle2'];
                     me.anticipo= me.arrayAvisoT[0]['anticipo'];
                     me.fraccionamiento= me.arrayAvisoT[0]['proyecto'];
                     me.total_anticipo = me.arrayAvisoT[0]['total_anticipo'];
@@ -1612,17 +1504,7 @@
                     case 'subirArchivo':
                     {
                         this.modal =1;
-                        this.tipoAccion = 1;
-                        this.tituloModal='Subir contrato';
-                        this.id=data['id'];
-                        this.pdf=data['documento'];
-                        break;
-                    }
-                    case 'subirArchivo2':
-                    {
-                        this.modal =1;
-                        this.tipoAccion = 2;
-                        this.tituloModal='Subir registro de obra';
+                        this.tituloModal='Subir Archivo';
                         this.id=data['id'];
                         this.pdf=data['documento'];
                         break;
@@ -1644,8 +1526,6 @@
 
                     me.contratista_id= me.arrayAvisoT[0]['contratista_id'];
                     me.clave= me.arrayAvisoT[0]['clave'];
-                    me.calle1 = me.arrayAvisoT[0]['calle1'];
-                    me.calle2 = me.arrayAvisoT[0]['calle2'];
                     me.f_ini= me.arrayAvisoT[0]['f_ini'];
                     me.f_fin= me.arrayAvisoT[0]['f_fin'];
                     me.anticipo= me.arrayAvisoT[0]['anticipo'];

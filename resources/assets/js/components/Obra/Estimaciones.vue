@@ -15,12 +15,6 @@
                         <button v-if="listado==0" type="button" @click="indexEstimaciones(1),listado=1" class="btn btn-success">
                             <i class="fa fa-mail-reply"></i> Regresar
                         </button>
-
-                        <button v-if="listado == 1" type="button" @click="abrirModal('resumen')" class="btn btn-dark">
-                            <i class="icon-share-alt"></i>&nbsp;Resumen de estimaciones
-                        </button>
-
-
                     </div>
 
             <!----------------- Listado Contratos ------------------------------>
@@ -115,12 +109,6 @@
                                         <label class="col-md-2 form-control-label" for="text-input">Importe del Anticipo</label>
                                         <div class="col-md-4">
                                              $ {{formatNumber(total_anticipo)}}
-                                        </div>
-                                        <div class="col-md-1">
-                                        </div>
-                                        <label class="col-md-2 form-control-label" for="text-input">Avance Global</label>
-                                        <div class="col-md-2">
-                                                {{(formatNumber(total_acum_actual/total_importe)*100)}}%
                                         </div>
                                     </div>
                                 </div> 
@@ -280,131 +268,6 @@
                                     </table>
                                 </div>
 
-                                <div class="table-responsive" > <br>
-                                </div>
-
-                                <div class="table-responsive"  v-if="nueva == 0" >
-                                    <table class="table2 table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th></th>
-                                                <th>Acum Ant</th>
-                                                <th>Esta Estimación</th>
-                                                <th>Acum Actual</th>
-                                                <th>Por Estimar</th>
-                                                <!-- <th>Total por Pagar</th> -->
-                                                
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td class="td2" v-text="'ESTIMADO'"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(total_acum_ant)"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(total_estimacion)"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(total_acum_actual = total_estimacion + total_acum_ant)"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(total_por_estimar = total_importe - total_acum_actual)"></td>
-                                            </tr>   
-                                            <tr>
-                                                <td class="td2" v-text="'AMOR. ANTICIPO'"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(amor_total_acum_ant = total_acum_ant * porc_anticipo)"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(amor_total_estimacion = total_estimacion * porc_anticipo)"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(amor_total_acum_actual = amor_total_acum_ant + amor_total_estimacion)"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(amor_total_por_estimar = total_anticipo - amor_total_acum_actual)"></td>
-                                            </tr>  
-                                            <tr>
-                                                <td class="td2" v-text="'F. G.'"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(fg_total_acum_ant = total_acum_ant * porc_garantia)"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(fg_total_estimacion = total_estimacion * porc_garantia)"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(fg_total_acum_actual = fg_total_acum_ant + fg_total_estimacion)"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(fg_total_por_estimar = importe_garantia - fg_total_acum_actual)"></td>
-                                            </tr>  
-                                            <tr>
-                                                <td class="td2" v-text="'PAGADO'"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(pagado_total_acum_ant = total_acum_ant - ( fg_total_acum_ant + amor_total_acum_ant))"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(pagado_total_estimacion = total_estimacion - ( fg_total_estimacion + amor_total_estimacion ))"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(pagado_total_acum_actual = total_acum_actual - ( fg_total_acum_actual + amor_total_acum_actual))"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(pagado_total_por_estimar = total_por_estimar - ( fg_total_por_estimar + amor_total_por_estimar))"></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                                <div class="table-responsive" >
-                                    <br><br>
-                                </div>
-
-                                <div class="form-group row">
-                                    <div class="col-md-5">
-                                        <div class="table-responsive"  v-if="nueva == 0" >
-                                            <table class="table2 table-bordered table-striped table-sm">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Anticipo</th>
-                                                        <th v-text="'$'+formatNumber(total_anticipo)"></th>
-                                                        <th>
-                                                            <button title="Añadir" type="button" @click="abrirModal('anticipo')" class="btn btn-success btn-sm">
-                                                                <i class="icon-plus"></i>
-                                                            </button>
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr v-for="anticipo in arrayAnticipos" :key="anticipo.id">
-                                                        <td class="td2" v-text="'Pago de Anticipo de Vivienda ('+this.moment(anticipo.fecha_anticipo).locale('es').format('DD/MMM/YYYY')+')'"></td>
-                                                        <td class="td2" v-text="'$'+formatNumber(anticipo.monto_anticipo)"></td>
-                                                    </tr>   
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <div class="table-responsive"  v-if="nueva == 0" > 
-                                            <center>
-                                                Esta estimacion: 
-                                                <h5 style="color: #153157;">
-                                                    <strong> ${{formatNumber(total_estimacion)}} </strong>
-                                                </h5> 
-                                            </center> 
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-5">
-                                        <div class="table-responsive"  v-if="nueva == 0" >
-                                            <table class="table2 table-bordered table-striped table-sm">
-                                                <thead>
-                                                    <tr>
-                                                        <th colspan="4">Fondo de Garantia</th>
-                                                        <th>
-                                                            <button title="Añadir" type="button" @click="abrirModal('fg')" class="btn btn-success btn-sm">
-                                                                <i class="icon-plus"></i>
-                                                            </button>
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td class="td2" v-text="'Viviendas'"></td>
-                                                        <td class="td2" v-text="'$'+formatNumber(importe_garantia)"></td>
-                                                        <td class="td2" v-text="num_casas"></td>
-                                                        <td class="td2" v-text="'$'+formatNumber(fg_indiv = importe_garantia/num_casas)"></td>
-                                                    </tr>   
-                                                    <tr v-for="fg in arrayFG" :key="fg.id">
-                                                        <td class="td2" colspan="2" v-text="'Pago de ' + fg.cantidad + ' FG (' + this.moment(fg.fecha_fg).locale('es').format('DD/MMM/YYYY')+')'"></td>
-                                                        <td class="td2" v-text="fg.cantidad"></td>
-                                                        <td class="td2" v-text="'$'+formatNumber(fg.monto_fg)"></td>
-
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-
-
-                                </div>
-
-                                
-
                                                          
                                 
                             <!-- </div> -->
@@ -417,7 +280,7 @@
             </div>
 
             <!-- Inicio Modal Asignar Partidas -->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-primary modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -493,115 +356,6 @@
             </div>
             <!--Fin del modal-->
 
-            <!-- Inicio Modal FG y Anticipos -->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal1}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-
-                        <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-                            <template v-if="tipoAccion == 1">
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de anticipo</label>
-                                    <div class="col-md-4">
-                                        <input type="date" v-model="fecha_anticipo" class="form-control" placeholder="Fecha">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Monto</label>
-                                    <div class="col-md-2">
-                                        <input type="text" pattern="\d*" v-on:change="validarAnticipo()" v-on:keypress="isNumber($event)" v-model="monto_anticipo" class="form-control" placeholder="Monto" >
-                                    </div>
-                                    <div class="col-md-2">
-                                        <h6><strong> ${{ formatNumber(monto_anticipo)}} </strong></h6>
-                                    </div>
-                                </div>
-                            </template>
-                            <template v-else-if="tipoAccion == 2">
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Cantidad</label>
-                                    <div class="col-md-4">
-                                        <input type="number" min="0" v-model="fg_cantidad" class="form-control" placeholder="Cantidad">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Monto</label>
-                                    <div class="col-md-2">
-                                        <h6><strong> ${{ formatNumber(monto_fg = fg_indiv * fg_cantidad)}} </strong></h6>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fecha</label>
-                                    <div class="col-md-4">
-                                        <input type="date" v-model="fecha_fg" class="form-control" placeholder="Fecha">
-                                    </div>
-                                </div>
-                            </template>
-
-                             <template v-else-if="tipoAccion == 3">
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fraccionamiento</label>
-                                    <div class="col-md-5">
-                                        <select class="form-control" v-model="fraccionamiento">
-                                            <option value="">Seleccione</option>
-                                            <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Contratista</label>
-                                    <div class="col-md-5">
-                                        <select class="form-control" v-model="contratista">
-                                            <option value=''> Seleccione </option>
-                                            <option v-for="contratista in arrayContratistas" :key="contratista.id" :value="contratista.id" v-text="contratista.nombre"></option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Emp. Constructora</label>
-                                    <div class="col-md-5">
-                                        <select class="form-control" v-model="constructora" >
-                                            <option value="">Empresa constructora</option>
-                                            <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </template>
-                                
-                                
-                            </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <button v-if="tipoAccion == 1 && monto_anticipo != 0 && fecha_anticipo != ''" 
-                                type="button" class="btn btn-primary" @click="storeAnticipos()">Guardar Anticipo</button>
-                            <button v-if="tipoAccion == 2 && fg_cantidad != 0 " 
-                                type="button" class="btn btn-primary" @click="storeFondoG()">Guardar FG</button>
-                            
-                            <a v-if="tipoAccion == 3" class="btn btn-success" v-bind:href="'/estimaciones/prueba?fraccionamiento='+ fraccionamiento 
-                                    + '&constructora='+ constructora + '&contratista='+ contratista">
-                                    <i class="fa fa-file-text"></i>&nbsp; Descargar excel
-                                </a>
-                        </div>
-                    </div> 
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
-            <!--Fin del modal-->
-
 
         </main>
 </template>
@@ -618,15 +372,9 @@
         },
         data(){
             return{
-                contratista:'',
-                fraccionamiento:'',
-                constructora:'',
-
                 listado:1,
                 nueva:0,
                 arrayNumEstim:[],
-                arrayAnticipos:[],
-                arrayFG:[],
                 b_estimacion:'',
                 num_estimacion:0,
                 n_excel:0,
@@ -634,11 +382,8 @@
                 aviso_id:0,
                 proceso:false,
                 arrayEstimaciones:[],
-                arrayFraccionamientos:[],
-                empresas:[],
                 
                 arrayContratos:[],
-                arrayContratistas:[],
 
                 arrayPartidas:[],
                 pagination2 : {
@@ -664,13 +409,6 @@
                 tituloModal: '',
 
                 modal1:0,
-                tipoAccion : 0,
-                monto_anticipo:0,
-                fecha_anticipo:'',
-                fecha_fg:'',
-                monto_fg : 0,
-                fg_cantidad : 0,
-                fg_indiv : 0,
 
                 file:'',
                 proceso:false,
@@ -679,29 +417,6 @@
                 acumCosto:0,
                 porEstimarVol:0,
                 porEstimarCosto:0,
-
-                porc_anticipo : 0,
-                porc_garantia : 0,
-
-                total_estimacion :0,
-                total_acum_ant : 0,
-                total_acum_actual : 0,
-                total_por_estimar : 0,
-
-                amor_total_estimacion :0,
-                amor_total_acum_ant : 0,
-                amor_total_acum_actual : 0,
-                amor_total_por_estimar : 0,
-
-                fg_total_estimacion :0,
-                fg_total_acum_ant : 0,
-                fg_total_acum_actual : 0,
-                fg_total_por_estimar : 0,
-
-                pagado_total_estimacion :0,
-                pagado_total_acum_ant : 0,
-                pagado_total_acum_actual : 0,
-                pagado_total_por_estimar : 0,
 
                 total1:0,
                 total2:0,
@@ -889,51 +604,6 @@
                
             },
 
-            selectContratistas(){
-                let me = this;
-                me.arrayContratistas = [];
-                var url = '/select_contratistas';
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayContratistas = respuesta.contratista;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
-
-            selectFraccionamientos(){
-                let me = this;
-                if(me.modal == 0){
-                me.buscar=""
-                me.buscar2=""
-                me.buscar3=""
-                }
-                
-                me.arrayFraccionamientos=[];
-                var url = '/select_fraccionamiento';
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayFraccionamientos = respuesta.fraccionamientos;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
-
-            getEmpresa(){
-                let me = this;
-                me.empresas=[];
-                var url = '/lotes/empresa/select';
-                axios.get(url).then(function (response) {
-                    var respuesta = response;
-                    me.empresas = respuesta.data.empresas;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
-
             formatNumber(value) {
                 let val = (value/1).toFixed(2)
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
@@ -975,10 +645,6 @@
                     me.arrayNumEstim = respuesta.numeros;
                     me.b_estimacion = me.arrayNumEstim[0].num_estimacion;
                     me.actual = respuesta.actual;
-                    me.total_estimacion = respuesta.total_estimacion;
-                    me.total_acum_ant = respuesta.totalEstimacionAnt;
-                    me.arrayAnticipos = respuesta.anticipos;
-                    me.arrayFG = respuesta.fondos;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -996,22 +662,6 @@
                 
             },
 
-            validarAnticipo(){
-                let me = this;
-                var monto = 0;
-
-                if(me.arrayAnticipos.length > 0)
-                    for(var i=0;i<me.arrayAnticipos.length;i++){
-                        monto += parseFloat(me.arrayAnticipos[i].monto_anticipo);
-                    }
-                
-                var porPagar = me.total_anticipo - monto;
-
-                if(me.monto_anticipo>porPagar)
-                    me.monto_anticipo = porPagar;
-                
-            },
-
             verDetalle(contrato){
                 
                 this.clave = contrato['clave'];
@@ -1019,8 +669,6 @@
                 this.total_anticipo = contrato['total_anticipo'];
                 this.importe_garantia = contrato['garantia_ret'];
                 this.listado = 0;
-                this.porc_garantia = contrato['porc_garantia_ret'] / 100;
-                this.porc_anticipo = contrato['anticipo'] / 100;
                 this.num_casas = contrato['num_casas'];
                 this.aviso_id = (contrato['id']);
                 this.getPartidas(contrato['id']);
@@ -1039,38 +687,10 @@
                         
                         break;
                     }
-                    case 'anticipo':
-                    {
-                        this.modal1 = 1;
-                        this.tipoAccion = 1;
-                        this.tituloModal = 'Añadir anticipo';
-                        this.fecha_anticipo = '';
-                        this.monto_anticipo = 0;
-                        break;
-                    }
+                    case 'detalle':{
+                        
+                        
 
-                    case 'fg':
-                    {
-                        this.modal1 = 1;
-                        this.tipoAccion = 2;
-                        this.tituloModal = 'Fondo de garantia';
-                        this.fg_cantidad = 0;
-                        this.monto_fg = 0;
-                        this.fecha_fg = '';
-                        break;
-                    }
-
-                    case 'resumen':
-                    {
-                        this.selectFraccionamientos();
-                        this.getEmpresa();
-                        this.selectContratistas();
-                        this.modal1 = 1;
-                        this.tipoAccion = 3;
-                        this.tituloModal = 'Resumen de estimaciones';
-                        this.fraccionamiento = '';
-                        this.contratista = '';
-                        this.constructora = '';
                         break;
                     }
                     
@@ -1102,8 +722,7 @@
                                     'estimacion_id' : element.id,
                                     'costo' : element.costo,
                                     'vol' : element.num_estimacion,
-                                    'num_estimacion' : this.num_estimacion,
-                                    'total_estimacion' : this.total2
+                                    'num_estimacion' : this.num_estimacion
                                 }); 
                                 me.nueva = 0;
                                 me.b_estimacion = '';
@@ -1117,81 +736,6 @@
                                 })
                             }
                         });
-                    }
-                })
-            },
-
-            storeAnticipos(){
-                let me = this;
-
-                Swal({
-                    title: '¿Desea continuar?',
-                    animation: false,
-                    customClass: 'animated bounceInDown',
-                    text: "Estos cambios no se pueden revertir",
-                    type: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    cancelButtonText: 'Cancelar',
-                    
-                    confirmButtonText: 'Si, guardar!'
-                    }).then((result) => {
-
-                    if (result.value) {
-                        axios.post('/estimaciones/storeAnticipo',{
-                            'aviso_id' : me.aviso_id,
-                            'monto_anticipo' : me.monto_anticipo,
-                            'fecha_anticipo' : me.fecha_anticipo
-                        }); 
-                        me.nueva = 0;
-                        me.cerrarModal();
-                        me.getPartidas(me.aviso_id);
-                        Swal({
-                            title: 'Hecho!',
-                            text: 'Anticipo guardado correctamente',
-                            type: 'success',
-                            animation: false,
-                            customClass: 'animated bounceInRight'
-                        })
-                    }
-                })
-            },
-
-            storeFondoG(){
-                let me = this;
-
-                Swal({
-                    title: '¿Desea continuar?',
-                    animation: false,
-                    customClass: 'animated bounceInDown',
-                    text: "Estos cambios no se pueden revertir",
-                    type: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    cancelButtonText: 'Cancelar',
-                    
-                    confirmButtonText: 'Si, guardar!'
-                    }).then((result) => {
-
-                    if (result.value) {
-                        axios.post('/estimaciones/storeFG',{
-                            'aviso_id' : me.aviso_id,
-                            'cantidad' : me.fg_cantidad,
-                            'monto_fg' : me.monto_fg,
-                            'fehca_fg' : me.fecha_fg
-                        }); 
-                        me.nueva = 0;
-                        me.cerrarModal();
-                        me.getPartidas(me.aviso_id);
-                        Swal({
-                            title: 'Hecho!',
-                            text: 'Fonddo de garantia guardado correctamente',
-                            type: 'success',
-                            animation: false,
-                            customClass: 'animated bounceInRight'
-                        })
                     }
                 })
             }

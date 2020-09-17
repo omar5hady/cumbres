@@ -18,7 +18,6 @@ class CreateFraccionamientosTable extends Migration
             $table->string('nombre',50);
             $table->integer('tipo_proyecto');
             $table->string('calle',100);
-            $table->integer('numero')->nullable();
             $table->string('colonia',50)->nullable();
             $table->string('estado',100)->nullable();
             $table->string('ciudad',100)->nullable();
