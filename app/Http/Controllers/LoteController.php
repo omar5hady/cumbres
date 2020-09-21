@@ -778,30 +778,37 @@ class LoteController extends Controller
         $lote->extra_ext = $request->extra_ext;
 
         if($request->habilitado == 1){
+            if($nombreModelo[0]->nombre != "TERRENO"){
+                $precioTerreno = Precio_etapa::select('precio_excedente','id')
+                ->where('fraccionamiento_id','=',$request->fraccionamiento_id)
+                ->where('etapa_id','=',$request->etapa_id)->get();
+        
+                $precioBase = Precio_modelo::select('precio_modelo')
+                ->where('modelo_id','=',$request->modelo_id)
+                ->where('precio_etapa_id', '=', $precioTerreno[0]->id)
+                ->get();
+        
+                $sobreprecios = Sobreprecio_modelo::join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
+                ->select(DB::raw("SUM(sobreprecios_etapas.sobreprecio) as sobreprecios"))
+                ->where('sobreprecios_modelos.lote_id','=',$request->id)->get();
+
+                $terrenoExcedente = ($lote->terreno - $terrenoModelo[0]->terreno);
+                if($terrenoExcedente > 0)
+                    $lote->excedente_terreno = $terrenoExcedente * $precioTerreno[0]->precio_excedente;
+
+                $lote->precio_base = $precioBase[0]->precio_modelo;
+
+                if($sobreprecios[0]->sobreprecios != NULL)
+                    $lote->sobreprecio = $sobreprecios[0]->sobreprecios;
+                else
+                    $lote->sobreprecio = 0;
+                
+            }
+            else{
+                
+            }
             
-            $precioTerreno = Precio_etapa::select('precio_excedente','id')
-            ->where('fraccionamiento_id','=',$request->fraccionamiento_id)
-            ->where('etapa_id','=',$request->etapa_id)->get();
-     
-            $precioBase = Precio_modelo::select('precio_modelo')
-            ->where('modelo_id','=',$request->modelo_id)
-            ->where('precio_etapa_id', '=', $precioTerreno[0]->id)
-            ->get();
-     
-            $sobreprecios = Sobreprecio_modelo::join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
-            ->select(DB::raw("SUM(sobreprecios_etapas.sobreprecio) as sobreprecios"))
-            ->where('sobreprecios_modelos.lote_id','=',$request->id)->get();
-
-            $terrenoExcedente = ($lote->terreno - $terrenoModelo[0]->terreno);
-            if($terrenoExcedente > 0)
-                $lote->excedente_terreno = $terrenoExcedente * $precioTerreno[0]->precio_excedente;
-
-            $lote->precio_base = $precioBase[0]->precio_modelo;
-
-            if($sobreprecios[0]->sobreprecios != NULL)
-                $lote->sobreprecio = $sobreprecios[0]->sobreprecios;
-            else
-                $lote->sobreprecio = 0;
+            
         }
         else{
             $lote->excedente_terreno = 0;
