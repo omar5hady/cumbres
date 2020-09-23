@@ -148,6 +148,14 @@ class FraccionamientoController extends Controller
             $modelo->construccion = 0;
             $modelo->save();
 
+            $modelo = new Modelo();
+            $modelo->nombre = "Terreno";
+            $modelo->fraccionamiento_id = $fraccionamiento->id;
+            $modelo->tipo = $fraccionamiento->tipo_proyecto;
+            $modelo->terreno = 0;
+            $modelo->construccion = 0;
+            $modelo->save();
+
             $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',$usuario_id)->get();
             $fecha = Carbon::now();
             $arregloSimPendientes = [
