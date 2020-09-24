@@ -13,6 +13,7 @@ class CreateDatosCalcLotesTable extends Migration
      */
     public function up()
     {
+        //Tabla utilizada para el modulo de "Precios -> Precios de terreno"
         Schema::create('datos_calc_lotes', function (Blueprint $table) {
             $table->increments('id');
 

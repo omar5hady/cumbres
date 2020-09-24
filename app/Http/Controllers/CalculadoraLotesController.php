@@ -21,16 +21,35 @@ class CalculadoraLotesController extends Controller
         $element->save();
     }
 
-    public function listaLotes(){
-        $lotes = lotes_individuales::all();
+    public function listarPrecios(){
+        $lotes = lotes_individuales::join('etapas', 'lotes_individuales.etapa_id', '=', 'etapas.id')
+        ->join('fraccionamientos', 'etapas.fraccionamiento_id', 'fraccionamientos.id')
+            ->select('lotes_individuales.id', 'lotes_individuales.etapa_id', 'lotes_individuales.costom2', 
+            'etapas.num_etapa', 'fraccionamientos.nombre')
+        ->get();
         return $lotes;
     }
 
-    public function editaLote(Request $request){
+    public function editEnterPrice(Request $request){
         $lote = lotes_individuales::findOrFail($request->id);
 
         $lote->costom2 = $request->costom2;
-        $lote->terrenom2 = $request->terrenom2;
+        $lote->save();
+    }
+
+    public function addWindowPrice(Request $request){
+        $lote = new lotes_individuales();
+
+        $lote->etapa_id = $request->etapa_id;
+        $lote->costom2 = $request->costom2;
+        $lote->save();
+    }
+
+    public function editWindowPrice(Request $request){
+        $lote = lotes_individuales::findOrFail($request->id);
+
+        $lote->etapa_id = $request->etapa_id;
+        $lote->costom2 = $request->costom2;
         $lote->save();
     }
 }

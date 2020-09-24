@@ -13,11 +13,13 @@ class CreateLotesIndividualesTable extends Migration
      */
     public function up()
     {
+        //tabla usada para la calculadora de lotes
         Schema::create('lotes_individuales', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->integer('num_lote');
-            $table->double('terrenom2');
+            $table->unsignedInteger('etapa_id');
+            $table->foreign('etapa_id')->references('id')->on('etapas');
+
             $table->double('costom2');
 
             $table->timestamps();

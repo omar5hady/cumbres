@@ -39,21 +39,32 @@
                             <div class="col-sm-6">
                                 <table class="table table-bordered table-striped">
                                     <thead>
-                                        <tr class="card-header"><th colspan="3"><i class="fa fa-align-justify"></i> Costos de lotes</th></tr>
+                                        <tr class="card-header">
+                                            <th colspan="4">
+                                                <i class="fa fa-align-justify"></i> Costos de lotes    
+                                                <button @click="setValues([], 1)" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addCost">
+                                                    <i class="fa fa-plus"></i> Agregar
+                                                </button>
+                                            </th>
+                                        </tr>
                                         <tr>
-                                            <th># Lote</th>
-                                            <th>m²</th>
+                                            <th class="text-center">#</th>
+                                            <th class="text-center">Fraccionamiento</th>
+                                            <th class="text-center">Etapa</th>
                                             <th>costo m²</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr v-for="item in arrayLotes" :key="item.id">
-                                            <td v-text="item.num_lote">Concepto</td>
-                                            <td style="padding:0px;">
-                                                <input v-model="item.terrenom2" v-on:keyup.enter="editaLote(item)" type="number" min="0" step=".01" class="form-control" style="height: 45px;">
+                                            <td class="text-center" v-text="item.id"></td>
+                                            <td class="text-center">
+                                                <a href="#" v-text="item.nombre" @click="setValues(item, 2), generalId = item.id" data-toggle="modal" data-target="#editCost"></a>
+                                            </td>
+                                            <td class="text-center">
+                                                <a href="#" v-text="item.num_etapa" @click="setValues(item, 2), generalId = item.id" data-toggle="modal" data-target="#editCost"></a>
                                             </td>
                                             <td style="padding:0px;">
-                                                <input v-model="item.costom2" v-on:keyup.enter="editaLote(item)" type="number" min="0" step=".01" class="form-control" style="height: 45px;">
+                                                <input v-model="item.costom2" v-on:keyup.enter="editaLoteEnter(item)" type="number" min="0" step=".01" class="form-control" style="height: 45px;">
                                             </td>
                                         </tr>
                                     </tbody>
@@ -66,6 +77,109 @@
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
         </div>
+
+        <div class="modal fade" id="addCost" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color: #00ADEF; color: white;">
+                        <h5 class="modal-title" id="exampleModalLabel">Agregar precio.</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    
+                    <form action="" @submit="addPrice" method="post">
+                        <div class="modal-body">
+                            <div class="row">
+                                <label for="" class="col-sm-4 text-rigth">Fraccionamiento</label>
+                                <select v-model="buscar" @change="selectEtapas(buscar)" class="form-control col-sm-7" required>
+                                    <option value="" disabled selected>Seleccione</option>
+                                    <option v-for="fraccionamientos in arrayFraccionamientos" 
+                                        :key="fraccionamientos.id" 
+                                        :value="fraccionamientos.id" 
+                                        v-text="fraccionamientos.nombre">
+                                    </option>
+                                </select>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <label for="" class="col-sm-4 text-rigth">Etapa</label>
+                                <select v-model="b_etapa" class="form-control col-sm-7" required>
+                                    <option value="" disabled selected>Seleccione</option>
+                                    <option v-for="etapa in arrayAllEtapas" 
+                                        :key="etapa.id" 
+                                        :value="etapa.id" 
+                                        v-text="etapa.num_etapa">
+                                    </option>
+                                </select>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <label for="" class="col-sm-4 text-rigth">Etapa</label>
+                                <input v-model="addPrecioEtapa" required type="number" min="0" step=".01" class="form-control col-sm-7" placeholder="$0.00">
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-plus"></i> Agregar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="editCost" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color: #00ADEF; color: white;">
+                        <h5 class="modal-title" id="exampleModalLabel">Editar precio.</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    
+                    <form action="" @submit="editPrice" method="post">
+                        <div class="modal-body">
+                            <div class="row">
+                                <label for="" class="col-sm-4 text-rigth">Fraccionamiento</label>
+                                <select v-model="buscar" @change="selectEtapas(buscar)" class="form-control col-sm-7" required>
+                                    <option value="" disabled selected>Seleccione</option>
+                                    <option v-for="fraccionamientos in arrayFraccionamientos" 
+                                        :key="fraccionamientos.id" 
+                                        :value="fraccionamientos.id" 
+                                        v-text="fraccionamientos.nombre">
+                                    </option>
+                                </select>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <label for="" class="col-sm-4 text-rigth">Etapa</label>
+                                <select v-model="b_etapa" class="form-control col-sm-7" required>
+                                    <option value="" disabled selected>Seleccione</option>
+                                    <option v-for="etapa in arrayAllEtapas" 
+                                        :key="etapa.id" 
+                                        :value="etapa.id" 
+                                        v-text="etapa.num_etapa">
+                                    </option>
+                                </select>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <label for="" class="col-sm-4 text-rigth">Etapa</label>
+                                <input v-model="editPrecioEtapa" required type="number" min="0" step=".01" class="form-control col-sm-7" placeholder="$0.00">
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Editar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
     </main>
 </template>
 
@@ -74,8 +188,15 @@ export default {
     
     data() {
         return{
+            b_etapa:'',
+            buscar:'',
+            addPrecioEtapa:'',
+            editPrecioEtapa:'',
+            generalId:[],
+            arrayAllEtapas:[],
             arrayListA:[],
             arrayLotes:[],
+            arrayFraccionamientos:[],
             myAlerts:{
                 popAlert : function(title = 'Alert',type = "success", description =''){
                     swal({
@@ -106,24 +227,90 @@ export default {
                 this.myAlerts.popAlert('Guardado correctamente')
             ).catch(error => console.log(error));
         },
-        editaLote(datos){
-            axios.put('/calc/lote/edita',{
+        editaLoteEnter(datos){
+            axios.put('/calc/enter/edita',{
                 'id':datos.id,
-                'terrenom2':datos.terrenom2,
                 'costom2':datos.costom2,
             }).then(
                 this.myAlerts.popAlert('Guardado correctamente')
             ).catch(error => console.log(error));
         },
-        buscaLotes(){
+        buscaPrecios(){
             axios.get('/calc/lotes').then(
                 response => this.arrayLotes = response.data
             ).catch(error => console.log(error));
+        },
+        addPrice(e){
+            e.preventDefault();
+
+            console.log(this.generalId+' '+this.addPrecioEtapa+' '+this.b_etapa+' ');
+            
+            axios.put('/calc/window/add',{
+                'etapa_id':this.b_etapa,
+                'costom2':this.addPrecioEtapa,
+            }).then(()=>{
+                this.buscaPrecios();
+                this.myAlerts.popAlert('Agregado correctamente');
+                $('#addCost').modal('hide');
+            }).catch(error => console.log(error));
+        },
+        editPrice(e){
+            e.preventDefault();
+            
+            axios.put('/calc/window/edita',{
+                'id':this.generalId,
+                'etapa_id':this.b_etapa,
+                'costom2':this.editPrecioEtapa,
+            }).then(()=>{
+                this.buscaPrecios();
+                this.myAlerts.popAlert('Agregado correctamente');
+                $('#editCost').modal('hide');
+            }).catch(error => console.log(error));
+        },
+        selectFraccionamientos(){
+            let me = this;
+
+            me.arrayFraccionamientos=[];
+
+            var url = '/select_fraccionamiento';
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayFraccionamientos = respuesta.fraccionamientos;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
+        selectEtapas(buscar){
+            
+            let me = this;
+            me.b_etapa="";
+            
+            me.arrayAllEtapas=[];
+            var url = '/select_etapa_proyecto?buscar=' + buscar;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayAllEtapas = respuesta.etapas;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        setValues(values, type){
+            if(type == 1){
+                this.buscar = '';
+                this.b_etapa = '';
+                this.addPrecioEtapa = '';
+            }else{
+                this.buscar = '';
+                this.b_etapa = '';
+                this.editPrecioEtapa = values.costom2;
+            }
         }
     },
     mounted() {
         this.listarPorcentajes();
-        this.buscaLotes();
+        this.buscaPrecios();
+        this.selectFraccionamientos();
     }
 };
 </script>

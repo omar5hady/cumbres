@@ -475,8 +475,10 @@ Route::group(['middleware' => ['auth']],function(){
     ////////////////////////////     RUTAS temporales de lotes y calculadora de lotes     ///////////////////////////
     Route::get('/calc/descuentos','CalculadoraLotesController@listarPorcentaje');
     Route::put('/calc/descuentos/edita','CalculadoraLotesController@editaPorcentaje');
-    Route::get('/calc/lotes','CalculadoraLotesController@listaLotes');
-    Route::put('/calc/lote/edita','CalculadoraLotesController@editaLote');
+    Route::get('/calc/lotes','CalculadoraLotesController@listarPrecios');
+    Route::put('/calc/enter/edita','CalculadoraLotesController@editEnterPrice');
+    Route::put('/calc/window/edita','CalculadoraLotesController@editWindowPrice');
+    Route::put('/calc/window/add','CalculadoraLotesController@addWindowPrice');
 
     /**********************************RUTAS AVANCE*************************** */
         Route::get('/avance','AvanceController@index');
