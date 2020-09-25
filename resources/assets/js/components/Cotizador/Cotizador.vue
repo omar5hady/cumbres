@@ -16,8 +16,17 @@
                 <div class="card-body">
                     <div class="row">
                         <input type="date" v-model="r_fecha" v-on:change="actualizar()" class="form-control col-sm-2 text-info">
-                        <input type="text" v-model="r_nombre" placeholder="Nombre" class="form-control col-sm-3">
-                        <input type="text" v-model="r_apellidos" placeholder="Apellidos" class="form-control col-sm-3">
+                        
+                        <div class="form-control col-md-6" style="padding:0px;">
+                            <v-select 
+                                :on-search="selectCliente"
+                                label="n_completo"
+                                :options="arrayClientes"
+                                placeholder="Buscar Cliente"
+                                :onChange="getDatosCliente"
+                            >
+                            </v-select>
+                        </div>
 
                         <select class="form-control col-sm-2" v-model="r_proyecto" v-on:change="selectEtapa(r_proyecto)">
                             <option value="">Proyecto</option>
@@ -186,6 +195,7 @@
 </template>
 
 <script>
+import vSelect from 'vue-select';
 export default {
     
     data() {
@@ -205,10 +215,14 @@ export default {
             arrayEtapas:[],
             arrayLotes:[],
             arrayListA:[],
+            arrayClientes:[],
         }
     },
     computed:{
 
+    },
+    components:{
+        vSelect
     },
     methods: {
         generarLista(){
@@ -262,7 +276,7 @@ export default {
             let me = this;
             
             me.arrayFraccionamientos=[];
-            var url = '/select_fraccionamiento';
+            var url = '/get/fraccionamientos/lotes';
 
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
@@ -276,7 +290,7 @@ export default {
             me.buscar2=""
             
             me.arrayEtapas=[];
-            var url = '/select_etapa_proyecto?buscar=' + buscar;
+            var url = '/get/etapas/lotes?buscar=' + buscar;
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
                 me.arrayEtapas = respuesta.etapas;
@@ -398,6 +412,29 @@ export default {
             axios.get('/calc/descuentos').then(
                 response => this.arrayListA = response.data
             ).catch(error => console.log(error));
+        },
+        selectCliente(search, loading){
+            let me = this;
+            loading(true)
+
+            //var url = '/select_coacreditadoVue?filtro='+search;
+            var url = '/clientes?page=1&criterio=personal.nombre&b_clasificacion=2&buscar='+search;
+            
+            axios.get(url).then(function (response) {
+                
+                let respuesta = response.data;
+                q: search
+                me.arrayClientes = respuesta.personas.data;
+                console.log(me.arrayClientes);
+
+                loading(false)
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
+        getDatosCliente(val1){
+            console.log(val1);
         },
     },
     mounted() {
