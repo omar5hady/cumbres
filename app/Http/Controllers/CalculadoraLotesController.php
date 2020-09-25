@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 
 use App\datos_calc_lotes;
 use App\lotes_individuales;
+use App\Lote;
+use App\Modelo;
 class CalculadoraLotesController extends Controller
 {
     public function listarPorcentaje(){
@@ -35,6 +37,8 @@ class CalculadoraLotesController extends Controller
 
         $lote->costom2 = $request->costom2;
         $lote->save();
+
+        $this->actPrecioLotes($lote->etapa_id, $request->costom2);
     }
 
     public function addWindowPrice(Request $request){
@@ -51,5 +55,22 @@ class CalculadoraLotesController extends Controller
         $lote->etapa_id = $request->etapa_id;
         $lote->costom2 = $request->costom2;
         $lote->save();
+
+        $this->actPrecioLotes($request->etapa_id, $request->costom2);
+    }
+
+    private function actPrecioLotes($etapa, $costom2){
+        $lotes = Lote::join('modelos','lotes.modelo_id','=','modelos.id')
+            ->select('lotes.id')->where('lotes.etapa_id','=',$etapa)
+            ->where('lotes.contrato','=',0)
+            ->where('modelos.nombre','=','Terreno')->get();
+        
+        if(sizeof($lotes)){
+            foreach ($lotes as $index => $lot) {
+                $l= Lote::findOrFail($lot->id);
+                $l->precio_base = $costom2 * $l->terreno;
+                $l->save();
+            }
+        }
     }
 }

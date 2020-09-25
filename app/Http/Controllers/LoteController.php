@@ -27,6 +27,7 @@ use App\User;
 use App\Credito;
 use App\Vendedor;
 use App\Expediente;
+use App\lotes_individuales;
 
 class LoteController extends Controller
 {
@@ -738,7 +739,7 @@ class LoteController extends Controller
        ->where('id','=',$modeloOld[0]->modelo_id)
        ->get();
 
-       $terrenoModelo = Modelo::select('terreno')
+       $terrenoModelo = Modelo::select('terreno', 'nombre')
        ->where('id','=',$request->modelo_id)
        ->get();
 
@@ -778,7 +779,7 @@ class LoteController extends Controller
         $lote->extra_ext = $request->extra_ext;
 
         if($request->habilitado == 1){
-            if($nombreModelo[0]->nombre != "TERRENO"){
+            if($terrenoModelo[0]->nombre != "Terreno"){
                 $precioTerreno = Precio_etapa::select('precio_excedente','id')
                 ->where('fraccionamiento_id','=',$request->fraccionamiento_id)
                 ->where('etapa_id','=',$request->etapa_id)->get();
@@ -805,7 +806,10 @@ class LoteController extends Controller
                 
             }
             else{
+                $preciom2 = lotes_individuales::select('costom2','id')
+                        ->where('etapa_id','=',$request->etapa_id)->get();
                 
+                $lote->precio_base = $preciom2[0]->costom2 * $lote->terreno;
             }
             
             
