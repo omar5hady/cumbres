@@ -126,7 +126,10 @@
                                     <div class="col-md-6">
                                        <select class="form-control" v-model="modelo_id">
                                             <option value="0">Seleccione</option>
-                                            <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.id" v-text="modelos.nombre"></option>
+                                            <template v-for="modelos in arrayModelos">
+                                               <option v-if="modelos.nombre != 'Terreno'" :key="modelos.id" :value="modelos.id" v-text="modelos.nombre"></option>
+                                            </template>
+                                            
                                         </select>
                                     </div>
                                 </div>

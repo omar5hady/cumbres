@@ -17,7 +17,7 @@ class LicenciasController extends Controller
 {
     public function index(Request $request) //Index para modulo de licencias
     {
-        if (!$request->ajax()) return redirect('/');
+       if (!$request->ajax()) return redirect('/');
 
         $buscar = $request->buscar;
         $buscar2 = $request->buscar2;
@@ -83,7 +83,8 @@ class LicenciasController extends Controller
                 );
 
         if ($buscar == '') {
-            $licencias = $query;
+            $licencias = $query
+            ->where('modelos.nombre','!=','Terreno');
         } else {
             if ($criterio != 'arquitecto' && $criterio != 'lotes.fraccionamiento_id' && $criterio != 'licencias.perito_dro' && $criterio != 'licencias.f_planos') {
                 $licencias = $query
@@ -288,7 +289,8 @@ class LicenciasController extends Controller
             );
 
         if ($buscar == '') {
-            $actas = $query;
+            $actas = $query
+            ->where('modelos.nombre','!=','Terreno');
         } else {
             if ($criterio != 'lotes.fraccionamiento_id') {
                 $actas = $query
@@ -1267,7 +1269,8 @@ class LicenciasController extends Controller
             );
 
         if ($buscar == '') {
-            $licencias = $query;
+            $licencias = $query
+            ->where('modelos.nombre','!=','Terreno');
         } else {
             if ($criterio != 'arquitecto' && $criterio != 'lotes.fraccionamiento_id' && $criterio != 'licencias.perito_dro' && $criterio != 'licencias.f_planos') {
                 $licencias = $query
@@ -1550,7 +1553,8 @@ class LicenciasController extends Controller
             );
 
         if ($buscar == '') {
-            $actas = $query;
+            $actas = $query
+            ->where('modelos.nombre','!=','Terreno');
         } else {
             if ($criterio != 'lotes.fraccionamiento_id') {
                 $actas = $query

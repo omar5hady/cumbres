@@ -24,7 +24,8 @@ class RuvController extends Controller
                     ->join('modelos','lotes.modelo_id','=','modelos.id')
                     ->select('lotes.id','etapas.num_etapa','fraccionamientos.nombre as proyecto','lotes.num_lote',
                             'modelos.nombre as modelo', 'lotes.manzana','lotes.calle','lotes.numero','lotes.paq_ruv',
-                            'lotes.terreno','lotes.construccion','lotes.paq_ruv');
+                            'lotes.terreno','lotes.construccion','lotes.paq_ruv')
+                            ->where('modelos.nombre','!=','Terreno');
 
         if($proyecto == ''){
             $lotes = $query->where('lotes.paq_ruv','=',NULL);

@@ -285,7 +285,7 @@ class BonoVentaController extends Controller
                                     ->select('contratos.id')
                                     ->whereBetween('contratos.fecha', [$fechaIni, $fechaFin])
                                     ->where('creditos.vendedor_id','=',$bono->vendedor_id)
-                                    // ->where('contratos.status','=',3)
+                                    ->where('contratos.status','!=',2)
                                     ->count();
 
                 $bono->ventaAnt = Contrato::join('creditos','contratos.id','=','creditos.id')
