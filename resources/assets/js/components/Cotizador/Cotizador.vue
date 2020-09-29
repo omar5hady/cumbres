@@ -32,9 +32,9 @@
                             <option value="">Proyecto</option>
                             <option v-for="proj in arrayFraccionamientos" :key="proj.id" :value="proj.id" v-text="proj.nombre">proyecto 1</option>
                         </select>
-                        <select v-on:change="getLotes(r_etapa)" class="form-control col-md-2" v-model="r_etapa">
+                        <select v-on:change="buscaLotes(r_etapa)" class="form-control col-md-2" v-model="r_etapa">
                             <option value="">Etapa</option>
-                            <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.num_etapa" v-text="etapas.num_etapa"></option>
+                            <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                         </select>
 
                         <select class="form-control col-sm-2" v-model="r_lote" v-on:change="selccionaLote(r_lote)" >
@@ -134,7 +134,7 @@
                                 <tr v-for="pago in arrayMensualidad" :key="pago.folio">
                                     <td v-text="pago.folio" class="text-info text-center">#</td>
                                     <td style="padding:0px;">
-                                        <select v-model="pago.pago" v-on:keyup="calculaPrecoi(pago)" class="form-control">
+                                        <select v-model="pago.pago" class="form-control">
                                             <option value="0">Enganche</option>
                                             <option v-for="n in arrayNMensualidad" :key="n.nMensualidad" :value="n.nMensualidad" v-text="'Mensualidad '+n.nMensualidad"></option>
                                         </select>
@@ -142,11 +142,11 @@
 
                                     <template v-if="pago.folio != 1">
                                         <td style="padding:0px;" v-if="arrayMensualidad[pago.folio-2].cantidad !=0 && arrayMensualidad[pago.folio-2].cantidad !=''">
-                                            <input v-model="pago.cantidad" v-on:keyup="calculaPrecoi(pago)" type="number" step=".01" class="form-control" style="height: 45px;">
+                                            <input v-model="pago.cantidad" type="number" step=".01" class="form-control" style="height: 45px;">
                                         </td><td v-else></td>
                                     </template>
                                     <td style="padding:0px;" v-else>
-                                        <input v-model="pago.cantidad" v-on:keyup="calculaPrecoi(pago)" type="number" step=".01" class="form-control" style="height: 45px;">
+                                        <input v-model="pago.cantidad" type="number" step=".01" class="form-control" style="height: 45px;">
                                     </td>
 
                                     <td style="padding:0px;" class="text-center">
@@ -350,33 +350,12 @@ export default {
             let dias = this.dias(this.r_fecha, datos.fecha)
             let montoDescuento = 0;
             let descuento = 0;
-
-            if(dias > 0 && dias <= 10){
+            let date = new Date(this.r_fecha);
+            let days = this.daysInMonth(date.getMonth, date.getFullYear);
+            console.log(days);
+            
+            if(dias > 0 && dias <= days-1){
                 descuento = this.arrayListA[0].valor;
-                montoDescuento = this.descuento(datos.cantidad, descuento);
-
-            }else if(dias > 10 && dias <= 30){
-                descuento = this.arrayListA[1].valor;
-                montoDescuento = this.descuento(datos.cantidad, descuento);
-
-            }else if(dias > 30 && dias <= 60){
-                descuento = this.arrayListA[2].valor;
-                montoDescuento = this.descuento(datos.cantidad, descuento);
-
-            }else if(dias > 60 && dias <= 90){
-                descuento = this.arrayListA[3].valor;
-                montoDescuento = this.descuento(datos.cantidad, descuento);
-
-            }else if(dias > 90 && dias <= 120){
-                descuento = this.arrayListA[4].valor;
-                montoDescuento = this.descuento(datos.cantidad, descuento);
-
-            }else if(dias > 120 && dias <= 150){
-                descuento = this.arrayListA[5].valor;
-                montoDescuento = this.descuento(datos.cantidad, descuento);
-
-            }else if(dias > 150 && dias <= 180){
-                descuento = this.arrayListA[6].valor;
                 montoDescuento = this.descuento(datos.cantidad, descuento);
             }
 
@@ -444,15 +423,14 @@ export default {
         actualizar(){
             this.arrayMensualidad.forEach(m => this.calculaPrecoi(m));
         },
-        buscaLotes(){
-            axios.get('/calc/lotes').then(
+        buscaLotes(etapa){
+            axios.get('/get/lotes/lotes?etapaId='+etapa).then(
                 response => this.arrayLotes = response.data
             ).catch(error => console.log(error));
         },
         selccionaLote(data){
-            
-            this.r_sup_terreno = data.terrenom2;
-            this.r_valor_m2 = data.costom2;
+            this.r_sup_terreno = data.terreno;
+            this.r_valor_m2 = data.precio_base/data.terreno;
             this.r_valor_venta = this.r_sup_terreno*this.r_valor_m2;
         },
         listarPorcentajes(){
@@ -473,8 +451,7 @@ export default {
                 me.arrayClientes = respuesta.personas.data;
 
                 loading(false)
-            })
-            .catch(function (error) {
+            }).catch(function (error) {
                 console.log(error);
             });
         },
@@ -482,14 +459,6 @@ export default {
             console.log(cliente);
 
             this.r_proyecto = cliente.proyecto_interes_id;
-        },
-        getLotes(etapa){
-            axios.get("/get/lotes/lotes").then(
-                response => {
-                    this.arrayLotes = respose.data.num_lote;
-                    console.log(response.data);
-                }
-            )
         },
         agregaCampoPago(){
 
@@ -506,10 +475,12 @@ export default {
                 saldo:0
             });
         },
+        daysInMonth (month, year) {
+            return new Date(toString(year), toString(month), 0).getDate();
+        },
     },
     mounted() {
         this.selectFraccionamientos();
-        this.buscaLotes();
         this.listarPorcentajes();
     }
 };

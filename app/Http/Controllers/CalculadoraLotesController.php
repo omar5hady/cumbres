@@ -127,18 +127,27 @@ class CalculadoraLotesController extends Controller
                         'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
                         'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
                         'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'lotes.emp_constructora', 'lotes.emp_terreno',
-        'v.nombre as v_nombre', 'apartados.fecha_apartado');
+        'v.nombre as v_nombre', 'apartados.fecha_apartado','lotes.regimen_condom');
                         
         $lotes = $query
+
+            ->where('modelos.nombre', '!=', 'Terreno')
+            ->where('etapas.id', '=', $request->etapaId)
+            
             ->where('lotes.habilitado','=',1)
-            ->where('modelos.nombre', '=', 'Terreno')
             ->where('lotes.contrato','=',0)
+            ->where('lotes.apartado','=',0)
+
+            ->where('lotes.casa_muestra', '=', 0)
+            ->where('lotes.lote_comercial', '=', 0)
+            //->where('lotes.regimen_condom', '=', 0)
 
             ->orderBy('fraccionamientos.nombre','DESC')
             ->orderBy('etapas.num_etapa','ASC')
             ->orderBy('lotes.manzana','ASC')
             ->orderBy('lotes.num_lote','ASC')
-        ->paginate(25);
+        ->get();
+        //->paginate(10);
 
         return $lotes;
 
