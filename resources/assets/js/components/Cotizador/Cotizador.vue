@@ -32,7 +32,7 @@
                             <option value="">Proyecto</option>
                             <option v-for="proj in arrayFraccionamientos" :key="proj.id" :value="proj.id" v-text="proj.nombre">proyecto 1</option>
                         </select>
-                        <select class="form-control col-md-2" v-model="r_etapa">
+                        <select v-on:change="getLotes(r_etapa)" class="form-control col-md-2" v-model="r_etapa">
                             <option value="">Etapa</option>
                             <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.num_etapa" v-text="etapas.num_etapa"></option>
                         </select>
@@ -46,8 +46,8 @@
                         <div v-text="'Costo m² $ '+r_valor_m2.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})" class="text-info form-control col-sm-2" title="Costo m²"></div>
                         <div v-text="'Valor de Venta $ '+r_valor_venta.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})" class="text-info form-control col-sm-3" title="Valor de Venta"></div>
 
-                        <select class="form-control col-sm-2" v-on:change="generarLista()" v-model="r_mensualidad" title="Mensualidades">
-                            <option value="">Pagos</option>
+                        <select class="form-control col-sm-2" v-on:change="generarLista()" v-model="r_mensualidad" title="Mensualidades" required>
+                            <option value="" disabled selected>Pagos</option>
                             <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
@@ -84,11 +84,24 @@
                             <option value="34">34</option>
                             <option value="35">35</option>
                             <option value="36">36</option>
-                            <!--option value="37">37</option>
+                            <option value="37">37</option>
                             <option value="38">38</option>
                             <option value="39">39</option>
-                            <option value="30">30</option-->
+                            <option value="40">40</option>
+                            <option value="41">41</option>
+                            <option value="42">42</option>
+                            <option value="43">43</option>
+                            <option value="44">44</option>
+                            <option value="45">45</option>
+                            <option value="46">46</option>
+                            <option value="47">47</option>
+                            <option value="48">48</option>
+                            <!--option value="40">40</option>
+                            <option value="40">40</option>
+                            <option value="40">40</option-->
                         </select>
+
+                        <button @click="agregaCampoPago()" class="btn btn-sm btn-primary col-sm-2">Agregar pago</button>
                     </div>
                     <br>
 
@@ -96,7 +109,9 @@
                         <table class="table table-bordered table-striped">
                             <tbody>
                                 <tr>
-                                    <td class=" text-right"><strong v-text="'Saldo inicial $ '+r_valor_venta.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})"></strong></td>
+                                    <td class=" text-right">
+                                        <strong v-text="'Saldo inicial $ '+r_valor_venta.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})"></strong>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -104,6 +119,7 @@
                             <thead>
                                 <tr>
                                     <th># Pago</th>
+                                    <th>Mensualidad</th>
                                     <th>Cantidad</th>
                                     <th>Fecha</th>
                                     <th>Dias</th>
@@ -117,14 +133,20 @@
                             <tbody>
                                 <tr v-for="pago in arrayMensualidad" :key="pago.folio">
                                     <td v-text="pago.folio" class="text-info text-center">#</td>
+                                    <td style="padding:0px;">
+                                        <select v-model="pago.pago" v-on:keyup="calculaPrecoi(pago)" class="form-control">
+                                            <option value="0">Enganche</option>
+                                            <option v-for="n in arrayNMensualidad" :key="n.nMensualidad" :value="n.nMensualidad" v-text="'Mensualidad '+n.nMensualidad"></option>
+                                        </select>
+                                    </td>
 
                                     <template v-if="pago.folio != 1">
                                         <td style="padding:0px;" v-if="arrayMensualidad[pago.folio-2].cantidad !=0 && arrayMensualidad[pago.folio-2].cantidad !=''">
-                                            <input v-model="pago.cantidad" v-on:keyup="calculaPrecoi(pago)" type="number" min="0" step=".01" class="form-control" style="height: 45px;">
+                                            <input v-model="pago.cantidad" v-on:keyup="calculaPrecoi(pago)" type="number" step=".01" class="form-control" style="height: 45px;">
                                         </td><td v-else></td>
                                     </template>
                                     <td style="padding:0px;" v-else>
-                                        <input v-model="pago.cantidad" v-on:keyup="calculaPrecoi(pago)" type="number" min="0" step=".01" class="form-control" style="height: 45px;">
+                                        <input v-model="pago.cantidad" v-on:keyup="calculaPrecoi(pago)" type="number" step=".01" class="form-control" style="height: 45px;">
                                     </td>
 
                                     <td style="padding:0px;" class="text-center">
@@ -208,7 +230,9 @@ export default {
             r_lote:'',
             r_sup_terreno:0,
             r_valor_m2:0,
-            r_valor_venta:0,
+            r_valor_venta:100000,
+            valor_enganche:10000,
+            valor_minMens:0,
             r_mensualidad:'',
             arrayMensualidad:[],
             arrayFraccionamientos:[],
@@ -216,6 +240,7 @@ export default {
             arrayLotes:[],
             arrayListA:[],
             arrayClientes:[],
+            arrayNMensualidad:[],
         }
     },
     computed:{
@@ -227,13 +252,25 @@ export default {
     methods: {
         generarLista(){
             this.arrayMensualidad=[];
+            this.arrayNMensualidad=[];
+
+            let fullPrice = this.r_valor_venta;
 
             if(this.r_fecha =="") this.r_fecha = moment().format('YYYY-MM-DD');
+            
+            if(this.r_mensualidad == 48){
+                this.valor_minMens = (fullPrice-(fullPrice*0.3))/this.r_mensualidad;
+                this.valor_enganche = fullPrice*0.3;
+            }else this.valor_minMens = (fullPrice-10000)/this.r_mensualidad;
 
-            for(let i=0; this.r_mensualidad >i; i++){
+            for(let i=0; this.r_mensualidad >=i; i++){
+
+                let monto = i?this.valor_minMens:this.valor_enganche;
+
                 this.arrayMensualidad.push({
                     folio: i+1,
-                    cantidad:0,
+                    pago: i?i:0,
+                    cantidad:monto,
                     fecha:'',
                     descuento:0,
                     dias:0,
@@ -243,6 +280,15 @@ export default {
                     saldo:0
                 });
             }
+
+            if(this.r_mensualidad == 1) this.arrayMensualidad.pop();
+
+            for(let i=0; this.r_mensualidad >i; i++){
+
+                this.arrayNMensualidad.push({
+                    nMensualidad: i+1,
+                });
+            }
         },
         calculaPrecoi(index){
             
@@ -250,11 +296,11 @@ export default {
             let descuento = this.montoDescuento(index);
             let dias = this.dias(this.r_fecha, index.fecha);
             let folio = index.folio-1;
-            
+
             this.arrayMensualidad[folio].cantidad = cantidad;
             this.arrayMensualidad[folio].fecha = index.fecha;
             //this.arrayMensualidad[folio].saldo = this.r_valor_venta-(cantidad + descuento + saldoPendiente);
-            this.arrayMensualidad[folio].interesMont = this.intereses(index);
+            this.arrayMensualidad[folio].interesMont = 0;//this.intereses(index);
 
             this.arrayMensualidad[folio].totalAPagar = cantidad+this.arrayMensualidad[folio].interesMont;
 
@@ -363,7 +409,8 @@ export default {
             return montoDesc;
         },
         intereses(datos){
-            let dias = this.dias(this.r_fecha, datos.fecha)
+
+            let dias = this.dias(this.r_fecha, datos.fecha);
             let montoInteres = 0;
 
             let saldo = 0;
@@ -416,8 +463,7 @@ export default {
         selectCliente(search, loading){
             let me = this;
             loading(true)
-
-            //var url = '/select_coacreditadoVue?filtro='+search;
+            
             var url = '/clientes?page=1&criterio=personal.nombre&b_clasificacion=2&buscar='+search;
             
             axios.get(url).then(function (response) {
@@ -425,7 +471,6 @@ export default {
                 let respuesta = response.data;
                 q: search
                 me.arrayClientes = respuesta.personas.data;
-                console.log(me.arrayClientes);
 
                 loading(false)
             })
@@ -433,8 +478,33 @@ export default {
                 console.log(error);
             });
         },
-        getDatosCliente(val1){
-            console.log(val1);
+        getDatosCliente(cliente){
+            console.log(cliente);
+
+            this.r_proyecto = cliente.proyecto_interes_id;
+        },
+        getLotes(etapa){
+            axios.get("/get/lotes/lotes").then(
+                response => {
+                    this.arrayLotes = respose.data.num_lote;
+                    console.log(response.data);
+                }
+            )
+        },
+        agregaCampoPago(){
+
+            this.arrayMensualidad.push({
+                folio: this.arrayMensualidad.length+1,
+                pago: '',
+                cantidad:0,
+                fecha:'',
+                descuento:0,
+                dias:0,
+                interesesPor:0,
+                interesMont:0,
+                totalAPagar:0,
+                saldo:0
+            });
         },
     },
     mounted() {

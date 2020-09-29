@@ -51,7 +51,7 @@
                                             <th class="text-center">#</th>
                                             <th class="text-center">Fraccionamiento</th>
                                             <th class="text-center">Etapa</th>
-                                            <th>costo m²</th>
+                                            <th>Costo m²</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -115,7 +115,7 @@
                             </div>
                             <br>
                             <div class="row">
-                                <label for="" class="col-sm-4 text-rigth">Etapa</label>
+                                <label for="" class="col-sm-4 text-rigth">Costo m²</label>
                                 <input v-model="addPrecioEtapa" required type="number" min="0" step=".01" class="form-control col-sm-7" placeholder="$0.00">
                             </div>
                         </div>
@@ -166,7 +166,7 @@
                             </div>
                             <br>
                             <div class="row">
-                                <label for="" class="col-sm-4 text-rigth">Etapa</label>
+                                <label for="" class="col-sm-4 text-rigth">Costo m²</label>
                                 <input v-model="editPrecioEtapa" required type="number" min="0" step=".01" class="form-control col-sm-7" placeholder="$0.00">
                             </div>
                         </div>

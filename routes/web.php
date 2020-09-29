@@ -481,6 +481,7 @@ Route::group(['middleware' => ['auth']],function(){
     Route::put('/calc/window/add','CalculadoraLotesController@addWindowPrice');
     Route::get('/get/fraccionamientos/lotes','CalculadoraLotesController@selectFraccionamientoLotes');
     Route::get('/get/etapas/lotes','CalculadoraLotesController@selectEtapa_proyectoLotes');
+    Route::get('/get/lotes/lotes','CalculadoraLotesController@lotesDisponiblesLotes');
 
     /**********************************RUTAS AVANCE*************************** */
         Route::get('/avance','AvanceController@index');

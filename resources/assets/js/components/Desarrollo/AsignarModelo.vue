@@ -488,7 +488,7 @@
                             los lotes vea el módulo <strong>“Desarrollo -> Modelos”</strong>.
                         </p>
                         <p>
-                            Puede asignar el modelo a una seria de lote seleccionando la casilla que aparece de lado 
+                            Puede asignar el modelo a una serie de lote seleccionando la casilla que aparece de lado 
                             izquierdo y presionando el botón de asignar modelo, o puede asignar el modelo dando clic 
                             sobre el icono del lote (lapis) de editar y seleccionando el modelo deseado para ese lote en específico.
                         </p>

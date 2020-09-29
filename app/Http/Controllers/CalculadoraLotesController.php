@@ -105,4 +105,42 @@ class CalculadoraLotesController extends Controller
         
         return['etapas' => $etapas];
     }
+
+    public function lotesDisponiblesLotes (Request $request)
+    {
+        //if(!$request->ajax())return redirect('/');
+
+        $query = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+            ->join('licencias','lotes.id','=','licencias.id')
+            ->join('etapas','lotes.etapa_id','=','etapas.id')
+            ->join('modelos','lotes.modelo_id','=','modelos.id')
+
+            ->leftJoin('apartados','lotes.id','apartados.lote_id')
+            ->leftJoin('clientes','apartados.cliente_id','clientes.id')
+            ->leftJoin('vendedores','apartados.vendedor_id','vendedores.id')
+            ->leftJoin('personal','clientes.id','personal.id')
+            ->leftJoin('personal as v','vendedores.id','v.id')
+
+            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
+                        'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
+                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
+                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
+                        'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
+                        'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'lotes.emp_constructora', 'lotes.emp_terreno',
+        'v.nombre as v_nombre', 'apartados.fecha_apartado');
+                        
+        $lotes = $query
+            ->where('lotes.habilitado','=',1)
+            ->where('modelos.nombre', '=', 'Terreno')
+            ->where('lotes.contrato','=',0)
+
+            ->orderBy('fraccionamientos.nombre','DESC')
+            ->orderBy('etapas.num_etapa','ASC')
+            ->orderBy('lotes.manzana','ASC')
+            ->orderBy('lotes.num_lote','ASC')
+        ->paginate(25);
+
+        return $lotes;
+
+    }
 }
