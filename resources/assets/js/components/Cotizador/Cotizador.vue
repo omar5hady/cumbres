@@ -133,20 +133,24 @@
                             <tbody>
                                 <tr v-for="pago in arrayMensualidad" :key="pago.folio">
                                     <td v-text="pago.folio" class="text-info text-center">#</td>
-                                    <td style="padding:0px;">
+
+                                    <td v-if="r_mensualidad == 1" style="padding:0px;">
                                         <select v-model="pago.pago" class="form-control">
                                             <option value="0">Enganche</option>
-                                            <option v-for="n in arrayNMensualidad" :key="n.nMensualidad" :value="n.nMensualidad" v-text="'Mensualidad '+n.nMensualidad"></option>
+                                            <option value="1">Mensualidad</option>
+                                            <!--option v-for="n in arrayNMensualidad" :key="n.nMensualidad" :value="n.nMensualidad" v-text="'Mensualidad'"></option-->
                                         </select>
                                     </td>
+                                    <td v-else-if="pago.pago == 0" >Enganche</td>
+                                    <td v-else>Mensualidad</td>
 
                                     <template v-if="pago.folio != 1">
                                         <td style="padding:0px;" v-if="arrayMensualidad[pago.folio-2].cantidad !=0 && arrayMensualidad[pago.folio-2].cantidad !=''">
-                                            <input v-model="pago.cantidad" type="number" step=".01" class="form-control" style="height: 45px;">
+                                            <input v-model="pago.cantidad" v-on:keyup="calculaPrecoi(pago)" type="number" step=".01" class="form-control" style="height: 45px;">
                                         </td><td v-else></td>
                                     </template>
                                     <td style="padding:0px;" v-else>
-                                        <input v-model="pago.cantidad" type="number" step=".01" class="form-control" style="height: 45px;">
+                                        <input v-model="pago.cantidad" v-on:keyup="calculaPrecoi(pago)" type="number" step=".01" class="form-control" style="height: 45px;">
                                     </td>
 
                                     <td style="padding:0px;" class="text-center">
@@ -166,7 +170,7 @@
                         </table>
 
                         <br>
-                        <table class="table table-bordered table-striped">
+                        <!--table class="table table-bordered table-striped">
                             <thead>
                                 <tr>
                                     <td class="text-center" colspan="10">
@@ -207,7 +211,7 @@
                                     <td class="text-center">%18 de Interes de tasa anual</td>
                                 </tr>
                             </tbody>
-                        </table>
+                        </table-->
                     </div>
                 </div>
             </div>
@@ -240,7 +244,6 @@ export default {
             arrayLotes:[],
             arrayListA:[],
             arrayClientes:[],
-            arrayNMensualidad:[],
         }
     },
     computed:{
@@ -269,7 +272,7 @@ export default {
 
                 this.arrayMensualidad.push({
                     folio: i+1,
-                    pago: i?i:0,
+                    pago: this.r_mensualidad==1?1:i?1:0,
                     cantidad:monto,
                     fecha:'',
                     descuento:0,
@@ -282,13 +285,6 @@ export default {
             }
 
             if(this.r_mensualidad == 1) this.arrayMensualidad.pop();
-
-            for(let i=0; this.r_mensualidad >i; i++){
-
-                this.arrayNMensualidad.push({
-                    nMensualidad: i+1,
-                });
-            }
         },
         calculaPrecoi(index){
             
@@ -300,7 +296,7 @@ export default {
             this.arrayMensualidad[folio].cantidad = cantidad;
             this.arrayMensualidad[folio].fecha = index.fecha;
             //this.arrayMensualidad[folio].saldo = this.r_valor_venta-(cantidad + descuento + saldoPendiente);
-            this.arrayMensualidad[folio].interesMont = 0;//this.intereses(index);
+            if(this.r_mensualidad > 6) this.arrayMensualidad[folio].interesMont = this.intereses(index);
 
             this.arrayMensualidad[folio].totalAPagar = cantidad+this.arrayMensualidad[folio].interesMont;
 
@@ -350,13 +346,20 @@ export default {
             let dias = this.dias(this.r_fecha, datos.fecha)
             let montoDescuento = 0;
             let descuento = 0;
+
             let date = new Date(this.r_fecha);
-            let days = this.daysInMonth(date.getMonth, date.getFullYear);
-            console.log(days);
+            let days = this.daysInMonth(date.getMonth()+1, date.getFullYear());
             
-            if(dias > 0 && dias <= days-1){
-                descuento = this.arrayListA[0].valor;
-                montoDescuento = this.descuento(datos.cantidad, descuento);
+            if(this.r_mensualidad == 1 && this.arrayMensualidad[0].pago != 0){
+                if(dias > 0 && dias <= days){
+                    descuento = this.arrayListA[0].valor;
+                    montoDescuento = this.descuento(datos.cantidad, descuento);
+                }
+            }else if(datos.pago == "0" && datos.cantidad > 10000 && dias <= 10){
+                let engancheExed = datos.cantidad-10000;
+                
+                descuento = 4;
+                montoDescuento = this.descuento(engancheExed, descuento);
             }
 
             let array = [montoDescuento, descuento];
@@ -405,13 +408,19 @@ export default {
 
             let ineres = 0;
 
-            if(dias > 180 && dias <= 365){
+            if(this.r_mensualidad >= 7 && this.r_mensualidad < 13){
+                ineres = this.arrayListA[6].valor/100;
+                montoInteres = ((saldo*ineres)/365)*dias;
+
+            }else if(this.r_mensualidad >= 13 && this.r_mensualidad < 25){
                 ineres = this.arrayListA[7].valor/100;
                 montoInteres = ((saldo*ineres)/365)*dias;
-            }else if(dias > 365 && dias <= 730){
+
+            }else if(this.r_mensualidad >= 25 && this.r_mensualidad < 37){
                 ineres = this.arrayListA[8].valor/100;
                 montoInteres = ((saldo*ineres)/365)*dias;
-            }else if(dias > 730 && dias <= 1095){
+
+            }else if(this.r_mensualidad >= 37 && this.r_mensualidad < 48){
                 ineres = this.arrayListA[9].valor/100;
                 montoInteres = ((saldo*ineres)/365)*dias;
             }
@@ -476,7 +485,7 @@ export default {
             });
         },
         daysInMonth (month, year) {
-            return new Date(toString(year), toString(month), 0).getDate();
+            return new Date(year, month, 0).getDate();
         },
     },
     mounted() {
