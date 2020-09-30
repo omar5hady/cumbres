@@ -6,7 +6,6 @@
         </ol>
 
         <div class="container-fluid">
-            <!-- Ejemplo de tabla Listado -->
             <div class="card scroll-box">
                 <div class="card-header">
                     <i class="fa fa-align-justify"></i> Cotizador de lotes
@@ -14,6 +13,7 @@
                 </div>
                 
                 <div class="card-body">
+                    <!--FORMULARIO-->
                     <div class="row">
                         <input type="date" v-model="r_fecha" v-on:change="actualizar()" class="form-control col-sm-2 text-info">
                         
@@ -46,75 +46,88 @@
                         <div v-text="'Costo m² $ '+r_valor_m2.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})" class="text-info form-control col-sm-2" title="Costo m²"></div>
                         <div v-text="'Valor de Venta $ '+r_valor_venta.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})" class="text-info form-control col-sm-3" title="Valor de Venta"></div>
 
-                        <select class="form-control col-sm-2" v-on:change="generarLista()" v-model="r_mensualidad" title="Mensualidades" required>
+                        <select class="form-control col-sm-2" v-on:change="generarLista()" v-model="r_mensualidad" :disabled="r_valor_venta==0" title="Mensualidades" required>
                             <option value="" disabled selected>Pagos</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                            <option value="9">9</option>
-                            <option value="10">10</option>
-                            <option value="11">11</option>
-                            <option value="12">12</option>
-                            <option value="13">13</option>
-                            <option value="14">14</option>
-                            <option value="15">15</option>
-                            <option value="16">16</option>
-                            <option value="17">17</option>
-                            <option value="18">18</option>
-                            <option value="19">19</option>
-                            <option value="20">20</option>
-                            <option value="21">21</option>
-                            <option value="22">22</option>
-                            <option value="23">23</option>
-                            <option value="24">24</option>
-                            <option value="25">25</option>
-                            <option value="26">26</option>
-                            <option value="27">27</option>
-                            <option value="28">28</option>
-                            <option value="29">29</option>
-                            <option value="30">30</option>
-                            <option value="31">31</option>
-                            <option value="32">32</option>
-                            <option value="33">33</option>
-                            <option value="34">34</option>
-                            <option value="35">35</option>
-                            <option value="36">36</option>
-                            <option value="37">37</option>
-                            <option value="38">38</option>
-                            <option value="39">39</option>
-                            <option value="40">40</option>
-                            <option value="41">41</option>
-                            <option value="42">42</option>
-                            <option value="43">43</option>
-                            <option value="44">44</option>
-                            <option value="45">45</option>
-                            <option value="46">46</option>
-                            <option value="47">47</option>
-                            <option value="48">48</option>
-                            <!--option value="40">40</option>
-                            <option value="40">40</option>
+                            <option value="1">0 A 1 MES</option>
+                            <option value="6">1 A 6 MESES</option>
+                            <option value="12">7 A 12 MESES</option>
+                            <option value="24">13 A 24 MESES</option>
+                            <option value="48">37 A 48 MESES</option>
+                            <!--option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                                <option value="13">13</option>
+                                <option value="14">14</option>
+                                <option value="15">15</option>
+                                <option value="16">16</option>
+                                <option value="17">17</option>
+                                <option value="18">18</option>
+                                <option value="19">19</option>
+                                <option value="20">20</option>
+                                <option value="21">21</option>
+                                <option value="22">22</option>
+                                <option value="23">23</option>
+                                <option value="24">24</option>
+                                <option value="25">25</option>
+                                <option value="26">26</option>
+                                <option value="27">27</option>
+                                <option value="28">28</option>
+                                <option value="29">29</option>
+                                <option value="30">30</option>
+                                <option value="31">31</option>
+                                <option value="32">32</option>
+                                <option value="33">33</option>
+                                <option value="34">34</option>
+                                <option value="35">35</option>
+                                <option value="36">36</option>
+                                <option value="37">37</option>
+                                <option value="38">38</option>
+                                <option value="39">39</option>
+                                <option value="40">40</option>
+                                <option value="41">41</option>
+                                <option value="42">42</option>
+                                <option value="43">43</option>
+                                <option value="44">44</option>
+                                <option value="45">45</option>
+                                <option value="46">46</option>
+                                <option value="47">47</option>
+                                <option value="48">48</option>
+                                <option value="40">40</option>
+                                <option value="40">40</option>
                             <option value="40">40</option-->
                         </select>
-
-                        <button @click="agregaCampoPago()" class="btn btn-sm btn-primary col-sm-2">Agregar pago</button>
                     </div>
                     <br>
 
                     <div class="row">
+                        <!--TOTALES A PAGAR-->
                         <table class="table table-bordered table-striped">
                             <tbody>
                                 <tr>
                                     <td class=" text-right">
-                                        <strong v-text="'Saldo inicial $ '+r_valor_venta.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})"></strong>
+                                        <strong v-if="r_mensualidad != 1" v-text="'Saldo inicial $ '+r_valor_venta.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})"></strong>
+                                        <strong v-else v-text="
+                                            'Saldo inicial $ '
+                                            +r_valor_venta.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})
+                                            +'  -  Descuento $ '
+                                            +r_valor_descuento.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})
+                                            +'  =  Total a Pagar $ '
+                                            +(r_valor_venta-r_valor_descuento).toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})
+                                        "></strong>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
+
+                        <!--PAGOS-->
                         <table class="table table-bordered table-striped">
                             <thead>
                                 <tr>
@@ -133,23 +146,11 @@
                             <tbody>
                                 <tr v-for="pago in arrayMensualidad" :key="pago.folio">
                                     <td v-text="pago.folio" class="text-info text-center">#</td>
-
-                                    <td v-if="r_mensualidad == 1" style="padding:0px;">
-                                        <select v-model="pago.pago" class="form-control">
-                                            <option value="0">Enganche</option>
-                                            <option value="1">Mensualidad</option>
-                                            <!--option v-for="n in arrayNMensualidad" :key="n.nMensualidad" :value="n.nMensualidad" v-text="'Mensualidad'"></option-->
-                                        </select>
-                                    </td>
-                                    <td v-else-if="pago.pago == 0" >Enganche</td>
+                                    
+                                    <td v-if="pago.pago == 0" >Enganche</td>
                                     <td v-else>Mensualidad</td>
-
-                                    <template v-if="pago.folio != 1">
-                                        <td style="padding:0px;" v-if="arrayMensualidad[pago.folio-2].cantidad !=0 && arrayMensualidad[pago.folio-2].cantidad !=''">
-                                            <input v-model="pago.cantidad" v-on:keyup="calculaPrecoi(pago)" type="number" step=".01" class="form-control" style="height: 45px;">
-                                        </td><td v-else></td>
-                                    </template>
-                                    <td style="padding:0px;" v-else>
+                                    
+                                    <td style="padding:0px;">
                                         <input v-model="pago.cantidad" v-on:keyup="calculaPrecoi(pago)" type="number" step=".01" class="form-control" style="height: 45px;">
                                     </td>
 
@@ -234,10 +235,11 @@ export default {
             r_lote:'',
             r_sup_terreno:0,
             r_valor_m2:0,
-            r_valor_venta:100000,
+            r_valor_venta:0,
             valor_enganche:10000,
             valor_minMens:0,
             r_mensualidad:'',
+            r_valor_descuento:0,
             arrayMensualidad:[],
             arrayFraccionamientos:[],
             arrayEtapas:[],
@@ -256,25 +258,41 @@ export default {
         generarLista(){
             this.arrayMensualidad=[];
             this.arrayNMensualidad=[];
+            let fullPrice = this.r_valor_venta-this.r_valor_descuento;
+            let fechaPago = '';
 
-            let fullPrice = this.r_valor_venta;
-
+            //asignacion de fecha actual
             if(this.r_fecha =="") this.r_fecha = moment().format('YYYY-MM-DD');
-            
+            fechaPago = new Date(this.r_fecha);
+
+            //asignacion de primar pago o enganche
             if(this.r_mensualidad == 48){
                 this.valor_minMens = (fullPrice-(fullPrice*0.3))/this.r_mensualidad;
                 this.valor_enganche = fullPrice*0.3;
+
+            }else if(this.r_mensualidad == 1){  
+                this.valor_enganche = fullPrice.toFixed(2);
+
             }else this.valor_minMens = (fullPrice-10000)/this.r_mensualidad;
 
+            //creacion de array vacio
             for(let i=0; this.r_mensualidad >=i; i++){
 
                 let monto = i?this.valor_minMens:this.valor_enganche;
+                if(i==1)fechaPago.setDate(fechaPago.getDate()+10);
+                else if(i > 1) fechaPago.setMonth(fechaPago.getMonth()+1);
+                let mes = '';
+                if(fechaPago.getMonth()<10) 
+                    mes = '0';//+(fechaPago.getMonth()+1) 
+                else fechaPago.getMonth()+1;
+
+                let fechaPagoFinal = fechaPago.getFullYear()+'-'+mes+'-'+fechaPago.getDate()
 
                 this.arrayMensualidad.push({
                     folio: i+1,
                     pago: this.r_mensualidad==1?1:i?1:0,
                     cantidad:monto,
-                    fecha:'',
+                    fecha: fechaPagoFinal,
                     descuento:0,
                     dias:0,
                     interesesPor:0,
@@ -283,7 +301,8 @@ export default {
                     saldo:0
                 });
             }
-
+            
+            //si la mensualidad es 1 se elimina un campo
             if(this.r_mensualidad == 1) this.arrayMensualidad.pop();
         },
         calculaPrecoi(index){
@@ -292,6 +311,14 @@ export default {
             let descuento = this.montoDescuento(index);
             let dias = this.dias(this.r_fecha, index.fecha);
             let folio = index.folio-1;
+
+            //fechas de pago
+            let firstFechaPago = new Date(this.r_fecha);
+            let lastFechaPago = new Date(this.r_fecha);
+
+            //if()
+            lastFechaPago.setMonth(lastFechaPago.getMonth());
+
 
             this.arrayMensualidad[folio].cantidad = cantidad;
             this.arrayMensualidad[folio].fecha = index.fecha;
@@ -468,21 +495,6 @@ export default {
             console.log(cliente);
 
             this.r_proyecto = cliente.proyecto_interes_id;
-        },
-        agregaCampoPago(){
-
-            this.arrayMensualidad.push({
-                folio: this.arrayMensualidad.length+1,
-                pago: '',
-                cantidad:0,
-                fecha:'',
-                descuento:0,
-                dias:0,
-                interesesPor:0,
-                interesMont:0,
-                totalAPagar:0,
-                saldo:0
-            });
         },
         daysInMonth (month, year) {
             return new Date(year, month, 0).getDate();
