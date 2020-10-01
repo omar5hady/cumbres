@@ -52,6 +52,7 @@
                             <option value="6">1 A 6 MESES</option>
                             <option value="12">7 A 12 MESES</option>
                             <option value="24">13 A 24 MESES</option>
+                            <option value="36">25 A 36 MESES</option>
                             <option value="48">37 A 48 MESES</option>
                             <!--option value="2">2</option>
                                 <option value="3">3</option>
@@ -104,6 +105,8 @@
                                 <option value="40">40</option>
                             <option value="40">40</option-->
                         </select>
+
+                        <button @click="actualizar()" class="btn btn-sm btn-primary col-sm-1">Calcular</button>
                     </div>
                     <br>
 
@@ -114,14 +117,22 @@
                                 <tr>
                                     <td class=" text-right">
                                         <strong v-if="r_mensualidad != 1" v-text="'Saldo inicial $ '+r_valor_venta.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})"></strong>
-                                        <strong v-else v-text="
-                                            'Saldo inicial $ '
-                                            +r_valor_venta.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})
-                                            +'  -  Descuento $ '
-                                            +r_valor_descuento.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})
-                                            +'  =  Total a Pagar $ '
-                                            +(r_valor_venta-r_valor_descuento).toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})
-                                        "></strong>
+                                        <template v-else>
+                                            <strong v-text="
+                                                'Saldo inicial $ '
+                                                +r_valor_venta.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})
+                                                +'  -  '"
+                                            ></strong>
+                                            <strong class="badge-warning" v-text="
+                                                'Descuento $ '
+                                                +r_valor_descuento.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})
+                                                +'  =  '"
+                                            ></strong>
+                                            <strong class="badge-info" v-text="
+                                                'Total a Pagar $ '
+                                                +(r_valor_venta-r_valor_descuento).toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})
+                                            "></strong>
+                                        </template>
                                     </td>
                                 </tr>
                             </tbody>
@@ -236,7 +247,7 @@ export default {
             r_sup_terreno:0,
             r_valor_m2:0,
             r_valor_venta:0,
-            valor_enganche:10000,
+            valor_enganche:0,
             valor_minMens:0,
             r_mensualidad:'',
             r_valor_descuento:0,
@@ -258,40 +269,64 @@ export default {
         generarLista(){
             this.arrayMensualidad=[];
             this.arrayNMensualidad=[];
+            this.valor_enganche=10000;
+
+            this.r_mensualidad==1?(
+                this.r_valor_descuento = this.r_valor_venta*(this.arrayListA[0].valor/100)
+            ):this.r_valor_descuento=0;
+
             let fullPrice = this.r_valor_venta-this.r_valor_descuento;
             let fechaPago = '';
 
             //asignacion de fecha actual
-            if(this.r_fecha =="") this.r_fecha = moment().format('YYYY-MM-DD');
-            fechaPago = new Date(this.r_fecha);
+                if(this.r_fecha =="") this.r_fecha = moment().format('YYYY-MM-DD');
+                fechaPago = new Date(
+                    this.r_fecha.substring(5,7)
+                    +'/'+this.r_fecha.substring(8,10)
+                    +'/'+this.r_fecha.substring(0, 4)
+                );
+            //asignacion de fecha actual
 
-            //asignacion de primar pago o enganche
-            if(this.r_mensualidad == 48){
-                this.valor_minMens = (fullPrice-(fullPrice*0.3))/this.r_mensualidad;
-                this.valor_enganche = fullPrice*0.3;
+            //asignacion de primer pago o enganche
+                if(this.r_mensualidad == 48){
+                    this.valor_minMens = (fullPrice-(fullPrice*0.3))/this.r_mensualidad;
+                    this.valor_enganche = fullPrice*0.3;
 
-            }else if(this.r_mensualidad == 1){  
-                this.valor_enganche = fullPrice.toFixed(2);
+                }else if(this.r_mensualidad == 1){  
+                    this.valor_enganche = fullPrice.toFixed(2);
 
-            }else this.valor_minMens = (fullPrice-10000)/this.r_mensualidad;
+                }else this.valor_minMens = (fullPrice-10000)/this.r_mensualidad;
+            //asignacion de primer pago o enganche
 
             //creacion de array vacio
             for(let i=0; this.r_mensualidad >=i; i++){
+                
+                let monto = 0.0;
+                if(i == this.r_mensualidad && this.r_mensualidad != 1){
+                    this.arrayMensualidad.forEach(item =>{
+                        monto = monto+parseFloat(item.cantidad);
+                    });
+                    monto = (fullPrice-monto).toFixed(2);
+                }else monto = i?this.valor_minMens:this.valor_enganche;
 
-                let monto = i?this.valor_minMens:this.valor_enganche;
-                if(i==1)fechaPago.setDate(fechaPago.getDate()+10);
-                else if(i > 1) fechaPago.setMonth(fechaPago.getMonth()+1);
-                let mes = '';
-                if(fechaPago.getMonth()<10) 
-                    mes = '0';//+(fechaPago.getMonth()+1) 
-                else fechaPago.getMonth()+1;
-
-                let fechaPagoFinal = fechaPago.getFullYear()+'-'+mes+'-'+fechaPago.getDate()
+                //Setear Fecha de pago
+                    let mes = '',dia = '';
+                    if(i==1)
+                        fechaPago.setDate(fechaPago.getDate()+10);
+                    else if(i > 1) fechaPago.setMonth(fechaPago.getMonth()+1);
+                    if(fechaPago.getMonth()<9)
+                        mes = '0'+(fechaPago.getMonth()+1);
+                    else mes = fechaPago.getMonth()+1;
+                    if(fechaPago.getDate()<10)
+                        dia = '0'+fechaPago.getDate();
+                    else dia = fechaPago.getDate();
+                    let fechaPagoFinal = fechaPago.getFullYear()+'-'+mes+'-'+dia;
+                //Setear Fecha de pago fin
 
                 this.arrayMensualidad.push({
                     folio: i+1,
                     pago: this.r_mensualidad==1?1:i?1:0,
-                    cantidad:monto,
+                    cantidad:parseFloat(monto).toFixed(2),
                     fecha: fechaPagoFinal,
                     descuento:0,
                     dias:0,
@@ -304,6 +339,9 @@ export default {
             
             //si la mensualidad es 1 se elimina un campo
             if(this.r_mensualidad == 1) this.arrayMensualidad.pop();
+
+            //actualiza los precios
+            this.actualizar()
         },
         calculaPrecoi(index){
             
@@ -315,23 +353,23 @@ export default {
             //fechas de pago
             let firstFechaPago = new Date(this.r_fecha);
             let lastFechaPago = new Date(this.r_fecha);
-
-            //if()
+            
             lastFechaPago.setMonth(lastFechaPago.getMonth());
-
 
             this.arrayMensualidad[folio].cantidad = cantidad;
             this.arrayMensualidad[folio].fecha = index.fecha;
             //this.arrayMensualidad[folio].saldo = this.r_valor_venta-(cantidad + descuento + saldoPendiente);
+
             if(this.r_mensualidad > 6) this.arrayMensualidad[folio].interesMont = this.intereses(index);
 
-            this.arrayMensualidad[folio].totalAPagar = cantidad+this.arrayMensualidad[folio].interesMont;
+            this.arrayMensualidad[folio].totalAPagar = this.arrayMensualidad[folio].interesMont+cantidad;
 
             this.arrayMensualidad[folio].interesesPor = descuento[1];
             this.arrayMensualidad[folio].descuento = descuento[0];
             this.arrayMensualidad[folio].dias = dias;
 
-            let saldo = this.r_valor_venta;
+            //Calcular saldo pendiente
+            let saldo = this.r_valor_venta-this.r_valor_descuento;
             this.arrayMensualidad.forEach(
                 m => {
                     if(m.cantidad != 0){
@@ -377,13 +415,20 @@ export default {
             let date = new Date(this.r_fecha);
             let days = this.daysInMonth(date.getMonth()+1, date.getFullYear());
             
-            if(this.r_mensualidad == 1 && this.arrayMensualidad[0].pago != 0){
-                if(dias > 0 && dias <= days){
-                    descuento = this.arrayListA[0].valor;
-                    montoDescuento = this.descuento(datos.cantidad, descuento);
-                }
-            }else if(datos.pago == "0" && datos.cantidad > 10000 && dias <= 10){
+            //if(this.r_mensualidad == 1 && this.arrayMensualidad[0].pago != 0){
+            //    if(dias > 0 && dias <= days){
+            //        descuento = this.arrayListA[0].valor;
+            //        montoDescuento = this.descuento(datos.cantidad, descuento);
+            //    }
+            //}else 
+            if(datos.pago == "0" && datos.cantidad > 10000 && dias <= 10 && this.r_mensualidad != 48){
                 let engancheExed = datos.cantidad-10000;
+                
+                descuento = 4;
+                montoDescuento = this.descuento(engancheExed, descuento);
+
+            }else if(datos.pago == "0" && datos.cantidad > (this.r_valor_venta*.30) && dias <= 10){
+                let engancheExed = datos.cantidad-(this.r_valor_venta*.30);
                 
                 descuento = 4;
                 montoDescuento = this.descuento(engancheExed, descuento);
@@ -419,6 +464,8 @@ export default {
         },
         intereses(datos){
 
+            if(datos.pago == 0) return 0;
+
             let dias = this.dias(this.r_fecha, datos.fecha);
             let montoInteres = 0;
 
@@ -435,19 +482,19 @@ export default {
 
             let ineres = 0;
 
-            if(this.r_mensualidad >= 7 && this.r_mensualidad < 13){
+            if(this.r_mensualidad = 12){
                 ineres = this.arrayListA[6].valor/100;
                 montoInteres = ((saldo*ineres)/365)*dias;
 
-            }else if(this.r_mensualidad >= 13 && this.r_mensualidad < 25){
+            }else if(this.r_mensualidad == 24){
                 ineres = this.arrayListA[7].valor/100;
                 montoInteres = ((saldo*ineres)/365)*dias;
 
-            }else if(this.r_mensualidad >= 25 && this.r_mensualidad < 37){
+            }else if(this.r_mensualidad == 36){
                 ineres = this.arrayListA[8].valor/100;
                 montoInteres = ((saldo*ineres)/365)*dias;
 
-            }else if(this.r_mensualidad >= 37 && this.r_mensualidad < 48){
+            }else if(this.r_mensualidad == 48){
                 ineres = this.arrayListA[9].valor/100;
                 montoInteres = ((saldo*ineres)/365)*dias;
             }
