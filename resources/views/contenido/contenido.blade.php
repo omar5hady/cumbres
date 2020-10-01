@@ -5,10 +5,14 @@
     @if(Auth::check())
 
         <template v-if="menu==20">
-            <perfil-user user-id="{{Auth::user()->id}}"></perfil-user>
+            <perfil-user user-id="{{Auth::user()->id}}"
+                rol-id="{{Auth::user()->rol_id}}"
+            ></perfil-user>
         </template>
         <template v-if="menu==100">
-            <perfil-user user-id="{{Auth::user()->id}}"></perfil-user>
+            <perfil-user user-id="{{Auth::user()->id}}"
+                rol-id="{{Auth::user()->rol_id}}"
+             ></perfil-user>
         </template>
         <template v-if="menu==101">
             <listar-notifications user-id="{{Auth::user()->id}}"></listar-notifications>

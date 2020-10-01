@@ -26,7 +26,7 @@
         <div class="text-center" v-if="arrayCumple.length >= 1 && arrayCumple.length > 1"> <h6>Deséales un Feliz Cumpleaños a tus Clientes</h6> </div>
         <div v-if="arrayCumple.length >= 1 && arrayCumple.length == 1"> <h6>Deséales un Feliz Cumpleaños a tus Clientes</h6> </div>
         
-        <div class="row" v-if="arrayCumple.length >= 1">
+        <div class="row" v-if="arrayCumple.length >= 1 " >
             <div v-for="cumple in arrayCumple" :key="cumple.id" class="col-xl-4 col-lg-5 col-md-4">
                 <div class="card">
                     <div class="card-body p-3 d-flex align-items-center">
@@ -40,10 +40,20 @@
                             <div class="text-muted text-uppercase font-weight-bold small"> &nbsp;&nbsp;&nbsp; {{this.moment(cumple.f_nacimiento).locale('es').format('DD/MMM/YYYY')}}</div>
                         </div>
                     </div>
-                    <div class="card-footer px-3 py-2 text-right">
-                        <a title="Llamar" class="btn btn-info rounded" :href="'tel:'+cumple.celular"><i class="fa fa-phone fa-lg"></i></a>
-                        <a title="Enviar whatsapp" class="btn btn-success rounded" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+cumple.celular+'&text=Feliz cumpleaños'"><i class="fa fa-whatsapp fa-lg"></i></a>
+                    <div>
+                        <div class="card-footer px-3 py-2 text-right">
+                            <a title="Llamar" class="btn btn-info rounded" :href="'tel:'+cumple.celular"><i class="fa fa-phone fa-lg"></i></a>
+                            <a title="Enviar whatsapp" class="btn btn-success rounded" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+cumple.celular+'&text=Feliz cumpleaños'"><i class="fa fa-whatsapp fa-lg"></i></a>
+                        </div>
+                        <div v-if="rolId != 2 && rolId != 8" class="card-footer px-3 py-2 text-left">
+                            <div class="text-muted text-uppercase font-weight-bold small" v-text="'Vendedor ' + cumple.vendedor + ' '+ cumple.vendedor_ap"></div>
+                        </div>
                     </div>
+
+                    
+                        
+                    
+                    
                 </div>
                 
             </div>
@@ -335,7 +345,8 @@
 <script>
 export default {
   props: {
-    userId: { type: String }
+    userId: { type: String },
+    rolId: { type: String }
   },
   data() {
     return {
