@@ -1855,17 +1855,48 @@ class ClienteController extends Controller
     public function getBirthdayPeople(Request $request){
 
         $now = Carbon::now();
-        $people = Cliente::join('personal','clientes.id','=','personal.id')
-                    ->select('personal.nombre', 'personal.id', 'personal.apellidos', 'personal.celular','personal.email',
-                                'personal.f_nacimiento')
-                    ->whereMonth('personal.f_nacimiento',$now->month)
-                    ->whereDay('personal.f_nacimiento',$now->day);
-                    if(Auth::user()->rol_id != 1)
-                        $people = $people->where('clientes.vendedor_id','=',Auth::user()->id);
-                    $people = $people->orderBy('personal.nombre','asc')
-                    ->get();
+        if( Auth::user()->rol_id == 8){
+            $people = $this->getBirthdayPeopleGestores();
+        }
+        else{
+            $people = Cliente::join('personal','clientes.id','=','personal.id')
+            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+            ->join('personal as v', 'vendedores.id', '=', 'v.id' )
+            ->select('personal.nombre', 'personal.id', 'personal.apellidos', 'personal.celular','personal.email',
+                        'personal.f_nacimiento','clientes.clasificacion','v.nombre as vendedor','v.apellidos as vendedor_ap')
+            ->whereMonth('personal.f_nacimiento',$now->month)
+            ->whereDay('personal.f_nacimiento',$now->day);
+            if(Auth::user()->rol_id != 1 && Auth::user()->rol_id != 4 && Auth::user()->rol_id != 6)
+                $people = $people->where('clientes.vendedor_id','=',Auth::user()->id);
+            $people = $people->orderBy('personal.nombre','asc')
+            ->get();
+        }
+        
 
         return ['people'=>$people];
     }
+
+    public function getBirthdayPeopleGestores(){
+
+        $now = Carbon::now();
+        $people = Cliente::join('personal','clientes.id','=','personal.id')
+                    ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                    ->join('personal as v', 'vendedores.id', '=', 'v.id' )
+                    ->join('creditos', 'clientes.id', '=', 'creditos.prospecto_id')
+                    ->join('contratos', 'creditos.id', '=', 'contratos.id')
+                    ->join('expedientes', 'contratos.id', '=', 'expedientes.id')
+                    ->select('personal.nombre', 'personal.id', 'personal.apellidos', 'personal.celular','personal.email',
+                                'personal.f_nacimiento','clientes.clasificacion')
+                    ->whereMonth('personal.f_nacimiento',$now->month)
+                    ->whereDay('personal.f_nacimiento',$now->day);
+                    $people = $people->where('expedientes.gestor_id','=',Auth::user()->id);
+                    $people = $people->orderBy('personal.nombre','asc')
+                    ->distinct('personal.id')
+                    ->get();
+
+        return $people;
+    }
+
+    
     
 }
