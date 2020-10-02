@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\datos_calc_lotes;
 use App\lotes_individuales;
 use App\Fraccionamiento;
+use App\Cotizacion_lotes;
+use App\Pagos_lotes;
 
 use App\Lote;
 use App\Modelo;
@@ -131,7 +133,7 @@ class CalculadoraLotesController extends Controller
                         
         $lotes = $query
 
-            ->where('modelos.nombre', '=', 'Terreno')
+            ->where('modelos.nombre', '!=', 'Terreno')
             ->where('etapas.id', '=', $request->etapaId)
             
             ->where('lotes.habilitado','=',1)
@@ -151,5 +153,41 @@ class CalculadoraLotesController extends Controller
 
         return $lotes;
 
+    }
+
+    public function guardaCotizacion(Request $request){
+
+        $arrayPagos = $request->pago;
+
+        $cotizacion = new Cotizacion_lotes();
+
+        $cotizacion->cliente_id = $request->idCliente;
+        $cotizacion->lotes_id = $request->idLote;
+        $cotizacion->valor_venta = $request->valor_venta;
+        $cotizacion->valor_descuento = $request->valor_descuento;
+        $cotizacion->save();
+        
+        foreach($arrayPagos as $pago => $index){
+
+            $newPago = new Pagos_lotes();
+
+            $newPago->cotizacion_lotes_id = $cotizacion->id;
+            
+            $newPago->folio = $pago->folio;
+            $newPago->pago = $pago->pago;
+            $newPago->cantidad = $pago->cantidad;
+            $newPago->fecha = $pago->fecha;
+            $newPago->descuento = $pago->descuento;
+            $newPago->dias = $pago->dias;
+            $newPago->descuento_porc = $pago->interesesPor;
+            $newPago->interes_monto = $pago->interesMont;
+            $newPago->total_a_pagar = $pago->totalAPagar;
+            $newPago->saldo = $pago->saldo;
+
+            //$newPago->save();
+
+        }
+        
+        //return $arrayPagos;
     }
 }
