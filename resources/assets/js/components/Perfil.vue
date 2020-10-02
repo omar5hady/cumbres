@@ -38,6 +38,13 @@
                         <div>
                             <div class="text-value text-primary">&nbsp;&nbsp;&nbsp;{{cumple.nombre.toUpperCase() + ' ' + cumple.apellidos.toUpperCase()}}</div>
                             <div class="text-muted text-uppercase font-weight-bold small"> &nbsp;&nbsp;&nbsp; {{this.moment(cumple.f_nacimiento).locale('es').format('DD/MMM/YYYY')}}</div>
+                            <div v-if="cumple.clasificacion == 2" class="text-muted text-uppercase font-weight-bold small"> &nbsp;&nbsp;&nbsp; Tipo A</div>
+                            <div v-if="cumple.clasificacion == 3" class="text-muted text-uppercase font-weight-bold small"> &nbsp;&nbsp;&nbsp; Tipo B</div>
+                            <div v-if="cumple.clasificacion == 4" class="text-muted text-uppercase font-weight-bold small"> &nbsp;&nbsp;&nbsp; Tipo C</div>
+                            <div v-if="cumple.clasificacion == 5" class="text-muted text-uppercase font-weight-bold small"> &nbsp;&nbsp;&nbsp; Venta</div>
+                            <div v-if="cumple.clasificacion == 6" class="text-muted text-uppercase font-weight-bold small"> &nbsp;&nbsp;&nbsp; Cancelado</div>
+                            <div v-if="cumple.clasificacion == 1" class="text-muted text-uppercase font-weight-bold small"> &nbsp;&nbsp;&nbsp; No Viable</div>
+                            <div v-if="cumple.clasificacion == 7" class="text-muted text-uppercase font-weight-bold small"> &nbsp;&nbsp;&nbsp; Coacreditado</div>
                         </div>
                     </div>
                     <div>

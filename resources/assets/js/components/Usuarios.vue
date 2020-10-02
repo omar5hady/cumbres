@@ -1303,6 +1303,7 @@
                 }).catch(function (error){
                 
                     console.log(error);
+                    me.proceso=false;
                 });
             },
             /**Metodo para registrar  */
