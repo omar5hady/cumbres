@@ -1340,6 +1340,7 @@
                         text: 'El RFC que ha ingresado ya se encuentra registrado!',
                         })
                     console.log(error);
+                    me.proceso=false;
                 });
             },
             registrarObservacion(){
