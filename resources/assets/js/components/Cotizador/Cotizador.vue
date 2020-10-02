@@ -108,7 +108,7 @@
 
                         <button @click="actualizar()" class="btn btn-sm btn-primary col-sm-1">Calcular</button>
                         <button @click="guardaCotizacion()" :disabled="(idCliente==0||arrayMensualidad.length==0)" class="btn btn-sm btn-warning col-sm-1">Guardar</button>
-                        <button @click="guardaCotizacion()" :disabled="(idCliente==0||arrayMensualidad.length==0)" class="btn btn-sm btn-success col-sm-1">
+                        <button @click="generarPdf()" :disabled="(idCliente==0||arrayMensualidad.length==0)" class="btn btn-sm btn-success col-sm-1">
                             <i class="fa fa-file-pdf-o"></i> PDF
                         </button>
                         
@@ -264,6 +264,17 @@ export default {
             arrayLotes:[],
             arrayListA:[],
             arrayClientes:[],
+            myAlerts:{
+                popAlert : function(title = 'Alert',type = "success", description =''){
+                    swal({
+                        title: title,
+                        type: type,
+                        text: description,
+                        showConfirmButton:false,
+                        timer:1500,
+                    })
+                }
+            },
         }
     },
     computed:{
@@ -520,6 +531,8 @@ export default {
             this.r_valor_m2 = data.precio_base/data.terreno;
             this.r_valor_venta = this.r_sup_terreno*this.r_valor_m2;
             this.idLote = data.id;
+
+            if(this.r_mensualidad != "") this.generarLista();
         },
         listarPorcentajes(){
             axios.get('/calc/descuentos').then(
@@ -569,14 +582,76 @@ export default {
                         'idLote':this.idLote,
                         'valor_venta':this.r_valor_venta,
                         'valor_descuento':this.r_valor_descuento,
+                        'fecha':this.r_fecha,
                     }).then(
-                        response => console.log(response.data)
-                    ).catch(error => console.log(error));
+                        rsponse => {
+                            this.myAlerts.popAlert('Guardado correctamente');
 
+                            this.arrayMensualidad = [];
+                            this.r_lote = "";
+                            this.r_lote = 0;
+                            this.r_valor_m2 = 0;
+                            this.r_valor_venta = 0;
+                            this.valor_enganche = 0;
+                            this.valor_minMens = 0;
+                            this.r_mensualidad = 0;
+                            this.r_valor_descuento = 0;
+                            this.idLote = 0;
+                            this.r_sup_terreno = 0;
+
+                            return response.data;
+                        }
+                    ).catch(error => console.log(error));
                 }
             });
 
         },
+        generarPdf(){
+
+            Swal.fire({
+                title: '¿Guardar cotización y generar PDF?',
+                text: "Este cambio no se podrá deshacer!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Si guardar!',
+                cancelButtonText: 'Cancelar',
+            }).then((result) => {
+                if (result.value) {
+
+                    axios.post('/calc/guardar/cotizacion',{
+                        'pago':this.arrayMensualidad,
+                        'idCliente':this.idCliente,
+                        'idLote':this.idLote,
+                        'valor_venta':this.r_valor_venta,
+                        'valor_descuento':this.r_valor_descuento,
+                        'fecha':this.r_fecha,
+                    }).then(
+                        response => {
+                            this.myAlerts.popAlert('Guardado correctamente');
+
+                            this.arrayMensualidad = [];
+                            this.r_lote = "";
+                            this.r_lote = 0;
+                            this.r_valor_m2 = 0;
+                            this.r_valor_venta = 0;
+                            this.valor_enganche = 0;
+                            this.valor_minMens = 0;
+                            this.r_mensualidad = 0;
+                            this.r_valor_descuento = 0;
+                            this.idLote = 0;
+                            this.r_sup_terreno = 0;
+
+                            //llamada a PDF
+                            window.open('/calc/generar/pdf/'+response.data, '_blank');
+
+                        }
+                    ).catch(error => console.log(error));
+                }
+            });
+
+        }
     },
     mounted() {
         this.selectFraccionamientos();

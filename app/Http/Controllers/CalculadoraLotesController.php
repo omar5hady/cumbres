@@ -12,6 +12,7 @@ use App\Pagos_lotes;
 
 use App\Lote;
 use App\Modelo;
+
 class CalculadoraLotesController extends Controller
 {
     public function listarPorcentaje(){
@@ -165,29 +166,62 @@ class CalculadoraLotesController extends Controller
         $cotizacion->lotes_id = $request->idLote;
         $cotizacion->valor_venta = $request->valor_venta;
         $cotizacion->valor_descuento = $request->valor_descuento;
+        $cotizacion->fecha = $request->fecha;
         $cotizacion->save();
         
-        foreach($arrayPagos as $pago => $index){
-
+        foreach($arrayPagos as $pago){
             $newPago = new Pagos_lotes();
 
             $newPago->cotizacion_lotes_id = $cotizacion->id;
             
-            $newPago->folio = $pago->folio;
-            $newPago->pago = $pago->pago;
-            $newPago->cantidad = $pago->cantidad;
-            $newPago->fecha = $pago->fecha;
-            $newPago->descuento = $pago->descuento;
-            $newPago->dias = $pago->dias;
-            $newPago->descuento_porc = $pago->interesesPor;
-            $newPago->interes_monto = $pago->interesMont;
-            $newPago->total_a_pagar = $pago->totalAPagar;
-            $newPago->saldo = $pago->saldo;
+            $newPago->folio = $pago['folio'];
+            $newPago->pago = $pago['pago'];
+            $newPago->cantidad = $pago['cantidad'];
+            $newPago->fecha = $pago['fecha'];
+            $newPago->descuento = $pago['descuento'];
+            $newPago->dias = $pago['dias'];
+            $newPago->descuento_porc = $pago['interesesPor'];
+            $newPago->interes_monto = $pago['interesMont'];
+            $newPago->total_a_pagar = $pago['totalAPagar'];
+            $newPago->saldo = $pago['saldo'];
 
-            //$newPago->save();
-
+            $newPago->save();
         }
+
+        return $cotizacion->id;
+    }
+
+    public function generaPdf(Request $request){
+
+        $cotizacion = Cotizacion_lotes::join('clientes', 'cotizacion_lotes.cliente_id', '=', 'clientes.id')
+            ->join('personal', 'clientes.id', '=', 'personal.id')
+            ->join('lotes', 'cotizacion_lotes.lotes_id', '=', 'lotes.id')
+            ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
+            ->join('fraccionamientos', 'lotes.fraccionamiento_id', '=', 'fraccionamientos.id')
+            ->select(
+                'cotizacion_lotes.id', 'cotizacion_lotes.cliente_id', 'cotizacion_lotes.lotes_id',
+                'cotizacion_lotes.valor_venta', 'cotizacion_lotes.valor_descuento',
+                'cotizacion_lotes.created_at', 'cotizacion_lotes.updated_at', 'cotizacion_lotes.fecha',
+
+                'personal.apellidos', 'personal.nombre', 
+                
+                'clientes.id as cliente_personal_id',
+
+                'lotes.num_lote',
+                'lotes.terreno as terreno_m2',
+                'etapas.num_etapa',
+                'fraccionamientos.nombre as fraccionamiento'
+            )
+            ->where('cotizacion_lotes.id', '=', $request->idCotizacion)
+        ->first();
         
-        //return $arrayPagos;
+        $pago = Pagos_lotes::where('cotizacion_lotes_id', '=', $cotizacion->id)
+            ->orderBy('folio')
+        ->get();
+
+        //return $cotizacion;
+
+        $pdf = \PDF::loadview('pdf.calculadoraLotes.cotizacionLote', ['cotizacion' => $request, 'pago' => $pago]);
+        return $pdf->stream('cotizacion_lote_con_servicios.pdf');
     }
 }

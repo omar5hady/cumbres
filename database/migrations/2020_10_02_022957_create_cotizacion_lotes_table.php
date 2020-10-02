@@ -14,6 +14,7 @@ class CreateCotizacionLotesTable extends Migration
     public function up()
     {
         Schema::create('cotizacion_lotes', function (Blueprint $table) {
+            
             $table->increments('id');
 
             $table->unsignedInteger('cliente_id')->nullable();
@@ -24,8 +25,10 @@ class CreateCotizacionLotesTable extends Migration
 
             $table->double('valor_venta')->default(0);
             $table->double('valor_descuento')->default(0);
+            $table->date('fecha');
 
             $table->timestamps();
+            
         });
     }
 

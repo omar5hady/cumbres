@@ -197,6 +197,7 @@ export default {
             arrayListA:[],
             arrayLotes:[],
             arrayFraccionamientos:[],
+            
             myAlerts:{
                 popAlert : function(title = 'Alert',type = "success", description =''){
                     swal({
