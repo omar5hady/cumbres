@@ -107,6 +107,11 @@
                         </select>
 
                         <button @click="actualizar()" class="btn btn-sm btn-primary col-sm-1">Calcular</button>
+                        <button @click="guardaCotizacion()" :disabled="(idCliente==0||arrayMensualidad.length==0)" class="btn btn-sm btn-warning col-sm-1">Guardar</button>
+                        <button @click="guardaCotizacion()" :disabled="(idCliente==0||arrayMensualidad.length==0)" class="btn btn-sm btn-success col-sm-1">
+                            <i class="fa fa-file-pdf-o"></i> PDF
+                        </button>
+                        
                     </div>
                     <br>
 
@@ -169,7 +174,7 @@
                                         <input v-model="pago.fecha" v-on:change="calculaPrecoi(pago)" type="date" class="form-control" style="height: 45px;">
                                     </td>
                                     <td>
-                                        <span v-text="pago.dias" class="badge" v-bind:class="(pago.dias <= 180 && pago.dias > 0) ? 'badge-success' : 'badge-warning'"></span>
+                                        <span v-text="pago.dias" class="badge" v-bind:class="!(r_mensualidad>6) ? 'badge-success' : 'badge-warning'"></span>
                                     </td>
 
                                     <td v-text="'%'+pago.interesesPor"></td>
@@ -251,6 +256,8 @@ export default {
             valor_minMens:0,
             r_mensualidad:'',
             r_valor_descuento:0,
+            idCliente:0,
+            idLote:0,
             arrayMensualidad:[],
             arrayFraccionamientos:[],
             arrayEtapas:[],
@@ -345,7 +352,7 @@ export default {
         },
         calculaPrecoi(index){
             
-            let cantidad = parseFloat(index.cantidad);
+            let cantidad = (index.cantidad=="")?0:parseFloat(index.cantidad);
             let descuento = this.montoDescuento(index);
             let dias = this.dias(this.r_fecha, index.fecha);
             let folio = index.folio-1;
@@ -358,7 +365,6 @@ export default {
 
             this.arrayMensualidad[folio].cantidad = cantidad;
             this.arrayMensualidad[folio].fecha = index.fecha;
-            //this.arrayMensualidad[folio].saldo = this.r_valor_venta-(cantidad + descuento + saldoPendiente);
 
             if(this.r_mensualidad > 6) this.arrayMensualidad[folio].interesMont = this.intereses(index);
 
@@ -372,10 +378,8 @@ export default {
             let saldo = this.r_valor_venta-this.r_valor_descuento;
             this.arrayMensualidad.forEach(
                 m => {
-                    if(m.cantidad != 0){
-                        saldo = saldo - (m.totalAPagar + m.descuento - m.interesMont);
-                        m.saldo = saldo;
-                    }
+                    saldo = saldo - ((m.totalAPagar + m.descuento) - m.interesMont);
+                    m.saldo = saldo;
                 }
             );
         },
@@ -515,6 +519,7 @@ export default {
             this.r_sup_terreno = data.terreno;
             this.r_valor_m2 = data.precio_base/data.terreno;
             this.r_valor_venta = this.r_sup_terreno*this.r_valor_m2;
+            this.idLote = data.id;
         },
         listarPorcentajes(){
             axios.get('/calc/descuentos').then(
@@ -539,12 +544,38 @@ export default {
             });
         },
         getDatosCliente(cliente){
-            console.log(cliente);
-
-            this.r_proyecto = cliente.proyecto_interes_id;
+            this.idCliente = cliente.id;
         },
         daysInMonth (month, year) {
             return new Date(year, month, 0).getDate();
+        },
+        guardaCotizacion(){
+            
+            Swal.fire({
+                title: '¿Estas seguro?',
+                text: "Este cambio no se podrá deshacer!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Si guardar!',
+                cancelButtonText: 'Cancelar',
+            }).then((result) => {
+                if (result.value) {
+
+                    axios.post('/calc/guardar/cotizacion',{
+                        'pago':this.arrayMensualidad,
+                        'idCliente':this.idCliente,
+                        'idLote':this.idLote,
+                        'valor_venta':this.r_valor_venta,
+                        'valor_descuento':this.r_valor_descuento,
+                    }).then(
+                        response => console.log(response.data)
+                    ).catch(error => console.log(error));
+
+                }
+            });
+
         },
     },
     mounted() {
