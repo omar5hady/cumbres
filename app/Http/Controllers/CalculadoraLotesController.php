@@ -221,7 +221,7 @@ class CalculadoraLotesController extends Controller
 
         //return $cotizacion;
 
-        $pdf = \PDF::loadview('pdf.calculadoraLotes.cotizacionLote', ['cotizacion' => $request, 'pago' => $pago]);
+        $pdf = \PDF::loadview('pdf.calculadoraLotes.cotizacionLote', ['cotizacion' => $cotizacion, 'pago' => $pago]);
         return $pdf->stream('cotizacion_lote_con_servicios.pdf');
     }
 }
