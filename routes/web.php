@@ -848,6 +848,7 @@ Route::group(['middleware' => ['auth']],function(){
     //////////////////////// RUTAS SOLIC DETALLES //////////////////////
         Route::post('/detalles/storeSolicitud','SolicDetallesController@storeSolicitud');
         Route::get('/detalles/indexSolicitudes','SolicDetallesController@indexSolicitudes');
+        Route::get('/detalles/excelSolicitudes','SolicDetallesController@excelSolicitudes');
         Route::get('/detalles/indexDescripciones','SolicDetallesController@indexDescripciones');
         Route::get('/detalles/reporteDetalles/pdf/{folio}','SolicDetallesController@reportePDF');
         Route::get('/detalles/reporteDetalles/reporteConclusionPDF/{folio}','SolicDetallesController@reporteConclusionPDF');

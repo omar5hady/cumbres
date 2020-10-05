@@ -2671,6 +2671,10 @@ class ReportesController extends Controller
                     if($request->etapa != '')
                         $resumen = $resumen->where('etapas.id','=',$request->etapa);
                 }
+
+                if($request->desde != '' && $request->hasta != ''){
+                    $resumen = $resumen->whereBetween('solic_detalles.created_at', [$request->desde, $request->hasta]);
+                }
                                     
         $resumen1 = $resumen->orderBy('solic_detalles.status','desc')
                                     ->get();
@@ -2748,6 +2752,10 @@ class ReportesController extends Controller
 
                 if($request->contratista != ''){
                     $resumen = $resumen->where('c.id','=',$request->contratista);
+                }
+
+                if($request->desde != '' && $request->hasta != ''){
+                    $resumen = $resumen->whereBetween('solic_detalles.created_at', [$request->desde, $request->hasta]);
                 }
 
                 if($request->proyecto != ''){

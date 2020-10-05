@@ -31,6 +31,16 @@
                             
                         </div>
                         <div class="form-group row">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <input type="date"  v-model="desde" class="form-control" placeholder="Fecha inicial">
+                                    <input type="date"  v-model="hasta" @keyup.enter="listarResumen(1)" class="form-control" placeholder="Fecha final">
+                                   
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
                             <div class="col-md-6">
                                 <div class="input-group">
                                     <select class="form-control" v-model="b_contratista" >
@@ -77,7 +87,7 @@
                         </div>
                         <div class="form-group row" v-if="mostrar == 1">
                             <div class="col-md-3">
-                                <a class="btn btn-success" v-bind:href="'/reportes/reporteDetallesExcel?proyecto='+ b_proyecto + '&etapa='+ b_etapa + '&contratista='+ b_contratista">
+                                <a class="btn btn-success" v-bind:href="'/reportes/reporteDetallesExcel?proyecto='+ b_proyecto + '&etapa='+ b_etapa + '&contratista='+ b_contratista  + '&desde='+ desde + '&hasta='+ hasta">
                                     <i class="fa fa-file-text"></i>&nbsp; Descargar excel
                                 </a>
                             </div>
@@ -204,6 +214,8 @@
                 enganche:0,
                 directo:0,
                 credito:0,
+                desde:'',
+                hasta:'',
                 saldo:0,
                 monto_cobrado:0,
                 lotes:0,
@@ -255,7 +267,7 @@
             listarResumen (page){
                 let me=this;
                 var url= '/reportes/reporteDetalles?page=' + page + '&proyecto='+ me.b_proyecto + '&etapa='+ me.b_etapa +
-                        '&contratista='+this.b_contratista;
+                        '&contratista='+this.b_contratista + '&desde='+ me.desde + '&hasta='+ me.hasta;
                 axios.get(url).then(function (response) {
                     var respuesta= response.data;
                     me.arrayResProyecto = respuesta.resumen.data;

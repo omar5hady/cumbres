@@ -100,12 +100,12 @@ body{
         <thead>
             <tr>
                 @if($cotizacion->valor_descuento == 0)
-                    <th class="text-right">Saldo inicial :${{$cotizacion->valor_venta}}</th>
+                    <th class="text-right">Saldo inicial: ${{$cotizacion->valor_venta}}</th>
                 @else 
                     <th class="text-right">
-                        Saldo inicial :${{$cotizacion->valor_venta}}
-                        - Descuento :${{$cotizacion->valor_descuento}} 
-                        = Total a Pagar :${{$cotizacion->total_pagar}}
+                        Saldo inicial: ${{$cotizacion->valor_venta}}
+                        - Descuento: ${{$cotizacion->valor_descuento}} 
+                        = Total a Pagar: ${{$cotizacion->total_pagar}}
                     </th>
                 @endif
             </tr>

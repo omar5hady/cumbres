@@ -9,6 +9,7 @@ use App\User;
 use App\Notifications\NotifyAdmin;
 use Auth;
 use DB;
+use Excel;
 use Carbon\Carbon;
 
 class SolicDetallesController extends Controller
@@ -232,6 +233,230 @@ class SolicDetallesController extends Controller
                 'to'            => $solicitudes->lastItem(),
             ], 'solicitudes' => $solicitudes
         ];
+    }
+
+    public function excelSolicitudes(Request $request){
+        $buscar = $request->buscar;
+        $etapa = $request->b_etapa;
+        $manzana = $request->b_manzana;
+        $lote = $request->b_lote;
+        $status = $request->status;
+        $criterio = $request->criterio;
+
+        $query = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
+            ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
+            ->join('creditos','contratos.id','=','creditos.id')
+            ->join('lotes','creditos.lote_id','=','lotes.id')
+            ->select('solic_detalles.id','contratos.id as folio','creditos.fraccionamiento',
+                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
+                    'solic_detalles.lunes','solic_detalles.martes',
+                    'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
+                    'solic_detalles.sabado','solic_detalles.nom_contrato',
+                    'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
+                    'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at' ,
+                    'solic_detalles.obs_gen',
+                    'solic_detalles.fecha_program','solic_detalles.hora_program');
+
+        if($status == ''){
+            if($buscar == ''){
+                $solicitudes = $query;
+            }
+            else{
+                switch($criterio){
+                    case 'contratos.id':{
+                        $solicitudes = $query
+                            ->where($criterio,'=',$buscar);
+                        break;
+                    }
+                    case 'lotes.fraccionamiento_id':{
+                        if($etapa == '' && $manzana == '' && $lote == ''){
+                            $solicitudes = $query
+                            ->where($criterio,'=',$buscar);
+                        }
+                        elseif($etapa != '' && $manzana == '' && $lote == ''){
+                            $solicitudes = $query
+                            ->where($criterio,'=',$buscar)
+                            ->where('lotes.etapa_id','=',$etapa);
+                        }
+                        elseif($etapa != '' && $manzana != '' && $lote == ''){
+                            $solicitudes = $query
+                            ->where($criterio,'=',$buscar)
+                            ->where('lotes.etapa_id','=',$etapa)
+                            ->where('lotes.manzana','=',$manzana);
+                        }
+                        elseif($etapa != '' && $manzana != '' && $lote != ''){
+                            $solicitudes = $query
+                            ->where($criterio,'=',$buscar)
+                            ->where('lotes.etapa_id','=',$etapa)
+                            ->where('lotes.manzana','=',$manzana)
+                            ->where('lotes.num_lote','=',$lote);
+                        }
+                        elseif($etapa != '' && $manzana == '' && $lote != ''){
+                            $solicitudes = $query
+                            ->where($criterio,'=',$buscar)
+                            ->where('lotes.etapa_id','=',$etapa)
+                            ->where('lotes.num_lote','=',$lote);
+                        }
+                        elseif($etapa == '' && $manzana == '' && $lote != ''){
+                            $solicitudes = $query
+                            ->where($criterio,'=',$buscar)
+                            ->where('lotes.num_lote','=',$lote);
+                        }
+                        break;
+                    }
+                    default:{
+                        $solicitudes = $query
+                            ->where($criterio,'like','%'.$buscar.'%');
+                        break;
+                    }
+                }
+            }
+           
+        }
+        else{
+            if($buscar == ''){
+                $solicitudes = $query
+                    ->where('solic_detalles.status','=',$status);
+            }
+            else{
+                switch($criterio){
+                    case 'contratos.id':{
+                        $solicitudes = $query
+                            ->where($criterio,'=',$buscar)
+                            ->where('solic_detalles.status','=',$status);
+                        break;
+                    }
+                    case 'lotes.fraccionamiento_id':{
+                        if($etapa == '' && $manzana == '' && $lote == ''){
+                            $solicitudes = $query
+                            ->where($criterio,'=',$buscar)
+                            ->where('solic_detalles.status','=',$status);
+                        }
+                        elseif($etapa != '' && $manzana == '' && $lote == ''){
+                            $solicitudes = $query
+                            ->where($criterio,'=',$buscar)
+                            ->where('solic_detalles.status','=',$status)
+                            ->where('lotes.etapa_id','=',$etapa);
+                        }
+                        elseif($etapa != '' && $manzana != '' && $lote == ''){
+                            $solicitudes = $query
+                            ->where($criterio,'=',$buscar)
+                            ->where('solic_detalles.status','=',$status)
+                            ->where('lotes.etapa_id','=',$etapa)
+                            ->where('lotes.manzana','=',$manzana);
+                        }
+                        elseif($etapa != '' && $manzana != '' && $lote != ''){
+                            $solicitudes = $query
+                            ->where($criterio,'=',$buscar)
+                            ->where('solic_detalles.status','=',$status)
+                            ->where('lotes.etapa_id','=',$etapa)
+                            ->where('lotes.manzana','=',$manzana)
+                            ->where('lotes.num_lote','=',$lote);
+                        }
+                        elseif($etapa != '' && $manzana == '' && $lote != ''){
+                            $solicitudes = $query
+                            ->where($criterio,'=',$buscar)
+                            ->where('solic_detalles.status','=',$status)
+                            ->where('lotes.etapa_id','=',$etapa)
+                            ->where('lotes.num_lote','=',$lote);
+                        }
+                        elseif($etapa == '' && $manzana == '' && $lote != ''){
+                            $solicitudes = $query
+                            ->where($criterio,'=',$buscar)
+                            ->where('solic_detalles.status','=',$status)
+                            ->where('lotes.num_lote','=',$lote);
+                        }
+                        break;
+                    }
+                    default:{
+                        $solicitudes = $query
+                            ->where($criterio,'like','%'.$buscar.'%')
+                            ->where('solic_detalles.status','=',$status);
+                        break;
+                    }
+                }
+            }
+        }
+
+        $solicitudes = $solicitudes->orderBy('solic_detalles.status','asc')
+                            ->orderBy('solic_detalles.created_at','asc')
+                            ->get();
+
+        return Excel::create(
+            'Solic. de Detalles',
+            function ($excel) use ($solicitudes) {
+                $excel->sheet('Solicitudes', function ($sheet) use ($solicitudes) {
+
+                    $sheet->row(1, [
+                        'Folio.', 'Cliente', 'Proyecto', 'Etapa',
+                        'Manzana', '# Lote', 'Modelo', 'Contratista', 'Fecha de reporte',
+                        'Disponibilidad', 'Costo', 'Status'
+                    ]);
+
+
+                    $sheet->cells('A1:L1', function ($cells) {
+                        $cells->setBackground('#052154');
+                        $cells->setFontColor('#ffffff');
+                        // Set font family
+                        $cells->setFontFamily('Calibri');
+
+                        // Set font size
+                        $cells->setFontSize(13);
+
+                        // Set font weight to bold
+                        $cells->setFontWeight('bold');
+                        $cells->setAlignment('center');
+                    });
+
+                    $sheet->setColumnFormat(array(
+                        'K' => '$#,##0.00',
+                    ));
+
+                    $cont = 1;
+
+                    foreach ($solicitudes as $index => $lote) {
+                        $cont++;
+                        $disponibilidad = '';
+                        $status = '';
+
+                        if($lote->status == '0')
+                            $status = 'Pendiente';
+                        if($lote->status == '1')
+                            $status = 'En proceso';
+                        if($lote->status == '2')
+                            $status = 'Concluido';
+
+                        if($lote->lunes == 1) $disponibilidad = $disponibilidad.'  Lunes';
+                        if($lote->martes == 1) $disponibilidad = $disponibilidad.'  Martes';
+                        if($lote->miercoles == 1) $disponibilidad = $disponibilidad.'  Miercoles';
+                        if($lote->jueves == 1) $disponibilidad = $disponibilidad.'  Jueves';
+                        if($lote->viernes == 1) $disponibilidad = $disponibilidad.'  Viernes';
+                        if($lote->sabado == 1) $disponibilidad = $disponibilidad.'  Sabado';
+
+                        //$tiempo = new Carbon($lote->created_at);
+                                //    $lote->created_at = $tiempo->formatLocalized('%d de %B de %Y');
+
+                        $sheet->row($index + 2, [
+                            $lote->id,
+                            $lote->cliente,
+                            $lote->fraccionamiento,
+                            $lote->etapa,
+                            $lote->manzana,
+                            $lote->num_lote,
+                            $lote->modelo,
+                            $lote->nombre,
+                            $lote->created_at,
+                            $disponibilidad,
+                            $lote->costo,
+                            $status
+                        ]);
+                    }
+                    $num = 'A1:L' . $cont;
+                    $sheet->setBorder($num, 'thin');
+                });
+            }
+
+        )->download('xls');
     }
 
     public function indexDescripciones(Request $request){

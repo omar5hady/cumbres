@@ -68,6 +68,9 @@
                                         <option value="3">Cancelado</option>
                                     </select>
                                     <button type="submit" @click="listarSolicitudes(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2,status)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <a  :href="'/detalles/excelSolicitudes?buscar=' + buscar2 + '&b_etapa=' + b_etapa2 + '&b_manzana=' + b_manzana2 + '&b_lote=' + b_lote2 + '&criterio=' + criterio2 + '&status=' + status"  class="btn btn-success">
+                                        <i class="fa fa-file-text"></i> Excel
+                                    </a>
                                 </div>
                             </div>
                         </div>

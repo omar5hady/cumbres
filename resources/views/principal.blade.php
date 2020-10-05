@@ -664,7 +664,7 @@
                             </ul>
                         </li>
                     @endif
-                    @if(Auth::user()->rep_recursos_propios	 == 1 || Auth::user()->rol_id == 6)
+                    @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 6)
                     <li class="nav-item nav-dropdown">
                         <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-book-open"></i> Cotizador de lotes</a>
                         <ul class="nav-dropdown-items">

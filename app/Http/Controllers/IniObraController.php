@@ -832,11 +832,12 @@ class IniObraController extends Controller
                 if(!empty($data) && $data->count()){
  
                     foreach ($data as $key => $value) {
-                        $insert[] = [
-                            'aviso_id' => $request->contrato,
-                            'partida' => $value->partida,
-                            'pu_prorrateado' => $value->pu_prorrateado
-                        ];
+                        if($value->partida != '')
+                            $insert[] = [
+                                'aviso_id' => $request->contrato,
+                                'partida' => $value->partida,
+                                'pu_prorrateado' => $value->pu_prorrateado
+                            ];
                     }
  
                     if(!empty($insert)){
