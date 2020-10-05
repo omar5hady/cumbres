@@ -14,6 +14,7 @@ class CreatePagosLotesTable extends Migration
     public function up()
     {
         Schema::create('pagos_lotes', function (Blueprint $table) {
+            
             $table->increments('id');
 
             $table->unsignedInteger('cotizacion_lotes_id')->nullable();

@@ -457,6 +457,9 @@
         <template v-if="menu==1004">
             <cotizador-opciones></cotizador-opciones>
         </template>
+        <template v-if="menu==1005">
+            <cotizador-editar></cotizador-editar>
+        </template>
         <template v-if="menu==247">
             <ingresos-concretania></ingresos-concretania>
         </template>

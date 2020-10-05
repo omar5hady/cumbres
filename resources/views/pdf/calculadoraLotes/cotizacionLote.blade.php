@@ -64,7 +64,13 @@ body{
 <body>
 
 <div>
-    <table class="myTable">
+
+    <div style="float: left; margin-top: 0px; margin-left: 0px;" >
+        <!--IMG SRC="img/contratos/logoContratoC1.png" width="110" height="110"-->
+        <IMG SRC="img/contratos/logoContrato.jpg" width="110" height="110">
+    </div>
+
+    <table class="myTable" style="margin-left:95px; margin-top:0px; width:95%;">
         <thead>
             <tr>
                 <th class="text-right" colspan="3">Fecha de emisión: {{$cotizacion->fecha}}</th>
@@ -83,12 +89,13 @@ body{
             </tr>
             <tr>
                 <td>Valor de Venta: ${{round($cotizacion->valor_venta)}}</td>
-                <td>Mensualidades: {{count($pago, COUNT_RECURSIVE)}}</td>
+                <td>Mensualidades: {{round($cotizacion->mensualidades)}}</td>
                 <td></td>
             </tr>
         </tbody>
     </table>
     <br>
+
     <table class="myTable">
         <thead>
             <tr>
@@ -105,6 +112,7 @@ body{
         </thead>
     </table>
     <br>
+
     <table class="myTable">
         <thead>
             <tr>
@@ -120,6 +128,23 @@ body{
                 <th>Saldo Pendiente</th>
             </tr>
         </thead>
+        <tbody>
+            @foreach($pago as $pago)
+            <tr>
+                <td>{{$pago->folio }}</td>
+                @if($pago->pago == 0)<td>Enganche</td>
+                @else<td>Mensualidad</td> @endif
+                <td>${{ round($pago->cantidad,2) }}</td>
+                <td>{{ $pago->fecha }}</td>
+                <td>{{ $pago->dias }}</td>
+                <td>%{{$pago->descuento_porc }}</td>
+                <td>${{ round($pago->descuento,2) }}</td>
+                <td>${{round($pago->interes_monto) }}</td>
+                <td>${{round($pago->total_a_pagar) }}</td>
+                <td>${{round($pago->saldo) }}</td>
+            </tr>
+            @endforeach
+        </tbody>
     </table>
 </div>
     

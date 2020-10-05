@@ -26,11 +26,17 @@ class CreateCotizacionLotesTable extends Migration
             $table->double('valor_venta')->default(0);
             $table->double('valor_descuento')->default(0);
             $table->date('fecha');
-
-            $table->timestamps();
+            $table->date('fecha');
+            $table->integer('mensualidades')->default(0);
+            $table->integer('estatus',1)->default(0);
             
         });
     }
+
+    //ALTER TABLE `db_cumbres`.`cotizacion_lotes` 
+    //ADD COLUMN `mensualidades` INT(10) NOT NULL DEFAULT '0' AFTER `fecha`;
+    //ALTER TABLE `db_cumbres`.`cotizacion_lotes` 
+    //ADD COLUMN `estatus` INT(1) NOT NULL DEFAULT '0' AFTER `mensualidades`;
 
     /**
      * Reverse the migrations.

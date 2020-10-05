@@ -583,6 +583,7 @@ export default {
                         'valor_venta':this.r_valor_venta,
                         'valor_descuento':this.r_valor_descuento,
                         'fecha':this.r_fecha,
+                        'mensualidades':this.r_mensualidad,
                     }).then(
                         rsponse => {
                             this.myAlerts.popAlert('Guardado correctamente');
@@ -627,6 +628,7 @@ export default {
                         'valor_venta':this.r_valor_venta,
                         'valor_descuento':this.r_valor_descuento,
                         'fecha':this.r_fecha,
+                        'mensualidades':this.r_mensualidad,
                     }).then(
                         response => {
                             this.myAlerts.popAlert('Guardado correctamente');

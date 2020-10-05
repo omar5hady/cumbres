@@ -672,6 +672,9 @@
                                 <a class="nav-link" href="#" @click="menu=1003"><i class="icon-book-open"></i> Calculadora</a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link" href="#" @click="menu=1005"><i class="icon-book-open"></i> Editar cotización</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link" href="#" @click="menu=1004"><i class="icon-book-open"></i> Opciones</a>
                             </li>
                         </ul>

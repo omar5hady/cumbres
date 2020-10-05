@@ -483,7 +483,12 @@ Route::group(['middleware' => ['auth']],function(){
     Route::get('/get/etapas/lotes','CalculadoraLotesController@selectEtapa_proyectoLotes');
     Route::get('/get/lotes/lotes','CalculadoraLotesController@lotesDisponiblesLotes');
     Route::post('/calc/guardar/cotizacion','CalculadoraLotesController@guardaCotizacion');
+    Route::post('/calc/actualizar/cotizacion','CalculadoraLotesController@actualizarCotizacion');
     Route::get('/calc/generar/pdf/{idCotizacion}','CalculadoraLotesController@generaPdf');
+    Route::get('/get/cotizacion/clientes','CalculadoraLotesController@getClientes');
+    Route::post('/edita/cotizacion/cancelar','CalculadoraLotesController@cancelaCotizacion');
+    Route::post('/edita/cotizacion/aprovar','CalculadoraLotesController@aprovarCotizacion');
+    Route::get('/get/cotizacion/editar','CalculadoraLotesController@getCotizacionEdita');
 
     /**********************************RUTAS AVANCE*************************** */
         Route::get('/avance','AvanceController@index');
