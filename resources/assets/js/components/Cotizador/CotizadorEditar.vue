@@ -129,7 +129,7 @@
                                             <button @click="aprobar(cot.id)" class="btn btn-success btn-sm" title="Aprovar">
                                                 <i class="fa fa-check-square-o"></i>
                                             </button>
-                                            <a :href="'/calc/generar/pdf/'+cot.id" _blank class="btn btn-sm btn-success">
+                                            <a :href="'/calc/generar/pdf/'+cot.id" target="_blank" class="btn btn-sm btn-success">
                                                 <i class="fa fa-file-pdf-o"></i>
                                             </a>
                                         </th>
@@ -307,7 +307,7 @@
                                             <span v-text="pago.dias" class="badge" v-bind:class="!(r_mensualidad>6) ? 'badge-success' : 'badge-warning'"></span>
                                         </td>
 
-                                        <td v-text="'%'+pago.descuento_porc"></td>
+                                        <td v-text="pago.descuento_porc+'%'"></td>
                                         <td v-text="'$ '+pago.descuento.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">Descuento</td>
                                         <td v-text="'$ '+pago.interes_monto.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">Interes</td>
                                         <td v-text="'$ '+pago.total_a_pagar.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">Total a Pagar</td>
@@ -316,53 +316,46 @@
                                 </tbody>
                             </table>
                         </div>
+
+                        <br>
+                        <div class="row">
+                            <br>
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <td class="text-center" colspan="10">
+                                            <strong class="badge badge-warning">
+                                                Nota: la presente cotización tiene vigencia de 8 días hábiles posteriores a la emisión y el lote cotizado estará sujeto a disponibilidad.
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                </thead>
+                                <thead>
+                                    <tr>
+                                        <th colspan="10">Plan Comercial de Pagos</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-center"><strong>De 0 a 1 mes</strong></td>
+                                        <td class="text-center"><strong>De 1 a 6 mes</strong></td>
+                                        <td class="text-center"><strong>De 7 a 12 meses</strong></td>
+                                        <td class="text-center"><strong>De 13 a 24 meses</strong></td>
+                                        <td class="text-center"><strong>De 25 a 36 meses</strong></td>
+                                        <td class="text-center"><strong>De 37 a 48 meses</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center">0% de Interes de tasa anual</td>
+                                        <td class="text-center">0% de Interes de tasa anual</td>
+                                        <td class="text-center">12% de Interes de tasa anual</td>
+                                        <td class="text-center">16% de Interes de tasa anual</td>
+                                        <td class="text-center">18% de Interes de tasa anual</td>
+                                        <td class="text-center">20% de Interes de tasa anual</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </template>
-                    
-                    <br>
-                    <div class="row">
-                        <!--table class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <td class="text-center" colspan="10">
-                                        <strong class="badge badge-warning">
-                                            Nota: la presente cotización tiene vigencia de 14 días. Los gastos de escrituración son a cargo de la parte compradora.
-                                        </strong>
-                                    </td>
-                                </tr>
-                            </thead>
-                            <thead>
-                                <tr>
-                                    <th colspan="10">Plan Comercial de Pagos</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="text-center"><strong>Menos de 10 días</strong></td>
-                                    <td class="text-center"><strong>De 11 a 30 días</strong></td>
-                                    <td class="text-center"><strong>De 31 a 60 días</strong></td>
-                                    <td class="text-center"><strong>De 61 a 90 días</strong></td>
-                                    <td class="text-center"><strong>De 91 a 120 días</strong></td>
-                                    <td class="text-center"><strong>De 121 a 150 días</strong></td>
-                                    <td class="text-center"><strong>De 151 a 180 días</strong></td>
-                                    <td class="text-center"><strong>De 181 días a 365 días</strong></td>
-                                    <td class="text-center"><strong>De 1 año a 2 años</strong></td>
-                                    <td class="text-center"><strong>De más de 2 años a 3 años</strong></td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">%7 de Descuento</td>
-                                    <td class="text-center">%6 de Descuento</td>
-                                    <td class="text-center">%5 de Descuento</td>
-                                    <td class="text-center">%4 de Descuento</td>
-                                    <td class="text-center">%3 de Descuento</td>
-                                    <td class="text-center">%2 de Descuento</td>
-                                    <td class="text-center">%1 de Descuento</td>
-                                    <td class="text-center">%11 de Interes de tasa anual</td>
-                                    <td class="text-center">%15 de Interes de tasa anual</td>
-                                    <td class="text-center">%18 de Interes de tasa anual</td>
-                                </tr>
-                            </tbody>
-                        </table-->
-                    </div>
                 </div>
             </div>
             <!-- Fin ejemplo de tabla Listado -->
@@ -778,7 +771,7 @@ export default {
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Si guardar!',
+                confirmButtonText: 'Si Cancelar!',
                 cancelButtonText: 'Cancelar',
             }).then((result) => {
                 if (result.value) {
@@ -803,7 +796,7 @@ export default {
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Si guardar!',
+                confirmButtonText: 'Si Aprobar!',
                 cancelButtonText: 'Cancelar',
             }).then((result) => {
                 if (result.value) {
@@ -824,7 +817,6 @@ export default {
 
             axios.get('/get/cotizacion/editar?idCotizacion='+id).then(
                 response => {
-                    console.log(response);
 
                     let cot = response.data.cotizacion;
 

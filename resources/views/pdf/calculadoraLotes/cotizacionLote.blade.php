@@ -137,13 +137,49 @@ body{
                 <td>${{ round($pago->cantidad,2) }}</td>
                 <td>{{ $pago->fecha }}</td>
                 <td>{{ $pago->dias }}</td>
-                <td>%{{$pago->descuento_porc }}</td>
+                <td>{{$pago->descuento_porc }}%</td>
                 <td>${{ round($pago->descuento,2) }}</td>
                 <td>${{round($pago->interes_monto) }}</td>
                 <td>${{round($pago->total_a_pagar) }}</td>
                 <td>${{round($pago->saldo) }}</td>
             </tr>
             @endforeach
+        </tbody>
+    </table>
+
+    <br>
+    <table class="myTable">
+        <thead>
+            <tr>
+                <td class="text-center" colspan="6">
+                    <strong class="" style="background-color: #ffc107 !important;">
+                        Nota: la presente cotización tiene vigencia de 8 días hábiles posteriores a la emisión y el lote cotizado estará sujeto a disponibilidad.
+                    </strong>
+                </td>
+            </tr>
+        </thead>
+        <thead>
+            <tr>
+                <th colspan="6">Plan Comercial de Pagos</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="text-center"><strong>De 0 a 1 mes</strong></td>
+                <td class="text-center"><strong>De 1 a 6 mes</strong></td>
+                <td class="text-center"><strong>De 7 a 12 meses</strong></td>
+                <td class="text-center"><strong>De 13 a 24 meses</strong></td>
+                <td class="text-center"><strong>De 25 a 36 meses</strong></td>
+                <td class="text-center"><strong>De 37 a 48 meses</strong></td>
+            </tr>
+            <tr>
+                <td class="text-center">0% de Interes de tasa anual</td>
+                <td class="text-center">0% de Interes de tasa anual</td>
+                <td class="text-center">12% de Interes de tasa anual</td>
+                <td class="text-center">16% de Interes de tasa anual</td>
+                <td class="text-center">18% de Interes de tasa anual</td>
+                <td class="text-center">20% de Interes de tasa anual</td>
+            </tr>
         </tbody>
     </table>
 </div>
