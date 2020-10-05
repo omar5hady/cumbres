@@ -18,8 +18,8 @@ body{
 
 @page{
     margin: 55px;
-    margin-right: 90px;
-    margin-left: 90px;
+    margin-right: 60px;
+    margin-left: 60px;
 }
 
 .table-cell3 { display: table-cell; padding: 0em; font-size: 10pt; }
@@ -52,7 +52,7 @@ body{
 }
 
 .myTable thead {
-    font-size:13px;
+    font-size:11px;
 }
 
 .myTable tbody {
@@ -67,7 +67,7 @@ body{
 
     <div style="float: left; margin-top: 0px; margin-left: 0px;" >
         <!--IMG SRC="img/contratos/logoContratoC1.png" width="110" height="110"-->
-        <IMG SRC="img/contratos/logoContrato.jpg" width="110" height="110">
+        <IMG SRC="img/contratos/logoContratoC1.png" width="110" height="110">
     </div>
 
     <table class="myTable" style="margin-left:95px; margin-top:0px; width:95%;">
@@ -85,10 +85,10 @@ body{
             <tr>
                 <td>Lote: {{mb_strtoupper($cotizacion->num_lote)}}</td>
                 <td>m²: {{round($cotizacion->terreno_m2,2)}}</td>
-                <td>Costo * m²: ${{round($cotizacion->valor_venta/$cotizacion->terreno_m2, 2)}}</td>
+                <td>Costo * m²: ${{$cotizacion->m2}}</td>
             </tr>
             <tr>
-                <td>Valor de Venta: ${{round($cotizacion->valor_venta)}}</td>
+                <td>Valor de Venta: ${{$cotizacion->valor_venta}}</td>
                 <td>Mensualidades: {{round($cotizacion->mensualidades)}}</td>
                 <td></td>
             </tr>
@@ -100,12 +100,12 @@ body{
         <thead>
             <tr>
                 @if($cotizacion->valor_descuento == 0)
-                    <th class="text-right">Saldo inicial :${{round($cotizacion->valor_venta, 2)}}</th>
+                    <th class="text-right">Saldo inicial :${{$cotizacion->valor_venta}}</th>
                 @else 
                     <th class="text-right">
-                        Saldo inicial :${{round($cotizacion->valor_venta,2)}}
-                        - Descuento :${{round($cotizacion->valor_descuento, 2)}} 
-                        = Total a Pagar :${{round($cotizacion->valor_venta-$cotizacion->valor_descuento, 2)}}
+                        Saldo inicial :${{$cotizacion->valor_venta}}
+                        - Descuento :${{$cotizacion->valor_descuento}} 
+                        = Total a Pagar :${{$cotizacion->total_pagar}}
                     </th>
                 @endif
             </tr>
@@ -134,14 +134,14 @@ body{
                 <td>{{$pago->folio }}</td>
                 @if($pago->pago == 0)<td>Enganche</td>
                 @else<td>Mensualidad</td> @endif
-                <td>${{ round($pago->cantidad,2) }}</td>
-                <td>{{ $pago->fecha }}</td>
+                <td>${{ $pago->cantidad }}</td>
+                <td> {{ $pago->fecha }} </td>
                 <td>{{ $pago->dias }}</td>
-                <td>{{$pago->descuento_porc }}%</td>
-                <td>${{ round($pago->descuento,2) }}</td>
-                <td>${{round($pago->interes_monto) }}</td>
-                <td>${{round($pago->total_a_pagar) }}</td>
-                <td>${{round($pago->saldo) }}</td>
+                <td>{{$pago->descuento_porc }} %</td>
+                <td>${{ $pago->descuento }}</td>
+                <td>${{$pago->interes_monto }}</td>
+                <td>${{$pago->total_a_pagar }}</td>
+                <td>${{$pago->saldo }}</td>
             </tr>
             @endforeach
         </tbody>
@@ -153,7 +153,7 @@ body{
             <tr>
                 <td class="text-center" colspan="6">
                     <strong class="" style="background-color: #ffc107 !important;">
-                        Nota: la presente cotización tiene vigencia de 8 días hábiles posteriores a la emisión y el lote cotizado estará sujeto a disponibilidad.
+                        Nota: La presente cotización tiene vigencia de 8 días hábiles posteriores a la emisión y el lote cotizado estará sujeto a disponibilidad.
                     </strong>
                 </td>
             </tr>

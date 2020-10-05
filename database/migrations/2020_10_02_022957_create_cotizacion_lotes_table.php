@@ -26,9 +26,8 @@ class CreateCotizacionLotesTable extends Migration
             $table->double('valor_venta')->default(0);
             $table->double('valor_descuento')->default(0);
             $table->date('fecha');
-            $table->date('fecha');
             $table->integer('mensualidades')->default(0);
-            $table->integer('estatus',1)->default(0);
+            $table->boolean('estatus')->default(0);
             
         });
     }

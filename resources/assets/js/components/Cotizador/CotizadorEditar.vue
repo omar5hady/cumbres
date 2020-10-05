@@ -126,7 +126,7 @@
                                             <button @click="cancelar(cot.id)" class="btn btn-danger btn-sm" title="Cancelar">
                                                 <i class="fa fa-close"></i>
                                             </button>
-                                            <button @click="aprobar(cot.id)" class="btn btn-success btn-sm" title="Aprovar">
+                                            <button @click="aprobar(cot.id)" class="btn btn-success btn-sm" title="Aprobar">
                                                 <i class="fa fa-check-square-o"></i>
                                             </button>
                                             <a :href="'/calc/generar/pdf/'+cot.id" target="_blank" class="btn btn-sm btn-success">

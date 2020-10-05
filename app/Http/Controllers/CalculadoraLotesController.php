@@ -232,10 +232,34 @@ class CalculadoraLotesController extends Controller
             )
             ->where('cotizacion_lotes.id', '=', $request->idCotizacion)
         ->first();
+
+        $fecha= new Carbon($cotizacion->fecha);
+        $cotizacion->fecha = $fecha->formatLocalized('%d/%m/%Y');
+
+        $cotizacion->m2 = $cotizacion->valor_venta/$cotizacion->terreno_m2;
+        $cotizacion->total_pagar = $cotizacion->valor_venta-$cotizacion->valor_descuento;
+
+        $cotizacion->valor_descuento = number_format((float)$cotizacion->valor_descuento, 2, '.', ',');
+        $cotizacion->valor_venta = number_format((float)$cotizacion->valor_venta, 2, '.', ',');
+        $cotizacion->total_pagar = number_format((float)$cotizacion->total_pagar, 2, '.', ',');
+        $cotizacion->m2 = number_format((float)$cotizacion->m2, 2, '.', ',');
         
         $pago = Pagos_lotes::where('cotizacion_lotes_id', '=', $cotizacion->id)
             ->orderBy('folio')
         ->get();
+
+        if(sizeof($pago)){
+            foreach ($pago as $index => $p) {
+                $p->cantidad = number_format((float)$p->cantidad, 2, '.', ',');
+                $p->descuento = number_format((float)$p->descuento, 2, '.', ',');
+                $p->interes_monto = number_format((float)$p->interes_monto, 2, '.', ',');
+                $p->total_a_pagar = number_format((float)$p->total_a_pagar, 2, '.', ',');
+                $p->saldo = number_format((float)$p->saldo, 2, '.', ',');
+                
+                $fecha_pago = new Carbon($p->fecha);
+                $p->fecha = $fecha_pago->formatLocalized('%d/%m/%Y');
+            }
+        }
 
         //return $cotizacion;
 
