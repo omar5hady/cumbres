@@ -351,7 +351,7 @@ export default {
             if(this.r_mensualidad == 1) this.arrayMensualidad.pop();
 
             //actualiza los precios
-            this.actualizar()
+            this.actualizar();
         },
         calculaPrecoi(index){
             
@@ -361,13 +361,30 @@ export default {
             let folio = index.folio-1;
 
             //fechas de pago
-            let firstFechaPago = new Date(this.r_fecha);
-            let lastFechaPago = new Date(this.r_fecha);
-            
-            lastFechaPago.setMonth(lastFechaPago.getMonth());
+                let firstFechaPago = new Date(
+                    index.fecha.substring(5,7)
+                    +'/'+index.fecha.substring(8,10)
+                    +'/'+index.fecha.substring(0, 4)
+                );
+                let lastFechaPago = new Date(
+                    this.r_fecha.substring(5,7)
+                    +'/'+this.r_fecha.substring(8,10)
+                    +'/'+this.r_fecha.substring(0, 4)
+                );
+                let fechaFinalPago = index.fecha;
+
+                lastFechaPago.setMonth(lastFechaPago.getMonth()+parseInt(this.r_mensualidad));
+
+                if(lastFechaPago < firstFechaPago){
+                    let dia = (lastFechaPago.getDate()<10)?('0'+lastFechaPago.getDate()):('0'+lastFechaPago.getDate());
+                    let mes = (lastFechaPago.getMonth()<9)?('0'+(lastFechaPago.getMonth()+1)):(lastFechaPago.getMonth()+1);
+
+                    fechaFinalPago = lastFechaPago.getFullYear()+'-'+mes+'-'+dia;
+                }
+            //fechas de pago
 
             this.arrayMensualidad[folio].cantidad = cantidad;
-            this.arrayMensualidad[folio].fecha = index.fecha;
+            this.arrayMensualidad[folio].fecha = fechaFinalPago;//index.fecha;
 
             if(this.r_mensualidad > 6) this.arrayMensualidad[folio].interesMont = this.intereses(index);
 
@@ -489,7 +506,7 @@ export default {
 
             let ineres = 0;
 
-            if(this.r_mensualidad = 12){
+            if(this.r_mensualidad == 12){
                 ineres = this.arrayListA[6].valor/100;
                 montoInteres = ((saldo*ineres)/365)*dias;
 
