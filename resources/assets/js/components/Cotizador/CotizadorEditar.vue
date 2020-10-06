@@ -710,6 +710,7 @@ export default {
             return new Date(year, month, 0).getDate();
         },
         guardaCotizacion(){
+            this.actualizar();
             
             Swal.fire({
                 title: '¿Estas seguro?',

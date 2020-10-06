@@ -572,6 +572,7 @@ export default {
             return new Date(year, month, 0).getDate();
         },
         guardaCotizacion(){
+            this.actualizar();
             
             Swal.fire({
                 title: '¿Estas seguro?',
@@ -584,6 +585,7 @@ export default {
                 cancelButtonText: 'Cancelar',
             }).then((result) => {
                 if (result.value) {
+                    
 
                     axios.post('/calc/guardar/cotizacion',{
                         'pago':this.arrayMensualidad,
