@@ -124,8 +124,12 @@ class User extends Authenticatable
         'rep_vent_modelos',
         'rep_detalles_post',
         'rep_acumulado',
-        
 
+        //Cotizador Lotes
+        'calc_lotes',
+        'edit_cotizacion',
+        'opc_cotizador',
+        
         //Pagos Internos
         'seg_pago'
     ];

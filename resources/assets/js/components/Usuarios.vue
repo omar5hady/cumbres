@@ -334,7 +334,7 @@
                                                         <a class="nav-link"><i class="fa fa-home"></i> <input v-model="entregas" type="checkbox" value="1"/> Viviendas por entregar</a>
                                                     </li>
                                                     <li class="nav-item">
-                                                        <a class="nav-link"><i class="fa fa-home"></i> <input v-model="estimaciones" type="checkbox" value="1"/> Estimaciones</a>
+                                                        <a class="nav-link"><i class="fa fa-calculator"></i> <input v-model="estimaciones" type="checkbox" value="1"/> Estimaciones</a>
                                                     </li>
                                                 </ul>
                                     </div>
@@ -377,6 +377,67 @@
                                                     </li>
                                                     <li class="nav-item">
                                                         <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_acumulado" type="checkbox" value="1"/> Reporte acumulado</a>
+                                                    </li>
+                                                    
+                                                </ul>
+                                    </div>
+                                </div> 
+
+
+                                <!-- listado para privilegios del menu Reportes -->
+                                <div class="col-md-4">
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="icon-people"></i> <input @click="limpiarReportes()" v-model="reportes" type="checkbox" value="1"/> Modulo Reportes</a>
+                                                <ul class="nav-dropdown-items" v-if="reportes==1">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="mejora" type="checkbox" value="1"/> Estadisticas Mejora</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_proy" type="checkbox" value="1"/> Resumen por proyecto</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_publi" type="checkbox" value="1"/> Estadisticas de Publicidad</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="inventario" type="checkbox" value="1"/> Inventario contable</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_venta_canc" type="checkbox" value="1"/> Reporte de ventas y cancelaciones</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_asesores" type="checkbox" value="1"/> Reporte de asesores</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_ini_term_ventas" type="checkbox" value="1"/> Reporte de inicio, termino, ventas y cobranza</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_recursos_propios" type="checkbox" value="1"/> Reporte de recursos propios</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_vent_modelos" type="checkbox" value="1"/> Reporte por modelo</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_detalles_post" type="checkbox" value="1"/> Reporte de detalles</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_acumulado" type="checkbox" value="1"/> Reporte acumulado</a>
+                                                    </li>
+                                                    
+                                                </ul>
+                                    </div>
+                                </div> <!-- listado para privilegios del menu Cotizador de lotes -->
+                                <div class="col-md-4">
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="icon-people"></i> Modulo Cotizador de lotes</a>
+                                                <ul class="nav-dropdown-items">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="icon-book-open"></i> <input v-model="calc_lotes" type="checkbox" value="1"/> Calculadora de lotes</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="icon-book-open"></i> <input v-model="edit_cotizacion" type="checkbox" value="1"/> Editar cotización</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="icon-book-open"></i> <input v-model="opc_cotizador" type="checkbox" value="1"/> Opciones de cotizador</a>
                                                     </li>
                                                     
                                                 </ul>
@@ -874,6 +935,11 @@
                     usuarios:0,
                     roles:0,
 
+                    //Calculador de lotes
+                    calc_lotes:0,
+                    edit_cotizacion:0,
+                    opc_cotizador:0,
+
                     //Reportes
                     mejora:0,
                     rep_proy:0,
@@ -1055,6 +1121,9 @@
                 this.contratos=0;
                 this.docs=0;
                 this.equipamientos=0;
+                this.calc_lotes=0;
+                this.edit_cotizacion=0;
+                this.opc_cotizador=0;
             },
             limpiarComisiones(){
                 this.bono_com=0;
@@ -1177,6 +1246,11 @@
                     me.sobreprecios=usuarios[0].sobreprecios;
                     me.paquetes=usuarios[0].paquetes;
                     me.promociones=usuarios[0].promociones;
+
+                    //Cotizador de lotes
+                    me.calc_lotes = usuarios[0].calc_lotes;
+                    me.edit_cotizacion = usuarios[0].edit_cotizacion;
+                    me.opc_cotizador = usuarios[0].opc_cotizador;
 
                     //Obra
                     me.contratistas=usuarios[0].contratistas;
@@ -1503,6 +1577,10 @@
                     'contratos':this.contratos,
                     'docs':this.docs,
                     'equipamientos':this.equipamientos,
+                        //Cotizador de lotes
+                    'calc_lotes':this.calc_lotes,
+                    'edit_cotizacion':this.edit_cotizacion,
+                    'opc_cotizador':this.opc_cotizador,
                         //Saldo
                     'edo_cuenta':this.edo_cuenta,
                     'depositos':this.depositos,
