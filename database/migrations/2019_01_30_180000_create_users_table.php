@@ -118,6 +118,11 @@ class CreateUsersTable extends Migration
             $table->boolean('exp_comision')->default(0);
             $table->boolean('gen_comision')->default(0);
             $table->boolean('bono_com')->default(0);
+
+            //Cotizador Lotes
+           $table->boolean('calc_lotes')->default(0);
+           $table->boolean('edit_cotizacion')->default(0);
+           $table->boolean('opc_cotizador')->default(0);
         
 
             //Acceso

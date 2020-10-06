@@ -12,7 +12,7 @@
                         <button v-if="listado == 1" type="button" @click="abrirModal('nuevo')" class="btn btn-primary">
                             <i class="icon-plus"></i>&nbsp;Asignar Partidas
                         </button>
-                        <button v-if="listado==0" type="button" @click="indexEstimaciones(1),listado=1" class="btn btn-success">
+                        <button v-if="listado==0" type="button" @click="indexEstimaciones(pagination2.current_page),listado=1" class="btn btn-success">
                             <i class="fa fa-mail-reply"></i> Regresar
                         </button>
                     </div>

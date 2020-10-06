@@ -1083,6 +1083,8 @@ class UserController extends Controller
                                 'users.expediente','users.asig_gestor','users.seg_tramite','users.avaluos','users.bonos_rec',
                                 //Postventa
                                 'users.entregas', 'users.solic_detalles',
+                                //Cotizador de lotes
+                                'calc_lotes','edit_cotizacion','opc_cotizador',
                                 //Comisiones
                                 'users.exp_comision','users.gen_comision','users.bono_com',
                                 //Acceso
@@ -1157,6 +1159,10 @@ class UserController extends Controller
         $user->partidas = $request->partidas;
         $user->avance = $request->avance;
         $user->estimaciones = $request->estimaciones;
+        //Calculadora de lotes
+        $user->calc_lotes = $request->calc_lotes;
+        $user->edit_cotizacion = $request->edit_cotizacion;
+        $user->opc_cotizador = $request->opc_cotizador;
         //Ventas
         $user->lotes_disp = $request->lotes_disp;
         $user->mis_prospectos = $request->mis_prospectos;
