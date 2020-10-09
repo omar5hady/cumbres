@@ -45,56 +45,7 @@
                                 <option value="24">13 A 24 MESES</option>
                                 <option value="36">25 A 36 MESES</option>
                                 <option value="48">37 A 48 MESES</option>
-                                <!--option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                    <option value="6">6</option>
-                                    <option value="7">7</option>
-                                    <option value="8">8</option>
-                                    <option value="9">9</option>
-                                    <option value="10">10</option>
-                                    <option value="11">11</option>
-                                    <option value="12">12</option>
-                                    <option value="13">13</option>
-                                    <option value="14">14</option>
-                                    <option value="15">15</option>
-                                    <option value="16">16</option>
-                                    <option value="17">17</option>
-                                    <option value="18">18</option>
-                                    <option value="19">19</option>
-                                    <option value="20">20</option>
-                                    <option value="21">21</option>
-                                    <option value="22">22</option>
-                                    <option value="23">23</option>
-                                    <option value="24">24</option>
-                                    <option value="25">25</option>
-                                    <option value="26">26</option>
-                                    <option value="27">27</option>
-                                    <option value="28">28</option>
-                                    <option value="29">29</option>
-                                    <option value="30">30</option>
-                                    <option value="31">31</option>
-                                    <option value="32">32</option>
-                                    <option value="33">33</option>
-                                    <option value="34">34</option>
-                                    <option value="35">35</option>
-                                    <option value="36">36</option>
-                                    <option value="37">37</option>
-                                    <option value="38">38</option>
-                                    <option value="39">39</option>
-                                    <option value="40">40</option>
-                                    <option value="41">41</option>
-                                    <option value="42">42</option>
-                                    <option value="43">43</option>
-                                    <option value="44">44</option>
-                                    <option value="45">45</option>
-                                    <option value="46">46</option>
-                                    <option value="47">47</option>
-                                    <option value="48">48</option>
-                                    <option value="40">40</option>
-                                    <option value="40">40</option>
-                                <option value="40">40</option-->
+                                
                             </select>
 
                             <button @click="getCotizacion()" class="btn btn-sm btn-primary col-sm-1">
@@ -123,10 +74,10 @@
                                     <tr v-for="cot in arrayCotizaciones.data" :key="cot.id">
                                         <td v-text="cot.id"></td>
                                         <th>
-                                            <button @click="cancelar(cot.id)" class="btn btn-danger btn-sm" title="Cancelar">
+                                            <button v-if="cot.estatus == 0" @click="cancelar(cot.id)" class="btn btn-danger btn-sm" title="Cancelar">
                                                 <i class="fa fa-close"></i>
                                             </button>
-                                            <button @click="aprobar(cot.id)" class="btn btn-success btn-sm" title="Aprobar">
+                                            <button v-if="cot.estatus == 0" @click="abrirModal(cot)" class="btn btn-success btn-sm" title="Aprobar">
                                                 <i class="fa fa-check-square-o"></i>
                                             </button>
                                             <a :href="'/calc/generar/pdf/'+cot.id" target="_blank" class="btn btn-sm btn-success">
@@ -356,10 +307,334 @@
                             </table>
                         </div>
                     </template>
+
+
                 </div>
             </div>
             <!-- Fin ejemplo de tabla Listado -->
         </div>
+
+        <!--Inicio del modal -->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="'Nueva solicitud de compra venta'"></h4>
+                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- form para solicitud de avaluo -->
+
+                                    <div class="">
+                                        <div class="card-body">
+                                            <ul class="nav nav-tabs">
+                                                <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==1 }" @click="paso = 1">Datos del prospecto</a></li>
+                                                <li v-if="datos.coacreditado == 1" class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==2 }" @click="paso = 2">Datos coacreditado</a></li>
+                                                <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==3 }" @click="paso = 3">Referencias familiares</a></li>
+                                            </ul>
+                                        </div>
+
+                                        <template v-if="paso == 1"> <!-- Datos del prospecto -->
+
+                                            <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="text-input">Nombre: </label>
+                                                <div class="col-md-4">
+                                                    <input type="text" disabled v-model="datos.nombre" class="form-control" >
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <input type="text" disabled v-model="datos.apellidos" class="form-control" >
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="text-input">Telefono: </label>
+                                                <div class="col-md-3">
+                                                    <input type="text" disabled v-model="datos.telefono" class="form-control" >
+                                                </div>
+                                                <label class="col-md-2 form-control-label" for="text-input">Celular: </label>
+                                                <div class="col-md-3">
+                                                    <input type="text" disabled v-model="datos.celular" class="form-control" >
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="text-input">Dirección: <span style="color:red;" v-show="datos.direccion==''">(*)</span></label>
+                                                <div class="col-md-4">
+                                                    <input type="text" v-model="datos.direccion" class="form-control" >
+                                                </div>
+                                                <label class="col-md-1 form-control-label" for="text-input">CP: <span style="color:red;" v-show="datos.cp==''">(*)</span></label>
+                                                <div class="col-md-3">
+                                                    <input type="text" v-model="datos.cp"  
+                                                    pattern="\d*" maxlength="5" v-on:keypress="isNumber($event)" @keyup="selectColonias(datos.cp,0)"
+                                                    class="form-control" >
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="text-input">Colonia: <span style="color:red;" v-show="datos.colonia==''">(*)</span></label>
+                                                <div class="col-md-7">
+                                                    <input type="text" name="city3" list="cityname3" class="form-control" v-model="datos.colonia">
+                                                    <datalist id="cityname3">
+                                                        <option value="">Seleccione</option>
+                                                        <option v-for="colonias in arrayColonias" :key="colonias.colonia " :value="colonias.colonia" v-text="colonias.colonia"></option>    
+                                                    </datalist>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="text-input">Estado: <span style="color:red;" v-show="datos.estado==''">(*)</span></label>
+                                                <div class="col-md-3">
+                                                    <select class="form-control" v-model="datos.estado" @click="selectCiudades(datos.estado,0)" >
+                                                        <option value="">Seleccione</option>
+                                                        <option v-for="estados in arrayEstados" :key="estados.estado" :value="estados.estado" v-text="estados.estado"></option>    
+                                                    </select>
+                                                </div>
+                                                <label class="col-md-1 form-control-label" for="text-input">Ciudad: <span style="color:red;" v-show="datos.ciudad==''">(*)</span></label>
+                                                <div class="col-md-5">
+                                                    <select class="form-control" v-model="datos.ciudad" >
+                                                        <option value="">Seleccione</option>
+                                                        <option v-for="ciudades in arrayCiudades" :key="ciudades.municipio" :value="ciudades.municipio" v-text="ciudades.municipio"></option>    
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="text-input">CURP: <span style="color:red;" v-show="datos.curp==''">(*)</span></label>
+                                                <div class="col-md-4">
+                                                    <input type="text" v-model="datos.curp" maxlength="18" class="form-control" >
+                                                </div>
+                                                <label class="col-md-1 form-control-label" for="text-input">NSS: <span style="color:red;" v-show="datos.nss==''">(*)</span></label>
+                                                <div class="col-md-4">
+                                                    <input type="text" v-model="datos.nss" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)">
+                                                </div>
+                                            </div>
+
+                                                <div class="form-group row line-separator"></div>
+
+                                                <div class="col-md-12">
+                                                    <h6 align="center"><strong> Lugar de trabajo </strong></h6>
+                                                </div>
+
+                                            <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="text-input" >Tipo de economia <span style="color:red;" v-show="tipo_economia==0">(*)</span></label>
+                                                <div class="col-md-3">
+                                                    <select class="form-control" v-model="tipo_economia" >
+                                                        <option value="0">Seleccione</option>  
+                                                        <option value="Formal">Formal</option>
+                                                        <option value="Informal">Informal</option>
+                                                        <option value="Mixta">Mixta</option>
+                                                    </select>
+                                                </div>
+
+                                                <label class="col-md-2 form-control-label" for="text-input" v-if="tipo_economia=='Formal' ||tipo_economia=='Mixta'">Puesto: </label>
+                                                <label class="col-md-2 form-control-label" for="text-input" v-else>Giro del negocio: </label>
+                                                <div class="col-md-4">
+                                                    <input type="text" v-model="puesto" maxlength="50" class="form-control" >
+                                                </div>
+
+                                                
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="">Empresa <span style="color:red;" v-show="datos.empresa==0">(*)</span></label>
+                                                <div class="col-md-6">
+                                                    <v-select 
+                                                        :on-search="selectEmpresaVueselect"
+                                                        label="nombre"
+                                                        :options="arrayEmpresa"
+                                                        placeholder="Buscar empresa..."
+                                                        :onChange="getDatosEmpresa2"
+                                                    ></v-select>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label class="col-md-3 form-control-label" for="">Numero de dependientes económicos  <span style="color:red;" v-show="datos.empresa==0">(*)</span></label>
+                                                <div class="col-md-2">
+                                                    <input type="number" v-model="num_dep_economicos" maxlength="2" class="form-control"  min="0">
+                                                </div>
+                                            </div>
+                                                
+
+                                        </template>
+
+                                        <template v-if="paso == 2"> <!-- Datos del coacreditado -->
+
+                                            <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="text-input">Nombre: </label>
+                                                <div class="col-md-4">
+                                                    <input type="text" disabled v-model="datos.nombre_coa" class="form-control" >
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <input type="text" disabled v-model="datos.apellidos_coa" class="form-control" >
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="text-input">Telefono: </label>
+                                                <div class="col-md-3">
+                                                    <input type="text" disabled v-model="datos.telefono_coa" class="form-control" >
+                                                </div>
+                                                <label class="col-md-2 form-control-label" for="text-input">Celular: </label>
+                                                <div class="col-md-3">
+                                                    <input type="text" disabled v-model="datos.celular_coa" class="form-control" >
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="text-input">Dirección: <span style="color:red;" v-show="datos.direccion_coa==''">(*)</span></label>
+                                                <div class="col-md-4">
+                                                    <input type="text" v-model="datos.direccion_coa" class="form-control" >
+                                                </div>
+                                                <label class="col-md-1 form-control-label" for="text-input">CP: <span style="color:red;" v-show="datos.cp_coa==''">(*)</span></label>
+                                                <div class="col-md-3">
+                                                    <input type="text" v-model="datos.cp_coa" 
+                                                    pattern="\d*" maxlength="5" v-on:keypress="isNumber($event)" @keyup="selectColonias(datos.cp_coa,1)"
+                                                    class="form-control" >
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="text-input">Colonia: <span style="color:red;" v-show="datos.colonia_coa==''">(*)</span></label>
+                                                <div class="col-md-7">
+                                                    <input type="text" name="city3" list="cityname3" class="form-control" v-model="datos.colonia_coa">
+                                                    <datalist id="cityname3">
+                                                        <option value="">Seleccione</option>
+                                                        <option v-for="colonias in arrayColoniasCoa" :key="colonias.colonia " :value="colonias.colonia" v-text="colonias.colonia"></option>    
+                                                    </datalist>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="text-input">Estado: <span style="color:red;" v-show="datos.estado_coa==''">(*)</span></label>
+                                                <div class="col-md-3">
+                                                    <select class="form-control" v-model="datos.estado_coa" @click="selectCiudades(datos.estado_coa,0)" >
+                                                        <option value="">Seleccione</option>
+                                                        <option v-for="estados in arrayEstados" :key="estados.estado" :value="estados.estado" v-text="estados.estado"></option>    
+                                                    </select>
+                                                </div>
+                                                <label class="col-md-1 form-control-label" for="text-input">Ciudad: <span style="color:red;" v-show="datos.ciudad_coa==''">(*)</span></label>
+                                                <div class="col-md-5">
+                                                    <select class="form-control" v-model="datos.ciudad_coa" >
+                                                        <option value="">Seleccione</option>
+                                                        <option v-for="ciudades in arrayCiudades" :key="ciudades.municipio" :value="ciudades.municipio" v-text="ciudades.municipio"></option>    
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="text-input">CURP: <span style="color:red;" v-show="datos.curp_coa==''">(*)</span></label>
+                                                <div class="col-md-4">
+                                                    <input type="text" v-model="datos.curp_coa" maxlength="18" class="form-control" >
+                                                </div>
+                                                <label class="col-md-1 form-control-label" for="text-input">NSS: </label>
+                                                <div class="col-md-4">
+                                                    <input type="text" v-model="datos.nss_coa" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)">
+                                                </div>
+                                            </div>
+
+                                                <div class="form-group row line-separator"></div>
+
+                                                <div class="col-md-12">
+                                                    <h6 align="center"><strong> Lugar de trabajo </strong></h6>
+                                                </div>
+
+
+                                            <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="">Empresa <span style="color:red;" v-show="datos.empresa_coa==0">(*)</span></label>
+                                                <div class="col-md-6">
+                                                    <v-select 
+                                                        :on-search="selectEmpresaVueselect"
+                                                        label="nombre"
+                                                        :options="arrayEmpresa"
+                                                        placeholder="Buscar empresa..."
+                                                        :onChange="getDatosEmpresa"
+                                                    ></v-select>
+                                                </div>
+                                            </div>
+
+                                           
+
+                                        </template>
+
+                                        <template v-if="paso == 3"> <!-- Datos de referencias -->
+
+                                                <div class="form-group row line-separator"></div>
+
+                                                <div class="col-md-12">
+                                                    <h6 align="center"><strong> Primera Referencia</strong></h6>
+                                                </div>
+
+                                            <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="text-input">Nombre:  <span style="color:red;" v-show="nombre_primera_ref ==''">(*)</span></label>
+                                                <div class="col-md-5">
+                                                    <input type="text" v-model="nombre_primera_ref" class="form-control" >
+                                                </div>
+                                            </div>
+
+                                             <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="text-input">Telefono:  <span style="color:red;" v-show="telefono_primera_ref ==''">(*)</span></label>
+                                                <div class="col-md-3">
+                                                    <input type="text" v-model="telefono_primera_ref"  pattern="\d*" 
+                                                    maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
+                                                </div>
+                                                <label class="col-md-1 form-control-label" for="text-input">Cel:  <span style="color:red;" v-show="celular_primera_ref ==''">(*)</span></label>
+                                                <div class="col-md-3">
+                                                    <input type="text" v-model="celular_primera_ref"  pattern="\d*" 
+                                                    maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row line-separator"></div>
+
+                                                <div class="col-md-12">
+                                                    <h6 align="center"><strong> Segunda Referencia</strong></h6>
+                                                </div>
+
+                                            <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="text-input">Nombre: <span style="color:red;" v-show="nombre_segunda_ref ==''">(*)</span></label>
+                                                <div class="col-md-5">
+                                                    <input type="text" v-model="nombre_segunda_ref" class="form-control" >
+                                                </div>
+                                            </div>
+
+                                             <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="text-input">Telefono: <span style="color:red;" v-show="telefono_segunda_ref ==''">(*)</span> </label>
+                                                <div class="col-md-3">
+                                                    <input type="text" v-model="telefono_segunda_ref"  pattern="\d*" 
+                                                    maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
+                                                </div>
+                                                <label class="col-md-1 form-control-label" for="text-input">Cel: <span style="color:red;" v-show="celular_segunda_ref ==''">(*)</span> </label>
+                                                <div class="col-md-3">
+                                                    <input type="text" v-model="celular_segunda_ref"  pattern="\d*" 
+                                                    maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
+                                                </div>
+                                            </div>
+
+                                            
+                                                
+
+                                        </template>
+                                    </div>
+
+                                
+                            <!-- fin del form solicitud de avaluo -->
+
+
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                            <button type="button" class="btn btn-primary" @click="aprobar(id)">Asignar</button>
+                        </div>
+                    </div>
+                      <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal consulta-->
     </main>
 </template>
 
@@ -397,7 +672,12 @@ export default {
             arrayEtapas:[],
             arrayLotes:[],
             arrayListA:[],
+            arrayColonias:[],
+            arrayColoniasCoa:[],
             arrayClientes:[],
+            arrayEstados:[],
+            arrayCiudades:[],
+            arrayCiudadesCoa:[],
             myAlerts:{
                 popAlert : function(title = 'Alert',type = "success", description =''){
                     swal({
@@ -409,6 +689,23 @@ export default {
                     })
                 }
             },
+
+            id:0,
+            paso:0,
+            modal:0,
+
+            datos : [],
+            arrayEmpresa: [],
+            tipo_economia:0,
+            puesto:'',
+            num_dep_economicos:0,
+            nombre_primera_ref:'',
+            nombre_segunda_ref:'',
+            telefono_primera_ref:'',
+            telefono_segunda_ref:'',
+            celular_primera_ref:'',
+            celular_segunda_ref:'',
+           
         }
     },
     computed:{
@@ -418,6 +715,90 @@ export default {
         vSelect
     },
     methods: {
+        selectEmpresaVueselect(search, loading){
+            let me = this;
+            loading(true)
+
+            var url = '/select_empresas?filtro='+search;
+            axios.get(url).then(function (response) {
+                let respuesta = response.data;
+                q: search
+                me.arrayEmpresa = respuesta.empresas;
+                loading(false)
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
+        getDatosEmpresa(val1){
+                let me = this;
+                me.loading = true;
+                me.datos.empresa_coa = val1.nombre;
+                me.datos.empresaCoa_id = val1.id;
+               
+            }, 
+            getDatosEmpresa2(val1){
+                let me = this;
+                me.loading = true;
+                me.datos.empresa_id = val1.id;
+                me.datos.empresa = val1.nombre;
+               
+            },
+        selectColonias(cp,coacreditado){
+            let me = this;
+            me.arrayColonias=[];
+            var url = '/select_colonias?buscar=' + cp;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                if(coacreditado==1){
+                    me.arrayColoniasCoa=[];
+                    me.arrayColoniasCoa = respuesta.colonias;
+                }
+                else{
+                    me.arrayColonias=[];
+                    me.arrayColonias = respuesta.colonias;
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
+        cerrarModal(){
+            this.datos = [];
+            this.modal = 0;
+        },
+        selectEstados(){
+            let me = this;
+            me.arrayEstados=[];
+            
+            var url = '/select_estados';
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayEstados = respuesta.estados;
+                
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
+        selectCiudades(estado,coacreditado){
+            let me = this;
+            var url = '/select_ciudades?buscar='+estado;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                if(coacreditado==1){
+                    me.arrayCiudadesCoa=[];
+                    me.arrayCiudadesCoa = respuesta.ciudades;
+                }
+                else{
+                    me.arrayCiudades=[];
+                    me.arrayCiudades = respuesta.ciudades;
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
         generarLista(){
             this.arrayMensualidad=[];
             this.arrayNMensualidad=[];
@@ -623,6 +1004,26 @@ export default {
 
             return days;
         },
+        abrirModal(cotizacion){
+            this.selectEstados();
+
+            this.id = cotizacion.id;
+            this.paso = 1;
+            this.modal = 1;
+            this.datos = cotizacion;
+
+        },
+
+        isNumber: function(evt) {
+            evt = (evt) ? evt : window.event;
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+                evt.preventDefault();;
+            } else {
+                return true;
+            }
+        },
+
         descuento(monto, descuento){
             let montoDesc = monto * (descuento/100);
             montoDesc = Number(montoDesc.toFixed(2));
@@ -807,27 +1208,56 @@ export default {
         },
         aprobar(id){
 
-            Swal.fire({
-                title: '¿Aprobar esta cotización?',
-                text: "Este cambio no se podrá deshacer!",
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Si Aprobar!',
-                cancelButtonText: 'Cancelar',
-            }).then((result) => {
-                if (result.value) {
+            if(this.nombre_primera_ref == '' || this.nombre_segunda_ref == ''){
+                swal({
+                    type: 'error',
+                    title: 'Oops...',
+                    text: 'No se han capturado las referencias personales',
+                })
+            }
+            else{
 
-                    axios.post('/edita/cotizacion/aprovar?id='+id).then(
-                        () => {
-                            this.myAlerts.popAlert('Guardado correctamente');
-                            this.getCotizacion();
-                        }
-                    ).catch(error => console.log(error));
+                Swal.fire({
+                    title: '¿Aprobar esta cotización?',
+                    text: "Este cambio no se podrá deshacer!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Si Aprobar!',
+                    cancelButtonText: 'Cancelar',
+                }).then((result) => {
+                    if (result.value) {
 
-                }
-            });
+                        axios.post('/edita/cotizacion/aprovar',
+                        {
+                            'id':id,
+                            'datos':this.datos,
+                            'tipo_economia':this.tipo_economia,
+                            'puesto':this.puesto,
+                            'num_dep_economicos':this.num_dep_economicos,
+                            'nombre_primera_ref':this.nombre_primera_ref,
+                            'nombre_segunda_ref':this.nombre_segunda_ref,
+                            'telefono_primera_ref':this.telefono_primera_ref,
+                            'telefono_segunda_ref':this.telefono_segunda_ref,
+                            'celular_segunda_ref':this.celular_segunda_ref,
+                            'celular_primera_ref':this.celular_primera_ref,
+                            
+                        }).then(
+                            () => {
+                                this.myAlerts.popAlert('Guardado correctamente');
+                                this.getCotizacion();
+                                this.cerrarModal();
+                            }
+                        ).catch(error => console.log(error));
+
+                    }
+                });
+
+            }
+
+
+            
 
         },
         editarCotizacin(id){
@@ -876,78 +1306,85 @@ export default {
 };
 </script>
 <style>
-.modal-content {
-  width: 100% !important;
-  position: absolute !important;
-}
-.mostrar {
-  display: list-item !important;
-  opacity: 1 !important;
-  position: fixed !important;
-  background-color: #3c29297a !important;
-}
-.div-error {
-  display: flex;
-  justify-content: center;
-}
-.text-error {
-  color: red !important;
-  font-weight: bold;
-}
-.card-user2 .avatar.border-white {
-    border: 5px solid #fff;
-}
-.card-user2 .avatar {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    position: relative;
-    margin-bottom: 15px;
-}
-.card2 .avatar {
-    width: 200px;
-    height: 200px;
-    overflow: hidden;
-    border-radius: 50%;
-    margin-right: 5px;
-}
-.border-white {
-    border-color: #fff!important;
-}
-.card-user2 .author {
-    text-align: center;
-    text-transform: none;
-    margin-top: -65px;
-}
-.card2 .author {
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-}
-.card2 {
-    border-radius: 6px;
-    box-shadow: 0 2px 2px hsla(38,16%,76%,.5);
-    background-color: #fff;
-    color: #252422;
-    margin-bottom: 20px;
-    position: relative;
-    z-index: 1;
-    border: none;
-}
-.card2 .card-image2 img  {
-    width: 100%;
-}
-img {
-    vertical-align: middle;
-    border-style: none;
-}
-.bg-gradient-primary {
-    background: #00ADEF!important;
-    background: linear-gradient(45deg,#321fdb 0%,#00ADEF 100%)!important;
-    border-color: #00ADEF!important;
-}
-.p-3 {
-    padding: 1rem!important;
-}
+    .line-separator{
+        height:1px;
+        background:#717171;
+        border-bottom:1px solid #c2cfd6;
+    }
+    .modal-content{
+        width: 100% !important;
+        position: absolute !important;
+    }
+    .mostrar{
+        display: list-item !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        background-color: #3c29297a !important;
+        overflow-y: auto;
+    
+    }
+    .div-error {
+    display: flex;
+    justify-content: center;
+    }
+    .text-error {
+    color: red !important;
+    font-weight: bold;
+    }
+    .card-user2 .avatar.border-white {
+        border: 5px solid #fff;
+    }
+    .card-user2 .avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        position: relative;
+        margin-bottom: 15px;
+    }
+    .card2 .avatar {
+        width: 200px;
+        height: 200px;
+        overflow: hidden;
+        border-radius: 50%;
+        margin-right: 5px;
+    }
+    .border-white {
+        border-color: #fff!important;
+    }
+    .card-user2 .author {
+        text-align: center;
+        text-transform: none;
+        margin-top: -65px;
+    }
+    .card2 .author {
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    .card2 {
+        border-radius: 6px;
+        box-shadow: 0 2px 2px hsla(38,16%,76%,.5);
+        background-color: #fff;
+        color: #252422;
+        margin-bottom: 20px;
+        position: relative;
+        z-index: 1;
+        border: none;
+    }
+    .card2 .card-image2 img  {
+        width: 100%;
+    }
+    img {
+        vertical-align: middle;
+        border-style: none;
+    }
+    .bg-gradient-primary {
+        background: #00ADEF!important;
+        background: linear-gradient(45deg,#321fdb 0%,#00ADEF 100%)!important;
+        border-color: #00ADEF!important;
+    }
+    .p-3 {
+        padding: 1rem!important;
+    }
 </style>
 

@@ -7,6 +7,8 @@ use App\Credito;
 use App\Contrato;
 use App\Pago_contrato;
 use App\Apartado;
+use App\Pagos_lotes;
+use App\Cotizacion_lotes;
 use DB;
 use Auth;
 
@@ -2609,9 +2611,8 @@ class ContratoController extends Controller
         return ['pagos' => $pagos];
     }
 
-    public function contratoCompraVentaPdf(Request $request, $id)
-    {
-        $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+    private function getDatosContrato($id){
+        return Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
             ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
             ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
@@ -2651,6 +2652,7 @@ class ContratoController extends Controller
                 'inst_seleccionadas.id as inst_credito',
                 'creditos.precio_obra_extra',
                 'creditos.fraccionamiento as proyecto',
+                'creditos.lote_id',
 
                 'lotes.calle',
                 'lotes.numero',
@@ -2752,6 +2754,12 @@ class ContratoController extends Controller
             ->where('inst_seleccionadas.elegido', '=', '1')
             ->where('contratos.id', '=', $id)
             ->orderBy('id', 'desc')->get();
+    }
+
+    public function contratoCompraVentaPdf(Request $request, $id)
+    {
+        $contratos = $this->getDatosContrato($id);
+
 
             if($contratos[0]->institucion == 'Gamu' && $contratos[0]->tipo_credito == 'INFONAVIT-FOVISSSTE' || $contratos[0]->institucion == 'Crea Más' && $contratos[0]->tipo_credito == 'INFONAVIT-FOVISSSTE'){
                 $contratos[0]->institucion = 'INFONAVIT';
@@ -2804,11 +2812,57 @@ class ContratoController extends Controller
             $pagos[$i]->fecha_pago = $fecha_pago->formatLocalized('%d-%m-%Y');
         }
 
+        if($contratos[0]->modelo != 'Terreno')
+            $pdf = \PDF::loadview('pdf.contratos.contratoCompraVenta', ['contratos' => $contratos, 'pagos' => $pagos]);
+        else{
+            $cotizacion = Cotizacion_lotes::join('clientes', 'cotizacion_lotes.cliente_id', '=', 'clientes.id')
+                ->join('personal', 'clientes.id', '=', 'personal.id')
+                ->join('lotes', 'cotizacion_lotes.lotes_id', '=', 'lotes.id')
+                ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
+                ->join('fraccionamientos', 'lotes.fraccionamiento_id', '=', 'fraccionamientos.id')
+                ->select(
+                    'cotizacion_lotes.id', 'cotizacion_lotes.cliente_id', 'cotizacion_lotes.lotes_id',
+                    'cotizacion_lotes.valor_venta', 'cotizacion_lotes.valor_descuento',
+                    'cotizacion_lotes.created_at', 'cotizacion_lotes.updated_at', 'cotizacion_lotes.fecha',
+                    'cotizacion_lotes.mensualidades',
+    
+                    'personal.apellidos', 'personal.nombre', 
+                    
+                    'clientes.id as cliente_personal_id',
+    
+                    'lotes.num_lote',
+                    'lotes.terreno as terreno_m2',
+                    'etapas.num_etapa',
+                    'fraccionamientos.nombre as fraccionamiento'
+                )
+                ->where('cotizacion_lotes.lotes_id', '=', $contratos[0]->lote_id)
+                ->where('cotizacion_lotes.cliente_id', '=', $contratos[0]->prospecto_id)
+                ->where('cotizacion_lotes.estatus', '=', 1)
+                
+            ->first();
 
-
-        $pdf = \PDF::loadview('pdf.contratos.contratoCompraVenta', ['contratos' => $contratos, 'pagos' => $pagos]);
+            $cotizacion->m2 = $cotizacion->valor_venta/$cotizacion->terreno_m2;
+            $contratos[0]->m2 = number_format((float)$cotizacion->m2, 2, '.', ',');
+            
+            $pago = Pagos_lotes::where('cotizacion_lotes_id', '=', $cotizacion->id)
+                ->orderBy('folio')
+            ->get();
+    
+            if(sizeof($pago)){
+                foreach ($pago as $index => $p) {
+                    $p->cantidad = number_format((float)$p->cantidad, 2, '.', ',');
+                    $p->descuento = number_format((float)$p->descuento, 2, '.', ',');
+                    $p->interes_monto = number_format((float)$p->interes_monto, 2, '.', ',');
+                    $p->total_a_pagar = number_format((float)$p->total_a_pagar, 2, '.', ',');
+                    $p->saldo = number_format((float)$p->saldo, 2, '.', ',');
+                    
+                    $fecha_pago = new Carbon($p->fecha);
+                    $p->fecha = $fecha_pago->formatLocalized('%d/%m/%Y');
+                }
+            }
+            $pdf = \PDF::loadview('pdf.contratos.contratoCompraVentaTerreno', ['contratos' => $contratos, 'pago' => $pago]);
+        }
         return $pdf->stream('ContratoCompraVenta.pdf');
-        //  return ['contratos' => $contratos];
     }
 
     public function pagareContratopdf(Request $request, $id)

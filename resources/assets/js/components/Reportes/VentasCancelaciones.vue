@@ -56,6 +56,7 @@
                                                 <th>Etapa</th>
                                                 <th>Manzana</th>
                                                 <th>Lote</th>
+                                                <th>% Avance</th>
                                                 <th>Cliente</th>
                                                 <th>Fecha de venta</th>
                                                 <th>Crédito</th>
@@ -86,6 +87,7 @@
                                                 <td class="td2" v-text="lote.num_etapa"></td>
                                                 <td class="td2" v-text="lote.manzana"></td>
                                                 <td class="td2" v-text="lote.num_lote"></td>
+                                                <td class="td2" v-text="lote.avance_lote + ' %'"></td>
                                                 <td class="td2" v-text="lote.nombre.toUpperCase() + ' ' + lote.apellidos.toUpperCase()"></td>
                                                 <td class="td2" v-text="lote.fecha"></td>
                                                 <td class="td2" v-text="lote.tipo_credito"></td>

@@ -1101,6 +1101,7 @@ class ReportesController extends Controller
                                 'creditos.descripcion_promocion','creditos.descripcion_paquete', 'lotes.firmado',
                                 'creditos.costo_descuento', 'creditos.descuento_terreno', 'creditos.costo_alarma',
                                 'creditos.costo_cuota_mant', 'creditos.costo_protecciones','contratos.id',
+                                'contratos.avance_lote',
                                 'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta','contratos.status')
                         
                         ->where('contratos.status','=',3)
@@ -1125,6 +1126,7 @@ class ReportesController extends Controller
                         ->select('lotes.manzana','lotes.num_lote','f.nombre as proyecto','et.num_etapa','p.nombre', 'p.apellidos',
                                 'lotes.emp_constructora','creditos.valor_terreno', 'lotes.emp_terreno',
                                 'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta',
+                                'contratos.avance_lote',
                                 'creditos.descripcion_promocion','creditos.descripcion_paquete',
                                 'contratos.fecha_status')
                         ->where('ins.elegido','=',1)
@@ -1156,6 +1158,7 @@ class ReportesController extends Controller
                                 'lotes.emp_constructora','creditos.valor_terreno', 'lotes.emp_terreno',
                                 'creditos.costo_descuento', 'creditos.descuento_terreno', 'creditos.costo_alarma',
                                 'creditos.costo_cuota_mant', 'creditos.costo_protecciones','contratos.id',
+                                'contratos.avance_lote',
                                 'creditos.descripcion_promocion','creditos.descripcion_paquete', 'contratos.status','lotes.firmado',
                                 'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta')
                         ->where('ins.elegido','=',1)
@@ -1183,6 +1186,7 @@ class ReportesController extends Controller
                                 'lotes.emp_constructora','creditos.valor_terreno', 'lotes.emp_terreno',
                                 'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta',
                                 'creditos.descripcion_promocion','creditos.descripcion_paquete', 'lotes.firmado',
+                                'contratos.avance_lote',
                                 'contratos.fecha_status')
                         ->where('ins.elegido','=',1)
                         ->where('contratos.status','=',0)

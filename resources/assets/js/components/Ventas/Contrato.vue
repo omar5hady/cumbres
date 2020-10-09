@@ -970,6 +970,17 @@
                                                 </div>
                                                 </div>
 
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="">Lugar de nacimiento</label>
+                                                        <input :disabled="listado==4 && btn_actualizar==0" type="text" name="city3" list="cityname3" class="form-control" v-model="lugar_nacimiento_coa">
+                                                        <datalist id="cityname3">
+                                                            <option value="">Seleccione</option>
+                                                            <option v-for="estados in arrayEstados" :key="estados.estado" :value="estados.estado" v-text="estados.estado"></option>    
+                                                        </datalist>
+                                                    </div>
+                                                </div>    
+
 
                                             <div class="col-md-12" v-if="coacreditado==true">
                                                     <div class="form-group">
@@ -1219,26 +1230,30 @@
                                                         </div>
                                                     </div>
 
-                                                     <div class="col-md-3" v-if="precioBase!=''">
+                                                    <div class="col-md-3" v-if="precioBase!=''">
                                                         <div class="form-group">
                                                             <label style="color:#2271b3;" for=""><strong> Precio base </strong></label>
                                                             <p v-text="'$'+formatNumber(precioBase)"></p>
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-3" v-if="precioBase!=''">
-                                                        <div class="form-group">
-                                                            <label style="color:#2271b3;" for=""><strong> Precio obra extra </strong></label>
-                                                            <p v-text="'$'+formatNumber(precioObraExtra)"></p>
+                                                    <template v-if="modelo != 'Terreno'">
+                                                        <div class="col-md-3" v-if="precioBase!=''">
+                                                            <div class="form-group">
+                                                                <label style="color:#2271b3;" for=""><strong> Precio obra extra </strong></label>
+                                                                <p v-text="'$'+formatNumber(precioObraExtra)"></p>
+                                                            </div>
                                                         </div>
-                                                    </div>
 
-                                                    <div class="col-md-3" v-if="precioBase!=''">
-                                                        <div class="form-group">
-                                                            <label style="color:#2271b3;" for=""><strong>Sobreprecio</strong></label>
-                                                            <p v-text="'$'+formatNumber(sobreprecio)"></p>
+                                                        <div class="col-md-3" v-if="precioBase!=''">
+                                                            <div class="form-group">
+                                                                <label style="color:#2271b3;" for=""><strong>Sobreprecio</strong></label>
+                                                                <p v-text="'$'+formatNumber(sobreprecio)"></p>
+                                                            </div>
                                                         </div>
-                                                    </div>
+                                                    </template>
+
+                                                    
 
                                                      <div class="col-md-12" v-if="precioBase!=''">
                                                         <div class="form-group">
@@ -1253,20 +1268,24 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-3" v-if="superficie!='' || terreno_tam_excedente>0">
-                                                        <div class="form-group">
-                                                            <label style="color:#2271b3;" for=""><strong> Terreno excedente m&sup2;</strong></label>
-                                                            <p v-text="terreno_tam_excedente"></p>
+                                                    <template v-if="modelo != 'Terreno'">
+                                                        <div class="col-md-3" v-if="superficie!='' || terreno_tam_excedente>0">
+                                                            <div class="form-group">
+                                                                <label style="color:#2271b3;" for=""><strong> Terreno excedente m&sup2;</strong></label>
+                                                                <p v-text="terreno_tam_excedente"></p>
+                                                            </div>
                                                         </div>
-                                                    </div>
 
 
-                                                    <div class="col-md-3" v-if="precioExcedente!='' || terreno_tam_excedente>0">
-                                                        <div class="form-group">
-                                                            <label style="color:#2271b3;" for=""><strong> Precio terreno excedente </strong></label>
-                                                            <p v-text="'$'+formatNumber(precioExcedente)"></p>
-                                                        </div>
-                                                    </div> 
+                                                        <div class="col-md-3" v-if="precioExcedente!='' || terreno_tam_excedente>0">
+                                                            <div class="form-group">
+                                                                <label style="color:#2271b3;" for=""><strong> Precio terreno excedente </strong></label>
+                                                                <p v-text="'$'+formatNumber(precioExcedente)"></p>
+                                                            </div>
+                                                        </div> 
+                                                    </template>
+
+                                                   
 
                                                     <div class="col-md-12" v-if="precioBase!=''">
                                                         <div class="form-group">
@@ -1274,21 +1293,21 @@
                                                         </div>
                                                     </div>
                                                     
-                                                    <div class="col-md-3" v-if="promocion!=''">
+                                                    <div class="col-md-3" v-if="promocion!='' && promocion != null">
                                                         <div class="form-group">
                                                             <label style="color:#2271b3;" for=""><strong> Promocion </strong></label>
                                                             <p v-text="promocion"></p>
                                                         </div>
                                                     </div> 
 
-                                                    <div class="col-md-3" v-if="descripcionPromo!=''" >
+                                                    <div class="col-md-3" v-if="descripcionPromo!='' && descripcionPromo != null" >
                                                         <div class="form-group">
                                                             <label style="color:#2271b3;" for=""><strong> Descripcion de la promocion </strong></label>
                                                             <p v-text="descripcionPromo"></p>
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-3" v-if="descuentoPromo!=0">
+                                                    <div class="col-md-3" v-if="descuentoPromo!=0 && descuentoPromo != null">
                                                         <div class="form-group">
                                                             <label style="color:#2271b3;" for=""><strong> Descuento de la promocion </strong></label>
                                                             <p v-text="'$'+formatNumber(descuentoPromo)"></p>
@@ -1309,21 +1328,21 @@
                                                         </div>
                                                     </div> 
 
-                                                    <div class="col-md-3" v-if="descripcionPaquete!=''">
+                                                    <div class="col-md-3" v-if="descripcionPaquete!='' && descripcionPaquete != null">
                                                         <div class="form-group">
                                                             <label style="color:#2271b3;" for=""><strong> Paquete </strong></label>
                                                             <p v-text="paquete"></p>
                                                         </div>
                                                     </div> 
 
-                                                    <div class="col-md-3" v-if="descripcionPaquete!=''">
+                                                    <div class="col-md-3" v-if="descripcionPaquete!='' && descripcionPaquete != null">
                                                         <div class="form-group">
                                                             <label style="color:#2271b3;" for=""><strong> Descripcion del paquete </strong></label>
                                                             <p v-text="descripcionPaquete"></p>
                                                         </div>
                                                     </div> 
 
-                                                    <div class="col-md-3" v-if="costoPaquete!=''">
+                                                    <div class="col-md-3" v-if="costoPaquete!='' && costoPaquete != null">
                                                         <div class="form-group">
                                                             <label style="color:#2271b3;" for=""><strong> Costo del paquete </strong></label>
                                                             <p v-text="'$'+formatNumber(costoPaquete)"></p>
@@ -1391,7 +1410,8 @@
 
                                                      <div class="col-md-2" v-if="inst_financiera!=''">
                                                         <div class="form-group">
-                                                        <label style="color:#2271b3;" for=""><strong>Plazo (años) </strong><span style="color:red;" v-show="plazo_credito==0">(*)</span></label>
+                                                        <label v-if="modelo != 'Terreno'" style="color:#2271b3;" for=""><strong>Plazo (años) </strong><span style="color:red;" v-show="plazo_credito==0">(*)</span></label>
+                                                        <label v-else style="color:#2271b3;" for=""><strong>Plazo (meses) </strong><span style="color:red;" v-show="plazo_credito==0">(*)</span></label>
                                                             <p v-text="plazo_credito"></p>
                                                         </div>
                                                     </div>
@@ -1402,25 +1422,29 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-3" v-if="inst_financiera!='' && listado==3 || listado==4 && btn_actualizar==1 && inst_financiera!=''">
-                                                        <div class="form-group">
-                                                        <label for="">Comisión por apertura</label>
-                                                            <input type="text" pattern="\d*" v-model="comision_apertura" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
+                                                    <template v-if="modelo != 'Terreno'">
+                                                        <div class="col-md-3" v-if="inst_financiera!='' && listado==3 || listado==4 && btn_actualizar==1 && inst_financiera!=''">
+                                                            <div class="form-group">
+                                                            <label for="">Comisión por apertura</label>
+                                                                <input type="text" pattern="\d*" v-model="comision_apertura" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
+                                                            </div>
                                                         </div>
-                                                    </div>
 
-                                                    <div class="col-md-3" >
-                                                        <div class="form-group">
-                                                            <h6 style="color:#2271b3;" for=""><strong> Comisión por apertura </strong></h6>
-                                                            <h6 v-text="'$'+formatNumber(comision_apertura)"></h6>
-                                                        </div>
-                                                    </div> 
+                                                        <div class="col-md-3" >
+                                                            <div class="form-group">
+                                                                <h6 style="color:#2271b3;" for=""><strong> Comisión por apertura </strong></h6>
+                                                                <h6 v-text="'$'+formatNumber(comision_apertura)"></h6>
+                                                            </div>
+                                                        </div>   
+                                                    </template>
 
                                                     <div class="col-md-3" v-if="inst_financiera!=''"><hr>
                                                         <div class="form-group">
-                                                            <h5 style="color:#2271b3;" for=""><strong> Credito Neto {{inst_financiera}}: </strong></h5>
+                                                            <h5 v-if="modelo != 'Terreno'" style="color:#2271b3;" for=""><strong> Credito Neto {{inst_financiera}}: </strong></h5>
+                                                            <h5 v-else style="color:#2271b3;" for=""><strong> Credito Neto Concretania: </strong></h5>
                                                         </div>
                                                     </div> 
+
                                                     <div class="col-md-3" v-if="inst_financiera!=''"><hr>
                                                         <div class="form-group">
                                                             <h5><strong>${{ formatNumber(credito_neto=totalCreditoSolic)}}</strong></h5>
@@ -1433,67 +1457,74 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-3" v-if="inst_financiera!=''&& listado==3 || listado==4 && btn_actualizar==1 && inst_financiera!=''">
-                                                        <div class="form-group">
-                                                        <label for="">Investigación</label>
-                                                            <input type="text" pattern="\d*" v-model="investigacion" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
+                                                    <template v-if="modelo != 'Terreno'">
+                                                        <div class="col-md-3" v-if="inst_financiera!=''&& listado==3 || listado==4 && btn_actualizar==1 && inst_financiera!=''">
+                                                            <div class="form-group">
+                                                            <label for="">Investigación</label>
+                                                                <input type="text" pattern="\d*" v-model="investigacion" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
+                                                            </div>
                                                         </div>
-                                                    </div>
 
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            <h6 style="color:#2271b3;" for=""><strong> Investigación </strong></h6>
-                                                            <h6 v-text="'$'+formatNumber(investigacion)"></h6>
-                                                        </div>
-                                                    </div> 
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <h6 style="color:#2271b3;" for=""><strong> Investigación </strong></h6>
+                                                                <h6 v-text="'$'+formatNumber(investigacion)"></h6>
+                                                            </div>
+                                                        </div> 
 
-                                                    <div class="col-md-3" v-if="tipo_credito=='Alia2' && listado==3 || tipo_credito=='Respalda2' && listado==3 || tipo_credito=='Alia2' && listado==4 && btn_actualizar==1 || tipo_credito=='Respalda2' && listado==4 && btn_actualizar==1 || tipo_credito=='INFONAVIT-FOVISSSTE' && listado==3 || tipo_credito=='INFONAVIT-FOVISSSTE' && listado==4 && btn_actualizar==1 ">
-                                                        <div class="form-group">
-                                                        <label for="">Fovissste</label>
-                                                            <input type="text" pattern="\d*" v-model="fovissste" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
+                                                        <div class="col-md-3" v-if="tipo_credito=='Alia2' && listado==3 || tipo_credito=='Respalda2' && listado==3 || tipo_credito=='Alia2' && listado==4 && btn_actualizar==1 || tipo_credito=='Respalda2' && listado==4 && btn_actualizar==1 || tipo_credito=='INFONAVIT-FOVISSSTE' && listado==3 || tipo_credito=='INFONAVIT-FOVISSSTE' && listado==4 && btn_actualizar==1 ">
+                                                            <div class="form-group">
+                                                            <label for="">Fovissste</label>
+                                                                <input type="text" pattern="\d*" v-model="fovissste" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
+                                                            </div>
                                                         </div>
-                                                    </div>
 
-                                                    <div class="col-md-3" v-if="tipo_credito=='Cofinavit' && listado==3 || tipo_credito=='Cofinavit' && listado==4 && btn_actualizar==1">
-                                                        <div class="form-group">
-                                                        <label for="">Infonavit</label>
-                                                            <input type="text" pattern="\d*" v-model="infonavit" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
+                                                        <div class="col-md-3" v-if="tipo_credito=='Cofinavit' && listado==3 || tipo_credito=='Cofinavit' && listado==4 && btn_actualizar==1">
+                                                            <div class="form-group">
+                                                            <label for="">Infonavit</label>
+                                                                <input type="text" pattern="\d*" v-model="infonavit" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
+                                                            </div>
                                                         </div>
-                                                    </div>
 
-                                                    <div class="col-md-3" v-if="fovissste!=0">
-                                                        <div class="form-group">
-                                                            <h6 style="color:#2271b3;" for=""><strong> Fovissste </strong></h6>
-                                                            <h6 v-text="'$'+formatNumber(fovissste)"></h6>
-                                                        </div>
-                                                    </div> 
+                                                        <div class="col-md-3" v-if="fovissste!=0">
+                                                            <div class="form-group">
+                                                                <h6 style="color:#2271b3;" for=""><strong> Fovissste </strong></h6>
+                                                                <h6 v-text="'$'+formatNumber(fovissste)"></h6>
+                                                            </div>
+                                                        </div> 
 
-                                                    <div class="col-md-3" v-if="infonavit!=0">
-                                                        <div class="form-group">
-                                                            <h6 style="color:#2271b3;" for=""><strong> Infonavit </strong></h6>
-                                                            <h6 v-text="'$'+formatNumber(infonavit)"></h6>
+                                                        <div class="col-md-3" v-if="infonavit!=0">
+                                                            <div class="form-group">
+                                                                <h6 style="color:#2271b3;" for=""><strong> Infonavit </strong></h6>
+                                                                <h6 v-text="'$'+formatNumber(infonavit)"></h6>
+                                                            </div>
                                                         </div>
-                                                    </div>
 
-                                                    <div class="col-md-12">
-                                                        <div class="form-group">
-                                                            <h6></h6>
+                                                        <div class="col-md-12">
+                                                            <div class="form-group">
+                                                                <h6></h6>
+                                                            </div>
                                                         </div>
-                                                    </div>
 
-                                                    <div class="col-md-3" v-if="inst_financiera!=''&& listado==3 || inst_financiera!=''&& listado==4 && btn_actualizar==1">
-                                                        <div class="form-group">
-                                                        <label for="">Avaluo por parte del banco</label>
-                                                            <input type="text" pattern="\d*" v-model="avaluo" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
-                                                        </div>
-                                                    </div>
+                                                    </template>
 
-                                                    <div class="col-md-3" > 
-                                                        <div class="form-group">
-                                                            <h6 style="color:#2271b3;" for=""><strong> Avaluo banco</strong></h6>
-                                                            <h6 v-text="'$'+formatNumber(avaluo)"></h6>
+                                                    
+                                                    <template v-if="modelo != 'Terreno'">
+                                                        <div class="col-md-3" v-if="inst_financiera!=''&& listado==3 || inst_financiera!=''&& listado==4 && btn_actualizar==1">
+                                                            <div class="form-group">
+                                                            <label for="">Avaluo por parte del banco</label>
+                                                                <input type="text" pattern="\d*" v-model="avaluo" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
+                                                            </div>
                                                         </div>
-                                                    </div> 
+
+                                                        <div class="col-md-3" > 
+                                                            <div class="form-group">
+                                                                <h6 style="color:#2271b3;" for=""><strong> Avaluo banco</strong></h6>
+                                                                <h6 v-text="'$'+formatNumber(avaluo)"></h6>
+                                                            </div>
+                                                        </div> 
+                                                    </template>
+                                                    
 
                                                     <div class="col-md-3" v-if="inst_financiera!=''"><hr>
                                                         <div class="form-group">
@@ -1513,20 +1544,23 @@
                                                     </div>
 
                                                      
-
-                                                    <div class="col-md-3" v-if="inst_financiera!=''&& listado==3 || inst_financiera!=''&& listado==4 && btn_actualizar==1">
-                                                        <div class="form-group">
-                                                        <label for="">Gastos de escrituración</label>
-                                                            <input type="text" pattern="\d*" v-model="escrituras" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
+                                                    <template v-if="modelo != 'Terreno'">
+                                                        <div class="col-md-3" v-if="inst_financiera!=''&& listado==3 || inst_financiera!=''&& listado==4 && btn_actualizar==1">
+                                                            <div class="form-group">
+                                                            <label for="">Gastos de escrituración</label>
+                                                                <input type="text" pattern="\d*" v-model="escrituras" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
+                                                            </div>
                                                         </div>
-                                                    </div>
 
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            <h6 style="color:#2271b3;" for=""><strong> Gastos de escrituración </strong></h6>
-                                                            <h6 v-text="'$'+formatNumber(escrituras)"></h6>
-                                                        </div>
-                                                    </div> 
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <h6 style="color:#2271b3;" for=""><strong> Gastos de escrituración </strong></h6>
+                                                                <h6 v-text="'$'+formatNumber(escrituras)"></h6>
+                                                            </div>
+                                                        </div> 
+                                                    </template>
+
+                                                    
 
                                                     <div class="col-md-3" v-if="inst_financiera!=''">
                                                         <div class="form-group">
@@ -1546,41 +1580,44 @@
                                                         </div>
                                                     </div>
 
+                                                    <template v-if="modelo != 'Terreno'">
                                                         <div class="col-md-3" v-if="inst_financiera!='' && listado==3 || inst_financiera!=''&& listado==4 && btn_actualizar==1">
-                                                        <div class="form-group">
-                                                        <!--<label for="">Prima unica</label>
-                                                            <input type="text" pattern="\d*" v-model="prima_unica" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >-->
+                                                            <div class="form-group">
+                                                            <!--<label for="">Prima unica</label>
+                                                                <input type="text" pattern="\d*" v-model="prima_unica" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >-->
+                                                            </div>
                                                         </div>
-                                                    </div>
 
-                                                    <div class="col-md-3" >
-                                                        <div class="form-group">
-                                                           <!-- <h6 style="color:#2271b3;" for=""><strong> Prima unica </strong></h6>
-                                                            <h6 v-text="'$'+formatNumber(prima_unica)"></h6>-->
+                                                        <div class="col-md-3" >
+                                                            <div class="form-group">
+                                                            <!-- <h6 style="color:#2271b3;" for=""><strong> Prima unica </strong></h6>
+                                                                <h6 v-text="'$'+formatNumber(prima_unica)"></h6>-->
+                                                            </div>
                                                         </div>
-                                                    </div>
+                                                        
+
+                                                        <div class="col-md-3" v-if="inst_financiera!='' && listado==3 || inst_financiera!=''&& listado==4 && btn_actualizar==1" ><hr>
+                                                            <div class="form-group">
+                                                            <label for="">Avaluo por parte del cliente</label>
+                                                                <input type="text" pattern="\d*" v-model="avaluo_cliente" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-3" v-if="avaluo_cliente"><hr>
+                                                            <div class="form-group">
+                                                                <h6 style="color:#2271b3;" for=""><strong> Avaluo cliente</strong></h6>
+                                                                <h6 v-text="'$'+formatNumber(avaluo_cliente)"></h6>
+                                                            </div>
+                                                        </div> 
+
+                                                        <div class="col-md-12"><hr>
+                                                            <div class="form-group">
+                                                                <h6></h6>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+
                                                     
-
-                                                    <div class="col-md-3" v-if="inst_financiera!='' && listado==3 || inst_financiera!=''&& listado==4 && btn_actualizar==1" ><hr>
-                                                        <div class="form-group">
-                                                        <label for="">Avaluo por parte del cliente</label>
-                                                            <input type="text" pattern="\d*" v-model="avaluo_cliente" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-3" v-if="avaluo_cliente"><hr>
-                                                        <div class="form-group">
-                                                            <h6 style="color:#2271b3;" for=""><strong> Avaluo cliente</strong></h6>
-                                                            <h6 v-text="'$'+formatNumber(avaluo_cliente)"></h6>
-                                                        </div>
-                                                    </div> 
-
-                                                    <div class="col-md-12"><hr>
-                                                        <div class="form-group">
-                                                            <h6></h6>
-                                                        </div>
-                                                    </div>
-
                                                      <div class="col-md-3" >
                                                         <h6></h6>
                                                     </div>
@@ -1745,26 +1782,39 @@
                                                 <button type="button" v-if="listado==3" class="btn btn-primary" @click="crearContrato()"> Enviar </button>
                                                 <button type="button" v-if="listado==4 && btn_actualizar==1" class="btn btn-success" @click="actualizarContrato()"> Actualizar </button>
                                             </div>
-                                             <div style="text-align: right;" v-if="rolId!=2">
-                                                <a class="btn btn-warning btn-sm" v-if="listado==4 && tipo_credito!='Crédito Directo' && btn_actualizar==0" target="_blank" v-bind:href="'/contrato/promesaCredito/pdf/'+id">Imprimir contrato</a>
-                                                <a class="btn btn-warning btn-sm" v-if="listado==4 && tipo_credito=='Crédito Directo' && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/reservaDeDominio/pdf/'+id">Imprimir contrato</a>
-                                                <a class="btn btn-primary btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+id">Solicitud de contrato de compra venta</a>
-                                                <a class="btn btn-light btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/pagareContrato/pdf/'+id">Imprimir pagares</a>
-                                                <a class="btn btn-dark btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/cartaServicios/pdf/'+id">Carta de servicios</a>
-                                                <a class="btn btn-dark btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+id">Servicios de telecomunición</a>
-                                                <a class="btn btn-danger btn-sm" v-if="listado==4 && btn_actualizar==0" v-bind:href="'/descargarReglamento/contrato/'+id">Reglamento de la etapa</a>
-                                                <a class="btn btn-info btn-sm" v-if="listado==4 && btn_actualizar==0" @click="selectNombreArchivoModelo()">Modelo</a>
-                                            </div>
-                                            <div style="text-align: right;" v-if="rolId==2 && status == 1">
-                                                <a class="btn btn-warning btn-sm" v-if="listado==4 && tipo_credito!='Crédito Directo' && btn_actualizar==0" target="_blank" v-bind:href="'/contrato/promesaCredito/pdf/'+id">Imprimir contrato</a>
-                                                <a class="btn btn-warning btn-sm" v-if="listado==4 && tipo_credito=='Crédito Directo' && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/reservaDeDominio/pdf/'+id">Imprimir contrato</a>
-                                                <a class="btn btn-primary btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+id">Solicitud de contrato de compra venta</a>
-                                                <a class="btn btn-light btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/pagareContrato/pdf/'+id">Imprimir pagares</a>
-                                                <a class="btn btn-dark btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/cartaServicios/pdf/'+id">Carta de servicios</a>
-                                                <a class="btn btn-dark btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+id">Servicios de telecomunición</a>
-                                                <a class="btn btn-danger btn-sm" v-if="listado==4 && btn_actualizar==0" v-bind:href="'/descargarReglamento/contrato/'+id">Reglamento de la etapa</a>
-                                                <a class="btn btn-info btn-sm" v-if="listado==4 && btn_actualizar==0" @click="selectNombreArchivoModelo()">Modelo</a>
-                                            </div>
+
+                                            <template v-if="modelo != 'Terreno'">
+                                                <div style="text-align: right;" v-if="rolId!=2">
+                                                    <a class="btn btn-warning btn-sm" v-if="listado==4 && tipo_credito!='Crédito Directo' && btn_actualizar==0" target="_blank" v-bind:href="'/contrato/promesaCredito/pdf/'+id">Imprimir contrato</a>
+                                                    <a class="btn btn-warning btn-sm" v-if="listado==4 && tipo_credito=='Crédito Directo' && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/reservaDeDominio/pdf/'+id">Imprimir contrato</a>
+                                                    <a class="btn btn-primary btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+id">Solicitud de contrato de compra venta</a>
+                                                    <a class="btn btn-light btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/pagareContrato/pdf/'+id">Imprimir pagares</a>
+                                                    <a class="btn btn-dark btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/cartaServicios/pdf/'+id">Carta de servicios</a>
+                                                    <a class="btn btn-dark btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+id">Servicios de telecomunición</a>
+                                                    <a class="btn btn-danger btn-sm" v-if="listado==4 && btn_actualizar==0" v-bind:href="'/descargarReglamento/contrato/'+id">Reglamento de la etapa</a>
+                                                    <a class="btn btn-info btn-sm" v-if="listado==4 && btn_actualizar==0" @click="selectNombreArchivoModelo()">Modelo</a>
+                                                </div>
+                                                <div style="text-align: right;" v-if="rolId==2 && status == 1">
+                                                    <a class="btn btn-warning btn-sm" v-if="listado==4 && tipo_credito!='Crédito Directo' && btn_actualizar==0" target="_blank" v-bind:href="'/contrato/promesaCredito/pdf/'+id">Imprimir contrato</a>
+                                                    <a class="btn btn-warning btn-sm" v-if="listado==4 && tipo_credito=='Crédito Directo' && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/reservaDeDominio/pdf/'+id">Imprimir contrato</a>
+                                                    <a class="btn btn-primary btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+id">Solicitud de contrato de compra venta</a>
+                                                    <a class="btn btn-light btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/pagareContrato/pdf/'+id">Imprimir pagares</a>
+                                                    <a class="btn btn-dark btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/cartaServicios/pdf/'+id">Carta de servicios</a>
+                                                    <a class="btn btn-dark btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+id">Servicios de telecomunición</a>
+                                                    <a class="btn btn-danger btn-sm" v-if="listado==4 && btn_actualizar==0" v-bind:href="'/descargarReglamento/contrato/'+id">Reglamento de la etapa</a>
+                                                    <a class="btn btn-info btn-sm" v-if="listado==4 && btn_actualizar==0" @click="selectNombreArchivoModelo()">Modelo</a>
+                                                </div>
+                                            </template>
+
+                                            <template v-else>
+                                                <div style="text-align: right;" v-if="rolId!=2">
+                                                    <a class="btn btn-primary btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+id">Solicitud de contrato de compra venta</a>
+                                                </div>
+                                                <div style="text-align: right;" v-if="rolId==2 && status == 1">
+                                                    <a class="btn btn-primary btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+id">Solicitud de contrato de compra venta</a>
+                                                </div>
+                                            </template>
+                                            
                                           
                                         </div>
                                     </div>
@@ -1930,6 +1980,7 @@
                     nss:'',
                     nacionalidad:0,
                     lugar_nacimiento:'',
+                    lugar_nacimiento_coa:'',
                     
                     tipo_economia: 0,
                     empresa: '',
@@ -2757,6 +2808,7 @@
                 this.fecha_status = data['fecha_status'];
                 this.lote_id = data['lote_id'];
                 this.lugar_nacimiento = data['lugar_nacimiento'];
+                this.lugar_nacimiento_coa = data['lugar_nacimiento_coa'];
                 
                 this.nombre_referencia1 = data['nombre_primera_ref'];
                 this.telefono_referencia1 = data['telefono_primera_ref'];
@@ -2847,6 +2899,7 @@
                    'edo_civil':this.e_civil,
                    'nss':this.nss,
                    'lugar_nacimiento':this.lugar_nacimiento,
+                   'lugar_nacimiento_coa':this.lugar_nacimiento_coa,
                    'curp':this.curp,
                    'empresa':this.empresa,
                    'coacreditado':this.coacreditado,
@@ -2980,6 +3033,7 @@
                 this.email = data['email'];
                 this.direccion = data['direccion'];
                 this.lugar_nacimiento = data['lugar_nacimiento'];
+                this.lugar_nacimiento_coa = data['lugar_nacimiento_coa'];
                 this.cp = data['cp'];
                 this.colonia = data['colonia'];
                 this.estado = data['estado'];
@@ -3460,6 +3514,7 @@
                 'ciudad':this.ciudad,
                 'estado':this.estado,
                 'lugar_nacimiento': this.lugar_nacimiento,
+                'lugar_nacimiento_coa': this.lugar_nacimiento_coa,
                 'nacionalidad':this.nacionalidad,
                 'puesto':this.puesto,
                 'sexo_coa':this.sexo_coa,
