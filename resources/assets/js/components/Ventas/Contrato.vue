@@ -1149,7 +1149,7 @@
 
                                                         <div class="col-md-12">
                                                         <div class="form-group">
-                                                        <center> <h4>Datos de la vivienda</h4> </center>
+                                                        <center> <h4>Datos de la propiedad</h4> </center>
                                                         </div>
                                                         </div>  
 
@@ -1359,7 +1359,7 @@
 
                                                     <div class="col-md-3" v-if="precioVenta!=''">
                                                         <div class="form-group">
-                                                            <h5 style="color:#2271b3;" for=""><strong> Valor Total de la Casa: </strong></h5>
+                                                            <h5 style="color:#2271b3;" for=""><strong> Valor Total de la Propiedad: </strong></h5>
                                                         </div>
                                                     </div> 
                                                     <div class="col-md-3" v-if="precioVenta!=''">
@@ -1389,16 +1389,29 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                        <label style="color:#2271b3;" for=""><strong>Institucion financiera </strong><span style="color:red;" v-show="inst_financiera==0">(*)</span></label>
-                                                        <p v-if="change_credito==0" @click="change_credito=1,selectInstitucion(tipo_credito)" v-text="inst_financiera"></p>
-                                                        <select v-if="change_credito==1" class="form-control" v-model="inst_financiera" >
-                                                            <option value="">Seleccione</option>
-                                                            <option v-for="institucion in arrayInstituciones" :key="institucion.institucion_fin" :value="institucion.institucion_fin" v-text="institucion.institucion_fin"></option>      
-                                                        </select>
+                                                    <template v-if="modelo != 'Terreno'">
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                            <label style="color:#2271b3;" for=""><strong>Institucion financiera </strong><span style="color:red;" v-show="inst_financiera==0">(*)</span></label>
+                                                            <p v-if="change_credito==0" @click="change_credito=1,selectInstitucion(tipo_credito)" v-text="inst_financiera"></p>
+                                                            <select v-if="change_credito==1" class="form-control" v-model="inst_financiera" >
+                                                                <option value="">Seleccione</option>
+                                                                <option v-for="institucion in arrayInstituciones" :key="institucion.institucion_fin" :value="institucion.institucion_fin" v-text="institucion.institucion_fin"></option>      
+                                                            </select>
+                                                            </div>
                                                         </div>
-                                                    </div>
+                                                    </template>
+
+                                                    <template v-else>
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <label style="color:#2271b3;" for=""><strong>Institucion financiera </strong><span style="color:red;" v-show="inst_financiera==0">(*)</span></label>
+                                                                <p v-text="'Concretania'"></p>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+
+                                                    
 
                                                     <div class="col-md-3">
                                                         <div class="form-group">

@@ -2843,6 +2843,7 @@ class ContratoController extends Controller
 
             $cotizacion->m2 = $cotizacion->valor_venta/$cotizacion->terreno_m2;
             $contratos[0]->m2 = number_format((float)$cotizacion->m2, 2, '.', ',');
+            $contratos[0]->mensualidades = $cotizacion->mensualidades;
             
             $pago = Pagos_lotes::where('cotizacion_lotes_id', '=', $cotizacion->id)
                 ->orderBy('folio')

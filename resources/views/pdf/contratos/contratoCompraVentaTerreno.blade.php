@@ -61,19 +61,19 @@
 
 <div style="margin-right: 100px;  margin-top: -40px; position: absolute;">
 <div style="position: static;"> 
-<p align="center" style="border: ridge #0B173B 1px; font-size:15pt; color:white; margin-right: 100px; background-color: #0B173B;">SOLICITUD DE CONTRATO DE COMPRA-VENTA</p>
+<p align="center" style="border: ridge #163253 1px; font-size:15pt; color:white; margin-right: 100px; background-color: #163253;">SOLICITUD DE CONTRATO DE COMPRA-VENTA</p>
 
     <div class="table1" style="margin-top: -12px;">
         <div class="table-row">
-            <div  style="border: ridge #0B173B 1px; padding-right:-20px; color:white; font-size:9pt; background-color: #0B173B;" class="table-cell1">FECHA</div>
+            <div  style="border: ridge #163253 1px; padding-right:-20px; color:white; font-size:9pt; background-color: #163253;" class="table-cell1">FECHA</div>
             <div  style="border: ridge #000000 1px; color:black; " class="table-cell1">{{strtoupper($contratos[0]->fecha)}}</div>
             <div  style="border: ridge #000000 1px; color:black; " class="table-cell1">#Ref: {{$contratos[0]->id}} - {{$contratos[0]->avance_lote}}%</div>
         </div>
     </div>
 </div> 
 <div style="position: static;  margin-top: -20px;">
-<p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 470px; background-color: #0B173B;">DATOS DEL CREDITO</p>
-    <div class="table1" style="border: ridge #0B173B 1px; color:black;  margin-top: -10px;">
+<p align="left" style="border: ridge #163253 1px; font-size:10pt; color:white; margin-right: 470px; background-color: #163253;">DATOS DEL CREDITO</p>
+    <div class="table1" style="border: ridge #163253 1px; color:black;  margin-top: -10px;">
         <div class="table-row">
             <div class="table-cell1">TIPO DE CREDITO: <u>{{mb_strtoupper($contratos[0]->tipo_credito)}}</u> </div>
             <div class="table-cell1">INSTITUCION: <u>CONCRETANIA</u> </div>
@@ -86,8 +86,8 @@
 </div>
     
     <div style="position: static;  margin-top: -25px;">
-    <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 450px; background-color: #0B173B;">DATOS DEL COMPRADOR</p>
-        <div class="table" style="border: ridge #0B173B 1px; color:black; margin-top: -10px;">
+    <p align="left" style="border: ridge #163253 1px; font-size:10pt; color:white; margin-right: 450px; background-color: #163253;">DATOS DEL COMPRADOR</p>
+        <div class="table" style="border: ridge #163253 1px; color:black; margin-top: -10px;">
                 <div class="table-row">
                     <div colspan="4" class="table-cell">NOMBRE: <u>{{mb_strtoupper($contratos[0]->apellidos)}} {{mb_strtoupper($contratos[0]->nombre)}}</u></div>
                 </div>
@@ -183,8 +183,8 @@
 </div>
 @if($contratos[0]->coacreditado == 1)
     <div style="position: static; margin-top: -25px;">
-    <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 350px; background-color: #0B173B;">DATOS DEL CONYUGE O COACREDITADO</p>        
-        <div class="table" style="border: ridge #0B173B 1px; color:black; margin-top: -10px;">
+    <p align="left" style="border: ridge #163253 1px; font-size:10pt; color:white; margin-right: 350px; background-color: #163253;">DATOS DEL CONYUGE O COACREDITADO</p>        
+        <div class="table" style="border: ridge #163253 1px; color:black; margin-top: -10px;">
                 <div class="table-row">
                     <div colspan="2" class="table-cell">NOMBRE: <u>{{mb_strtoupper($contratos[0]->nombre_coa)}} {{mb_strtoupper($contratos[0]->apellidos_coa)}}</u></div>
                     <div class="table-cell">R.F.C. <u>{{mb_strtoupper($contratos[0]->rfc_coa)}} - {{mb_strtoupper($contratos[0]->homoclave_coa)}}</u></div>
@@ -229,8 +229,8 @@
 @endif
 
 <div style="position: static; margin-top: -20px;">
-    <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 450px; background-color: #0B173B;">DATOS DE LA VIVIENDA</p>        
-        <div class="table" style="border: ridge #0B173B 1px; color:black; margin-top: -10px;">
+    <p align="left" style="border: ridge #163253 1px; font-size:10pt; color:white; margin-right: 450px; background-color: #163253;">DATOS DE LA PROPIEDAD</p>        
+        <div class="table" style="border: ridge #163253 1px; color:black; margin-top: -10px;">
                
                 <div class="table-row">
                     <div class="table-cell">FRACCIONAMIENTO: <u>{{mb_strtoupper($contratos[0]->proyecto)}}</u></div>
@@ -261,13 +261,13 @@
 </div>
 
 <div style="position: static; margin-top: -20px;">
-    <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 500px; background-color: #0B173B;">PRESUPUESTO</p>        
-        <div class="table" style="border: ridge #0B173B 1px; color:black; margin-top: -10px;">
+    <p align="left" style="border: ridge #163253 1px; font-size:10pt; color:white; margin-right: 500px; background-color: #163253;">PRESUPUESTO</p>        
+        <div class="table" style="border: ridge #163253 1px; color:black; margin-top: -10px;">
  
                 <div class="table-row">
                     <div class="table-cell2">CONCRETANIA: </div>
                     <div class="table-cell2">${{$contratos[0]->credito_solic}}</div> 
-                    <div class="table-cell2">PRECIO DE LA VIVIENDA: </div>
+                    <div class="table-cell2">PRECIO DE LA PROPIEDAD: </div>
                     <div class="table-cell2">${{$contratos[0]->precio_base}}</div>
                 </div>
                 
@@ -376,7 +376,7 @@
     <table class="myTable">
         <thead>
             <tr>
-                <th class="text-right">
+                <th style="background-color: #163253;" class="text-right">
                         Total a Pagar: ${{$contratos[0]->total_pagar}}
                 </th>
             </tr>
@@ -423,26 +423,32 @@
        
         <thead>
             <tr>
-                <th colspan="6">Plan Comercial de Pagos</th>
+                <th style="background-color: #163253;" colspan="2">Plan Comercial de Pagos</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td class="text-center"><strong>De 0 a 1 mes</strong></td>
-                <td class="text-center"><strong>De 1 a 6 mes</strong></td>
-                <td class="text-center"><strong>De 7 a 12 meses</strong></td>
-                <td class="text-center"><strong>De 13 a 24 meses</strong></td>
-                <td class="text-center"><strong>De 25 a 36 meses</strong></td>
-                <td class="text-center"><strong>De 37 a 48 meses</strong></td>
+                @if($contratos[0]->mensualidades == 1)
+                    <td class="text-center"><strong>De 0 a 1 mes</strong></td>
+                    <td class="text-center">0% de Interes de tasa anual</td>
+                @elseif($contratos[0]->mensualidades == 6)
+                    <td class="text-center"><strong>De 1 a 6 mes</strong></td>
+                    <td class="text-center">0% de Interes de tasa anual</td>
+                @elseif($contratos[0]->mensualidades == 12)
+                    <td class="text-center"><strong>De 7 a 12 meses</strong></td>
+                    <td class="text-center">12% de Interes de tasa anual</td>
+                @elseif($contratos[0]->mensualidades == 24)
+                    <td class="text-center"><strong>De 13 a 24 meses</strong></td>
+                    <td class="text-center">16% de Interes de tasa anual</td>
+                @elseif($contratos[0]->mensualidades == 36)
+                    <td class="text-center"><strong>De 25 a 36 meses</strong></td>
+                    <td class="text-center">18% de Interes de tasa anual</td>
+                @elseif($contratos[0]->mensualidades == 48)
+                    <td class="text-center"><strong>De 37 a 48 meses</strong></td>
+                    <td class="text-center">20% de Interes de tasa anual</td>
+                @endif
             </tr>
-            <tr>
-                <td class="text-center">0% de Interes de tasa anual</td>
-                <td class="text-center">0% de Interes de tasa anual</td>
-                <td class="text-center">12% de Interes de tasa anual</td>
-                <td class="text-center">16% de Interes de tasa anual</td>
-                <td class="text-center">18% de Interes de tasa anual</td>
-                <td class="text-center">20% de Interes de tasa anual</td>
-            </tr>
+            
         </tbody>
     </table>
 </div>
