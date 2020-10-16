@@ -1897,6 +1897,68 @@ class ClienteController extends Controller
         return $people;
     }
 
+    public function asignarClienteAleatorio(Request $request){
+        $band = 0;
+
+        $vendedores = User::join('personal','users.id','=','personal.id')
+                ->join('vendedores','personal.id','vendedores.id')
+                ->select('personal.id',
+                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS vendedor"))
+                ->where('vendedores.tipo','=',0)
+                ->where('users.condicion','=',1)
+                ->where('users.usuario','!=','descartado')
+                ->where('users.usuario','!=','oficina')
+                ->orderBy('vendedor','asc')->get();
+
+        foreach ($vendedores as $index => $vendedor) {
+
+            $vendedor->total = 0;
+            $vendedor->bd = 0;
+
+            $clientes = Cliente::select('id')->where('vendedor_id','=',$vendedor->id)
+            ->where('clasificacion','!=',6)
+            ->where('clasificacion','!=',7)
+            ->where('clasificacion','!=',1)
+            ->get();
+            $vendedor->total = $clientes->count();
+            $vendedor->bd = 0;
+
+            foreach ($clientes as $index => $c) {
+                $obs = Cliente_observacion::where('created_at','>=',Carbon::now()->subDays(7))
+                ->where('cliente_id','=',$c->id)
+                ->count();
+
+                if($obs > 0){
+                    $vendedor->bd ++;
+                }
+
+                $vendedor->dif = $vendedor->total - $vendedor->bd;
+            }
+
+
+        }
+        $cont = 0;
+
+        do{
+            $cont++;
+            $value = random_int ( 0 , (sizeOf($vendedores)-1) );
+            if($vendedores[$value]->dif < 5){
+                $band = 1;
+            }   
+
+        }while($band == 0);
+        
+
+
+        return [
+            'vendedores' =>  $vendedores,
+            'random' => $value,
+            'vendedor_elegido' => $vendedores[$value]
+        ];
+       
+
+    }
+
     
     
 }

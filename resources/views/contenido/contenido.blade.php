@@ -214,7 +214,7 @@
 
         @if(Auth::user()->lotes_disp == 1)
             <template v-if="menu==59">
-                <lote-disponible rol-id="{{Auth::user()->rol_id}}"></lote-disponible>
+                <lote-disponible rol-id="{{Auth::user()->rol_id}}" user-id="{{Auth::user()->id}}"></lote-disponible>
             </template>
         @endif
 

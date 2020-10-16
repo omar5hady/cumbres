@@ -186,6 +186,8 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::get('/personal/indexClientes','PersonalController@indexClientes');
         Route::get('/personal/excelClientes','PersonalController@excelClientes');
+
+        Route::get('/clientes/asignacionDigital','ClienteController@asignarClienteAleatorio');
     
     ////////////////////        RUTAS EMPRESA     /////////////////////////////////
         Route::get('/empresa','EmpresaController@index');
