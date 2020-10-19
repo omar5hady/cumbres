@@ -60,6 +60,11 @@
                                         <label class="form-control col-md-4" disabled>
                                             Asesor:
                                         </label>
+                                        <select class="form-control"  v-model="tipo_asesor" @click="selectAsesores()" >
+                                            <option value=""></option>
+                                            <option value=0>Interno</option>
+                                            <option value=1>Externo</option>
+                                        </select>
                                         <select class="form-control"  v-model="b_asesor_id" >
                                             <option value="">Seleccione</option>
                                             <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
@@ -80,6 +85,9 @@
                                             <th>Asesor</th>
                                             <th>Total Comisión</th>
                                             <th>Total Pagado</th>
+                                            <th></th>
+                                            <!-- <th>Autorizacion 1</th>
+                                            <th>Autorizacion 2</th> -->
                                             <!-- <th>Total por Pagar</th> -->
                                             
                                         </tr>
@@ -107,6 +115,19 @@
                                             <td class="td2" v-text="contrato.asesor"></td>
                                             <td class="td2" v-text="'$'+formatNumber(contrato.total_comision)"></td>
                                             <td class="td2" v-text="'$'+formatNumber(contrato.total_pagado)"></td>
+                                            <!-- <td></td>
+                                            <td>
+                                                <button v-if="contrato.autorizacion1 == 0" type="button" title="Aprobar" @click="aprobar(contrato.id)" class="btn btn-success btn-sm">
+                                                    <i class="fa fa-check"></i>
+                                                </button>
+                                                <label v-else v-text="this.moment(contrato.fecha_aut1).locale('es').format('DD/MMM/YYYY')"></label>
+                                            </td>
+                                            <td>
+                                                <button v-if="contrato.autorizacion2 == 0 && contrato.autorizacion1 == 1" type="button" title="Aprobar" @click="aprobar(contrato.id)" class="btn btn-success btn-sm">
+                                                    <i class="fa fa-check"></i>
+                                                </button>
+                                                <label v-else-if="contrato.autorizacion2 == 1" v-text="this.moment(contrato.fecha_aut2).locale('es').format('DD/MMM/YYYY')"></label>
+                                            </td> -->
                                             <!-- <td class="td2" v-text="'$'+formatNumber(contrato.total_porPagar)"></td> -->
                                         </tr>                               
                                     </tbody>
@@ -227,7 +248,7 @@
                                                     <th>% Avance</th>
                                                     <th>% De comisión</th>
                                                     <th>Comisión a pagar</th>
-                                                    <th>Este pago</th>
+                                                    <th @dblclick="cambiar()"> <a href="#">Este pago</a> </th>
                                                     <th>Por pagar</th>
                                                     <!-- <th>Observaciones</th> -->
                                                 </tr>
@@ -259,73 +280,37 @@
                                                     <td v-text="'$'+formatNumber(venta.precio_venta)"></td>
                                                     <td class="td2" v-text="venta.tipo_credito + '(' + venta.institucion + ')'"></td>
                                                     <td v-text="venta.avance_lote + '%'"></td>
-                                                    <!--- Calculo de la comision que corresponde segun ventas y avance ----->
-                                                        <template v-if="numVentas == 1">
-                                                            <td v-if="venta.avance_lote<=90">
-                                                                {{ venta.porcentaje_comision = (venta.extra + (0.80*(venta.porcentaje_exp/100)) ).toFixed(3) }}%
-                                                            </td>
-                                                            <td v-else>
-                                                                {{ venta.porcentaje_comision = (venta.extra + ((venta.porcentaje_exp/100)*1) ).toFixed(3) }}%
-                                                            </td>
-                                                        </template>
-                                                        <template v-if="numVentas == 2">
-                                                            <td v-if="venta.avance_lote<=90">
-                                                                {{venta.porcentaje_comision = (venta.extra + (1.00*(venta.porcentaje_exp/100)) ).toFixed(3)}}%
-                                                            </td>
-                                                            <td v-else>
-                                                                {{venta.porcentaje_comision = (venta.extra + ((venta.porcentaje_exp/100)*1.25) ).toFixed(3)}}%
-                                                            </td>
-                                                        </template>
-                                                        <template v-if="numVentas == 3">
-                                                            <td v-if="venta.avance_lote<=90">
-                                                                {{venta.porcentaje_comision = (venta.extra + (1.30*(venta.porcentaje_exp/100)) ).toFixed(3)}}%
-                                                            </td>
-                                                            <td v-else>
-                                                                {{venta.porcentaje_comision = (venta.extra + ((venta.porcentaje_exp/100)*1.55) ).toFixed(3)}}%
-                                                            </td>
-                                                        </template>
-                                                        <template v-if="numVentas == 4">
-                                                            <td v-if="venta.avance_lote<=90">
-                                                                {{venta.porcentaje_comision = (venta.extra + (1.50*(venta.porcentaje_exp/100)) ).toFixed(3)}}%
-                                                            </td>
-                                                            <td v-else>
-                                                                {{venta.porcentaje_comision = (venta.extra + ((venta.porcentaje_exp/100)*1.75) ).toFixed(3)}}%
-                                                            </td>
-
-                                                        </template>
-                                                        <template v-if="numVentas == 5">
-                                                            <td v-if="venta.avance_lote<=90">
-                                                                {{venta.porcentaje_comision = (venta.extra + (1.70*(venta.porcentaje_exp/100)) ).toFixed(3)}}%
-                                                            </td>
-                                                            <td v-else>
-                                                                {{venta.porcentaje_comision = (venta.extra + ((venta.porcentaje_exp/100)*2.00) ).toFixed(3)}}%
-                                                            </td>
-                                                        </template>
-                                                        <template v-if="numVentas >= 6">
-                                                            <td v-if="venta.avance_lote<=90">
-                                                                {{venta.porcentaje_comision = (venta.extra + (2.00*(venta.porcentaje_exp/100)) ).toFixed(3)}}%
-                                                            </td>
-                                                            <td v-else>
-                                                                {{venta.porcentaje_comision = (venta.extra + ((venta.porcentaje_exp/100)*2.00) ).toFixed(3)}}%
-                                                            </td>
-                                                        </template>
-                                                    <!----------------------->
-                                                    <td v-text="'$'+formatNumber(venta.comision_pagar = (venta.precio_venta * (venta.porcentaje_comision/100)))"></td>
+                                                    <td class="td2">{{ venta.porcentaje_comision.toFixed(3) }}%</td>
+                                                    <td v-text="'$'+formatNumber(venta.comision_pagar)"></td>
                                                     
-                                                    <!--- Verifica si la venta esta individualizada para determinar de cuanto sera el pago --->
-                                                        <td v-if="venta.indiv == 0 && venta.pagado > 1" v-text="'$'+formatNumber(venta.este_pago = (venta.comision_pagar / 2))"></td>
-                                                        <td v-else-if="venta.indiv == 1 && venta.pagado > 1" v-text="'$'+formatNumber(venta.este_pago = (venta.comision_pagar))"></td>
-                                                        <td v-else-if="venta.pagado < 2" v-text="'$'+formatNumber(venta.este_pago = 0)"></td>
-                                                    <!------->
-                                                        <td v-if="venta.indiv == 0 && venta.pagado > 1" v-text="'$'+formatNumber(venta.por_pagar = (venta.comision_pagar / 2))"></td>
-                                                        <td v-else-if="venta.indiv == 1 && venta.pagado > 1" v-text="'$'+formatNumber(venta.por_pagar = 0)"></td>
-                                                        <td v-else-if="venta.pagado < 2" v-text="'$'+formatNumber(venta.por_pagar = (venta.comision_pagar))"></td>
+                                                    <template v-if="modif == 0">
+
+                                                        <!--- Verifica si la venta esta individualizada para determinar de cuanto sera el pago --->
+                                                            <td><input v-model="venta.este_pago" @keyup.enter="totalPagar()" ></td>
+                                                        <!------->
+                                                            <td v-text="'$'+formatNumber(venta.por_pagar = venta.comision_pagar - venta.este_pago )"></td>
+
+                                                    </template>
+                                                    <template v-else>
+                                                        <!--- Verifica si la venta esta individualizada para determinar de cuanto sera el pago --->
+                                                            <td v-text="'$'+formatNumber(venta.este_pago)"></td>
+                                                            
+                                                        <!------->
+                                                            <td v-text="'$'+formatNumber(venta.por_pagar)"></td>
+                                                           
+               
+                                                    </template>
+                                                        
+
+                                                    
                                                 </tr>  
                                                 <tr>
                                                     <td align="right" colspan="11"><strong>Total: </strong></td>
                                                     <td> ${{formatNumber(total_comision = totalComision)}} </td>
                                                     <td><strong> ${{formatNumber(total_pagado = totalPagado)}} </strong></td>
-                                                    <td> ${{formatNumber(total_porPagar = totalPorPagar)}} </td>
+                                                    <!-- <td v-if="modif == 0"> ${{formatNumber(total_porPagar =total_comision - total_pagado)}} </td> -->
+                                                    <td > ${{formatNumber(total_porPagar = totalPorPagar)}} </td>
+                                                    
                                                     
                                                     
                                                 </tr>                     
@@ -373,9 +358,9 @@
                                                     <td class="td2" v-text="venta.tipo_credito + '(' + venta.institucion + ')'"></td>
                                                     <td v-text="venta.avance_lote + '%'"></td>
                                                     <td>
-                                                        {{ venta.porcentaje_comision = (venta.extra_ext + esquema).toFixed(1) }}%
+                                                        {{ venta.porcentaje_comision.toFixed(1) }}%
                                                     </td>
-                                                    <td v-text="'$'+formatNumber(venta.comision_pagar = (venta.precio_venta * (venta.porcentaje_comision/100)))"></td>
+                                                    <td v-text="'$'+formatNumber(venta.comision_pagar)"></td>
                                                     <td v-text="'$'+formatNumber(venta.iva = (venta.comision_pagar * 0.16 ))"></td>
                                                     <td v-if="bandRetencion == 1" v-text="'$'+formatNumber(venta.retencion = (venta.iva * (2/3)))"></td>
                                                     <td v-else v-text="'$'+formatNumber(venta.retencion = 0)"></td>
@@ -1641,6 +1626,7 @@
             return{
                 id:0,
                 proceso:false,
+                tipo_asesor:'',
                 arrayComisiones:[],
                 arrayAsesores:[], 
                 pagination2 : {
@@ -1682,6 +1668,8 @@
                 comision:0,
                 anticipo:0,
                 sueldoBand:true,
+
+                modif : 0,
                 
                 asesor_id:'',
                 
@@ -1764,6 +1752,8 @@
                 }
                 return pagesArray2;
             },
+
+            
             totalComision: function(){
                 var totalComision =0.0;
                 for(var i=0;i<this.arrayVentas.length;i++){
@@ -1787,12 +1777,13 @@
             },
 
             totalPorPagar: function(){
+                this.total_porPagar = 0.0;
                 var totalPorPagar =0.0;
                 for(var i=0;i<this.arrayVentas.length;i++){
                     totalPorPagar += parseFloat(this.arrayVentas[i].por_pagar)
                 }
                 if(totalPorPagar < 0)
-                    totalPorPagar = 0;
+                    totalPorPagar = 0.0;
                 totalPorPagar = Math.round(totalPorPagar*100)/100;
                 return totalPorPagar;
             },
@@ -2063,7 +2054,7 @@
         methods : {
             listarComisiones(page){
                 let me = this;
-                var url = '/comision/indexComisiones?page=' + page + '&b_mes=' + this.b_mes + '&b_anio=' + this.b_anio + '&b_asesor_id=' + this.b_asesor_id;
+                var url = '/comision/indexComisiones?page=' + page + '&b_mes=' + this.b_mes + '&b_anio=' + this.b_anio + '&b_asesor_id=' + this.b_asesor_id + '&tipo=' + this.tipo_asesor;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayComisiones = respuesta.comisiones.data;
@@ -2075,6 +2066,29 @@
                     console.log(error);
                 })
             },
+
+            totalPagar(){
+                let me = this;
+                
+                me.total_porPagar  =0.0;
+                for(var i=0;i<me.arrayVentas.length;i++){
+                    me.total_porPagar += parseFloat(me.arrayVentas[i].por_pagar)
+                }
+                if(me.total_porPagar < 0)
+                    me.total_porPagar = 0;
+                //me.total_porPagar = Math.round(me.total_porPagar*100)/100;
+                me.total_porPagar;
+                
+            },
+
+            cambiar(){
+                if(this.modif == 0){
+                    this.modif = 1;
+                }
+                else
+                    this.modif = 0;
+            },
+
             getComision(id){
                 let me = this;
                 var url = '/comision/getComision?mes=' + me.mes + '&anio=' + me.anio + '&vendedor=' + id;
@@ -2082,7 +2096,11 @@
                      
                     var respuesta = response.data;
                     me.numVentas = respuesta.numVentas;
+
                     me.arrayVentas = respuesta.ventas;
+                    // me.arrayVentas.forEach(element => {
+                    //     element.este_pago = 0.0;
+                    // });
                     me.esquema = respuesta.esquema;
                     me.tipoVendedor = respuesta.tipo;
                     
@@ -2099,6 +2117,8 @@
                     me.aPagar = 0;
                     me.restante = respuesta.acumuladoAnt;
                     me.sueldoBand = respuesta.sueldo;
+
+                    
 
                     me.bandISR = respuesta.isr;
                     me.bandRetencion = respuesta.retencion;
@@ -2197,8 +2217,9 @@
             
             selectAsesores(){
                 let me = this;
+                me.b_asesor_id = '';
                 me.arrayAsesores=[];
-                var url = '/select/asesores';
+                var url = '/select/asesores?tipo='+me.tipo_asesor;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayAsesores = respuesta.personas;

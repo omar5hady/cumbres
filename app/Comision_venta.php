@@ -10,7 +10,7 @@ class Comision_venta extends Model
     protected $primaryKey = 'id'; //Referenciar la llave primaria
     protected $fillable = [
         'mes', 'anio', 'total_pagado','total_comision', 'total_porPagar', 'apoyo_mes', 'asesor_id', 'restanteAnt',
-        'total_bono','total_anticipo','tipo_vendedor'
+        'total_bono','total_anticipo','tipo_vendedor','autorizacion1','fecha_aut1', 'autorizacion2', 'fecha_aut2'
     ];
 
     public function vendedor()
