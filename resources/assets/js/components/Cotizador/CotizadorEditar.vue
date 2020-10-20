@@ -878,7 +878,12 @@ export default {
             
             let cantidad = (index.cantidad=="")?0:parseFloat(index.cantidad);
             let descuento = this.montoDescuento(index);
-            let dias = this.dias(this.r_fecha, index.fecha);
+            let dias = 0;//this.dias(this.r_fecha, index.fecha);
+            if(index.folio == 1){
+                dias = this.dias(this.r_fecha, index.fecha);
+            }else{
+                dias = this.dias(this.arrayMensualidad[parseInt(index.folio-2)].fecha, index.fecha);
+            }
             let folio = index.folio-1;
 
             //fechas de pago
@@ -1031,7 +1036,13 @@ export default {
 
             if(datos.pago == 0) return 0;
 
-            let dias = this.dias(this.r_fecha, datos.fecha);
+            let dias = 0;//this.dias(this.r_fecha, datos.fecha);
+            if(index.folio == 1){
+                dias = this.dias(this.r_fecha, datos.fecha);
+            }else{
+                dias = this.dias(this.arrayMensualidad[parseInt(datos.folio-2)].fecha, datos.fecha);
+            }
+                
             let montoInteres = 0;
 
             let saldo = 0;

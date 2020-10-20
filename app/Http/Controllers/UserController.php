@@ -1025,11 +1025,14 @@ class UserController extends Controller
         if (!$request->ajax()) return redirect('/');
             $personas = User::join('personal','users.id','=','personal.id')
             ->join('vendedores','personal.id','=','vendedores.id')
-            ->select('personal.id','personal.nombre','personal.apellidos')
+            ->select('personal.id','personal.nombre','personal.apellidos');
             //->where('vendedores.supervisor_id','=',Auth::user()->id)
             //->where('users.condicion','=',1)
             //->orWhere('vendedores.tipo','=',1)
-            ->orderBy('personal.nombre', 'asc')
+            if($request->tipo != ''){
+                $personas = $personas->where('vendedores.tipo','=',$request->tipo);
+            }
+            $personas = $personas->orderBy('personal.nombre', 'asc')
             ->orderBy('personal.apellidos', 'asc')
             ->get();
     

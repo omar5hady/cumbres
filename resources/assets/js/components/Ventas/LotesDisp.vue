@@ -279,9 +279,9 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="apartarLote()">Apartar</button>
-                            <button type="button" v-if="tipoAccion==3" class="btn btn-warning" @click="desapartarLote()">Desapartar</button>
-                            <button type="button" v-if="tipoAccion==3" class="btn btn-success" @click="actualizarLote()">Guardar</button>
+                            <button type="button" v-if="tipoAccion==2 && userId != 28128" class="btn btn-primary" @click="apartarLote()">Apartar</button>
+                            <button type="button" v-if="tipoAccion==3 && userId != 28128" class="btn btn-warning" @click="desapartarLote()">Desapartar</button>
+                            <button type="button" v-if="tipoAccion==3 && userId != 28128" class="btn btn-success" @click="actualizarLote()">Guardar</button>
                         </div>
                     </div>
                       <!-- /.modal-content -->
@@ -326,7 +326,8 @@
 <script>
     export default {
         props:{
-            rolId:{type: String}
+            rolId:{type: String},
+            userId:{type: String}
         },
         data(){
             return{

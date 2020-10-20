@@ -55,6 +55,84 @@ class ComisionesVentaController extends Controller
         $individualizadas = $this->getIndividualizadas($request->vendedor, $request->mes, $request->anio);
         $pendientes = $this->getPendientes($request->vendedor);
 
+        if(sizeof($ventas))
+        foreach ($ventas as $index => $venta) {
+            if($tipo == 0){
+                if($numVentas == 1){
+                    if($venta->avance_lote<=90)
+                        $venta->porcentaje_comision = $venta->extra + ( 0.80 * ($venta->porcentaje_exp/100) );
+                    else{
+                        $venta->porcentaje_comision = $venta->extra + ($venta->porcentaje_exp/100 );
+                    }
+                }
+                elseif($numVentas == 2){
+                    if($venta->avance_lote<=90)
+                        $venta->porcentaje_comision = $venta->extra + ( 1.00 * ($venta->porcentaje_exp/100) );
+                    else{
+                        $venta->porcentaje_comision = $venta->extra + ( ($venta->porcentaje_exp/100)*1.25 );
+                    }
+                }
+                elseif($numVentas == 3){
+                    if($venta->avance_lote<=90)
+                        $venta->porcentaje_comision = $venta->extra + ( 1.30 * ($venta->porcentaje_exp/100) );
+                    else{
+                        $venta->porcentaje_comision = $venta->extra + ( ($venta->porcentaje_exp/100)*1.55 );
+                    }
+                }
+                elseif($numVentas == 4){
+                    if($venta->avance_lote<=90)
+                        $venta->porcentaje_comision = $venta->extra + ( 1.50 * ($venta->porcentaje_exp/100) );
+                    else{
+                        $venta->porcentaje_comision = $venta->extra + ( ($venta->porcentaje_exp/100)*1.75 );
+                    }
+                }
+                elseif($numVentas == 5){
+                    if($venta->avance_lote<=90)
+                        $venta->porcentaje_comision = $venta->extra + ( 1.70 * ($venta->porcentaje_exp/100) );
+                    else{
+                        $venta->porcentaje_comision = $venta->extra + ( ($venta->porcentaje_exp/100)*2.0 );
+                    }
+                }
+    
+                elseif($numVentas >= 6){
+                    if($venta->avance_lote<=90)
+                        $venta->porcentaje_comision = $venta->extra + ( 2.0 * ($venta->porcentaje_exp/100) );
+                    else{
+                        $venta->porcentaje_comision = $venta->extra + ( ($venta->porcentaje_exp/100)*2.0 );
+                    }
+                }
+
+            }
+            else{
+                $venta->porcentaje_comision = ($venta->extra_ext + $esquema);
+            }
+            
+
+            $venta->comision_pagar = ($venta->precio_venta * ($venta->porcentaje_comision/100));
+            
+            if($tipo == 0){
+                // Verifica si la venta esta individualizada para determinar de cuanto sera el pago --->
+                if($venta->indiv == 0 && $venta->pagado > 1){
+                    $venta->este_pago = ($venta->comision_pagar / 2);
+                    $venta->por_pagar = ($venta->comision_pagar / 2);
+                }
+                elseif($venta->indiv == 1 && $venta->pagado > 1){
+                    $venta->este_pago = ($venta->comision_pagar);
+                    $venta->por_pagar = 0;
+                }
+                elseif($venta->pagado < 2){
+                    $venta->este_pago = 0;
+                    $venta->por_pagar = $venta->comision_pagar;
+                }
+            }
+
+            $venta->porcentaje_comision = (float)number_format($venta->porcentaje_comision, 3, '.', '');
+            $venta->comision_pagar = (double)number_format($venta->comision_pagar, 2, '.', '');
+            $venta->este_pago = (double)number_format($venta->este_pago, 2, '.', '');
+            $venta->por_pagar = (double)number_format($venta->por_pagar, 2, '.', '');
+
+        }
+
         $cambios = $this->getCambios($request->vendedor);
 
         //$numVentas = $ventas->count();
@@ -109,6 +187,10 @@ class ComisionesVentaController extends Controller
                         'comisiones_ventas.tipo_vendedor',
                         'comisiones_ventas.mes',
                         'comisiones_ventas.anio',
+                        'comisiones_ventas.autorizacion1',
+                        'comisiones_ventas.autorizacion2',
+                        'comisiones_ventas.fecha_aut1',
+                        'comisiones_ventas.fecha_aut2',
                         
                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS asesor"),
                         'vendedores.tipo'
@@ -130,6 +212,10 @@ class ComisionesVentaController extends Controller
                 $comisiones = $query
                         ->where('comisiones_ventas.mes','=',$mes)
                         ->where('comisiones_ventas.anio','=',$anio);
+            }
+
+            if($request->tipo != ''){
+                $comisiones =  $comisiones->where('vendedores.tipo','=',$request->tipo);
             }
 
         }
@@ -379,6 +465,20 @@ class ComisionesVentaController extends Controller
         // } catch (Exception $e) {
         //     DB::rollBack();
         // }
+    }
+
+    public function autorizar1(Request $request){
+        $comision = Comision_venta::findOrFail($request->id);
+        $comision->autorizacion1 = $request->autorizacion;
+        $comision->fecha_aut1 = Carbon::now();
+        $comision->save();
+    }
+
+    public function autorizar2(Request $request){
+        $comision = Comision_venta::findOrFail($request->id);
+        $comision->autorizacion2 = $request->autorizacion;
+        $comision->fecha_aut2 = Carbon::now();
+        $comision->save();
     }
 
     private function getVentas($vendedor, $mes, $anio){

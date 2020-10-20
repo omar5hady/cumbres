@@ -202,7 +202,7 @@
                                                 <div class="col-md-4">
                                                 <div class="form-group">
                                                 <label for="">Telefono </label>
-                                                <input disabled type="text" maxlength="7" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="telefono" placeholder="Telefono">
+                                                <input disabled type="text" maxlength="10" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="telefono" placeholder="Telefono">
                                             </div>
                                             </div>
 
@@ -574,7 +574,7 @@
                                                 <div class="col-md-3" v-if="coacreditado==true">
                                                         <div class="form-group">
                                                     <label for="">Celular</label>
-                                                    <input type="text" maxlength="8" pattern="\d*" class="form-control" disabled v-model="celular_coa" placeholder="Celular">
+                                                    <input type="text" maxlength="10" pattern="\d*" class="form-control" disabled v-model="celular_coa" placeholder="Celular">
                                                 </div>
                                                 </div>
 
@@ -582,7 +582,7 @@
                                                 <div class="col-md-3" v-if="coacreditado==true">
                                                         <div class="form-group">
                                                     <label for="">Telefono</label>
-                                                    <input type="text" maxlength="7" pattern="\d*" class="form-control" disabled v-model="telefono_coa" placeholder="Telefono">
+                                                    <input type="text" maxlength="10" pattern="\d*" class="form-control" disabled v-model="telefono_coa" placeholder="Telefono">
                                                 </div>
                                                 </div>
 
@@ -1165,7 +1165,7 @@
                                                 <div class="col-md-4">
                                                 <div class="form-group">
                                                 <label for="">Telefono </label>
-                                                <input disabled type="text" maxlength="7" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="telefono" placeholder="Telefono">
+                                                <input disabled type="text" maxlength="10" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="telefono" placeholder="Telefono">
                                             </div>
                                             </div>
 
@@ -1473,7 +1473,7 @@
                                                 <div class="col-md-3" v-if="coacreditado==true">
                                                     <div class="form-group">
                                                         <label for="">Celular</label>
-                                                        <input type="text" maxlength="8" pattern="\d*" class="form-control" disabled v-model="celular_coa" placeholder="Celular">
+                                                        <input type="text" maxlength="10" pattern="\d*" class="form-control" disabled v-model="celular_coa" placeholder="Celular">
                                                     </div>
                                                 </div>
 
@@ -1481,7 +1481,7 @@
                                                 <div class="col-md-3" v-if="coacreditado==true">
                                                         <div class="form-group">
                                                     <label for="">Telefono</label>
-                                                    <input type="text" maxlength="7" pattern="\d*" class="form-control" disabled v-model="telefono_coa" placeholder="Telefono">
+                                                    <input type="text" maxlength="10" pattern="\d*" class="form-control" disabled v-model="telefono_coa" placeholder="Telefono">
                                                 </div>
                                                 </div>
 
@@ -1542,7 +1542,7 @@
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label for="">Telefono <span style="color:red;" v-show="telefono_referencia1==''">(*)</span></label>
-                                                        <input readonly type="text"  maxlength="7" pattern="\d*" class="form-control"  v-model="telefono_referencia1" placeholder="Telefono">
+                                                        <input readonly type="text"  maxlength="10" pattern="\d*" class="form-control"  v-model="telefono_referencia1" placeholder="Telefono">
                                                     </div>
                                                 </div>
 
@@ -1571,7 +1571,7 @@
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label for="">Telefono <span style="color:red;" v-show="telefono_referencia2==''">(*)</span></label>
-                                                        <input readonly type="text" maxlength="7" pattern="\d*" class="form-control"  v-model="telefono_referencia2" placeholder="Telefono">
+                                                        <input readonly type="text" maxlength="10" pattern="\d*" class="form-control"  v-model="telefono_referencia2" placeholder="Telefono">
                                                     </div>
                                                 </div>
 

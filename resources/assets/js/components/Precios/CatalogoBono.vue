@@ -146,7 +146,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Monto $</label>
                                     <div class="col-md-4">
-                                        <input type="text" v-model="monto" maxlength="8" v-on:keypress="isNumber($event)" class="form-control" placeholder="Monto del bono">
+                                        <input type="text" v-model="monto" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" placeholder="Monto del bono">
                                     </div>
                                 </div>
 

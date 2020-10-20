@@ -522,7 +522,7 @@
                                                 <div class="col-md-4">
                                                 <div class="form-group">
                                                 <label for="">Telefono </label>
-                                                <input  type="text" :readonly="listado==4 && btn_actualizar==0" maxlength="7" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="telefono" placeholder="Telefono">
+                                                <input  type="text" :readonly="listado==4 && btn_actualizar==0" maxlength="10" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="telefono" placeholder="Telefono">
                                             </div>
                                             </div>
 

@@ -27,6 +27,11 @@ class CreateComisionesVentasTable extends Migration
             $table->boolean('tipo_vendedor')->default(0); 
 
             $table->double('restanteAnt')->default(0); //restante
+
+            $table->boolean('autorizacion1')->default(0);
+            $table->date('fecha_aut1')->nullable();
+            $table->boolean('autorizacion2')->default(0);
+            $table->date('fecha_aut2')->nullable();
             
             $table->unsignedInteger('asesor_id');
             $table->foreign('asesor_id')->references('id')->on('vendedores');
