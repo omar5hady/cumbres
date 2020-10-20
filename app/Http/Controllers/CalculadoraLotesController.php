@@ -154,7 +154,7 @@ class CalculadoraLotesController extends Controller
                         
         $lotes = $query
 
-            ->where('modelos.nombre', '=', 'Terreno')
+            ->where('modelos.nombre', '!=', 'Terreno')
             ->where('etapas.id', '=', $request->etapaId)
             
             ->where('lotes.habilitado','=',1)

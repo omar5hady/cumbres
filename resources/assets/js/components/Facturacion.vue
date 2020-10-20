@@ -11,6 +11,7 @@
                         <i class="fa fa-align-justify"></i>Facturacion
                     </div>
                     <div class="card-body">
+
                         <ul class="nav nav-tabs">
                             <li class="nav-item">
                                 <a @click="tab = 1" v-text="'Depositos de pagares (' + arrayDepositos.total +')'" class="nav-link" v-bind:class="{ 'text-info active': tab==1 }">
@@ -28,7 +29,7 @@
                             </li>
                         </ul>
 
-                        <!-- Facturas de Depositos -->
+                        <!-- Facturas de Depositos (DEPOSITOS DE PAGARE) -->
                         <div class="container" v-if="tab == 1">
                             <div class="row"><!-- campos de busqueda-->
                                 <select class="form-control col-md-2" v-model="b_empresa" >
@@ -199,6 +200,7 @@
 
                         <!-- Creditos Directos -->
                         <div class="container" v-else-if="tab == 2">
+                            <!-- Formularios -->
                             <div class="row">
                                 <select class="form-control col-md-2" v-model="b_empresa" >
                                     <option value="">Empresa constructora</option>
@@ -233,6 +235,8 @@
                                 </div>
                             </div>
                             <br>
+
+                            <!-- Tabla -->
                             <div class="row">
                                 <table class="table-responsive table2 table-bordered table-striped table-sm">
                                     <thead>
@@ -250,6 +254,10 @@
                                             <th>Folio Factura</th>
                                             <th>Valor a escriturar</th>
                                             <th>F. de carga</th>
+
+                                            <th>Folio Factura (CONCRETANIA)</th>
+                                            <th>Valor a escriturar (CONCRETANIA)</th>
+                                            <th>F. de carga (CONCRETANIA)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -271,21 +279,46 @@
                                                 <a :href="'/contratoCompraVenta/pdf/'+contrato.id" target="_blank" class="btn btn-info btn-sm">Ver contrato</a>
                                             </td>
                                             <td>
-                                                <button id="btnFiles" class="dropdown-toggle btn-primary btn btn-sm" data-toggle="dropdown" type="button"
-                                                    aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fa fa-cloud-upload"></i>
-                                                </button>
-                                                <div class="dropdown-menu" aria-labelleadby="btnFiles">
-                                                    <a href="#" class="dropdown-item btn btn-primary text-center" style="background-color: #00B0BB !important;"
-                                                        data-toggle="modal" data-target="#modAdvFilesUp" @click="setForm(contrato, 'contrato')">
-                                                        <i class="fa fa-cloud-upload"></i> Subir archivo
-                                                    </a>
-                                                    <a v-if="contrato.e_factura" :href="'/facturas/contratos/download/'+contrato.e_factura" target="_blank" class="dropdown-item btn text-info">Descargar</a>
-                                                </div>
+                                                <section>
+                                                    <button id="btnFiles" class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" 
+                                                        aria-haspopup="true" aria-expanded="false">
+                                                        <i class="fa fa-cloud-upload"></i>
+                                                    </button>
+                                                    <div class="dropdown-menu" aria-labelledby="btnFiles">
+                                                        <a href="#" class="dropdown-item btn btn-primary text-center" style="background-color: #00B0BB !important;"
+                                                            data-toggle="modal" data-target="#modAdvFilesUp" @click="setForm(contrato, 'contrato')">
+                                                            <i class="fa fa-cloud-upload"></i> Subir archivo
+                                                        </a>
+                                                        <a v-if="contrato.e_factura" :href="'/facturas/contratos/download/'+contrato.e_factura" target="_blank" class="dropdown-item btn text-info">Descargar</a>
+                                                    </div>
+                                                </section>
+
+                                                <section v-if="contrato.emp_constructora == 'CONCRETANIA'">
+                                                    <button id="" class="dropdown-toggle btn-info btn btn-sm" data-toggle="dropdown" type="button"
+                                                        aria-haspopup="true" aria-expanded="false" title="Factura de CONCRETANIA">
+                                                        <i class="fa fa-cloud-upload"></i>
+                                                    </button>
+                                                    <div class="dropdown-menu" aria-labelleadby="btn2Files">
+                                                        <a href="#" class="dropdown-item btn btn-primary text-center" style="background-color: #00B0BB !important;"
+                                                            data-toggle="modal" data-target="#modAdvFilesUpConcretania" @click="setForm(contrato, 'contrato2')">
+                                                            <i class="fa fa-cloud-upload"></i> Subir archivo (CONCRETANIA)
+                                                        </a>
+                                                        <a v-if="contrato.e_factura_concretania" 
+                                                            :href="'/facturas/contratos/concretania/download/'+contrato.e_factura_concretania" 
+                                                            target="_blank" class="dropdown-item btn text-info">
+                                                            Descargar
+                                                        </a>
+                                                    </div>
+                                                </section>
                                             </td>
                                             <td v-text="contrato.e_folio_factura">folio</td>
                                             <td v-text="'$'+contrato.e_monto.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">monto</td>
                                             <td v-if="contrato.e_f_carga_factura" v-text="this.moment(contrato.e_f_carga_factura).locale('es').format('DD/MMM/YYYY')">F. de carga</td>
+                                            <td v-else></td>
+
+                                            <td v-text="contrato.e_folio_factura_concretania">folio</td>
+                                            <td v-text="'$'+contrato.e_monto_concretania.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">monto</td>
+                                            <td v-if="contrato.e_f_carga_factura_concretania" v-text="this.moment(contrato.e_f_carga_factura_concretania).locale('es').format('DD/MMM/YYYY')">F. de carga</td>
                                             <td v-else></td>
                                         </tr>
                                     </tbody>
@@ -687,6 +720,7 @@
                                 </div>
 
                                 <template v-if="statusTerreno.emp_constructora == 'CONCRETANIA' && (statusTerreno.pendiente_terre != 0 || statusTerreno.factura_terreno)">
+                                    
                                     <hr>
                                     <div class="row">
                                         <label class="col-sm-4" for="">Factura de Terreno</label>
@@ -719,6 +753,42 @@
                                 <button v-if="(statusTerreno.pendiente_terre - montoTer) >= 0" type="submit" class="btn btn-primary">Guardar</button>
                             </template>
                             <button v-else type="submit" class="btn btn-primary">Guardar</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upload bill files CONCRETANIA-->
+            <div class="modal fade" id="modAdvFilesUpConcretania" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header" style="color: #fff; background-color: #00B0BB;">
+                            <h5 class="modal-title" id="">Subir Factura CONCRETANIA</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form action="" method="post" enctype="multipart/form-data" id="formUpAdvFile" @submit="subirFacturaC">
+                        <div class="modal-body">
+                            <div class="row">
+                                <label class="col-sm-4" for="">Factura CONCRETANIA</label>
+                                <input type="file" name="upfilCon" id="upfilCon" style="right: 10px;" class="form-control col-sm-8" required>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <label class="col-sm-4" for="">Folio Factura de CONCRETANIA</label>
+                                <input type="text" name="upFolioCon" id="upFolioCon" style="right: 10px;" class="form-control col-sm-8" required>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <label class="col-sm-4" for="">Valor (monto) de Factura de CONCRETANIA</label>
+                                <input type="number" name="upMontoCon" id="upMontoCon" step="0.0001" style="right: 10px;" class="form-control col-sm-8" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Guardar</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                         </div>
                         </form>
@@ -811,12 +881,17 @@
                 this.foliTer = datos.folio_factura_terreno;
 
                 document.getElementById('upfil').value = "";
+
                 if(tipo == 'contrato'){
                     document.getElementById('upFolio').value = datos.e_folio_factura;
 
                     if(datos.e_monto == 0 && datos.cant_depo != ""){
                         document.getElementById('upMonto').value = datos.e_monto;
                     }else document.getElementById('upMonto').value = datos.e_monto;
+                }else if(tipo == 'contrato2'){
+                    document.getElementById('upfilCon').value = "";
+                    document.getElementById('upFolioCon').value = datos.e_folio_factura_concretania;
+                    document.getElementById('upMontoCon').value = datos.e_monto_concretania;
                 }else{
                     document.getElementById('upFolio').value = datos.folio_factura;
                     
@@ -832,10 +907,16 @@
                 let formData = new FormData();
 
                 formData.append('id', this.generalId);
-                formData.append('upfil', e.target.upfil.files[0]);
-                formData.append('upFolio', e.target.upFolio.value);
-                formData.append('upMonto', e.target.upMonto.value);
 
+                if(this.tipoFactura != "contrato2"){
+                    formData.append('upfil', e.target.upfil.files[0]);
+                    formData.append('upFolio', e.target.upFolio.value);
+                    formData.append('upMonto', e.target.upMonto.value);
+                }else{
+                    formData.append('upfilCon', e.target.upfilCon.files[0]);
+                    formData.append('upFolioCon', e.target.upFolioCon.value);
+                    formData.append('upMontoCon', e.target.upMontoCon.value);
+                }
                 switch(this.tipoFactura){
                     case 'deposito':
 
@@ -859,6 +940,15 @@
                                 me.listarContratos(me.arrayContratos.current_page)
                                 me.myAlerts.popAlert('Guardado correctamente')
                                 $('#modAdvFilesUp').modal('hide');
+                            }
+                        ).catch(error => console.log(error));
+                        break;
+                    case 'contrato2':
+                        axios.post('/facturas/contratos/concretania/update', formData).then(
+                            () => {
+                                me.listarContratos(me.arrayContratos.current_page);
+                                me.myAlerts.popAlert('Guardado correctamente');
+                                $('#modAdvFilesUpConcretania').modal('hide');
                             }
                         ).catch(error => console.log(error));
                         break;
@@ -945,7 +1035,7 @@
                     response => me.arrayLiqCredit = response.data
                 ).catch(error => console.log(error))
             },
-            //liquidacion credito
+            //deposito credito
             listarDepCredit(page = 1){
                 let me = this;
                 

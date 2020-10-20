@@ -215,7 +215,12 @@ class FacturasController extends Controller
                 'contratos.e_factura',
                 'contratos.e_folio_factura',
                 'contratos.e_monto',
-                'contratos.e_f_carga_factura'
+                'contratos.e_f_carga_factura',
+                'contratos.e_factura_concretania',
+                'contratos.e_folio_factura_concretania',
+                'contratos.e_monto_concretania',
+                'contratos.e_f_carga_factura_concretania',
+                'lotes.emp_constructora'
         );
 
         if($request->buscar != '' || $request->b_gen != ''){
@@ -233,13 +238,14 @@ class FacturasController extends Controller
                     $facturas = $facturas->where(DB::raw('CONCAT(nombre," ",apellidos)'), 'like', "%$request->b_gen%");
                 }else{$facturas = $facturas->where("$request->criterio", 'like', "%$request->b_gen%");}
             }
+
             if($request->historial == 1){
                 $facturas = $facturas->where('contratos.e_factura','!=',NULL)
                                             ->where('contratos.e_factura','!=','');
             }
         }else{
             if($request->historial == 0)
-                $facturas = $facturas->where('contratos.status', '=', 3)->whereNull('contratos.e_factura');
+                $facturas = $facturas->where('contratos.status', '=', 3)->where('contratos.e_factura', '=', "");
             else{
                 $facturas = $facturas->where('contratos.status', '=', 3)->where('contratos.e_factura','!=',NULL)
                                             ->where('contratos.e_factura','!=','');
@@ -289,8 +295,45 @@ class FacturasController extends Controller
         //}
     }
 
+    public function cargarFacturaContratosConcretania(Request $request){
+
+        setLocale(LC_TIME, 'es_MX.utf8');
+
+        $contrato = Contrato::findOrFail($request->id);
+
+        if($contrato->e_factura_concretania != ""){
+            //try{
+                File::delete(public_path().'/files/facturas/contratos/concretania/'.$contrato->e_factura_concretania);
+            //}catch (Exception $e){
+            //    return $e->getMessage();
+            //}
+        }
+
+        //try{
+
+            $name = uniqId().'.'.$request->upfilCon->getClientOriginalExtension();
+            $moved = $request->upfilCon->move(public_path('/files/facturas/contratos/concretania/'), $name);
+            
+            if($moved){
+                $contrato->e_factura_concretania = $name;
+                $contrato->e_folio_factura_concretania = $request->upFolioCon;
+                $contrato->e_monto_concretania = $request->upMontoCon;
+                $contrato->e_f_carga_factura_concretania = Carbon::now()->format('Y-m-d');
+                $contrato->save();
+            }
+
+        //}catch (Exception $e){
+        //    DB::rollBack();
+        //}
+    }
+
     public function descargaFacturaC($name){
         $pathtoFile = public_path().'/files/facturas/contratos/'.$name;
+        return response()->download($pathtoFile);
+    }
+
+    public function descargaFacturaCon($name){
+        $pathtoFile = public_path().'/files/facturas/contratos/concretania/'.$name;
         return response()->download($pathtoFile);
     }
 

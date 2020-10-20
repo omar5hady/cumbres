@@ -117,6 +117,7 @@
                             </nav>
                         </div>
                     </template>
+                    
                     <template v-if="privilegios==1">
                         <div class="card-body"> 
                             <div class="form-group row border">

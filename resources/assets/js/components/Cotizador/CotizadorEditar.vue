@@ -433,8 +433,6 @@
                                                 <div class="col-md-4">
                                                     <input type="text" v-model="puesto" maxlength="50" class="form-control" >
                                                 </div>
-
-                                                
                                             </div>
 
                                             <div class="form-group row">
