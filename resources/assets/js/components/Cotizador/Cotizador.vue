@@ -496,7 +496,7 @@ export default {
             if(datos.pago == 0) return 0;
 
             let dias = 0;//this.dias(this.r_fecha, datos.fecha);
-            if(index.folio == 1){
+            if(datos.folio == 1){
                 dias = this.dias(this.r_fecha, datos.fecha);
             }else{
                 dias = this.dias(this.arrayMensualidad[parseInt(datos.folio-2)].fecha, datos.fecha);
