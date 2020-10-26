@@ -3782,6 +3782,7 @@ class ContratoController extends Controller
             DB::beginTransaction();
 
             $lote_new = Lote::findOrFail($loteNuevo_id);
+            $new_avance = Licencia::findOrFail($loteNuevo_id);
 
             /////////////////////////////////////////////////////////////////
             $precio_etapa = Precio_etapa::select('id','precio_excedente')
@@ -3812,6 +3813,8 @@ class ContratoController extends Controller
             
 
             $credito = Credito::findOrFail($request->id);
+            $contrato = Contrato::findOrFail($request->id);
+            $contrato->avance_lote = $new_avance->avance;
             $credito->fraccionamiento = $request->fraccionamiento;
             $credito->etapa = $request->etapa;
             $credito->manzana = $request->manzana;

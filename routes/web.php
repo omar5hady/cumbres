@@ -908,6 +908,16 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/modelos/archivos/updateVersionLote','VersionModeloController@updateVersionLote');
         Route::delete('/modelos/archivos/delete', 'VersionModeloController@delete');
 
+
+        //////////////////// RUTAS PARA LEADS ////////////////////////
+        Route::get('/campanias/index','CampaniaController@indexCampanias');
+        Route::put('/campanias/update', 'CampaniaController@update');
+        Route::post('/campanias/store', 'CampaniaController@store');
+        Route::delete('/campanias/delete', 'CampaniaController@delete');
+
+        Route::get('/leads/index','DigitalLeadController@index');
+
+
     });
 
 

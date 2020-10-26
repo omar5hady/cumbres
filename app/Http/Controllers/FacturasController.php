@@ -245,7 +245,7 @@ class FacturasController extends Controller
             }
         }else{
             if($request->historial == 0)
-                $facturas = $facturas->where('contratos.status', '=', 3)->where('contratos.e_factura', '=', "");
+                $facturas = $facturas->where('contratos.status', '=', 3)->where('contratos.e_factura', '=', NULL);
             else{
                 $facturas = $facturas->where('contratos.status', '=', 3)->where('contratos.e_factura','!=',NULL)
                                             ->where('contratos.e_factura','!=','');

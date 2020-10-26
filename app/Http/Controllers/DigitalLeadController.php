@@ -11,12 +11,11 @@ use DB;
 class DigitalLeadController extends Controller
 {
     public function index(Request $request){
-        $leads = Digital_lead::where(DB::raw("CONCAT(nombre,' ',apellidos)"), 'like', '%'. $request->buscar . '%')
-                        ->orderBy('nombre','asc')
+        $leads = Digital_lead::orderBy('nombre','asc')
                         ->orderBy('apellidos','asc')
                         ->paginate(10);
 
-        return ['leads'=>$leads];
+        return $leads;
     }
 
     public function store(Request $request){
