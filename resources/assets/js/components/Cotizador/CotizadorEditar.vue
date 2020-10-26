@@ -8,9 +8,9 @@
         <div class="container-fluid">
             <div class="card scroll-box">
                 <div class="card-header">
-                    <i class="fa fa-align-justify"></i> Cotizador de lotes
+                    <i class="fa fa-align-justify"></i> Editar cotización
                     &nbsp;
-                    <button @click="back()" class="btn btn-primary btn-sm">Regresar</button>
+                    <button v-if="editar" @click="back()" class="btn btn-primary btn-sm">Regresar</button>
                 </div>
                 
                 <div class="card-body">
@@ -56,7 +56,7 @@
                         <br>
 
                         <div class="row">
-                            <table class="table table-bordered table-striped">
+                            <table class="table2 table table-bordered table-striped">
                                 <thead>
                                     <tr>
                                         <th>#</th>
@@ -102,6 +102,58 @@
                                 </tbody>
                             </table>
                         </div>
+
+                        <nav>
+                            <!--Botones de paginacion -->
+                            <ul class="pagination">
+                                <li class="page-item" @click="getCotizacion(1)">
+                                    <a class="page-link" href="#" >Inicio</a>
+                                </li>
+                                <li class="page-item" v-if="arrayCotizaciones.current_page > 1"
+                                    @click="getCotizacion(arrayCotizaciones.current_page-1)">
+                                    <a class="page-link" href="#" >Ant</a>
+                                </li>
+
+                                <li class="page-item" v-if="arrayCotizaciones.current_page-3 >= 1"
+                                    @click="getCotizacion(arrayCotizaciones.current_page-3)">
+                                    <a class="page-link" href="#" v-text="arrayCotizaciones.current_page-3"></a>
+                                </li>
+                                <li class="page-item" v-if="arrayCotizaciones.current_page-2 >= 1"
+                                    @click="getCotizacion(arrayCotizaciones.current_page-2)">
+                                    <a class="page-link" href="#" v-text="arrayCotizaciones.current_page-2"></a>
+                                </li>
+                                <li class="page-item" v-if="arrayCotizaciones.current_page-1 >= 1"
+                                    @click="getCotizacion(arrayCotizaciones.current_page-1)">
+                                    <a class="page-link" href="#" v-text="arrayCotizaciones.current_page-1"></a>
+                                </li>
+                                <li class="page-item active" >
+                                    <a class="page-link" href="#" v-text="arrayCotizaciones.current_page"></a>
+                                </li>
+                                <li class="page-item" 
+                                    v-if="arrayCotizaciones.current_page+1 <= arrayCotizaciones.last_page">
+                                    <a class="page-link" href="#" @click="getCotizacion(arrayCotizaciones.current_page+1)" 
+                                    v-text="arrayCotizaciones.current_page+1"></a>
+                                </li>
+                                <li class="page-item" 
+                                    v-if="arrayCotizaciones.current_page+2 <= arrayCotizaciones.last_page">
+                                    <a class="page-link" href="#" @click="getCotizacion(arrayCotizaciones.current_page+2)"
+                                     v-text="arrayCotizaciones.current_page+2"></a>
+                                </li>
+                                <li class="page-item" 
+                                    v-if="arrayCotizaciones.current_page+3 <= arrayCotizaciones.last_page">
+                                    <a class="page-link" href="#" @click="getCotizacion(arrayCotizaciones.current_page+3)"
+                                    v-text="arrayCotizaciones.current_page+3"></a>
+                                </li>
+
+                                <li class="page-item" v-if="arrayCotizaciones.current_page < arrayCotizaciones.last_page"
+                                    @click="getCotizacion(arrayCotizaciones.current_page+1)">
+                                    <a class="page-link" href="#" >Sig</a>
+                                </li>
+                                <li class="page-item" @click="getCotizacion(arrayCotizaciones.last_page)">
+                                    <a class="page-link" href="#" >Ultimo</a>
+                                </li>
+                            </ul>
+                        </nav>
                     </template>
                     
                     <!--Editar-->
@@ -225,7 +277,7 @@
                         <div class="row">
 
                             <!--PAGOS-->
-                            <table class="table table-bordered table-striped">
+                            <table class="table2 table table-bordered table-striped">
                                 <thead>
                                     <tr>
                                         <th># Pago</th>
@@ -248,11 +300,11 @@
                                         <td v-else>Mensualidad</td>
                                         
                                         <td style="padding:0px;">
-                                            <input v-model="pago.cantidad" v-on:keyup="calculaPrecoi(pago)" type="number" step=".01" class="form-control" style="height: 45px;">
+                                            <input v-model="pago.cantidad" v-on:keyup="calculaPrecio(pago)" type="number" step=".01" class="form-control" style="height: 45px;">
                                         </td>
 
                                         <td style="padding:0px;" class="text-center">
-                                            <input v-model="pago.fecha" v-on:change="calculaPrecoi(pago)" type="date" class="form-control" style="height: 45px;">
+                                            <input v-model="pago.fecha" v-on:change="calculaPrecio(pago)" type="date" class="form-control" style="height: 45px;">
                                         </td>
                                         <td>
                                             <span v-text="pago.dias" class="badge" v-bind:class="!(r_mensualidad>6) ? 'badge-success' : 'badge-warning'"></span>
@@ -271,7 +323,7 @@
                         <br>
                         <div class="row">
                             <br>
-                            <table class="table table-bordered table-striped">
+                            <table class="table2 table table-bordered table-striped">
                                 <thead>
                                     <tr>
                                         <td class="text-center" colspan="10">
@@ -874,7 +926,7 @@ export default {
             //actualiza los precios
             this.actualizar();
         },
-        calculaPrecoi(index){
+        calculaPrecio(index){
             
             let cantidad = (index.cantidad=="")?0:parseFloat(index.cantidad);
             let descuento = this.montoDescuento(index);
@@ -909,6 +961,9 @@ export default {
                 }
             //fechas de pago
 
+            if(folio > 0){
+                cantidad = (this.arrayMensualidad[folio-1].saldo < 0.001)?0:cantidad;
+            }
             this.arrayMensualidad[folio].cantidad = cantidad;
             this.arrayMensualidad[folio].fecha = fechaFinalPago;//index.fecha;
 
@@ -1080,7 +1135,7 @@ export default {
             return montoInteres;
         },
         actualizar(){
-            this.arrayMensualidad.forEach(m => this.calculaPrecoi(m));
+            this.arrayMensualidad.forEach(m => this.calculaPrecio(m));
         },
         buscaLotes(etapa){
             axios.get('/get/lotes/lotes?etapaId='+etapa).then(
@@ -1100,10 +1155,10 @@ export default {
                 response => this.arrayListA = response.data
             ).catch(error => console.log(error));
         },
-        getCotizacion(){
+        getCotizacion(page = 1){
             
-            axios.get('/get/cotizacion/clientes'+
-                '?b_fecha='+this.b_fecha+
+            axios.get('/get/cotizacion/clientes?page='+page+
+                '&b_fecha='+this.b_fecha+
                 '&b_cliente='+this.b_cliente+
                 '&r_proyecto='+this.r_proyecto+
                 '&r_etapa='+this.r_etapa+
@@ -1207,7 +1262,7 @@ export default {
                     axios.post('/edita/cotizacion/cancelar?id='+id).then(
                         () => {
                             this.myAlerts.popAlert('Guardado correctamente');
-                            this.getCotizacion();
+                            this.getCotizacion(this.arrayCotizaciones.current_page);
                         }
                     ).catch(error => console.log(error));
 
@@ -1255,7 +1310,7 @@ export default {
                         }).then(
                             () => {
                                 this.myAlerts.popAlert('Guardado correctamente');
-                                this.getCotizacion();
+                                this.getCotizacion(this.arrayCotizaciones.current_page);
                                 this.cerrarModal();
                             }
                         ).catch(error => console.log(error));
@@ -1394,6 +1449,14 @@ export default {
     }
     .p-3 {
         padding: 1rem!important;
+    }
+    .table2 {
+        border-collapse: collapse;
+        overflow-x: auto;
+        display: block;
+        width: fit-content;
+        max-width: 100%;
+        box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
     }
 </style>
 

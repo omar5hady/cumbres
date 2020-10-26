@@ -428,7 +428,7 @@
         </thead>
         <tbody>
             <tr>
-                @if($contratos[0]->mensualidades == 1)
+                @if($contratos[0]->mensualidades <= 1)
                     <td class="text-center"><strong>De 0 a 1 mes</strong></td>
                     <td class="text-center">0% de Interes de tasa anual</td>
                 @elseif($contratos[0]->mensualidades == 6)
