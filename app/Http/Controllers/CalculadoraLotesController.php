@@ -152,7 +152,7 @@ class CalculadoraLotesController extends Controller
                         'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'lotes.emp_constructora', 'lotes.emp_terreno',
         'v.nombre as v_nombre', 'apartados.fecha_apartado','lotes.regimen_condom');
                         
-        $lotes = $query->where('modelos.nombre', '!=', 'Terreno')
+        $lotes = $query->where('modelos.nombre', '=', 'Terreno')
             ->where('etapas.id', '=', $request->etapaId)
             
             ->where('lotes.habilitado','=',1)
