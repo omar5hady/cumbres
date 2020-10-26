@@ -468,6 +468,14 @@
             <estimaciones></estimaciones>
         </template>
 
+        <template v-if="menu==249">
+            <campanias></campanias>
+        </template>
+
+        <template v-if="menu==250">
+            <digital-leads></digital-leads>
+        </template>
+
         
 
         

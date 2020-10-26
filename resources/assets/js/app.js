@@ -42,6 +42,7 @@ Vue.component('tipo-credito', require('./components/Administracion/TipoCredito.v
 Vue.component('asesores', require('./components/Administracion/Asesor.vue'));
 Vue.component('notarias', require('./components/Administracion/Notaria.vue'));
 Vue.component('proveedores', require('./components/Administracion/Proveedores.vue'));
+Vue.component('campanias', require('./components/Administracion/Campania.vue'));
 
 //Componentes Desarrollo
 Vue.component('fraccionamiento', require('./components/Desarrollo/Fraccionamiento.vue'));
@@ -82,6 +83,7 @@ Vue.component('uri-equipamiento', require('./components/Obra/EquipamientosUri.vu
 //Componentes Ventas
 Vue.component('lote-disponible', require('./components/Ventas/LotesDisp.vue'));
 Vue.component('prospectos', require('./components/Ventas/Prospectos.vue'));
+Vue.component('digital-leads', require('./components/Ventas/DigitalLead.vue'));
 Vue.component('prospectos-publicidad', require('./components/Ventas/ProspectosPublicidad.vue'));
 Vue.component('simulacion', require('./components/Ventas/SimulacionDeCredito.vue'));
 Vue.component('historialsim', require('./components/Ventas/HistorialSimulacion.vue'));

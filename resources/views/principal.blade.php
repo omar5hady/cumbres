@@ -97,6 +97,11 @@
                                         <a class="nav-link" href="#"><i class="fa fa-bullhorn"></i> Medios Publicitarios</a>
                                     </li>
                                 @endif
+                                @if(Auth::user()->rol_id == 1)
+                                    <li @click="menu=249" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-vcard"></i> Campañas digitales</a>
+                                    </li>
+                                @endif
                                 @if(Auth::user()->lugares_contacto == 1)
                                     <li @click="menu=15" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-street-view"></i> Lugares de contacto</a>
@@ -365,6 +370,11 @@
                                 @if(Auth::user()->lotes_disp == 1)
                                     <li @click="menu=59" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-circle-o-notch fa-spin"></i> Casas Disponibles</a>
+                                    </li>
+                                @endif
+                                @if(Auth::user()->rol_id == 1)
+                                    <li @click="menu=250" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-vcard"></i> Digital Leads</a>
                                     </li>
                                 @endif
                                 @if(Auth::user()->mis_prospectos == 1)
