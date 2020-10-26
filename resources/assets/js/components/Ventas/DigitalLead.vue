@@ -14,25 +14,24 @@
                 </div>
                 
                 <div class="card-body">
-
                     <!--TOTALES A PAGAR-->
                     <template v-if="editar == 0">
                         <!--FORMULARIO-->
-                        <div class="row">
-                           
-                            
-                            <input type="text" v-model="b_cliente" @keyup.enter="listarLeads()" placeholder="Nombre Apellidos" class="form-control col-sm-4">
-
-                            
-                            <button @click="listarLeads()" class="btn btn-sm btn-primary col-sm-1">
-                                <i class="fa fa-search"></i> Buscar
-                            </button>
-                            
+                        <div class="form-group row">
+                            <div class="col-md-10">
+                                <div class="input-group">
+                                    <input type="text" v-model="b_cliente" @keyup.enter="listarLeads(1)" placeholder="Nombre Apellidos" class="form-control col-sm-4">
+                                    
+                                    <button @click="listarLeads(1)" class="btn btn-sm btn-primary col-sm-1">
+                                        <i class="fa fa-search"></i> Buscar
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                         <br>
 
                         <div class="row">
-                            <table class="table table-bordered table-striped">
+                            <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
                                         <th></th>
@@ -49,17 +48,26 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="lead in arrayLeads.data" :key="lead.id">
-                                        <td style="width:15%">
-                                            <button title="Editar" type="button" @click="abrirModal('actualizar',campania)" class="btn btn-warning btn-sm">
+                                        <td class="td2" style="width:15%">
+                                            <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
                                                 <i class="icon-pencil"></i>
                                             </button>  
-                                            <button type="button" class="btn btn-danger btn-sm" @click="eliminar(campania)" title="Eliminar">
+                                            <button type="button" class="btn btn-danger btn-sm" @click="eliminar(lead)" title="Eliminar">
                                                 <i class="icon-trash"></i>
                                             </button>                                       
                                         </td>
-                                        <td v-if="apellidos != null" v-text="lead.nombre + ' '+lead.apellidos"></td>
-                                        <td v-else v-text="lead.nombre"></td>
-                                        <td v-if="lead.celular != null"  v-text="lead.celular"></td>
+                                        <td class="td2" v-if="lead.apellidos != null" v-text="lead.nombre + ' '+lead.apellidos"></td>
+                                        <td class="td2" v-else v-text="lead.nombre"></td>
+                                        <td class="td2" v-if="lead.celular != null"  v-text="lead.celular"></td><td class="td2" v-else ></td>
+                                        <td class="td2" v-if="lead.email != null"  v-text="lead.celular"></td><td class="td2" v-else ></td>
+                                        <td class="td2" v-text="lead.nombre_campania"></td>
+                                        <td class="td2" v-text="lead.proyecto"></td>
+                                        <td class="td2" v-if="lead.rango != null" v-text="'$'+formatNumber(lead.rango1) + ' - $'+formatNumber(lead.rango2)"></td><td class="td2" v-else ></td>
+                                        <td class="td2" v-text="lead.modelo_interes"></td>
+                                        <td class="td2" v-if="lead.status == '1'"><span class="badge badge-warning">En Seguimiento</span></td>
+                                        <td class="td2" v-if="lead.status == '0'"><span class="badge badge-danger">Descartado</span></td>
+                                        <td class="td2" v-if="lead.status == '2'"><span class="badge badge-success">Potencial</span></td>
+                                        <td></td>
                                        
                                     </tr>
                                 </tbody>
@@ -76,7 +84,7 @@
                 <div class="modal-dialog modal-primary modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title" v-text="'Nueva solicitud de compra venta'"></h4>
+                            <h4 class="modal-title" v-text="tituloModal"></h4>
                             <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
                               <span aria-hidden="true">×</span>
                             </button>
@@ -88,7 +96,6 @@
                                         <div class="card-body">
                                             <ul class="nav nav-tabs">
                                                 <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==1 }" @click="paso = 1">Datos del prospecto</a></li>
-                                                <li v-if="datos.coacreditado == 1" class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==2 }" @click="paso = 2">Datos coacreditado</a></li>
                                                 <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==3 }" @click="paso = 3">Referencias familiares</a></li>
                                             </ul>
                                         </div>
@@ -98,21 +105,21 @@
                                             <div class="form-group row">
                                                 <label class="col-md-2 form-control-label" for="text-input">Nombre: </label>
                                                 <div class="col-md-4">
-                                                    <input type="text" disabled v-model="datos.nombre" class="form-control" >
+                                                    <input type="text" v-model="datos.nombre" class="form-control" >
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <input type="text" disabled v-model="datos.apellidos" class="form-control" >
+                                                    <input type="text" v-model="datos.apellidos" class="form-control" >
                                                 </div>
                                             </div>
                                             
                                             <div class="form-group row">
                                                 <label class="col-md-2 form-control-label" for="text-input">Telefono: </label>
                                                 <div class="col-md-3">
-                                                    <input type="text" disabled v-model="datos.telefono" class="form-control" >
+                                                    <input type="text" v-model="datos.telefono" class="form-control" >
                                                 </div>
                                                 <label class="col-md-2 form-control-label" for="text-input">Celular: </label>
                                                 <div class="col-md-3">
-                                                    <input type="text" disabled v-model="datos.celular" class="form-control" >
+                                                    <input type="text" v-model="datos.celular" class="form-control" >
                                                 </div>
                                             </div>
                                             
@@ -216,64 +223,6 @@
                                         </template>
 
 
-                                        <template v-if="paso == 3"> <!-- Datos de referencias -->
-
-                                                <div class="form-group row line-separator"></div>
-
-                                                <div class="col-md-12">
-                                                    <h6 align="center"><strong> Primera Referencia</strong></h6>
-                                                </div>
-
-                                            <div class="form-group row">
-                                                <label class="col-md-2 form-control-label" for="text-input">Nombre:  <span style="color:red;" v-show="nombre_primera_ref ==''">(*)</span></label>
-                                                <div class="col-md-5">
-                                                    <input type="text" v-model="nombre_primera_ref" class="form-control" >
-                                                </div>
-                                            </div>
-
-                                             <div class="form-group row">
-                                                <label class="col-md-2 form-control-label" for="text-input">Telefono:  <span style="color:red;" v-show="telefono_primera_ref ==''">(*)</span></label>
-                                                <div class="col-md-3">
-                                                    <input type="text" v-model="telefono_primera_ref"  pattern="\d*" 
-                                                    maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
-                                                </div>
-                                                <label class="col-md-1 form-control-label" for="text-input">Cel:  <span style="color:red;" v-show="celular_primera_ref ==''">(*)</span></label>
-                                                <div class="col-md-3">
-                                                    <input type="text" v-model="celular_primera_ref"  pattern="\d*" 
-                                                    maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group row line-separator"></div>
-
-                                                <div class="col-md-12">
-                                                    <h6 align="center"><strong> Segunda Referencia</strong></h6>
-                                                </div>
-
-                                            <div class="form-group row">
-                                                <label class="col-md-2 form-control-label" for="text-input">Nombre: <span style="color:red;" v-show="nombre_segunda_ref ==''">(*)</span></label>
-                                                <div class="col-md-5">
-                                                    <input type="text" v-model="nombre_segunda_ref" class="form-control" >
-                                                </div>
-                                            </div>
-
-                                             <div class="form-group row">
-                                                <label class="col-md-2 form-control-label" for="text-input">Telefono: <span style="color:red;" v-show="telefono_segunda_ref ==''">(*)</span> </label>
-                                                <div class="col-md-3">
-                                                    <input type="text" v-model="telefono_segunda_ref"  pattern="\d*" 
-                                                    maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
-                                                </div>
-                                                <label class="col-md-1 form-control-label" for="text-input">Cel: <span style="color:red;" v-show="celular_segunda_ref ==''">(*)</span> </label>
-                                                <div class="col-md-3">
-                                                    <input type="text" v-model="celular_segunda_ref"  pattern="\d*" 
-                                                    maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
-                                                </div>
-                                            </div>
-
-                                            
-                                                
-
-                                        </template>
                                     </div>
 
                                 
@@ -319,21 +268,20 @@ export default {
             id:0,
             paso:0,
             modal:0,
+            tituloModal:'',
             editar:0,
             b_cliente:'',
 
             datos : [],
             arrayEmpresa: [],
             arrayColonias:[],
+            arrayEstados:[],
+            arrayCiudades:[],
             tipo_economia:0,
             puesto:'',
             num_dep_economicos:0,
-            nombre_primera_ref:'',
-            nombre_segunda_ref:'',
-            telefono_primera_ref:'',
-            telefono_segunda_ref:'',
-            celular_primera_ref:'',
-            celular_segunda_ref:'',
+            datos:[],
+            
            
         }
     },
@@ -369,33 +317,53 @@ export default {
             });
         },
         getDatosEmpresa(val1){
-                let me = this;
-                me.loading = true;
-                me.datos.empresa_coa = val1.nombre;
-                me.datos.empresaCoa_id = val1.id;
-               
-            }, 
-            getDatosEmpresa2(val1){
-                let me = this;
-                me.loading = true;
-                me.datos.empresa_id = val1.id;
-                me.datos.empresa = val1.nombre;
-               
-            },
+            let me = this;
+            me.loading = true;
+            me.datos.empresa_coa = val1.nombre;
+            me.datos.empresaCoa_id = val1.id;
+            
+        }, 
+        getDatosEmpresa2(val1){
+            let me = this;
+            me.loading = true;
+            me.datos.empresa_id = val1.id;
+            me.datos.empresa = val1.nombre;
+            
+        },
+        selectEstados(){
+            let me = this;
+            me.arrayEstados=[];
+            
+            var url = '/select_estados';
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayEstados = respuesta.estados;
+                
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
+        selectCiudades(estado){
+            let me = this;
+            var url = '/select_ciudades?buscar='+estado;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayCiudades=[];
+                me.arrayCiudades = respuesta.ciudades;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
         selectColonias(cp,coacreditado){
             let me = this;
             me.arrayColonias=[];
             var url = '/select_colonias?buscar=' + cp;
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
-                if(coacreditado==1){
-                    me.arrayColoniasCoa=[];
-                    me.arrayColoniasCoa = respuesta.colonias;
-                }
-                else{
-                    me.arrayColonias=[];
-                    me.arrayColonias = respuesta.colonias;
-                }
+                me.arrayColonias=[];
+                me.arrayColonias = respuesta.colonias;
             })
             .catch(function (error) {
                 console.log(error);
@@ -406,13 +374,21 @@ export default {
             this.modal = 0;
         },
         
-        abrirModal(){
+        abrirModal(accion,data =[]){
             this.selectEstados();
 
-            this.id = cotizacion.id;
-            this.paso = 1;
-            this.modal = 1;
-            this.datos = cotizacion;
+            switch(accion){
+                case 'actualizar':
+                {
+                    this.tituloModal='Actualizar Lead';
+                    this.paso = 1;
+                    this.modal = 1;
+                    this.datos = data;
+                    
+                    break;
+                }
+            }
+            
 
         },
 
@@ -448,6 +424,11 @@ export default {
         width: 100% !important;
         position: absolute !important;
     }
+    .modal-body{
+        height: 450px;
+        width: 100%;
+        overflow-y: auto;
+    }
     .mostrar{
         display: list-item !important;
         opacity: 1 !important;
@@ -464,53 +445,7 @@ export default {
     color: red !important;
     font-weight: bold;
     }
-    .card-user2 .avatar.border-white {
-        border: 5px solid #fff;
-    }
-    .card-user2 .avatar {
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        position: relative;
-        margin-bottom: 15px;
-    }
-    .card2 .avatar {
-        width: 200px;
-        height: 200px;
-        overflow: hidden;
-        border-radius: 50%;
-        margin-right: 5px;
-    }
-    .border-white {
-        border-color: #fff!important;
-    }
-    .card-user2 .author {
-        text-align: center;
-        text-transform: none;
-        margin-top: -65px;
-    }
-    .card2 .author {
-        font-size: 12px;
-        font-weight: 600;
-        text-transform: uppercase;
-    }
-    .card2 {
-        border-radius: 6px;
-        box-shadow: 0 2px 2px hsla(38,16%,76%,.5);
-        background-color: #fff;
-        color: #252422;
-        margin-bottom: 20px;
-        position: relative;
-        z-index: 1;
-        border: none;
-    }
-    .card2 .card-image2 img  {
-        width: 100%;
-    }
-    img {
-        vertical-align: middle;
-        border-style: none;
-    }
+    
     .bg-gradient-primary {
         background: #00ADEF!important;
         background: linear-gradient(45deg,#321fdb 0%,#00ADEF 100%)!important;
@@ -519,5 +454,33 @@ export default {
     .p-3 {
         padding: 1rem!important;
     }
+    .table2 {
+        margin: auto;
+        border-collapse: collapse;
+        overflow-x: auto;
+        display: block;
+        width: fit-content;
+        max-width: 100%;
+        box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+    }
+
+    .td2, .th2 {
+        border: solid rgb(200, 200, 200) 1px;
+        padding: .5rem;
+    }
+
+    .td2 {
+        white-space: nowrap;
+        border-bottom: none;
+        color: rgb(20, 20, 20);
+    }
+
+    .td2:first-of-type, th:first-of-type {
+       border-left: none;
+    }
+
+    .td2:last-of-type, th:last-of-type {
+       border-right: none;
+    } 
 </style>
 
