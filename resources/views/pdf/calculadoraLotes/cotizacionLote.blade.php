@@ -90,7 +90,21 @@ body{
             <tr>
                 <td>Valor de Venta: ${{$cotizacion->valor_venta}}</td>
                 <td>Mensualidades: {{round($cotizacion->mensualidades)}}</td>
-                <td></td>
+                <td>
+                    @if($cotizacion->mensualidades <= 1)
+                        0% de Interes de tasa anual
+                    @elseif($cotizacion->mensualidades == 6)
+                        0% de Interes de tasa anual
+                    @elseif($cotizacion->mensualidades == 12)
+                        12% de Interes de tasa anual
+                    @elseif($cotizacion->mensualidades == 24)
+                        16% de Interes de tasa anual
+                    @elseif($cotizacion->mensualidades == 36)
+                        18% de Interes de tasa anual
+                    @elseif($cotizacion->mensualidades == 48)
+                        20% de Interes de tasa anual
+                    @endif
+                </td>
             </tr>
         </tbody>
     </table>
@@ -158,7 +172,7 @@ body{
                 </td>
             </tr>
         </thead>
-        <thead>
+        <!--thead>
             <tr>
                 <th colspan="6">Plan Comercial de Pagos</th>
             </tr>
@@ -180,8 +194,11 @@ body{
                 <td class="text-center">18% de Interes de tasa anual</td>
                 <td class="text-center">20% de Interes de tasa anual</td>
             </tr>
-        </tbody>
+        </tbody-->
     </table>
+    <p>
+        Vendedor: {{mb_strtoupper($cotizacion->v_apellidos)}} {{mb_strtoupper($cotizacion->v_nombre)}}
+    </p>
 </div>
     
 </body>

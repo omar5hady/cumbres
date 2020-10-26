@@ -152,9 +152,7 @@ class CalculadoraLotesController extends Controller
                         'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'lotes.emp_constructora', 'lotes.emp_terreno',
         'v.nombre as v_nombre', 'apartados.fecha_apartado','lotes.regimen_condom');
                         
-        $lotes = $query
-
-            ->where('modelos.nombre', '=', 'Terreno')
+        $lotes = $query->where('modelos.nombre', '!=', 'Terreno')
             ->where('etapas.id', '=', $request->etapaId)
             
             ->where('lotes.habilitado','=',1)
@@ -162,10 +160,15 @@ class CalculadoraLotesController extends Controller
             ->where('lotes.apartado','=',0)
 
             ->where('lotes.casa_muestra', '=', 0)
-            ->where('lotes.lote_comercial', '=', 0)
+        ->where('lotes.lote_comercial', '=', 0);
             //->where('lotes.regimen_condom', '=', 0)
 
-            ->orderBy('fraccionamientos.nombre','DESC')
+        //Buscar manzana
+        if($request->manzana != ''){
+            $lotes = $lotes->where('lotes.manzana','like', "%$request->manzana%");
+        }
+
+        $lotes = $lotes->orderBy('fraccionamientos.nombre','DESC')
             ->orderBy('etapas.num_etapa','ASC')
             ->orderBy('lotes.manzana','ASC')
             ->orderBy('lotes.num_lote','ASC')
@@ -218,6 +221,8 @@ class CalculadoraLotesController extends Controller
 
         $cotizacion = Cotizacion_lotes::join('clientes', 'cotizacion_lotes.cliente_id', '=', 'clientes.id')
             ->join('personal', 'clientes.id', '=', 'personal.id')
+            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+            ->join('personal as p_ventas', 'vendedores.id', '=', 'p_ventas.id')
             ->join('lotes', 'cotizacion_lotes.lotes_id', '=', 'lotes.id')
             ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
             ->join('fraccionamientos', 'lotes.fraccionamiento_id', '=', 'fraccionamientos.id')
@@ -234,7 +239,10 @@ class CalculadoraLotesController extends Controller
                 'lotes.num_lote',
                 'lotes.terreno as terreno_m2',
                 'etapas.num_etapa',
-                'fraccionamientos.nombre as fraccionamiento'
+                'fraccionamientos.nombre as fraccionamiento',
+
+                'p_ventas.apellidos as v_apellidos',
+                'p_ventas.nombre as v_nombre'
             )
             ->where('cotizacion_lotes.id', '=', $request->idCotizacion)
         ->first();

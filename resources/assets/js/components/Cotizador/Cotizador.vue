@@ -36,6 +36,7 @@
                             <option value="">Etapa</option>
                             <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                         </select>
+                        <input type="text" v-model="r_manzana" v-on:change="buscaLotes(r_etapa)" placeholder="Manzana" class="form-control col-md-3">
 
                         <select class="form-control col-sm-2" v-model="r_lote" v-on:change="selccionaLote(r_lote)" >
                             <option value="">Lote</option>
@@ -48,6 +49,7 @@
 
                         <select class="form-control col-sm-2" v-on:change="generarLista()" v-model="r_mensualidad" :disabled="r_valor_venta==0" title="Mensualidades" required>
                             <option value="" disabled selected>Pagos</option>
+                            <option value="2">0 A 1 MES + ENGANCHE</option>
                             <option value="1">0 A 1 MES</option>
                             <option value="6">1 A 6 MESES</option>
                             <option value="12">7 A 12 MESES</option>
@@ -144,7 +146,7 @@
                         </table>
 
                         <!--PAGOS-->
-                        <table class="table table-bordered table-striped">
+                        <table class="table2 table table-bordered table-striped">
                             <thead>
                                 <tr>
                                     <th># Pago</th>
@@ -167,11 +169,11 @@
                                     <td v-else>Mensualidad</td>
                                     
                                     <td style="padding:0px;">
-                                        <input v-model="pago.cantidad" v-on:keyup="calculaPrecoi(pago)" type="number" step=".01" class="form-control" style="height: 45px;">
+                                        <input v-model="pago.cantidad" v-on:keyup="calculaPrecio(pago)" type="number" step=".01" class="form-control" style="height: 45px;">
                                     </td>
 
                                     <td style="padding:0px;" class="text-center">
-                                        <input v-model="pago.fecha" v-on:change="calculaPrecoi(pago)" type="date" class="form-control" style="height: 45px;">
+                                        <input v-model="pago.fecha" v-on:change="calculaPrecio(pago)" type="date" class="form-control" style="height: 45px;">
                                     </td>
                                     <td>
                                         <span v-text="pago.dias" class="badge" v-bind:class="!(r_mensualidad>6) ? 'badge-success' : 'badge-warning'"></span>
@@ -187,7 +189,7 @@
                         </table>
 
                         <br>
-                        <table class="table table-bordered table-striped">
+                        <table class="table2 table table-bordered table-striped">
                             <thead>
                                 <tr>
                                     <td class="text-center" colspan="10">
@@ -250,6 +252,7 @@ export default {
             r_valor_descuento:0,
             idCliente:0,
             idLote:0,
+            r_manzana:'',
             arrayMensualidad:[],
             arrayFraccionamientos:[],
             arrayEtapas:[],
@@ -298,6 +301,7 @@ export default {
             //asignacion de fecha actual
 
             //asignacion de primer pago o enganche
+                //y pagos restantes
                 if(this.r_mensualidad == 48){
                     this.valor_minMens = (fullPrice-(fullPrice*0.3))/this.r_mensualidad;
                     this.valor_enganche = fullPrice*0.3;
@@ -305,12 +309,16 @@ export default {
                 }else if(this.r_mensualidad == 1){  
                     this.valor_enganche = fullPrice.toFixed(2);
 
+                }else if(this.r_mensualidad == 2){
+                    this.valor_minMens = (fullPrice-10000);
+                    
                 }else this.valor_minMens = (fullPrice-10000)/this.r_mensualidad;
             //asignacion de primer pago o enganche
 
             //creacion de array vacio
             for(let i=0; this.r_mensualidad >=i; i++){
                 
+                //asignar monto inicial de pago
                 let monto = 0.0;
                 if(i == this.r_mensualidad && this.r_mensualidad != 1){
                     this.arrayMensualidad.forEach(item =>{
@@ -348,12 +356,12 @@ export default {
             }
             
             //si la mensualidad es 1 se elimina un campo
-            if(this.r_mensualidad == 1) this.arrayMensualidad.pop();
+            if(this.r_mensualidad == 1 || this.r_mensualidad == 2) this.arrayMensualidad.pop();
 
             //actualiza los precios
             this.actualizar();
         },
-        calculaPrecoi(index){
+        calculaPrecio(index){
             
             let cantidad = (index.cantidad=="")?0:parseFloat(index.cantidad);
             let descuento = this.montoDescuento(index);
@@ -388,6 +396,9 @@ export default {
                 }
             //fechas de pago
 
+            if(folio > 0){
+                cantidad = (this.arrayMensualidad[folio-1].saldo < 0.001)?0:cantidad;
+            }
             this.arrayMensualidad[folio].cantidad = cantidad;
             this.arrayMensualidad[folio].fecha = fechaFinalPago;//index.fecha;
 
@@ -496,7 +507,7 @@ export default {
             if(datos.pago == 0) return 0;
 
             let dias = 0;//this.dias(this.r_fecha, datos.fecha);
-            if(index.folio == 1){
+            if(datos.folio == 1){
                 dias = this.dias(this.r_fecha, datos.fecha);
             }else{
                 dias = this.dias(this.arrayMensualidad[parseInt(datos.folio-2)].fecha, datos.fecha);
@@ -539,10 +550,10 @@ export default {
             return montoInteres;
         },
         actualizar(){
-            this.arrayMensualidad.forEach(m => this.calculaPrecoi(m));
+            this.arrayMensualidad.forEach(m => this.calculaPrecio(m));
         },
         buscaLotes(etapa){
-            axios.get('/get/lotes/lotes?etapaId='+etapa).then(
+            axios.get('/get/lotes/lotes?etapaId='+etapa+'&manzana='+this.r_manzana).then(
                 response => this.arrayLotes = response.data
             ).catch(error => console.log(error));
         },
@@ -756,6 +767,15 @@ img {
 }
 .p-3 {
     padding: 1rem!important;
+}
+
+.table2 {
+    border-collapse: collapse;
+    overflow-x: auto;
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
 }
 </style>
 
