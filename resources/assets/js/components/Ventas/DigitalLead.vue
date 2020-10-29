@@ -20,8 +20,7 @@
                         <div class="form-group row">
                             <div class="col-md-10">
                                 <div class="input-group">
-                                    <input type="text" v-model="b_cliente" @keyup.enter="listarLeads(1)" placeholder="Nombre Apellidos" class="form-control col-sm-4">
-                                    
+                                    <input type="text" v-model="b_cliente" @keyup.enter="listarLeads(1)" placeholder="Nombre" class="form-control col-sm-4">
                                     <button @click="listarLeads(1)" class="btn btn-sm btn-primary col-sm-1">
                                         <i class="fa fa-search"></i> Buscar
                                     </button>
@@ -30,7 +29,7 @@
                         </div>
                         <br>
 
-                        <div class="row">
+                        <div class="table-responsive">
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
@@ -60,7 +59,7 @@
                                         <td class="td2" v-else v-text="lead.nombre"></td>
                                         <td class="td2" v-if="lead.celular != null"  v-text="lead.celular"></td><td class="td2" v-else ></td>
                                         <td class="td2" v-if="lead.email != null"  v-text="lead.celular"></td><td class="td2" v-else ></td>
-                                        <td class="td2" v-text="lead.nombre_campania"></td>
+                                        <td class="td2" v-text="lead.nombre_campania + '-'+lead.medio_digital"></td>
                                         <td class="td2" v-text="lead.proyecto"></td>
                                         <td class="td2" v-if="lead.rango != null" v-text="'$'+formatNumber(lead.rango1) + ' - $'+formatNumber(lead.rango2)"></td><td class="td2" v-else ></td>
                                         <td class="td2" v-text="lead.modelo_interes"></td>
@@ -73,6 +72,52 @@
                                 </tbody>
                             </table>
                         </div>
+                        <nav>
+                            <ul class="pagination">
+                                <li class="page-item">
+                                    <a class="page-link" href="#" @click="listarLeads(1)">Inicio</a>
+                                </li>
+                                <li v-if="arrayLeads.current_page-3 >= 1">
+                                    <a class="page-link" href="#" 
+                                    @click="listarLeads(arrayLeads.current_page-3)" 
+                                    v-text="arrayLeads.current_page-3" ></a>
+                                </li>
+                                <li v-if="arrayLeads.current_page-2 >= 1">
+                                    <a class="page-link" href="#" 
+                                    @click="listarLeads(arrayLeads.current_page-2)" 
+                                    v-text="arrayLeads.current_page-2" ></a>
+                                </li>
+                                <li v-if="arrayLeads.current_page-1 >= 1">
+                                    <a class="page-link" href="#" 
+                                    @click="listarLeads(arrayLeads.current_page-1)" 
+                                    v-text="arrayLeads.current_page-1" ></a>
+                                </li>
+                                
+                                <li class="page-item active">
+                                    <a class="page-link" href="#" v-text="arrayLeads.current_page" ></a>
+                                </li>
+                                
+                                <li v-if="arrayLeads.current_page+1 <= arrayLeads.last_page">
+                                    <a class="page-link" href="#" 
+                                    @click="listarLeads(arrayLeads.current_page+1)" 
+                                    v-text="arrayLeads.current_page+1" ></a>
+                                </li>
+                                <li v-if="arrayLeads.current_page+2 <= arrayLeads.last_page">
+                                    <a class="page-link" href="#" 
+                                    @click="listarLeads(arrayLeads.current_page+2)" 
+                                    v-text="arrayLeads.current_page+2" ></a>
+                                </li>
+                                <li v-if="arrayLeads.current_page+3 <= arrayLeads.last_page">
+                                    <a class="page-link" href="#" 
+                                    @click="listarLeads(arrayLeads.current_page+3)" 
+                                    v-text="arrayLeads.current_page+3" ></a>
+                                </li>
+                                
+                                <li class="page-item">
+                                    <a class="page-link" href="#" @click="listarLeads(arrayLeads.last_page)">Ultimo</a>
+                                </li>
+                            </ul>
+                        </nav>
                     </template>
                 </div>
             </div>
@@ -95,31 +140,137 @@
                                     <div class="">
                                         <div class="card-body">
                                             <ul class="nav nav-tabs">
-                                                <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==1 }" @click="paso = 1">Datos del prospecto</a></li>
-                                                <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==3 }" @click="paso = 3">Referencias familiares</a></li>
+                                                <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==1 }" @click="paso = 1">Lead</a></li>
+                                                <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==2 }" @click="paso = 2">Datos personales</a></li>
+                                                <li class="nav-item"><a class="nav-link"  v-bind:class="{ 'active': paso==3 }" @click="paso = 3">Datos importantes</a></li>
                                             </ul>
                                         </div>
 
-                                        <template v-if="paso == 1"> <!-- Datos del prospecto -->
+                                        <template v-if="paso == 1"> <!-- Datos del lead -->
 
                                             <div class="form-group row">
-                                                <label class="col-md-2 form-control-label" for="text-input">Nombre: </label>
+                                                <label class="col-md-2 form-control-label" for="text-input"><strong>Nombre:</strong><span style="color:red;" v-show="datos.nombre==''">(*)</span></label>
                                                 <div class="col-md-4">
-                                                    <input type="text" v-model="datos.nombre" class="form-control" >
+                                                    <input type="text" v-model="datos.nombre" class="form-control" placeholder="Nombre">
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <input type="text" v-model="datos.apellidos" class="form-control" >
+                                                    <input type="text" v-model="datos.apellidos" class="form-control" placeholder="Apellidos">
                                                 </div>
                                             </div>
                                             
                                             <div class="form-group row">
                                                 <label class="col-md-2 form-control-label" for="text-input">Telefono: </label>
                                                 <div class="col-md-3">
-                                                    <input type="text" v-model="datos.telefono" class="form-control" >
+                                                    <input type="text" v-model="datos.telefono" class="form-control" placeholder="Telefono">
                                                 </div>
                                                 <label class="col-md-2 form-control-label" for="text-input">Celular: </label>
                                                 <div class="col-md-3">
-                                                    <input type="text" v-model="datos.celular" class="form-control" >
+                                                    <input type="text" v-model="datos.celular" class="form-control" placeholder="Celular">
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="text-input">Correo electrónico: </label>
+                                                <div class="col-md-5">
+                                                    <input type="text" v-model="datos.email" class="form-control" placeholder="Telefono">
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="text-input">Campaña publicitaria</label>
+                                                <div class="col-md-4">
+                                                    <select class="form-control" v-model="datos.campania_id">
+                                                        <option value="">Seleccione</option>
+                                                        <option v-for="medios in arrayCampanias" :key="medios.id" :value="medios.id" v-text="medios.nombre_campania + ' - ' + medios.medio_digital"></option>
+                                                    </select>
+                                                </div>
+
+                                                <label class="col-md-2 form-control-label" for="text-input">Medio de contacto</label>
+                                                <div class="col-md-4">
+                                                    <input type="text" name="city" list="cityname" class="form-control" v-model="datos.medio_contacto" laceholder="Medio de publicidad">
+                                                    <datalist id="cityname">
+                                                        <option value="">Seleccione</option>
+                                                        <option value="Facebook">Facebook</option>
+                                                        <option value="Instagram">Instagram</option>
+                                                        <option value="Pagina web">Pagina web</option>
+                                                        <option value="Llamada Telefonica">Llamada Telefónica</option>
+                                                        
+                                                    </datalist>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="text-input"><strong>Proyecto de interes</strong></label>
+                                                <div class="col-md-6">
+                                                    <select class="form-control" v-model="datos.proyecto_interes" v-on:change="selectModelo(datos.proyecto_interes)">
+                                                        <option value="">Seleccione</option>
+                                                        <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" 
+                                                            :value="proyecto.id" v-text="proyecto.nombre">
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="text-input">Prototipo recomendado: </label>
+                                                <div class="col-md-5">
+                                                    <input type="text" name="city" list="modelosName" class="form-control" v-model="datos.modelo_interes" laceholder="Prototipo">
+                                                    <datalist id="modelosName">
+                                                        <option value="">Modelo</option>
+                                                        <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.nombre" v-text="modelos.nombre"></option>
+                                                    </datalist>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="text-input">Presupuesto</label>
+                                                <div class="col-md-2">
+                                                    <p><strong>${{ formatNumber(datos.rango1)}}</strong></p>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <input class="form-control" type="text" v-model="datos.rango1" placeholder="Minimo">
+                                                    <input class="form-control" type="range" name="price-min" id="price-min" v-model="datos.rango1" min="300000" max="2500000">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <p><strong>${{ formatNumber(datos.rango2)}}</strong></p>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <input class="form-control" type="text" v-model="datos.rango2" placeholder="Maximo">
+                                                    <input class="form-control" type="range" name="price-max" id="price-max" v-model="datos.rango2" min="300000" max="2500000">
+                                                </div>
+                                            </div>
+
+                                                <div class="form-group row line-separator"></div>
+
+                                                <div class="col-md-12">
+                                                    <h6 align="center"><strong> Lugar de trabajo </strong></h6>
+                                                </div>
+
+                                           
+                                                
+
+                                        </template>
+
+                                        <template v-if="paso == 2"> <!-- Datos del lead -->
+
+                                            <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="text-input">Nombre: <span style="color:red;" v-show="datos.nombre==''">(*)</span></label>
+                                                <div class="col-md-4">
+                                                    <input type="text" v-model="datos.nombre" class="form-control" placeholder="Nombre">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <input type="text" v-model="datos.apellidos" class="form-control" placeholder="Apellidos">
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="text-input">Telefono: </label>
+                                                <div class="col-md-3">
+                                                    <input type="text" v-model="datos.telefono" class="form-control" placeholder="Telefono">
+                                                </div>
+                                                <label class="col-md-2 form-control-label" for="text-input">Celular: </label>
+                                                <div class="col-md-3">
+                                                    <input type="text" v-model="datos.celular" class="form-control" placeholder="Celular">
                                                 </div>
                                             </div>
                                             
@@ -233,7 +384,7 @@
                         <!-- Botones del modal -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <button type="button" class="btn btn-primary" @click="aprobar(id)">Asignar</button>
+                            <button type="button" class="btn btn-primary" @click="storeLead()">Regisrar</button>
                         </div>
                     </div>
                       <!-- /.modal-content -->
@@ -277,9 +428,9 @@ export default {
             arrayColonias:[],
             arrayEstados:[],
             arrayCiudades:[],
-            tipo_economia:0,
-            puesto:'',
-            num_dep_economicos:0,
+            arrayCampanias:[],
+            arrayFraccionamientos:[],
+            arrayModelos:[],
             datos:[],
             
            
@@ -301,6 +452,31 @@ export default {
                 response => this.arrayLeads = response.data
             ).catch(error => console.log(error));
         },
+        selectFraccionamientos(){
+            let me = this;
+            me.arrayFraccionamientos=[];
+            var url = '/select_fraccionamiento';
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayFraccionamientos = respuesta.fraccionamientos;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
+        selectModelo(buscar){
+                let me = this;
+              
+                me.arrayModelos=[];
+                var url = '/select_modelo_proyecto2?buscar=' + buscar;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayModelos = respuesta.modelos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
         selectEmpresaVueselect(search, loading){
             let me = this;
             loading(true)
@@ -311,6 +487,19 @@ export default {
                 q: search
                 me.arrayEmpresa = respuesta.empresas;
                 loading(false)
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
+        selectCampania(){
+            let me = this;
+
+            var url = '/campanias/campaniaActiva';
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayCampanias = respuesta;
+                
             })
             .catch(function (error) {
                 console.log(error);
@@ -376,6 +565,8 @@ export default {
         
         abrirModal(accion,data =[]){
             this.selectEstados();
+            this.selectCampania();
+            this.selectFraccionamientos();
 
             switch(accion){
                 case 'actualizar':
@@ -401,6 +592,11 @@ export default {
                 return true;
             }
         },
+
+        formatNumber(value) {
+                let val = (value/1).toFixed(2)
+                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            },
 
     
         back(){

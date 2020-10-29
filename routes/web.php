@@ -939,6 +939,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/select_etapa_proyecto','EtapaController@selectEtapa_proyecto'); 
         Route::get('/select_etapa','EtapaController@selectEtapa'); 
         Route::get('/select_modelo_proyecto','ModeloController@selectModelo_proyecto');
+        Route::get('/select_modelo_proyecto2','ModeloController@selectModelo_proyecto2');
         Route::get('/select_manzana_proyecto','LoteController@selectManzana_proyecto'); 
         Route::get('/selectManzana_dist','CreditoController@selectManzana'); 
         Route::get('/select_construcc_terreno','ModeloController@selectConsYTerreno'); 
@@ -988,6 +989,8 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::get('/select_clientesVenta','PersonalController@selectClientesVenta');
         Route::get('/clientes/getDatosVentas','PersonalController@getDatosCliente');
+
+        Route::get('/campanias/campaniaActiva','CampaniaController@campaniaActiva');
     
     
 });

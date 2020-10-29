@@ -250,7 +250,7 @@
                                 <tbody>
                                     <tr>
                                         <td class=" text-right">
-                                            <strong v-if="r_mensualidad != 1" v-text="'Saldo inicial $ '+r_valor_venta.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})"></strong>
+                                            <strong v-if="r_mensualidad > 2" v-text="'Saldo inicial $ '+r_valor_venta.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})"></strong>
                                             <template v-else>
                                                 <strong v-text="
                                                     'Saldo inicial $ '
@@ -300,7 +300,7 @@
                                         <td v-else>Mensualidad</td>
                                         
                                         <td style="padding:0px;">
-                                            <input v-model="pago.cantidad" v-on:keyup="calculaPrecio(pago)" type="number" step=".01" class="form-control" style="height: 45px;">
+                                            <input v-model="pago.cantidad" v-on:keyup.enter="calculaPrecio(pago),actualizar()" type="number" step=".01" class="form-control" style="height: 45px;">
                                         </td>
 
                                         <td style="padding:0px;" class="text-center">
@@ -854,7 +854,7 @@ export default {
             this.arrayNMensualidad=[];
             this.valor_enganche=10000;
 
-            this.r_mensualidad==1?(
+            this.r_mensualidad<=2?(
                 this.r_valor_descuento = this.r_valor_venta*(this.arrayListA[0].valor/100)
             ):this.r_valor_descuento=0;
 
@@ -931,6 +931,7 @@ export default {
             let cantidad = (index.cantidad=="")?0:parseFloat(index.cantidad);
             let descuento = this.montoDescuento(index);
             let dias = 0;//this.dias(this.r_fecha, index.fecha);
+            let fullPrice = this.r_valor_venta-this.r_valor_descuento;
             if(index.folio == 1){
                 dias = this.dias(this.r_fecha, index.fecha);
             }else{
@@ -961,8 +962,17 @@ export default {
                 }
             //fechas de pago
 
-            if(folio > 0){
-                cantidad = (this.arrayMensualidad[folio-1].saldo < 0.001)?0:cantidad;
+            if(folio == 0 && this.r_mensualidad == 48){
+                if(cantidad < fullPrice*0.3 ){
+                    cantidad = fullPrice*0.3;
+                }
+            }
+
+
+            if(folio > 0 && this.arrayMensualidad[folio].saldo < 0){
+                // cantidad = 0;
+                cantidad = this.arrayMensualidad[folio-1].saldo
+                cantidad =(this.arrayMensualidad[folio-1].saldo < 0.001)?0:cantidad;
             }
             this.arrayMensualidad[folio].cantidad = cantidad;
             this.arrayMensualidad[folio].fecha = fechaFinalPago;//index.fecha;
@@ -1013,31 +1023,36 @@ export default {
         },
         montoDescuento(datos){
 
-            let dias = this.dias(this.r_fecha, datos.fecha)
             let montoDescuento = 0;
             let descuento = 0;
-
-            let date = new Date(this.r_fecha);
-            let days = this.daysInMonth(date.getMonth()+1, date.getFullYear());
-            
-            //if(this.r_mensualidad == 1 && this.arrayMensualidad[0].pago != 0){
-            //    if(dias > 0 && dias <= days){
-            //        descuento = this.arrayListA[0].valor;
-            //        montoDescuento = this.descuento(datos.cantidad, descuento);
-            //    }
-            //}else 
-            if(datos.pago == "0" && datos.cantidad > 10000 && dias <= 10 && this.r_mensualidad != 48){
-                let engancheExed = datos.cantidad-10000;
+            if(this.r_mensualidad != 2){
+                let dias = this.dias(this.r_fecha, datos.fecha)
                 
-                descuento = 4;
-                montoDescuento = this.descuento(engancheExed, descuento);
 
-            }else if(datos.pago == "0" && datos.cantidad > (this.r_valor_venta*.30) && dias <= 10){
-                let engancheExed = datos.cantidad-(this.r_valor_venta*.30);
+                let date = new Date(this.r_fecha);
+                let days = this.daysInMonth(date.getMonth()+1, date.getFullYear());
                 
-                descuento = 4;
-                montoDescuento = this.descuento(engancheExed, descuento);
+                //if(this.r_mensualidad == 1 && this.arrayMensualidad[0].pago != 0){
+                //    if(dias > 0 && dias <= days){
+                //        descuento = this.arrayListA[0].valor;
+                //        montoDescuento = this.descuento(datos.cantidad, descuento);
+                //    }
+                //}else 
+                if(datos.pago == "0" && datos.cantidad > 10000 && dias <= 10 && this.r_mensualidad != 48){
+                    let engancheExed = datos.cantidad-10000;
+                    
+                    descuento = 4;
+                    montoDescuento = this.descuento(engancheExed, descuento);
+
+                }else if(datos.pago == "0" && datos.cantidad > (this.r_valor_venta*.30) && dias <= 10){
+                    let engancheExed = datos.cantidad-(this.r_valor_venta*.30);
+                    
+                    descuento = 4;
+                    montoDescuento = this.descuento(engancheExed, descuento);
+                }
+
             }
+            
 
             let array = [montoDescuento, descuento];
             //return montoDescuento;

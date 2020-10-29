@@ -329,6 +329,20 @@ class ModeloController extends Controller
         return['modelos' => $modelos];
     }
 
+    public function selectModelo_proyecto2(Request $request){
+        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
+        if(!$request->ajax())return redirect('/');
+
+        $buscar = $request->buscar;
+        $modelos = Modelo::select('nombre','id')
+        ->where('fraccionamiento_id', '=', $buscar )
+        ->where('nombre','!=','Por Asignar')
+        //->where('nombre','!=','Por Asignar')
+        ->orderBy('nombre','asc')
+        ->get();
+        return['modelos' => $modelos];
+    }
+
     public function selectConsYTerreno(Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');

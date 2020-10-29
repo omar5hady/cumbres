@@ -195,22 +195,23 @@ class CalculadoraLotesController extends Controller
         $cotizacion->save();
         
         foreach($arrayPagos as $pago){
-            $newPago = new Pagos_lotes();
+            if($pago['cantidad'] != 0){
+                $newPago = new Pagos_lotes();
 
-            $newPago->cotizacion_lotes_id = $cotizacion->id;
-            
-            $newPago->folio = $pago['folio'];
-            $newPago->pago = $pago['pago'];
-            $newPago->cantidad = $pago['cantidad'];
-            $newPago->fecha = $pago['fecha'];
-            $newPago->descuento = $pago['descuento'];
-            $newPago->dias = $pago['dias'];
-            $newPago->descuento_porc = $pago['interesesPor'];
-            $newPago->interes_monto = $pago['interesMont'];
-            $newPago->total_a_pagar = $pago['totalAPagar'];
-            $newPago->saldo = $pago['saldo'];
-
-            $newPago->save();
+                $newPago->cotizacion_lotes_id = $cotizacion->id;
+                $newPago->folio = $pago['folio'];
+                $newPago->pago = $pago['pago'];
+                $newPago->cantidad = $pago['cantidad'];
+                $newPago->fecha = $pago['fecha'];
+                $newPago->descuento = $pago['descuento'];
+                $newPago->dias = $pago['dias'];
+                $newPago->descuento_porc = $pago['interesesPor'];
+                $newPago->interes_monto = $pago['interesMont'];
+                $newPago->total_a_pagar = $pago['totalAPagar'];
+                $newPago->saldo = $pago['saldo'];
+    
+                $newPago->save();
+            }
         }
 
         return $cotizacion->id;

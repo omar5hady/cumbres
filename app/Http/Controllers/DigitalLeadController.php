@@ -13,12 +13,13 @@ class DigitalLeadController extends Controller
     public function index(Request $request){
         $leads = Digital_lead::join('campanias as c','digital_leads.campania_id','=','c.id')
                         ->leftJoin('fraccionamientos as f','digital_leads.proyecto_interes','=','f.id')
-                        ->select('digital_leads.nombre','digital_leads.apellidos','digital_leads.email',
+                        ->select('digital_leads.nombre','digital_leads.apellidos','digital_leads.email','digital_leads.campania_id',
                                 'digital_leads.celular','digital_leads.telefono','digital_leads.proyecto_interes',
+                                'digital_leads.rango1','digital_leads.rango2',
                                 'c.nombre_campania','c.medio_digital','f.nombre as proyecto','digital_leads.status')
                         ->orderBy('nombre','asc')
                         ->orderBy('apellidos','asc')
-                        ->paginate(10);
+                        ->paginate(1);
 
         return $leads;
     }
