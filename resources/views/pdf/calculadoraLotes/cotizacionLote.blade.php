@@ -132,11 +132,12 @@ body{
             <tr>
                 <th># Pago</th>
                 <th>Mensualidad</th>
-                <th>Cantidad</th>
+                
                 <th>Fecha</th>
                 <th>Dias</th>
                 <th>% Descuento</th>
                 <th>Descuento</th>
+                <th>Pago a capital</th>
                 <th>Interes</th>
                 <th>Total a Pagar</th>
                 <th>Saldo Pendiente</th>
@@ -148,11 +149,11 @@ body{
                 <td>{{$pago->folio }}</td>
                 @if($pago->pago == 0)<td>Enganche</td>
                 @else<td>Mensualidad</td> @endif
-                <td>${{ $pago->cantidad }}</td>
                 <td> {{ $pago->fecha }} </td>
                 <td>{{ $pago->dias }}</td>
                 <td>{{$pago->descuento_porc }} %</td>
                 <td>${{ $pago->descuento }}</td>
+                <td>${{ $pago->cantidad }}</td>
                 <td>${{$pago->interes_monto }}</td>
                 <td>${{$pago->total_a_pagar }}</td>
                 <td>${{$pago->saldo }}</td>

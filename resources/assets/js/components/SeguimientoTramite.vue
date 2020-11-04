@@ -165,7 +165,7 @@
                                                         <a v-if="ingresar.num_licencia" class="dropdown-item"  v-text="'Licencia: '+ingresar.num_licencia" v-bind:href="'/downloadLicencias/'+ingresar.foto_lic"></a>
                                                     </div>
                                                 </td>
-                                                <td class="td2" v-text="ingresar.nombre_cliente"></td>
+                                                <td class="td2" v-bind:style="{ color : ingresar.emp_constructora == 'Grupo Constructor Cumbres' ? '#2C36C2' : '#000000'}" v-text="ingresar.nombre_cliente"></td>
                                                 <td class="td2" v-text="ingresar.nombre_vendedor"></td>
                                                 <td class="td2" v-text="ingresar.proyecto"></td>
                                                 <td class="td2" v-text="ingresar.etapa"></td>
@@ -367,7 +367,7 @@
                                                         <a v-if="preautorizados.num_licencia" class="dropdown-item"  v-text="'Licencia: '+preautorizados.num_licencia" v-bind:href="'/downloadLicencias/'+preautorizados.foto_lic"></a>
                                                     </div>
                                                 </td>
-                                                <td class="td2" v-text="preautorizados.nombre_cliente"></td>
+                                                <td class="td2" v-bind:style="{ color : preautorizados.emp_constructora == 'Grupo Constructor Cumbres' ? '#2C36C2' : '#000000'}" v-text="preautorizados.nombre_cliente"></td>
                                                 <td class="td2" v-text="preautorizados.nombre_vendedor"></td>
                                                 <td class="td2" v-text="preautorizados.proyecto"></td>
                                                 <td class="td2" v-text="preautorizados.etapa"></td>
@@ -596,7 +596,7 @@
                                                         <a v-if="liquidacion.num_licencia" class="dropdown-item"  v-text="'Licencia: '+liquidacion.num_licencia" v-bind:href="'/downloadLicencias/'+liquidacion.foto_lic"></a>
                                                     </div>
                                                 </td>
-                                                <td class="td2" v-text="liquidacion.nombre_cliente"></td>
+                                                <td class="td2" v-bind:style="{ color : liquidacion.emp_constructora == 'Grupo Constructor Cumbres' ? '#2C36C2' : '#000000'}" v-text="liquidacion.nombre_cliente"></td>
                                                 <td class="td2" v-text="liquidacion.nombre_vendedor"></td>
                                                 <td class="td2" v-text="liquidacion.proyecto"></td>
                                                 <td class="td2" v-text="liquidacion.etapa"></td>
@@ -818,7 +818,7 @@
                                                         <a v-if="programacion.num_licencia" class="dropdown-item"  v-text="'Licencia: '+programacion.num_licencia" v-bind:href="'/downloadLicencias/'+programacion.foto_lic"></a>
                                                     </div>
                                                 </td>
-                                                <td class="td2" v-text="programacion.nombre_cliente"></td>
+                                                <td class="td2" v-bind:style="{ color : programacion.emp_constructora == 'Grupo Constructor Cumbres' ? '#2C36C2' : '#000000'}" v-text="programacion.nombre_cliente"></td>
                                                 <td class="td2" v-text="programacion.nombre_vendedor"></td>
                                                 <td class="td2" v-text="programacion.proyecto"></td>
                                                 <td class="td2" v-text="programacion.etapa"></td>

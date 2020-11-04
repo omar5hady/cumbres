@@ -10,6 +10,10 @@
                 <div class="card-header">
                     <i class="fa fa-align-justify"></i> Digital Leads
                     &nbsp;
+                    <button type="button" @click="abrirModal('nuevo')" class="btn btn-success">
+                        <i class="icon-people"></i>&nbsp;Nuevo
+                    </button>
+                    &nbsp;
                     <button @click="back()" class="btn btn-primary btn-sm">Regresar</button>
                 </div>
                 
@@ -57,11 +61,15 @@
                                         </td>
                                         <td class="td2" v-if="lead.apellidos != null" v-text="lead.nombre + ' '+lead.apellidos"></td>
                                         <td class="td2" v-else v-text="lead.nombre"></td>
-                                        <td class="td2" v-if="lead.celular != null"  v-text="lead.celular"></td><td class="td2" v-else ></td>
-                                        <td class="td2" v-if="lead.email != null"  v-text="lead.celular"></td><td class="td2" v-else ></td>
+                                        <td class="td2" v-if="lead.celular != null">
+                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>    
+                                        </td><td class="td2" v-else ></td>
+                                        <td class="td2" v-if="lead.email != null" >
+                                            <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+lead.email+ ';'"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                        </td><td class="td2" v-else ></td>
                                         <td class="td2" v-text="lead.nombre_campania + '-'+lead.medio_digital"></td>
                                         <td class="td2" v-text="lead.proyecto"></td>
-                                        <td class="td2" v-if="lead.rango != null" v-text="'$'+formatNumber(lead.rango1) + ' - $'+formatNumber(lead.rango2)"></td><td class="td2" v-else ></td>
+                                        <td class="td2" v-if="lead.rango1 != null" v-text="'$'+formatNumber(lead.rango1) + ' - $'+formatNumber(lead.rango2)"></td><td class="td2" v-else ></td>
                                         <td class="td2" v-text="lead.modelo_interes"></td>
                                         <td class="td2" v-if="lead.status == '1'"><span class="badge badge-warning">En Seguimiento</span></td>
                                         <td class="td2" v-if="lead.status == '0'"><span class="badge badge-danger">Descartado</span></td>
@@ -149,37 +157,20 @@
                                         <template v-if="paso == 1"> <!-- Datos del lead -->
 
                                             <div class="form-group row">
-                                                <label class="col-md-2 form-control-label" for="text-input"><strong>Nombre:</strong><span style="color:red;" v-show="datos.nombre==''">(*)</span></label>
+                                                <label class="col-md-2 form-control-label" for="text-input"><strong>Nombre:</strong><span style="color:red;" v-show="nombre==''">(*)</span></label>
                                                 <div class="col-md-4">
-                                                    <input type="text" v-model="datos.nombre" class="form-control" placeholder="Nombre">
+                                                    <input type="text" v-model="nombre" class="form-control" placeholder="Nombre">
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <input type="text" v-model="datos.apellidos" class="form-control" placeholder="Apellidos">
+                                                    <input type="text" v-model="apellidos" class="form-control" placeholder="Apellidos">
                                                 </div>
                                             </div>
                                             
-                                            <div class="form-group row">
-                                                <label class="col-md-2 form-control-label" for="text-input">Telefono: </label>
-                                                <div class="col-md-3">
-                                                    <input type="text" v-model="datos.telefono" class="form-control" placeholder="Telefono">
-                                                </div>
-                                                <label class="col-md-2 form-control-label" for="text-input">Celular: </label>
-                                                <div class="col-md-3">
-                                                    <input type="text" v-model="datos.celular" class="form-control" placeholder="Celular">
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group row">
-                                                <label class="col-md-2 form-control-label" for="text-input">Correo electrónico: </label>
-                                                <div class="col-md-5">
-                                                    <input type="text" v-model="datos.email" class="form-control" placeholder="Telefono">
-                                                </div>
-                                            </div>
-
+                                            
                                             <div class="form-group row">
                                                 <label class="col-md-2 form-control-label" for="text-input">Campaña publicitaria</label>
                                                 <div class="col-md-4">
-                                                    <select class="form-control" v-model="datos.campania_id">
+                                                    <select class="form-control" v-model="campania_id">
                                                         <option value="">Seleccione</option>
                                                         <option v-for="medios in arrayCampanias" :key="medios.id" :value="medios.id" v-text="medios.nombre_campania + ' - ' + medios.medio_digital"></option>
                                                     </select>
@@ -187,7 +178,7 @@
 
                                                 <label class="col-md-2 form-control-label" for="text-input">Medio de contacto</label>
                                                 <div class="col-md-4">
-                                                    <input type="text" name="city" list="cityname" class="form-control" v-model="datos.medio_contacto" laceholder="Medio de publicidad">
+                                                    <input type="text" name="city" list="cityname" class="form-control" v-model="medio_contacto" placeholder="Medio de publicidad">
                                                     <datalist id="cityname">
                                                         <option value="">Seleccione</option>
                                                         <option value="Facebook">Facebook</option>
@@ -202,11 +193,20 @@
                                             <div class="form-group row">
                                                 <label class="col-md-2 form-control-label" for="text-input"><strong>Proyecto de interes</strong></label>
                                                 <div class="col-md-6">
-                                                    <select class="form-control" v-model="datos.proyecto_interes" v-on:change="selectModelo(datos.proyecto_interes)">
+                                                    <select class="form-control" v-model="proyecto_interes" v-on:change="selectModelo(proyecto_interes)">
                                                         <option value="">Seleccione</option>
                                                         <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" 
                                                             :value="proyecto.id" v-text="proyecto.nombre">
                                                         </option>
+                                                    </select>
+                                                </div>
+
+                                                <label class="col-md-2 form-control-label" for="text-input">Tipo de uso</label>
+                                                <div class="col-md-2">
+                                                    <select class="form-control" v-model="tipo_uso">
+                                                        <option value="">Seleccione</option>
+                                                        <option value="0">Habitar</option>
+                                                        <option value="1">Inversión</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -214,7 +214,7 @@
                                             <div class="form-group row">
                                                 <label class="col-md-2 form-control-label" for="text-input">Prototipo recomendado: </label>
                                                 <div class="col-md-5">
-                                                    <input type="text" name="city" list="modelosName" class="form-control" v-model="datos.modelo_interes" laceholder="Prototipo">
+                                                    <input type="text" name="city" list="modelosName" class="form-control" v-model="modelo_interes" laceholder="Prototipo">
                                                     <datalist id="modelosName">
                                                         <option value="">Modelo</option>
                                                         <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.nombre" v-text="modelos.nombre"></option>
@@ -225,152 +225,131 @@
                                             <div class="form-group row">
                                                 <label class="col-md-2 form-control-label" for="text-input">Presupuesto</label>
                                                 <div class="col-md-2">
-                                                    <p><strong>${{ formatNumber(datos.rango1)}}</strong></p>
+                                                    <p><strong>${{ formatNumber(rango1)}}</strong></p>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <input class="form-control" type="text" v-model="datos.rango1" placeholder="Minimo">
-                                                    <input class="form-control" type="range" name="price-min" id="price-min" v-model="datos.rango1" min="300000" max="2500000">
+                                                    <input class="form-control" type="text" v-model="rango1" placeholder="Minimo">
+                                                    <input class="form-control" type="range" name="price-min" id="price-min" v-model="rango1" min="300000" max="2500000">
                                                 </div>
                                                 <div class="col-md-2">
-                                                    <p><strong>${{ formatNumber(datos.rango2)}}</strong></p>
+                                                    <p><strong>${{ formatNumber(rango2)}}</strong></p>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <input class="form-control" type="text" v-model="datos.rango2" placeholder="Maximo">
-                                                    <input class="form-control" type="range" name="price-max" id="price-max" v-model="datos.rango2" min="300000" max="2500000">
+                                                    <input class="form-control" type="text" v-model="rango2" placeholder="Maximo">
+                                                    <input class="form-control" type="range" name="price-max" id="price-max" v-model="rango2" min="300000" max="2500000">
                                                 </div>
                                             </div>
-
-                                                <div class="form-group row line-separator"></div>
-
-                                                <div class="col-md-12">
-                                                    <h6 align="center"><strong> Lugar de trabajo </strong></h6>
-                                                </div>
-
-                                           
-                                                
 
                                         </template>
 
-                                        <template v-if="paso == 2"> <!-- Datos del lead -->
+                                        <template v-if="paso == 2"> <!-- Datos personales -->
 
                                             <div class="form-group row">
-                                                <label class="col-md-2 form-control-label" for="text-input">Nombre: <span style="color:red;" v-show="datos.nombre==''">(*)</span></label>
-                                                <div class="col-md-4">
-                                                    <input type="text" v-model="datos.nombre" class="form-control" placeholder="Nombre">
+                                                <label class="col-md-2 form-control-label" for="text-input">Correo electrónico: </label>
+                                                <div class="col-md-6">
+                                                    <input type="text" v-model="email" class="form-control" placeholder="Email">
                                                 </div>
-                                                <div class="col-md-4">
-                                                    <input type="text" v-model="datos.apellidos" class="form-control" placeholder="Apellidos">
-                                                </div>
+                                                
                                             </div>
-                                            
+
                                             <div class="form-group row">
-                                                <label class="col-md-2 form-control-label" for="text-input">Telefono: </label>
-                                                <div class="col-md-3">
-                                                    <input type="text" v-model="datos.telefono" class="form-control" placeholder="Telefono">
-                                                </div>
+                                                
                                                 <label class="col-md-2 form-control-label" for="text-input">Celular: </label>
                                                 <div class="col-md-3">
-                                                    <input type="text" v-model="datos.celular" class="form-control" placeholder="Celular">
+                                                    <input type="text" v-model="celular" class="form-control" placeholder="Celular" maxlength="10">
+                                                </div>
+
+                                                <label class="col-md-2 form-control-label" for="text-input">Teléfono: </label>
+                                                <div class="col-md-3">
+                                                    <input type="text" v-model="telefono" class="form-control" placeholder="Teléfono" maxlength="10">
+                                                </div>
+                                            </div>
+
+
+                                            <div class="form-group row">
+                                                <label class="col-md-1 form-control-label" for="text-input">RFC:</label>
+                                                <div class="col-md-3">
+                                                    <input type="text" v-model="rfc" class="form-control" placeholder="RFC" maxlength="10">
+                                                </div>
+                                                <label class="col-md-1 form-control-label" for="text-input">NSS:</label>
+                                                <div class="col-md-4">
+                                                    <input type="text" v-model="nss" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" placeholder="NSS" maxlength="11">
                                                 </div>
                                             </div>
                                             
                                             <div class="form-group row">
-                                                <label class="col-md-2 form-control-label" for="text-input">Dirección: <span style="color:red;" v-show="datos.direccion==''">(*)</span></label>
-                                                <div class="col-md-4">
-                                                    <input type="text" v-model="datos.direccion" class="form-control" >
-                                                </div>
-                                                <label class="col-md-1 form-control-label" for="text-input">CP: <span style="color:red;" v-show="datos.cp==''">(*)</span></label>
+                                                <label class="col-md-1 form-control-label" for="text-input">Sexo:</label>
                                                 <div class="col-md-3">
-                                                    <input type="text" v-model="datos.cp"  
-                                                    pattern="\d*" maxlength="5" v-on:keypress="isNumber($event)" @keyup="selectColonias(datos.cp,0)"
-                                                    class="form-control" >
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group row">
-                                                <label class="col-md-2 form-control-label" for="text-input">Colonia: <span style="color:red;" v-show="datos.colonia==''">(*)</span></label>
-                                                <div class="col-md-7">
-                                                    <input type="text" name="city3" list="cityname3" class="form-control" v-model="datos.colonia">
-                                                    <datalist id="cityname3">
+                                                    <select class="form-control" v-model="sexo">
                                                         <option value="">Seleccione</option>
-                                                        <option v-for="colonias in arrayColonias" :key="colonias.colonia " :value="colonias.colonia" v-text="colonias.colonia"></option>    
-                                                    </datalist>
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group row">
-                                                <label class="col-md-2 form-control-label" for="text-input">Estado: <span style="color:red;" v-show="datos.estado==''">(*)</span></label>
-                                                <div class="col-md-3">
-                                                    <select class="form-control" v-model="datos.estado" @click="selectCiudades(datos.estado,0)" >
-                                                        <option value="">Seleccione</option>
-                                                        <option v-for="estados in arrayEstados" :key="estados.estado" :value="estados.estado" v-text="estados.estado"></option>    
+                                                        <option value="F">Femenino</option>
+                                                        <option value="M">Masculino</option>
                                                     </select>
                                                 </div>
-                                                <label class="col-md-1 form-control-label" for="text-input">Ciudad: <span style="color:red;" v-show="datos.ciudad==''">(*)</span></label>
-                                                <div class="col-md-5">
-                                                    <select class="form-control" v-model="datos.ciudad" >
-                                                        <option value="">Seleccione</option>
-                                                        <option v-for="ciudades in arrayCiudades" :key="ciudades.municipio" :value="ciudades.municipio" v-text="ciudades.municipio"></option>    
-                                                    </select>
+                                                <label class="col-md-2 form-control-label" for="text-input">Fecha de nacimiento:</label>
+                                                <div class="col-md-3">
+                                                    <input type="date" v-model="f_nacimiento" class="form-control" >
                                                 </div>
                                             </div>
 
                                             <div class="form-group row">
-                                                <label class="col-md-2 form-control-label" for="text-input">CURP: <span style="color:red;" v-show="datos.curp==''">(*)</span></label>
+                                                <label class="col-md-2 form-control-label" for="text-input">Estado civil:</label>
                                                 <div class="col-md-4">
-                                                    <input type="text" v-model="datos.curp" maxlength="18" class="form-control" >
+                                                    <select class="form-control" v-model="edo_civil" >
+                                                        <option value="0">Seleccione</option> 
+                                                        <option value="1">Casado - separacion de bienes</option> 
+                                                        <option value="2">Casado - sociedad conyugal</option> 
+                                                        <option value="3">Divorciado</option> 
+                                                        <option value="4">Soltero</option> 
+                                                        <option value="5">Union libre</option>
+                                                        <option value="6">Viudo</option> 
+                                                        <option value="7">Otro</option>    
+                                                    </select>
                                                 </div>
-                                                <label class="col-md-1 form-control-label" for="text-input">NSS: <span style="color:red;" v-show="datos.nss==''">(*)</span></label>
-                                                <div class="col-md-4">
-                                                    <input type="text" v-model="datos.nss" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)">
+
+                                                <label class="col-md-1 form-control-label" for="text-input">Hijos?</label>
+                                                <div class="col-md-2">
+                                                    <select class="form-control" v-model="hijos" >
+                                                        <option value="">Seleccione</option> 
+                                                        <option value="1">Si</option> 
+                                                        <option value="0">No</option>   
+                                                    </select>
+                                                </div>
+
+                                                <div v-if="hijos == 1" class="col-md-2">
+                                                    <input type="number" min="0" v-model="num_hijos" class="form-control" >
                                                 </div>
                                             </div>
 
+                                            <div class="form-group row">
+
+                                                <label class="col-md-2 form-control-label" for="text-input">¿Mascotas?</label>
+                                                <div class="col-md-2">
+                                                    <select class="form-control" v-model="mascotas" >
+                                                        <option value="">Seleccione</option> 
+                                                        <option value="1">Si</option> 
+                                                        <option value="0">No</option>   
+                                                    </select>
+                                                </div>
+
+                                                <label class="col-md-2 form-control-label" for="text-input">Tamaño de mascota?</label>
+                                                <div v-if="mascotas == 1" class="col-md-2">
+                                                    <select class="form-control" v-model="tam_mascota" >
+                                                        <option value="">Seleccione</option> 
+                                                        <option value="1">Chico</option> 
+                                                        <option value="1">Mediano</option>   
+                                                        <option value="2">Grande</option>   
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            
                                                 <div class="form-group row line-separator"></div>
 
                                                 <div class="col-md-12">
                                                     <h6 align="center"><strong> Lugar de trabajo </strong></h6>
                                                 </div>
-
-                                            <div class="form-group row">
-                                                <label class="col-md-2 form-control-label" for="text-input" >Tipo de economia <span style="color:red;" v-show="tipo_economia==0">(*)</span></label>
-                                                <div class="col-md-3">
-                                                    <select class="form-control" v-model="tipo_economia" >
-                                                        <option value="0">Seleccione</option>  
-                                                        <option value="Formal">Formal</option>
-                                                        <option value="Informal">Informal</option>
-                                                        <option value="Mixta">Mixta</option>
-                                                    </select>
-                                                </div>
-
-                                                <label class="col-md-2 form-control-label" for="text-input" v-if="tipo_economia=='Formal' ||tipo_economia=='Mixta'">Puesto: </label>
-                                                <label class="col-md-2 form-control-label" for="text-input" v-else>Giro del negocio: </label>
-                                                <div class="col-md-4">
-                                                    <input type="text" v-model="puesto" maxlength="50" class="form-control" >
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group row">
-                                                <label class="col-md-2 form-control-label" for="">Empresa <span style="color:red;" v-show="datos.empresa==0">(*)</span></label>
-                                                <div class="col-md-6">
-                                                    <v-select 
-                                                        :on-search="selectEmpresaVueselect"
-                                                        label="nombre"
-                                                        :options="arrayEmpresa"
-                                                        placeholder="Buscar empresa..."
-                                                        :onChange="getDatosEmpresa2"
-                                                    ></v-select>
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group row">
-                                                <label class="col-md-3 form-control-label" for="">Numero de dependientes económicos  <span style="color:red;" v-show="datos.empresa==0">(*)</span></label>
-                                                <div class="col-md-2">
-                                                    <input type="number" v-model="num_dep_economicos" maxlength="2" class="form-control"  min="0">
-                                                </div>
-                                            </div>
                                                 
-
                                         </template>
 
 
@@ -431,7 +410,36 @@ export default {
             arrayCampanias:[],
             arrayFraccionamientos:[],
             arrayModelos:[],
-            datos:[],
+            
+            medio_contacto: '',
+            medio_publicidad: '',
+            campania_id: '',
+            nombre: '',
+            apellidos: '',
+            email: '',
+            celular: '',
+            telefono: '',
+            proyecto_interes: '',
+            modelo_interes: '',
+            rango1: '',
+            rango2: '',
+            edo_civil: '',
+            perfil_cliente: '',
+            ingresos: '',
+            coacreditado: '',
+            hijos: '',
+            num_hijos: '',
+            mascotas: '',
+            tam_mascota: '',
+            tipo_credito: '',
+            tipo_uso: '',
+            empresa: '',
+            status: '',
+            vendedor_asign: '',
+            rfc:'',
+            nss:'',
+            sexo:'',
+            f_nacimiento:''
             
            
         }
@@ -574,8 +582,37 @@ export default {
                     this.tituloModal='Actualizar Lead';
                     this.paso = 1;
                     this.modal = 1;
-                    this.datos = data;
                     
+                    //////////// PASO 1 //////////////////
+                    this.nombre = data['nombre'];
+                    this.apellidos = data['apellidos'];
+                    this.telefono = data['telefono'];
+                    this.celular = data['celular'];
+                    this.campania_id = data['campania_id'];
+                    this.medio_contacto = data['medio_contacto'];
+                    this.proyecto_interes = data['proyecto_interes'];
+                    this.tipo_uso = data['tipo_uso'];
+                    this.modelo_interes = data['modelo_interes'];
+                    this.rango1 = data['rango1'];
+                    this.rango2 = data['rango2'];
+                    this.email = data['email'];
+
+                    /////////////// PASO 2 ////////////////
+                    this.rfc = data['rfc'];
+                    this.nss = data['nss'];
+                    this.sexo = data['sexo'];
+                    this.f_nacimiento = data['f_nacimiento'];
+                    this.edo_civil = data['edo_civil'];
+                    this.hijos = data['hijos'];
+                    this.num_hijos = data['num_hijos'];
+                    break;
+                }
+
+                case 'nuevo':{
+                    this.tituloModal = 'Nuevo Lead';
+                    this.paso = 1;
+                    this.modal = 1
+                    this.datos = [];
                     break;
                 }
             }
@@ -621,7 +658,7 @@ export default {
         position: absolute !important;
     }
     .modal-body{
-        height: 450px;
+        height: 500px;
         width: 100%;
         overflow-y: auto;
     }

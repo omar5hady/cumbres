@@ -125,7 +125,7 @@
                                         <td class="td2" v-else> 
                                             <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+contratos.email+ ';'+contratos.email_institucional"> <i class="fa fa-envelope-o fa-lg"></i> </a>
                                         </td>
-                                        <td class="td2" v-text="contratos.nombre_cliente"></td>
+                                        <td class="td2" v-bind:style="{ color : contratos.emp_constructora == 'Grupo Constructor Cumbres' ? '#2C36C2' : '#000000'}" v-text="contratos.nombre_cliente"></td>
                                         <td class="td2" v-text="contratos.nombre_vendedor"></td>
                                         <td class="td2" v-text="contratos.proyecto"></td>
                                         <td class="td2" v-text="contratos.etapa"></td>

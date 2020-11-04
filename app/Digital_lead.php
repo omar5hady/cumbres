@@ -11,7 +11,7 @@ class Digital_lead extends Model
     protected $fillable = [
         'medio_contacto',
         'medio_publicidad',
-        'campaña_id',
+        'campania_id',
         'nombre',
         'apellidos',
         'email',
@@ -33,7 +33,11 @@ class Digital_lead extends Model
         'tipo_uso',
         'empresa',
         'status',
-        'vendedor_asign'
+        'vendedor_asign',
+        'rfc',
+        'nss',
+        'sexo',
+        'f_nacimiento'
     ];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
 
     public function obs_leads(){

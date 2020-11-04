@@ -183,56 +183,6 @@
                                 <option value="24">13 A 24 MESES</option>
                                 <option value="36">25 A 36 MESES</option>
                                 <option value="48">37 A 48 MESES</option>
-                                <!--option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                    <option value="6">6</option>
-                                    <option value="7">7</option>
-                                    <option value="8">8</option>
-                                    <option value="9">9</option>
-                                    <option value="10">10</option>
-                                    <option value="11">11</option>
-                                    <option value="12">12</option>
-                                    <option value="13">13</option>
-                                    <option value="14">14</option>
-                                    <option value="15">15</option>
-                                    <option value="16">16</option>
-                                    <option value="17">17</option>
-                                    <option value="18">18</option>
-                                    <option value="19">19</option>
-                                    <option value="20">20</option>
-                                    <option value="21">21</option>
-                                    <option value="22">22</option>
-                                    <option value="23">23</option>
-                                    <option value="24">24</option>
-                                    <option value="25">25</option>
-                                    <option value="26">26</option>
-                                    <option value="27">27</option>
-                                    <option value="28">28</option>
-                                    <option value="29">29</option>
-                                    <option value="30">30</option>
-                                    <option value="31">31</option>
-                                    <option value="32">32</option>
-                                    <option value="33">33</option>
-                                    <option value="34">34</option>
-                                    <option value="35">35</option>
-                                    <option value="36">36</option>
-                                    <option value="37">37</option>
-                                    <option value="38">38</option>
-                                    <option value="39">39</option>
-                                    <option value="40">40</option>
-                                    <option value="41">41</option>
-                                    <option value="42">42</option>
-                                    <option value="43">43</option>
-                                    <option value="44">44</option>
-                                    <option value="45">45</option>
-                                    <option value="46">46</option>
-                                    <option value="47">47</option>
-                                    <option value="48">48</option>
-                                    <option value="40">40</option>
-                                    <option value="40">40</option>
-                                <option value="40">40</option-->
                             </select>
 
                             <button @click="actualizar()" class="btn btn-sm btn-primary col-sm-1">Calcular</button>
@@ -287,6 +237,7 @@
                                         <th>Dias</th>
                                         <th>% Descuento</th>
                                         <th>Descuento</th>
+                                        <th>Pago a capital</th>
                                         <th>Interes</th>
                                         <th>Total a Pagar</th>
                                         <th>Saldo Pendiente</th>
@@ -312,6 +263,7 @@
 
                                         <td v-text="pago.descuento_porc+'%'"></td>
                                         <td v-text="'$ '+pago.descuento.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">Descuento</td>
+                                        <td v-text="'$ '+pago.pagoCapital.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">Pago Capital</td>
                                         <td v-text="'$ '+pago.interes_monto.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">Interes</td>
                                         <td v-text="'$ '+pago.total_a_pagar.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">Total a Pagar</td>
                                         <td v-text="'$ '+pago.saldo.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">Saldo</td>
@@ -728,6 +680,7 @@ export default {
             arrayEstados:[],
             arrayCiudades:[],
             arrayCiudadesCoa:[],
+            interesMensual:0,
             myAlerts:{
                 popAlert : function(title = 'Alert',type = "success", description =''){
                     swal({
@@ -854,11 +807,36 @@ export default {
             this.arrayNMensualidad=[];
             this.valor_enganche=10000;
 
+            this.interesMensual = 0.0;
+
+            switch(this.r_mensualidad){
+                case '12':{
+                    this.interesMensual = (.12/12);
+                    break;
+                }
+                case '24':{
+                    this.interesMensual = (.16/12);
+                    break;
+                }
+                case '36':{
+                    this.interesMensual = (.18/12);
+                    break;
+                }
+                case '48':{
+                    this.interesMensual = (.20/12);
+                    break;
+                }
+                default:{
+                    this.interesMensual = 0;
+                    break; 
+                }
+            }
+
             this.r_mensualidad<=2?(
                 this.r_valor_descuento = this.r_valor_venta*(this.arrayListA[0].valor/100)
             ):this.r_valor_descuento=0;
 
-            let fullPrice = this.r_valor_venta-this.r_valor_descuento;
+            let fullPrice = parseFloat(this.r_valor_venta-this.r_valor_descuento);
             let fechaPago = '';
 
             //asignacion de fecha actual
@@ -870,21 +848,28 @@ export default {
                 );
             //asignacion de fecha actual
 
-            //asignacion de primer pago o enganche
+             //asignacion de primer pago o enganche
+                //y pagos restantes
                 if(this.r_mensualidad == 48){
-                    this.valor_minMens = (fullPrice-(fullPrice*0.3))/this.r_mensualidad;
-                    this.valor_enganche = fullPrice*0.3;
+                   this.valor_enganche = parseFloat(fullPrice*0.3);
+                    //this.valor_minMens = (fullPrice-(fullPrice*0.3))/this.r_mensualidad;
+                    this.valor_minMens = (((fullPrice-this.valor_enganche)*this.interesMensual)/(1-(Math.pow(1+this.interesMensual,-this.r_mensualidad)))).toFixed(2);
 
                 }else if(this.r_mensualidad == 1){  
-                    this.valor_enganche = fullPrice.toFixed(2);
+                    this.valor_enganche = parseFloat(fullPrice.toFixed(2));
 
-                }else this.valor_minMens = (fullPrice-10000)/this.r_mensualidad;
+                }else if(this.r_mensualidad >= 2 && this.r_mensualidad <=6){
+                    this.valor_minMens = ((fullPrice-10000)/this.r_mensualidad).toFixed(2);
+                    
+                }else this.valor_minMens = (((fullPrice-10000)*this.interesMensual)/(1-(Math.pow(1+this.interesMensual,-this.r_mensualidad)))).toFixed(2);
             //asignacion de primer pago o enganche
+            let intMes = 0.0;
 
             //creacion de array vacio
             for(let i=0; this.r_mensualidad >=i; i++){
                 
                 let monto = 0.0;
+                let montoInteres = 0.0;
                 if(i == this.r_mensualidad && this.r_mensualidad != 1){
                     this.arrayMensualidad.forEach(item =>{
                         monto = monto+parseFloat(item.cantidad);
@@ -906,16 +891,22 @@ export default {
                     let fechaPagoFinal = fechaPago.getFullYear()+'-'+mes+'-'+dia;
                 //Setear Fecha de pago fin
 
+                if(i > 0 && this.r_mensualidad >6)
+                    intMes = this.valor_minMens*( 1-(Math.pow( (1+this.interesMensual),((-this.r_mensualidad)+(i-1))) ));
+
+                let pagoCap = monto - intMes;
+
                 this.arrayMensualidad.push({
                     folio: i+1,
                     pago: this.r_mensualidad==1?1:i?1:0,
-                    cantidad:parseFloat(monto).toFixed(2),
+                    cantidad:parseFloat(pagoCap).toFixed(2),
                     fecha: fechaPagoFinal,
                     descuento:0,
                     dias:0,
                     descuento_porc:0,
-                    interes_monto:0,
-                    total_a_pagar:0,
+                    interes_monto:parseFloat(intMes).toFixed(2),
+                    total_a_pagar:parseFloat(monto).toFixed(2),
+                    pagoCapital:parseFloat(pagoCap).toFixed(2),
                     saldo:0
                 });
             }
@@ -927,15 +918,52 @@ export default {
             this.actualizar();
         },
         calculaPrecio(index){
-            
+
+            switch(this.r_mensualidad){
+                case 12:{
+                    this.interesMensual = (.12/12);
+                    break;
+                }
+                case 24:{
+                    this.interesMensual = (.16/12);
+                    break;
+                }
+                case 36:{
+                    this.interesMensual = (.18/12);
+                    break;
+                }
+                case 48:{
+                    this.interesMensual = (.20/12);
+                    break;
+                }
+                default:{
+                    this.interesMensual = 0;
+                    break; 
+                }
+            }
+            this.valor_minMens = 0.0;
             let cantidad = (index.cantidad=="")?0:parseFloat(index.cantidad);
             let descuento = this.montoDescuento(index);
             let dias = 0;//this.dias(this.r_fecha, index.fecha);
             let fullPrice = this.r_valor_venta-this.r_valor_descuento;
+
+            if(this.r_mensualidad == 48){
+                    //this.valor_minMens = (fullPrice-(fullPrice*0.3))/this.r_mensualidad;
+                    this.valor_minMens = ((fullPrice-(fullPrice*0.3))*this.interesMensual.toFixed(4))/(1-(Math.pow(1+this.interesMensual.toFixed(4),-this.r_mensualidad)));
+
+                }else if(this.r_mensualidad == 1){  
+                    this.valor_enganche = parseFloat(fullPrice.toFixed(2));
+
+                }else if(this.r_mensualidad >= 2 && this.r_mensualidad <=6){
+                    this.valor_minMens = ((fullPrice-10000)/this.r_mensualidad).toFixed(2);
+                    
+                }else this.valor_minMens = (((fullPrice-10000)*this.interesMensual)/(1-(Math.pow(1+this.interesMensual,-this.r_mensualidad)))).toFixed(2);
+
+                
             if(index.folio == 1){
-                dias = this.dias(this.r_fecha, index.fecha);
+                dias = this.dias(this.r_fecha, index.fecha)-1;
             }else{
-                dias = this.dias(this.arrayMensualidad[parseInt(index.folio-2)].fecha, index.fecha);
+                dias = this.dias(this.arrayMensualidad[parseInt(index.folio-2)].fecha, index.fecha)-1;
             }
             let folio = index.folio-1;
 
@@ -978,8 +1006,8 @@ export default {
             this.arrayMensualidad[folio].fecha = fechaFinalPago;//index.fecha;
 
             if(this.r_mensualidad > 6) this.arrayMensualidad[folio].interes_monto = this.intereses(index);
-
-            this.arrayMensualidad[folio].total_a_pagar = this.arrayMensualidad[folio].interes_monto+cantidad;
+            this.arrayMensualidad[folio].pagoCapital = cantidad;
+            this.arrayMensualidad[folio].total_a_pagar = parseFloat(this.arrayMensualidad[folio].interes_monto)+cantidad;
 
             this.arrayMensualidad[folio].descuento_porc = descuento[1];
             this.arrayMensualidad[folio].descuento = descuento[0];
@@ -989,7 +1017,7 @@ export default {
             let saldo = this.r_valor_venta-this.r_valor_descuento;
             this.arrayMensualidad.forEach(
                 m => {
-                    saldo = saldo - ((m.total_a_pagar + m.descuento) - m.interes_monto);
+                    saldo = saldo - (m.pagoCapital + m.descuento)
                     m.saldo = saldo;
                 }
             );
@@ -1115,35 +1143,9 @@ export default {
                 
             let montoInteres = 0;
 
-            let saldo = 0;
-            this.arrayMensualidad.forEach(
-                m => {
-                    if(m.folio < datos.folio){
-                        saldo = saldo + ((m.total_a_pagar + m.descuento) - m.interes_monto)
-                    }
-                }
-            );
+            let intMes = this.valor_minMens*( 1-(Math.pow( (1+this.interesMensual),((-this.r_mensualidad)+(datos.folio-2))) ));
 
-            saldo = this.r_valor_venta-saldo;
-
-            let ineres = 0;
-
-            if(this.r_mensualidad == 12){
-                ineres = this.arrayListA[6].valor/100;
-                montoInteres = ((saldo*ineres)/365)*dias;
-
-            }else if(this.r_mensualidad == 24){
-                ineres = this.arrayListA[7].valor/100;
-                montoInteres = ((saldo*ineres)/365)*dias;
-
-            }else if(this.r_mensualidad == 36){
-                ineres = this.arrayListA[8].valor/100;
-                montoInteres = ((saldo*ineres)/365)*dias;
-
-            }else if(this.r_mensualidad == 48){
-                ineres = this.arrayListA[9].valor/100;
-                montoInteres = ((saldo*ineres)/365)*dias;
-            }
+            montoInteres = ((intMes)/30)*(dias-1);
 
             montoInteres = Number(montoInteres.toFixed(2));
 
@@ -1360,6 +1362,7 @@ export default {
                     this.r_valor_descuento = cot.valor_descuento;
 
                     this.arrayMensualidad = response.data.pago;
+                    this.actualizar();
                 }
             )
         },

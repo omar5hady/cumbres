@@ -265,6 +265,7 @@ class CalculadoraLotesController extends Controller
 
         if(sizeof($pago)){
             foreach ($pago as $index => $p) {
+                $p->cantidad = $p->cantidad + $p->descuento;
                 $p->cantidad = number_format((float)$p->cantidad, 2, '.', ',');
                 $p->descuento = number_format((float)$p->descuento, 2, '.', ',');
                 $p->interes_monto = number_format((float)$p->interes_monto, 2, '.', ',');

@@ -37,6 +37,19 @@
     <div style="position: static; margin: 30px;">
         <div class="table1" style="margin-top: 0.3em;">
             <div class="table-row">
+                <div class="table-cell"> <strong> Constructora:</strong> {{$contratos[0]->emp_constructora}}</div>        
+            </div>
+        </div>
+
+        <div class="table1" style="margin-top: 0.3em;">
+            <div class="table-row">
+            <div class="table-cell"><strong> Terreno:</strong> {{$contratos[0]->emp_terreno}}</div>         
+            </div>
+        </div>
+        <br>
+
+        <div class="table1" style="margin-top: 0.3em;">
+            <div class="table-row">
             <div class="table-cell">{{$fecha}}</div>         
             </div>
         </div>

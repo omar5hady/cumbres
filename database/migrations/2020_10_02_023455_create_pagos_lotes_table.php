@@ -38,6 +38,8 @@ class CreatePagosLotesTable extends Migration
 
             $table->boolean('estatus_pagado')->default(0)->nullable();
 
+            $table->integer('pagare_id')->nullable();
+
             $table->timestamps();
             
         });

@@ -672,7 +672,7 @@ class ClienteController extends Controller
         $Personal->activo = '0';
         $Personal->save();
 
-        $cliente->clasificacion = 6;
+        $cliente->clasificacion = 1;
         $cliente->save();
     }
 
@@ -1066,13 +1066,18 @@ class ClienteController extends Controller
     public function asignarCliente2(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+
+        
          
         try{
             DB::beginTransaction();
             //FindOrFail se utiliza para buscar lo que recibe de argumento
             $cliente = Cliente::findOrFail($request->id);
             $cliente->vendedor_id = $request->asesor_id;
+            if($cliente->clasificacion == 1 && Auth::user()->rol_id == 28271 || $cliente->clasificacion == 1 && Auth::user()->rol_id == 28270 || $cliente->clasificacion == 1 && Auth::user()->rol_id == 28128)
+                return redirect('/');
             $cliente->clasificacion = $request->clasificacion;
+            
             $cliente->save();
             
             $observacion = new Cliente_observacion();
