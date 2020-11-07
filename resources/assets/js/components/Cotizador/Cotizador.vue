@@ -289,8 +289,11 @@ export default {
 
                 }else if(this.r_mensualidad == 1){  
                     this.valor_enganche = parseFloat(fullPrice.toFixed(2));
+                
+                }else if(this.r_mensualidad == 2){  
+                    this.valor_minMens = parseFloat((fullPrice-10000).toFixed(2));
 
-                }else if(this.r_mensualidad >= 2 && this.r_mensualidad <=6){
+                }else if(this.r_mensualidad > 2 && this.r_mensualidad <=6){
                     this.valor_minMens = ((fullPrice-10000)/this.r_mensualidad).toFixed(2);
                     
                 }else this.valor_minMens = (((fullPrice-10000)*this.interesMensual)/(1-(Math.pow(1+this.interesMensual,-this.r_mensualidad)))).toFixed(2);

@@ -85,7 +85,7 @@
                                             </a>
                                         </th>
                                         <td>
-                                            <a v-if="cot.estatus==0" href="#" @click="editarCotizacin(cot.id)" v-text="cot.n_completo"></a>
+                                            <a v-if="cot.estatus==0 || cot.estatus == 1 && cot.contratoStatus == 1" href="#" @click="editarCotizacin(cot.id)" v-text="cot.n_completo"></a>
                                             <span v-else v-text="cot.n_completo"></span>
                                         </td>
                                         <td v-text="cot.fraccionamiento"></td>
@@ -1007,7 +1007,10 @@ export default {
 
             if(this.r_mensualidad > 6) this.arrayMensualidad[folio].interes_monto = this.intereses(index);
             this.arrayMensualidad[folio].pagoCapital = cantidad;
-            this.arrayMensualidad[folio].total_a_pagar = parseFloat(this.arrayMensualidad[folio].interes_monto)+cantidad;
+            if(cantidad > 0)
+                this.arrayMensualidad[folio].total_a_pagar = parseFloat(this.arrayMensualidad[folio].interes_monto)+cantidad;
+            else 
+                this.arrayMensualidad[folio].total_a_pagar = 0;
 
             this.arrayMensualidad[folio].descuento_porc = descuento[1];
             this.arrayMensualidad[folio].descuento = descuento[0];

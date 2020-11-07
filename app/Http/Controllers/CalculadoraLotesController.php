@@ -296,6 +296,8 @@ class CalculadoraLotesController extends Controller
             ->join('etapas','lotes.etapa_id','=','etapas.id')
             ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
 
+            ->leftJoin('contratos','cotizacion_lotes.num_contrato','=','contratos.id')
+
             ->select(
                 'clientes.coacreditado', 'clientes.lugar_nacimiento_coa', 'clientes.nombre_coa',
                 'clientes.apellidos_coa', 'clientes.f_nacimiento_coa','clientes.direccion_coa',
@@ -314,6 +316,8 @@ class CalculadoraLotesController extends Controller
                 'cotizacion_lotes.valor_venta', 'cotizacion_lotes.valor_descuento',
                 'cotizacion_lotes.created_at', 'cotizacion_lotes.fecha',
                 'cotizacion_lotes.mensualidades', 'cotizacion_lotes.estatus',
+
+                'contratos.id as folio', 'contratos.status as contratoStatus',
 
                 'etapas.num_etapa',
                 'lotes.num_lote',
@@ -373,7 +377,7 @@ class CalculadoraLotesController extends Controller
 
             $cotizacion = Cotizacion_lotes::findOrFail($request->id);
             $cotizacion->estatus = 1;
-            $cotizacion->save();
+            
 
             $lote = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                         ->join('etapas','lotes.etapa_id','=','etapas.id')
@@ -477,6 +481,8 @@ class CalculadoraLotesController extends Controller
                 $contrato->telefono_empresa_coa = $empresaCoa[0]->telefono;
                 $contrato->ext_empresa_coa = $empresaCoa[0]->ext;
                 $contrato->save();
+
+                $cotizacion->num_contrato = $credito->id;
             
             //Pagos
             foreach ($pagos as $ep => $det) {
@@ -487,6 +493,10 @@ class CalculadoraLotesController extends Controller
                 $pago->restante = $det['total_a_pagar'];
                 $pago->fecha_pago = $det['fecha'];
                 $pago->save();
+
+                $pagoLote = Pagos_lotes::findOrFail($det['id']);
+                $pagoLote->pagare_id = $pago->id;
+                $pagoLote->save();
             }
             
 
@@ -494,6 +504,8 @@ class CalculadoraLotesController extends Controller
                 $lote = Lote::findOrFail($cotizacion->lotes_id);
                 $lote->contrato = 1;
                 $lote->save();
+
+                $cotizacion->save();
 
             $this->cancelaOtros($cotizacion->id, $cotizacion->lotes_id);
             DB::commit();
@@ -586,6 +598,47 @@ class CalculadoraLotesController extends Controller
             $newPago->interes_monto = $pago['interes_monto'];
             $newPago->total_a_pagar = $pago['total_a_pagar'];
             $newPago->saldo = $pago['saldo'];
+
+            $idPago = $newPago->pagare_id;
+            $totalPagar = $pago['total_a_pagar'];
+            $fecha = $pago['fecha'];
+            $folio = $pago['folio'];
+
+            
+
+            if($idPago != NULL){
+                $p = Pago_contrato::select('id')->where('id','=',$idPago)->get();
+                if(sizeOf($p)){
+                    $pContrato = Pago_contrato::findOrFail($idPago);
+                
+                    if($totalPagar != 0){
+                        $pContrato->restante = ($pContrato->monto_pago - $pContrato->restante) + $totalPagar;
+                        $pContrato->monto_pago = $totalPagar;
+                        
+                        $pContrato->fecha_pago = $fecha;
+                        $pContrato->save();
+                    }
+                    else{
+                        $pContrato->delete();
+                    }
+
+                }
+                else{
+                     if($totalPagar != 0 && $totalPagar != '0'){
+                         $pContrato = new Pago_contrato();
+                         $pContrato->contrato_id = $cotizacion->num_contrato;
+                         $pContrato->num_pago = $folio;
+                         $pContrato->monto_pago = $totalPagar;    
+                         $pContrato->fecha_pago = $fecha;
+                         $pContrato->restante = $totalPagar;    
+                         $pContrato->save();
+
+                         $newPago->pagare_id = $pContrato->id;
+                     }
+
+                 }
+                
+            }
 
             $newPago->save();
         }

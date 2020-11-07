@@ -1744,26 +1744,26 @@
                                                 </thead>
                                                 <tbody >
                                                     <tr v-for="(pago,index) in arrayPagos" :key="pago.fecha_pago">
-                                                        <td v-if="listado==3 || listado==4 && btn_actualizar==1">
+                                                        <td v-if="listado==3  && modelo != 'Terreno' || listado==4 && btn_actualizar==1  && modelo != 'Terreno'">
                                                             <button v-if="listado==3" @click="eliminarPago(index)" type="button" class="btn btn-danger btn-sm">
                                                                 <i class="icon-close"></i>
                                                             </button>
-                                                            <button v-if="listado==4 && btn_actualizar==1 && pago.restante == pago.monto_pago" @click="eliminarPagoBD(pago.id)" type="button" class="btn btn-warning btn-sm">
+                                                            <button v-if="listado==4  && modelo != 'Terreno' && btn_actualizar==1 && pago.restante == pago.monto_pago  && modelo != 'Terreno'" @click="eliminarPagoBD(pago.id)" type="button" class="btn btn-warning btn-sm">
                                                                 <i class="icon-close"></i>
                                                             </button>
                                                         </td>
                                                         <td v-text="'Pago no. ' + parseInt(index+1)"></td>
                                                         <td v-if="btn_actualizar == 0" v-text="this.moment(pago.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
                                                         <td v-else>
-                                                            <input type="date" v-model="pago.fecha_pago">
+                                                            <input v-if="modelo != 'Terreno'" type="date" v-model="pago.fecha_pago">
                                                         </td>
                                                         <td v-if="btn_actualizar == 0">
                                                             {{ pago.monto_pago | currency}}
                                                         </td>
                                                         <td v-else>
-                                                            <input type="text" pattern="\d*" v-on:keypress="isNumber($event)" v-model="pago.monto_pago">
+                                                            <input v-if="modelo != 'Terreno'" type="text" pattern="\d*" v-on:keypress="isNumber($event)" v-model="pago.monto_pago">
                                                         </td>
-                                                        <td v-if="btn_actualizar == 1">
+                                                        <td v-if="btn_actualizar == 1 && modelo != 'Terreno'">
                                                             <button @click="actualizarPagoBD(pago.id, pago.monto_pago, pago.fecha_pago)" type="button" class="btn btn-success btn-sm">
                                                                 <i class="icon-check"></i>
                                                             </button>
