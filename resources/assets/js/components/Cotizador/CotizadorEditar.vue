@@ -300,13 +300,14 @@
                                         <td class="text-center"><strong>De 37 a 48 meses</strong></td>
                                     </tr>
                                     <tr>
+                                        <td class="text-center">{{arrayListA[0].valor + '% de Descuento'}}</td>
                                         <td class="text-center">0% de Interes de tasa anual</td>
-                                        <td class="text-center">0% de Interes de tasa anual</td>
-                                        <td class="text-center">12% de Interes de tasa anual</td>
-                                        <td class="text-center">16% de Interes de tasa anual</td>
-                                        <td class="text-center">18% de Interes de tasa anual</td>
-                                        <td class="text-center">20% de Interes de tasa anual</td>
+                                        <td class="text-center">{{arrayListA[6].valor + '% de Interes de tasa anual'}}</td>
+                                        <td class="text-center">{{arrayListA[7].valor + '% de Interes de tasa anual'}}</td>
+                                        <td class="text-center">{{arrayListA[8].valor + '% de Interes de tasa anual'}}</td>
+                                        <td class="text-center">{{arrayListA[9].valor + '% de Interes de tasa anual'}}</td>
                                     </tr>
+                                    
                                 </tbody>
                             </table>
                         </div>
@@ -708,6 +709,7 @@ export default {
             telefono_segunda_ref:'',
             celular_primera_ref:'',
             celular_segunda_ref:'',
+            interesAnual : 0,
            
         }
     },
@@ -811,22 +813,27 @@ export default {
 
             switch(this.r_mensualidad){
                 case '12':{
-                    this.interesMensual = (.12/12);
+                    this.interesAnual = this.arrayListA[6].valor;
+                    this.interesMensual = ((this.arrayListA[6].valor/100)/12);
                     break;
                 }
                 case '24':{
-                    this.interesMensual = (.16/12);
+                    this.interesAnual = this.arrayListA[7].valor;
+                    this.interesMensual = ((this.arrayListA[7].valor/100)/12);
                     break;
                 }
                 case '36':{
-                    this.interesMensual = (.18/12);
+                    this.interesAnual = this.arrayListA[8].valor;
+                    this.interesMensual = ((this.arrayListA[8].valor/100)/12);
                     break;
                 }
                 case '48':{
-                    this.interesMensual = (.20/12);
+                    this.interesAnual = this.arrayListA[9].valor;
+                    this.interesMensual = ((this.arrayListA[9].valor/100)/12);
                     break;
                 }
                 default:{
+                    this.interesAnual = 0;
                     this.interesMensual = 0;
                     break; 
                 }
@@ -920,20 +927,24 @@ export default {
         calculaPrecio(index){
 
             switch(this.r_mensualidad){
-                case 12:{
-                    this.interesMensual = (.12/12);
+                case '12':{
+                    this.interesAnual = this.arrayListA[6].valor;
+                    this.interesMensual = ((this.arrayListA[6].valor/100)/12);
                     break;
                 }
-                case 24:{
-                    this.interesMensual = (.16/12);
+                case '24':{
+                    this.interesAnual = this.arrayListA[7].valor;
+                    this.interesMensual = ((this.arrayListA[7].valor/100)/12);
                     break;
                 }
-                case 36:{
-                    this.interesMensual = (.18/12);
+                case '36':{
+                    this.interesAnual = this.arrayListA[8].valor;
+                    this.interesMensual = ((this.arrayListA[8].valor/100)/12);
                     break;
                 }
-                case 48:{
-                    this.interesMensual = (.20/12);
+                case '48':{
+                    this.interesAnual = this.arrayListA[9].valor;
+                    this.interesMensual = ((this.arrayListA[9].valor/100)/12);
                     break;
                 }
                 default:{
@@ -1218,6 +1229,7 @@ export default {
                         'valor_descuento':this.r_valor_descuento,
                         'fecha':this.r_fecha,
                         'mensualidades':this.r_mensualidad,
+                        'interes':this.interesAnual,
                     }).then(
                         rsponse => {
                             this.myAlerts.popAlert('Guardado correctamente');

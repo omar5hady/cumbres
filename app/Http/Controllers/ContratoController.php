@@ -9,6 +9,7 @@ use App\Pago_contrato;
 use App\Apartado;
 use App\Pagos_lotes;
 use App\Cotizacion_lotes;
+use App\datos_calc_lotes;
 use DB;
 use Auth;
 
@@ -3266,6 +3267,115 @@ class ContratoController extends Controller
         else
             $pdf = \PDF::loadview('pdf.contratos.contratoDePromesaCredito2', ['contratoPromesa' => $contratoPromesa, 'pagos' => $pagos]);
         return //['contratoPromesa' => $contratoPromesa, 'pagos' => $pagos];
+        $pdf->stream('contrato_promesa_credito.pdf');
+    }
+
+    public function contratoLote(Request $request, $id)
+    {
+
+        $cotizacion = Cotizacion_lotes::select('id','mensualidades','interes')->where('num_contrato','=',$id)->first();
+        $p_lote = Pagos_lotes::where('cotizacion_lotes_id','=',$cotizacion->id)->orderBy('folio','asc')->get();
+        $opc_lotes = datos_calc_lotes::get();
+
+        $contratoPromesa = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+            ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+            ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+            ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+            ->join('fraccionamientos', 'lotes.fraccionamiento_id', '=', 'fraccionamientos.id')
+            ->select(
+                'creditos.id',
+                'creditos.prospecto_id',
+                'creditos.etapa',
+                'creditos.manzana',
+                'creditos.num_lote',
+                'creditos.superficie',
+                'inst_seleccionadas.id as inst_credito',
+                'inst_seleccionadas.tipo_credito',
+                'creditos.precio_venta',
+                'inst_seleccionadas.institucion',
+                'creditos.fraccionamiento as proyecto',
+
+                'fraccionamientos.ciudad as ciudad_proy','fraccionamientos.estado as estado_proy',
+
+                'personal.nombre',
+                'personal.apellidos',
+                'personal.telefono',
+                'personal.celular',
+                'personal.direccion',
+                'personal.cp',
+                'personal.colonia',
+                'creditos.fraccionamiento',
+                'clientes.id as prospecto_id',
+                'clientes.edo_civil',
+                'clientes.nss',
+                'clientes.curp',
+                'clientes.empresa',
+                'clientes.coacreditado',
+                'clientes.nombre_coa',
+                'clientes.apellidos_coa',
+                'clientes.f_nacimiento_coa',
+                'clientes.nacionalidad_coa',
+                'clientes.estado',
+                'clientes.ciudad',
+
+                'contratos.monto_total_credito',
+                'contratos.enganche_total',
+                'contratos.fecha',
+                'contratos.infonavit',
+                'contratos.fovisste',
+                'contratos.avaluo_cliente',
+                'contratos.credito_neto',
+                'contratos.total_pagar'
+            )
+            ->where('inst_seleccionadas.elegido', '=', '1')
+            ->where('contratos.id', '=', $id)
+            ->get();
+
+        $pagos = Pago_contrato::select('monto_pago', 'num_pago', 'fecha_pago')
+            ->where('tipo_pagare', '=', 0)->where('contrato_id', '=', $id)->orderBy('fecha_pago', 'asc')->get();
+        
+        
+
+        $contratoPromesa[0]->mensualidades = $cotizacion->mensualidades;
+        $contratoPromesa[0]->interes = $cotizacion->interes;
+        $contratoPromesa[0]->porcentajeValor = ($p_lote[0]->total_a_pagar * 100)/$contratoPromesa[0]->precio_venta;
+        $contratoPromesa[0]->porcentajeValor = round($contratoPromesa[0]->porcentajeValor,2);
+        
+        //$contratoPromesa[0]->avaluoLetra = NumerosEnLetras::convertir($contratoPromesa[0]->avaluo_cliente, 'Pesos', true, 'Centavos');
+        $contratoPromesa[0]->precioVentaLetra = NumerosEnLetras::convertir($contratoPromesa[0]->precio_venta, 'Pesos', true, 'Centavos');
+        $contratoPromesa[0]->valorTerrenoLetra = NumerosEnLetras::convertir($contratoPromesa[0]->valor_terreno, 'Pesos', true, 'Centavos');
+        //$contratoPromesa[0]->valorConstruccionLetra = NumerosEnLetras::convertir($contratoPromesa[0]->valor_construccion, 'Pesos', true, 'Centavos');
+
+        $contratoPromesa[0]->montoTotalCreditoLetra = NumerosEnLetras::convertir($contratoPromesa[0]->credito_neto, 'Pesos', true, 'Centavos');
+
+        $fechaContrato = new Carbon($contratoPromesa[0]->fecha);
+        $contratoPromesa[0]->fecha = $fechaContrato->formatLocalized('%d días de %B de %Y');
+        $contratoPromesa[0]->fecha2 = $fechaContrato->formatLocalized('%d de %B de %Y');
+        
+        $totalDePagos = count($p_lote);
+        $p_lote[0]->totalDePagos = NumerosEnLetras::convertir($totalDePagos, false, false, false);
+
+        $enganche = $p_lote[0]->total_a_pagar;
+        
+
+        for ($i = 0; $i < count($p_lote); $i++) {
+            $tiempo = new Carbon($p_lote[$i]->fecha);
+            $p_lote[$i]->fecha = $tiempo->formatLocalized('%d de %B de %Y');
+            $p_lote[$i]->totalLetra = NumerosEnLetras::convertir($p_lote[$i]->total_a_pagar, 'Pesos', true, 'Centavos');
+            $p_lote[$i]->total_a_pagar = number_format((float)$p_lote[$i]->total_a_pagar, 2, '.', ',');
+
+            $p_lote[$i]->interesLetra = NumerosEnLetras::convertir($p_lote[$i]->interes_monto, 'Pesos', true, 'Centavos');
+            $p_lote[$i]->interes_monto = number_format((float)$p_lote[$i]->interes_monto, 2, '.', ',');
+
+            $p_lote[$i]->cantidadLetra = NumerosEnLetras::convertir($p_lote[$i]->cantidad, 'Pesos', true, 'Centavos');
+            $p_lote[$i]->cantidad = number_format((float)$p_lote[$i]->cantidad, 2, '.', ',');
+        }
+
+       
+        $pdf = \PDF::loadview('pdf.contratos.contratoLote', ['contratoPromesa' => $contratoPromesa, 'pagos' => $p_lote]);
+        return //['contratoPromesa' => $contratoPromesa, 'pagos' => $p_lote];
         $pdf->stream('contrato_promesa_credito.pdf');
     }
 

@@ -192,6 +192,7 @@ class CalculadoraLotesController extends Controller
         $cotizacion->valor_descuento = $request->valor_descuento;
         $cotizacion->fecha = $request->fecha;
         $cotizacion->mensualidades = $request->mensualidades;
+        $cotizacion->interes = $request->interes;
         $cotizacion->save();
         
         foreach($arrayPagos as $pago){
@@ -390,7 +391,7 @@ class CalculadoraLotesController extends Controller
             $pagos = Pagos_lotes::where('cotizacion_lotes_id','=',$request->id)->get();
             
             $empresa = Empresa::where('id','=',$datos['empresa_id'])->get();
-            $empresaCoa = Empresa::where('id','=',$datos['empresaCoa_id'])->get();
+            
 
             // PERSONAL
                 $persona = Personal::findOrFail($datos['personalId']);
@@ -407,16 +408,20 @@ class CalculadoraLotesController extends Controller
                 $cliente->estado = $datos['estado'];
                 $cliente->ciudad = $datos['ciudad'];
                 $cliente->puesto = $request->puesto;
-                $cliente->empresa_coa = $datos['empresa_coa'];
-                $cliente->nss_coa = $datos['nss_coa'];
-                $cliente->curp_coa = $datos['curp_coa'];
-                $cliente->telefono_coa = $datos['telefono_coa'];
-                $cliente->celular_coa = $datos['celular_coa'];
-                $cliente->direccion_coa = $datos['direccion_coa'];
-                $cliente->colonia_coa = $datos['colonia_coa'];
-                $cliente->estado_coa = $datos['estado_coa'];
-                $cliente->ciudad_coa = $datos['ciudad_coa'];
-                $cliente->cp_coa = $datos['cp_coa'];
+                if($cliente->coacreditado == 1){
+                    $empresaCoa = Empresa::where('id','=',$datos['empresaCoa_id'])->get();
+                    $cliente->empresa_coa = $datos['empresa_coa'];
+                    $cliente->nss_coa = $datos['nss_coa'];
+                    $cliente->curp_coa = $datos['curp_coa'];
+                    $cliente->telefono_coa = $datos['telefono_coa'];
+                    $cliente->celular_coa = $datos['celular_coa'];
+                    $cliente->direccion_coa = $datos['direccion_coa'];
+                    $cliente->colonia_coa = $datos['colonia_coa'];
+                    $cliente->estado_coa = $datos['estado_coa'];
+                    $cliente->ciudad_coa = $datos['ciudad_coa'];
+                    $cliente->cp_coa = $datos['cp_coa'];
+                }
+                
                 $cliente->save();
             
             //Credito
@@ -473,13 +478,16 @@ class CalculadoraLotesController extends Controller
                 $contrato->ciudad_empresa = $empresa[0]->ciudad;
                 $contrato->telefono_empresa = $empresa[0]->telefono;
                 $contrato->ext_empresa = $empresa[0]->ext;
-                $contrato->direccion_empresa_coa = $empresaCoa[0]->direccion;
-                $contrato->cp_empresa_coa = $empresaCoa[0]->cp;
-                $contrato->colonia_empresa_coa = $empresaCoa[0]->colonia;
-                $contrato->estado_empresa_coa = $empresaCoa[0]->estado;
-                $contrato->ciudad_empresa_coa = $empresaCoa[0]->ciudad;
-                $contrato->telefono_empresa_coa = $empresaCoa[0]->telefono;
-                $contrato->ext_empresa_coa = $empresaCoa[0]->ext;
+                if($cliente->coacreditado == 1){
+                    $contrato->direccion_empresa_coa = $empresaCoa[0]->direccion;
+                    $contrato->cp_empresa_coa = $empresaCoa[0]->cp;
+                    $contrato->colonia_empresa_coa = $empresaCoa[0]->colonia;
+                    $contrato->estado_empresa_coa = $empresaCoa[0]->estado;
+                    $contrato->ciudad_empresa_coa = $empresaCoa[0]->ciudad;
+                    $contrato->telefono_empresa_coa = $empresaCoa[0]->telefono;
+                    $contrato->ext_empresa_coa = $empresaCoa[0]->ext;
+                }
+                
                 $contrato->save();
 
                 $cotizacion->num_contrato = $credito->id;
@@ -580,6 +588,7 @@ class CalculadoraLotesController extends Controller
         //$cotizacion->valor_venta = $request->valor_venta;
         //$cotizacion->valor_descuento = $request->valor_descuento;
         $cotizacion->fecha = $request->fecha;
+        $cotizacion->interes = $request->interes;
         //$cotizacion->mensualidades = $request->mensualidades;
         $cotizacion->save();
         

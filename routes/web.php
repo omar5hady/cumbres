@@ -492,6 +492,8 @@ Route::group(['middleware' => ['auth']],function(){
     Route::post('/edita/cotizacion/aprovar','CalculadoraLotesController@aprovarCotizacion');
     Route::get('/get/cotizacion/editar','CalculadoraLotesController@getCotizacionEdita');
 
+    Route::get('/contrato/contratoLote/pdf/{id}','ContratoController@contratoLote')->name('contrato_promesa_credito.pdf');
+
     /**********************************RUTAS AVANCE*************************** */
         Route::get('/avance','AvanceController@index');
         Route::get('/avanceProm','AvanceController@indexProm');

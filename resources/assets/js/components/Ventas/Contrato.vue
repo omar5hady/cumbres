@@ -1822,9 +1822,11 @@
                                             <template v-else>
                                                 <div style="text-align: right;" v-if="rolId!=2">
                                                     <a class="btn btn-primary btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+id">Solicitud de contrato de compra venta</a>
+                                                    <a class="btn btn-warning btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/contrato/contratoLote/pdf/'+id">Imprimir contrato</a>
                                                 </div>
                                                 <div style="text-align: right;" v-if="rolId==2 && status == 1">
                                                     <a class="btn btn-primary btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+id">Solicitud de contrato de compra venta</a>
+                                                    <a class="btn btn-warning btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/contrato/contratoLote/pdf/'+id">Imprimir contrato</a>
                                                 </div>
                                             </template>
                                             
