@@ -332,7 +332,7 @@
                                                     </select>
                                                 </div>
 
-                                                <label class="col-md-2 form-control-label" for="text-input">Tamaño de mascota?</label>
+                                                <label class="col-md-2 form-control-label" v-if="mascotas == 1" for="text-input">Tamaño de mascota?</label>
                                                 <div v-if="mascotas == 1" class="col-md-2">
                                                     <select class="form-control" v-model="tam_mascota" >
                                                         <option value="">Seleccione</option> 
@@ -348,6 +348,19 @@
 
                                                 <div class="col-md-12">
                                                     <h6 align="center"><strong> Lugar de trabajo </strong></h6>
+                                                </div>
+
+                                                <label class="col-md-2 form-control-label" for="text-input">Empresa</label>
+                                                <div class="col-md-6">
+                                                    <input type="text" name="city" list="cityname" class="form-control" v-model="medio_contacto" placeholder="Medio de publicidad">
+                                                    <datalist id="cityname">
+                                                        <option value="">Seleccione</option>
+                                                        <option value="Facebook">Facebook</option>
+                                                        <option value="Instagram">Instagram</option>
+                                                        <option value="Pagina web">Pagina web</option>
+                                                        <option value="Llamada Telefonica">Llamada Telefónica</option>
+                                                        
+                                                    </datalist>
                                                 </div>
                                                 
                                         </template>

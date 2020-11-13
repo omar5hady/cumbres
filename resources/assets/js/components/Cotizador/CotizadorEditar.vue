@@ -812,28 +812,27 @@ export default {
             this.interesMensual = 0.0;
 
             switch(this.r_mensualidad){
-                case '12':{
-                    this.interesAnual = this.arrayListA[6].valor;
-                    this.interesMensual = ((this.arrayListA[6].valor/100)/12);
+                case 12:{
+                    this.interesAnual = parseFloat(this.arrayListA[6].valor);
+                    this.interesMensual = ((this.interesAnual/100)/12);
                     break;
                 }
-                case '24':{
-                    this.interesAnual = this.arrayListA[7].valor;
-                    this.interesMensual = ((this.arrayListA[7].valor/100)/12);
+                case 24:{
+                    this.interesAnual = parseFloat(this.arrayListA[7].valor);
+                    this.interesMensual = ((this.interesAnual.valor/100)/12);
                     break;
                 }
-                case '36':{
-                    this.interesAnual = this.arrayListA[8].valor;
-                    this.interesMensual = ((this.arrayListA[8].valor/100)/12);
+                case 36:{
+                    this.interesAnual = parseFloat(this.arrayListA[8].valor);
+                    this.interesMensual = ((this.interesAnual/100)/12);
                     break;
                 }
-                case '48':{
-                    this.interesAnual = this.arrayListA[9].valor;
-                    this.interesMensual = ((this.arrayListA[9].valor/100)/12);
+                case 48:{
+                    this.interesAnual = parseFloat(this.arrayListA[9].valor);
+                    this.interesMensual = ((this.interesAnual/100)/12);
                     break;
                 }
                 default:{
-                    this.interesAnual = 0;
                     this.interesMensual = 0;
                     break; 
                 }
@@ -926,25 +925,31 @@ export default {
         },
         calculaPrecio(index){
 
+            this.interesMensual = 0.0;
+
             switch(this.r_mensualidad){
-                case '12':{
-                    this.interesAnual = this.arrayListA[6].valor;
-                    this.interesMensual = ((this.arrayListA[6].valor/100)/12);
+                case 12:{
+                    this.interesAnual = parseFloat(this.arrayListA[6].valor);
+                    this.interesMensual = this.interesAnual/100;
+                    this.interesMensual = this.interesMensual/12;
                     break;
                 }
-                case '24':{
-                    this.interesAnual = this.arrayListA[7].valor;
-                    this.interesMensual = ((this.arrayListA[7].valor/100)/12);
+                case 24:{
+                    this.interesAnual = parseFloat(this.arrayListA[7].valor);
+                    this.interesMensual = this.interesAnual/100;
+                    this.interesMensual = this.interesMensual/12;
                     break;
                 }
-                case '36':{
-                    this.interesAnual = this.arrayListA[8].valor;
-                    this.interesMensual = ((this.arrayListA[8].valor/100)/12);
+                case 36:{
+                    this.interesAnual = parseFloat(this.arrayListA[8].valor);
+                    this.interesMensual = this.interesAnual/100;
+                    this.interesMensual = this.interesMensual/12;
                     break;
                 }
-                case '48':{
-                    this.interesAnual = this.arrayListA[9].valor;
-                    this.interesMensual = ((this.arrayListA[9].valor/100)/12);
+                case 48:{
+                    this.interesAnual = parseFloat(this.arrayListA[9].valor);
+                    this.interesMensual = this.interesAnual/100;
+                    this.interesMensual = this.interesMensual/12;
                     break;
                 }
                 default:{
@@ -952,6 +957,8 @@ export default {
                     break; 
                 }
             }
+
+            
             this.valor_minMens = 0.0;
             let cantidad = (index.cantidad=="")?0:parseFloat(index.cantidad);
             let descuento = this.montoDescuento(index);

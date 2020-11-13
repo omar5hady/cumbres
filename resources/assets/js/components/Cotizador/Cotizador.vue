@@ -660,7 +660,7 @@ export default {
 
         },
         generarPdf(){
-
+            this.actualizar();
             Swal.fire({
                 title: '¿Guardar cotización y generar PDF?',
                 text: "Este cambio no se podrá deshacer!",
@@ -681,6 +681,7 @@ export default {
                         'valor_descuento':this.r_valor_descuento,
                         'fecha':this.r_fecha,
                         'mensualidades':this.r_mensualidad,
+                        'interes':this.interesAnual,
                     }).then(
                         response => {
                             this.myAlerts.popAlert('Guardado correctamente');

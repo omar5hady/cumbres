@@ -19,6 +19,8 @@ class DigitalLeadController extends Controller
                                 'digital_leads.rfc', 'digital_leads.nss', 'digital_leads.sexo', 'digital_leads.f_nacimiento',
                                 'digital_leads.edo_civil', 'digital_leads.hijos', 'digital_leads.num_hijos',
                                 'digital_leads.mascotas', 'digital_leads.tam_mascota',
+                                'digital_leads.edo_civil','digital_leads.edo_civil','digital_leads.edo_civil',
+                                'digital_leads.edo_civil','digital_leads.edo_civil','digital_leads.edo_civil',
                                 'c.nombre_campania','c.medio_digital','f.nombre as proyecto','digital_leads.status')
                         ->orderBy('nombre','asc')
                         ->orderBy('apellidos','asc')

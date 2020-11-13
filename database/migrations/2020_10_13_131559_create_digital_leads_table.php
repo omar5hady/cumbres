@@ -25,6 +25,7 @@ class CreateDigitalLeadsTable extends Migration
             $table->string('celular',10)->nullable();
             $table->string('telefono',10)->nullable();
             $table->integer('proyecto_interes')->nullable();
+            $table->boolean('privada')->default(1);
             $table->string('modelo_interes')->nullable();
             $table->double('rango1')->nullable();
             $table->double('rango2')->nullable();
@@ -35,12 +36,18 @@ class CreateDigitalLeadsTable extends Migration
             $table->boolean('hijos')->nullable();
             $table->integer('num_hijos')->default(0);
             $table->boolean('mascotas')->nullable();
+            $table->integer('num_mascotas')->default(0);
+            $table->boolean('autos')->nullable();
+            $table->integer('num_autos')->default(0);
             $table->boolean('tam_mascota')->default(0);
             $table->string('tipo_credito')->nullable();
             $table->boolean('tipo_uso')->nullable();
             $table->string('empresa')->nullable();
             $table->boolean('status')->default(1);
             $table->integer('vendedor_asign')->nullable();
+
+            $table->string('amenidad_priv')->nullable(); 
+            $table->string('detalle_casa')->nullable(); 
 
             $table->string('rfc',10)->nullable();
             $table->string('nss',11)->nullable();

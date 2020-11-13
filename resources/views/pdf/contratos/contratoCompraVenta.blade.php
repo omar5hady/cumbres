@@ -348,7 +348,11 @@ body {
                     <div colspan="5" class="table-cell"></div>
                 </div>  -->    
                 <div class="table-row">
-                <div colspan="5" class="table-cell" style="text-align:center;"><hr style="border-color:gray;">  www.casascumbres.mx</div>
+                    @if($contratos[0]->emp_constructora == 'CONCRETANIA' && $contratos[0]->emp_terreno == 'CONCRETANIA')
+                        <div colspan="5" class="table-cell" style="text-align:center;"><hr style="border-color:gray;">  www.concretania.mx</div>
+                    @else
+                        <div colspan="5" class="table-cell" style="text-align:center;"><hr style="border-color:gray;">  www.casascumbres.mx</div>
+                    @endif
                 </div>    
         </div>
 </div>
@@ -446,7 +450,12 @@ body {
   <li align="justify">TODAS LAS TRANSFERENCIAS DEBERAN PROVENIR DE LA CUENTA DE LA PERSONA QUE ESTA ADQUIRIENDO LA CASA.</li>
   <li align="justify">EL TOTAL DE LOS DEPOSITOS EN EFECTIVO DEBERAN SER INFERIORES A $100,000.00.</li>
   <li align="justify">EN CASO DE REALIZAR TU PAGO ELECTRONICO EN UNA SUCURSAL BANCARIA ENTREGA TU COMPROBANTE EN NUESTRAS OFICINAS
-      CENTRALES O VIA CORREO ELECTRONICO (escaneado o foto digital del comprobante), AL EMAIL: <u>cobranza@grupocumbres.com</u> 
+      CENTRALES O VIA CORREO ELECTRONICO (escaneado o foto digital del comprobante), AL EMAIL: 
+      @if($contratos[0]->emp_constructora == 'Grupo Constructor Cumbres')
+      <u>cobranza@grupocumbres.com</u> 
+      @else 
+      <u>cobranza@concretania.mx</u> 
+      @endif
       <strong>ES REQUISITO INDISPENSABLE SE ANEXE EL NUMERO DE CUENTA Y BANCO DE LA CUENTA DE LA QUE PROVIENEN LOS RECURSOS EN CADA 
       MOVIMIENTO.</strong>
   </li>

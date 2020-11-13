@@ -33,7 +33,11 @@ body {
 
 <div style="text-align: justify; margin:60px">
         <div style="text-align: right; margin-bottom: 0em;  margin-top: 0em;">
-            <p style="margin-bottom: 0em;  margin-top: 0em;"> <strong> PAGARE NO. </strong> {{$pagos[$i]->num_pago + 1}}/{{count($pagos)}}</p>
+            @if($cliente[0]->emp_constructora == 'CONCRETANIA' && $cliente[0]->emp_terreno == 'CONCRETANIA')
+                <p style="margin-bottom: 0em;  margin-top: 0em;"> <strong> PAGARE NO. </strong> {{$pagos[$i]->num_pago }}/{{count($pagos)}}</p>
+            @else
+                <p style="margin-bottom: 0em;  margin-top: 0em;"> <strong> PAGARE NO. </strong> {{$pagos[$i]->num_pago + 1}}/{{count($pagos)}}</p>
+            @endif
             <p style="margin-bottom: 0em;  margin-top: 0em;"> <strong>BUENO POR </strong>${{$pagos[$i]->monto_pago1}}</p>
             <p style="margin-bottom: 0em;  margin-top: 0em;">EN SAN LUIS POTOSI, SAN LUIS POTOSI, A {{strtoupper($cliente[0]->fecha)}}</p>
         </div>
@@ -42,7 +46,11 @@ body {
         <br>
        
             <div>
-            <p style="margin-bottom: 0em;  margin-top: 0em;">DEBE(MOS) Y PAGARE(MOS) INCONDICIONALMENTE POR ESTE PAGARE A LA ORDEN DE GRUPO CONSTRUCTOR CUMBRES, S.A DE C.V., EN SAN LUIS POTOSI, SAN LUIS POTOSI, <strong> EL {{strtoupper($pagos[$i]->fecha_pago)}}</strong></p>
+                @if($cliente[0]->emp_constructora == 'CONCRETANIA' && $cliente[0]->emp_terreno == 'CONCRETANIA')
+                <p style="margin-bottom: 0em;  margin-top: 0em;">DEBE(MOS) Y PAGARE(MOS) INCONDICIONALMENTE POR ESTE PAGARE A LA ORDEN DE CONCRETANIA S.A. DE C.V., EN SAN LUIS POTOSI, SAN LUIS POTOSI, <strong> EL {{strtoupper($pagos[$i]->fecha_pago)}}</strong></p>
+                @else
+                    <p style="margin-bottom: 0em;  margin-top: 0em;">DEBE(MOS) Y PAGARE(MOS) INCONDICIONALMENTE POR ESTE PAGARE A LA ORDEN DE GRUPO CONSTRUCTOR CUMBRES, S.A DE C.V., EN SAN LUIS POTOSI, SAN LUIS POTOSI, <strong> EL {{strtoupper($pagos[$i]->fecha_pago)}}</strong></p>
+                @endif
             <p style="margin-bottom: 0em;  margin-top: 0em;">LA CANTIDAD DE: </p>
             <p style="margin-bottom: 0em;  margin-top: 0em;"><strong>${{strtoupper($pagos[$i]->montoPagoLetra)}}</strong></p>
             <p style="margin-bottom: 0em;  margin-top: 0em;">VALOR RECIBIDO A MI (NUESTRA) ENTERA SATISFACCION. ESTE PAGARE FORMA PARTE DE UNA SERIE NUMERADA DEL <strong>1</strong> AL <strong>{{count($pagos)}}</strong> Y TODOS ESTAN SUJETOS A LA CONDICION DE QUE, AL NO PAGARSE CUALQUIERA

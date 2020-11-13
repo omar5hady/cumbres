@@ -2825,7 +2825,7 @@ class ContratoController extends Controller
                     'cotizacion_lotes.id', 'cotizacion_lotes.cliente_id', 'cotizacion_lotes.lotes_id',
                     'cotizacion_lotes.valor_venta', 'cotizacion_lotes.valor_descuento',
                     'cotizacion_lotes.created_at', 'cotizacion_lotes.updated_at', 'cotizacion_lotes.fecha',
-                    'cotizacion_lotes.mensualidades',
+                    'cotizacion_lotes.mensualidades', 'cotizacion_lotes.interes',
     
                     'personal.apellidos', 'personal.nombre', 
                     
@@ -2836,21 +2836,24 @@ class ContratoController extends Controller
                     'etapas.num_etapa',
                     'fraccionamientos.nombre as fraccionamiento'
                 )
-                ->where('cotizacion_lotes.lotes_id', '=', $contratos[0]->lote_id)
-                ->where('cotizacion_lotes.cliente_id', '=', $contratos[0]->prospecto_id)
-                ->where('cotizacion_lotes.estatus', '=', 1)
+                ->where('cotizacion_lotes.num_contrato', '=', $id)
                 
             ->first();
 
             $cotizacion->m2 = $cotizacion->valor_venta/$cotizacion->terreno_m2;
             $contratos[0]->m2 = number_format((float)$cotizacion->m2, 2, '.', ',');
+            $contratos[0]->interes = $cotizacion->interes;
             $contratos[0]->mensualidades = $cotizacion->mensualidades;
             
             $pago = Pagos_lotes::where('cotizacion_lotes_id', '=', $cotizacion->id)
                 ->orderBy('folio')
             ->get();
+            
     
             if(sizeof($pago)){
+                $totalDePagos = count($pago);
+                $pago[0]->numPagos= $totalDePagos;
+
                 foreach ($pago as $index => $p) {
                     $p->cantidad = number_format((float)$p->cantidad, 2, '.', ',');
                     $p->descuento = number_format((float)$p->descuento, 2, '.', ',');
@@ -2885,10 +2888,13 @@ class ContratoController extends Controller
                 'personal.cp',
                 'personal.colonia',
                 'clientes.estado',
+                'creditos.modelo',
                 'clientes.ciudad',
                 'lotes.emp_constructora',
                 'lotes.emp_terreno',
-                'contratos.fecha'
+                'contratos.fecha',
+                'lotes.emp_constructora',
+                'lotes.emp_terreno'
             )
             ->where('contratos.id', '=', $id)->get();
 
@@ -3262,7 +3268,7 @@ class ContratoController extends Controller
             }
         }
 
-        if($contratoPromesa[0]->emp_constructora == 'Grupo Constructor Cumbres')
+        if($contratoPromesa[0]->emp_constructora == $contratoPromesa[0]->emp_terreno)
             $pdf = \PDF::loadview('pdf.contratos.contratoDePromesaCredito', ['contratoPromesa' => $contratoPromesa, 'pagos' => $pagos]);
         else
             $pdf = \PDF::loadview('pdf.contratos.contratoDePromesaCredito2', ['contratoPromesa' => $contratoPromesa, 'pagos' => $pagos]);
@@ -3336,6 +3342,7 @@ class ContratoController extends Controller
         $pagos = Pago_contrato::select('monto_pago', 'num_pago', 'fecha_pago')
             ->where('tipo_pagare', '=', 0)->where('contrato_id', '=', $id)->orderBy('fecha_pago', 'asc')->get();
         
+        setlocale(LC_TIME, 'es_MX.utf8');
         
 
         $contratoPromesa[0]->mensualidades = $cotizacion->mensualidades;
@@ -3355,6 +3362,7 @@ class ContratoController extends Controller
         $contratoPromesa[0]->fecha2 = $fechaContrato->formatLocalized('%d de %B de %Y');
         
         $totalDePagos = count($p_lote);
+        $p_lote[0]->numPagos= $totalDePagos;
         $p_lote[0]->totalDePagos = NumerosEnLetras::convertir($totalDePagos, false, false, false);
 
         $enganche = $p_lote[0]->total_a_pagar;

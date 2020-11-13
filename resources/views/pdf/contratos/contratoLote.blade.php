@@ -326,7 +326,7 @@ body{
 </p>
 
 <p>
-    En todo caso, para que <strong>EL PROMITTENTE VENDEDOR</strong> apruebe la cesión el promitente comprador deberá de 
+    En todo caso, para que <strong>EL PROMITENTE VENDEDOR</strong> apruebe la cesión el promitente comprador deberá de 
     demostrar que está al corriente de todas las obligaciones fiscales y legales que recaigan sobre el 
     inmueble o que deriven del presente contrato.
 </p>
@@ -546,7 +546,7 @@ body{
 <br>
 <p>
     El plazo para cubrir el adeudo elegido por <strong>EL PROMITENTE COMPRADOR</strong> es de 
-    {{$contratoPromesa[0]->mensualidades}} meses, por lo que la tasa de interés ordinario que aplica, conforme a la 
+    {{$pagos[0]->numPagos}} pagos, por lo que la tasa de interés ordinario que aplica, conforme a la 
     cláusula cuarta del contrato es del {{$contratoPromesa[0]->interes}} por ciento anual. Los contratos a
      plazo menores de seis meses no generan interés ordinario, pero si el moratorio. 
 </p>

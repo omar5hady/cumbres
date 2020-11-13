@@ -31,8 +31,16 @@ body{
 
 <p>
 CONTRATO DE PROMESA DE COMPRAVENTA SUJETO A CONDICION SUSPENSIVA, QUE CELEBRAN, POR UNA PARTE, 
-LA SOCIEDAD MERCANTIL DENOMINADA <strong>GRUPO CONSTRUCTOR CUMBRES, S.A DE C.V.</strong>, REPRESENTADA EN ESTE ACTO POR EL 
-ING. ALEJANDRO F. PEREZ ESPINOSA O EL ING. DAVID CALVILLO MARTINEZ, A QUIEN EN LO SUCESIVO Y PARA LOS EFECTOS DEL PRESENTE CONTRATO, 
+LA SOCIEDAD MERCANTIL DENOMINADA 
+@if($contratoPromesa[0]->emp_constructora == 'Grupo Constructor Cumbres')
+    <strong>GRUPO CONSTRUCTOR CUMBRES, S.A DE C.V.</strong>, REPRESENTADA EN ESTE ACTO POR EL 
+    ING. ALEJANDRO F. PEREZ ESPINOSA O EL ING. DAVID CALVILLO MARTINEZ, 
+@else
+    <strong>CONCRETANIA, S.A DE C.V.</strong>, REPRESENTADA EN ESTE ACTO POR EL 
+    EL ING. DAVID CALVILLO MARTINEZ, 
+@endif
+
+A QUIEN EN LO SUCESIVO Y PARA LOS EFECTOS DEL PRESENTE CONTRATO, 
 SE LE DENOMINARA COMO <strong>EL PROMITENTE VENDEDOR</strong>, Y POR LA OTRA PARTE, POR SU PROPIO DERECHO, <strong>EL SR(A). {{mb_strtoupper($contratoPromesa[0]->nombre)}} {{mb_strtoupper($contratoPromesa[0]->apellidos)}} y @if($contratoPromesa[0]->coacreditado == 1) {{mb_strtoupper($contratoPromesa[0]->nombre_coa)}} {{mb_strtoupper($contratoPromesa[0]->apellidos_coa)}} @endif</strong>, 
 A QUIEN EN LO SUCESIVO Y PARA LOS EFECTOS DEL PRESENTE CONTRATO SE LE DENOMINARÁ COMO EL PROMITENTE COMPRADOR, 
 AL TENOR DE LAS SIGUIENTES DECLARACIONES Y CLÁUSULAS. 
@@ -45,17 +53,32 @@ I.- Declara <strong>EL PROMITENTE VENDEDOR</strong>, por conducto de su represen
 </p>
 
 <p>
-a) Que es una sociedad mercantil constituida de acuerdo a la legislación de la República Mexicana, mediante Escritura Pública número tres,
-   del tomo cuarenta y siete, otorgada ante la fe del Licenciado Leopoldo de la Garza Marroquín, Notario Público numero 33, 
-   con ejercicio en esta ciudad, con fecha ocho de diciembre de mil novecientos noventa y nueve, y cuyo primer testimonio obra inscrito en el 
-   Registro Publico de la Propiedad y de Comercio, de esta ciudad, bajo la inscripción numero tres del folio mercantil y 
-   folio de muebles número setenta, desde el día diecinueve de enero del dos mil.
+    @if($contratoPromesa[0]->emp_constructora == 'Grupo Constructor Cumbres')
+        a) Que es una sociedad mercantil constituida de acuerdo a la legislación de la República Mexicana, mediante Escritura Pública número tres,
+        del tomo cuarenta y siete, otorgada ante la fe del Licenciado Leopoldo de la Garza Marroquín, Notario Público numero 33, 
+        con ejercicio en esta ciudad, con fecha ocho de diciembre de mil novecientos noventa y nueve, y cuyo primer testimonio obra inscrito en el 
+        Registro Publico de la Propiedad y de Comercio, de esta ciudad, bajo la inscripción numero tres del folio mercantil y 
+        folio de muebles número setenta, desde el día diecinueve de enero del dos mil.
+    @else
+        a) QQue es una sociedad mercantil constituida de acuerdo a la legislación de la República Mexicana,
+        mediante Escritura Pública número setecientos sesenta y cuatro, del volumen veintiuno, otorgada ante la fe
+        del Licenciado Octaviano Gómez y González, Notario Público número Cuatro, con ejercicio en esta
+        ciudad, con fecha veinticinco de julio de dos mil dieciocho, y cuyo primer testimonio obra inscrito en el
+        Registro Público de la Propiedad y de Comercio, de esta ciudad, bajo el Folio Mercantil Eléctronico N2018073682, 
+        desde el día siete de septiembre de dos mil dieciocho.
+    @endif
 </p>
 
 <p>
-b) Que su representante, el Ing. Alejandro Francisco Pérez Espinosa y el Ing. David Calvillo Martínez, 
-   cuentan con las facultades necesarias para la celebración del presente contrato, mismas que a la fecha no le han sido restringidas, 
-   ni revocadas de forma alguna. 
+    @if($contratoPromesa[0]->emp_constructora == 'Grupo Constructor Cumbres')
+        b) Que su representante, el Ing. Alejandro Francisco Pérez Espinosa y el Ing. David Calvillo Martínez, 
+        cuentan con las facultades necesarias para la celebración del presente contrato, mismas que a la fecha no le han sido restringidas, 
+        ni revocadas de forma alguna. 
+    @else
+        b) Que su representante, el Ing. David Calvillo Martínez, 
+        cuenta con las facultades necesarias para la celebración del presente contrato, mismas que a la fecha no le han sido restringidas, 
+        ni revocadas de forma alguna. 
+    @endif
 </p>
 
 <p>
@@ -278,7 +301,11 @@ excepto el Impuesto sobre la Renta el cuál será a cargo de <strong>EL PROMITEN
 </p>
 
 <p>
-<strong>EL PROMITENTE VENDEDOR:</strong> MANUEL GUTIERREZ NAJERA 190 Colonia TEQUISQUIAPAM San Luis Potosí, San Luis Potosí 
+    @if($contratoPromesa[0]->emp_constructora == 'Grupo Constructor Cumbres')
+        <strong>EL PROMITENTE VENDEDOR:</strong> MANUEL GUTIERREZ NAJERA 190 Colonia TEQUISQUIAPAM San Luis Potosí, San Luis Potosí 
+    @else
+        <strong>EL PROMITENTE VENDEDOR:</strong> MANUEL GUTIERREZ NAJERA 180 Colonia TEQUISQUIAPAM San Luis Potosí, San Luis Potosí 
+    @endif
 </p>
 
 <p>
@@ -316,7 +343,11 @@ en tres ejemplares de un mismo tenor y para un solo efecto, a los <strong>{{$con
                     <div colspan="2" class="table-cell3">_________________________________</div>
                 </div>
                 <div class="table-row">
+                    @if($contratoPromesa[0]->emp_constructora == 'Grupo Constructor Cumbres')
                     <div colspan="2" class="table-cell3">GRUPO CONSTRUCTOR CUMBRES<br>ING. ALEJANDRO F. PEREZ ESPINOSA<br>ING. DAVID CALVILLO MARTINEZ</div>
+                    @else 
+                        <div colspan="2" class="table-cell3">CONCRETANIA<br>ING. DAVID CALVILLO MARTINEZ</div>
+                    @endif
                     <div style="width: 8%;" class="table-cell3"></div>
                     <div colspan="2" class="table-cell3">{{mb_strtoupper($contratoPromesa[0]->nombre)}} {{mb_strtoupper($contratoPromesa[0]->apellidos)}}</div>
                 </div>

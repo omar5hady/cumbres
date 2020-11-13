@@ -79,7 +79,7 @@
             <div class="table-cell1">INSTITUCION: <u>CONCRETANIA</u> </div>
         </div>
         <div class="table-row">
-            <div class="table-cell1">PLAZO: <u>{{$contratos[0]->plazo}} MESES</u> </div>
+            <div class="table-cell1">PLAZO: <u>{$pago[0]->numPagos}} PAGOS</u> </div>
             <div class="table-cell1">DENOMINACION: <u>PESOS</u> </div>
         </div>
     </div>
@@ -366,7 +366,7 @@
             </tr>
             <tr>
                 <td>Valor de Venta: ${{$contratos[0]->total_pagar}}</td>
-                <td>Mensualidades: {{round($contratos[0]->mensualidades)}}</td>
+                <td>Número de pagos: {{round($pago[0]->numPagos)}}</td>
                 <td></td>
             </tr>
         </tbody>
@@ -430,22 +430,22 @@
             <tr>
                 @if($contratos[0]->mensualidades <= 1)
                     <td class="text-center"><strong>De 0 a 1 mes</strong></td>
-                    <td class="text-center">0% de Interes de tasa anual</td>
+                    <td class="text-center">{{$contratos[0]->interes}}% de Interes de tasa anual</td>
                 @elseif($contratos[0]->mensualidades == 6)
                     <td class="text-center"><strong>De 1 a 6 mes</strong></td>
-                    <td class="text-center">0% de Interes de tasa anual</td>
+                    <td class="text-center">{{$contratos[0]->interes}}% de Interes de tasa anual</td>
                 @elseif($contratos[0]->mensualidades == 12)
                     <td class="text-center"><strong>De 7 a 12 meses</strong></td>
-                    <td class="text-center">12% de Interes de tasa anual</td>
+                    <td class="text-center">{{$contratos[0]->interes}}% de Interes de tasa anual</td>
                 @elseif($contratos[0]->mensualidades == 24)
                     <td class="text-center"><strong>De 13 a 24 meses</strong></td>
-                    <td class="text-center">16% de Interes de tasa anual</td>
+                    <td class="text-center">{{$contratos[0]->interes}}% de Interes de tasa anual</td>
                 @elseif($contratos[0]->mensualidades == 36)
                     <td class="text-center"><strong>De 25 a 36 meses</strong></td>
-                    <td class="text-center">18% de Interes de tasa anual</td>
+                    <td class="text-center">{{$contratos[0]->interes}}% de Interes de tasa anual</td>
                 @elseif($contratos[0]->mensualidades == 48)
                     <td class="text-center"><strong>De 37 a 48 meses</strong></td>
-                    <td class="text-center">20% de Interes de tasa anual</td>
+                    <td class="text-center">{{$contratos[0]->interes}}% de Interes de tasa anual</td>
                 @endif
             </tr>
             

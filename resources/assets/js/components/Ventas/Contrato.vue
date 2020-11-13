@@ -1752,18 +1752,19 @@
                                                                 <i class="icon-close"></i>
                                                             </button>
                                                         </td>
+                                                        <td v-else-if="listado==4 && btn_actualizar==1  && modelo == 'Terreno'"></td>
                                                         <td v-text="'Pago no. ' + parseInt(index+1)"></td>
                                                         <td v-if="btn_actualizar == 0" v-text="this.moment(pago.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
                                                         <td v-else>
-                                                            <input v-if="modelo != 'Terreno'" type="date" v-model="pago.fecha_pago">
+                                                            <input v-if="modelo != 'Terreno' || modelo == 'Terreno' && index == 0" type="date" v-model="pago.fecha_pago">
                                                         </td>
-                                                        <td v-if="btn_actualizar == 0">
+                                                        <td v-if="btn_actualizar == 0 || btn_actualizar == 1 &&  modelo == 'Terreno'">
                                                             {{ pago.monto_pago | currency}}
                                                         </td>
                                                         <td v-else>
                                                             <input v-if="modelo != 'Terreno'" type="text" pattern="\d*" v-on:keypress="isNumber($event)" v-model="pago.monto_pago">
                                                         </td>
-                                                        <td v-if="btn_actualizar == 1 && modelo != 'Terreno'">
+                                                        <td v-if="btn_actualizar == 1 && modelo != 'Terreno' ||btn_actualizar == 1 && modelo == 'Terreno' && index == 0">
                                                             <button @click="actualizarPagoBD(pago.id, pago.monto_pago, pago.fecha_pago)" type="button" class="btn btn-success btn-sm">
                                                                 <i class="icon-check"></i>
                                                             </button>
@@ -1823,10 +1824,14 @@
                                                 <div style="text-align: right;" v-if="rolId!=2">
                                                     <a class="btn btn-primary btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+id">Solicitud de contrato de compra venta</a>
                                                     <a class="btn btn-warning btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/contrato/contratoLote/pdf/'+id">Imprimir contrato</a>
+                                                    <a class="btn btn-light btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/pagareContrato/pdf/'+id">Imprimir pagares</a>
+                                                    <a class="btn btn-info btn-sm" v-if="listado==4 && btn_actualizar==0" @click="selectNombreArchivoModelo()">Especificaciones</a>
                                                 </div>
                                                 <div style="text-align: right;" v-if="rolId==2 && status == 1">
                                                     <a class="btn btn-primary btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+id">Solicitud de contrato de compra venta</a>
                                                     <a class="btn btn-warning btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/contrato/contratoLote/pdf/'+id">Imprimir contrato</a>
+                                                    <a class="btn btn-light btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/pagareContrato/pdf/'+id">Imprimir pagares</a>
+                                                    <a class="btn btn-info btn-sm" v-if="listado==4 && btn_actualizar==0" @click="selectNombreArchivoModelo()">Especificaciones</a>
                                                 </div>
                                             </template>
                                             
