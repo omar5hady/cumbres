@@ -53,8 +53,8 @@ class CreateUsersTable extends Migration
             $table->boolean('notaria')->default(0);
             $table->boolean('cuenta')->default(0);
             $table->boolean('proveedores')->default(0);
-
-
+            $table->boolean('digital_campain')->default(0);
+            
             //Desarrollo
             $table->boolean('fraccionamiento')->default(0);
             $table->boolean('etapas')->default(0);
@@ -94,6 +94,7 @@ class CreateUsersTable extends Migration
             $table->boolean('contratos')->default(0);
             $table->boolean('docs')->default(0);
             $table->boolean('equipamientos')->default(0);
+            $table->boolean('digital_lead')->default(0);
 
             //Saldos
             $table->boolean('edo_cuenta')->default(0);

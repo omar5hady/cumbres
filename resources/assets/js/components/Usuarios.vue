@@ -171,6 +171,9 @@
                                                 <li class="nav-item">
                                                     <a class="nav-link"><i class="fa fa-industry"></i> <input v-model="proveedores" type="checkbox" value="1"/> Proveedores</a>
                                                 </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"><i class="fa fa-industry"></i> <input v-model="digital_campain" type="checkbox" value="1"/> Campañas digitales</a>
+                                                </li>
                                             </ul>
                                     </div>
                                 </div> 
@@ -245,6 +248,9 @@
                                                     </li>
                                                     <li class="nav-item">
                                                         <a class="nav-link"><i class="fa fa-archive"></i> <input v-model="equipamientos" type="checkbox" value="1"/> Equipamientos</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="fa fa-vcard"></i> <input v-model="digital_lead" type="checkbox" value="1"/> Digital leads</a>
                                                     </li>
                                                 </ul>
                                     </div>
@@ -862,6 +868,7 @@
                     cuenta:0,
                     notaria: 0,
                     proveedores : 0,
+                    digital_campain : 0,
 
 
                     //Desarrollo
@@ -905,6 +912,7 @@
                     contratos:0,
                     docs: 0,
                     equipamientos : 0,
+                    digital_lead : 0,
 
                     //Saldos
                     edo_cuenta:0,
@@ -1076,6 +1084,7 @@
                 this.cuenta = 0;
                 this.notaria=0;
                 this.proveedores = 0;
+                this.digital_campain = 0;
             },
             limpiarDesarrollo(){
                 //Desarrollo
@@ -1125,6 +1134,7 @@
                 this.calc_lotes=0;
                 this.edit_cotizacion=0;
                 this.opc_cotizador=0;
+                this.digital_lead = 0;
             },
             limpiarComisiones(){
                 this.bono_com=0;
@@ -1226,6 +1236,7 @@
                     me.cuenta = usuarios[0].cuenta;
                     me.notaria = usuarios[0].notaria;
                     me.proveedores = usuarios[0].proveedores;
+                    me.digital_campain = usuarios[0].digital_campain;
 
                     //Desarrollo
                     me.fraccionamiento=usuarios[0].fraccionamiento;
@@ -1270,6 +1281,7 @@
                     me.contratos=usuarios[0].contratos;
                     me.docs=usuarios[0].docs;
                     me.equipamientos = usuarios[0].equipamientos;
+                    me.digital_lead = usuarios[0].digital_lead;
 
                     //Saldos
                     me.edo_cuenta = usuarios[0].edo_cuenta;
@@ -1542,6 +1554,7 @@
                     'cuenta':this.cuenta,
                     'notaria':this.notaria,
                     'proveedores':this.proveedores,
+                    'digital_campain':this.digital_campain,
                         //Desarrollo
                     'fraccionamiento':this.fraccionamiento,
                     'etapas':this.etapas,
@@ -1578,6 +1591,7 @@
                     'contratos':this.contratos,
                     'docs':this.docs,
                     'equipamientos':this.equipamientos,
+                    'digital_lead':this.digital_lead,
                         //Cotizador de lotes
                     'calc_lotes':this.calc_lotes,
                     'edit_cotizacion':this.edit_cotizacion,
@@ -1890,6 +1904,7 @@
                 me.contratos=0;
                 me.docs=0;
                 me.equipamientos = 0;
+                me.digital_lead = 0;
 
                     //Acceso
                 me.usuarios=0;

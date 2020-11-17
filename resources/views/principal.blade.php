@@ -99,7 +99,7 @@
                                         <a class="nav-link" href="#"><i class="fa fa-bullhorn"></i> Medios Publicitarios</a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->rol_id == 1)
+                                @if(Auth::user()->digital_campain == 1)
                                     <li @click="menu=249" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-vcard"></i> Campañas digitales</a>
                                     </li>
@@ -374,7 +374,7 @@
                                         <a class="nav-link" href="#"><i class="fa fa-circle-o-notch fa-spin"></i> Casas Disponibles</a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->rol_id == 1)
+                                @if(Auth::user()->digital_lead == 1)
                                     <li @click="menu=250" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-vcard"></i> Digital Leads</a>
                                     </li>

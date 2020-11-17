@@ -1065,7 +1065,7 @@ class UserController extends Controller
                                 //Administracion
                                 'users.departamentos','users.personas','users.empresas','users.medios_public','users.lugares_contacto','users.servicios',
                                 'users.inst_financiamiento','users.tipos_credito','users.asig_servicios','users.mis_asesores','users.cuenta','users.notaria',
-                                'users.proveedores',
+                                'users.proveedores','users.digital_campain',
                                 //Desarrollo
                                 'users.fraccionamiento','users.etapas','users.modelos','users.lotes','users.asign_modelos','users.licencias',
                                 'users.acta_terminacion','users.p_etapa','users.descarga_actas', 'users.ruv', 'users.seg_ruv',
@@ -1078,7 +1078,7 @@ class UserController extends Controller
                                 'users.contratistas','users.ini_obra','users.aviso_obra','users.partidas','users.avance', 'users.estimaciones',
                                 //Ventas
                                 'users.lotes_disp','users.mis_prospectos','users.simulacion_credito','users.hist_simulaciones',
-                                'users.hist_creditos','users.contratos','users.docs','users.equipamientos',
+                                'users.hist_creditos','users.contratos','users.docs','users.equipamientos', 'users.digital_lead',
                                 //Saldo
                                 'users.edo_cuenta','users.depositos','users.gastos_admn','users.cobro_credito',
                                 'users.dev_exc','users.dev_cancel','users.facturas','users.ingresos_concretania',
@@ -1132,6 +1132,7 @@ class UserController extends Controller
         $user->mis_asesores = $request->mis_asesores;
         $user->cuenta = $request->cuenta;
         $user->proveedores = $request->proveedores;
+        $user->digital_campain = $request->digital_campain;
         //Desarrollo
         $user->fraccionamiento = $request->fraccionamiento;
         $user->etapas = $request->etapas;
@@ -1175,6 +1176,7 @@ class UserController extends Controller
         $user->contratos = $request->contratos;
         $user->docs = $request->docs;
         $user->equipamientos = $request->equipamientos;
+        $user->digital_lead = $request->digital_lead;
         //Saldos
         $user->edo_cuenta = $request->edo_cuenta;
         $user->depositos = $request->depositos;

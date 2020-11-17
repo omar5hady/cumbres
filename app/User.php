@@ -42,6 +42,7 @@ class User extends Authenticatable
         'mis_asesores',
         'cuenta',
         'proveedores',
+        'digital_campain',
 
         //Desarrollo
         'fraccionamiento',
@@ -81,6 +82,7 @@ class User extends Authenticatable
         'contratos',
         'docs',
         'equipamientos',
+        'digital_lead',
 
         //Saldos
         'edo_cuenta',

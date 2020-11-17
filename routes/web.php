@@ -918,6 +918,10 @@ Route::group(['middleware' => ['auth']],function(){
         Route::delete('/campanias/delete', 'CampaniaController@delete');
 
         Route::get('/leads/index','DigitalLeadController@index');
+        Route::get('/leads/getObs','DigitalLeadController@getObs');
+        Route::post('/leads/store', 'DigitalLeadController@store');
+        Route::put('/leads/update', 'DigitalLeadController@update');
+        Route::post('/leads/storeObs', 'DigitalLeadController@storeObs');
 
 
     });

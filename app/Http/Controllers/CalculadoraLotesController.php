@@ -324,6 +324,8 @@ class CalculadoraLotesController extends Controller
                 'lotes.num_lote',
                 'fraccionamientos.nombre as fraccionamiento'
             );
+
+    
         
         //nombre
         if($request->b_cliente != '')
@@ -352,6 +354,10 @@ class CalculadoraLotesController extends Controller
             $request->b_lote == ''&&
             $request->b_mensualidad == ''
         ){$personas = $queryGen->where('cotizacion_lotes.estatus', '=', 0);}
+
+        if(Auth::user()->rol_id == 2){
+            $personas = $personas->where('clientes.vendedor_id','=',Auth::user()->id);
+        }
 
         $personas = $personas->orderBy('personal.nombre', 'asc')
             ->orderBy('personal.apellidos', 'asc')

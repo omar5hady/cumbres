@@ -74,7 +74,10 @@
                                         <td class="td2" v-if="lead.status == '1'"><span class="badge badge-warning">En Seguimiento</span></td>
                                         <td class="td2" v-if="lead.status == '0'"><span class="badge badge-danger">Descartado</span></td>
                                         <td class="td2" v-if="lead.status == '2'"><span class="badge badge-success">Potencial</span></td>
-                                        <td></td>
+                                        <td class="td2"> 
+                                            <button title="Ver observaciones" type="button" class="btn btn-info pull-right" 
+                                            @click="abrirModal1(lead.id),listarObservacion(1,lead.id)">Ver todos</button> </td>
+                                        
                                        
                                     </tr>
                                 </tbody>
@@ -133,7 +136,7 @@
         </div>
 
         <!--Inicio del modal -->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 1}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-primary modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -185,6 +188,7 @@
                                                         <option value="Instagram">Instagram</option>
                                                         <option value="Pagina web">Pagina web</option>
                                                         <option value="Llamada Telefonica">Llamada Telefónica</option>
+                                                        <option value="Correo Electrónico">Correo Electrónico</option>
                                                         
                                                     </datalist>
                                                 </div>
@@ -214,7 +218,7 @@
                                             <div class="form-group row">
                                                 <label class="col-md-2 form-control-label" for="text-input">Prototipo recomendado: </label>
                                                 <div class="col-md-5">
-                                                    <input type="text" name="city" list="modelosName" class="form-control" v-model="modelo_interes" laceholder="Prototipo">
+                                                    <input type="text" name="city" list="modelosName" @click="selectModelo(proyecto_interes)" class="form-control" v-model="modelo_interes" placeholder="Prototipo">
                                                     <datalist id="modelosName">
                                                         <option value="">Modelo</option>
                                                         <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.nombre" v-text="modelos.nombre"></option>
@@ -294,7 +298,7 @@
 
                                             <div class="form-group row">
                                                 <label class="col-md-2 form-control-label" for="text-input">Estado civil:</label>
-                                                <div class="col-md-4">
+                                                <div class="col-md-3">
                                                     <select class="form-control" v-model="edo_civil" >
                                                         <option value="0">Seleccione</option> 
                                                         <option value="1">Casado - separacion de bienes</option> 
@@ -316,30 +320,9 @@
                                                     </select>
                                                 </div>
 
+                                                <label v-if="hijos == 1" class="col-md-2 form-control-label" for="text-input">¿Cuantos?</label>
                                                 <div v-if="hijos == 1" class="col-md-2">
                                                     <input type="number" min="0" v-model="num_hijos" class="form-control" >
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group row">
-
-                                                <label class="col-md-2 form-control-label" for="text-input">¿Mascotas?</label>
-                                                <div class="col-md-2">
-                                                    <select class="form-control" v-model="mascotas" >
-                                                        <option value="">Seleccione</option> 
-                                                        <option value="1">Si</option> 
-                                                        <option value="0">No</option>   
-                                                    </select>
-                                                </div>
-
-                                                <label class="col-md-2 form-control-label" v-if="mascotas == 1" for="text-input">Tamaño de mascota?</label>
-                                                <div v-if="mascotas == 1" class="col-md-2">
-                                                    <select class="form-control" v-model="tam_mascota" >
-                                                        <option value="">Seleccione</option> 
-                                                        <option value="1">Chico</option> 
-                                                        <option value="1">Mediano</option>   
-                                                        <option value="2">Grande</option>   
-                                                    </select>
                                                 </div>
                                             </div>
 
@@ -350,18 +333,122 @@
                                                     <h6 align="center"><strong> Lugar de trabajo </strong></h6>
                                                 </div>
 
+                                            <div class="form-group row">
                                                 <label class="col-md-2 form-control-label" for="text-input">Empresa</label>
-                                                <div class="col-md-6">
-                                                    <input type="text" name="city" list="cityname" class="form-control" v-model="medio_contacto" placeholder="Medio de publicidad">
+                                                <div class="col-md-5">
+                                                    <input type="text" name="city" list="cityname" class="form-control" v-model="empresa" v-on:keypress="selectEmpresa(empresa)" placeholder="Empresa">
                                                     <datalist id="cityname">
                                                         <option value="">Seleccione</option>
-                                                        <option value="Facebook">Facebook</option>
-                                                        <option value="Instagram">Instagram</option>
-                                                        <option value="Pagina web">Pagina web</option>
-                                                        <option value="Llamada Telefonica">Llamada Telefónica</option>
+                                                        <option v-for="empresa in arrayEmpresas" :key="empresa.id" :value="empresa.nombre" v-text="empresa.nombre"></option>
                                                         
                                                     </datalist>
                                                 </div>
+
+                                                <label class="col-md-2 form-control-label" for="text-input">Ingresos</label>
+                                                <div class="col-md-3">
+                                                    <input type="number" min="0" v-model="ingresos" class="form-control" >
+                                                </div>
+                                            </div>
+                                                
+                                        </template>
+
+                                        <template v-if="paso == 3"> <!-- Datos Importantes -->
+
+                                            <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="text-input">Tipo de Crédito</label>
+                                                <div class="col-md-4">
+                                                <select  v-model="tipo_credito"  class="form-control" >
+                                                        <option value="">Seleccione</option>
+                                                        <option v-for="creditos in arrayCreditos" :key="creditos.nombre" :value="creditos.nombre" v-text="creditos.nombre"></option>
+                                                    </select>
+                                                </div>
+
+                                                <label class="col-md-2 form-control-label" for="text-input">¿Coacreditado?</label>
+                                                <div class="col-md-2">
+                                                <select  v-model="coacreditado"  class="form-control" >
+                                                        <option value="0">No</option>
+                                                        <option value="1">Si</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+
+                                                <label class="col-md-2 form-control-label" for="text-input">¿Mascotas?</label>
+                                                <div class="col-md-2">
+                                                    <select class="form-control" v-model="mascotas" >
+                                                        <option value="1">Si</option> 
+                                                        <option value="0">No</option>   
+                                                    </select>
+                                                </div>
+
+                                                <label v-if="mascotas == 1" class="col-md-2 form-control-label" for="text-input">Cuantos?</label>
+                                                <div class="col-md-2">
+                                                    <input v-if="mascotas == 1" type="number" min="0" v-model="num_mascotas" class="form-control" >
+                                                </div>
+
+                                                <label class="col-md-2 form-control-label" v-if="mascotas == 1" for="text-input">Tamaño de mascota?</label>
+                                                <div v-if="mascotas == 1" class="col-md-2">
+                                                    <select class="form-control" v-model="tam_mascota" >
+                                                        <option value="0">Seleccione</option> 
+                                                        <option value="1">Chico</option> 
+                                                        <option value="2">Mediano</option>   
+                                                        <option value="3">Grande</option>   
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+
+                                                <label class="col-md-2 form-control-label" for="text-input">¿Autos?</label>
+                                                <div class="col-md-2">
+                                                    <select class="form-control" v-model="autos" >
+                                                        <option value="1">Si</option> 
+                                                        <option value="0">No</option>   
+                                                    </select>
+                                                </div>
+
+                                                <label v-if="autos == 1" class="col-md-2 form-control-label" for="text-input">¿Cuantos?</label>
+                                                <div class="col-md-2">
+                                                    <input v-if="autos == 1" type="number" min="0" v-model="num_autos" class="form-control" >
+                                                </div>
+
+                                            </div>
+
+                                            
+                                                <div class="form-group row line-separator"></div>
+
+                                            <div class="form-group row">
+                                                <strong>
+                                                    <label class="col-md-12 form-control-label" for="text-input">¿Busca alguna amenidad en especial dentro de la privada?</label>
+                                                </strong>
+
+                                                <div class="col-md-12">
+                                                    <input type="text" v-model="amenidad_priv" maxlength="191" class="form-control" placeholder="Amenidad en privada" >
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <strong>
+                                                    <label class="col-md-12 form-control-label" for="text-input">¿Habrá algún detalle en especial, que busque dentro de su casa?</label>
+                                                </strong>
+
+                                                <div class="col-md-12">
+                                                    <input type="text" v-model="detalle_casa" maxlength="191" class="form-control" placeholder="Detalle en su nuevo hogar" >
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row line-separator"></div>
+
+                                            <div class="form-group row">
+                                                <strong>
+                                                    <label class="col-md-12 form-control-label" for="text-input">Perfil del lead</label>
+                                                </strong>
+
+                                                <div class="col-md-12">
+                                                    <textarea v-model="perfil_cliente" class="form-control" rows="5"></textarea>
+                                                </div>
+                                            </div>
                                                 
                                         </template>
 
@@ -376,7 +463,8 @@
                         <!-- Botones del modal -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <button type="button" class="btn btn-primary" @click="storeLead()">Regisrar</button>
+                            <button type="button" v-if="tipoAccion == 1" class="btn btn-success" @click="storeLead()">Registrar</button>
+                            <button type="button" v-if="tipoAccion == 2" class="btn btn-primary" @click="updateLead()">Guradar cambios</button>
                         </div>
                     </div>
                       <!-- /.modal-content -->
@@ -384,6 +472,61 @@
                 <!-- /.modal-dialog -->
             </div>
             <!--Fin del modal consulta-->
+
+
+             <!--Inicio del modal observaciones-->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal"></h4>
+                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
+                                    <div class="col-md-6">
+                                         <textarea rows="3" cols="30" v-model="comentario" class="form-control" placeholder="Observacion"></textarea>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button"  class="btn btn-primary" @click="storeObs()">Guardar</button>
+                                    </div>
+                                </div>
+
+                                
+                                <table class="table table-bordered table-striped table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Usuario</th>
+                                            <th>Observacion</th>
+                                            <th>Fecha</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="observacion in arrayObs.data" :key="observacion.id">
+                                            
+                                            <td v-text="observacion.usuario" ></td>
+                                            <td v-text="observacion.comentario" ></td>
+                                            <td v-text="observacion.created_at"></td>
+                                        </tr>                               
+                                    </tbody>
+                                </table>
+                                
+                            </form>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                        </div>
+                    </div>
+                      <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
     </main>
 </template>
 
@@ -412,8 +555,10 @@ export default {
             paso:0,
             modal:0,
             tituloModal:'',
+            tipoAccion: 0,
             editar:0,
             b_cliente:'',
+            proceso : false,
 
             datos : [],
             arrayEmpresa: [],
@@ -423,6 +568,9 @@ export default {
             arrayCampanias:[],
             arrayFraccionamientos:[],
             arrayModelos:[],
+            arrayEmpresas:[],
+            arrayCreditos:[],
+            arrayObs:[],
             
             medio_contacto: '',
             medio_publicidad: '',
@@ -441,7 +589,7 @@ export default {
             ingresos: '',
             coacreditado: '',
             hijos: '',
-            num_hijos: '',
+            num_hijos: 0,
             mascotas: '',
             tam_mascota: '',
             tipo_credito: '',
@@ -452,8 +600,13 @@ export default {
             rfc:'',
             nss:'',
             sexo:'',
-            f_nacimiento:''
-            
+            f_nacimiento:'',
+            num_mascotas:0,
+            autos:'',
+            num_autos:0,
+            amenidad_priv:'',
+            detalle_casa:'',
+            comentario:''
            
         }
     },
@@ -473,6 +626,20 @@ export default {
                 response => this.arrayLeads = response.data
             ).catch(error => console.log(error));
         },
+
+        selectEmpresa(buscar){
+            let me = this;
+
+            var url = '/empresa'+'?buscar='+buscar + '&criterio=nombre';
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayEmpresas = respuesta.empresas.data;
+                
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
         selectFraccionamientos(){
             let me = this;
             me.arrayFraccionamientos=[];
@@ -486,33 +653,32 @@ export default {
             });
         },
         selectModelo(buscar){
-                let me = this;
-              
-                me.arrayModelos=[];
-                var url = '/select_modelo_proyecto2?buscar=' + buscar;
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayModelos = respuesta.modelos;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
-        selectEmpresaVueselect(search, loading){
             let me = this;
-            loading(true)
-
-            var url = '/select_empresas?filtro='+search;
+            
+            me.arrayModelos=[];
+            var url = '/select_modelo_proyecto2?buscar=' + buscar;
             axios.get(url).then(function (response) {
-                let respuesta = response.data;
-                q: search
-                me.arrayEmpresa = respuesta.empresas;
-                loading(false)
+                var respuesta = response.data;
+                me.arrayModelos = respuesta.modelos;
             })
             .catch(function (error) {
                 console.log(error);
             });
         },
+
+        selectCreditos(){
+            let me = this;
+            me.arrayCreditos=[];
+            var url = '/select_tipoCredito';
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayCreditos = respuesta.Tipos_creditos;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
+        
         selectCampania(){
             let me = this;
 
@@ -583,11 +749,209 @@ export default {
             this.datos = [];
             this.modal = 0;
         },
+
+        listarObservacion(page,id){
+            axios.get('/leads/getObs'+
+                '?id='+id+
+                '&page='+page
+                
+            ).then(
+                response => this.arrayObs = response.data
+            ).catch(error => console.log(error));
+        },
+
+        storeLead(){
+            if(this.nombre == '' || this.proceso==true) //Se verifica si hay un error (campo vacio)
+                {
+                    Swal({
+                    title: 'lote ya se encuentra registrado',
+                    animation: false,
+                    customClass: 'animated tada'
+                    })
+                    this.proceso = false;
+                    return;
+                }
+
+                this.proceso=true;
+
+                let me = this;
+                //Con axios se llama el metodo store de FraccionaminetoController
+                axios.post('/leads/store',{
+
+                    'nombre' : this.nombre,
+                    'apellidos' : this.apellidos,
+                    'telefono' : this.telefono,
+                    'celular' : this.celular,
+                    'campania_id' : this.campania_id,
+                    'medio_contacto' : this.medio_contacto,
+                    'proyecto_interes' : this.proyecto_interes,
+                    'tipo_uso' : this.tipo_uso,
+                    'modelo_interes' : this.modelo_interes,
+                    'rango1' : this.rango1,
+                    'rango2' : this.rango2,
+                    'email' : this.email,
+
+                    /////////////// PASO 2 ////////////////
+                    'rfc' : this.rfc,
+                    'nss' : this.nss,
+                    'sexo' : this.sexo,
+                    'f_nacimiento' : this.f_nacimiento,
+                    'edo_civil' : this.edo_civil,
+                    'hijos' : this.hijos,
+                    'num_hijos' : this.num_hijos,
+                    'empresa' : this.empresa,
+                    'ingresos' : this.ingresos,
+
+                    ////////////// Paso 3 /////////////////
+                    'mascotas' : this.mascotas,
+                    'tam_mascota' : this.tam_mascota,
+                    'num_mascotas' : this.num_mascotas,
+                    'tipo_credito' : this.tipo_credito,
+                    'coacreditado' : this.coacreditado,
+                    'num_autos' : this.num_autos,
+                    'autos' : this.autos,
+                    'amenidad_priv' : this.amenidad_priv,
+                    'detalle_casa' : this.detalle_casa,
+                    'perfil_cliente' : this.perfil_cliente,
+                    
+                }).then(function (response){
+                    me.proceso=false;
+                    me.cerrarModal();
+                    me.listarLeads(1);
+                    
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Lead registrado correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                    this.proceso = false;
+                });
+        },
+
+        updateLead(){
+            if(this.nombre == '' || this.proceso==true) //Se verifica si hay un error (campo vacio)
+            {
+                Swal({
+                title: 'lote ya se encuentra registrado',
+                animation: false,
+                customClass: 'animated tada'
+                })
+                this.proceso = false;
+                return;
+            }
+
+            this.proceso=true;
+
+            let me = this;
+            //Con axios se llama el metodo store de FraccionaminetoController
+            axios.put('/leads/update',{
+
+                'id' : this.id,
+                'nombre' : this.nombre,
+                'apellidos' : this.apellidos,
+                'telefono' : this.telefono,
+                'celular' : this.celular,
+                'campania_id' : this.campania_id,
+                'medio_contacto' : this.medio_contacto,
+                'proyecto_interes' : this.proyecto_interes,
+                'tipo_uso' : this.tipo_uso,
+                'modelo_interes' : this.modelo_interes,
+                'rango1' : this.rango1,
+                'rango2' : this.rango2,
+                'email' : this.email,
+
+                /////////////// PASO 2 ////////////////
+                'rfc' : this.rfc,
+                'nss' : this.nss,
+                'sexo' : this.sexo,
+                'f_nacimiento' : this.f_nacimiento,
+                'edo_civil' : this.edo_civil,
+                'hijos' : this.hijos,
+                'num_hijos' : this.num_hijos,
+                'empresa' : this.empresa,
+                'ingresos' : this.ingresos,
+
+                ////////////// Paso 3 /////////////////
+                'mascotas' : this.mascotas,
+                'tam_mascota' : this.tam_mascota,
+                'num_mascotas' : this.num_mascotas,
+                'tipo_credito' : this.tipo_credito,
+                'coacreditado' : this.coacreditado,
+                'num_autos' : this.num_autos,
+                'autos' : this.autos,
+                'amenidad_priv' : this.amenidad_priv,
+                'detalle_casa' : this.detalle_casa,
+                'perfil_cliente' : this.perfil_cliente,
+                
+            }).then(function (response){
+                me.proceso=false;
+                me.cerrarModal();
+                me.listarLeads(1);
+                
+                //Se muestra mensaje Success
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Lead actualizado correctamente',
+                    showConfirmButton: false,
+                    timer: 1500
+                    })
+            }).catch(function (error){
+                console.log(error);
+                this.proceso = false;
+            });
+        },
+
+        storeObs(){
+            this.proceso=true;
+
+            let me = this;
+            //Con axios se llama el metodo store de FraccionaminetoController
+            axios.post('/leads/storeObs',{
+
+                'lead_id' : this.id,
+                'comentario' : this.comentario,
+                
+            }).then(function (response){
+                me.proceso=false;
+                me.listarObservacion(1,me.id);
+                
+                //Se muestra mensaje Success
+                const toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                    });
+
+                    toast({
+                    type: 'success',
+                    title: 'Observación Agregada Correctamente'
+                    })
+            }).catch(function (error){
+                console.log(error);
+                this.proceso = false;
+            });
+        },
+
+        abrirModal1(id){
+            this.modal = 2;
+            this.id = id; 
+            this.comentario = '';
+            this.tituloModal='Observaciones';
+        },
         
         abrirModal(accion,data =[]){
             this.selectEstados();
             this.selectCampania();
             this.selectFraccionamientos();
+            this.selectEmpresa(this.empresa);
+            this.selectCreditos();
 
             switch(accion){
                 case 'actualizar':
@@ -595,6 +959,9 @@ export default {
                     this.tituloModal='Actualizar Lead';
                     this.paso = 1;
                     this.modal = 1;
+                    this.tipoAccion = 2;
+
+                    this.id = data['id'];
                     
                     //////////// PASO 1 //////////////////
                     this.nombre = data['nombre'];
@@ -618,14 +985,66 @@ export default {
                     this.edo_civil = data['edo_civil'];
                     this.hijos = data['hijos'];
                     this.num_hijos = data['num_hijos'];
+                    this.empresa = data['empresa'];
+                    this.ingresos = data['ingresos'];
+
+                    ////////////// Paso 3 /////////////////
+                    this.mascotas = data['mascotas'];
+                    this.tam_mascota = data['tam_mascota'];
+                    this.num_mascotas = data['num_mascotas'];
+                    this.tipo_credito = data['tipo_credito'];
+                    this.coacreditado = data['coacreditado'];
+                    this.num_autos = data['num_autos'];
+                    this.autos = data['autos'];
+                    this.amenidad_priv = data['amenidad_priv'];
+                    this.detalle_casa = data['detalle_casa'];
+                    this.perfil_cliente = data['perfil_cliente']
+                    
                     break;
                 }
 
                 case 'nuevo':{
-                    this.tituloModal = 'Nuevo Lead';
+                    this.tituloModal='Nuevo Lead';
                     this.paso = 1;
-                    this.modal = 1
-                    this.datos = [];
+                    this.modal = 1;
+                    this.tipoAccion = 1;
+                    
+                    //////////// PASO 1 //////////////////
+                    this.nombre = '';
+                    this.apellidos = '';
+                    this.telefono = '';
+                    this.celular = '';
+                    this.campania_id = '';
+                    this.medio_contacto = '';
+                    this.proyecto_interes = '';
+                    this.tipo_uso = '';
+                    this.modelo_interes = '';
+                    this.rango1 = '';
+                    this.rango2 = '';
+                    this.email = '';
+
+                    /////////////// PASO 2 ////////////////
+                    this.rfc = '';
+                    this.nss = '';
+                    this.sexo = '';
+                    this.f_nacimiento = '';
+                    this.edo_civil = '';
+                    this.hijos = '';
+                    this.num_hijos = 0;
+                    this.empresa = '';
+                    this.ingresos = 0;
+
+                    ////////////// Paso 3 /////////////////
+                    this.mascotas = 0;
+                    this.tam_mascota = 0;
+                    this.num_mascotas = 0;
+                    this.tipo_credito = '';
+                    this.coacreditado = 0;
+                    this.num_autos = 0;
+                    this.autos = 0;
+                    this.amenidad_priv = '';
+                    this.detalle_casa = '';
+                    this.perfil_cliente = '';
                     break;
                 }
             }
@@ -651,8 +1070,6 @@ export default {
     
         back(){
             this.editar = 0;
-
-            
         }
     },
     mounted() {
