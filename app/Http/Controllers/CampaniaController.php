@@ -50,10 +50,14 @@ class CampaniaController extends Controller
 
     public function campaniaActiva(Request $request){
         $current = Carbon::now()->toDateString();
-        $campanias = Campania::select('nombre_campania','medio_digital','fecha_ini','fecha_fin','id')
-                    ->whereDate('fecha_ini','<=',$current)
-                    ->whereDate('fecha_fin','>=',$current)
-                    ->get();
+        $campanias = Campania::select('nombre_campania','medio_digital','fecha_ini','fecha_fin','id');
+                    if($request->buscar == ''){
+                        $campanias = $campanias->whereDate('fecha_ini','<=',$current)
+                        ->whereDate('fecha_fin','>=',$current);
+                    }
+                    
+                    
+                    $campanias = $campanias->orderBy('nombre_campania','asc')->get();
 
         return $campanias;
     }

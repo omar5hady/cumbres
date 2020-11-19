@@ -14,7 +14,6 @@
                         <i class="icon-people"></i>&nbsp;Nuevo
                     </button>
                     &nbsp;
-                    <button @click="back()" class="btn btn-primary btn-sm">Regresar</button>
                 </div>
                 
                 <div class="card-body">
@@ -22,15 +21,46 @@
                     <template v-if="editar == 0">
                         <!--FORMULARIO-->
                         <div class="form-group row">
-                            <div class="col-md-10">
+                            <div class="col-md-8">
                                 <div class="input-group">
-                                    <input type="text" v-model="b_cliente" @keyup.enter="listarLeads(1)" placeholder="Nombre" class="form-control col-sm-4">
-                                    <button @click="listarLeads(1)" class="btn btn-sm btn-primary col-sm-1">
+                                    <input type="text" v-model="b_cliente" @keyup.enter="listarLeads(1)" placeholder="Nombre" class="form-control col-sm-6">
+
+                                    <select class="form-control col-sm-5" v-model="b_campania">
+                                        <option value="">Campaña publicitaria</option>
+                                        <option v-for="medios in arrayCampanias" :key="medios.id" :value="medios.id" v-text="medios.nombre_campania + ' - ' + medios.medio_digital"></option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <select class="form-control"  v-model="b_asesor" >
+                                        <option value="">Vendedor asignado</option>
+                                        <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
+                                    </select>
+                                    <!--Criterios para el listado de busqueda -->
+                                    <select class="form-control col-sm-4" v-model="b_status">
+                                        <option value="">Status</option>
+                                        <option value="1">En Seguimiento</option>
+                                        <option value="0">Descartado</option>
+                                        <option value="2">Potencial</option>
+                                    </select>
+                            
+                                
+                                </div>
+                                <div class="input-group">
+                                    <button @click="listarLeads(1)" class="btn btn-primary">
                                         <i class="fa fa-search"></i> Buscar
+                                    </button>
+                                    <button disabled class="btn btn-primary">
+                                        {{'Total: '+arrayLeads.total}}
                                     </button>
                                 </div>
                             </div>
                         </div>
+
+
+                       
                         <br>
 
                         <div class="table-responsive">
@@ -42,10 +72,11 @@
                                         <th>Celular</th>
                                         <th>Correo</th>
                                         <th>Campaña</th>
-                                        <th>Proyecto interes</th>
+                                        <th>Proyecto o zona de interés </th>
                                         <th>Presupuesto</th>
                                         <th>Modelo recomendado</th>
                                         <th>Estatus</th>
+                                        <th>Vendedor asignado</th>
                                         <th>Observaciones</th>
                                     </tr>
                                 </thead>
@@ -54,13 +85,15 @@
                                         <td class="td2" style="width:15%">
                                             <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
                                                 <i class="icon-pencil"></i>
-                                            </button>  
-                                            <button type="button" class="btn btn-danger btn-sm" @click="eliminar(lead)" title="Eliminar">
-                                                <i class="icon-trash"></i>
-                                            </button>                                       
+                                            </button>                                 
                                         </td>
-                                        <td class="td2" v-if="lead.apellidos != null" v-text="lead.nombre + ' '+lead.apellidos"></td>
-                                        <td class="td2" v-else v-text="lead.nombre"></td>
+                                        <td v-if="lead.diferencia < 7" class="td2" v-text="lead.nombre + ' ' + lead.apellidos "></td>                                                    
+                                        <td v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15  " class="td2">
+                                            <span class="badge2 badge-warning">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
+                                        </td>    
+                                        <td v-else-if="lead.diferencia > 15" class="td2">
+                                            <span class="badge2 badge-danger">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
+                                        </td>
                                         <td class="td2" v-if="lead.celular != null">
                                             <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>    
                                         </td><td class="td2" v-else ></td>
@@ -68,12 +101,14 @@
                                             <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+lead.email+ ';'"> <i class="fa fa-envelope-o fa-lg"></i> </a>
                                         </td><td class="td2" v-else ></td>
                                         <td class="td2" v-text="lead.nombre_campania + '-'+lead.medio_digital"></td>
-                                        <td class="td2" v-text="lead.proyecto"></td>
+                                        <td class="td2" v-if="lead.proyecto_interes != 0" v-text="lead.proyecto"></td>
+                                        <td class="td2" v-else v-text="lead.zona_interes"></td>
                                         <td class="td2" v-if="lead.rango1 != null" v-text="'$'+formatNumber(lead.rango1) + ' - $'+formatNumber(lead.rango2)"></td><td class="td2" v-else ></td>
                                         <td class="td2" v-text="lead.modelo_interes"></td>
                                         <td class="td2" v-if="lead.status == '1'"><span class="badge badge-warning">En Seguimiento</span></td>
                                         <td class="td2" v-if="lead.status == '0'"><span class="badge badge-danger">Descartado</span></td>
                                         <td class="td2" v-if="lead.status == '2'"><span class="badge badge-success">Potencial</span></td>
+                                        <td class="td2" v-text="lead.vendedor"></td>
                                         <td class="td2"> 
                                             <button title="Ver observaciones" type="button" class="btn btn-info pull-right" 
                                             @click="abrirModal1(lead.id),listarObservacion(1,lead.id)">Ver todos</button> </td>
@@ -195,16 +230,27 @@
                                             </div>
 
                                             <div class="form-group row">
-                                                <label class="col-md-2 form-control-label" for="text-input"><strong>Proyecto de interes</strong></label>
+                                                <label class="col-md-3 form-control-label" for="text-input"><strong>Proyecto de interes</strong></label>
                                                 <div class="col-md-6">
                                                     <select class="form-control" v-model="proyecto_interes" v-on:change="selectModelo(proyecto_interes)">
                                                         <option value="">Seleccione</option>
                                                         <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" 
                                                             :value="proyecto.id" v-text="proyecto.nombre">
                                                         </option>
+                                                        <option value="0">Otro...</option>
                                                     </select>
                                                 </div>
+                                            </div>
 
+                                            <div class="form-group row" v-if="proyecto_interes == 0">
+
+                                                <label class="col-md-3 form-control-label" v-if="proyecto_interes == 0" for="text-input">Zona o proyecto: </label>
+                                                <div class="col-md-6" v-if="proyecto_interes == 0">
+                                                    <input type="text" v-model="zona_interes" class="form-control" placeholder="Zona de interes">
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
                                                 <label class="col-md-2 form-control-label" for="text-input">Tipo de uso</label>
                                                 <div class="col-md-2">
                                                     <select class="form-control" v-model="tipo_uso">
@@ -213,12 +259,10 @@
                                                         <option value="1">Inversión</option>
                                                     </select>
                                                 </div>
-                                            </div>
-
-                                            <div class="form-group row">
+                                                
                                                 <label class="col-md-2 form-control-label" for="text-input">Prototipo recomendado: </label>
                                                 <div class="col-md-5">
-                                                    <input type="text" name="city" list="modelosName" @click="selectModelo(proyecto_interes)" class="form-control" v-model="modelo_interes" placeholder="Prototipo">
+                                                    <input type="text" name="city" list="modelosName" @keyup="selectModelo(proyecto_interes)" class="form-control" v-model="modelo_interes" placeholder="Prototipo">
                                                     <datalist id="modelosName">
                                                         <option value="">Modelo</option>
                                                         <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.nombre" v-text="modelos.nombre"></option>
@@ -242,6 +286,12 @@
                                                     <input class="form-control" type="text" v-model="rango2" placeholder="Maximo">
                                                     <input class="form-control" type="range" name="price-max" id="price-max" v-model="rango2" min="300000" max="2500000">
                                                 </div>
+                                            </div>
+
+                                            <div class="form-group row line-separator"></div>
+
+                                            <div v-if="vendedor_asign != 0 && vendedor_asign != null" class="col-md-12">
+                                                <h6 v-if="vendedor_asign != 0 && vendedor_asign != null" align="center">Vendedor asignado: <strong> {{vendedor}} </strong></h6>
                                             </div>
 
                                         </template>
@@ -273,7 +323,7 @@
                                             <div class="form-group row">
                                                 <label class="col-md-1 form-control-label" for="text-input">RFC:</label>
                                                 <div class="col-md-3">
-                                                    <input type="text" v-model="rfc" class="form-control" placeholder="RFC" maxlength="10">
+                                                    <input type="text" v-model="rfc" @keyup="selectRFC(rfc)" class="form-control" placeholder="RFC" maxlength="10">
                                                 </div>
                                                 <label class="col-md-1 form-control-label" for="text-input">NSS:</label>
                                                 <div class="col-md-4">
@@ -371,6 +421,20 @@
                                                     </select>
                                                 </div>
                                             </div>
+
+                                            <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="text-input">¿Pago mensual deseado?</label>
+                                                <div class="col-md-3">
+                                                    <input type="number" min="0" v-model="pago_mensual" class="form-control" >
+                                                </div>
+
+                                                <label class="col-md-2 form-control-label" for="text-input">¿Enganche?</label>
+                                                <div class="col-md-3">
+                                                    <input type="number" min="0" v-model="enganche" class="form-control" >
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row line-separator"></div>
 
                                             <div class="form-group row">
 
@@ -558,6 +622,9 @@ export default {
             tipoAccion: 0,
             editar:0,
             b_cliente:'',
+            b_status : '',
+            b_campania : '',
+            b_asesor:'',
             proceso : false,
 
             datos : [],
@@ -571,6 +638,7 @@ export default {
             arrayEmpresas:[],
             arrayCreditos:[],
             arrayObs:[],
+            arrayAsesores:[], 
             
             medio_contacto: '',
             medio_publicidad: '',
@@ -596,7 +664,7 @@ export default {
             tipo_uso: '',
             empresa: '',
             status: '',
-            vendedor_asign: '',
+            vendedor_asign: 0,
             rfc:'',
             nss:'',
             sexo:'',
@@ -606,7 +674,11 @@ export default {
             num_autos:0,
             amenidad_priv:'',
             detalle_casa:'',
-            comentario:''
+            comentario:'',
+            zona_interes:'',
+            pago_mensual:0,
+            enganche:0,
+            vendedor : '',
            
         }
     },
@@ -617,9 +689,55 @@ export default {
         vSelect
     },
     methods: {
+        selectRFC(rfc){
+            var url = '/select_rfcs?rfc=' + rfc;
+            let me = this;
+            me.encuentraRFC=0;
+            axios.get(url).then(function (response) {
+            var respuesta = response.data;
+            me.encuentraRFC = respuesta.rfc1; 
+
+            if(me.encuentraRFC==1) {
+                var vendedorrfc = [];
+                var nombrevendedor = '';
+                vendedorrfc = respuesta.vendedor;
+                me.vendedor = vendedorrfc[0]['nombre'] + ' ' + vendedorrfc[0]['apellidos'];
+                me.vendedor_asign = vendedorrfc[0]['id'] ;
+                Swal({
+                title: 'Este RFC ya ha sido agregado por: ' + me.vendedor ,
+                animation: false,
+                customClass: 'animated tada'
+                })
+            } 
+            else{
+                me.vendedor_asign = 0;
+            }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+
+        },
+        selectAsesores(){
+                let me = this;
+                me.arrayAsesores=[];
+                var url = '/select/asesores';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayAsesores = respuesta.personas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+              
+            },  
         listarLeads (page){
             axios.get('/leads/index'+
                 '?buscar='+this.b_cliente+
+                '&campania='+this.b_campania+
+                '&status='+this.b_status+
+                '&asesor='+this.b_asesor+
                 '&page='+page
                 
             ).then(
@@ -679,10 +797,10 @@ export default {
             });
         },
         
-        selectCampania(){
+        selectCampania(buscar){
             let me = this;
 
-            var url = '/campanias/campaniaActiva';
+            var url = '/campanias/campaniaActiva?buscar='+buscar;
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
                 me.arrayCampanias = respuesta;
@@ -762,75 +880,72 @@ export default {
 
         storeLead(){
             if(this.nombre == '' || this.proceso==true) //Se verifica si hay un error (campo vacio)
-                {
-                    Swal({
-                    title: 'lote ya se encuentra registrado',
-                    animation: false,
-                    customClass: 'animated tada'
-                    })
-                    this.proceso = false;
-                    return;
-                }
+            {
+                Swal({
+                title: 'lote ya se encuentra registrado',
+                animation: false,
+                customClass: 'animated tada'
+                })
+                this.proceso = false;
+                return;
+            }
 
-                this.proceso=true;
+            this.proceso=true;
 
-                let me = this;
-                //Con axios se llama el metodo store de FraccionaminetoController
-                axios.post('/leads/store',{
+            let me = this;
+            //Con axios se llama el metodo store de FraccionaminetoController
+            axios.post('/leads/store',{
 
-                    'nombre' : this.nombre,
-                    'apellidos' : this.apellidos,
-                    'telefono' : this.telefono,
-                    'celular' : this.celular,
-                    'campania_id' : this.campania_id,
-                    'medio_contacto' : this.medio_contacto,
-                    'proyecto_interes' : this.proyecto_interes,
-                    'tipo_uso' : this.tipo_uso,
-                    'modelo_interes' : this.modelo_interes,
-                    'rango1' : this.rango1,
-                    'rango2' : this.rango2,
-                    'email' : this.email,
+                'nombre' : this.nombre,
+                'apellidos' : this.apellidos,
+                'telefono' : this.telefono,
+                'celular' : this.celular,
+                'campania_id' : this.campania_id,
+                'medio_contacto' : this.medio_contacto,
+                'proyecto_interes' : this.proyecto_interes,
+                'tipo_uso' : this.tipo_uso,
+                'modelo_interes' : this.modelo_interes,
+                'rango1' : this.rango1,
+                'rango2' : this.rango2,
+                'email' : this.email,
+                'zona_interes' : this.zona_interes,
+                'vendedor_asign' : this.vendedor_asign,
 
-                    /////////////// PASO 2 ////////////////
-                    'rfc' : this.rfc,
-                    'nss' : this.nss,
-                    'sexo' : this.sexo,
-                    'f_nacimiento' : this.f_nacimiento,
-                    'edo_civil' : this.edo_civil,
-                    'hijos' : this.hijos,
-                    'num_hijos' : this.num_hijos,
-                    'empresa' : this.empresa,
-                    'ingresos' : this.ingresos,
+                /////////////// PASO 2 ////////////////
+                'rfc' : this.rfc,
+                'nss' : this.nss,
+                'sexo' : this.sexo,
+                'f_nacimiento' : this.f_nacimiento,
+                'edo_civil' : this.edo_civil,
+                'hijos' : this.hijos,
+                'num_hijos' : this.num_hijos,
+                'empresa' : this.empresa,
+                'ingresos' : this.ingresos,
+                'pago_mensual' : this.pago_mensual,
+                'enganche' : this.enganche,
 
-                    ////////////// Paso 3 /////////////////
-                    'mascotas' : this.mascotas,
-                    'tam_mascota' : this.tam_mascota,
-                    'num_mascotas' : this.num_mascotas,
-                    'tipo_credito' : this.tipo_credito,
-                    'coacreditado' : this.coacreditado,
-                    'num_autos' : this.num_autos,
-                    'autos' : this.autos,
-                    'amenidad_priv' : this.amenidad_priv,
-                    'detalle_casa' : this.detalle_casa,
-                    'perfil_cliente' : this.perfil_cliente,
-                    
-                }).then(function (response){
-                    me.proceso=false;
-                    me.cerrarModal();
-                    me.listarLeads(1);
-                    
-                    //Se muestra mensaje Success
-                    swal({
-                        position: 'top-end',
-                        type: 'success',
-                        title: 'Lead registrado correctamente',
-                        showConfirmButton: false,
-                        timer: 1500
-                        })
-                }).catch(function (error){
-                    console.log(error);
-                    this.proceso = false;
-                });
+                ////////////// Paso 3 /////////////////
+                'mascotas' : this.mascotas,
+                'tam_mascota' : this.tam_mascota,
+                'num_mascotas' : this.num_mascotas,
+                'tipo_credito' : this.tipo_credito,
+                'coacreditado' : this.coacreditado,
+                'num_autos' : this.num_autos,
+                'autos' : this.autos,
+                'amenidad_priv' : this.amenidad_priv,
+                'detalle_casa' : this.detalle_casa,
+                'perfil_cliente' : this.perfil_cliente,
+                
+            }).then(function (response){
+                me.proceso=false;
+                me.cerrarModal();
+                me.listarLeads(1);
+                
+                me.myAlerts.popAlert('Lead registrado correctamente');
+            }).catch(function (error){
+                console.log(error);
+                this.proceso = false;
+            });
         },
 
         updateLead(){
@@ -864,6 +979,8 @@ export default {
                 'rango1' : this.rango1,
                 'rango2' : this.rango2,
                 'email' : this.email,
+                'zona_interes' : this.zona_interes,
+                'vendedor_asign' : this.vendedor_asign,
 
                 /////////////// PASO 2 ////////////////
                 'rfc' : this.rfc,
@@ -875,6 +992,8 @@ export default {
                 'num_hijos' : this.num_hijos,
                 'empresa' : this.empresa,
                 'ingresos' : this.ingresos,
+                'pago_mensual' : this.pago_mensual,
+                'enganche' : this.enganche,
 
                 ////////////// Paso 3 /////////////////
                 'mascotas' : this.mascotas,
@@ -893,14 +1012,7 @@ export default {
                 me.cerrarModal();
                 me.listarLeads(1);
                 
-                //Se muestra mensaje Success
-                swal({
-                    position: 'top-end',
-                    type: 'success',
-                    title: 'Lead actualizado correctamente',
-                    showConfirmButton: false,
-                    timer: 1500
-                    })
+                me.myAlerts.popAlert('Guardado correctamente');
             }).catch(function (error){
                 console.log(error);
                 this.proceso = false;
@@ -948,14 +1060,14 @@ export default {
         
         abrirModal(accion,data =[]){
             this.selectEstados();
-            this.selectCampania();
-            this.selectFraccionamientos();
+            
             this.selectEmpresa(this.empresa);
             this.selectCreditos();
 
             switch(accion){
                 case 'actualizar':
                 {
+                    this.selectCampania(1);
                     this.tituloModal='Actualizar Lead';
                     this.paso = 1;
                     this.modal = 1;
@@ -971,11 +1083,14 @@ export default {
                     this.campania_id = data['campania_id'];
                     this.medio_contacto = data['medio_contacto'];
                     this.proyecto_interes = data['proyecto_interes'];
+                    this.zona_interes = data['zona_interes'];
                     this.tipo_uso = data['tipo_uso'];
                     this.modelo_interes = data['modelo_interes'];
                     this.rango1 = data['rango1'];
                     this.rango2 = data['rango2'];
                     this.email = data['email'];
+                    this.vendedor_asign = data['vendedor_asign'];
+                    this.vendedor = data['vendedor'];
 
                     /////////////// PASO 2 ////////////////
                     this.rfc = data['rfc'];
@@ -987,6 +1102,8 @@ export default {
                     this.num_hijos = data['num_hijos'];
                     this.empresa = data['empresa'];
                     this.ingresos = data['ingresos'];
+                    this.pago_mensual = data['pago_mensual'];
+                    this.enganche = data['enganche'];
 
                     ////////////// Paso 3 /////////////////
                     this.mascotas = data['mascotas'];
@@ -1004,6 +1121,7 @@ export default {
                 }
 
                 case 'nuevo':{
+                    this.selectCampania('');
                     this.tituloModal='Nuevo Lead';
                     this.paso = 1;
                     this.modal = 1;
@@ -1017,11 +1135,14 @@ export default {
                     this.campania_id = '';
                     this.medio_contacto = '';
                     this.proyecto_interes = '';
+                    this.zona_interes = '';
                     this.tipo_uso = '';
                     this.modelo_interes = '';
                     this.rango1 = '';
                     this.rango2 = '';
                     this.email = '';
+                    this.vendedor_asign = 0
+                    this.vendedor = '';
 
                     /////////////// PASO 2 ////////////////
                     this.rfc = '';
@@ -1033,6 +1154,8 @@ export default {
                     this.num_hijos = 0;
                     this.empresa = '';
                     this.ingresos = 0;
+                    this.pago_mensual = 0;
+                    this.enganche = 0;
 
                     ////////////// Paso 3 /////////////////
                     this.mascotas = 0;
@@ -1074,6 +1197,9 @@ export default {
     },
     mounted() {
         this.listarLeads(1);
+        this.selectCampania(1);
+        this.selectFraccionamientos();
+        this.selectAsesores();
     }
 };
 </script>

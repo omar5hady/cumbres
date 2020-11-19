@@ -37,7 +37,11 @@ class Digital_lead extends Model
         'rfc',
         'nss',
         'sexo',
-        'f_nacimiento'
+        'f_nacimiento',
+        'zona_interes',
+        'pago_mensual',
+        'enganche',
+        'fecha_update'
     ];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
 
     public function obs_leads(){

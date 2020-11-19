@@ -53,6 +53,12 @@ class CreateDigitalLeadsTable extends Migration
             $table->string('nss',11)->nullable();
             $table->char('sexo',1)->nullable();
             $table->date('f_nacimiento')->nullable();
+
+            $table->double('pago_mensual')->nullable();
+            $table->double('enganche')->nullable();
+            $table->string('zona_interes',100)->nullable();
+
+            $table->date('fecha_update')->nullable();
         
             $table->timestamps();
         });

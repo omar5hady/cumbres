@@ -177,7 +177,7 @@ class PersonalController extends Controller
                             ->where('rfc','=',$rfc)->get();
                 $vendedor = Cliente::join('vendedores','clientes.vendedor_id','=','vendedores.id')
                 ->join('personal','vendedores.id','=','personal.id')
-                ->select('personal.nombre','personal.apellidos')
+                ->select('personal.nombre','personal.apellidos','personal.id')
                 ->where('clientes.id','=',$personaid[0]->id)->get();
                 return ['rfc1'=>$rfc1,'personaid' => $personaid, 'vendedor'=> $vendedor];
                           }else{
