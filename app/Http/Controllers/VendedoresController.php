@@ -162,4 +162,11 @@ class VendedoresController extends Controller
         $pathtoFile = public_path() . '/files/vendedores/' . $fileName;
         return response()->download($pathtoFile);
     }
+
+    public function actPeriodoVacacional(Request $request){
+        $vendedor = Vendedor::findOrFail($request->id);
+        $vendedor->ini_vacaciones = $request->ini_vacaciones;
+        $vendedor->fin_vacaciones = $request->fin_vacaciones;
+        $vendedor->save();
+    }
 }

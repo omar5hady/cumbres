@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Digital_lead;
 use App\Obs_lead;
+use App\Http\Controllers\ClienteController;
 use Auth;
 use DB;
 use Carbon\Carbon;
@@ -16,12 +17,13 @@ class DigitalLeadController extends Controller
         $campania = $request->campania;
         $status = $request->status;
         $asesor = $request->asesor;
-        $leads = Digital_lead::join('campanias as c','digital_leads.campania_id','=','c.id')
+        $leads = Digital_lead::leftJoin('campanias as c','digital_leads.campania_id','=','c.id')
                         ->leftJoin('fraccionamientos as f','digital_leads.proyecto_interes','=','f.id')
                         ->leftJoin('personal as p','digital_leads.vendedor_asign','=','p.id')
                         ->select(
                                 DB::raw("CONCAT(p.nombre,' ',p.apellidos) AS vendedor"),
-                                'c.nombre_campania','c.medio_digital','f.nombre as proyecto','digital_leads.*');
+                                'c.nombre_campania','c.medio_digital','f.nombre as proyecto','digital_leads.*')
+                        ->where('digital_leads.motivo','=',$request->motivo);
                         if(Auth::user()->rol_id == 2){
                             $leads = $leads->where('vendedor_asign','=',Auth::user()->id);
                         }
@@ -73,7 +75,29 @@ class DigitalLeadController extends Controller
         $lead->email = $request->email;
         $lead->zona_interes = $request->zona_interes;
 
+        $lead->motivo = $request->motivo;
+        $lead->descripcion = $request->descripcion;
+        $lead->direccion = $request->direccion;
+
         if($request->vendedor_asign!= 0){
+            
+            if($lead->vendedor_asign != $request->vendedor_asign){
+                $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
+                $fecha = Carbon::now();
+                $arreglo = [
+                        'notificacion' => [
+                        'usuario' => $imagenUsuario[0]->usuario,
+                        'foto' => $imagenUsuario[0]->foto_user,
+                        'fecha' => $fecha,
+                        'msj' => 'Le ha asignado un lead digital',
+                        'titulo' => 'Lead Digital'
+                    ]
+                ];
+    
+                User::findOrFail($request->vendedor_asign)->notify(new NotifyAdmin($arreglo));
+            }
+            
+
             $lead->vendedor_asign = $request->vendedor_asign;
         }
         $lead->fecha_update = $fecha;
@@ -106,7 +130,24 @@ class DigitalLeadController extends Controller
         $obs->lead_id = $lead->id;
         $obs->comentario = 'Lead registrado';
         $obs->usuario = Auth::user()->usuario;
+        $obs->visto = $fecha;
         $obs->save();
+
+        if($lead->motivo == 2){
+            $obs = new Obs_lead();
+            $obs->lead_id = $lead->id;
+            $obs->comentario = 'Cliente necesita atención postventa, para mayor informacion revisar el modulo de Digital Leads';
+            $obs->usuario = Auth::user()->usuario;
+            $obs->save();
+
+        }
+        if($lead->motivo == 3){
+            $obs = new Obs_lead();
+            $obs->lead_id = $lead->id;
+            $obs->comentario = 'Lead busca información sobre renta de casa, para mayor infomración revisar el modulo de Digital Leads';
+            $obs->usuario = Auth::user()->usuario;
+            $obs->save();
+        }
     }
 
     public function update(Request $request){
@@ -126,7 +167,27 @@ class DigitalLeadController extends Controller
         $lead->email = $request->email;
         $lead->zona_interes = $request->zona_interes;
         $lead->fecha_update = $fecha;
+
+        $lead->motivo = $request->motivo;
+        $lead->descripcion = $request->descripcion;
+        $lead->direccion = $request->direccion;
         if($request->vendedor_asign!= 0){
+
+            if($lead->vendedor_asign != $request->vendedor_asign){
+                $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
+                $fecha = Carbon::now();
+                $arreglo = [
+                        'notificacion' => [
+                        'usuario' => $imagenUsuario[0]->usuario,
+                        'foto' => $imagenUsuario[0]->foto_user,
+                        'fecha' => $fecha,
+                        'msj' => 'Le ha asignado un lead digital',
+                        'titulo' => 'Lead Digital'
+                    ]
+                ];
+    
+                User::findOrFail($request->vendedor_asign)->notify(new NotifyAdmin($arreglo));
+            }
             $lead->vendedor_asign = $request->vendedor_asign;
         }
 
@@ -158,7 +219,10 @@ class DigitalLeadController extends Controller
         $obs->lead_id = $lead->id;
         $obs->comentario = 'Se actualiza información del Lead';
         $obs->usuario = Auth::user()->usuario;
+        $obs->visto = $fecha;
         $obs->save();
+
+            
 
     }
 
@@ -168,6 +232,7 @@ class DigitalLeadController extends Controller
         $obs->lead_id = $request->lead_id;
         $obs->comentario = $request->comentario;
         $obs->usuario = Auth::user()->usuario;
+        $obs->visto = $fecha;
         $obs->save();
 
         $lead = Digital_lead::findOrFail($request->lead_id);
@@ -182,6 +247,63 @@ class DigitalLeadController extends Controller
     }
 
     public function asignarLead(Request $request){
-        $lead = Digital_lead::findOrFail($request->id);
+        try{
+            DB::beginTransaction();
+            $lead = Digital_lead::findOrFail($request->id);
+
+            $cliente = new ClienteController();
+            $vendedor_asign = $cliente->asignarClienteAleatorio();
+            $lead->vendedor_asign = $vendedor_asign['vendedor_elegido']['id'];
+            $lead->status = 2;
+            $lead->save();
+
+            $obs = new Obs_lead();
+            $obs->lead_id = $lead->id;
+            $obs->comentario = 'Aviso!, se le ha asignado un nuevo lead para seguimiento, 
+                                favor de ingresar al modulo de Digital Leads para mas información. ';
+            $obs->usuario = Auth::user()->usuario;
+            $obs->save();
+            DB::commit();
+
+        } catch (Exception $e){
+            DB::rollBack();
+        }   
+    }
+
+    public function reminderCommentarioLead(){
+
+        $reminders = Digital_lead::join('obs_leads', 'digital_leads.id','=','obs_leads.lead_id')
+            ->select('obs_leads.id','nombre','apellidos','celular','email','comentario','motivo')
+            ->where('obs_leads.visto','=', NULL);
+            
+            if(Auth::user()->rol_id == 2 || Auth::user()->rol_id == 1){
+                //$reminders = $reminders->where('clientes.vendedor_id','=', Auth::user()->id);
+                $reminders = $reminders->get();
+
+                return $reminders;
+            }
+
+            elseif(Auth::user()->rol_id == 12 ){
+                $reminders = $reminders->where('motivo','=', 2);
+                $reminders = $reminders->get();
+
+                return $reminders;
+            }
+
+            elseif(Auth::user()->id == 25816 ){
+                $reminders = $reminders->where('motivo','=', 3);
+                $reminders = $reminders->get();
+
+                return $reminders;
+            }
+       
+    }
+
+    public function leadEnterado(Request $request){
+        $fecha = Carbon::now();
+        $obs = Obs_lead::findOrFail($request->id);
+        $obs->visto = $fecha;
+        $obs->save();
+
     }
 }

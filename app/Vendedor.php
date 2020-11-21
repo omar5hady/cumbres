@@ -13,7 +13,8 @@ class Vendedor extends Model
      */
     protected $table = 'vendedores';
     protected $fillable = [
-        'id','supervisor_id','inmobiliaria','tipo','esquema','fecha_sueldo','doc_ine','doc_comprobante','curriculum','retencion','isr'
+        'id','supervisor_id','inmobiliaria','tipo','esquema','fecha_sueldo','doc_ine','doc_comprobante','curriculum','retencion','isr',
+        'ini_vacaciones', 'fin_vacaciones'
     ];
 
     public function persona(){

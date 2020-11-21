@@ -11,7 +11,8 @@ class Obs_lead extends Model
     protected $fillable = [
         'lead_id',
         'comentario',
-        'usuario'
+        'usuario',
+        'visto'
     ];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
 
     public function lead(){

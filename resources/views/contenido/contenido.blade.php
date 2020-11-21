@@ -473,7 +473,7 @@
         </template>
 
         <template v-if="menu==250">
-            <digital-leads></digital-leads>
+            <digital-leads rol-id="{{Auth::user()->rol_id}}"></digital-leads>
         </template>
 
         

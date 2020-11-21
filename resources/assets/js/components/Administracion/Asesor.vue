@@ -60,7 +60,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="Personal in arrayPersonal" :key="Personal.id"  @dblclick="mostrarProspectos(Personal.nombre, Personal.id)" title="Ver prospectos">
+                                    <tr v-for="Personal in arrayPersonal" :key="Personal.id"  @dblclick="mostrarProspectos(Personal.nombre, Personal.id)" >
                                         <td width="10%">
                                             <button type="button" @click="abrirModal('Personal','actualizar',Personal)" class="btn btn-warning btn-sm">
                                             <i class="icon-pencil"></i>
@@ -75,9 +75,13 @@
                                                     <i class="icon-check"></i>
                                                 </button>
                                             </template>
+
+                                            <button type="button" @click="abrirModal('Vacaciones','',Personal)" class="btn btn-success btn-sm" title="Periodo vacacional">
+                                                <i class="fa fa-calendar"></i>
+                                            </button>
                                       
                                         </td>
-                                        <td>
+                                        <td title="Ver prospectos">
                                             <a href="#" v-text="Personal.nombre + ' ' + Personal.apellidos"></a>
                                         </td>
                                         
@@ -464,8 +468,7 @@
             </div>
             <!--Fin del modal-->
 
-               <!--Inicio del modal observaciones-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal3}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+               <!--Inicio del modal observaciones-->            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal3 == 1}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-primary modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -847,6 +850,44 @@
                 </div>
             </div>
 
+            <!--Inicio del modal observaciones-->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal3 == 2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal"></h4>
+                            <button type="button" class="close" @click="cerrarModal3()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Inicio de vacaciones</label>
+                                    <div class="col-md-3">
+                                        <input type="date" v-model="ini_vacaciones" class="form-control"  >
+                                    </div>
+
+                                    <label class="col-md-3 form-control-label" for="text-input">Fin de vacaciones</label>
+                                    <div class="col-md-3">
+                                        <input type="date" v-model="fin_vacaciones" class="form-control"  >
+                                    </div>
+                                </div>
+                                
+                                
+                            
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal3()">Cerrar</button>
+                            <button type="button" v-if="modal3 == 2" class="btn btn-primary" @click="actPeriodoVacacional()">Guardar cambios</button>
+                        </div>
+                    </div>
+                      <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+
         </main>
 </template>
 
@@ -963,7 +1004,10 @@
                 b_clasificacion:'',
                 coacreditados: 0,
                 criterio2 : 'personal.nombre',
-                arrayColonias : []
+                arrayColonias : [],
+
+                ini_vacaciones:'',
+                fin_vacaciones:''
 
             }
         },
@@ -1416,6 +1460,32 @@
                     console.log(error);
                 });
             },
+            actPeriodoVacacional(){
+                
+
+                let me = this;
+                //Con axios se llama el metodo update de PersonalController
+                axios.put('/asesores/actPeriodoVacacional',{
+                    
+                    'id' : this.id,
+                    'ini_vacaciones' : this.ini_vacaciones,
+                    'fin_vacaciones' : this.fin_vacaciones,
+                    
+                }).then(function (response){
+                    me.cerrarModal3();
+                    me.listarPersonal(1,'','nombre');
+                    //window.alert("Cambios guardados correctamente");
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Cambios guardados correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
             /**Metodo para actualizar  */
             actualizarProspecto(){
                 /*if(this.proceso==true) //Se verifica si hay un error (campo vacio)
@@ -1713,6 +1783,8 @@
                 this.archivoComprobante = '';
                 this.archivoCV = '';
                 this.modalArchivos = 0;
+                this.ini_vacaciones = '';
+                this.fin_vacaciones = '';
             
             },
             cerrarModal4(){
@@ -1815,7 +1887,18 @@
                                 break;
                             }
                         }
+                        break;
                     }
+                    case "Vacaciones":{
+                        this.modal3 =2;
+                        this.tituloModal='Ingresar periodo vacacional';
+                        
+                        this.ini_vacaciones=data['ini_vacaciones'];
+                        this.fin_vacaciones=data['fin_vacaciones'];
+                        this.id=data['id'];
+                        break;
+                    }
+
                 }
                 this.selectColonias(this.cp);
             },

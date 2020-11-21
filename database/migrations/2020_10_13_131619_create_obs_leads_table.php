@@ -20,6 +20,8 @@ class CreateObsLeadsTable extends Migration
             $table->text('comentario');
             $table->string('usuario',50);
 
+            $table->date('visto')->nullable();
+
             $table->foreign('lead_id')->references('id')->on('digital_leads')->onDelete('cascade');
 
             $table->timestamps();

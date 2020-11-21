@@ -1902,8 +1902,9 @@ class ClienteController extends Controller
         return $people;
     }
 
-    public function asignarClienteAleatorio(Request $request){
+    public function asignarClienteAleatorio(){
         $band = 0;
+        $fecha = Carbon::now();
 
         $vendedores = User::join('personal','users.id','=','personal.id')
                 ->join('vendedores','personal.id','vendedores.id')
@@ -1911,6 +1912,7 @@ class ClienteController extends Controller
                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS vendedor"))
                 ->where('vendedores.tipo','=',0)
                 ->where('users.condicion','=',1)
+                ->whereRaw("? NOT BETWEEN vendedores.ini_vacaciones AND vendedores.fin_vacaciones", [$fecha])
                 ->where('users.usuario','!=','descartado')
                 ->where('users.usuario','!=','oficina')
                 ->orderBy('vendedor','asc')->get();
@@ -1929,7 +1931,7 @@ class ClienteController extends Controller
             $vendedor->bd = 0;
 
             foreach ($clientes as $index => $c) {
-                $obs = Cliente_observacion::where('created_at','>=',Carbon::now()->subDays(7))
+                $obs = Cliente_observacion::where('created_at','>=',Carbon::now()->subDays(8))
                 ->where('cliente_id','=',$c->id)
                 ->count();
 
@@ -1944,6 +1946,7 @@ class ClienteController extends Controller
         }
         $cont = 0;
 
+        if(sizeof($vendedores))
         do{
             $cont++;
             $value = random_int ( 0 , (sizeOf($vendedores)-1) );

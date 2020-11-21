@@ -581,7 +581,7 @@
 <script>
     export default {
         props:{
-            rolId:{ty6e: String}
+            rolId:{type: String}
         },
         data(){
             return{

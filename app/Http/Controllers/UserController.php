@@ -13,6 +13,7 @@ use Excel;
 use Carbon\Carbon;
 use App\Cliente;
 
+
 class UserController extends Controller
 {
     public function index(Request $request)
@@ -99,6 +100,7 @@ class UserController extends Controller
             'personal.email','users.usuario','users.password',
             'users.condicion','users.rol_id','roles.nombre as rol','vendedores.inmobiliaria','vendedores.tipo',
             'vendedores.esquema','vendedores.doc_ine','vendedores.doc_comprobante','vendedores.curriculum',
+            'vendedores.ini_vacaciones', 'vendedores.fin_vacaciones',
             'vendedores.isr','vendedores.retencion');
          
             if ($buscar==''){
@@ -1402,4 +1404,6 @@ class UserController extends Controller
 
         return $reminders;
     }
+
+    
 }

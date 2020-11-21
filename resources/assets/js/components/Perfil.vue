@@ -11,6 +11,27 @@
     
     <div class="container-fluid">
         <div class="row">
+            <div class="col-xl-12 col-lg-12 col-md-4">
+                <div v-for="rem in arrayRemindersLead" :key="rem.id" class="col-sm-12 alert alert-dark alert-dismissible fade show" role="alert">
+                    <strong>¡Atención! : </strong> {{rem.comentario}} 
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <br>
+                    Nombre de cliente: {{rem.nombre+" "+rem.apellidos}}<br>
+                    Email <a :href="'mailto:'+rem.email" v-text="rem.email"></a>
+                    Tel <a :href="'tel:+'+rem.celular" v-text="rem.celular"></a>
+                    <br>
+                    <div class="px-3 py-2 text-right">
+                        <button type="button" class="btn btn-dark rounded" @click="enterado(rem.id)">
+                            <span aria-hidden="true">Enterado</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        <div class="row">
             <div v-for="rem in arrayReminders" :key="rem.id" class="col-sm-12 alert alert-warning alert-dismissible fade show" role="alert">
                 <strong>¡No lo olvides! : </strong> {{rem.comentario}} 
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -375,6 +396,7 @@ export default {
       arrayCumple:[],
       url: null,
       arrayReminders:[],
+      arrayRemindersLead:[]
     };
   },
 
@@ -394,6 +416,20 @@ export default {
       formData.append("foto_user", this.foto_user);
       let me = this;
       axios.post("/users/foto/" + this.userId, formData);
+    },
+
+    enterado(id){
+        axios
+        .put("/comments/leadEnterado", {
+          'id': id,
+        })
+        .then(function(response) {
+          location.reload();
+        })
+
+        .catch(function(error) {
+          currentObj.output = error;
+        });
     },
 
     passwordChange() {
@@ -478,12 +514,21 @@ export default {
                 this.arrayReminders = response.data;
             }
         ).catch(error => console.log(error));
+    },
+    getReminderLeads(){
+        axios.get('/comments/reminderCommentarioLead/').then(
+            response => {
+                console.log(response);
+                this.arrayRemindersLead = response.data;
+            }
+        ).catch(error => console.log(error));
     }
   },
   mounted() {
     this.obtenerUsuario();
     this.getBirthdayPeople();
     this.getReminder();
+    this.getReminderLeads();
   }
 };
 </script>

@@ -93,11 +93,14 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/select/asesores','UserController@selectAsesores');
         Route::get('/select/asesores2','UserController@selectAsesores2');
         Route::put('/cliente/reasignar','ClienteController@asignarCliente');
+        
         Route::post('/cliente/reasignar2','ClienteController@asignarCliente2'); // desde vista mis Prospectos
         Route::post('/asesores/formSubmitComprobante/{id}','VendedoresController@formSubmitComprobante');
         Route::post('/asesores/formSubmitINE/{id}','VendedoresController@formSubmitINE');
         Route::post('/asesores/formSubmitCV/{id}','VendedoresController@formSubmitCV');
         Route::get('/asesores/downloadFile/{fileName}' , 'VendedoresController@downloadFile'); //descarga de acta
+
+        Route::put('/asesores/actPeriodoVacacional','VendedoresController@actPeriodoVacacional');
 
         Route::get('/getBirthdayPeople','ClienteController@getBirthdayPeople');
 
@@ -187,7 +190,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/personal/indexClientes','PersonalController@indexClientes');
         Route::get('/personal/excelClientes','PersonalController@excelClientes');
 
-        Route::get('/clientes/asignacionDigital','ClienteController@asignarClienteAleatorio');
+        
     
     ////////////////////        RUTAS EMPRESA     /////////////////////////////////
         Route::get('/empresa','EmpresaController@index');
@@ -922,6 +925,10 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/leads/store', 'DigitalLeadController@store');
         Route::put('/leads/update', 'DigitalLeadController@update');
         Route::post('/leads/storeObs', 'DigitalLeadController@storeObs');
+
+        Route::put('/leads/asignarLead','DigitalLeadController@asignarLead');
+        Route::get('/comments/reminderCommentarioLead/', 'DigitalLeadController@reminderCommentarioLead');
+        Route::put('/comments/leadEnterado', 'DigitalLeadController@leadEnterado');
 
 
     });
