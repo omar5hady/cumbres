@@ -3760,6 +3760,7 @@ class ContratoController extends Controller
                 $credito->costo_paquete = $request->costo_paquete;
                 $credito->precio_venta = $request->precio_venta;
                 $credito->credito_solic = $request->credito_solic;
+                $credito->plazo = $request->plazo_credito;
                 $credito->contrato = 1;
 
             $inst_sel = inst_seleccionada::select('id')
@@ -3770,6 +3771,7 @@ class ContratoController extends Controller
                 $credito_sol->monto_credito = $request->credito_solic;
                 $credito_sol->tipo_credito = $request->tipo_credito;
                 $credito_sol->institucion = $request->institucion;
+                $credito_sol->plazo_credito = $request->plazo_credito;
                 $credito_sol->save();
 
             $lote = Lote::findOrFail($request->lote_id);

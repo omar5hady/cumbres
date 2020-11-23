@@ -60,6 +60,8 @@ class CreateDigitalLeadsTable extends Migration
             $table->boolean('motivo')->default(1); // 1 Ventas, 2 Postventa, 3 Rentas
             $table->string('descripcion',191)->nullable();
             $table->string('direccion',191)->nullable();
+
+            $table->boolean('prospecto')->default(0);
         
             $table->timestamps();
         });

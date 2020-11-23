@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Digital_lead;
 use App\Obs_lead;
+use App\Personal;
+use App\Cliente;
 use App\Http\Controllers\ClienteController;
+use App\Medio_publicitario;
 use Auth;
 use DB;
 use Carbon\Carbon;
@@ -57,6 +60,7 @@ class DigitalLeadController extends Controller
                         
         return $leads;
     }
+    
 
     public function store(Request $request){
         $fecha = Carbon::now();
@@ -181,7 +185,7 @@ class DigitalLeadController extends Controller
                         'usuario' => $imagenUsuario[0]->usuario,
                         'foto' => $imagenUsuario[0]->foto_user,
                         'fecha' => $fecha,
-                        'msj' => 'Le ha asignado un lead digital',
+                        'msj' => 'Se le ha asignado un lead digital',
                         'titulo' => 'Lead Digital'
                     ]
                 ];
@@ -226,6 +230,89 @@ class DigitalLeadController extends Controller
 
     }
 
+    public function sendProspectos(Request $request){
+        $fecha = Carbon::now();
+        $cliente = Personal::select('id')->where('rfc','=',$request->rfc)->get();
+        
+        $medio = Medio_publicitario::select('id')->where('nombre','like','%'.$request->medio_publicidad.'%')->get();
+        if(sizeof($medio) == 0)
+            $publi = 20;
+        else{
+            $publi = $medio[0]->id;
+        }
+        try{
+            DB::beginTransaction();
+
+            if(sizeof($cliente) == 0){
+                $persona = new Personal();
+                $persona->nombre = $request->nombre;
+                $persona->apellidos = $request->apellidos;
+                $persona->telefono = $request->telefono;
+                $persona->celular = $request->celular;
+                $persona->email = $request->email;
+                $persona->rfc = $request->rfc;
+                $persona->f_nacimiento = $request->f_nacimiento;
+                $persona->departamento_id = 8;
+                $persona->save();
+
+                $id = $persona->id;
+
+                $cliente = new Cliente();
+                $cliente->id = $id;
+                $cliente->publicidad_id = $publi;
+                $cliente->proyecto_interes_id = $request->proyecto_interes;
+                $cliente->vendedor_id = $request->vendedor_asign;
+                $cliente->nss = $request->nss;
+                $cliente->sexo = $request->sexo;
+                $cliente->edo_civil = $request->edo_civil;
+                $cliente->empresa = $request->empresa;
+                $cliente->ingreso = $request->ingresos;
+                $cliente->coacreditado = $request->coacreditado;
+                $cliente->tipo_casa = '';
+                $cliente->save();
+
+            }
+            else{
+                $persona = Personal::findOrFail($cliente[0]->id);
+                $persona->nombre = $request->nombre;
+                $persona->apellidos = $request->apellidos;
+                $persona->telefono = $request->telefono;
+                $persona->celular = $request->celular;
+                $persona->email = $request->email;
+                $persona->rfc = $request->rfc;
+                $persona->f_nacimiento = $request->f_nacimiento;
+                $persona->save;
+
+                $cliente = Cliente::findOrFail($cliente[0]->id);
+                $cliente->publicidad_id = $medio[0]->id;
+                $cliente->proyecto_interes_id = $request->proyecto_interes;
+                $cliente->vendedor_id = $request->vendedor_asign;
+                $cliente->nss = $request->nss;
+                $cliente->sexo = $request->sexo;
+                $cliente->edo_civil = $request->edo_civil;
+                $cliente->empresa = $request->empresa;
+                $cliente->ingreso = $request->ingresos;
+                $cliente->coacreditado = $request->coacreditado;
+                $cliente->save();
+            }
+            $lead = Digital_lead::findOrFail($request->id);
+            $lead->prospecto = 1;
+            $lead->save();
+
+            $obs = new Obs_lead();
+            $obs->lead_id = $lead->id;
+            $obs->comentario = 'El lead se ha enviado a la base de prospectos del vendedor';
+            $obs->usuario = Auth::user()->usuario;
+            $obs->visto = $fecha;
+            $obs->save();
+
+            DB::commit();
+
+        } catch (Exception $e){
+            DB::rollBack();
+        }   
+    }
+
     public function storeObs(Request $request){
         $fecha = Carbon::now();
         $obs = new Obs_lead();
@@ -242,7 +329,8 @@ class DigitalLeadController extends Controller
     }
 
     public function getObs(Request $request){
-        $obs = Obs_lead::where('lead_id','=',$request->id)->paginate(15);
+        $obs = Obs_lead::where('lead_id','=',$request->id)
+        ->orderBy('created_at','desc')->paginate(15);
         return $obs;
     }
 

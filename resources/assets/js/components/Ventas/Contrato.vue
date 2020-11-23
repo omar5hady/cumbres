@@ -1425,7 +1425,8 @@
                                                         <div class="form-group">
                                                         <label v-if="modelo != 'Terreno'" style="color:#2271b3;" for=""><strong>Plazo (años) </strong><span style="color:red;" v-show="plazo_credito==0">(*)</span></label>
                                                         <label v-else style="color:#2271b3;" for=""><strong>Plazo (meses) </strong><span style="color:red;" v-show="plazo_credito==0">(*)</span></label>
-                                                            <p v-text="plazo_credito"></p>
+                                                            <p v-if="change_credito==0" v-text="plazo_credito"></p>
+                                                            <input v-if="change_credito==1" v-model="plazo_credito" type="number" @keyup.enter="change_credito=0,actualizarContrato()" class="form-control" >
                                                         </div>
                                                     </div>
 
@@ -2993,6 +2994,7 @@
                     'credito_solic' : this.monto_credito,
                     'tipo_credito' : this.tipo_credito,
                     'institucion': this.inst_financiera,
+                    'plazo_credito' : this.plazo_credito,
 
                     'paquete' : this.paquete,
                     'descripcion_paquete' : this.descripcionPaquete,

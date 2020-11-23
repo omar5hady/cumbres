@@ -819,6 +819,14 @@
 
                             </div>
 
+                            <!-- Div para mostrar los errores que mande validerFraccionamiento -->
+                                    <div v-show="errorProspecto" class="form-group row div-error">
+                                        <div class="text-center text-error">
+                                            <div v-for="error in errorMostrarMsjProspecto" :key="error" v-text="error">
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 
                             <!-- fin del form solicitud de avaluo -->
 
@@ -826,9 +834,14 @@
                         </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">
+                            <button type="button" 
+                                v-if="(tipoAccion == 1 && motivo == 1 && vendedor_asign == userId && prospecto == 0) || rolId == 1 && prospecto == 0"
+                            class="btn btn-dark" @click="sendProspecto()">Enviar a prospectos</button>
+                            <div></div>
+
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <button type="button" v-if="tipoAccion == 1 && motivo != 0" class="btn btn-success" @click="storeLead()">Registrar</button>
-                            <button type="button" v-if="tipoAccion == 2" class="btn btn-primary" @click="updateLead()">Guradar cambios</button>
+                            <button type="button" v-if="tipoAccion == 2" class="btn btn-primary" @click="updateLead()">Guardar cambios</button>
                         </div>
                     </div>
                       <!-- /.modal-content -->
@@ -897,7 +910,8 @@
 import vSelect from 'vue-select';
 export default {
     props:{
-            rolId:{type: String}
+            rolId:{type: String},
+            userId:{type: String}
         },
     
     data() {
@@ -987,6 +1001,9 @@ export default {
             descripcion:'',
             direccion:'',
 
+            errorMostrarMsjProspecto : [],
+            errorProspecto : 0,
+
            
         }
     },
@@ -997,9 +1014,82 @@ export default {
         vSelect
     },
     methods: {
+        validarProspecto(){
+            this.errorProspecto=0;
+            this.errorMostrarMsjProspecto=[];
+            if(this.rfc == null)
+                this.rfc = '';
+
+            if(this.nombre=='' || this.apellidos=='') 
+                this.errorMostrarMsjProspecto.push("El nombre del prospecto no puede ir vacio.");
+            if(this.sexo=='' || this.sexo == null) 
+                this.errorMostrarMsjProspecto.push("Seleccionar el sexo del prospecto.");
+            if(this.celular=='' || this.celular == null) 
+                this.errorMostrarMsjProspecto.push("Ingresar numero de celular.");
+            if(this.email=='' || this.email == null) 
+                this.errorMostrarMsjProspecto.push("Ingresar email personal.");
+            if(this.empresa=='' || this.empresa == null) 
+                this.errorMostrarMsjProspecto.push("Seleccionar empresa.");
+            if(this.f_nacimiento=='' || this.f_nacimiento == null) 
+                this.errorMostrarMsjProspecto.push("Ingresar fecha de nacimiento.");
+            if(this.rfc=='' || this.rfc.length < 10 || this.rfc == null) 
+                this.errorMostrarMsjProspecto.push("RFC no valido");
+            if(this.edo_civil==0 || this.edo_civil == '' || this.edo_civil == null) 
+                this.errorMostrarMsjProspecto.push("Seleccionar estado civil.");
+            if(this.proyecto_interes==0 || this.proyecto_interes == '') 
+                this.errorMostrarMsjProspecto.push("Seleccionar proyecto de interes.");
+            if(this.medio_contacto=='') 
+                this.errorMostrarMsjProspecto.push("Escribir medio de contacto.");
+
+            if(this.errorMostrarMsjProspecto.length)//Si el mensaje tiene almacenado algo en el array
+                this.errorProspecto = 1;
+
+            return this.errorProspecto;
+        },
+
+        sendProspecto(){
+            if(this.validarProspecto()) //Se verifica si hay un error (campo vacio)
+                return;
+            
+            let me = this;
+            //Con axios se llama el metodo store del controller
+            axios.post('/leads/sendProspectos',{
+                'id' : this.id,
+                'nombre' : this.nombre,
+                'apellidos' : this.apellidos,
+                'telefono' : this.telefono,
+                'celular' : this.celular,
+                'medio_publicidad' : this.medio_contacto,
+                'proyecto_interes' : this.proyecto_interes,
+                'email' : this.email,
+                'vendedor_asign' : this.vendedor_asign,
+
+                'rfc' : this.rfc,
+                'nss' : this.nss,
+                'sexo' : this.sexo,
+                'f_nacimiento' : this.f_nacimiento,
+                'edo_civil' : this.edo_civil,
+                'empresa' : this.empresa,
+                'ingresos' : this.ingresos,
+
+                ////////////// Paso 3 /////////////////
+                'coacreditado' : this.coacreditado,
+            }).then(function (response){
+                me.cerrarModal();
+                me.listarLeads(1);
+                //Se muestra mensaje Success
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Prospecto agregado correctamente',
+                    showConfirmButton: false,
+                    timer: 1500
+                    })
+            }).catch(function (error){
+                console.log(error);
+            });
+        },
         asignarVendedor(id){
-            
-            
             Swal.fire({
                 title: '¿Estas seguro de asignar un vendedor a este lead?',
                 text: "Este cambio no se podrá deshacer!",
@@ -1055,7 +1145,8 @@ export default {
                 })
             } 
             else{
-                me.vendedor_asign = 0;
+                if(me.vendedor_asign == '' || me.vendedor_asign == 0)
+                    me.vendedor_asign = 0;
             }
             })
             .catch(function (error) {

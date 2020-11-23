@@ -925,6 +925,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/leads/store', 'DigitalLeadController@store');
         Route::put('/leads/update', 'DigitalLeadController@update');
         Route::post('/leads/storeObs', 'DigitalLeadController@storeObs');
+        Route::post('/leads/sendProspectos', 'DigitalLeadController@sendProspectos');
 
         Route::put('/leads/asignarLead','DigitalLeadController@asignarLead');
         Route::get('/comments/reminderCommentarioLead/', 'DigitalLeadController@reminderCommentarioLead');
