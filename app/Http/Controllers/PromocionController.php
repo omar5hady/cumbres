@@ -46,6 +46,7 @@ class PromocionController extends Controller
         }
 
         $promociones = $promociones->orderBy('is_active', 'desc')
+                                    ->orderBy('promociones.v_ini','desc')
                                     ->orderBy('fraccionamientos.nombre', 'asc')
                                     ->orderBy('etapas.num_etapa', 'asc')
                                     ->paginate(20);
