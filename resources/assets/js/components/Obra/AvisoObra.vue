@@ -65,6 +65,9 @@
                                             <th>Importe total</th>
                                             <th>Fecha de inicio </th>
                                             <th>Fecha de termino</th>
+                                            <th>
+                                               
+                                            </th>
                                             
                                         </tr>
                                     </thead>
@@ -94,6 +97,17 @@
                                             <td class="td2" v-text="'$'+formatNumber(avisoObra.total_importe)"></td>
                                             <td class="td2" v-text="avisoObra.f_ini"></td>
                                             <td class="td2" v-text="avisoObra.f_fin"></td>
+                                            <td>
+                                                <a class="btn btn-success" v-bind:href="'/avisoObra/siroc?id='+ avisoObra.id">
+                                                    <i class="fa fa-file-text"></i>&nbsp; SIROC
+                                                </a>
+                                                <button title="Subir registro de obra" type="button" @click="abrirModal('subirArchivo2',avisoObra)" class="btn btn-default btn-sm">
+                                                    <i class="icon-cloud-upload"></i>
+                                                </button>
+                                                <a title="Descargar registro de obra" class="btn btn-default btn-sm" v-if="avisoObra.registro_obra != '' && avisoObra.registro_obra != null"  v-bind:href="'/downloadRegistroObra/'+avisoObra.registro_obra">
+                                                    <i class="fa fa-download"></i>
+                                                </a>
+                                            </td>
                                         </tr>                               
                                     </tbody>
                                 </table>
@@ -169,7 +183,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-2">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Manzana</label>
                                         <div class="form-inline">
@@ -180,6 +194,22 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="">Entre calle </label>
+                                        <input class="form-control"  type="text" v-model="calle1">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="">Y Calle </label>
+                                        <input class="form-control"  type="text" v-model="calle2">
+                                    </div>
+                                </div>
+
+                                
 
                                  <div class="col-md-12">
                                     <!-- Div para mostrar los errores que mande validerFraccionamiento -->
@@ -401,7 +431,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-2">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Manzana</label>
                                         <div class="form-inline">
@@ -410,6 +440,20 @@
                                             <option v-for="manzana in arrayManzanaLotes" :key="manzana.id" :value="manzana.manzana" v-text="manzana.manzana"></option>
                                         </select>
                                         </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="">Entre calle </label>
+                                        <input class="form-control"  type="text" v-model="calle1">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="">Y Calle </label>
+                                        <input class="form-control"  type="text" v-model="calle2">
                                     </div>
                                 </div>
 
@@ -714,13 +758,27 @@
                                 <span aria-hidden="true">×</span>
                             </button>
                         </div>
-                        <div class="modal-body">
+
+                        <div v-if="tipoAccion == 1" class="modal-body">
                             <div>
                                 <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
 
                                         <strong>Seleccionar contrato</strong>
 
                                         <input type="file" class="form-control" v-on:change="onImageChange">
+                                        <br/>
+                                        <button type="submit" class="btn btn-success">Cargar</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div v-else class="modal-body">
+                            <div>
+                                <form  method="post" @submit="formSubmit2" enctype="multipart/form-data">
+
+                                        <strong>Seleccionar archivo</strong>
+
+                                        <input type="file" class="form-control" v-on:change="onImageChange2">
                                         <br/>
                                         <button type="submit" class="btn btn-success">Cargar</button>
                                 </form>
@@ -801,6 +859,8 @@
                 etapa_id:0,
                 fraccionamiento_id : 0,
                 num_etapa : 0,
+                calle1:'',
+                calle2:'',
                 descripcion_larga:'',
                 descripcion_corta:'',
                 tipo:'Vivienda',
@@ -866,23 +926,19 @@
             isActived: function(){
                 return this.pagination.current_page;
             },
-
             //Calcula los elementos de la paginación
             pagesNumber:function(){
                 if(!this.pagination.to){
                     return [];
                 }
-
                 var from = this.pagination.current_page - this.offset;
                 if(from < 1){
                     from = 1;
                 }
-
                 var to = from + (this.offset * 2);
                 if(to >= this.pagination.last_page){
                     to = this.pagination.last_page;
                 }
-
                 var pagesArray = [];
                 while(from <= to){
                     pagesArray.push(from);
@@ -904,7 +960,6 @@
             }
             return Math.round(resultado_costo_indirecto*100)/100;
         },
-
         totalImporte: function(){
             var resultado_importe_total =0.0;
             for(var i=0;i<this.arrayAvisoObraLotes.length;i++){
@@ -912,7 +967,6 @@
             }
             return Math.round(resultado_importe_total*100)/100;
         },
-
         totalConstruccion: function(){
             var resultado_construccion_total =0.0;
             for(var i=0;i<this.arrayAvisoObraLotes.length;i++){
@@ -927,24 +981,15 @@
             }
             return Math.round(resultado_construccion_total*100)/100;
         }
-
-
         },
        
         methods : {
-
             onImageChange(e){
-
                 console.log(e.target.files[0]);
-
                 this.pdf = e.target.files[0];
-
             },
-
             formSubmit(e) {
-
                 e.preventDefault();
-
                 let currentObj = this;
             
                 let formData = new FormData();
@@ -962,17 +1007,39 @@
                         timer: 2000
                         })
                     me.cerrarModal();
-
                 })
-
                 .catch(function (error) {
-
                     currentObj.output = error;
-
                 });
-
             },
-
+            onImageChange2(e){
+                console.log(e.target.files[0]);
+                this.pdf = e.target.files[0];
+            },
+            formSubmit2(e) {
+                e.preventDefault();
+                let currentObj = this;
+            
+                let formData = new FormData();
+           
+                formData.append('pdf', this.pdf);
+                axios.post('/formSubmitRegistroObra/'+this.id, formData)
+                .then(function (response) {
+                   
+                    currentObj.success = response.data.success;
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo guardado correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+                    me.cerrarModal();
+                })
+                .catch(function (error) {
+                    currentObj.output = error;
+                });
+            },
             /**Metodo para mostrar los registros */
             listarAvisos(page, buscar, criterio){
                 let me = this;
@@ -986,7 +1053,6 @@
                     console.log(error);
                 });
             },
-
             getEmpresa(){
                 let me = this;
                 me.empresas=[];
@@ -1002,7 +1068,6 @@
             selectContratista(search, loading){
                 let me = this;
                 loading(true)
-
                 var url = '/select_contratistas2?filtro='+search;
                 axios.get(url).then(function (response) {
                     let respuesta = response.data;
@@ -1023,7 +1088,6 @@
             selectFraccionamiento(search, loading){
                 let me = this;
                 loading(true)
-
                 var url = '/select_fraccionamiento2?filtro='+search;
                 axios.get(url).then(function (response) {
                     let respuesta = response.data;
@@ -1119,13 +1183,11 @@
                         sw=true;
                     }
                 }
-
                 return sw;
             },
             agregarLote(){
                 let me = this;
                 if(me.descripcion == '' || me.costo_directo==0 || me.costo_indirecto==0){
-
                 }else{
                     if(me.encuentra(me.lote_id, me.empresa_constructora)){
                          swal({
@@ -1160,12 +1222,10 @@
                     me.empresa_constructora='';
                     }
                 }
-
             },
             registrarLote(){
                 let me = this;
                 if(me.descripcion == '' || me.costo_directo==0 || me.costo_indirecto==0){
-
                 }else{
                     if(me.encuentra(me.lote_id)){
                          swal({
@@ -1203,7 +1263,6 @@
                     }).catch(function (error){
                         console.log(error);
                     });
-
                     me.lote = '';
                     me.lote_id =0;
                     me.construccion = 0;
@@ -1214,7 +1273,6 @@
                     me.modelo='';
                     }
                 }
-
             },
             eliminarLote(data =[]){
                 //this.lote_id=data['id'];
@@ -1230,7 +1288,6 @@
                 }).then((result) => {
                 if (result.value) {
                     let me = this;
-
                 axios.delete('/iniobra/lote/eliminar', 
                         {params: {'id': data['id']}}).then(function (response){
                         
@@ -1263,7 +1320,6 @@
                 {
                     return;
                 }
-
                 this.proceso=true;
                 let me = this;
                 me.total_anticipo=(me.anticipo/100)*me.total_importe;
@@ -1274,6 +1330,8 @@
                     'clave': this.clave,
                     'f_ini': this.f_ini,
                     'f_fin': this.f_fin,
+                    'calle1': this.calle1,
+                    'calle2': this.calle2,
                     'total_importe' :this.total_importe,
                     'total_costo_directo':this.total_costo_directo,
                     'total_costo_indirecto':this.total_costo_indirecto,
@@ -1304,7 +1362,6 @@
                     console.log(error);
                 });
             },
-
              /**Metodo para actualizar  */
             actualizarAvisoObra(){
                 if(this.proceso==true){
@@ -1323,6 +1380,8 @@
                     'id':this.id,
                     'fraccionamiento_id': this.fraccionamiento_id,
                     'contratista_id': this.contratista_id,
+                    'calle1': this.calle1,
+                    'calle2': this.calle2,
                     'clave': this.clave,
                     'f_ini': this.f_ini,
                     'f_fin': this.f_fin,
@@ -1361,11 +1420,12 @@
                 me.buscar= "";
             },
   
-
             limpiarDatos(){
                 this.contratista_id=0;
                 this.f_fin='';
                 this.clave='';
+                this.calle1 = '';
+                this.calle2 = '';
                 this.fraccionamiento_id=0;
                 this.anticipo=0;
                 this.total_anticipo=0;
@@ -1401,7 +1461,6 @@
                 }).then((result) => {
                 if (result.value) {
                     let me = this;
-
                 axios.delete('/iniobra/contrato/eliminar', 
                         {params: {'id': this.id}}).then(function (response){
                         swal(
@@ -1419,7 +1478,6 @@
             validarAviso(){
                 this.errorAvisoObra=0;
                 this.errorMostrarMsjAvisoObra=[];
-
                 if(this.contratista_id==0) //Si la variable Fraccionamiento esta vacia
                     this.errorMostrarMsjAvisoObra.push("Seleccionar un contratista.");
                     if(this.fraccionamiento_id==0) //Si la variable Fraccionamiento esta vacia
@@ -1428,13 +1486,10 @@
                     this.errorMostrarMsjAvisoObra.push("Ingresar clave.");
                 if(this.arrayAvisoObraLotes.length<=0) //Si la variable Fraccionamiento esta vacia
                     this.errorMostrarMsjAvisoObra.push("No se ha ingresado ningun lote");
-
                 if(this.errorMostrarMsjAvisoObra.length)//Si el mensaje tiene almacenado algo en el array
                     this.errorAvisoObra = 1;
-
                 return this.errorAvisoObra;
             },
-
             isNumber: function(evt) {
                 evt = (evt) ? evt : window.event;
                 var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -1458,18 +1513,18 @@
             verAviso(id){
                 let me= this;
                 this.listado=2;
-
                 //Obtener datos de cabecera
                 var arrayAvisoT=[];
                 var url = '/iniobra/obtenerCabecera?id=' + id;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayAvisoT = respuesta.ini_obra;
-
                     me.contratista= me.arrayAvisoT[0]['contratista'];
                     me.clave= me.arrayAvisoT[0]['clave'];
                     me.f_ini= me.arrayAvisoT[0]['f_ini'];
                     me.f_fin= me.arrayAvisoT[0]['f_fin'];
+                    me.calle1 = me.arrayAvisoT[0]['calle1'];
+                    me.calle2 = me.arrayAvisoT[0]['calle2'];
                     me.anticipo= me.arrayAvisoT[0]['anticipo'];
                     me.fraccionamiento= me.arrayAvisoT[0]['proyecto'];
                     me.total_anticipo = me.arrayAvisoT[0]['total_anticipo'];
@@ -1490,42 +1545,47 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-
             },
-
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
                 this.pdf='';
             },
-
             abrirModal(accion,data =[]){
                 switch(accion){
                     case 'subirArchivo':
                     {
                         this.modal =1;
-                        this.tituloModal='Subir Archivo';
+                        this.tipoAccion = 1;
+                        this.tituloModal='Subir contrato';
+                        this.id=data['id'];
+                        this.pdf=data['documento'];
+                        break;
+                    }
+                    case 'subirArchivo2':
+                    {
+                        this.modal =1;
+                        this.tipoAccion = 2;
+                        this.tituloModal='Subir registro de obra';
                         this.id=data['id'];
                         this.pdf=data['documento'];
                         break;
                     }
                 } 
             },
-
-
             actualizarContrato(id){
                 let me= this;
                 this.listado=3;
-
                 //Obtener datos de cabecera
                 var arrayAvisoT=[];
                 var url = '/iniobra/obtenerCabecera?id=' + id;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayAvisoT = respuesta.ini_obra;
-
                     me.contratista_id= me.arrayAvisoT[0]['contratista_id'];
                     me.clave= me.arrayAvisoT[0]['clave'];
+                    me.calle1 = me.arrayAvisoT[0]['calle1'];
+                    me.calle2 = me.arrayAvisoT[0]['calle2'];
                     me.f_ini= me.arrayAvisoT[0]['f_ini'];
                     me.f_fin= me.arrayAvisoT[0]['f_fin'];
                     me.anticipo= me.arrayAvisoT[0]['anticipo'];
@@ -1555,7 +1615,6 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-
             }
            
         },
@@ -1590,7 +1649,6 @@
         max-width: 100%;
         box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
     }
-
     .td2, .th2 {
         border: solid rgb(200, 200, 200) 1px;
         padding: .5rem;

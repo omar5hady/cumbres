@@ -28,6 +28,8 @@ Vue.use(VueCurrencyFilter, {
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+Vue.component('calendar-component', require('./components/Calendar/CalendarComponent.vue'));
+
 //Componentes Administracion
 Vue.component('departamento', require('./components/Administracion/Departamento.vue'));
 Vue.component('cuenta', require('./components/Administracion/Cuenta.vue'));

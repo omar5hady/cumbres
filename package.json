@@ -10,19 +10,22 @@
     "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
   },
   "devDependencies": {
-    "axios": "^0.17",
+    "axios": "^0.21.0",
     "bootstrap": "^3.3.7",
     "cross-env": "^5.1",
-    "jquery": "^3.2",
-    "popper.js": "^1.12",
+    "jquery": "^3.5.1",
     "laravel-mix": "^2.0",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.20",
+    "popper.js": "^1.12",
     "vue": "^2.5.7"
   },
   "dependencies": {
+    "@fullcalendar/daygrid": "^5.4.0",
+    "@fullcalendar/interaction": "^5.4.0",
+    "@fullcalendar/vue": "^5.4.0",
     "laravel-echo": "^1.5.3",
     "moment": "^2.23.0",
-    "npm": "^6.9.2",
+    "npm": "^6.14.9",
     "pusher-js": "^4.4.0",
     "vue-currency-filter": "^3.2.0",
     "vue-lodash": "^2.0.0",

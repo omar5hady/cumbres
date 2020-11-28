@@ -1301,6 +1301,10 @@ class UserController extends Controller
                 return['gerentes' => $gerentes];
     }
 
+    public function getNombre(Request $request){
+        return Personal::select('nombre', 'apellidos')->where('id','=',$request->id)->first();
+    }
+
     public function asignarGerentes (Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $asignar = Vendedor::findOrFail($request->id);
@@ -1403,6 +1407,17 @@ class UserController extends Controller
         ->get();
 
         return $reminders;
+    }
+
+    public function selectUser(Request $request){
+        $users = User::join('personal','users.id','=','personal.id')
+                        ->select('personal.id','personal.nombre','personal.apellidos')
+                        ->where('users.condicion','=','1')
+                        ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $request->buscar . '%')
+                        ->orderBy('nombre','asc')
+                        ->paginate(6);
+
+        return $users;
     }
 
     

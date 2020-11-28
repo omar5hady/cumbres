@@ -53,7 +53,7 @@
                                         <td v-if="fraccionamiento.tipo_proyecto==1" v-text="'Lotificación'"></td>
                                         <td v-if="fraccionamiento.tipo_proyecto==2" v-text="'Departamento'"></td>
                                         <td v-if="fraccionamiento.tipo_proyecto==3" v-text="'Terreno'"></td>
-                                        <td v-text="fraccionamiento.calle"></td>
+                                        <td v-text="fraccionamiento.calle + ' No. ' + fraccionamiento.numero"></td>
                                         <td class="td2" style="width:7%" v-if = "fraccionamiento.logo_fracc"><a class="btn btn-success btn-sm" v-bind:href="'/downloadLogoFraccionamiento/'+fraccionamiento.logo_fracc"><i class="fa fa-download fa-spin"></i></a></td>
                                         <td class="td2" v-else></td>
             

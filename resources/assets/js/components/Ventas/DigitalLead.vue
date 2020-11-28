@@ -134,6 +134,7 @@
                                         <th>Proyecto o zona de interés </th>
                                         <th>Modelo de interes</th>
                                         <th>Mensualidad deseada</th>
+                                        <th>Status</th>
                                         <th>Observaciones</th>
                                     </tr>
                                 </thead>
@@ -142,7 +143,10 @@
                                         <td class="td2" style="width:10%">
                                             <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
                                                 <i class="icon-pencil"></i>
-                                            </button>                                 
+                                            </button>    
+                                            <button v-if="lead.status == 1" title="Finalizar" type="button" @click="changeStatus(lead.id)" class="btn btn-success btn-sm">
+                                                <i class="icon-check"></i>
+                                            </button>                              
                                         </td>
                                         <td v-if="lead.diferencia < 7" class="td2" v-text="lead.nombre + ' ' + lead.apellidos "></td>                                                    
                                         <td v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15  " class="td2">
@@ -161,6 +165,9 @@
                                         <td class="td2" v-else v-text="lead.zona_interes"></td>
                                         <td class="td2" v-text="lead.modelo_interes"></td>
                                         <td class="td2" v-if="lead.rango1 != null" v-text="'$'+formatNumber(lead.rango1) + ' - $'+formatNumber(lead.rango2)"></td><td class="td2" v-else ></td>
+                                        <td class="td2" v-if="lead.status == '1'"><span class="badge badge-warning">En Seguimiento</span></td>
+                                        <td class="td2" v-if="lead.status == '0'"><span class="badge badge-danger">Descartado</span></td>
+                                        <td class="td2" v-if="lead.status == '3'"><span class="badge badge-success">Finalizado</span></td>
                                         <td class="td2"> 
                                             <button title="Ver observaciones" type="button" class="btn btn-info pull-right" 
                                             @click="abrirModal1(lead.id),listarObservacion(1,lead.id)">Ver todos</button> </td>
@@ -187,7 +194,10 @@
                                         <td class="td2" style="width:10%">
                                             <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
                                                 <i class="icon-pencil"></i>
-                                            </button>                                 
+                                            </button>  
+                                            <button v-if="lead.status == 1" title="Finalizar" type="button" @click="changeStatus(lead.id)" class="btn btn-success btn-sm">
+                                                <i class="icon-check"></i>
+                                            </button>                                
                                         </td>
                                         <td v-if="lead.diferencia < 7" class="td2" v-text="lead.nombre + ' ' + lead.apellidos "></td>                                                    
                                         <td v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15  " class="td2">
@@ -206,7 +216,7 @@
                                         <td v-text="lead.descripcion"></td>  
                                         <td class="td2" v-if="lead.status == '1'"><span class="badge badge-warning">En Seguimiento</span></td>
                                         <td class="td2" v-if="lead.status == '0'"><span class="badge badge-danger">Descartado</span></td>
-                                        <td class="td2" v-if="lead.status == '2'"><span class="badge badge-success">Potencial</span></td>
+                                        <td class="td2" v-if="lead.status == '3'"><span class="badge badge-success">Finalizado</span></td>
                                         <td class="td2"> 
                                             <button title="Ver observaciones" type="button" class="btn btn-info pull-right" 
                                             @click="abrirModal1(lead.id),listarObservacion(1,lead.id)">Ver todos</button> </td>
@@ -1107,6 +1117,35 @@ export default {
                     }).then(
                         rsponse => {
                             this.myAlerts.popAlert('Asignado correctamente');
+                            this.listarLeads(this.arrayLeads.current_page);
+
+                            return response.data;
+                        }
+                    ).catch(error => console.log(error));
+                }
+            });
+
+        },
+
+        changeStatus(id){
+            Swal.fire({
+                title: '¿Estas seguro de finzalizar el seguimiento de este lead?',
+                text: "Este cambio no se podrá deshacer!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Si continuar!',
+                cancelButtonText: 'Cancelar',
+            }).then((result) => {
+                if (result.value) {
+
+                    axios.put('/leads/changeStatus',{
+                        'id': id,
+                        'status':3
+                    }).then(
+                        rsponse => {
+                            this.myAlerts.popAlert('finalizado correctamente');
                             this.listarLeads(this.arrayLeads.current_page);
 
                             return response.data;

@@ -4,6 +4,12 @@
 
     @if(Auth::check())
 
+    <template v-if="menu==0">
+        <calendar-component></calendar-component>
+    </template>
+
+    
+
         <template v-if="menu==20">
             <perfil-user user-id="{{Auth::user()->id}}"
                 rol-id="{{Auth::user()->rol_id}}"

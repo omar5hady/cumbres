@@ -365,7 +365,7 @@ class DigitalLeadController extends Controller
             ->where('obs_leads.visto','=', NULL);
             
             if(Auth::user()->rol_id == 2 || Auth::user()->rol_id == 1){
-                //$reminders = $reminders->where('clientes.vendedor_id','=', Auth::user()->id);
+                $reminders = $reminders->where('digital_leads.vendedor_asign','=', Auth::user()->id);
                 $reminders = $reminders->get();
 
                 return $reminders;
@@ -385,6 +385,12 @@ class DigitalLeadController extends Controller
                 return $reminders;
             }
        
+    }
+
+    public function changeStatus(Request $request){
+        $lead = Digital_lead::findOrFail($request->id);
+        $lead->status = $request->status;
+        $lead->save();
     }
 
     public function leadEnterado(Request $request){
