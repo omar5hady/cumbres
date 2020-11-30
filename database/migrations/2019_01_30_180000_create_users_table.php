@@ -24,6 +24,8 @@ class CreateUsersTable extends Migration
             $table->integer('rol_id')->unsigned();
             $table->foreign('rol_id')->references('id')->on('roles');
 
+            $table->boolean('calendario')->default(0);
+
             //Menus principales
             $table->boolean('administracion')->default(0);
             $table->boolean('desarrollo')->default(0);

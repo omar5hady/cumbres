@@ -29,6 +29,8 @@ class User extends Authenticatable
        'postventa',
        'comisiones',
 
+       'calendario',
+
         //Administracion
         'departamentos',
         'personas',

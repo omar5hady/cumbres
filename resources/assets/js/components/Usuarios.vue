@@ -130,6 +130,7 @@
                                 <!-- listado para privilegios del menu Administracion -->
                                 <div class="col-md-4" >
                                     <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-calendar"></i><input v-model="calendario" type="checkbox" value="1"/> Calendario de actividades </a>
                                             <a class="nav-link nav-dropdown-toggle"><i class="icon-energy"></i><input @click="limpiarAdministracion()" v-model="administracion" type="checkbox" value="1"/> Modulo Administración </a>
                                             <ul v-if="administracion==1" class="nav-dropdown-items">
                                                 <li class="nav-item" >
@@ -853,6 +854,7 @@
                 gestoria:0,
                 postventa:0,
                 comisiones:0,
+                calendario:0,
 
                     //Administracion
                     departamentos:0,
@@ -1221,6 +1223,7 @@
                     me.gestoria = usuarios[0].gestoria;
                     me.postventa = usuarios[0].postventa;
                     me.comisiones = usuarios[0].comisiones;
+                    me.calendario = usuarios[0].calendario;
 
                     //Administracion
                     me.departamentos=usuarios[0].departamentos;
@@ -1540,6 +1543,7 @@
                     'gestoria':this.gestoria,
                     'postventa':this.postventa,
                     'comisiones':this.comisiones,
+                    'calendario':this.calendario,
                         //Administracion
                     'departamentos':this.departamentos,
                     'personas':this.personas,
@@ -1850,6 +1854,7 @@
                 me.acceso=0;
                 me.reportes=0;
                 me.id=0;
+                me.calendario = 0,
 
                     //Administracion
                 me.departamentos=0;

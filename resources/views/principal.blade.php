@@ -72,6 +72,11 @@
                     <li @click="menu=20" class="nav-item">
                         <a class="nav-link active" href="#"><i class="icon-speedometer"></i> Escritorio</a>
                     </li>
+                    @if(Auth::user()->calendario == 1)
+                        <li @click="menu=0" class="nav-item">
+                            <a class="nav-link" @click="menu=0" href="#"><i class="fa fa-calendar"></i> Calendario de actividades</a>
+                        </li>
+                    @endif
                     <li class="nav-title">
                     <strong>Menu</strong> 
                     </li>
@@ -712,8 +717,8 @@
                         <a class="nav-link" onclick="window.open('/pdf/manualUsuarioAsesor.pdf','_blank')"><i class="icon-book-open"></i> Manual de usuario <span class="badge badge-danger">PDF</span></a>
                     </li>
                 @endif
-                    <li @click="menu=0" class="nav-item">
-                        <a class="nav-link" @click="menu=0" href="#"><i class="icon-info"></i> Acerca de...<span class="badge badge-info">IT</span></a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="icon-info"></i> Acerca de...<span class="badge badge-info">IT</span></a>
                     </li>
                 </ul>
             </nav>
