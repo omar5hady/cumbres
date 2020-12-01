@@ -70,17 +70,20 @@
             </div>
             <div class="row">
               
-              
-              <div class="col-md-6 mb-4" v-if="addingMode">
-                <button class="btn btn-sm btn-primary" @click="addNewEvent">Guardar Evento</button>
-              </div>
-              <template v-else>
-                <div class="col-md-6 mb-4">
-                  <button class="btn btn-sm btn-success" @click="updateEvent">Actualizar</button>
-                  <button class="btn btn-sm btn-danger" @click="deleteEvent">Borrar</button>
-                  <button class="btn btn-sm btn-secondary" @click="addingMode = !addingMode, vista = 1, resetForm()">Cancelar</button>
+              <template v-if="rolId != 2">
+                <div class="col-md-6 mb-4" v-if="addingMode && rolId">
+                  <button class="btn btn-sm btn-primary" @click="addNewEvent">Guardar Evento</button>
                 </div>
+                <template v-else>
+                  <div class="col-md-6 mb-4">
+                    <button class="btn btn-sm btn-success" @click="updateEvent">Actualizar</button>
+                    <button class="btn btn-sm btn-danger" @click="deleteEvent">Borrar</button>
+                    <button class="btn btn-sm btn-secondary" @click="addingMode = !addingMode, vista = 1, resetForm()">Cancelar</button>
+                  </div>
+                </template>
+                  
               </template>
+              
             </div>
           </form>
         </div>
@@ -100,6 +103,9 @@ import esLocale from '@fullcalendar/core/locales/es';
 import axios from "axios";
 
 export default {
+  props:{
+    rolId:{type: String}
+  },
   components: {
     Fullcalendar
   },

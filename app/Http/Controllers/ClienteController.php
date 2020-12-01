@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use App\Mail\NotificationReceived;
 use App\Notifications\NotifyAdmin;
 use App\User;
+use App\Calendar;
 
 class ClienteController extends Controller
 {
@@ -1904,7 +1905,20 @@ class ClienteController extends Controller
 
     public function asignarClienteAleatorio(){
         $band = 0;
-        $fecha = Carbon::now();
+        $current = Carbon::now();
+
+        $calendario = Calendar::select('user_id')
+                ->whereDate('end_date','>=',$current)
+                ->whereDate('start_date','<=',$current)
+                ->where('event_name','!=','Guardia')
+                ->get();
+
+        $cal = [];
+        
+        if(sizeof($calendario))
+            foreach($calendario as $index => $calendar){
+                array_push($cal,$calendar->user_id);
+            }
 
         $vendedores = User::join('personal','users.id','=','personal.id')
                 ->join('vendedores','personal.id','vendedores.id')
@@ -1912,7 +1926,7 @@ class ClienteController extends Controller
                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS vendedor"))
                 ->where('vendedores.tipo','=',0)
                 ->where('users.condicion','=',1)
-                ->whereRaw("? NOT BETWEEN vendedores.ini_vacaciones AND vendedores.fin_vacaciones", [$fecha])
+                ->whereNotIn('users.id',$cal)
                 ->where('users.usuario','!=','descartado')
                 ->where('users.usuario','!=','oficina')
                 ->orderBy('vendedor','asc')->get();

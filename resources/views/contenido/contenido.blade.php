@@ -5,7 +5,7 @@
     @if(Auth::check())
 
     <template v-if="menu==0">
-        <calendar-component></calendar-component>
+        <calendar-component rol-id="{{Auth::user()->rol_id}}"></calendar-component>
     </template>
 
     

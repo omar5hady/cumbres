@@ -96,7 +96,13 @@
 
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <center> <h6 style="color: #153157;">Contrato: {{clave}}</h6> </center>
+                                        <center> <h5 style="color: #153157;">Contrato: {{clave}}</h5> </center>
+                                    </div>
+                                </div> 
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <center> <h6 style="color: #153157;">Contratista: {{contratista}}</h6> </center>
                                     </div>
                                 </div> 
 
@@ -822,6 +828,8 @@
             },
             indexEstimaciones(page){
                 let me = this;
+                this.arrayAnticipos = [];
+                this.arrayFG = [];
                 var url = '/estimaciones/indexEstimaciones?page=' + page + '&buscar=' + me.buscar;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
@@ -975,6 +983,7 @@
                 this.porc_anticipo = contrato['anticipo'] / 100;
                 this.num_casas = contrato['num_casas'];
                 this.aviso_id = (contrato['id']);
+                this.contratista = contrato['contratista'];
                 this.getPartidas(contrato['id']);
             },
             abrirModal(accion,data =[]){
