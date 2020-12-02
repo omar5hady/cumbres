@@ -109,8 +109,14 @@
                                 <div class="col-md-12">
                                     <div class="form-group row">
                                         <label class="col-md-2 form-control-label" for="text-input">Importe del Contrato</label>
-                                        <div class="col-md-4">
+                                        <div class="col-md-4" v-if="arrayFG.length > 0">
                                              $ {{formatNumber(total_importe)}}
+                                        </div>
+                                        <div class="col-md-4" v-else-if="arrayFG.length == 0 && edit == 0">
+                                             <a href="#" @dblclick="edit = 1, total_impAux = total_importe" title="Doble clic para editar">$ {{formatNumber(total_importe)}}</a>
+                                        </div>
+                                        <div class="col-md-4" v-else-if="arrayFG.length == 0 && edit == 1">
+                                             <input type="text" pattern="\d*" @keyup.esc="cancel()" v-on:keypress="isNumber($event)" v-model="total_impAux" @keyup.enter="updateTotal()">
                                         </div>
                                     </div>
                                 </div> 
@@ -159,7 +165,7 @@
                                                 </select>
                                             </div>
 
-                                            <div class="col-md-2">
+                                            <div class="col-md-2" v-if="((total_acum_actual/total_importe)*100) < 100">
                                                 <button type="button" @click="nueva = 1"  class="btn btn-primary">
                                                     <i class="icon-plus"></i>&nbsp;Nueva estimación
                                                 </button>
@@ -183,7 +189,25 @@
                                                 <input type="number" disabled v-model="num_estimacion" min="0" step="1" class="form-control" placeholder="Núm. Estimación">
                                             </div>
 
-                                            <div class="col-md-6">
+                                            
+
+                                        </div>
+                                    </div> 
+
+                                    <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <label class="col-md-2 form-control-label" for="text-input">Inicio Periodo</label>
+                                            <div class="col-md-3">
+                                                <input type="date" v-model="periodo1" class="form-control" >
+                                            </div>
+                                            <label class="col-md-2 form-control-label" for="text-input">Fin Periodo</label>
+                                            <div class="col-md-3">
+                                                <input type="date" v-model="periodo2" class="form-control" >
+                                            </div>
+                                        </div>
+                                    </div> 
+
+                                    <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <div class="col-md-2">
                                                         <button type="button" @click="storeEstimacion(arrayPartidas)"  class="btn btn-success">
@@ -200,9 +224,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-
-                                        </div>
-                                    </div> 
                                 </template>
 
                                 <div class="table-responsive" >
@@ -455,6 +476,7 @@
                                         <h6 style="color: #153157;">Importe del Contrato  
                                             <strong> ${{formatNumber(total_importe)}} </strong>
                                         </h6>
+                                        <input type="text" v-on:keypress="isNumber($event)" v-model="total_importe">
                                     </div>
                                 </div>
 
@@ -523,7 +545,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Monto</label>
                                     <div class="col-md-2">
-                                        <input type="text" pattern="\d*" v-on:change="validarAnticipo()" v-on:keypress="isNumber($event)" v-model="monto_anticipo" class="form-control" placeholder="Monto" >
+                                        <input type="text" v-on:change="validarAnticipo()" pattern="\d*" v-on:keypress="isNumber($event)" v-model="monto_anticipo" class="form-control" placeholder="Monto" >
                                     </div>
                                     <div class="col-md-2">
                                         <h6><strong> ${{ formatNumber(monto_anticipo)}} </strong></h6>
@@ -534,7 +556,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Cantidad</label>
                                     <div class="col-md-4">
-                                        <input type="number" min="0" v-model="fg_cantidad" class="form-control" placeholder="Cantidad">
+                                        <input type="number" min="0" v-on:change="validarFG()" v-model="fg_cantidad" class="form-control" placeholder="Cantidad">
                                     </div>
                                 </div>
 
@@ -641,6 +663,10 @@
                 arrayEstimaciones:[],
                 arrayFraccionamientos:[],
                 empresas:[],
+                edit:0,
+                total_impAux:0,
+                periodo1:'',
+                periodo2:'',
                 
                 arrayContratos:[],
                 arrayContratistas:[],
@@ -807,6 +833,7 @@
                 formData.append('contrato', this.clave);
                 formData.append('porcentaje_garantia', this.porcentaje_garantia);
                 formData.append('garantia_ret', this.garantia_ret);
+                formData.append('total_importe', this.total_importe);
                 let me = this;
                 axios.post('/estimaciones/import',formData)
                 .then(function (response) {
@@ -930,6 +957,8 @@
             },
             getPartidas(id){
                 let me = this;
+                me.periodo1 = '';
+                me.periodo2 = '';
                 me.arrayCreditos=[];
                 var url = '/estimaciones/getPartidas?clave='+id+'&numero='+this.b_estimacion;
                 axios.get(url).then(function (response) {
@@ -970,6 +999,19 @@
                 var porPagar = me.total_anticipo - monto;
                 if(me.monto_anticipo>porPagar)
                     me.monto_anticipo = porPagar;
+                
+            },
+            validarFG(){
+                let me = this;
+                var num = 0;
+                if(me.arrayFG.length > 0)
+                    for(var i=0;i<me.arrayFG.length;i++){
+                        num += parseFloat(me.arrayFG[i].cantidad);
+                    }
+                
+                var porFG = me.num_casas - num;
+                if(me.fg_cantidad>porFG)
+                    me.fg_cantidad = porFG;
                 
             },
             verDetalle(contrato){
@@ -1059,7 +1101,9 @@
                                     'costo' : element.costo,
                                     'vol' : element.num_estimacion,
                                     'num_estimacion' : this.num_estimacion,
-                                    'total_estimacion' : this.total2
+                                    'total_estimacion' : this.total2,
+                                    'periodo1' : this.periodo1,
+                                    'periodo2' : this.periodo2,
                                 }); 
                                 me.nueva = 0;
                                 me.b_estimacion = '';
@@ -1075,6 +1119,52 @@
                         });
                     }
                 })
+            },
+            updateTotal(){
+                
+                let me = this;
+                Swal({
+                    title: '¿Desea continuar?',
+                    animation: false,
+                    customClass: 'animated bounceInDown',
+                    text: "Estos cambios no se pueden revertir",
+                    type: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Cancelar',
+                    
+                    confirmButtonText: 'Si, guardar!'
+                    }).then((result) => {
+                    if (result.value) {
+                        me.edit = 0;
+                        me.total_importe = me.total_impAux;
+                        me.importe_garantia = me.total_importe * me.porc_garantia;
+                        me.getPartidas(me.aviso_id);
+
+                        axios.put('/estimaciones/updateImporTotal',{
+                            'id' : me.aviso_id,
+                            'total_importe' : me.total_importe,
+                            'importe_garantia' : me.importe_garantia
+                        }); 
+                        me.nueva = 0;
+                        me.cerrarModal();
+                        me.getPartidas(me.aviso_id);
+                        Swal({
+                            title: 'Hecho!',
+                            text: 'Cambios aplicados correctamente',
+                            type: 'success',
+                            animation: false,
+                            customClass: 'animated bounceInRight'
+                        })
+                    }
+                })
+
+            },
+            cancel(){
+                this.edit = 0;
+                this.getPartidas(this.aviso_id);
+                this.total_impAux = 0;
             },
             storeAnticipos(){
                 let me = this;
@@ -1130,7 +1220,7 @@
                             'aviso_id' : me.aviso_id,
                             'cantidad' : me.fg_cantidad,
                             'monto_fg' : me.monto_fg,
-                            'fehca_fg' : me.fecha_fg
+                            'fecha_fg' : me.fecha_fg
                         }); 
                         me.nueva = 0;
                         me.cerrarModal();

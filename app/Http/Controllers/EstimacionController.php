@@ -488,7 +488,7 @@ class EstimacionController extends Controller
             ->select('ini_obras.id','ini_obras.clave',
                 'ini_obras.total_costo_directo',
                 'ini_obras.total_costo_indirecto', 
-                'ini_obras.total_importe',
+                'ini_obras.total_importe2 as total_importe',
                 'ini_obras.anticipo',
                 'ini_obras.garantia_ret',
                 'ini_obras.porc_garantia_ret',

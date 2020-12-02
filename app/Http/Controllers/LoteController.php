@@ -2113,7 +2113,7 @@ class LoteController extends Controller
         $lotes = $lotes->orderBy('fraccionamientos.nombre','DESC')
                     ->orderBy('etapas.num_etapa','ASC')
                     ->orderBy('lotes.manzana','ASC')
-                    ->orderBy('lotes.num_lote','ASC')->paginate(25);  
+                    ->orderBy('lotes.num_lote','ASC')->paginate(8);  
         
         $tipo = 2;
         if(Auth::user()->rol_id == 2)

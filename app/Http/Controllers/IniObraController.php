@@ -874,6 +874,7 @@ class IniObraController extends Controller
                 $contrato->num_casas = $lotes;
                 $contrato->porc_garantia_ret = $request->porcentaje_garantia;
                 $contrato->garantia_ret = $request->garantia_ret;
+                $contrato->total_importe2 = $request->total_importe;
                 $contrato->save();
 
                 $path = $request->file->getRealPath();
@@ -917,7 +918,7 @@ class IniObraController extends Controller
 
         $query = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
             ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
-            ->select('ini_obras.id','ini_obras.clave','ini_obras.total_importe', 'ini_obras.garantia_ret',
+            ->select('ini_obras.id','ini_obras.clave','ini_obras.total_importe2 as total_importe', 'ini_obras.garantia_ret',
             'ini_obras.total_anticipo', 'ini_obras.num_casas',
             'ini_obras.anticipo',
             'ini_obras.porc_garantia_ret',
@@ -1091,8 +1092,10 @@ class IniObraController extends Controller
                                 ->where('estimaciones.aviso_id','=',$request->clave);
 
         $contrato = Ini_obra::join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
+                        ->join('contratistas','ini_obras.contratista_id','=','contratistas.id')
                         ->select('ini_obras.emp_constructora','fraccionamientos.nombre','ini_obras.clave',
-                                'total_importe', 'total_anticipo', 'garantia_ret', 'porc_garantia_ret', 'anticipo'
+                                'total_importe2 as total_importe', 'total_anticipo', 'garantia_ret', 'porc_garantia_ret', 'anticipo',
+                                'contratistas.nombre as contratista'
                         )->where('ini_obras.id','=',$request->clave)->get();
         
 
@@ -1155,6 +1158,8 @@ class IniObraController extends Controller
             $estimacion->porEstimarCosto = 0;
             $estimacion->porEstimarVol = 0;
             $estimacion->costoA = 0;
+            $estimacion->ini = '';
+            $estimacion->fin = '';
             
 
             if($num_est != 0){
@@ -1171,7 +1176,7 @@ class IniObraController extends Controller
                 }
 
                 $historial = Hist_estimacion::select(
-                    'vol', 'costo', 'num_estimacion'
+                    'vol', 'costo', 'num_estimacion','ini','fin'
                 )
                 ->where('estimacion_id','=',$estimacion->id)
                 ->where('num_estimacion','=',$num_est)
@@ -1179,6 +1184,8 @@ class IniObraController extends Controller
 
                 if( sizeOf($historial) > 0 ){
                     $estimacion->vol = $historial[0]->vol;
+                    $estimacion->ini = $historial[0]->ini;
+                    $estimacion->fin = $historial[0]->fin;
                     $estimacion->costoA = $historial[0]->costo;
                     //$estimacion->costo = $historial[0]->costo;
                     //$estimacion->num_estimacion = $historial[0]->vol;
@@ -1191,13 +1198,14 @@ class IniObraController extends Controller
                 
                 $sheet->mergeCells('A1:L1');
                 $sheet->mergeCells('A3:L3');
+                $sheet->mergeCells('A4:L4');
                 $sheet->mergeCells('A5:L5');
                 
                 $sheet->mergeCells('E7:F7');
                 $sheet->mergeCells('G7:H7');
                 $sheet->mergeCells('I7:J7');
                 $sheet->mergeCells('K7:L7');
-                $sheet->setSize('A1', 10, 60);
+                $sheet->setSize('A1', 40, 60);
                 $sheet->setSize('B1', 50, 20);
                 $sheet->setSize('C1', 30, 20);
                 $sheet->setSize('H1', 30, 20);
@@ -1233,22 +1241,34 @@ class IniObraController extends Controller
                         // manipulate the cell
                         $cell->setValue(  'CONCRETANIA, SA DE CV');
                         $cell->setFontFamily('Arial Narrow');
-                        $cell->setFontSize(32);
+                        $cell->setFontSize(20);
                         $cell->setFontWeight('bold');
                         $cell->setAlignment('center');
                     
                     });
                     
                 $sheet->row(3, [
-                    'Control de estimaciones '.'"'.$contrato[0]->nombre.'"'
+                    'Control de estimaciones '.$contrato[0]->nombre.' - '.$contrato[0]->clave 
+                ]);
+                $sheet->row(4, [
+                    'Contratista '.$contrato[0]->contratista 
                 ]);
 
                 $sheet->cell('A3', function($cell) {
 
                     // manipulate the cell
                     $cell->setFontFamily('Arial Narrow');
-                    $cell->setFontSize(18);
+                    $cell->setFontSize(14);
                     $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                
+                });
+                $sheet->cell('A4', function($cell) {
+
+                    // manipulate the cell
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(14);
+                   // $cell->setFontWeight('bold');
                     $cell->setAlignment('center');
                 
                 });
@@ -1263,6 +1283,17 @@ class IniObraController extends Controller
                     $cell->setAlignment('center');
                 
                 });
+                    setlocale(LC_TIME, 'es_MX.utf8');
+                    $fecha1 = new Carbon($estimaciones[0]->ini);
+                    $estimaciones[0]->ini = $fecha1->formatLocalized('%d de %B de %Y');
+
+                    $fecha2 = new Carbon($estimaciones[0]->fin);
+                    $estimaciones[0]->fin = $fecha2->formatLocalized('%d de %B de %Y');
+
+                
+                $sheet->row(6, [
+                    'Periodo: ', $estimaciones[0]->ini. ' al '.$estimaciones[0]->fin
+                ]);
         
                 $sheet->row(7, [
                     'No.', 'Paquete', 'P.U. Prorrateado', 'No. de Viviendas', 'Estimación No.'.$num_est,'', 
@@ -1465,6 +1496,8 @@ class IniObraController extends Controller
         $estimacion->vol = $request->vol;
         $estimacion->costo = $request->costo;
         $estimacion->total_estimacion = $request->total_estimacion;
+        $estimacion->ini = $request->periodo1;
+        $estimacion->fin = $request->periodo2;
         $estimacion->save();
     }
 
@@ -1709,6 +1742,13 @@ class IniObraController extends Controller
             
             )->download('xls');
             
+    }
+
+    public function updateImporTotal(Request $request){
+        $iniObra = Ini_obra::findOrFail($request->id);
+        $iniObra->total_importe2 = $request->total_importe;
+        $iniObra->garantia_ret = $request->importe_garantia;
+        $iniObra->save();
     }
 
 }
