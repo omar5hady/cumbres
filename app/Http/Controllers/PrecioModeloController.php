@@ -81,7 +81,8 @@ class PrecioModeloController extends Controller
         $etapa_id = Precio_etapa::select('etapa_id')->where('id','=',$request->precio_etapa_id)->get();
         $lote_id = Lote::select('id')->where('modelo_id','=',$request->modelo_id)
         ->where('etapa_id','=',$etapa_id[0]->etapa_id)
-        ->where('contrato','=',0)->get();
+        //->where('contrato','=',0)
+        ->get();
         
         foreach($lote_id as $loteid){
             $credito_id = Credito::select('id','precio_base','precio_venta')->where('lote_id','=',$loteid->id)

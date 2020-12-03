@@ -96,10 +96,10 @@
                                         </td>
                                         <td v-if="lead.diferencia < 7" class="td2" v-text="lead.nombre + ' ' + lead.apellidos "></td>                                                    
                                         <td v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15  " class="td2">
-                                            <span class="badge2 badge-warning">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
+                                            <span class="badge2 badge-warning">{{ lead.nombre.toUpperCase()+' '+lead.apellidos}}</span>
                                         </td>    
                                         <td v-else-if="lead.diferencia > 15" class="td2">
-                                            <span class="badge2 badge-danger">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
+                                            <span class="badge2 badge-danger">{{ lead.nombre.toUpperCase()+' '+lead.apellidos}}</span>
                                         </td>
                                         <td class="td2" v-if="lead.celular != null">
                                             <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>    
