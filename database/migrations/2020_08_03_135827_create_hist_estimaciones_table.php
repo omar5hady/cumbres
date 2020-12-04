@@ -18,7 +18,7 @@ class CreateHistEstimacionesTable extends Migration
             $table->unsignedInteger('estimacion_id')->nullable();
             $table->foreign('estimacion_id')->references('id')->on('estimaciones');
             $table->integer('num_estimacion');
-            $table->integer('vol');
+            $table->float('vol');
             $table->double('costo',10,2)->default(0);
             $table->double('total_estimacion',10,2)->default(0);
             $table->date('ini')->nullable();

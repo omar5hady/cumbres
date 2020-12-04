@@ -2113,7 +2113,12 @@ class LoteController extends Controller
         $lotes = $lotes->orderBy('fraccionamientos.nombre','DESC')
                     ->orderBy('etapas.num_etapa','ASC')
                     ->orderBy('lotes.manzana','ASC')
-                    ->orderBy('lotes.num_lote','ASC')->paginate(8);  
+                    ->orderBy('lotes.num_lote','ASC');
+                    
+        if(Auth::user()->rol_id == 2 || Auth::user()->rol_id == 4)
+            $lotes = $lotes->paginate(25);  
+        else
+            $lotes = $lotes->paginate(8);  
         
         $tipo = 2;
         if(Auth::user()->rol_id == 2)
@@ -3080,6 +3085,89 @@ class LoteController extends Controller
         $modelo = $request->modelo;
         $criterio = $request->criterio;
 
+        $lotes = $this->getPreciosBase($buscar,$b_etapa,$b_manzana,$b_lote,$modelo,$criterio);
+            $lotes = $lotes->paginate(8);
+
+
+        return [
+            'pagination' => [
+                'total'         => $lotes->total(),
+                'current_page'  => $lotes->currentPage(),
+                'per_page'      => $lotes->perPage(),
+                'last_page'     => $lotes->lastPage(),
+                'from'          => $lotes->firstItem(),
+                'to'            => $lotes->lastItem(),
+            ],
+            'lotes' => $lotes
+        ];
+    }
+
+    public function excelPrecioBase(Request $request){
+        $buscar = $request->buscar;
+        $b_etapa = $request->b_etapa;
+        $b_manzana = $request->b_manzana;
+        $b_lote = $request->b_lote;
+        $modelo = $request->modelo;
+        $criterio = $request->criterio;
+
+        $lotes = $this->getPreciosBase($buscar,$b_etapa,$b_manzana,$b_lote,$modelo,$criterio);
+            $lotes = $lotes->get();
+
+        return Excel::create('lotes', function($excel) use ($lotes){
+                $excel->sheet('lotes', function($sheet) use ($lotes){
+                    
+                    $sheet->row(1, [
+                        'Proyecto', 'Etapa', 'Manzana', 'Lote', 'Modelo', 'Avance',
+                        'Precio base', 'Ajuste'
+                    ]);
+    
+    
+                    $sheet->cells('A1:H1', function ($cells) {
+                        $cells->setBackground('#052154');
+                        $cells->setFontColor('#ffffff');
+                        // Set font family
+                        $cells->setFontFamily('Calibri');
+    
+                        // Set font size
+                        $cells->setFontSize(13);
+    
+                        // Set font weight to bold
+                        $cells->setFontWeight('bold');
+                        $cells->setAlignment('center');
+                    });
+
+                    $sheet->setColumnFormat(array(
+                        'H' => '$#,##0.00',
+                        'G' => '$#,##0.00',
+                    ));
+    
+                    
+                    $cont=1;
+    
+                    foreach($lotes as $index => $lote) {
+                        $cont++;
+    
+                        
+                        $sheet->row($index+2, [
+                            $lote->proyecto, 
+                            $lote->num_etapa, 
+                            $lote->manzana,
+                            $lote->num_lote,
+                            $lote->modelo, 
+                            $lote->avance.'%',
+                            $lote->precio_base,
+                            $lote->ajuste,
+                        ]);	
+                    }
+                    $num='A1:H' . $cont;
+                    $sheet->setBorder($num, 'thin');
+                });
+            }
+            
+            )->download('xls');
+    }
+
+    private function getPreciosBase($buscar,$b_etapa,$b_manzana,$b_lote,$modelo,$criterio){
         $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
             ->join('etapas','lotes.etapa_id','=','etapas.id')
             ->join('modelos','lotes.modelo_id','=','modelos.id')
@@ -3106,21 +3194,9 @@ class LoteController extends Controller
             ->where('lotes.precio_base','>','0')
             ->orderBy('fraccionamientos.nombre','ASC')
             ->orderBy('etapas.num_etapa','ASC')
-            ->orderBy('lotes.num_lote','ASC')
-            ->paginate(8);
+            ->orderBy('lotes.num_lote','ASC');
 
-
-        return [
-            'pagination' => [
-                'total'         => $lotes->total(),
-                'current_page'  => $lotes->currentPage(),
-                'per_page'      => $lotes->perPage(),
-                'last_page'     => $lotes->lastPage(),
-                'from'          => $lotes->firstItem(),
-                'to'            => $lotes->lastItem(),
-            ],
-            'lotes' => $lotes
-        ];
+        return $lotes;
     }
 
     public function updateAjuste(Request $request){

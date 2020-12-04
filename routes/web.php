@@ -240,6 +240,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/lotes/export_excel/{fraccionamiento_id}','LoteController@excelLotes');
         Route::get('/lotes/resume_excel_lotes_disp','LoteController@exportExcelLotesDisp');
         Route::get('/lotes/con_precio_base','LoteController@LotesConPrecioBase');
+        Route::get('/preciosVivienda/excel','LoteController@excelPrecioBase');
         Route::put('/lotes/actualizar/ajuste','LoteController@updateAjuste');
         Route::put('/lotes/masa/empresa','LoteController@asignarEmpresa');
         Route::get('/lotes/empresa/select','LoteController@selectEmpresaConstructora'); 

@@ -47,6 +47,9 @@
                             <div class="col-md-8">
                                 <div class="input-group">
                                     <button type="submit" @click="listarLote(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <a  :href="'/preciosVivienda/excel?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana 
+                                        + '&b_lote=' + b_lote + '&modelo=' + b_modelo
+                                        + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
                                 </div>
                             </div>
                         </div>
@@ -80,7 +83,7 @@
                                        <td class="td2" v-text="lote.avance+'%'"></td>
                                         <td class="td2" v-text="'$'+formatNumber(lote.precio_base)"></td>
 
-                                        <td>
+                                        <td style="width:50%">
                                         <input type="text" pattern="\d*" @keyup.enter="actualizarAjuste(lote.id,$event.target.value)" :id="lote.id" :value="lote.ajuste|currency" step="1"  v-on:keypress="isNumber($event)" class="form-control" >     
                                         </td>
                                     </tr>

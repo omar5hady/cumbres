@@ -258,7 +258,7 @@
                                                 </template>
                                                 <template v-else>
                                                     <td class="td2">
-                                                        <input type="number" v-on:change="validar(index)"  v-model="partida.num_estimacion" min="0" step="1" class="form-control" placeholder="Núm. volumen">
+                                                        <input type="number" v-on:change="validar(index)"  v-model="partida.num_estimacion" min="0" step="0.1" class="form-control" placeholder="Núm. volumen">
                                                     </td>
                                                     <td class="td2" v-text="'$' + formatNumber( partida.costo = partida.num_estimacion * partida.pu_prorrateado )"></td>
                                                 </template>
@@ -368,7 +368,7 @@
                                                     <tr>
                                                         <th>Anticipo</th>
                                                         <th v-text="'$'+formatNumber(total_anticipo)"></th>
-                                                        <th>
+                                                        <th v-if="arrayNumEstim.length == 0">
                                                             <button title="Añadir" type="button" @click="abrirModal('anticipo')" class="btn btn-success btn-sm">
                                                                 <i class="icon-plus"></i>
                                                             </button>
@@ -857,6 +857,33 @@
                 let me = this;
                 this.arrayAnticipos = [];
                 this.arrayFG = [];
+                this.acumuladoVol = 0;
+                this.acumCosto = 0;
+                this.porEstimarVol = 0;
+                this.porEstimarCosto = 0;
+                this.porc_anticipo = 0;
+                this.porc_garantia = 0;
+                this.total_estimacion  = 0;
+                this.total_acum_ant = 0;
+                this.total_acum_actual = 0;
+                this.total_por_estimar = 0;
+                this.amor_total_estimacion  = 0;
+                this.amor_total_acum_ant = 0;
+                this.amor_total_acum_actual = 0;
+                this.amor_total_por_estimar = 0;
+                this.fg_total_estimacion  = 0;
+                this.fg_total_acum_ant = 0;
+                this.fg_total_acum_actual = 0;
+                this.fg_total_por_estimar = 0;
+                this.pagado_total_estimacion  = 0;
+                this.pagado_total_acum_ant = 0;
+                this.pagado_total_acum_actual = 0;
+                this.pagado_total_por_estimar = 0;
+                this.total1 = 0;
+                this.total2 = 0;
+                this.total3 = 0;
+                this.total4 = 0;
+                this.total5 = 0;
                 var url = '/estimaciones/indexEstimaciones?page=' + page + '&buscar=' + me.buscar;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
@@ -960,19 +987,23 @@
                 me.periodo1 = '';
                 me.periodo2 = '';
                 me.arrayCreditos=[];
-                var url = '/estimaciones/getPartidas?clave='+id+'&numero='+this.b_estimacion;
+                var url = '/estimaciones/getPartidas?clave='+id+'&numero='+this.b_estimacion+'&total_importe='+this.total_importe;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayPartidas = respuesta.estimaciones;
                     me.numero = respuesta.numero;
                     me.num_estimacion = respuesta.num_est;
                     me.arrayNumEstim = respuesta.numeros;
-                    me.b_estimacion = me.arrayNumEstim[0].num_estimacion;
+                    if(me.arrayNumEstim.length > 0)
+                        me.b_estimacion = me.arrayNumEstim[0].num_estimacion;
                     me.actual = respuesta.actual;
                     me.total_estimacion = respuesta.total_estimacion;
                     me.total_acum_ant = respuesta.totalEstimacionAnt;
                     me.arrayAnticipos = respuesta.anticipos;
                     me.arrayFG = respuesta.fondos;
+
+                    me.total_anticipo = respuesta.total_anticipo;
+                    me.porc_anticipo = respuesta.anticipo/ 100;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -996,7 +1027,7 @@
                         monto += parseFloat(me.arrayAnticipos[i].monto_anticipo);
                     }
                 
-                var porPagar = me.total_anticipo - monto;
+                var porPagar = me.total_importe - monto;
                 if(me.monto_anticipo>porPagar)
                     me.monto_anticipo = porPagar;
                 

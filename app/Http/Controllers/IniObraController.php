@@ -940,6 +940,18 @@ class IniObraController extends Controller
         $ini_obra = $ini_obra
             ->where('ini_obras.num_casas','!=',0)
             ->orderBy('ini_obras.clave', 'desc')->paginate(12);
+
+        if(sizeof($ini_obra))
+            foreach($ini_obra as $index => $obra){
+                $anticipoT = Anticipo_estimacion::select(DB::raw("SUM(monto_anticipo) as total"))
+                                    ->where('aviso_id','=',$obra->id)->first();
+                $obra->total_anticipo = 0;
+                if($anticipoT->total != null)
+                    $obra->total_anticipo = $anticipoT->total;
+
+                $obra->anticipo = round($obra->total_anticipo/$obra->total_importe,3);
+                
+            }
         
          
         return [
@@ -1058,6 +1070,17 @@ class IniObraController extends Controller
                 }
             }
         }
+        
+
+        $anticipoT = Anticipo_estimacion::select(DB::raw("SUM(monto_anticipo) as total"))
+            ->where('aviso_id','=',$request->clave)->first();
+            $total_anticipo = 0;
+            if($anticipoT->total != null)
+                $total_anticipo = $anticipoT->total;
+
+            $anticipo = round($total_anticipo/$request->total_importe,3);
+
+        
 
         return [
             'estimaciones' => $estimaciones, 
@@ -1069,6 +1092,8 @@ class IniObraController extends Controller
             'totalEstimacionAnt' => $totalEstimacionAnt,
             'anticipos' => $anticipos,
             'fondos' => $fondos,
+            'anticipo' => $anticipo,
+            'total_anticipo' => $total_anticipo
         ];
     }
 
@@ -1097,6 +1122,14 @@ class IniObraController extends Controller
                                 'total_importe2 as total_importe', 'total_anticipo', 'garantia_ret', 'porc_garantia_ret', 'anticipo',
                                 'contratistas.nombre as contratista'
                         )->where('ini_obras.id','=',$request->clave)->get();
+
+    $anticipoT = Anticipo_estimacion::select(DB::raw("SUM(monto_anticipo) as total"))
+        ->where('aviso_id','=',$contrato[0]->id)->first();
+    $contrato[0]->total_anticipo = 0;
+    if($anticipoT->total != null)
+        $contrato[0]->total_anticipo = $anticipoT->total;
+
+    $contrato[0]->anticipo = round($contrato[0]->total_anticipo/$contrato[0]->total_importe,3);
         
 
         if($request->numero == ''){
