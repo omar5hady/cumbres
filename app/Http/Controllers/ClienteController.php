@@ -1903,7 +1903,7 @@ class ClienteController extends Controller
         return $people;
     }
 
-    public function asignarClienteAleatorio(){
+    public function asignarClienteAleatorio($tipo){
         $band = 0;
         $current = Carbon::now();
 
@@ -1920,16 +1920,34 @@ class ClienteController extends Controller
                 array_push($cal,$calendar->user_id);
             }
 
-        $vendedores = User::join('personal','users.id','=','personal.id')
-                ->join('vendedores','personal.id','vendedores.id')
-                ->select('personal.id',
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS vendedor"))
-                ->where('vendedores.tipo','=',0)
-                ->where('users.condicion','=',1)
-                ->whereNotIn('users.id',$cal)
-                ->where('users.usuario','!=','descartado')
-                ->where('users.usuario','!=','oficina')
-                ->orderBy('vendedor','asc')->get();
+        if($tipo == 0){
+            $vendedores = User::join('personal','users.id','=','personal.id')
+            ->join('vendedores','personal.id','vendedores.id')
+            ->select('personal.id',
+                    DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS vendedor"))
+            ->where('vendedores.tipo','=',0)
+            ->where('users.condicion','=',1)
+            ->whereNotIn('users.id',$cal)
+            ->whereNotIn('users.id',[28020,28230,55])
+            ->where('users.usuario','!=','descartado')
+            ->where('users.usuario','!=','oficina')
+            ->orderBy('vendedor','asc')->get();
+        }
+            
+        else{
+            $vendedores = User::join('personal','users.id','=','personal.id')
+            ->join('vendedores','personal.id','vendedores.id')
+            ->select('personal.id',
+                    DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS vendedor"))
+            ->where('vendedores.tipo','=',0)
+            ->where('users.condicion','=',1)
+            ->whereNotIn('users.id',$cal)
+            ->whereIn('users.id',[28020,28230])
+            ->where('users.usuario','!=','descartado')
+            ->where('users.usuario','!=','oficina')
+            ->orderBy('vendedor','asc')->get();
+        }
+        $ids = [];
 
         foreach ($vendedores as $index => $vendedor) {
 
@@ -1937,6 +1955,7 @@ class ClienteController extends Controller
             $vendedor->bd = 0;
 
             $clientes = Cliente::select('id')->where('vendedor_id','=',$vendedor->id)
+            ->where('clasificacion','!=',5)
             ->where('clasificacion','!=',6)
             ->where('clasificacion','!=',7)
             ->where('clasificacion','!=',1)
@@ -1956,26 +1975,26 @@ class ClienteController extends Controller
                 $vendedor->dif = $vendedor->total - $vendedor->bd;
             }
 
+            if($vendedor->dif < 5){
+                array_push($ids,$vendedor->id);
+                
+            }
+
 
         }
         $cont = 0;
 
-        if(sizeof($vendedores))
-        do{
-            $cont++;
-            $value = random_int ( 0 , (sizeOf($vendedores)-1) );
-            if($vendedores[$value]->dif < 5){
-                $band = 1;
-            }   
-
-        }while($band == 0);
+        if(sizeof($ids))
+        
+            $value = random_int ( 0 , (sizeOf($ids)-1) );
+        
         
 
 
         return [
             'vendedores' =>  $vendedores,
             'random' => $value,
-            'vendedor_elegido' => $vendedores[$value]
+            'vendedor_elegido' => $ids[$value]
         ];
        
 

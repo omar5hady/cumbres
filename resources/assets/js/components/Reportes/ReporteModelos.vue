@@ -52,8 +52,12 @@
                                         <th>Modelo</th>
                                         <th>Total de casas</th>
                                         <th>Individualizadas</th>
+                                        <th>Vendidas Proceso</th>
+                                        <th>Vendidas Terminadas</th>
                                         <th>Vendidas</th>
                                         <th>Total vendidas</th>
+                                        <th>Disponible Proceso</th>
+                                        <th>Disponible Terminadas</th>
                                         <th>Disponibles</th>
                                         <th v-if="meses != 0">Promedio mensual de venta</th>
                                         
@@ -66,8 +70,12 @@
                                             <td class="td2" v-text="lote.nombre"></td>
                                             <td class="td2 text-center" v-text="lote.total"></td>
                                             <td class="td2 text-center" v-text="lote.indiv"></td>
+                                            <td class="td2 text-center" v-text="lote.vendidaProc"></td>
+                                            <td class="td2 text-center" v-text="lote.vendidaTerm"></td>
                                             <td class="td2 text-center" v-text="lote.vendida"></td>
                                             <td class="td2 text-center" v-text="lote.total_vendidas"></td>
+                                            <td class="td2 text-center" v-text="lote.disponibleProc"></td>
+                                            <td class="td2 text-center" v-text="lote.disponibleTerm"></td>
                                             <td class="td2 text-center" v-text="lote.disponible"></td>
                                             <td v-if="meses != 0" class="td2 text-center"> {{((lote.vendida + lote.indiv)/meses).toFixed(2)}} </td>
                                             
@@ -123,7 +131,6 @@
 
                     me.meses = respuesta.diferencia;
                    
-                    
                     me.fecha = moment().locale('es').format('DD-MMMM-YYYY');
 
                     me.arrayLotes.sort((b, a) => a.total_vendidas - b.total_vendidas);

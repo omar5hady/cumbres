@@ -592,7 +592,7 @@ export default {
             let me = this;
             loading(true)
             
-            var url = '/clientes?page=1&criterio=personal.nombre&b_clasificacion=2&buscar='+search;
+            var url = '/clientes?page=1&criterio=personal.nombre&b_clasificacion=&buscar='+search;
             
             axios.get(url).then(function (response) {
                 

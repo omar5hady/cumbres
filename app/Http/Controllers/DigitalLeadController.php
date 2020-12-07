@@ -340,8 +340,14 @@ class DigitalLeadController extends Controller
             $lead = Digital_lead::findOrFail($request->id);
 
             $cliente = new ClienteController();
-            $vendedor_asign = $cliente->asignarClienteAleatorio();
-            $lead->vendedor_asign = $vendedor_asign['vendedor_elegido']['id'];
+            
+            if($lead->proyecto_interes != 12 )
+                $vendedor_asign = $cliente->asignarClienteAleatorio(0);
+            else
+                $vendedor_asign = $cliente->asignarClienteAleatorio(1);
+                
+            $lead->vendedor_asign = $vendedor_asign['vendedor_elegido'];
+            
             $lead->status = 2;
             $lead->save();
 

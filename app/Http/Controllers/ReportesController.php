@@ -2514,6 +2514,7 @@ class ReportesController extends Controller
         
         $modelos = Modelo::select('nombre')
         ->where('nombre','!=','Por Asignar');
+
         if($fraccionamiento != ''){
            $modelos =  $modelos->where('fraccionamiento_id','=',$fraccionamiento);
         }
@@ -2564,74 +2565,194 @@ class ReportesController extends Controller
         foreach($modelos as $index => $modelo){
             $modelo->total = 0;
 
-            $lotes = Lote::join('modelos','lotes.modelo_id','=','modelos.id')->where('lotes.habilitado','=',1)->where('modelos.nombre','=',$modelo->nombre);
-            if($fraccionamiento != '')
-                $lotes = $lotes->where('lotes.fraccionamiento_id','=',$fraccionamiento);
-            if($etapa != '')
-                $lotes = $lotes->where('lotes.etapa_id','=',$etapa);
-            $lotes = $lotes->count();
-            $modelo->total = $lotes;
+            $lotesTerm = Lote::join('modelos','lotes.modelo_id','=','modelos.id')
+                ->join('licencias','lotes.id','=','licencias.id')
+                ->where('licencias.avance','>=',90)
+                ->where('lotes.habilitado','=',1)->where('modelos.nombre','=',$modelo->nombre);
+            $lotesProc = Lote::join('modelos','lotes.modelo_id','=','modelos.id')
+                ->join('licencias','lotes.id','=','licencias.id')
+                ->where('licencias.avance','<',90)
+                ->where('lotes.habilitado','=',1)->where('modelos.nombre','=',$modelo->nombre);
 
-            $indivContado   =   Contrato::join('expedientes','contratos.id','=','expedientes.id')
+            if($fraccionamiento != ''){
+                $lotesTerm = $lotesTerm->where('lotes.fraccionamiento_id','=',$fraccionamiento);
+                $lotesProc = $lotesProc->where('lotes.fraccionamiento_id','=',$fraccionamiento);
+            }
+                
+            if($etapa != ''){
+                $lotesTerm = $lotesTerm->where('lotes.etapa_id','=',$etapa);
+                $lotesProc = $lotesProc->where('lotes.etapa_id','=',$etapa);
+            }
+                
+            $lotesTerm = $lotesTerm->count();
+            $lotesProc = $lotesProc->count();
+
+            $modelo->total = $lotesProc + $lotesTerm;
+            $modelo->lotesTerm = $lotesTerm;
+            $modelo->lotesProc = $lotesProc;
+
+            $indivContadoProc =  Contrato::join('expedientes','contratos.id','=','expedientes.id')
                                 ->join('creditos','contratos.id', '=', 'creditos.id')
                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
                                 ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->join('licencias','lotes.id','=','licencias.id')
                                 ->join('modelos','lotes.modelo_id','=','modelos.id')
                                 ->where('contratos.status','=',3)
                                 ->where('expedientes.liquidado','=',1)
                                 ->where('inst_seleccionadas.elegido', '=', '1')
                                 ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
                                 ->where('modelos.nombre','=',$modelo->nombre);
-                                if($fraccionamiento != '')
-                                    $indivContado=$indivContado->where('lotes.fraccionamiento_id','=',$fraccionamiento);
-                                if($etapa != '')
-                                    $indivContado=$indivContado->where('lotes.etapa_id','=',$etapa);
-                                $indivContado = $indivContado->distinct('contratos.id')
-                                                            ->count('contratos.id');
-            
-            $indivCredito = Contrato::join('expedientes','contratos.id','=','expedientes.id')
+
+            $indivContadoTerm =  Contrato::join('expedientes','contratos.id','=','expedientes.id')
                                 ->join('creditos','contratos.id', '=', 'creditos.id')
                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
                                 ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->join('licencias','lotes.id','=','licencias.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->where('contratos.status','=',3)
+                                ->where('expedientes.liquidado','=',1)
+                                ->where('inst_seleccionadas.elegido', '=', '1')
+                                ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
+                                ->where('modelos.nombre','=',$modelo->nombre);
+
+                $indivContadoTerm = $indivContadoTerm->where('licencias.avance','>=',90);
+                $indivContadoProc = $indivContadoProc->where('licencias.avance','<',90);
+
+                                if($fraccionamiento != ''){
+                                    $indivContadoTerm=$indivContadoTerm->where('lotes.fraccionamiento_id','=',$fraccionamiento);
+                                    $indivContadoProc=$indivContadoProc->where('lotes.fraccionamiento_id','=',$fraccionamiento);
+                                }
+                                    
+                                if($etapa != ''){
+                                    $indivContadoTerm=$indivContadoTerm->where('lotes.etapa_id','=',$etapa);
+                                    $indivContadoProc=$indivContadoProc->where('lotes.etapa_id','=',$etapa);
+                                }
+                                
+                                $indivContadoTerm = $indivContadoTerm->distinct('contratos.id')
+                                                            ->count('contratos.id');
+                                $indivContadoProc = $indivContadoProc->distinct('contratos.id')
+                                                            ->count('contratos.id');
+
+                $indivContado = $indivContadoTerm + $indivContadoProc;
+            
+            $indivCreditoTerm = Contrato::join('expedientes','contratos.id','=','expedientes.id')
+                                ->join('creditos','contratos.id', '=', 'creditos.id')
+                                ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->join('licencias','lotes.id','=','licencias.id')
                                 ->join('modelos','lotes.modelo_id','=','modelos.id')
                                 ->where('contratos.status','=',3)
                                 ->where('expedientes.fecha_firma_esc','!=',NULL)
                                 ->where('inst_seleccionadas.elegido', '=', '1')
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                 ->where('modelos.nombre','=',$modelo->nombre);
-                                if($fraccionamiento != '')
-                                    $indivCredito=$indivCredito->where('lotes.fraccionamiento_id','=',$fraccionamiento);
-                                if($etapa != '')
-                                    $indivCredito=$indivCredito->where('lotes.etapa_id','=',$etapa);
-                                $indivCredito=$indivCredito->distinct('contratos.id')
-                                ->count('contratos.id');
 
-            $contratos = Contrato::join('creditos','contratos.id', '=', 'creditos.id')
+            $indivCreditoProc = Contrato::join('expedientes','contratos.id','=','expedientes.id')
+                                ->join('creditos','contratos.id', '=', 'creditos.id')
+                                ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->join('licencias','lotes.id','=','licencias.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->where('contratos.status','=',3)
+                                ->where('expedientes.fecha_firma_esc','!=',NULL)
+                                ->where('inst_seleccionadas.elegido', '=', '1')
+                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
+                                ->where('modelos.nombre','=',$modelo->nombre);
+
+                $indivCreditoTerm = $indivCreditoTerm->where('licencias.avance','>=',90);
+                $indivCreditoProc = $indivCreditoProc->where('licencias.avance','<',90);
+
+                                if($fraccionamiento != ''){
+                                    $indivCreditoTerm=$indivCreditoTerm->where('lotes.fraccionamiento_id','=',$fraccionamiento);
+                                    $indivCreditoProc=$indivCreditoProc->where('lotes.fraccionamiento_id','=',$fraccionamiento);
+                                } 
+
+                                if($etapa != ''){
+                                    $indivCreditoTerm=$indivCreditoTerm->where('lotes.etapa_id','=',$etapa);
+                                    $indivCreditoProc=$indivCreditoProc->where('lotes.fraccionamiento_id','=',$fraccionamiento);
+                                }
+
+                                $indivCreditoTerm=$indivCreditoTerm->distinct('contratos.id')
+                                                            ->count('contratos.id');
+                                $indivCreditoProc=$indivCreditoProc->distinct('contratos.id')
+                                                            ->count('contratos.id');
+
+                $indivCredito = $indivCreditoTerm + $indivCreditoProc;
+
+            $contratosProc = Contrato::join('creditos','contratos.id', '=', 'creditos.id')
                             ->join('lotes','creditos.lote_id','=','lotes.id')
+                            ->join('licencias','lotes.id','=','licencias.id')
                             ->join('modelos','lotes.modelo_id','=','modelos.id')
                             ->where('contratos.status','=',3)
+                            ->where('licencias.avance','<',90)
                             ->where('modelos.nombre','=',$modelo->nombre);
+
                             if($fraccionamiento != '')
-                                $contratos=$contratos->where('lotes.fraccionamiento_id','=',$fraccionamiento);
+                                $contratosProc=$contratosProc->where('lotes.fraccionamiento_id','=',$fraccionamiento);
+
                             if($etapa != '')
-                                $contratos=$contratos->where('lotes.etapa_id','=',$etapa);
-                            $contratos=$contratos->orWhere('contratos.status','=',1)
-                            ->where('modelos.nombre','=',$modelo->nombre);
+                                $contratosProc=$contratosProc->where('lotes.etapa_id','=',$etapa);
+
+                            $contratosProc=$contratosProc->orWhere('contratos.status','=',1)
+                                ->where('licencias.avance','<',90)
+                                ->where('modelos.nombre','=',$modelo->nombre);
+
                             if($fraccionamiento != '')
-                                $contratos=$contratos->where('lotes.fraccionamiento_id','=',$fraccionamiento);
+                                $contratosProc=$contratosProc->where('lotes.fraccionamiento_id','=',$fraccionamiento);
                             if($etapa != '')
-                                $contratos=$contratos->where('lotes.etapa_id','=',$etapa);
+                                $contratosProc=$contratosProc->where('lotes.etapa_id','=',$etapa);
                            
-                            $contratos=$contratos->distinct('contratos.id')
+                            $contratosProc=$contratosProc->distinct('contratos.id')
+                                ->count('contratos.id');
+            
+            $contratosTerm = Contrato::join('creditos','contratos.id', '=', 'creditos.id')
+                            ->join('lotes','creditos.lote_id','=','lotes.id')
+                            ->join('licencias','lotes.id','=','licencias.id')
+                            ->join('modelos','lotes.modelo_id','=','modelos.id')
+                            ->where('contratos.status','=',3)
+                            ->where('licencias.avance','>=',90)
+                            ->where('modelos.nombre','=',$modelo->nombre);
+
+                            if($fraccionamiento != '')
+                                $contratosTerm=$contratosTerm->where('lotes.fraccionamiento_id','=',$fraccionamiento);
+
+                            if($etapa != '')
+                                $contratosTerm=$contratosTerm->where('lotes.etapa_id','=',$etapa);
+
+                            $contratosTerm=$contratosTerm->orWhere('contratos.status','=',1)
+                                ->where('licencias.avance','>=',90)
+                                ->where('modelos.nombre','=',$modelo->nombre);
+
+                            if($fraccionamiento != '')
+                                $contratosTerm=$contratosTerm->where('lotes.fraccionamiento_id','=',$fraccionamiento);
+                            if($etapa != '')
+                                $contratosTerm=$contratosTerm->where('lotes.etapa_id','=',$etapa);
+                           
+                            $contratosTerm=$contratosTerm->distinct('contratos.id')
                             ->count('contratos.id');
 
-            $modelo->indiv = $indivContado + $indivCredito;
+            $contratos = $contratosTerm + $contratosProc;
 
-            $modelo->vendida = $contratos - ($indivContado + $indivCredito);
+            $indiv = $indivContado + $indivCredito;
+
+            $indivTerm = $indivCreditoTerm + $indivContadoTerm;
+            $indivProc = $indivCreditoProc + $indivContadoProc;
+
+            $modelo->indiv = $indiv;
+
+            $modelo->vendida = $contratos - $indiv;
+
+            $modelo->vendidaTerm = $contratosTerm - $indivTerm;
+
+            $modelo->vendidaProc = $contratosProc - $indivProc;
 
             $modelo->total_vendidas = $modelo->indiv + $modelo->vendida;
 
             $modelo->disponible = $modelo->total - ($modelo->indiv + $modelo->vendida );
+
+            $modelo->disponibleProc = $lotesProc - ($indivProc + $modelo->vendidaProc );
+
+            $modelo->disponibleTerm = $lotesTerm - ($indivTerm + $modelo->vendidaTerm );
 
             
         }
