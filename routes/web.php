@@ -407,7 +407,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::delete('/iniobra/contrato/eliminar','IniObraController@eliminarContrato');
         Route::post('/iniobra/lote/registrar','IniObraController@agregarIniObraLotes');
         Route::delete('/iniobra/lote/eliminar','IniObraController@eliminarIniObraLotes');
-        Route::get('/iniobra/pdf/{id}','IniObraController@contratoObraPDF')->name('contratos.pdf');
+        Route::get('/iniobra/pdf','IniObraController@contratoObraPDF')->name('contratos.pdf');
         Route::get('/iniobra/relacion/excel/{id}','IniObraController@exportExcel');
         Route::get('/licencias/indexVisita','LicenciasController@indexVisita');
         Route::get('/licencias/excelVisita','LicenciasController@excelVisita');

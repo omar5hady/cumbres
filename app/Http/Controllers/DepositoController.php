@@ -2438,8 +2438,15 @@ class DepositoController extends Controller
                                         ->where('creditos.id','=',$id)
                                         ->get();
 
+        
         $contratos[0]->sumDepositoCredito = $total_depositos_credito[0]->sumDepositoCredito;
         $contratos[0]->totalAbono = $contratos[0]->sumDeposito + $contratos[0]->sumDepositoCredito + $contratos[0]->descuento;
+        $contratos[0]->saldo = $contratos[0]->totalCargo - $contratos[0]->totalAbono;
+
+        $contratoChange = Contrato::findOrFail($id);
+        $contratoChange->saldo = $contratos[0]->totalCargo - $contratos[0]->totalAbono;
+        $contratoChange->save();
+
         $contratos[0]->sumDepositoCredito = number_format((float)$contratos[0]->sumDepositoCredito, 2, '.', ',');
         $contratos[0]->sumDeposito = number_format((float)$contratos[0]->sumDeposito, 2, '.', ',');
         $contratos[0]->totalAbono = number_format((float)$contratos[0]->totalAbono, 2, '.', ',');

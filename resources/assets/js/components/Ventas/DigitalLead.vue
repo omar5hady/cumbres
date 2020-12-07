@@ -107,7 +107,8 @@
                                         <td class="td2" v-if="lead.email != null" >
                                             <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+lead.email+ ';'"> <i class="fa fa-envelope-o fa-lg"></i> </a>
                                         </td><td class="td2" v-else ></td>
-                                        <td class="td2" v-text="lead.nombre_campania + '-'+lead.medio_digital"></td>
+                                        <td class="td2" v-if="lead.nombre_campania != null" v-text="lead.nombre_campania + '-'+lead.medio_digital"></td>
+                                        <td class="td2" v-else v-text="'Tráfico organico'"></td>
                                         <td class="td2" v-if="lead.proyecto_interes != 0" v-text="lead.proyecto"></td>
                                         <td class="td2" v-else v-text="lead.zona_interes"></td>
                                         <td class="td2" v-if="lead.rango1 != null" v-text="'$'+formatNumber(lead.rango1) + ' - $'+formatNumber(lead.rango2)"></td><td class="td2" v-else ></td>

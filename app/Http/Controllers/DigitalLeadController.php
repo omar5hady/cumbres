@@ -53,6 +53,7 @@ class DigitalLeadController extends Controller
 
         if(sizeof($leads))
         foreach($leads as $index => $persona){
+            $persona->progress = 0;
             $date = Carbon::parse($persona->fecha_update);
             $now = Carbon::now();
             $persona->diferencia = $date->diffInDays($now);

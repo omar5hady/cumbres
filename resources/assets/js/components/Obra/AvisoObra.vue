@@ -736,9 +736,7 @@
                                     </a>
                                 </div>
                                 <div class="col-md-2">
-                                    <a class="btn btn-primary" v-bind:href="'/iniobra/pdf/'+ id " >
-                                        <i></i>Imprimir Contrato
-                                    </a>
+                                    <button type="button" class="btn btn-primary" @click="modal = 2"><i class="fa fa-print"></i>&nbsp; Imprimir Contrato</button>
                                 </div>
                             </div>
                         </div>
@@ -749,7 +747,7 @@
             </div>
 
             <!-- Modal para la carga pdf -->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 1}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-primary modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -788,6 +786,41 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             </div>
+                    </div> 
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal-->
+
+            <!-- Modal para la carga pdf -->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Seleccionar apoderado legal</h4>
+                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+
+                        <div class="modal-body">
+                            <div>
+                                <select class="form-control" v-model="apoderado">
+                                    <option value="ING. DAVID CALVILLO MARTINEZ">ING. DAVID CALVILLO MARTINEZ</option>
+                                    <option value="ING. ALEJANDRO F. PEREZ ESPINOSA">ING. ALEJANDRO F. PEREZ ESPINOSA</option>
+                                    <option value="ING. JUAN URIEL ALFARO GALVÁN">ING. JUAN URIEL ALFARO GALVÁN</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                             <a class="btn btn-primary" v-bind:href="'/iniobra/pdf?id=' + id + '&apoderado=' + apoderado"  target="_blank">
+                                <i></i>Imprimir
+                            </a>
+                        </div>
                     </div> 
                     <!-- /.modal-content -->
                 </div>
@@ -916,6 +949,7 @@
                 contratista:'',
                 fraccionamiento:'',
                 empresa_constructora:'',
+                apoderado:'ING. DAVID CALVILLO MARTINEZ',
                 
             }
         },

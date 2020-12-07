@@ -59,7 +59,7 @@
 	<TR>
 	<br>
 	@if($cabecera[0]->emp_constructora == 'Grupo Constructor Cumbres')
-		<TD WIDTH=450 HEIGHT=72 VALIGN=TOP BGCOLOR="#999999" STYLE="border: 1px solid #00000a; padding-top: 0in; padding-bottom: 0.2in; padding-left: 0.05in; padding-right: 0.09in">
+		<TD WIDTH=450 HEIGHT=72 VALIGN=TOP BGCOLOR="#c2c2c2" STYLE="border: 1px solid #00000a; padding-top: 0in; padding-bottom: 0.2in; padding-left: 0.05in; padding-right: 0.09in">
 			<P LANG="es-ES" CLASS="western" ALIGN=JUSTIFY STYLE="margin-left: 0.07in">
 			</P>
 			<P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY STYLE="margin-top: 0in; margin-left: 0.05in">
@@ -67,14 +67,13 @@
 			DE OBRA A PRECIO ALZADO Y TIEMPO DETERMINADO QUE CELEBRAN POR UNA
 			PARTE </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES"><B>GRUPO
 			CONSTRUCTOR CUMBRES, S.A. DE C.V.,</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES">
-			REPRESENTADA POR EL SR. </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES"><B>ING.
-			DAVID CALVILLO MARTINEZ,</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES">
+			REPRESENTADA POR EL SR. </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES"><B>{{$cabecera[0]->apoderado}},</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES">
 			EN SU CARACTER DE APODERADO LEGAL Y A QUIEN EN LO SUCESIVO SE LE
 			DENOMINA </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES"><B>“LA
 			CONTRATANTE”</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES">,
-			Y POR LA OTRA PARTE </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES"><B>{{$cabecera[0]->contratista}}
+			Y POR LA OTRA PARTE </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES"><B>{{mb_strtoupper($cabecera[0]->contratista)}}
 			</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES">REPRESENTADA
-			POR {{$cabecera[0]->representante}}</SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES"><B>,
+			POR {{mb_strtoupper($cabecera[0]->representante)}}</SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES"><B>,
 			</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES">A
 			QUIEN EN LO SUBSECUENTE SE LE IDENTIFICARA COMO </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES"><B>“LA
 			CONTRATISTA”,</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES">
@@ -82,21 +81,21 @@
 		</TD>
 	@endif
 	@if($cabecera[0]->emp_constructora == 'CONCRETANIA')
-		<TD WIDTH=450 HEIGHT=72 VALIGN=TOP BGCOLOR="#999999" STYLE="border: 1px solid #00000a; padding-top: 0in; padding-bottom: 0.2in; padding-left: 0.05in; padding-right: 0.09in">
+		<TD WIDTH=450 HEIGHT=72 VALIGN=TOP BGCOLOR="#c2c2c2" STYLE="border: 1px solid #00000a; padding-top: 0in; padding-bottom: 0.2in; padding-left: 0.05in; padding-right: 0.09in">
 			<P LANG="es-ES" CLASS="western" ALIGN=JUSTIFY STYLE="margin-left: 0.07in">
 			</P>
 			<P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY STYLE="margin-top: 0in; margin-left: 0.05in">
 			<FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES">CONTRATO
 			DE OBRA A PRECIO ALZADO Y TIEMPO DETERMINADO QUE CELEBRAN POR UNA
 			PARTE </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES"><B>CONCRETANIA, S.A. DE C.V.,</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES">
-			REPRESENTADA POR EL SR. </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES"><B>ING.
-			DAVID CALVILLO MARTINEZ,</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES">
+			REPRESENTADA POR EL SR. </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES"><B>{{$cabecera[0]->apoderado}},
+			</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES">
 			EN SU CARACTER DE APODERADO LEGAL Y A QUIEN EN LO SUCESIVO SE LE
 			DENOMINA </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES"><B>“LA
 			CONTRATANTE”</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES">,
-			Y POR LA OTRA PARTE </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES"><B>{{$cabecera[0]->contratista}}
+			Y POR LA OTRA PARTE </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES"><B>{{mb_strtoupper($cabecera[0]->contratista)}}
 			</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES">REPRESENTADA
-			POR {{$cabecera[0]->representante}}</SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES"><B>,
+			POR {{mb_strtoupper($cabecera[0]->representante)}}</SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES"><B>,
 			</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES">A
 			QUIEN EN LO SUBSECUENTE SE LE IDENTIFICARA COMO </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES"><B>“LA
 			CONTRATISTA”,</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES">
@@ -120,9 +119,9 @@ L A U S U L A S		</H5>
 - Datos del contratista:</SPAN></FONT></FONT></P>
 <H2 LANG="es-ES" CLASS="western"><BR>
 </H2>
-<H2 LANG="es-ES" CLASS="western"><FONT SIZE=4>{{$cabecera[0]->contratista}}</FONT></H2>
+<H2 LANG="es-ES" CLASS="western"><FONT SIZE=4>{{mb_strtoupper($cabecera[0]->contratista)}}</FONT></H2>
 <H2 LANG="es-ES" CLASS="western"><FONT SIZE=2><SPAN STYLE="font-weight: normal">REPRESENTADA
-POR EL {{$cabecera[0]->representante}}</SPAN></FONT></H2>
+POR EL {{mb_strtoupper($cabecera[0]->representante)}}</SPAN></FONT></H2>
 <H2 LANG="es-ES" CLASS="western">	</H2>
 <H2 LANG="es-ES" CLASS="western"><FONT SIZE=2><SPAN STYLE="font-weight: normal">Domicilio</SPAN></FONT></H2>
 
@@ -174,7 +173,8 @@ cumplir y llevar a cabo la obra del presente contrato.</SPAN></FONT></FONT></P>
 - </B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">El
 contrato es referente a los trabajos de </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>{{$cabecera[0]->descripcion_corta}}
 </B> {{$cabecera[0]->descripcion_larga}},
-de la obra </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>{{$cabecera[0]->proyecto}}, </B>{{$cabecera[0]->coloniaFracc}}, misma que identifican ambas partes. 
+de la obra </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>{{$cabecera[0]->proyecto}}, </B>{{$cabecera[0]->calleFracc}}, {{$cabecera[0]->delegacion}}, 
+	{{$cabecera[0]->ciudadFracc}}, {{$cabecera[0]->estadoFracc}}, misma que identifican ambas partes. 
 </SPAN></FONT></FONT>
 </P>
 <br>
@@ -388,13 +388,13 @@ firma el presente contrato a los {{$cabecera[0]->f_ini2}}.</B></SPAN></FONT></FO
       <div class="table-cell"><b>CONTRATISTA</div>
     </div>
     <div class="table-row">
-      <div class="table-cell" > <b>APDO .ING. DAVID CALVILLO MARTINEZ</div>
-      <div class="table-cell" > <b>REP.{{$cabecera[0]->representante}}</div>
+      <div class="table-cell" > <b>APDO. {{$cabecera[0]->apoderado}}</div>
+      <div class="table-cell" > <b>REP.{{mb_strtoupper($cabecera[0]->representante)}}</div>
 	</div>
 	@if($cabecera[0]->emp_constructora == 'Grupo Constructor Cumbres')
     <div class="table-row">
         <div class="table-cell" > <b>GRUPO CONSTRUCTOR CUMBRES, SA DE CV</div>
-        <div class="table-cell" > <b>{{$cabecera[0]->contratista}}</div>
+        <div class="table-cell" > <b>{{mb_strtoupper($cabecera[0]->contratista)}}</div>
 	</div>
 	<div class="table-row">
         <div class="table-cell" > <b>Manuel Gutiérrez Nájera # 190 Col. Tequisquiapan</div>
@@ -404,7 +404,7 @@ firma el presente contrato a los {{$cabecera[0]->f_ini2}}.</B></SPAN></FONT></FO
 	@if($cabecera[0]->emp_constructora == 'CONCRETANIA')
     <div class="table-row">
         <div class="table-cell" > <b>CONCRETANIA, SA DE CV</div>
-        <div class="table-cell" > <b>{{$cabecera[0]->contratista}}</div>
+        <div class="table-cell" > <b>{{mb_strtoupper($cabecera[0]->contratista)}}</div>
 	</div>
 	<div class="table-row">
         <div class="table-cell" > <b>Manuel Gutiérrez Nájera # 180 Col. Tequisquiapan</div>

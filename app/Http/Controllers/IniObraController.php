@@ -465,8 +465,9 @@ class IniObraController extends Controller
 
     }
 
-    public function contratoObraPDF(Request $request, $id)
+    public function contratoObraPDF(Request $request)
     {
+        $id = $request->id;
         
         $cabecera = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
         ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
@@ -476,8 +477,8 @@ class IniObraController extends Controller
             'contratistas.direccion as direccion','contratistas.colonia as colonia',
             'contratistas.cp as codigoPostal','contratistas.IMSS as imss','contratistas.estado as estado',
             'contratistas.representante as representante','fraccionamientos.nombre as proyecto',
-            'fraccionamientos.calle as calleFracc','fraccionamientos.colonia as coloniaFracc',
-            'fraccionamientos.estado as estadoFracc','ini_obras.anticipo',
+            'fraccionamientos.calle as calleFracc','fraccionamientos.colonia as coloniaFracc', 'fraccionamientos.delegacion',
+            'fraccionamientos.estado as estadoFracc','ini_obras.anticipo', 'fraccionamientos.ciudad as ciudadFracc',
             'ini_obras.emp_constructora',
             'ini_obras.total_anticipo','ini_obras.costo_indirecto_porcentaje','ini_obras.fraccionamiento_id',
             'ini_obras.contratista_id','ini_obras.descripcion_corta','ini_obras.descripcion_larga','ini_obras.iva','ini_obras.tipo')
@@ -487,6 +488,8 @@ class IniObraController extends Controller
         setlocale(LC_TIME, 'es_MX.utf8');
         $tiempo = new Carbon($cabecera[0]->f_ini);
         $cabecera[0]->f_ini = $tiempo->formatLocalized('%d de %B de %Y');
+
+        $cabecera[0]->apoderado = $request->apoderado;
 
         $tiempo2 = new Carbon($cabecera[0]->f_fin);
         $cabecera[0]->f_fin = $tiempo2->formatLocalized('%d de %B de %Y');
@@ -502,7 +505,7 @@ class IniObraController extends Controller
         $cabecera[0]->totalImporteLetra = NumerosEnLetras::convertir($cabecera[0]->total_importe,'Pesos',true,'Centavos');
 
             $pdf = \PDF::loadview('pdf.contratoContratista',['cabecera' => $cabecera]);
-            return $pdf->download('contrato.pdf');
+            return $pdf->stream('contrato.pdf');
             // return ['cabecera' => $cabecera];
     }
 
@@ -1123,13 +1126,13 @@ class IniObraController extends Controller
                                 'contratistas.nombre as contratista'
                         )->where('ini_obras.id','=',$request->clave)->get();
 
-    $anticipoT = Anticipo_estimacion::select(DB::raw("SUM(monto_anticipo) as total"))
-        ->where('aviso_id','=',$contrato[0]->id)->first();
-    $contrato[0]->total_anticipo = 0;
-    if($anticipoT->total != null)
-        $contrato[0]->total_anticipo = $anticipoT->total;
+        $anticipoT = Anticipo_estimacion::select(DB::raw("SUM(monto_anticipo) as total"))
+            ->where('aviso_id','=',$contrato[0]->id)->first();
+        $contrato[0]->total_anticipo = 0;
+        if($anticipoT->total != null)
+            $contrato[0]->total_anticipo = $anticipoT->total;
 
-    $contrato[0]->anticipo = round($contrato[0]->total_anticipo/$contrato[0]->total_importe,3);
+        $contrato[0]->anticipo = round($contrato[0]->total_anticipo/$contrato[0]->total_importe,3);
         
 
         if($request->numero == ''){
