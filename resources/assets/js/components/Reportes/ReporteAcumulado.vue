@@ -66,6 +66,17 @@
                                             <option value="2028">2028</option>
                                             <option value="2029">2029</option>
                                         </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-8">
+                                    <div class="input-group">
+                                        <select class="form-control col-md-4" v-model="emp_constructora">
+                                            <option value="">Empresa constructora</option>
+                                            <option value="Grupo Constructor Cumbres">Grupo Constructor Cumbres</option>
+                                            <option value="CONCRETANIA">CONCRETANIA</option>
+                                        </select>
                                         <button type="submit" @click="listarReporte()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     </div>
                                 </div>
@@ -390,7 +401,8 @@
 
                 arrayIngresosCobranza : [],
                 mes:'',
-                anio:''
+                anio:'',
+                emp_constructora:''
             }
         },
         computed:{
@@ -399,7 +411,15 @@
             /**Metodo para mostrar los registros */
             listarReporte(){
                 let me = this;
-                var url = '/reprotes/reporteAcumulado?mes=' + me.mes + '&anio=' + me.anio;
+
+                me.arrayExpCreditos = [];
+                me.arrayExpContado = [];
+                me.arrayPendientes = [];
+                me.arrayEscrituras = [];
+                me.arraycontadoSinEscrituras = [];
+                me.arrayIngresosCobranza = [];
+
+                var url = '/reprotes/reporteAcumulado?mes=' + me.mes + '&anio=' + me.anio + '&empresa=' + me.emp_constructora;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayExpCreditos = respuesta.expCreditos;

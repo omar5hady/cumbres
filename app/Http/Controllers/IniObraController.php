@@ -1787,4 +1787,13 @@ class IniObraController extends Controller
         $iniObra->save();
     }
 
+    public function excelEdoCuenta(Request $request){
+
+        $contrato = Ini_obra::join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
+                        ->join('contratistas','ini_obras.contratista_id','=','contratistas.id')
+                        ->select('ini_obras.emp_constructora','fraccionamientos.nombre','ini_obras.clave',
+                                'total_importe2 as total_importe','contratistas.nombre as contratista'
+                        )->where('ini_obras.id','=',$request->clave)->get();
+    }
+
 }

@@ -173,7 +173,7 @@ cumplir y llevar a cabo la obra del presente contrato.</SPAN></FONT></FONT></P>
 - </B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">El
 contrato es referente a los trabajos de </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>{{$cabecera[0]->descripcion_corta}}
 </B> {{$cabecera[0]->descripcion_larga}},
-de la obra </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>{{$cabecera[0]->proyecto}}, </B>{{$cabecera[0]->calleFracc}}, {{$cabecera[0]->delegacion}}, 
+de la obra </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>{{$cabecera[0]->proyecto}}, en Calle </B>{{$cabecera[0]->calleFracc}}, {{$cabecera[0]->delegacion}}, 
 	{{$cabecera[0]->ciudadFracc}}, {{$cabecera[0]->estadoFracc}}, misma que identifican ambas partes. 
 </SPAN></FONT></FONT>
 </P>

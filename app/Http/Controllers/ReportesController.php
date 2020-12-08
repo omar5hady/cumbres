@@ -518,16 +518,24 @@ class ReportesController extends Controller
 
     public function reporteLotesVentas(Request $request){
         if(!$request->ajax())return redirect('/');
+
+        $empresa = $request->emp_constructora;
         $lotes = Etapa::join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
                         ->select('fraccionamientos.id as proyectoId','etapas.id as etapaId',
-                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto')
-                        ->orderBy('proyecto','asc')->orderBy('num_etapa','asc')->get();
+                                    'etapas.num_etapa','fraccionamientos.nombre as proyecto');
+        $lotes = $lotes->orderBy('proyecto','asc')->orderBy('num_etapa','asc')->get();
 
         $total1= $total2= $total3= $total4= $total5= $total6= $total7= $total8= $total9= $total10= $total11 = 0;
 
         foreach($lotes as $index => $lote){
             $lote->lotes = Lote::where('fraccionamiento_id','=',$lote->proyectoId)
-                                ->where('etapa_id','=',$lote->etapaId)->count();
+                                ->where('etapa_id','=',$lote->etapaId);
+            
+            if($empresa != '')
+                $lote->lotes = $lote->lotes->where('lotes.emp_constructora','=', $empresa);
+                    
+                                
+            $lote->lotes = $lote->lotes->count();
         
         /// CONSULTAS PARA TODAS LAS DISPONIBLES (lotes.contrato = 0)
             $lote->terminadaDisponible = Lote::join('licencias','lotes.id','=','licencias.id')
@@ -535,21 +543,36 @@ class ReportesController extends Controller
                                 ->where('lotes.contrato','=',0)
                                 ->where('lotes.casa_muestra','=',0)
                                 ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
-                                ->where('lotes.etapa_id','=',$lote->etapaId)->count();
+                                ->where('lotes.etapa_id','=',$lote->etapaId);
+
+                if($empresa != '')
+                    $lote->terminadaDisponible = $lote->terminadaDisponible->where('lotes.emp_constructora','=', $empresa);
+                    
+            $lote->terminadaDisponible = $lote->terminadaDisponible->count();
 
             $lote->procesoDisponible = Lote::join('licencias','lotes.id','=','licencias.id')
                                 ->whereBetween('licencias.avance', [1, 90])
                                 ->where('lotes.contrato','=',0)
                                 ->where('lotes.casa_muestra','=',0)
                                 ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
-                                ->where('lotes.etapa_id','=',$lote->etapaId)->count();
+                                ->where('lotes.etapa_id','=',$lote->etapaId);
+                                
+                if($empresa != '')
+                    $lote->procesoDisponible = $lote->procesoDisponible->where('lotes.emp_constructora','=', $empresa);
+                                
+            $lote->procesoDisponible = $lote->procesoDisponible->count();
 
             $lote->sinAvanceDisponible = Lote::join('licencias','lotes.id','=','licencias.id')
                                 ->where('licencias.avance','=',0)
                                 ->where('lotes.contrato','=',0)
                                 ->where('lotes.casa_muestra','=',0)
                                 ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
-                                ->where('lotes.etapa_id','=',$lote->etapaId)->count();
+                                ->where('lotes.etapa_id','=',$lote->etapaId);
+
+                if($empresa != '')
+                    $lote->sinAvanceDisponible = $lote->sinAvanceDisponible->where('lotes.emp_constructora','=', $empresa);
+                                
+            $lote->sinAvanceDisponible = $lote->sinAvanceDisponible->count();
 
         // CONSULTAS PARA OBTENER LAS COBRADAS    
             $indivContado   =   Contrato::join('expedientes','contratos.id','=','expedientes.id')
@@ -562,8 +585,12 @@ class ReportesController extends Controller
                                         ->where('lotes.casa_muestra','=',0)
                                         ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
                                         ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
-                                        ->where('lotes.etapa_id','=',$lote->etapaId)
-                                        ->distinct('contratos.id')
+                                        ->where('lotes.etapa_id','=',$lote->etapaId);
+
+                if($empresa != '')
+                    $indivContado = $indivContado->where('lotes.emp_constructora','=', $empresa);
+
+            $indivContado = $indivContado->distinct('contratos.id')
                                         ->count('contratos.id');
                                         
             $indivCredito = Contrato::join('expedientes','contratos.id','=','expedientes.id')
@@ -576,8 +603,12 @@ class ReportesController extends Controller
                                         ->where('lotes.casa_muestra','=',0)
                                         ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                         ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
-                                        ->where('lotes.etapa_id','=',$lote->etapaId)
-                                        ->distinct('contratos.id')
+                                        ->where('lotes.etapa_id','=',$lote->etapaId);
+
+                if($empresa != '')
+                    $indivCredito = $indivCredito->where('lotes.emp_constructora','=', $empresa);
+
+            $indivCredito = $indivCredito->distinct('contratos.id')
                                         ->count('contratos.id');
 
             $lote->cobradas = $indivContado + $indivCredito;
@@ -597,8 +628,12 @@ class ReportesController extends Controller
                                         ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
                                         ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                         ->where('lotes.etapa_id','=',$lote->etapaId)
-                                        ->where('licencias.avance','<=',90)
-                                        ->distinct('contratos.id')
+                                        ->where('licencias.avance','<=',90);
+
+                if($empresa != '')
+                    $procVenNoCobrada1 = $procVenNoCobrada1->where('lotes.emp_constructora','=', $empresa);
+
+            $procVenNoCobrada1 = $procVenNoCobrada1->distinct('contratos.id')
                                         ->count('contratos.id');
 
                                         
@@ -615,8 +650,12 @@ class ReportesController extends Controller
                                         ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                         ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                         ->where('lotes.etapa_id','=',$lote->etapaId)
-                                        ->where('licencias.avance','<=',90)
-                                        ->distinct('contratos.id')
+                                        ->where('licencias.avance','<=',90);
+
+                if($empresa != '')
+                    $procVenNoCobrada2 = $procVenNoCobrada2->where('lotes.emp_constructora','=', $empresa);
+
+            $procVenNoCobrada2 = $procVenNoCobrada2->distinct('contratos.id')
                                         ->count('contratos.id');
 
             $procVenNoCobrada3 = Contrato::join('creditos','contratos.id', '=', 'creditos.id')
@@ -625,11 +664,14 @@ class ReportesController extends Controller
                                         ->join('licencias','lotes.id','=','licencias.id')
                                         ->where('contratos.status','=',1)
                                         ->where('lotes.casa_muestra','=',0)
-                                        
                                         ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                         ->where('lotes.etapa_id','=',$lote->etapaId)
-                                        ->where('licencias.avance','<=',90)
-                                        ->count('contratos.id');
+                                        ->where('licencias.avance','<=',90);
+
+                if($empresa != '')
+                    $procVenNoCobrada3 = $procVenNoCobrada3->where('lotes.emp_constructora','=', $empresa);
+                                        
+            $procVenNoCobrada3 = $procVenNoCobrada3->count('contratos.id');
 
             $procVenNoCobrada4 = Contrato::join('creditos','contratos.id', '=', 'creditos.id')
                                         
@@ -638,11 +680,14 @@ class ReportesController extends Controller
                                         ->where('contratos.status','=',3)
                                         ->where('contratos.integracion','=',0)
                                         ->where('lotes.casa_muestra','=',0)
-                                        
                                         ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                         ->where('lotes.etapa_id','=',$lote->etapaId)
-                                        ->where('licencias.avance','<=',90)
-                                        ->count('contratos.id');
+                                        ->where('licencias.avance','<=',90);
+
+                if($empresa != '')
+                    $procVenNoCobrada4 = $procVenNoCobrada4->where('lotes.emp_constructora','=', $empresa);
+
+            $procVenNoCobrada4 = $procVenNoCobrada4->count('contratos.id');
 
 
             $lote->procVendidaNoCobrada = $procVenNoCobrada2 + $procVenNoCobrada1  + $procVenNoCobrada3 + $procVenNoCobrada4;
@@ -661,8 +706,12 @@ class ReportesController extends Controller
                                         ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
                                         ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                         ->where('lotes.etapa_id','=',$lote->etapaId)
-                                        ->where('licencias.avance','>',90)
-                                        ->distinct('contratos.id')
+                                        ->where('licencias.avance','>',90);
+
+                if($empresa != '')
+                    $termVendidaNoCobrada1 = $termVendidaNoCobrada1->where('lotes.emp_constructora','=', $empresa);
+
+            $termVendidaNoCobrada1 = $termVendidaNoCobrada1->distinct('contratos.id')
                                         ->count('contratos.id');
 
             $termVendidaNoCobrada2 = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
@@ -678,8 +727,12 @@ class ReportesController extends Controller
                                         ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                         ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                         ->where('lotes.etapa_id','=',$lote->etapaId)
-                                        ->where('licencias.avance','>',90)
-                                        ->distinct('contratos.id')
+                                        ->where('licencias.avance','>',90);
+
+                if($empresa != '')
+                    $termVendidaNoCobrada2 = $termVendidaNoCobrada2->where('lotes.emp_constructora','=', $empresa);
+
+            $termVendidaNoCobrada2 = $termVendidaNoCobrada2->distinct('contratos.id')
                                         ->count('contratos.id');
                                         
             $termVendidaNoCobrada3 = Contrato::join('creditos','contratos.id', '=', 'creditos.id')
@@ -692,8 +745,12 @@ class ReportesController extends Controller
                                         ->where('lotes.etapa_id','=',$lote->etapaId)
                                         ->where('licencias.avance','>',90)
                                         ->where('lotes.casa_muestra','=',0)
-                                        ->where('contratos.status','=',1)
-                                        ->count('contratos.id');
+                                        ->where('contratos.status','=',1);
+
+                if($empresa != '')
+                    $termVendidaNoCobrada3 = $termVendidaNoCobrada3->where('lotes.emp_constructora','=', $empresa);
+                                        
+            $termVendidaNoCobrada3 = $termVendidaNoCobrada3->count('contratos.id');
 
             
             $termVendidaNoCobrada4 = Contrato::join('creditos','contratos.id', '=', 'creditos.id')
@@ -706,20 +763,34 @@ class ReportesController extends Controller
                                         
                                         ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                         ->where('lotes.etapa_id','=',$lote->etapaId)
-                                        ->where('licencias.avance','>',90)
-                                        ->count('contratos.id');
+                                        ->where('licencias.avance','>',90);
+
+                if($empresa != '')
+                    $termVendidaNoCobrada4 = $termVendidaNoCobrada4->where('lotes.emp_constructora','=', $empresa);
+
+            $termVendidaNoCobrada4 = $termVendidaNoCobrada4->count('contratos.id');
             
             $lote->muestraTerminada = Lote::join('licencias','lotes.id','=','licencias.id')
                                         ->where('licencias.avance','>',90)
                                         ->where('lotes.casa_muestra','=',1)
                                         ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
-                                        ->where('lotes.etapa_id','=',$lote->etapaId)->count();
+                                        ->where('lotes.etapa_id','=',$lote->etapaId);
+
+                if($empresa != '')
+                    $lote->muestraTerminada = $lote->muestraTerminada->where('lotes.emp_constructora','=', $empresa);
+                                        
+            $lote->muestraTerminada = $lote->muestraTerminada->count();
         
             $lote->muestraProceso = Lote::join('licencias','lotes.id','=','licencias.id')
                                         ->whereBetween('licencias.avance', [0, 90])
                                         ->where('lotes.casa_muestra','=',1)
                                         ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
-                                        ->where('lotes.etapa_id','=',$lote->etapaId)->count();
+                                        ->where('lotes.etapa_id','=',$lote->etapaId);
+                                        
+                if($empresa != '')
+                    $lote->muestraProceso = $lote->muestraProceso->where('lotes.emp_constructora','=', $empresa);
+
+            $lote->muestraProceso = $lote->muestraProceso->count();
 
             $lote->termVendidaNoCobrada = $termVendidaNoCobrada1 + $termVendidaNoCobrada2 + $termVendidaNoCobrada3 + $termVendidaNoCobrada4;
 
@@ -757,6 +828,8 @@ class ReportesController extends Controller
 
     public function excelReporteLotesVentas(Request $request){
 
+        $empresa = $request->emp_constructora;
+
         $lotes = Etapa::join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
                         ->select('fraccionamientos.id as proyectoId','etapas.id as etapaId',
                                     'etapas.num_etapa','fraccionamientos.nombre as proyecto')
@@ -766,30 +839,52 @@ class ReportesController extends Controller
 
         foreach($lotes as $index => $lote){
             $lote->lotes = Lote::where('fraccionamiento_id','=',$lote->proyectoId)
-                                ->where('etapa_id','=',$lote->etapaId)->count();
-
+                                ->where('etapa_id','=',$lote->etapaId);
+            
+            if($empresa != '')
+                $lote->lotes = $lote->lotes->where('lotes.emp_constructora','=', $empresa);
+                    
+                                
+            $lote->lotes = $lote->lotes->count();
+        
+        /// CONSULTAS PARA TODAS LAS DISPONIBLES (lotes.contrato = 0)
             $lote->terminadaDisponible = Lote::join('licencias','lotes.id','=','licencias.id')
                                 ->where('licencias.avance','>',90)
                                 ->where('lotes.contrato','=',0)
                                 ->where('lotes.casa_muestra','=',0)
                                 ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
-                                ->where('lotes.etapa_id','=',$lote->etapaId)->count();
+                                ->where('lotes.etapa_id','=',$lote->etapaId);
+
+                if($empresa != '')
+                    $lote->terminadaDisponible = $lote->terminadaDisponible->where('lotes.emp_constructora','=', $empresa);
+                    
+            $lote->terminadaDisponible = $lote->terminadaDisponible->count();
 
             $lote->procesoDisponible = Lote::join('licencias','lotes.id','=','licencias.id')
                                 ->whereBetween('licencias.avance', [1, 90])
                                 ->where('lotes.contrato','=',0)
                                 ->where('lotes.casa_muestra','=',0)
                                 ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
-                                ->where('lotes.etapa_id','=',$lote->etapaId)->count();
+                                ->where('lotes.etapa_id','=',$lote->etapaId);
+                                
+                if($empresa != '')
+                    $lote->procesoDisponible = $lote->procesoDisponible->where('lotes.emp_constructora','=', $empresa);
+                                
+            $lote->procesoDisponible = $lote->procesoDisponible->count();
 
             $lote->sinAvanceDisponible = Lote::join('licencias','lotes.id','=','licencias.id')
                                 ->where('licencias.avance','=',0)
                                 ->where('lotes.contrato','=',0)
                                 ->where('lotes.casa_muestra','=',0)
                                 ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
-                                ->where('lotes.etapa_id','=',$lote->etapaId)->count();
+                                ->where('lotes.etapa_id','=',$lote->etapaId);
 
-        // COBRADAS    
+                if($empresa != '')
+                    $lote->sinAvanceDisponible = $lote->sinAvanceDisponible->where('lotes.emp_constructora','=', $empresa);
+                                
+            $lote->sinAvanceDisponible = $lote->sinAvanceDisponible->count();
+
+        // CONSULTAS PARA OBTENER LAS COBRADAS    
             $indivContado   =   Contrato::join('expedientes','contratos.id','=','expedientes.id')
                                         ->join('creditos','contratos.id', '=', 'creditos.id')
                                         ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -797,11 +892,15 @@ class ReportesController extends Controller
                                         ->where('contratos.status','=',3)
                                         ->where('expedientes.liquidado','=',1)
                                         ->where('inst_seleccionadas.elegido', '=', '1')
+                                        ->where('lotes.casa_muestra','=',0)
                                         ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
                                         ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
-                                        ->where('lotes.etapa_id','=',$lote->etapaId)
-                                        ->where('lotes.casa_muestra','=',0)
-                                        ->distinct('contratos.id')
+                                        ->where('lotes.etapa_id','=',$lote->etapaId);
+
+                if($empresa != '')
+                    $indivContado = $indivContado->where('lotes.emp_constructora','=', $empresa);
+
+            $indivContado = $indivContado->distinct('contratos.id')
                                         ->count('contratos.id');
                                         
             $indivCredito = Contrato::join('expedientes','contratos.id','=','expedientes.id')
@@ -811,11 +910,15 @@ class ReportesController extends Controller
                                         ->where('contratos.status','=',3)
                                         ->where('expedientes.fecha_firma_esc','!=',NULL)
                                         ->where('inst_seleccionadas.elegido', '=', '1')
+                                        ->where('lotes.casa_muestra','=',0)
                                         ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                         ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
-                                        ->where('lotes.etapa_id','=',$lote->etapaId)
-                                        ->where('lotes.casa_muestra','=',0)
-                                        ->distinct('contratos.id')
+                                        ->where('lotes.etapa_id','=',$lote->etapaId);
+
+                if($empresa != '')
+                    $indivCredito = $indivCredito->where('lotes.emp_constructora','=', $empresa);
+
+            $indivCredito = $indivCredito->distinct('contratos.id')
                                         ->count('contratos.id');
 
             $lote->cobradas = $indivContado + $indivCredito;
@@ -831,12 +934,16 @@ class ReportesController extends Controller
                                         ->where('contratos.integracion','=',1)
                                         ->where('expedientes.liquidado','=',0)
                                         ->where('inst_seleccionadas.elegido', '=', '1')
+                                        ->where('lotes.casa_muestra','=',0)
                                         ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
                                         ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                         ->where('lotes.etapa_id','=',$lote->etapaId)
-                                        ->where('lotes.casa_muestra','=',0)
-                                        ->whereBetween('licencias.avance', [0, 90])
-                                        ->distinct('contratos.id')
+                                        ->where('licencias.avance','<=',90);
+
+                if($empresa != '')
+                    $procVenNoCobrada1 = $procVenNoCobrada1->where('lotes.emp_constructora','=', $empresa);
+
+            $procVenNoCobrada1 = $procVenNoCobrada1->distinct('contratos.id')
                                         ->count('contratos.id');
 
                                         
@@ -847,14 +954,18 @@ class ReportesController extends Controller
                                         ->join('licencias','lotes.id','=','licencias.id')
                                         ->where('contratos.status','=',3)
                                         ->where('contratos.integracion','=',1)
-                                        ->where('expedientes.fecha_firma_esc','=',NULL)
+                                        ->whereNull('expedientes.fecha_firma_esc')
                                         ->where('inst_seleccionadas.elegido', '=', '1')
+                                        ->where('lotes.casa_muestra','=',0)
                                         ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                         ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                         ->where('lotes.etapa_id','=',$lote->etapaId)
-                                        ->where('lotes.casa_muestra','=',0)
-                                        ->whereBetween('licencias.avance', [0, 90])
-                                        ->distinct('contratos.id')
+                                        ->where('licencias.avance','<=',90);
+
+                if($empresa != '')
+                    $procVenNoCobrada2 = $procVenNoCobrada2->where('lotes.emp_constructora','=', $empresa);
+
+            $procVenNoCobrada2 = $procVenNoCobrada2->distinct('contratos.id')
                                         ->count('contratos.id');
 
             $procVenNoCobrada3 = Contrato::join('creditos','contratos.id', '=', 'creditos.id')
@@ -862,12 +973,15 @@ class ReportesController extends Controller
                                         ->join('lotes','creditos.lote_id','=','lotes.id')
                                         ->join('licencias','lotes.id','=','licencias.id')
                                         ->where('contratos.status','=',1)
-                                        
+                                        ->where('lotes.casa_muestra','=',0)
                                         ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                         ->where('lotes.etapa_id','=',$lote->etapaId)
-                                        ->where('lotes.casa_muestra','=',0)
-                                        ->whereBetween('licencias.avance', [0, 90])
-                                        ->count('contratos.id');
+                                        ->where('licencias.avance','<=',90);
+
+                if($empresa != '')
+                    $procVenNoCobrada3 = $procVenNoCobrada3->where('lotes.emp_constructora','=', $empresa);
+                                        
+            $procVenNoCobrada3 = $procVenNoCobrada3->count('contratos.id');
 
             $procVenNoCobrada4 = Contrato::join('creditos','contratos.id', '=', 'creditos.id')
                                         
@@ -875,12 +989,15 @@ class ReportesController extends Controller
                                         ->join('licencias','lotes.id','=','licencias.id')
                                         ->where('contratos.status','=',3)
                                         ->where('contratos.integracion','=',0)
-                                        
+                                        ->where('lotes.casa_muestra','=',0)
                                         ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                         ->where('lotes.etapa_id','=',$lote->etapaId)
-                                        ->where('lotes.casa_muestra','=',0)
-                                        ->whereBetween('licencias.avance', [0, 90])
-                                        ->count('contratos.id');
+                                        ->where('licencias.avance','<=',90);
+
+                if($empresa != '')
+                    $procVenNoCobrada4 = $procVenNoCobrada4->where('lotes.emp_constructora','=', $empresa);
+
+            $procVenNoCobrada4 = $procVenNoCobrada4->count('contratos.id');
 
 
             $lote->procVendidaNoCobrada = $procVenNoCobrada2 + $procVenNoCobrada1  + $procVenNoCobrada3 + $procVenNoCobrada4;
@@ -893,14 +1010,18 @@ class ReportesController extends Controller
                                         ->join('licencias','lotes.id','=','licencias.id')
                                         ->where('contratos.status','=',3)
                                         ->where('contratos.integracion','=',1)
+                                        ->where('lotes.casa_muestra','=',0)
                                         ->where('expedientes.liquidado','=',0)
                                         ->where('inst_seleccionadas.elegido', '=', '1')
                                         ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
                                         ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                         ->where('lotes.etapa_id','=',$lote->etapaId)
-                                        ->where('lotes.casa_muestra','=',0)
-                                        ->where('licencias.avance','>',90)
-                                        ->distinct('contratos.id')
+                                        ->where('licencias.avance','>',90);
+
+                if($empresa != '')
+                    $termVendidaNoCobrada1 = $termVendidaNoCobrada1->where('lotes.emp_constructora','=', $empresa);
+
+            $termVendidaNoCobrada1 = $termVendidaNoCobrada1->distinct('contratos.id')
                                         ->count('contratos.id');
 
             $termVendidaNoCobrada2 = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
@@ -910,14 +1031,18 @@ class ReportesController extends Controller
                                         ->join('licencias','lotes.id','=','licencias.id')
                                         ->where('contratos.status','=',3)
                                         ->where('contratos.integracion','=',1)
-                                        ->where('expedientes.fecha_firma_esc','=',NULL)
+                                        ->where('lotes.casa_muestra','=',0)
+                                        ->whereNull('expedientes.fecha_firma_esc')
                                         ->where('inst_seleccionadas.elegido', '=', '1')
                                         ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
                                         ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                         ->where('lotes.etapa_id','=',$lote->etapaId)
-                                        ->where('lotes.casa_muestra','=',0)
-                                        ->where('licencias.avance','>',90)
-                                        ->distinct('contratos.id')
+                                        ->where('licencias.avance','>',90);
+
+                if($empresa != '')
+                    $termVendidaNoCobrada2 = $termVendidaNoCobrada2->where('lotes.emp_constructora','=', $empresa);
+
+            $termVendidaNoCobrada2 = $termVendidaNoCobrada2->distinct('contratos.id')
                                         ->count('contratos.id');
                                         
             $termVendidaNoCobrada3 = Contrato::join('creditos','contratos.id', '=', 'creditos.id')
@@ -928,10 +1053,14 @@ class ReportesController extends Controller
                                         
                                         ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                         ->where('lotes.etapa_id','=',$lote->etapaId)
-                                        ->where('lotes.casa_muestra','=',0)
                                         ->where('licencias.avance','>',90)
-                                        ->where('contratos.status','=',1)
-                                        ->count('contratos.id');
+                                        ->where('lotes.casa_muestra','=',0)
+                                        ->where('contratos.status','=',1);
+
+                if($empresa != '')
+                    $termVendidaNoCobrada3 = $termVendidaNoCobrada3->where('lotes.emp_constructora','=', $empresa);
+                                        
+            $termVendidaNoCobrada3 = $termVendidaNoCobrada3->count('contratos.id');
 
             
             $termVendidaNoCobrada4 = Contrato::join('creditos','contratos.id', '=', 'creditos.id')
@@ -940,30 +1069,38 @@ class ReportesController extends Controller
                                         ->join('licencias','lotes.id','=','licencias.id')
                                         ->where('contratos.status','=',3)
                                         ->where('contratos.integracion','=',0)
+                                        ->where('lotes.casa_muestra','=',0)
                                         
                                         ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
                                         ->where('lotes.etapa_id','=',$lote->etapaId)
-                                        ->where('lotes.casa_muestra','=',0)
-                                        ->where('licencias.avance','>',90)
-                                        ->count('contratos.id');
+                                        ->where('licencias.avance','>',90);
 
-            // $termVendidaNoCobrada4 = $termVendidaNoCobrada4 - $termVendidaNoCobrada2 - $termVendidaNoCobrada1;
+                if($empresa != '')
+                    $termVendidaNoCobrada4 = $termVendidaNoCobrada4->where('lotes.emp_constructora','=', $empresa);
 
-            // if($termVendidaNoCobrada4 < 0){
-            //     $termVendidaNoCobrada4 = 0;
-
+            $termVendidaNoCobrada4 = $termVendidaNoCobrada4->count('contratos.id');
+            
             $lote->muestraTerminada = Lote::join('licencias','lotes.id','=','licencias.id')
                                         ->where('licencias.avance','>',90)
                                         ->where('lotes.casa_muestra','=',1)
                                         ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
-                                        ->where('lotes.etapa_id','=',$lote->etapaId)->count();
+                                        ->where('lotes.etapa_id','=',$lote->etapaId);
+
+                if($empresa != '')
+                    $lote->muestraTerminada = $lote->muestraTerminada->where('lotes.emp_constructora','=', $empresa);
+                                        
+            $lote->muestraTerminada = $lote->muestraTerminada->count();
         
             $lote->muestraProceso = Lote::join('licencias','lotes.id','=','licencias.id')
                                         ->whereBetween('licencias.avance', [0, 90])
                                         ->where('lotes.casa_muestra','=',1)
                                         ->where('lotes.fraccionamiento_id','=',$lote->proyectoId)
-                                        ->where('lotes.etapa_id','=',$lote->etapaId)->count();
-            // }
+                                        ->where('lotes.etapa_id','=',$lote->etapaId);
+                                        
+                if($empresa != '')
+                    $lote->muestraProceso = $lote->muestraProceso->where('lotes.emp_constructora','=', $empresa);
+
+            $lote->muestraProceso = $lote->muestraProceso->count();
 
             $lote->termVendidaNoCobrada = $termVendidaNoCobrada1 + $termVendidaNoCobrada2 + $termVendidaNoCobrada3 + $termVendidaNoCobrada4;
 
@@ -981,7 +1118,6 @@ class ReportesController extends Controller
             $total9 += $lote->sinAvanceDisponible;
             $total10 += $lote->muestraTerminada;
             $total11 += $lote->muestraProceso;
-
 
         }
 
@@ -1090,6 +1226,8 @@ class ReportesController extends Controller
 
     public function reporteVentas(Request $request){
 
+        $empresa = $request->empresa;
+
         $ventas = Contrato::join('creditos','contratos.id','=','creditos.id')
                         ->join('inst_seleccionadas as ins', 'creditos.id', '=', 'ins.credito_id')
                         ->join('lotes','creditos.lote_id','=','lotes.id')
@@ -1106,14 +1244,27 @@ class ReportesController extends Controller
                         
                         ->where('contratos.status','=',3)
                         ->where('ins.elegido','=',1)
-                        ->whereBetween('contratos.fecha', [$request->fecha, $request->fecha2])
-                        ->orWhere('contratos.status','=',1)
+                        ->whereBetween('contratos.fecha', [$request->fecha, $request->fecha2]);
+                        
+                        if($empresa != '')
+                            $ventas = $ventas->where('lotes.emp_constructora','=', $empresa);
+
+                        $ventas = $ventas->orWhere('contratos.status','=',1)
                         ->where('ins.elegido','=',1)
-                        ->whereBetween('contratos.fecha', [$request->fecha, $request->fecha2])
-                        ->orWhere('contratos.status','=',0)
+                        ->whereBetween('contratos.fecha', [$request->fecha, $request->fecha2]);
+
+                        if($empresa != '')
+                            $ventas = $ventas->where('lotes.emp_constructora','=', $empresa);
+
+
+                        $ventas = $ventas->orWhere('contratos.status','=',0)
                         ->where('ins.elegido','=',1)
-                        ->whereBetween('contratos.fecha', [$request->fecha, $request->fecha2])
-                        ->orderBy('contratos.status','desc')
+                        ->whereBetween('contratos.fecha', [$request->fecha, $request->fecha2]);
+
+                        if($empresa != '')
+                            $ventas = $ventas->where('lotes.emp_constructora','=', $empresa);
+
+                        $ventas = $ventas->orderBy('contratos.status','desc')
                         ->orderBy('contratos.fecha','asc')
                         ->get();
 
@@ -1131,8 +1282,12 @@ class ReportesController extends Controller
                                 'contratos.fecha_status')
                         ->where('ins.elegido','=',1)
                         ->where('contratos.status','=',0)
-                        ->whereBetween('contratos.fecha_status', [$request->fecha, $request->fecha2])
-                        ->orderBy('contratos.fecha_status','asc')
+                        ->whereBetween('contratos.fecha_status', [$request->fecha, $request->fecha2]);
+
+                        if($empresa != '')
+                            $cancelaciones = $cancelaciones->where('lotes.emp_constructora','=', $empresa);
+
+                        $cancelaciones = $cancelaciones->orderBy('contratos.fecha_status','asc')
                         ->get();
 
         
@@ -1148,6 +1303,8 @@ class ReportesController extends Controller
 
     public function reporteVentasExcel(Request $request){
 
+        $empresa = $request->empresa;
+
         $ventas = Contrato::join('creditos','contratos.id','=','creditos.id')
                         ->join('inst_seleccionadas as ins', 'creditos.id', '=', 'ins.credito_id')
                         ->join('lotes','creditos.lote_id','=','lotes.id')
@@ -1156,23 +1313,35 @@ class ReportesController extends Controller
                         ->join('etapas as et','lotes.etapa_id','=','et.id')
                         ->select('lotes.manzana','lotes.num_lote','f.nombre as proyecto','et.num_etapa','p.nombre', 'p.apellidos',
                                 'lotes.emp_constructora','creditos.valor_terreno', 'lotes.emp_terreno',
+                                'creditos.descripcion_promocion','creditos.descripcion_paquete', 'lotes.firmado',
                                 'creditos.costo_descuento', 'creditos.descuento_terreno', 'creditos.costo_alarma',
                                 'creditos.costo_cuota_mant', 'creditos.costo_protecciones','contratos.id',
                                 'contratos.avance_lote',
-                                'creditos.descripcion_promocion','creditos.descripcion_paquete', 'contratos.status','lotes.firmado',
-                                'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta')
-                        ->where('ins.elegido','=',1)
+                                'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta','contratos.status')
+                        
                         ->where('contratos.status','=',3)
-                        ->whereBetween('contratos.fecha', [$request->fecha, $request->fecha2])
-
-                        ->orWhere('contratos.status','=',1)
                         ->where('ins.elegido','=',1)
-                        ->whereBetween('contratos.fecha', [$request->fecha, $request->fecha2])
+                        ->whereBetween('contratos.fecha', [$request->fecha, $request->fecha2]);
+                        
+                        if($empresa != '')
+                            $ventas = $ventas->where('lotes.emp_constructora','=', $empresa);
 
-                        ->orWhere('contratos.status','=',0)
+                        $ventas = $ventas->orWhere('contratos.status','=',1)
                         ->where('ins.elegido','=',1)
-                        ->whereBetween('contratos.fecha', [$request->fecha, $request->fecha2])
-                        ->orderBy('contratos.status','desc')
+                        ->whereBetween('contratos.fecha', [$request->fecha, $request->fecha2]);
+
+                        if($empresa != '')
+                            $ventas = $ventas->where('lotes.emp_constructora','=', $empresa);
+
+
+                        $ventas = $ventas->orWhere('contratos.status','=',0)
+                        ->where('ins.elegido','=',1)
+                        ->whereBetween('contratos.fecha', [$request->fecha, $request->fecha2]);
+
+                        if($empresa != '')
+                            $ventas = $ventas->where('lotes.emp_constructora','=', $empresa);
+
+                        $ventas = $ventas->orderBy('contratos.status','desc')
                         ->orderBy('contratos.fecha','asc')
                         ->get();
 
@@ -1185,13 +1354,17 @@ class ReportesController extends Controller
                         ->select('lotes.manzana','lotes.num_lote','f.nombre as proyecto','et.num_etapa','p.nombre', 'p.apellidos',
                                 'lotes.emp_constructora','creditos.valor_terreno', 'lotes.emp_terreno',
                                 'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta',
-                                'creditos.descripcion_promocion','creditos.descripcion_paquete', 'lotes.firmado',
                                 'contratos.avance_lote',
+                                'creditos.descripcion_promocion','creditos.descripcion_paquete',
                                 'contratos.fecha_status')
                         ->where('ins.elegido','=',1)
                         ->where('contratos.status','=',0)
-                        ->whereBetween('contratos.fecha_status', [$request->fecha, $request->fecha2])
-                        ->orderBy('contratos.fecha','asc')
+                        ->whereBetween('contratos.fecha_status', [$request->fecha, $request->fecha2]);
+
+                        if($empresa != '')
+                            $cancelaciones = $cancelaciones->where('lotes.emp_constructora','=', $empresa);
+
+                        $cancelaciones = $cancelaciones->orderBy('contratos.fecha_status','asc')
                         ->get();
 
                         setlocale(LC_TIME, 'es_MX.utf8');
@@ -1491,13 +1664,14 @@ class ReportesController extends Controller
     public function reporteAcumulado(Request $request){
         $mes = $request->mes;
         $anio = $request->anio;
-        $expCreditos = $this->getRepExpedientes($mes, $anio);
-        $expContado = $this->getRepExpContado($mes, $anio);
-        $sinEntregar = $this->getSinEntregarRep($mes,$anio);
+        $empresa = $request->empresa;
+        $expCreditos = $this->getRepExpedientes($mes, $anio, $empresa);
+        $expContado = $this->getRepExpContado($mes, $anio, $empresa);
+        $sinEntregar = $this->getSinEntregarRep($mes,$anio, $empresa);
         
-        $escrituras = $this->getEscriturasRep($mes, $anio);
-        $contadoSinEscrituras = $this->getContadoSinEscrituras($mes, $anio);
-        $ingresosCobranza = $this->getIngresosCobranza($mes,$anio);
+        $escrituras = $this->getEscriturasRep($mes, $anio, $empresa);
+        $contadoSinEscrituras = $this->getContadoSinEscrituras($mes, $anio, $empresa);
+        $ingresosCobranza = $this->getIngresosCobranza($mes,$anio, $empresa);
         
         return ['expCreditos'=>$expCreditos,
                 'expContado'=>$expContado,
@@ -1510,7 +1684,7 @@ class ReportesController extends Controller
 
     }
 
-    private function getRepExpedientes($mes, $anio){//$mes, $anio){
+    private function getRepExpedientes($mes, $anio, $empresa){
 
         $mes2 = $mes + 1;
         $fecha = $anio.'-'.$mes2.'-01';
@@ -1527,8 +1701,12 @@ class ReportesController extends Controller
                             'lotes.manzana','lotes.num_lote',
                             DB::raw("SUM(dep_creditos.cant_depo) as totalDep")
                             )
-                ->where('dep_creditos.fecha_deposito','<',$fecha)
-                ->groupBy('ins.credito_id')
+                ->where('dep_creditos.fecha_deposito','<',$fecha);
+
+                if($empresa != '')
+                    $depositos = $depositos->where('lotes.emp_constructora','=',$empresa);
+
+                $depositos = $depositos->groupBy('ins.credito_id')
                 ->distinct()->get();
 
         if(sizeOf($depositos)){
@@ -1547,7 +1725,12 @@ class ReportesController extends Controller
                         ->select('dep_creditos.fecha_deposito')
                         ->where('ins.credito_id','=',$deposito->id)
                         ->whereYear('dep_creditos.fecha_deposito',$anio)
-                        ->whereMonth('dep_creditos.fecha_deposito',$mes)->get();
+                        ->whereMonth('dep_creditos.fecha_deposito',$mes);
+                        
+                    if($empresa != '')
+                        $act = $act->where('lotes.emp_constructora','=',$empresa);
+
+                    $act = $act->get();
                 
                 $deposito->totalCredito = round($inst[0]->monto_credito + $inst[0]->segundo_credito,2);
                 $deposito->totalDep = round($deposito->totalDep,2);
@@ -1567,7 +1750,7 @@ class ReportesController extends Controller
         return $depositos;
     }
 
-    private function getSinEntregarRep($mes,$anio){
+    private function getSinEntregarRep($mes, $anio, $empresa){
         $sinEntregar = inst_seleccionada::join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
                 ->join('contratos','creditos.id','=','contratos.id')
                 ->join('expedientes','contratos.id','=','expedientes.id')
@@ -1588,20 +1771,28 @@ class ReportesController extends Controller
                 ->where('expedientes.fecha_firma_esc','!=', NULL)
                 ->where('contratos.status','=',3)
                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                ->orWhere('inst_seleccionadas.tipo','=',1)
+                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+
+                if($empresa != '')
+                    $sinEntregar = $sinEntregar->where('lotes.emp_constructora','=',$empresa);
+
+            $sinEntregar = $sinEntregar->orWhere('inst_seleccionadas.tipo','=',1)
                 ->where('inst_seleccionadas.elegido','=',0)
                 ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
                 ->where('inst_seleccionadas.status','=',2)
                 ->where('expedientes.fecha_firma_esc','!=', NULL)
                 ->where('contratos.status','=',3)
-                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                ->orderBy('contratos.fecha','asc')->get();
+                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo');
+
+                if($empresa != '')
+                    $sinEntregar = $sinEntregar->where('lotes.emp_constructora','=',$empresa);
+
+                $sinEntregar = $sinEntregar->orderBy('contratos.fecha','asc')->get();
 
         return $sinEntregar;
     }
     
-    private function getRepExpContado($mes, $anio){
+    private function getRepExpContado($mes, $anio, $empresa){
         $expContado = Expediente::join('contratos','expedientes.id','=','contratos.id')
                 ->join('creditos','contratos.id','=','creditos.id')
                 ->join('inst_seleccionadas as ins', 'creditos.id', '=', 'ins.credito_id')
@@ -1616,13 +1807,18 @@ class ReportesController extends Controller
                 ->where('ins.elegido','=',1)
                 ->where('ins.tipo_credito','=','Crédito Directo')
                 ->whereMonth('expedientes.fecha_firma_esc',$mes)
-                ->whereYear('expedientes.fecha_firma_esc',$anio)
-                ->orderBy('expedientes.fecha_firma_esc','asc')->get();
+                ->whereYear('expedientes.fecha_firma_esc',$anio);
+
+                if($empresa != '')
+                    $expContado = $expContado->where('lotes.emp_constructora','=',$empresa);
+
+
+                $expContado = $expContado->orderBy('expedientes.fecha_firma_esc','asc')->get();
 
         return $expContado;
     }
 
-    private function getEscriturasRep($mes, $anio){
+    private function getEscriturasRep($mes, $anio, $empresa){
         $escrituras = Expediente::join('contratos','expedientes.id','=','contratos.id')
                 ->join('creditos','contratos.id','=','creditos.id')
                 ->join('inst_seleccionadas as ins', 'creditos.id', '=', 'ins.credito_id')
@@ -1637,13 +1833,17 @@ class ReportesController extends Controller
                 ->where('ins.elegido','=',1)
                 ->where('expedientes.fecha_firma_esc','!=',NULL)
                 ->whereMonth('expedientes.fecha_firma_esc',$mes)
-                ->whereYear('expedientes.fecha_firma_esc',$anio)
-                ->orderBy('expedientes.fecha_firma_esc','desc')->get();
+                ->whereYear('expedientes.fecha_firma_esc',$anio);
+
+                if($empresa != '')
+                    $escrituras = $escrituras->where('lotes.emp_constructora','=',$empresa);
+
+            $escrituras = $escrituras->orderBy('expedientes.fecha_firma_esc','desc')->get();
         
         return $escrituras;
     }
 
-    private function getContadoSinEscrituras($mes, $anio){
+    private function getContadoSinEscrituras($mes, $anio, $empresa){
         $contadoSinEscrituras = Expediente::join('contratos','expedientes.id','=','contratos.id')
             ->join('creditos','contratos.id','=','creditos.id')
             ->join('inst_seleccionadas as ins', 'creditos.id', '=', 'ins.credito_id')
@@ -1660,13 +1860,17 @@ class ReportesController extends Controller
             ->where('contratos.saldo','<=',0)
             ->where('ins.elegido','=',1)
             ->where('expedientes.fecha_firma_esc','=',NULL)
-            ->where('ins.tipo_credito','=','Crédito Directo')
-            ->orderBy('contratos.fecha')->get();
+            ->where('ins.tipo_credito','=','Crédito Directo');
+
+            if($empresa != '')
+                    $contadoSinEscrituras = $contadoSinEscrituras->where('lotes.emp_constructora','=',$empresa);
+
+            $contadoSinEscrituras = $contadoSinEscrituras->orderBy('contratos.fecha')->get();
     
         return $contadoSinEscrituras;
     }
 
-    private function getIngresosCobranza($mes, $anio){
+    private function getIngresosCobranza($mes, $anio, $empresa){
         $ingresosCobranza = Contrato::join('creditos','contratos.id','=','creditos.id')
                 ->join('inst_seleccionadas as ins', 'creditos.id', '=', 'ins.credito_id')
                 ->join('dep_creditos as dep','ins.id','=','dep.inst_sel_id')
@@ -1677,8 +1881,13 @@ class ReportesController extends Controller
                 ->select('p.nombre','p.apellidos','f.nombre as proyecto','et.num_etapa',
                         'lotes.manzana','lotes.num_lote','dep.cant_depo','dep.fecha_deposito','dep.banco')
                 ->whereMonth('dep.fecha_deposito',$mes)
-                ->whereYear('dep.fecha_deposito',$anio)
-                ->orderBy('dep.fecha_deposito')->get();
+                ->whereYear('dep.fecha_deposito',$anio);
+
+                if($empresa != '')
+                    $ingresosCobranza = $ingresosCobranza->where('lotes.emp_constructora','=',$empresa);
+
+            $ingresosCobranza = $ingresosCobranza->orderBy('dep.fecha_deposito')->get();
+
         return $ingresosCobranza;
     }
 
@@ -2763,7 +2972,6 @@ class ReportesController extends Controller
             ];
 
     }
-
 
     public function reporteDetalles(Request $request){
         $contratistas = Contratista::select('id', 'nombre')->orderBy('nombre','asc')->get();

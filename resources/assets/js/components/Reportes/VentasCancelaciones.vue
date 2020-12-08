@@ -10,7 +10,7 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Reporte de Ventas y Cancelaciones &nbsp;&nbsp;
                         <!--   Boton Nuevo    -->
-                        <a class="btn btn-success" v-bind:href="'/reprotes/reporteVentasExcel?fecha=' + fecha + '&fecha2=' + fecha2">
+                        <a class="btn btn-success" v-bind:href="'/reprotes/reporteVentasExcel?fecha=' + fecha + '&fecha2=' + fecha2 + '&empresa=' + emp_constructora">
                             <i class="fa fa-file-text"></i>&nbsp; Excel
                         </a>
                         <!-- <a :href="'/etapa/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel </a> -->
@@ -36,6 +36,18 @@
                                         <div class="input-group">
                                             <input type="date"  v-model="fecha" @keyup.enter="listarReporte()" class="form-control" placeholder="Fecha inicial">
                                             <input type="date"  v-model="fecha2" @keyup.enter="listarReporte()" class="form-control" placeholder="Fecha final">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-md-8">
+                                        <div class="input-group">
+                                            <select class="form-control col-md-4" v-model="emp_constructora">
+                                                <option value="">Empresa constructora</option>
+                                                <option value="Grupo Constructor Cumbres">Grupo Constructor Cumbres</option>
+                                                <option value="CONCRETANIA">CONCRETANIA</option>
+                                            </select>
                                             <button type="submit" @click="listarReporte()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                         </div>
                                     </div>
@@ -146,6 +158,18 @@
                                         <div class="input-group">
                                             <input type="date"  v-model="fecha" @keyup.enter="listarReporte()" class="form-control" placeholder="Fecha inicial">
                                             <input type="date"  v-model="fecha2" @keyup.enter="listarReporte()" class="form-control" placeholder="Fecha final">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-md-8">
+                                        <div class="input-group">
+                                            <select class="form-control col-md-4" v-model="emp_constructora">
+                                                <option value="">Empresa constructora</option>
+                                                <option value="Grupo Constructor Cumbres">Grupo Constructor Cumbres</option>
+                                                <option value="CONCRETANIA">CONCRETANIA</option>
+                                            </select>
                                             <button type="submit" @click="listarReporte()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                         </div>
                                     </div>
@@ -231,7 +255,8 @@
                 fecha2:'',
                 cont1:0,
                 cont2:0,
-                activo:1
+                activo:1,
+                emp_constructora:''
             }
         },
         computed:{
@@ -240,7 +265,7 @@
             /**Metodo para mostrar los registros */
             listarReporte(){
                 let me = this;
-                var url = '/reprotes/reporteVentas?fecha=' + me.fecha + '&fecha2=' + me.fecha2;
+                var url = '/reprotes/reporteVentas?fecha=' + me.fecha + '&fecha2=' + me.fecha2 + '&empresa=' + me.emp_constructora;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLotes = respuesta.ventas;

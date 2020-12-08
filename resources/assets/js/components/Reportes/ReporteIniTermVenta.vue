@@ -10,7 +10,7 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Reporte de Inicio, Termino, Ventas y Cobranza &nbsp;&nbsp;
                         <!--   Boton Nuevo    -->
-                         <a class="btn btn-success" v-bind:href="'/reprotes/excelReporteLotesVentas'">
+                         <a class="btn btn-success" v-bind:href="'/reprotes/excelReporteLotesVentas?emp_constructora=' + emp_constructora">
                             <i class="fa fa-file-text"></i>&nbsp; Excel
                         </a>
                         <!-- <a :href="'/etapa/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel </a> -->
@@ -21,7 +21,13 @@
                         <div class="form-group row">
                             <div class="col-md-8">
                                 <div class="input-group">
+                                        <select class="form-control col-md-4" v-model="emp_constructora">
+                                            <option value="">Empresa constructora</option>
+                                            <option value="Grupo Constructor Cumbres">Grupo Constructor Cumbres</option>
+                                            <option value="CONCRETANIA">CONCRETANIA</option>
+                                        </select>
 
+                                        <button type="submit" @click="listarReporte()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </div>
@@ -119,6 +125,8 @@
                 total10:0,
                 total11:0,
                 fecha:'',
+
+                emp_constructora:''
             }
         },
         computed:{
@@ -127,7 +135,7 @@
             /**Metodo para mostrar los registros */
             listarReporte(){
                 let me = this;
-                var url = '/reprotes/reporteLotesVentas';
+                var url = '/reprotes/reporteLotesVentas?emp_constructora=' + this.emp_constructora;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLotes = respuesta.lotes;
