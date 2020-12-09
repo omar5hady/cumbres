@@ -19,6 +19,8 @@ use App\Estimacion;
 use App\Fg_estimacion;
 use App\Anticipo_estimacion;
 use App\Hist_estimacion;
+use App\Concepto_extra;
+use App\Importe_extra;
 
 class IniObraController extends Controller
 { 
@@ -797,7 +799,7 @@ class IniObraController extends Controller
 
     public function formSubmitRegistroObra(Request $request, $id)
     {
-        if(!$request->ajax() || Auth::user()->rol_id == 11 || Auth::user()->rol_id == 9)return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11 )return redirect('/');
         $pdfAnterior = Ini_obra::select('registro_obra', 'id')
             ->where('id', '=', $id)
             ->get();
@@ -970,9 +972,21 @@ class IniObraController extends Controller
         ];
     }
 
+    private function getConceptosExtra($clave){
+        return Concepto_extra::where('aviso_id','=',$clave)->orderBy('fecha','asc')->get();
+    }
+
+    private function getImporteExtra($clave){
+        return Importe_extra::where('aviso_id','=',$clave)->orderBy('fechaExtra','desc')->get();
+    }
+
     public function getPartidas(Request $request){
         $anticipos = $this->getAnticipos($request->clave);
         $fondos = $this->getFG($request->clave);
+
+        $importesExtra = $this->getImporteExtra($request->clave);
+        $conceptosExtra = $this->getConceptosExtra($request->clave);
+
         $acumAntTotal = [];
         $estimaciones = Estimacion::select('id', 'partida','pu_prorrateado','cant_tope')
                         ->where('aviso_id','=',$request->clave)
@@ -1006,12 +1020,12 @@ class IniObraController extends Controller
         }
 
         $acumAntTotal = Hist_estimacion::join('estimaciones','hist_estimaciones.estimacion_id','=','estimaciones.id')
-        ->select(
-            'total_estimacion'
-        )
-        ->where('estimaciones.aviso_id','=',$request->clave)
-        ->where('num_estimacion','<',$num_est)
-        ->distinct('total_estimacion')
+            ->select(
+                'total_estimacion'
+            )
+            ->where('estimaciones.aviso_id','=',$request->clave)
+            ->where('num_estimacion','<',$num_est)
+            ->distinct('total_estimacion')
         ->get();
 
         $totalEstimacionAnt = 0;
@@ -1022,7 +1036,6 @@ class IniObraController extends Controller
             }
         }
             
-
         $num = $num_est + 1;
 
         if(sizeof($act) == 0)
@@ -1030,8 +1043,6 @@ class IniObraController extends Controller
         else
             $actual = $act[0]->num_estimacion;
 
-        
-        
         foreach($estimaciones as $index => $estimacion){
             $estimacion->num_estimacion = 0;
             $estimacion->costo = 0;
@@ -1096,7 +1107,9 @@ class IniObraController extends Controller
             'anticipos' => $anticipos,
             'fondos' => $fondos,
             'anticipo' => $anticipo,
-            'total_anticipo' => $total_anticipo
+            'total_anticipo' => $total_anticipo,
+            'conceptosExtra' => $conceptosExtra,
+            'importesExtra' => $importesExtra
         ];
     }
 
@@ -1106,6 +1119,10 @@ class IniObraController extends Controller
         $clave = $request->clave;
         $num_casas = $request->num_casas;
         $acumAntTotal = [];
+
+        $importesExtra = $this->getImporteExtra($request->clave);
+        $conceptosExtra = $this->getConceptosExtra($request->clave);
+        
         $estimaciones = Estimacion::select('id', 'partida','pu_prorrateado','cant_tope')
                         ->where('aviso_id','=',$request->clave)
                         ->orderBy('id','asc')->get();
@@ -1229,8 +1246,12 @@ class IniObraController extends Controller
             }
         }
 
-        return Excel::create('Estimaciones' , function($excel) use ($clave, $estimaciones, $num_est, $contrato, $num_casas , $totalEstimacionAnt , $total_estimacion, $anticipos, $fondos){
-            $excel->sheet($contrato[0]->clave, function($sheet) use ($clave, $estimaciones, $num_est, $contrato, $num_casas , $totalEstimacionAnt, $total_estimacion, $anticipos, $fondos){
+        return Excel::create('Estimaciones' , function($excel) use ($clave, $estimaciones, 
+                $num_est, $contrato, $num_casas , $totalEstimacionAnt , 
+                $total_estimacion, $anticipos, $fondos, $importesExtra, $conceptosExtra){
+            $excel->sheet($contrato[0]->clave, function($sheet) use ($clave, $estimaciones, $num_est, 
+                    $contrato, $num_casas , $totalEstimacionAnt, 
+                    $total_estimacion, $anticipos, $fondos, $importesExtra, $conceptosExtra){
                 
                 $sheet->mergeCells('A1:L1');
                 $sheet->mergeCells('A3:L3');
@@ -1517,9 +1538,35 @@ class IniObraController extends Controller
                     'D'.$cont3.':D'.$cont2 => '$#,##0.00',
                     'C'.$cont3.':C'.$cont2 => '#,##0.00'
                 ));
-                
-    
 
+
+            ///////////// OBRAS EXTRA
+                $cont2+=2;
+                
+                $cont3=$cont2;
+                $saldoExtra = $importesExtra[0]->impExtra;
+                $sheet->row($cont2, 
+                        ['','Obra extra:',$importesExtra[0]->impExtra]
+                    );
+                $cont2++;
+                $sheet->row($cont2, 
+                        ['','Concepto','Importe','Fecha']
+                    );
+                foreach($conceptosExtra as $index => $concepto) {
+                    $cont2++;
+                    
+                    $sheet->row($cont2, 
+                        ['',$concepto->concepto,$concepto->importe,$concepto->fecha]
+                    );
+                    $saldoExtra -= $concepto->importe;
+                }
+                $cont2+=2;
+                $sheet->row($cont2, 
+                        ['','Saldo',$saldoExtra]
+                    );
+                
+                $num='B'.$cont3.':D' . $cont2;
+                $sheet->setBorder($num, 'thin'); 
             
             });
         })->download('xls');
@@ -1785,6 +1832,23 @@ class IniObraController extends Controller
         $iniObra->total_importe2 = $request->total_importe;
         $iniObra->garantia_ret = $request->importe_garantia;
         $iniObra->save();
+    }
+
+    public function storeImporteExtra(Request $request){
+        $importe = new Importe_extra();
+        $importe->impExtra = $request->impExtra;
+        $importe->fechaExtra = $request->fechaExtra;
+        $importe->aviso_id = $request->clave;
+        $importe->save();
+    }
+
+    public function storeConceptoExtra(Request $request){
+        $concepto = new Concepto_extra();
+        $concepto->fecha = $request->fecha;
+        $concepto->concepto = $request->concepto;
+        $concepto->importe = $request->importe;
+        $concepto->aviso_id = $request->clave;
+        $concepto->save();
     }
 
     public function excelEdoCuenta(Request $request){

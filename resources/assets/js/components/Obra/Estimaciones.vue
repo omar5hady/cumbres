@@ -434,6 +434,77 @@
 
                                 </div>
 
+                                <div class="form-group row">
+                                    <div class="col-md-2">
+                                        
+                                    </div>
+
+                                    <div class="col-md-8">
+                                        <div class="table-responsive"  v-if="nueva == 0" > 
+                                            <table class="table2 table-bordered table-striped table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th colspan="2">Obra extra</th>
+
+                                                        <th v-if="edit2 == 1">
+                                                            <input type="text" pattern="\d*" @keyup.esc="cancel()" 
+                                                                v-on:keypress="isNumber($event)" v-model="total_impAux">
+                                                        </th>
+
+                                                        <th v-else>
+                                                            <a href="#" @dblclick="edit2 = 1, total_impAux = impExtra" 
+                                                                title="Doble clic para editar">$ {{formatNumber(impExtra)}}</a>
+                                                        </th>
+
+                                                        <th v-if="edit2 == 1">
+                                                            <input type="date" @keyup.esc="cancel()" 
+                                                                v-on:keypress="isNumber($event)" v-model="dateAux">
+                                                        </th>
+
+                                                        <th v-else v-text="fechaExtra"></th>
+                                                        
+                                                        <th>
+                                                            <button v-if="edit2 == 1" title="Guardar" type="button" @click="storeImporteExtra()" class="btn btn-success btn-sm">
+                                                                <i class="icon-check"></i>
+                                                            </button>
+                                                            <button v-if="edit2 == 1" title="Cancelar" type="button" @click="cancel()" class="btn btn-danger btn-sm">
+                                                                <i class="icon-close"></i>
+                                                            </button>
+                                                        </th>
+                                                    </tr>
+                                                
+                                                    
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="td2"><strong>No.</strong> </td>
+                                                        <td class="td2"><strong>Fecha</strong> </td>
+                                                        <td colspan="2" class="td2"><strong>Concepto</strong> </td>
+                                                        <td class="td2"><strong>Importe</strong> </td>
+                                                            <button v-if="impExtra>0" title="Añadir" type="button" @click="abrirModal('extra')" class="btn btn-success btn-sm">
+                                                                <i class="icon-plus"></i>
+                                                            </button>
+                                                    </tr>   
+                                                    <tr v-for="(extra,index) in arrayExtra" :key="extra.id">
+                                                        <td class="td2" v-text="index+1"></td>
+                                                        <td class="td2" v-text="this.moment(extra.fecha).locale('es').format('DD/MMM/YYYY')"></td>
+                                                        <td colspan="2" class="td2" v-text="extra.concepto"></td>
+                                                        <td class="td2" v-text="'$'+formatNumber(extra.importe)"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <div class="table-responsive"  v-if="nueva == 0" >
+                                            
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
                                 
 
                                                          
@@ -525,7 +596,7 @@
             </div>
             <!--Fin del modal-->
 
-            <!-- Inicio Modal FG y Anticipos -->
+            <!-- Inicio Modal FG, Anticipos y Obra extra -->
             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal1}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-primary modal-lg" role="document">
                     <div class="modal-content">
@@ -579,6 +650,32 @@
                                 </div>
                             </template>
 
+                            <template v-else-if="tipoAccion == 4">
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Importe</label>
+                                    <div class="col-md-2">
+                                        <input type="text" v-on:change="validarOExtra()" pattern="\d*" v-on:keypress="isNumber($event)" v-model="importe" class="form-control" placeholder="Importe" >
+                                    </div>
+                                    <div class="col-md-2">
+                                        <h6><strong> ${{ formatNumber(importe)}} </strong></h6>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Concepto</label>
+                                    <div class="col-md-5">
+                                        <input type="text" v-model="concepto" class="form-control" placeholder="Concepto" >
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Fecha</label>
+                                    <div class="col-md-4">
+                                        <input type="date" v-model="fecha_extra" class="form-control" placeholder="Fecha">
+                                    </div>
+                                </div>
+                            </template>
+
                              <template v-else-if="tipoAccion == 3">
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Fraccionamiento</label>
@@ -621,6 +718,9 @@
                                 type="button" class="btn btn-primary" @click="storeAnticipos()">Guardar Anticipo</button>
                             <button v-if="tipoAccion == 2 && fg_cantidad != 0 " 
                                 type="button" class="btn btn-primary" @click="storeFondoG()">Guardar FG</button>
+
+                            <button v-if="tipoAccion == 4 && importe != 0 " 
+                                type="button" class="btn btn-primary" @click="storeConceptoExtra()">Guardar importe extra</button>
                             
                             <a v-if="tipoAccion == 3" class="btn btn-success" v-bind:href="'/estimaciones/prueba?fraccionamiento='+ fraccionamiento 
                                     + '&constructora='+ constructora + '&contratista='+ contratista">
@@ -732,10 +832,15 @@
                 total2:0,
                 total3:0,
                 total4:0,
-                total5:0
-                               
-               
-               
+                total5:0,
+                edit2:0,
+                impExtra:0,
+                dateAux:'',
+                fechaExtra:'',
+                arrayExtra:[],
+                fecha_extra:'',
+                concepto:'',
+                importe:0,
             }
         },
         components:{
@@ -994,6 +1099,7 @@
                 var url = '/estimaciones/getPartidas?clave='+id+'&numero='+this.b_estimacion+'&total_importe='+this.total_importe;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
+                    var extra= [];
                     me.arrayPartidas = respuesta.estimaciones;
                     me.numero = respuesta.numero;
                     me.num_estimacion = respuesta.num_est;
@@ -1005,6 +1111,11 @@
                     me.total_acum_ant = respuesta.totalEstimacionAnt;
                     me.arrayAnticipos = respuesta.anticipos;
                     me.arrayFG = respuesta.fondos;
+
+                    me.arrayExtra = respuesta.conceptosExtra;
+                    extra = respuesta.importesExtra;
+                    me.fechaExtra = extra[0].fechaExtra;
+                    me.impExtra = extra[0].impExtra;
 
                     me.total_anticipo = respuesta.total_anticipo;
                     me.porc_anticipo = respuesta.anticipo/ 100;
@@ -1023,6 +1134,20 @@
                 }
                 
             },
+
+            validarOExtra(){
+                let me = this;
+                var monto = 0;
+                if(me.arrayExtra.length > 0)
+                    for(var i=0;i<me.arrayExtra.length;i++){
+                        monto += parseFloat(me.arrayExtra[i].importe);
+                    }
+                
+                var porPagar = me.impExtra - monto;
+                if(me.importe>porPagar)
+                    me.importe = porPagar;
+            },
+
             validarAnticipo(){
                 let me = this;
                 var monto = 0;
@@ -1095,6 +1220,18 @@
                         this.fecha_fg = '';
                         break;
                     }
+
+                    case 'extra':
+                    {
+                        this.modal1 = 1;
+                        this.tipoAccion = 4;
+                        this.tituloModal = 'Obra extra';
+                        this.importe = 0;
+                        this.concepto = 0;
+                        this.fecha_extra = '';
+                        break;
+                    }
+
                     case 'resumen':
                     {
                         this.selectFraccionamientos();
@@ -1198,6 +1335,8 @@
             },
             cancel(){
                 this.edit = 0;
+                this.edit2 = 0;
+                
                 this.getPartidas(this.aviso_id);
                 this.total_impAux = 0;
             },
@@ -1256,6 +1395,75 @@
                             'cantidad' : me.fg_cantidad,
                             'monto_fg' : me.monto_fg,
                             'fecha_fg' : me.fecha_fg
+                        }); 
+                        me.nueva = 0;
+                        me.cerrarModal();
+                        me.getPartidas(me.aviso_id);
+                        Swal({
+                            title: 'Hecho!',
+                            text: 'Fonddo de garantia guardado correctamente',
+                            type: 'success',
+                            animation: false,
+                            customClass: 'animated bounceInRight'
+                        })
+                    }
+                })
+            },
+            storeImporteExtra(){
+                let me = this;
+                Swal({
+                    title: '¿Desea continuar?',
+                    animation: false,
+                    customClass: 'animated bounceInDown',
+                    text: "Estos cambios no se pueden revertir",
+                    type: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Cancelar',
+                    
+                    confirmButtonText: 'Si, guardar!'
+                    }).then((result) => {
+                    if (result.value) {
+                        axios.post('/estimaciones/storeImporteExtra',{
+                            'clave' : me.aviso_id,
+                            'impExtra' : me.total_impAux,
+                            'fechaExtra' : me.dateAux,
+                        }); 
+                        me.edit2 = 0;
+                        me.cerrarModal();
+                        me.getPartidas(me.aviso_id);
+                        Swal({
+                            title: 'Hecho!',
+                            text: 'Fonddo de garantia guardado correctamente',
+                            type: 'success',
+                            animation: false,
+                            customClass: 'animated bounceInRight'
+                        })
+                    }
+                })
+            },
+            storeConceptoExtra(){
+                let me = this;
+                Swal({
+                    title: '¿Desea continuar?',
+                    animation: false,
+                    customClass: 'animated bounceInDown',
+                    text: "Estos cambios no se pueden revertir",
+                    type: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Cancelar',
+                    
+                    confirmButtonText: 'Si, guardar!'
+                    }).then((result) => {
+                    if (result.value) {
+                        axios.post('/estimaciones/storeConceptoExtra',{
+                            'clave' : me.aviso_id,
+                            'fecha' : me.fecha_extra,
+                            'concepto' : me.concepto,
+                            'importe' : me.importe
                         }); 
                         me.nueva = 0;
                         me.cerrarModal();
