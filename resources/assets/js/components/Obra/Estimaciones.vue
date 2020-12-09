@@ -62,6 +62,10 @@
                                                         @click="verDetalle(contrato)" class="btn btn-primary btn-sm">
                                                         <i class="fa fa-eye"></i>
                                                     </button>
+
+                                                    <a :href="'/estimaciones/excelEdoCuenta?clave='+contrato.id"  
+                                                        class="btn btn-success"><i class="fa fa-file-text" title="Descargar estado de cuenta"></i> Edo. Cuenta
+                                                    </a>
                                                 </td>
                                             <td class="td2" v-text="contrato.clave"></td>
                                             <td class="td2" v-text="contrato.contratista"></td>

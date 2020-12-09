@@ -54,7 +54,7 @@
                                 </div>
 
                                 <div class="table-responsive" >
-                                    <table v-if="cont1 != 0 && cont2 != 0" class="table2 table-bordered table-striped table-sm">
+                                    <table v-if="cont1 != 0" class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr v-if="activo == 1">
                                                 <th colspan="8" class="text-center"> Ventas en el periodo ({{cont1}}) </th>

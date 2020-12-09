@@ -434,6 +434,7 @@ Route::group(['middleware' => ['auth']],function(){
 
 
         Route::get('/estimaciones/prueba','EstimacionController@prueba');
+        Route::get('/estimaciones/excelEdoCuenta','IniObraController@excelEdoCuenta');
 
 
     ////////////////////        RUTAS PARTIDAS   /////////////////////////////////
