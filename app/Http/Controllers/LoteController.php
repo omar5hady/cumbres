@@ -3206,7 +3206,9 @@ class LoteController extends Controller
         $ajuste->ajuste = $request->ajuste;
         $ajuste->save();
 
-        $creditos = Credito::select('id')->where('lote_id','=',$request->id)->get();
+        $creditos = Credito::select('id')
+        ->where('contrato','=',0)
+        ->where('lote_id','=',$request->id)->get();
         foreach($creditos as $creditosid){
             
             $credito = Credito::findOrFail($creditosid->id);

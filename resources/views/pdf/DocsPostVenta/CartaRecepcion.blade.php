@@ -12,7 +12,7 @@ div {
   page-break-inside: avoid;
 }
 body {
-    font-size: 13pt;
+    font-size: 12.5pt;
     font-family: Arial;
 }
 
@@ -28,38 +28,42 @@ body {
                 </div>
         </div>
        
-        <div style="margin: 70px; margin-top: 120px;"> 
+        <div style="margin: 60px; margin-top: 120px;"> 
             <hr>
             <br>
-            <p style="text-align: right;"> San Luis Potosí, S.L.P. a {{$contratos[0]->fecha_hoy}}
+            <p style="text-align: right;"> San Luis Potosí, S.L.P. a ____ de ____________ del 20_____
             </p>
             <br>
+        
 
-            <p style="margin: 30px; text-align: justify;">
-                Recibí de conformidad de <b>GRUPO CONSTRUCTOR CUMBRES S.A. DE C.V.</b> la siguiente dcumentacion correspondiente
+            <p style="margin: 10px; line-height: 190%; text-align: justify;">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Recibí de conformidad de <b>GRUPO CONSTRUCTOR CUMBRES S.A. DE C.V.</b> la siguiente documentación correspondiente
                 a la vivienda ubicada en el <b>LOTE {{$contratos[0]->num_lote}}</b> de la <b>
                     @if($contratos[0]->etapa == 'EXTERIOR')
                         MANZANA {{mb_strtoupper($contratos[0]->manzana)}}
                     @else
-                        PRIVADA {{mb_strtoupper($contratos[0]->etapa)}}
+                        PRIVADA "{{mb_strtoupper($contratos[0]->etapa)}}"
                     @endif
                 </b> en la calle 
                 <b>{{mb_strtoupper($contratos[0]->calle)}} No. {{$contratos[0]->numero}}</b> del 
-                <b> FRACCIONAMIENTO "{{mb_strtoupper($contratos[0]->proyecto)}}" en la Delegación de {{mb_strtoupper($contratos[0]->delegacion)}}, en la ciudad de San Luis Potosí:
+                <b> FRACCIONAMIENTO "{{mb_strtoupper($contratos[0]->proyecto)}}"</b> en la {{ucwords ($contratos[0]->delegacion)}}, en la ciudad de San Luis Potosí:
             </p>
 
-            <ul style="list-style-type:none; margin: 70px;">
+            <ul style="list-style-type:none; margin: 40px;">
                 <li class="li-2"> &#10004; Plano Arquitectonico.</li>
                 <li class="li-2"> &#10004; Póliza de garantía original</li>
-                <li class="li-2"> &#10004; Copia del contrato de agua o factibilidad</li>
+                <li class="li-2"> &#10004; Copia de dictamen de factibilidad de agua</li>
+                <li class="li-2"> &#10004; Carta informativa Interapas</li>
                 <li class="li-2"> &#10004; Manual de mantenimiento</li>
+                <li class="li-2"> &#10004; Tríptico instalación de gas</li>
+                <li class="li-2"> &#10004; 1 par de membretes de identificación vehicular </li>
             </ul>
 
             <br>
             <p style="text-align: center;"> Recibí </p>
-            <br><br>
+            <br>
             <p style="text-align: center;">______________________________________</p>
-            <p style="text-align: center;">{{mb_strtoupper($contratos[0]->nombre_cliente)}}</p>
+            <p style="text-align: center;"><b>{{mb_strtoupper($contratos[0]->nombre_cliente)}}</b></p>
 
             
 

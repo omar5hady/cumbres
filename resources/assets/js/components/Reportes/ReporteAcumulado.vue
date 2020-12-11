@@ -164,7 +164,7 @@
                                     <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
-                                                <th colspan="7" class="text-center">Pendientes </th>
+                                                <th colspan="7" class="text-center">Pendientes de cobro </th>
                                             </tr>
                                             <tr></tr>
                                             

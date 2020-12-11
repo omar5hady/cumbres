@@ -88,6 +88,7 @@
                                             <th>Concepto</th>
                                             <th>F. Deposito</th>
                                             <th>Solicitud de contrato</th>
+                                            <th v-if="b_empresa == 'CONCRETANIA'">Valor de terreno</th>
                                             <th>Factura</th>
                                             <th>Folio Factura</th>
                                             <th>Valor</th>
@@ -118,6 +119,7 @@
                                             <td>
                                                 <a :href="'/contratoCompraVenta/pdf/'+deposito.cId" target="_blank" class="btn btn-info btn-sm">Ver contrato</a>
                                             </td>
+                                            <td v-if="b_empresa == 'CONCRETANIA'" v-text="'$'+ deposito.valor_terreno.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">Terreno</td>
                                             <td>
                                                 <button id="btnFiles" class="dropdown-toggle btn-primary btn btn-sm" data-toggle="dropdown" type="button"
                                                     aria-haspopup="true" aria-expanded="false">
@@ -250,6 +252,7 @@
                                             <th>Lote</th>
                                             <th>F. firma contrato</th>
                                             <th>Solicitud de contrato</th>
+                                            <th v-if="b_empresa == 'CONCRETANIA'">Valor de terreno</th>
                                             <th>Factura</th>
                                             <th>Folio Factura</th>
                                             <th>Valor a escriturar</th>
@@ -278,6 +281,7 @@
                                             <td>
                                                 <a :href="'/contratoCompraVenta/pdf/'+contrato.id" target="_blank" class="btn btn-info btn-sm">Ver contrato</a>
                                             </td>
+                                            <td v-if="b_empresa == 'CONCRETANIA'" v-text="'$'+ contrato.valor_terreno.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">Terreno</td>
                                             <td>
                                                 <section>
                                                     <button id="btnFiles" class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" 
@@ -424,6 +428,7 @@
                                             <th>Lote</th>
                                             <th>F. firma escritura</th>
                                             <th>Solicitud de contrato</th>
+                                            <th v-if="b_empresa == 'CONCRETANIA'">Valor de terreno</th>
                                             <th>Factura</th>
                                             <th>Folio Factura</th>
                                             <th>Valor</th>
@@ -448,6 +453,7 @@
                                             <td>
                                                 <a :href="'/contratoCompraVenta/pdf/'+liqCredit.cId" target="_blank" class="btn btn-info btn-sm">Ver contrato</a>
                                             </td>
+                                            <td v-if="b_empresa == 'CONCRETANIA'" v-text="'$'+ liqCredit.valor_terreno.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">Terreno</td>
                                             <td>
                                                 <button id="btnFiles" class="dropdown-toggle btn-primary btn btn-sm" data-toggle="dropdown" type="button"
                                                     aria-haspopup="true" aria-expanded="false">
@@ -577,6 +583,7 @@
                                             <th>Concepto</th>
                                             <th>Fecha de deposito</th>
                                             <th>Solicitud de contrato</th>
+                                            <th v-if="b_empresa == 'CONCRETANIA'">Valor de terreno</th>
                                             <th>Factura</th>
                                             <th>Folio Factura</th>
                                             <th>Valor</th>
@@ -607,6 +614,7 @@
                                             <td>
                                                 <a :href="'/contratoCompraVenta/pdf/'+deposito.cId" target="_blank" class="btn btn-info btn-sm">Ver contrato</a>
                                             </td>
+                                            <td v-if="b_empresa == 'CONCRETANIA'" v-text="'$'+ deposito.valor_terreno.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">Terreno</td>
                                             <td>
                                                 <button id="btnFiles" class="dropdown-toggle btn-primary btn btn-sm" data-toggle="dropdown" type="button"
                                                     aria-haspopup="true" aria-expanded="false">

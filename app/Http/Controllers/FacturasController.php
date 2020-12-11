@@ -220,7 +220,9 @@ class FacturasController extends Controller
                 'contratos.e_folio_factura_concretania',
                 'contratos.e_monto_concretania',
                 'contratos.e_f_carga_factura_concretania',
-                'lotes.emp_constructora'
+                'lotes.emp_constructora',
+
+                'creditos.valor_terreno'
         );
 
         if($request->buscar != '' || $request->b_gen != ''){
@@ -358,7 +360,10 @@ class FacturasController extends Controller
                 'creditos.factura',
                 'creditos.folio_factura',
                 'creditos.monto',
-                'creditos.f_carga_factura'
+                'creditos.f_carga_factura',
+                'lotes.emp_constructora',
+
+                'creditos.valor_terreno'
         );
 
         if($request->buscar != '' || $request->b_gen != ''){
