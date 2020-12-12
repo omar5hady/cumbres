@@ -496,7 +496,7 @@ Route::group(['middleware' => ['auth']],function(){
             Route::get('/postventa/checklist/pdf/{folio}','RevisionPreviaController@DetallesPDF');
 
 
-    ////////////////////////////     RUTAS temporales de lotes y calculadora de lotes     ///////////////////////////
+    ////////////////////////////     RUTAS calculadora de lotes     ///////////////////////////
     Route::get('/calc/descuentos','CalculadoraLotesController@listarPorcentaje');
     Route::put('/calc/descuentos/edita','CalculadoraLotesController@editaPorcentaje');
     Route::get('/calc/lotes','CalculadoraLotesController@listarPrecios');
@@ -675,6 +675,10 @@ Route::group(['middleware' => ['auth']],function(){
          Route::post('/expediente/integrar','ExpedienteController@store');
 
          Route::delete('/expediente/regresarExpediente','ExpedienteController@regresarExpediente');
+
+
+        Route::post('expediente/formSubmitEscrituras/{id}','ReportesController@formSubmitEscrituras'); //carga de Avaluo
+        Route::get('expediente/downloadEscrituras/{fileName}' , 'ReportesController@downloadFile'); //descarga de Avaluo
 
     ////////////////////////// RUTAS COMISIONES //////////////////////////////
         Route::get('/comision/listarContratos','ComisionesController@indexContratos');

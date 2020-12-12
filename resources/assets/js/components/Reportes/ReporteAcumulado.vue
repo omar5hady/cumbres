@@ -21,15 +21,7 @@
                             <li class="nav-item">
                                 <a class="nav-link active show" id="expediente-tab" data-toggle="tab" href="#expediente" role="tab" aria-controls="expediente" v-text="'Expedientes entregados'"></a>
                             </li>
-                            <!-- <li class="nav-item">
-                                <a class="nav-link" id="cobranza-tab" data-toggle="tab" href="#cobranza" role="tab" aria-controls="cobranza" aria-selected="false" v-text="'Acumulado de cobranza'"></a>
-                            </li> -->
-                            <li class="nav-item">
-                                <a class="nav-link" id="escrituras-tab" data-toggle="tab" href="#escrituras" role="tab" aria-controls="escrituras" aria-selected="false" v-text="'Escrituras'"></a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="ingresos-tab" data-toggle="tab" href="#ingresos" role="tab" aria-controls="ingresos" aria-selected="false" v-text="'Ingresos'"></a>
-                            </li>
+                            
                         </ul>
 
                         <div>
@@ -195,183 +187,6 @@
                                     
                                 </div>
                             </div>
-
-                            <!-- Listado por cobranza
-                            <div class="tab-pane fade" id="cobranza" role="tabpanel" aria-labelledby="cobranza-tab">
-
-                                <div class="table-responsive">
-                                    <table class="table2 table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th colspan="11" class="text-center"> Cancelaciones en el periodo </th>
-                                            </tr>
-                                            <tr>
-                                                <th>Fraccionamiento</th>
-                                                <th>Etapa</th>
-                                                <th>Manzana</th>
-                                                <th>Lote</th>
-                                                <th>Cliente</th>
-                                                <th>Fecha de cancelación</th>
-                                                <th>Fecha de venta</th>
-                                                <th>Crédito</th>
-                                                <th>Institución</th>
-                                                <th>Valor de escrituración</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="cancelacion in arrayCancelaciones" :key="cancelacion.id">
-                                                <td class="td2" v-text="cancelacion.proyecto"></td>
-                                                <td class="td2" v-text="cancelacion.num_etapa"></td>
-                                                <td class="td2" v-text="cancelacion.manzana"></td>
-                                                <td class="td2" v-text="cancelacion.num_lote"></td>
-                                                <td class="td2" v-text="cancelacion.nombre + ' ' + cancelacion.apellidos"></td>
-                                                <td class="td2" v-text="cancelacion.fecha_status"></td>
-                                                <td class="td2" v-text="cancelacion.fecha"></td>
-                                                <td class="td2" v-text="cancelacion.tipo_credito"></td>
-                                                <td class="td2" v-text="cancelacion.institucion"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(cancelacion.precio_venta)"></td>
-                                            </tr>                             
-                                        </tbody>
-                                    </table>
-
-                                    
-                                </div>
-                            </div> -->
-
-                            <!-- Listado por escrituras -->
-                            <div class="tab-pane fade" id="escrituras" role="tabpanel" aria-labelledby="escrituras-tab">
-
-                                <div class="table-responsive">
-                                    <table class="table2 table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th colspan="11" class="text-center"> Reporte Mensual de Escrituras Ventas de Crédito </th>
-                                            </tr>
-                                            <tr></tr>
-                                            <tr>
-                                                <th colspan="3"></th>
-                                                <th colspan="4" class="text-center">Ubicación</th>
-                                                <th colspan="4"></th>
-                                            </tr>
-                                            <tr>
-                                                <th></th>
-                                                <th># Referencia</th>
-                                                <th>Cliente</th>
-                                                <th>Fraccionamiento</th>
-                                                <th>Etapa</th>
-                                                <th>Manzana</th>
-                                                <th>Lote</th>
-                                                <th>Crédito</th>
-                                                <th>Fecha de firma de escrituras</th>
-                                                <th>Valor de escrituración</th>
-                                                <th>Notaria</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="(escrituras, index) in arrayEscrituras" :key="escrituras.id">
-                                                <td>{{index+1}}</td>
-                                                <td class="td2" v-text="escrituras.id"></td>
-                                                <td class="td2" v-text="escrituras.nombre.toUpperCase() + ' '+escrituras.apellidos.toUpperCase()"></td>
-                                                <td class="td2" v-text="escrituras.proyecto"></td>
-                                                <td class="td2" v-text="escrituras.num_etapa"></td>
-                                                <td class="td2" v-text="escrituras.manzana"></td>
-                                                <td class="td2" v-text="escrituras.num_lote"></td>
-                                                <td class="td2" v-text="escrituras.tipo_credito+' ('+escrituras.institucion+')'"></td>
-                                                <td class="td2" v-text="escrituras.fecha_firma_esc"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(escrituras.valor_escrituras)"></td>
-                                                <td class="td2" v-text="escrituras.notaria"></td>
-                                                
-                                            </tr>                             
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                                <div class="table-responsive">
-                                    <table class="table2 table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th colspan="10" class="text-center"> Contados Pendientes de Escriturar </th>
-                                            </tr>
-                                            <tr></tr>
-                                            <tr>
-                                                <th colspan="3"></th>
-                                                <th colspan="4" class="text-center">Ubicación</th>
-                                                <th colspan="3"></th>
-                                            </tr>
-                                            <tr>
-                                                <th></th>
-                                                <th># Referencia</th>
-                                                <th>Cliente</th>
-                                                <th>Fraccionamiento</th>
-                                                <th>Etapa</th>
-                                                <th>Manzana</th>
-                                                <th>Lote</th>
-                                                <th>Crédito</th>
-                                                <th>Fecha de Venta</th>
-                                                <th>Responsable</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="(contadoSinEsc,index) in arraycontadoSinEscrituras" :key="contadoSinEsc.id">
-                                                <td>{{index+1}}</td>
-                                                <td class="td2" v-text="contadoSinEsc.id"></td>
-                                                <td class="td2" v-text="contadoSinEsc.nombre.toUpperCase() + ' '+contadoSinEsc.apellidos.toUpperCase()"></td>
-                                                <td class="td2" v-text="contadoSinEsc.proyecto"></td>
-                                                <td class="td2" v-text="contadoSinEsc.num_etapa"></td>
-                                                <td class="td2" v-text="contadoSinEsc.manzana"></td>
-                                                <td class="td2" v-text="contadoSinEsc.num_lote"></td>
-                                                <td class="td2" v-text="contadoSinEsc.tipo_credito+' ('+contadoSinEsc.institucion+')'"></td>
-                                                <td class="td2" v-text="contadoSinEsc.fecha"></td>
-                                                <td class="td2" v-text="contadoSinEsc.nombre_gestor"></td>
-                                            </tr>                             
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                            <!-- Listado por ingresos -->
-                            <div class="tab-pane fade" id="ingresos" role="tabpanel" aria-labelledby="ingresos-tab">
-
-                                <div class="table-responsive">
-                                    <table class="table2 table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th colspan="9" class="text-center"> Reporte de Ingresos (Cobranza Institucional) </th>
-                                            </tr>
-                                            <tr></tr>
-                                            <tr>
-                                                <th colspan="2"></th>
-                                                <th colspan="4" class="text-center">Ubicación</th>
-                                                <th colspan="3"></th>
-                                            </tr>
-                                            <tr>
-                                                <th></th>
-                                                <th>Cliente</th>
-                                                <th>Fraccionamiento</th>
-                                                <th>Etapa</th>
-                                                <th>Manzana</th>
-                                                <th>Lote</th>
-                                                <th>Monto Credito Neto</th>
-                                                <th>Fecha</th>
-                                                <th>Banco</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="(ingresoCobranza, index) in arrayIngresosCobranza" :key="ingresoCobranza.id">
-                                                <td>{{index + 1}}</td>
-                                                <td class="td2" v-text="ingresoCobranza.nombre.toUpperCase() + ' ' + ingresoCobranza.apellidos.toUpperCase()"></td>
-                                                <td class="td2" v-text="ingresoCobranza.proyecto"></td>
-                                                <td class="td2" v-text="ingresoCobranza.num_etapa"></td>
-                                                <td class="td2" v-text="ingresoCobranza.manzana"></td>
-                                                <td class="td2" v-text="ingresoCobranza.num_lote"></td>
-                                                <td class="td2" v-text="'$'+formatNumber(ingresoCobranza.cant_depo)"></td>
-                                                <td class="td2" v-text="ingresoCobranza.fecha_deposito"></td>
-                                                <td class="td2" v-text="ingresoCobranza.banco"></td>
-                                            </tr>                             
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -394,12 +209,6 @@
                 arrayExpContado:[],
                 arrayPendientes:[],
 
-                arrayEscrituras:[],
-                arraycontadoSinEscrituras:[],
-
-                arrayCancelaciones : [],
-
-                arrayIngresosCobranza : [],
                 mes:'',
                 anio:'',
                 emp_constructora:''
@@ -415,20 +224,14 @@
                 me.arrayExpCreditos = [];
                 me.arrayExpContado = [];
                 me.arrayPendientes = [];
-                me.arrayEscrituras = [];
-                me.arraycontadoSinEscrituras = [];
-                me.arrayIngresosCobranza = [];
 
-                var url = '/reprotes/reporteAcumulado?mes=' + me.mes + '&anio=' + me.anio + '&empresa=' + me.emp_constructora;
+                var url = '/reprotes/reporteAcumulado?mes=' + me.mes + '&anio=' +
+                     me.anio + '&empresa=' + me.emp_constructora + '&opcion=Expedientes';
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayExpCreditos = respuesta.expCreditos;
                     me.arrayExpContado = respuesta.expContado;
                     me.arrayPendientes = respuesta.pendientes;
-                    me.arrayEscrituras = respuesta.escrituras;
-                    me.arraycontadoSinEscrituras = respuesta.contadoSinEscrituras;
-                    me.arrayIngresosCobranza = respuesta.ingresosCobranza;
-
                 })
                 .catch(function (error) {
                     console.log(error);

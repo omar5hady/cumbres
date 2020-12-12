@@ -32,6 +32,9 @@ class AddGestorIdToExpedientes extends Migration
 
             $table->double('interes_ord')->default(0)->nullable();
 
+            $table->string('doc_escrituras')->nullable();
+            $table->date('doc_date')->nullable();
+
             $table->foreign('gestor_id')->references('id')->on('personal');
         });
     }

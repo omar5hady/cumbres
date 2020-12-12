@@ -1100,7 +1100,9 @@ class UserController extends Controller
                                 'rep_ini_term_ventas',
                                 'rep_recursos_propios',
                                 'rep_detalles_post',
-                                'rep_acumulado'
+                                'rep_acumulado',
+                                'rep_escrituras',
+                                'rep_ingresos'
                         )->where('users.id','=',$request->id)->get();
             
             return['privilegios' => $privilegios];
@@ -1217,6 +1219,8 @@ class UserController extends Controller
         $user->rep_vent_modelos = $request->rep_vent_modelos;
         $user->rep_detalles_post = $request->rep_detalles_post;
         $user->rep_acumulado = $request->rep_acumulado;
+        $user->rep_ingresos = $request->rep_ingresos;
+        $user->rep_escrituras = $request->rep_escrituras;
         $user->save();
 
     }

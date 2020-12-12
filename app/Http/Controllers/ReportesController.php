@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use DB;
+use File;
+use Excel;
+use Auth;
+use Carbon\Carbon;
 use App\Etapa;
 use App\Fraccionamiento;
 use App\Credito;
@@ -11,20 +15,15 @@ use App\Contrato;
 use App\Expediente;
 use App\Dep_credito;
 use App\Lote;
-use Excel;
-use Carbon\Carbon;
 use App\Pago_contrato;
 use App\Historial_descartado;
 use App\Modelo;
 use App\Solic_detalle;
 use App\Contratista;
 use App\inst_seleccionada;
-
 use App\Cat_detalle_subconcepto;
-
 use App\Cliente;
 use App\Vendedor;
-
 use App\Detalle_previo;
 use App\Revision_previa;
 
@@ -1662,25 +1661,57 @@ class ReportesController extends Controller
     }
 
     public function reporteAcumulado(Request $request){
+        $opcion = $request->opcion;
+
         $mes = $request->mes;
         $anio = $request->anio;
-        $empresa = $request->empresa;
-        $expCreditos = $this->getRepExpedientes($mes, $anio, $empresa);
-        $expContado = $this->getRepExpContado($mes, $anio, $empresa);
-        $sinEntregar = $this->getSinEntregarRep($mes,$anio, $empresa);
-        
-        $escrituras = $this->getEscriturasRep($mes, $anio, $empresa);
-        $contadoSinEscrituras = $this->getContadoSinEscrituras($mes, $anio, $empresa);
-        $ingresosCobranza = $this->getIngresosCobranza($mes,$anio, $empresa);
-        
-        return ['expCreditos'=>$expCreditos,
-                'expContado'=>$expContado,
-                'pendientes'=>$sinEntregar,
-                'escrituras'=>$escrituras,
-                'contadoSinEscrituras'=>$contadoSinEscrituras,
-                'ingresosCobranza'=>$ingresosCobranza
 
-            ];
+        $fecha1 = $request->fecha1;
+        $fecha2 = $request->fecha2;
+
+        $empresa = $request->empresa;
+
+        switch($opcion){
+            case 'Expedientes':{
+                $expCreditos = $this->getRepExpedientes($mes, $anio, $empresa);
+                $expContado = $this->getRepExpContado($mes, $anio, $empresa);
+                $sinEntregar = $this->getSinEntregarRep($mes,$anio, $empresa);
+
+                return ['expCreditos'=>$expCreditos,
+                    'expContado'=>$expContado,
+                    'pendientes'=>$sinEntregar
+                   
+                ];
+
+                break;
+            }
+            case 'Escrituras':{
+                $escrituras = $this->getEscriturasRep($mes, $anio, $empresa);
+                $contadoSinEscrituras = $this->getContadoSinEscrituras($mes, $anio, $empresa);
+
+                return [
+                    'escrituras'=>$escrituras,
+                    'contadoSinEscrituras'=>$contadoSinEscrituras
+                ];
+
+                break;
+            }
+            case 'Ingresos':{
+                $ingresosCobranza = $this->getIngresosCobranza($fecha1,$fecha2, $empresa);
+
+                return [
+                    'ingresosCobranza'=>$ingresosCobranza
+                ];
+
+                break;
+            }
+        }
+       
+        
+        
+        
+        
+        
 
     }
 
@@ -1827,7 +1858,9 @@ class ReportesController extends Controller
                 ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
                 ->join('etapas as et','lotes.etapa_id','=','et.id')
                 ->select('contratos.id','p.nombre','p.apellidos','f.nombre as proyecto','et.num_etapa',
+                        'creditos.valor_terreno',
                         'lotes.manzana','lotes.num_lote','ins.tipo_credito','ins.institucion',
+                        'expedientes.doc_escrituras','expedientes.doc_date',
                         'expedientes.fecha_firma_esc','expedientes.valor_escrituras','expedientes.notaria')
                 ->where('contratos.status','=',3)
                 ->where('ins.elegido','=',1)
@@ -1870,7 +1903,7 @@ class ReportesController extends Controller
         return $contadoSinEscrituras;
     }
 
-    private function getIngresosCobranza($mes, $anio, $empresa){
+    private function getIngresosCobranza($fecha1, $fecha2, $empresa){
         $ingresosCobranza = Contrato::join('creditos','contratos.id','=','creditos.id')
                 ->join('inst_seleccionadas as ins', 'creditos.id', '=', 'ins.credito_id')
                 ->join('dep_creditos as dep','ins.id','=','dep.inst_sel_id')
@@ -1880,8 +1913,8 @@ class ReportesController extends Controller
                 ->join('etapas as et','lotes.etapa_id','=','et.id')
                 ->select('p.nombre','p.apellidos','f.nombre as proyecto','et.num_etapa',
                         'lotes.manzana','lotes.num_lote','dep.cant_depo','dep.fecha_deposito','dep.banco')
-                ->whereMonth('dep.fecha_deposito',$mes)
-                ->whereYear('dep.fecha_deposito',$anio);
+
+                ->whereBetween('dep.fecha_deposito',[$fecha1, $fecha2]);
 
                 if($empresa != '')
                     $ingresosCobranza = $ingresosCobranza->where('lotes.emp_constructora','=',$empresa);
@@ -3321,6 +3354,55 @@ class ReportesController extends Controller
                 
                 )->download('xls');    
 
+    }
+
+    public function formSubmitEscrituras(Request $request, $id)
+    {
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $fecha = Carbon::now();
+
+        $escrituras = Expediente::select('doc_escrituras', 'id')
+            ->where('id', '=', $id)
+            ->get();
+        if ($escrituras->isEmpty() == 1) {
+            $fileName = time() . '.' . $request->archivo->getClientOriginalExtension();
+            $moved =  $request->archivo->move(public_path('/files/escrituras'), $fileName);
+
+            if ($moved) {
+                if (!$request->ajax()) return redirect('/');
+                $escrituras = Expediente::findOrFail($request->id);
+                $escrituras->doc_escrituras = $fileName;
+                $escrituras->doc_date = $fecha;
+                $escrituras->save(); //Insert
+
+            }
+
+            return back();
+        } else {
+            $pathAnterior = public_path() . '/files/escrituras/' . $escrituras[0]->pdf;
+            File::delete($pathAnterior);
+
+            $fileName = time() . '.' . $request->archivo->getClientOriginalExtension();
+            $moved =  $request->archivo->move(public_path('/files/escrituras'), $fileName);
+
+            if ($moved) {
+                if (!$request->ajax()) return redirect('/');
+                $escrituras = Expediente::findOrFail($request->id);
+                $escrituras->doc_escrituras = $fileName;
+                $escrituras->doc_date = $fecha;
+                $escrituras->save(); //Insert
+
+            }
+
+            return back();
+        }
+    }
+
+    public function downloadFile($fileName)
+    {
+
+        $pathtoFile = public_path() . '/files/escrituras/' . $fileName;
+        return response()->download($pathtoFile);
     }
     
 }

@@ -670,7 +670,17 @@
                                 @endif
                                 @if(Auth::user()->rep_acumulado == 1)
                                     <li @click="menu=240" class="nav-item">
-                                        <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte acumulado</a>
+                                        <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de expedientes</a>
+                                    </li>
+                                @endif
+                                @if(Auth::user()->rep_ingresos == 1)
+                                    <li @click="menu=251" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de ingresos</a>
+                                    </li>
+                                @endif
+                                @if(Auth::user()->rep_escrituras == 1)
+                                    <li @click="menu=252" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de escrituras</a>
                                     </li>
                                 @endif
                                 @if(Auth::user()->rep_detalles_post == 1)

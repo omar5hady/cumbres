@@ -139,6 +139,8 @@ class CreateUsersTable extends Migration
             $table->boolean('inventario')->default(0);
             $table->boolean('rep_venta_canc')->default(0);
             $table->boolean('rep_acumulado')->default(0);
+            $table->boolean('rep_ingresos')->default(0);
+            $table->boolean('rep_escrituras')->default(0);
 
             $table->boolean('rep_asesores')->default(0);
             $table->boolean('rep_ini_term_ventas')->default(0);

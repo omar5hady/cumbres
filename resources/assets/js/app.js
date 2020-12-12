@@ -138,6 +138,8 @@ Vue.component('rep-vendedores', require('./components/Reportes/ReporteVendedores
 Vue.component('rep-lotes', require('./components/Reportes/ReporteIniTermVenta.vue'));
 Vue.component('rep-ventascanc', require('./components/Reportes/VentasCancelaciones.vue'));
 Vue.component('rep-acumulado', require('./components/Reportes/ReporteAcumulado.vue'));
+Vue.component('rep-ingresos', require('./components/Reportes/ReporteIngresos.vue'));
+Vue.component('rep-escrituras', require('./components/Reportes/ReporteEscrituras.vue'));
 Vue.component('recursos-propios', require('./components/Reportes/ReporteRecursosPropios.vue'));
 Vue.component('repcredito-puente', require('./components/Reportes/ReporteCasasPuente.vue'));
 Vue.component('reporte-modelos', require('./components/Reportes/ReporteModelos.vue'));

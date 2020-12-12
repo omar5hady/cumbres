@@ -76,6 +76,7 @@
                                         <th>Etapa</th>
                                         <th>Manzana</th>
                                         <th>Lote</th>
+                                        <th>Fecha de firma de escrituras</th>
                                         <th>Pendiente a devolver</th>
                                         <th>Observaciones</th>
                                     </tr>
@@ -95,6 +96,8 @@
                                         <td class="td2" v-text="contratos.etapa"></td>
                                         <td class="td2" v-text="contratos.manzana"></td>
                                         <td class="td2" v-text="contratos.num_lote"></td>
+                                        <td class="td2" v-if="contratos.fecha_firma_esc != null" v-text="this.moment(contratos.fecha_firma_esc).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <td class="td2" v-else>Sin firmar</td>
                                         <td class="td2" v-text="'$'+formatNumber(contratos.saldo*(-1))"></td>
                                         <td class="td2">
                                             <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
@@ -184,7 +187,7 @@
                                         <th>Manzana</th>
                                         <th>Lote</th>
                                         <th>Devuelto</th>
-                                        <th>Fecha cancelación</th>
+                                        <th>Fecha de contrato</th>
                                         <th>Fecha de devolucion</th>
                                         <th>Cheque</th>
                                         <th>Cuenta</th>

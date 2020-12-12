@@ -482,6 +482,14 @@
             <digital-leads rol-id="{{Auth::user()->rol_id}}" user-id="{{Auth::user()->id}}"></digital-leads>
         </template>
 
+        <template v-if="menu==251">
+            <rep-ingresos></rep-ingresos>
+        </template>
+
+        <template v-if="menu==252">
+            <rep-escrituras></rep-escrituras>
+        </template>
+
         
 
         

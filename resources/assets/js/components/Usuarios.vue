@@ -428,7 +428,13 @@
                                                         <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_detalles_post" type="checkbox" value="1"/> Reporte de detalles</a>
                                                     </li>
                                                     <li class="nav-item">
-                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_acumulado" type="checkbox" value="1"/> Reporte acumulado</a>
+                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_acumulado" type="checkbox" value="1"/> Reporte de expedientes</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_ingresos" type="checkbox" value="1"/> Reporte de ingresos</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_escrituras" type="checkbox" value="1"/> Reporte de escrituras</a>
                                                     </li>
                                                     
                                                 </ul>
@@ -963,6 +969,8 @@
                     rep_vent_modelos:0,
                     rep_detalles_post:0,
                     rep_acumulado:0,
+                    rep_ingresos:0,
+                    rep_escrituras:0,
 
                 pagination : {
                     'total' : 0,         
@@ -1187,6 +1195,8 @@
                 this.rep_vent_modelos = 0;
                 this.rep_detalles_post = 0;
                 this.rep_acumulado = 0;
+                this.rep_ingresos = 0;
+                this.rep_escrituras = 0;
             },
 
             selectPersonas(){
@@ -1329,6 +1339,8 @@
                     me.rep_vent_modelos = usuarios[0].rep_vent_modelos;
                     me.rep_detalles_post = usuarios[0].rep_detalles_post;
                     me.rep_acumulado = usuarios[0].rep_acumulado;
+                    me.rep_ingresos = usuarios[0].rep_ingresos;
+                    me.rep_escrituras = usuarios[0].rep_escrituras;
 
                     me.rol_id = usuarios[0].rol_id;
 
@@ -1637,7 +1649,9 @@
                     'rep_recursos_propios':this.rep_recursos_propios,
                     'rep_vent_modelos':this.rep_vent_modelos,
                     'rep_detalles_post':this.rep_detalles_post,
-                    'rep_acumulado' : this.rep_acumulado
+                    'rep_acumulado' : this.rep_acumulado,
+                    'rep_ingresos' : this.rep_ingresos,
+                    'rep_escrituras' : this.rep_escrituras
 
                 }).then(function (response){
                     me.listarPersonal(1,'','nombre');

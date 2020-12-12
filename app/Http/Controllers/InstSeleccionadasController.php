@@ -1242,11 +1242,13 @@ class InstSeleccionadasController extends Controller
         $query = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
             ->join('contratos','contratos.id','=','creditos.id')
             ->join('lotes','lotes.id','=','creditos.lote_id')
+            ->leftJoin('expedientes','expedientes.id','=','contratos.id')
             ->join('personal','personal.id','=','creditos.prospecto_id')
             ->select('contratos.id', 'lotes.credito_puente',
                     'creditos.fraccionamiento as proyecto',
                     'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
                     'personal.nombre','personal.apellidos', 
+                    'expedientes.fecha_firma_esc',
                     DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
                     'inst_seleccionadas.id as inst_sel_id', 'contratos.saldo',
                     'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
