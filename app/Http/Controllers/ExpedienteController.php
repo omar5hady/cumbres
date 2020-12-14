@@ -20,6 +20,7 @@ use App\Credito;
 use App\Entrega;
 use App\Avaluo;
 use App\Bono_recomendado;
+use App\Obs_exp_entregado;
 use App\Http\Controllers\BonoRecomendadoController;
 
 use App\Mail\NotificationReceived;
@@ -5780,5 +5781,50 @@ class ExpedienteController extends Controller
         )->download('xls');
        
     }
+
+    public function sendExp(Request $request){
+        $fecha = Carbon::now();
+
+        $contrato = Contrato::findOrFail($request->id);
+        $contrato->send_exp = $fecha;
+        $contrato->save();
+
+        $obs = new Obs_exp_entregado();
+        $obs->contrato_id = $request->id;
+        $obs->observacion = 'Expediente enviado';
+        $obs->usuario = Auth::user()->usuario;
+        $obs->save();
+    }
+
+    public function receivedExp(Request $request){
+
+        $fecha = Carbon::now();
+
+        $contrato = Contrato::findOrFail($request->id);
+        $contrato->received_exp = $fecha;
+        $contrato->save();
+
+        $obs = new Obs_exp_entregado();
+        $obs->contrato_id = $request->id;
+        $obs->observacion = 'Expediente recibido';
+        $obs->usuario = Auth::user()->usuario;
+        $obs->save();
+
+    }
+
+    public function getObsExpEntregados(Request $request){
+        $obs = Obs_exp_entregado::where('contrato_id','=',$request->id)->orderBy('created_at','desc')->paginate(15);
+
+        return ['observacion'=>$obs];
+    }
+
+    public function storeObsExpEntregado(Request $request){
+        $obs = new Obs_exp_entregado();
+        $obs->contrato_id = $request->id;
+        $obs->observacion = $request->observacion;
+        $obs->usuario = Auth::user()->usuario;
+        $obs->save();
+    }
+    
 
 }

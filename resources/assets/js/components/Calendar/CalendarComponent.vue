@@ -13,6 +13,7 @@
                   <label for="event_name">TIpo de evento</label>
                   <select class="form-control" @click="changeColor()" v-model="newEvent.event_name" >
                       <option value="Vacaciones">Vacaciones</option>
+                      <option value="Descanso">Descanso</option>
                       <option value="Guardia">Guardia</option>
                       <option value="Pendientes">Pendientes</option>
                       <option value="Propaganda">Propaganda</option>
@@ -187,7 +188,7 @@ export default {
           break;
         }
         default:{
-          this.newEvent.color = '#fff'
+          this.newEvent.color = '#000000'
           break;
         }
           

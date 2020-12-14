@@ -85,13 +85,13 @@
                                     <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
-                                                <th colspan="7" class="text-center">Reporte de Expedientes Entregados </th>
+                                                <th colspan="11" class="text-center">Reporte de Expedientes Entregados </th>
                                             </tr>
                                             <tr></tr>
                                             <tr>
                                                 <th colspan="2" class="text-center"> </th>
                                                 <th colspan="4" class="text-center"> Ubicación / Plantio </th>
-                                                <th class="text-center"> </th>
+                                                <th colspan="5" class="text-center"> </th>
                                             </tr>
                                             <tr>
                                                 <th># Referencia</th>
@@ -101,6 +101,10 @@
                                                 <th>Manzana</th>
                                                 <th>Lote</th>
                                                 <th>Canal de Ventas</th>
+                                                <th></th>
+                                                <th>Envio de envio</th>
+                                                <th>Fecha de recibido</th>
+                                                <th></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -112,6 +116,23 @@
                                                 <td class="td2" v-text="lote.manzana"></td>
                                                 <td class="td2" v-text="lote.num_lote"></td>
                                                 <td class="td2" v-text="lote.tipo_credito"></td>
+                                                <td></td>
+
+                                                <td class="td2" v-if="lote.send_exp == null">
+                                                    <button class="btn btn-dark" @click="enviarExp(lote.id)">Enviar exp</button>
+                                                </td>
+                                                <td class="td2" v-else v-text="'Expediente enviado el: '+lote.send_exp"></td>
+                                                <td class="td2" v-if="lote.send_exp == null">
+                                                    Expediente pendiente de envio
+                                                </td>
+                                                <td class="td2" v-else-if="lote.received_exp == null">
+                                                    <button class="btn btn-dark" @click="recibirExp(lote.id)">Confirmar expediente recibido</button>
+                                                </td>
+                                                <td class="td2" v-else v-text="'Expediente recibido el: '+lote.received_exp"></td>
+
+                                                <td class="td2">
+                                                    <button class="btn btn-primary" @click="comentarios(lote.id)">Ver Comentarios</button>
+                                                </td>
                                                 
                                             </tr>                             
                                         </tbody>
@@ -121,13 +142,13 @@
                                     <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
-                                                <th colspan="7" class="text-center">Expedientes de contado </th>
+                                                <th colspan="11" class="text-center">Expedientes de contado </th>
                                             </tr>
                                             <tr></tr>
                                             <tr>
                                                 <th colspan="2" class="text-center"> </th>
                                                 <th colspan="4" class="text-center"> Ubicación / Plantio </th>
-                                                <th class="text-center"> </th>
+                                                <th colspan="5" class="text-center"> </th>
                                             </tr>
                                             <tr>
                                                 <th># Referencia</th>
@@ -137,6 +158,10 @@
                                                 <th>Manzana</th>
                                                 <th>Lote</th>
                                                 <th>Canal de Ventas</th>
+                                                 <th></th>
+                                                <th>Envio de envio</th>
+                                                <th>Fecha de recibido</th>
+                                                <th></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -148,6 +173,23 @@
                                                 <td class="td2" v-text="lote.manzana"></td>
                                                 <td class="td2" v-text="lote.num_lote"></td>
                                                 <td class="td2" v-text="lote.tipo_credito"></td>
+                                                <td></td>
+
+                                                <td class="td2" v-if="lote.send_exp == null">
+                                                    <button class="btn btn-dark" @click="enviarExp(lote.id)">Enviar exp</button>
+                                                </td>
+                                                <td class="td2" v-else v-text="'Expediente enviado el: '+lote.send_exp"></td>
+                                                <td class="td2" v-if="lote.send_exp == null">
+                                                    Expediente pendiente de envio
+                                                </td>
+                                                <td class="td2" v-else-if="lote.received_exp == null">
+                                                    <button class="btn btn-dark" @click="recibirExp(lote.id)">Confirmar expediente recibido</button>
+                                                </td>
+                                                <td class="td2" v-else v-text="'Expediente recibido el: '+lote.received_exp"></td>
+
+                                                <td class="td2">
+                                                    <button class="btn btn-primary" @click="comentarios(lote.id)">Ver Comentarios</button>
+                                                </td>
                                                 
                                             </tr>                             
                                         </tbody>
@@ -191,7 +233,65 @@
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
-            </div>          
+            </div>    
+
+            <!--Inicio del modal observaciones-->
+                <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog modal-primary modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" v-text="'Observaciones'"></h4>
+                                <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Nueva observación</label>
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="observacion" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <button class="btn btn-primary" @click="storeObservacion()">Guardar</button>
+                                    </div>
+                                </div>
+
+
+                                <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                                    
+                                    <table class="table table-bordered table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Usuario</th>
+                                                <th>Observacion</th>
+                                                <th>Fecha</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="observacion in arrayObservacion" :key="observacion.id">
+                                                
+                                                <td v-text="observacion.usuario" ></td>
+                                                <td v-text="observacion.observacion" ></td>
+                                                <td v-text="observacion.created_at"></td>
+                                            </tr>                               
+                                        </tbody>
+                                    </table>
+                                    
+                                </form>
+                            </div>
+                            <!-- Botones del modal -->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+            <!--Fin del modal-->      
 
         </main>
 </template>
@@ -211,7 +311,13 @@
 
                 mes:'',
                 anio:'',
-                emp_constructora:''
+                emp_constructora:'',
+
+                arrayObservacion:[],
+                observacion:'',
+
+                modal:'',
+                id:'',
             }
         },
         computed:{
@@ -236,6 +342,131 @@
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+
+            comentarios(id){
+                let me = this;
+                var url = '/contrato/getObsExpEntregados?page=1&id=' + id ;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayObservacion = respuesta.observacion.data;
+                    console.log(url);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
+                this.modal = 1;
+                this.observacion = '';
+                this.id = id;
+            },
+
+            cerrarModal(){
+                this.modal=0;
+                this.observacion='';
+                this.arrayObservacion=[];
+            },
+
+            storeObservacion(){
+                 let me = this;
+                //Con axios se llama el metodo update de LoteController
+                axios.post('/contratos/storeObsExpEntregado',{
+                    'observacion' : this.observacion,
+                    'id':this.id,
+                    
+                }).then(function (response){
+                    me.listarReporte();
+                    me.cerrarModal();
+                    //window.alert("Cambios guardados correctamente");
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Observación guardada correctamente'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            enviarExp(id){
+
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                
+                 Swal({
+                    title: 'Estas seguro?',
+                    animation: false,
+                    customClass: 'animated bounceInDown',
+                    text: "Confirmar envio de expediente",
+                    type: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Cancelar',
+                    
+                    confirmButtonText: 'Si, enviar!'
+                    }).then((result) => {
+
+                    if (result.value) {
+                       
+                        axios.put('/contrato/sendExp',{
+                            'id':id,
+                        }); 
+                        
+                        me.listarReporte();
+                        Swal({
+                            title: 'Hecho!',
+                            text: 'Expediente enviado',
+                            type: 'success',
+                            animation: false,
+                            customClass: 'animated bounceInRight'
+                        })
+                    }
+                })
+
+            },
+
+            recibirExp(id){
+
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                
+                 Swal({
+                    title: 'Estas seguro?',
+                    animation: false,
+                    customClass: 'animated bounceInDown',
+                    text: "Confirmar recibo de expediente",
+                    type: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Cancelar',
+                    
+                    confirmButtonText: 'Si, enviar!'
+                    }).then((result) => {
+
+                    if (result.value) {
+                       
+                        axios.put('/contrato/receivedExp',{
+                            'id':id,
+                        }); 
+                        
+                        me.listarReporte();
+                        Swal({
+                            title: 'Hecho!',
+                            text: 'Expediente recibido',
+                            type: 'success',
+                            animation: false,
+                            customClass: 'animated bounceInRight'
+                        })
+                    }
+                })
+
             },
 
             

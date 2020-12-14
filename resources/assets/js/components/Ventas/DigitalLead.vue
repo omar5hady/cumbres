@@ -31,11 +31,24 @@
                             <div class="col-md-8">
                                 <div class="input-group">
                                     <input type="text" v-model="b_cliente" @keyup.enter="listarLeads(1)" placeholder="Nombre" class="form-control col-sm-6">
+                                    <select v-if="b_motivo != 1" class="form-control col-sm-4" v-model="b_status">
+                                        <option value="">Todos</option>
+                                        <option value="1">Pendientes</option>
+                                        <option value="3">Finalizados</option>
+                                    </select>
 
                                     <select v-if="b_motivo == 1" class="form-control col-sm-5" v-model="b_campania">
                                         <option value="">Campaña publicitaria</option>
                                         <option v-for="medios in arrayCampanias" :key="medios.id" :value="medios.id" v-text="medios.nombre_campania + ' - ' + medios.medio_digital"></option>
                                     </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-8" v-if="b_motivo ==1">
+                                <div class="input-group">
+                                    <input type="text" readonly placeholder="Fecha de alta:" class="form-control col-sm-4">
+                                    <input type="date" v-model="b_fecha1" @keyup.enter="listarLeads(1)" class="form-control col-sm-6">
+                                    <input type="date" v-model="b_fecha2" @keyup.enter="listarLeads(1)" class="form-control col-sm-6">
                                 </div>
                             </div>
 
@@ -46,14 +59,12 @@
                                         <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
                                     </select>
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-sm-4" v-model="b_status">
+                                    <select v-if="b_motivo == 1" class="form-control col-sm-4" v-model="b_status">
                                         <option value="">Status</option>
                                         <option value="1">En Seguimiento</option>
                                         <option value="0">Descartado</option>
                                         <option value="2">Potencial</option>
                                     </select>
-                            
-                                
                                 </div>
                                 <div class="input-group">
                                     <button @click="listarLeads(1)" class="btn btn-primary">
@@ -62,6 +73,7 @@
                                     <button disabled class="btn btn-primary">
                                         {{'Total: '+arrayLeads.total}}
                                     </button>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -81,6 +93,7 @@
                                         <th>Modelo recomendado</th>
                                         <th>Estatus</th>
                                         <th>Vendedor asignado</th>
+                                        <th>Fecha de alta</th>
                                         <th>Observaciones</th>
                                     </tr>
                                 </thead>
@@ -92,7 +105,10 @@
                                             </button>   
                                             <button type="button" v-if="lead.vendedor_asign == null" @click="asignarVendedor(lead.id)" class="btn btn-primary btn-sm">
                                                 <i class="fa fa-exchange"></i>
-                                            </button>                              
+                                            </button>    
+                                            <button v-if="userId == 25511 || rolId == 1" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
+                                                <i class="icon-close"></i>
+                                            </button>                           
                                         </td>
                                         <td v-if="lead.diferencia < 7" class="td2" v-text="lead.nombre + ' ' + lead.apellidos "></td>                                                    
                                         <td v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15  " class="td2">
@@ -117,6 +133,7 @@
                                         <td class="td2" v-if="lead.status == '0'"><span class="badge badge-danger">Descartado</span></td>
                                         <td class="td2" v-if="lead.status == '2'"><span class="badge badge-success">Potencial</span></td>
                                         <td class="td2" v-text="lead.vendedor"></td>
+                                        <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2"> 
                                             <button title="Ver observaciones" type="button" class="btn btn-info pull-right" 
                                             @click="abrirModal1(lead.id),listarObservacion(1,lead.id)">Ver todos</button> </td>
@@ -136,6 +153,7 @@
                                         <th>Modelo de interes</th>
                                         <th>Mensualidad deseada</th>
                                         <th>Status</th>
+                                        <th>Fecha de alta</th>
                                         <th>Observaciones</th>
                                     </tr>
                                 </thead>
@@ -147,7 +165,10 @@
                                             </button>    
                                             <button v-if="lead.status == 1" title="Finalizar" type="button" @click="changeStatus(lead.id)" class="btn btn-success btn-sm">
                                                 <i class="icon-check"></i>
-                                            </button>                              
+                                            </button>   
+                                            <button v-if="userId == 25511 || rolId == 1" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
+                                                <i class="icon-close"></i>
+                                            </button>                            
                                         </td>
                                         <td v-if="lead.diferencia < 7" class="td2" v-text="lead.nombre + ' ' + lead.apellidos "></td>                                                    
                                         <td v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15  " class="td2">
@@ -169,6 +190,7 @@
                                         <td class="td2" v-if="lead.status == '1'"><span class="badge badge-warning">En Seguimiento</span></td>
                                         <td class="td2" v-if="lead.status == '0'"><span class="badge badge-danger">Descartado</span></td>
                                         <td class="td2" v-if="lead.status == '3'"><span class="badge badge-success">Finalizado</span></td>
+                                        <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2"> 
                                             <button title="Ver observaciones" type="button" class="btn btn-info pull-right" 
                                             @click="abrirModal1(lead.id),listarObservacion(1,lead.id)">Ver todos</button> </td>
@@ -187,6 +209,7 @@
                                         <th>Dirección</th>
                                         <th>Descripción del problema</th>
                                         <th>Status</th>
+                                        <th>Fecha de alta</th>
                                         <th>Observaciones</th>
                                     </tr>
                                 </thead>
@@ -198,7 +221,10 @@
                                             </button>  
                                             <button v-if="lead.status == 1" title="Finalizar" type="button" @click="changeStatus(lead.id)" class="btn btn-success btn-sm">
                                                 <i class="icon-check"></i>
-                                            </button>                                
+                                            </button>      
+                                            <button v-if="userId == 25511 || rolId == 1" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
+                                                <i class="icon-close"></i>
+                                            </button>                           
                                         </td>
                                         <td v-if="lead.diferencia < 7" class="td2" v-text="lead.nombre + ' ' + lead.apellidos "></td>                                                    
                                         <td v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15  " class="td2">
@@ -218,6 +244,7 @@
                                         <td class="td2" v-if="lead.status == '1'"><span class="badge badge-warning">En Seguimiento</span></td>
                                         <td class="td2" v-if="lead.status == '0'"><span class="badge badge-danger">Descartado</span></td>
                                         <td class="td2" v-if="lead.status == '3'"><span class="badge badge-success">Finalizado</span></td>
+                                        <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2"> 
                                             <button title="Ver observaciones" type="button" class="btn btn-info pull-right" 
                                             @click="abrirModal1(lead.id),listarObservacion(1,lead.id)">Ver todos</button> </td>
@@ -846,8 +873,14 @@
                         <!-- Botones del modal -->
                         <div class="modal-footer">
                             <button type="button" 
-                                v-if="(tipoAccion == 1 && motivo == 1 && vendedor_asign == userId && prospecto == 0) || rolId == 1 && prospecto == 0"
+                                v-if="(tipoAccion == 2 && motivo == 1 && vendedor_asign == userId && prospecto == 0) || rolId == 1 && prospecto == 0"
                             class="btn btn-dark" @click="sendProspecto()">Enviar a prospectos</button>
+
+                            <button type="button" 
+                                v-if="(tipoAccion == 2 && motivo == 1 )"
+                                class="btn btn-danger" @click="descartar()">Descartar
+                            </button>
+
                             <div></div>
 
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
@@ -953,6 +986,8 @@ export default {
             b_campania : '',
             b_asesor:'',
             b_motivo:1,
+            b_fecha1:'',
+            b_fecha2:'',
             proceso : false,
 
             datos : [],
@@ -1007,6 +1042,7 @@ export default {
             pago_mensual:0,
             enganche:0,
             vendedor : '',
+            prospecto:0,
 
             motivo:0,
             descripcion:'',
@@ -1128,6 +1164,35 @@ export default {
 
         },
 
+        eliminar(id){
+                swal({
+                title: '¿Desea eliminar?',
+                text: "Esta acción no se puede revertir!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, eliminar!'
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+
+                axios.delete('/leads/delete', 
+                        {params: {'id': id}}).then(function (response){
+                        swal(
+                        'Borrado!',
+                        'Lead borrado correctamente.',
+                        'success'
+                        )
+                        me.listarLeads(1);
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+                }
+                })
+            },
+
         changeStatus(id){
             Swal.fire({
                 title: '¿Estas seguro de finzalizar el seguimiento de este lead?',
@@ -1156,11 +1221,42 @@ export default {
             });
 
         },
+
+        descartar(){
+            Swal.fire({
+                title: '¿Estas seguro de finzalizar el seguimiento de este lead?',
+                text: "Este cambio no se podrá deshacer!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Si continuar!',
+                cancelButtonText: 'Cancelar',
+            }).then((result) => {
+                if (result.value) {
+
+                    axios.put('/leads/changeStatus',{
+                        'id': this.id,
+                        'status':0
+                    }).then(
+                        rsponse => {
+                            this.myAlerts.popAlert('finalizado correctamente');
+                            this.listarLeads(this.arrayLeads.current_page);
+
+                            return response.data;
+                        }
+                    ).catch(error => console.log(error));
+                }
+            });
+
+        },
         changeMotivo(){
             this.b_cliente='';
             this.b_status ='';
             this.b_campania ='';
             this.b_asesor='';
+            this.b_fecha1='';
+            this.b_fecha2='';
 
             this.listarLeads(1);
         },
@@ -1217,6 +1313,8 @@ export default {
                 '&status='+this.b_status+
                 '&asesor='+this.b_asesor+
                 '&motivo='+this.b_motivo+
+                '&fecha1='+this.b_fecha1+
+                '&fecha2='+this.b_fecha2+
                 '&page='+page
                 
             ).then(
@@ -1606,7 +1704,8 @@ export default {
                     this.autos = data['autos'];
                     this.amenidad_priv = data['amenidad_priv'];
                     this.detalle_casa = data['detalle_casa'];
-                    this.perfil_cliente = data['perfil_cliente']
+                    this.perfil_cliente = data['perfil_cliente'];
+                    this.prospecto = data['prospecto'];
                     
                     break;
                 }

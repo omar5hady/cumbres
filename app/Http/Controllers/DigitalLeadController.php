@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 use App\Digital_lead;
 use App\Obs_lead;
 use App\Personal;
+use App\User;
 use App\Cliente;
 use App\Http\Controllers\ClienteController;
+use App\Notifications\NotifyAdmin;
 use App\Medio_publicitario;
 use Auth;
 use DB;
@@ -20,6 +22,8 @@ class DigitalLeadController extends Controller
         $campania = $request->campania;
         $status = $request->status;
         $asesor = $request->asesor;
+        $fecha1 = $request->fecha1;
+        $fecha2 = $request->fecha2;
         $leads = Digital_lead::leftJoin('campanias as c','digital_leads.campania_id','=','c.id')
                         ->leftJoin('fraccionamientos as f','digital_leads.proyecto_interes','=','f.id')
                         ->leftJoin('personal as p','digital_leads.vendedor_asign','=','p.id')
@@ -29,6 +33,10 @@ class DigitalLeadController extends Controller
                         ->where('digital_leads.motivo','=',$request->motivo);
                         if(Auth::user()->rol_id == 2){
                             $leads = $leads->where('vendedor_asign','=',Auth::user()->id);
+                        }
+
+                        if($fecha1 != '' && $fecha2!=''){
+                            $leads = $leads->whereBetween('digital_leads.created_at',[$fecha1,$fecha2]);
                         }
 
                         if($buscar != ''){
@@ -62,7 +70,6 @@ class DigitalLeadController extends Controller
         return $leads;
     }
     
-
     public function store(Request $request){
         $fecha = Carbon::now();
         $lead = new Digital_lead();
@@ -153,6 +160,11 @@ class DigitalLeadController extends Controller
             $obs->usuario = Auth::user()->usuario;
             $obs->save();
         }
+    }
+    
+    public function delete(Request $request){
+        $lead = Digital_lead::findOrFail($request->id);
+        $lead->delete();
     }
 
     public function update(Request $request){
@@ -326,6 +338,58 @@ class DigitalLeadController extends Controller
         $lead = Digital_lead::findOrFail($request->lead_id);
         $lead->fecha_update = $fecha;
         $lead->save();
+
+        $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', Auth::user()->id)->get();
+        $fecha = Carbon::now();
+        $msj = "Nuevo comentario en el lead: ".$lead->nombre.' '.$lead->apellidos;
+        $arregloAceptado = [
+            'notificacion' => [
+                'usuario' => $imagenUsuario[0]->usuario,
+                'foto' => $imagenUsuario[0]->foto_user,
+                'fecha' => $fecha,
+                'msj' => $msj,
+                'titulo' => 'Lead :)'
+            ]
+        ];
+
+        if($lead->motivo == 1){
+            $personal = User::select('id')
+            ->where('id', '=', 25511)
+            ->orWhere('rol_id','=',8)
+            ->where('digital_lead','=',1)
+            ->orWhere('rol_id','=',1)
+            ->get();
+        }
+
+        if($lead->motivo == 2){
+            $personal = User::select('id')
+            ->where('id', '=', 25511)
+            ->orWhere('rol_id','=',8)
+            ->where('digital_lead','=',1)
+
+            ->orWhere('rol_id','=',12)
+            ->where('digital_lead','=',1)
+            ->orWhere('rol_id','=',1)
+            ->get();
+        }
+
+        if($lead->motivo == 3){
+            $personal = User::select('id')
+            ->where('id', '=', 25511)
+            ->orWhere('rol_id','=',8)
+            ->where('digital_lead','=',1)
+            ->orWhere('rol_id','=',1)
+            ->get();
+        }
+
+        
+
+        foreach ($personal as $personas) {
+            //$correo = $personas->email;
+            //Mail::to($correo)->send(new NotificationReceived($msj));
+            if(Auth::user()->id != $personas->id)
+                User::findOrFail($personas->id)->notify(new NotifyAdmin($arregloAceptado));
+        }
         
     }
 

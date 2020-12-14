@@ -1715,6 +1715,317 @@ class ReportesController extends Controller
 
     }
 
+    public function excelExpedientes(Request $request){
+
+        $mes = $request->mes;
+        $anio = $request->anio;
+
+        $empresa = $request->empresa;
+
+        $expCreditos = $this->getRepExpedientes($mes, $anio, $empresa);
+        $expContado = $this->getRepExpContado($mes, $anio, $empresa);
+        $sinEntregar = $this->getSinEntregarRep($mes,$anio, $empresa);
+
+        // return [
+        //     'expCreditos'=>$expCreditos,
+        //     'expContado'=>$expContado,
+        //     'pendientes'=>$sinEntregar
+        // ];
+
+        // return Excel::create('Reporte de expedientes', function($excel) use ($expCreditos,$expContado,$sinEntregar){
+        //     $excel->sheet('Expedientes', function($sheet) use ($expCreditos,$expContado,$sinEntregar){
+
+        //         $sheet->mergeCells('A1:K1');
+        //         $sheet->mergeCells('A2:K2');
+        //         $sheet->mergeCells('C4:G4');
+
+        //         $sheet->cell('A1', function($cell) {
+
+        //             // manipulate the cell
+        //             $cell->setValue(  'GRUPO CONSTRUCTOR CUMBRES, SA DE C.V.');
+        //             $cell->setFontFamily('Arial Narrow');
+        //             $cell->setFontSize(14);
+        //             $cell->setFontWeight('bold');
+        //             $cell->setAlignment('center');
+                
+        //         });
+        //         $sheet->cell('A2', function($cell) {
+
+        //             // manipulate the cell
+        //             $cell->setValue(  'REPORTE DE VENTAS');
+        //             $cell->setFontFamily('Arial Narrow');
+        //             $cell->setFontSize(14);
+        //             $cell->setFontWeight('bold');
+        //             $cell->setAlignment('center');
+                
+        //         });
+
+        //         $sheet->cell('B4', function($cell) {
+
+        //             // manipulate the cell
+        //             $cell->setFontFamily('Arial Narrow');
+        //             $cell->setFontSize(12);
+        //             $cell->setAlignment('center');
+                
+        //         });
+
+        //         $sheet->row(4,[
+        //             '',
+        //             'Periodo: ',
+        //             $periodo
+        //         ]);
+
+        //         $sheet->cell('C4', function($cell) {
+
+        //             // manipulate the cell
+        //             $cell->setFontFamily('Arial Narrow');
+        //             $cell->setFontSize(12);
+        //             $cell->setAlignment('center');
+        //         });
+
+        //         $sheet->setColumnFormat(array(
+        //             'K' => '$#,##0.00',
+        //             'L' => '$#,##0.00',
+        //             'M' => '$#,##0.00',
+        //             'N' => '$#,##0.00',
+        //             'O' => '$#,##0.00',
+        //             'P' => '$#,##0.00',
+        //             'Q' => '$#,##0.00',
+        //             'R' => '$#,##0.00',
+        //         ));
+
+        //         $sheet->row(8, [
+        //             'No.',
+        //             'Fraccionamiento',
+        //             'Etapa',
+        //             'Manzana',
+        //             'Lote',
+        //             'Cliente',
+        //             'Fecha de venta',
+        //             'Crédito',
+        //             'Institución',
+        //             'Promoción / Paquete',
+        //             'Valor de escrituración',
+        //             'Valor de terreno',
+        //             'Valor de construccion',
+        //             'Descuento precio de casa o equipamiento',
+        //             'Descuento en el terreno',
+        //             'Costo de Alarma',
+        //             'Cuota de mantenimiento',
+        //             'Protecciones'
+        //         ]);
+                
+
+        //         $sheet->cells('A8:T8', function ($cells) {
+        //             // Set font family
+        //             $cells->setFontFamily('Calibri');
+
+        //             // Set font size
+        //             $cells->setFontSize(12);
+
+        //             // Set font weight to bold
+        //             $cells->setFontWeight('bold');
+        //             $cells->setAlignment('center');
+        //         });
+
+        //         $cont=9;
+
+                
+
+        //         foreach($ventas as $index => $lote) {
+        //             $cont++;
+
+        //             $paquete = '';
+
+        //             $status='';
+        //             if($lote->status == 0)
+        //                 $status = 'Cancelado';
+        //             elseif($lote->status == 1 || $lote->status == 3 && $lote->firmado == 0)
+        //                 $status = 'Vendida';
+        //             elseif($lote->status == 3 && $lote->firmado == 1)
+        //                 $status = 'Individualizada';
+
+        //             if($lote->descripcion_promocion == null && $lote->descripcion_paquete == null) 
+        //                 $paquete = '';
+        //             elseif($lote->descripcion_promocion != null && $lote->descripcion_paquete == null)
+        //                 $paquete = 'Promo: '.$lote->descripcion_promocion;
+        //             elseif($lote->descripcion_promocion == null && $lote->descripcion_paquete != null)
+        //                 $paquete = 'Paquete: '.$lote->descripcion_paquete;
+        //             else 
+        //                 $paquete = 'Promo: ' . $lote->descripcion_promocion . ' / Paquete:' . $lote->descripcion_paquete;
+
+        //             $sheet->row($index+9, [
+        //                 $index+1,
+        //                 $lote->proyecto, 
+        //                 $lote->num_etapa,
+        //                 $lote->manzana,
+        //                 $lote->num_lote,
+        //                 $lote->nombre.' '.$lote->apellidos,
+        //                 $lote->fecha,
+        //                 $lote->tipo_credito,
+        //                 $lote->institucion,
+        //                 $paquete,
+        //                 $lote->precio_venta,
+        //                 $lote->valor_terreno,
+        //                 $lote->precio_venta - $lote->valor_terreno,
+        //                 $lote->costo_descuento,
+        //                 $lote->descuento_terreno,
+        //                 $lote->costo_alarma,
+        //                 $lote->costo_cuota_mant,
+        //                 $lote->costo_protecciones,
+        //                 $status,
+        //             ]);	
+        //         }
+            
+        //         $num='A8:S' . $cont;
+        //         $sheet->setBorder($num, 'thin');
+
+                
+        //     });
+
+        //     $excel->sheet('Cancelaciones', function($sheet) use ($cancelaciones,$periodo){
+
+        //         $sheet->mergeCells('A1:L1');
+        //         $sheet->mergeCells('A2:L2');
+        //         $sheet->mergeCells('C4:G4');
+
+        //         $sheet->cell('A1', function($cell) {
+
+        //             // manipulate the cell
+        //             $cell->setValue(  'GRUPO CONSTRUCTOR CUMBRES, SA DE C.V.');
+        //             $cell->setFontFamily('Arial Narrow');
+        //             $cell->setFontSize(14);
+        //             $cell->setFontWeight('bold');
+        //             $cell->setAlignment('center');
+                
+        //         });
+        //         $sheet->cell('A2', function($cell) {
+
+        //             // manipulate the cell
+        //             $cell->setValue(  'REPORTE DE CANCELACIONES');
+        //             $cell->setFontFamily('Arial Narrow');
+        //             $cell->setFontSize(14);
+        //             $cell->setFontWeight('bold');
+        //             $cell->setAlignment('center');
+                
+        //         });
+
+        //         $sheet->cell('B4', function($cell) {
+
+        //             // manipulate the cell
+        //             $cell->setFontFamily('Arial Narrow');
+        //             $cell->setFontSize(12);
+        //             $cell->setAlignment('center');
+                
+        //         });
+
+        //         $sheet->row(4,[
+        //             '',
+        //             'Periodo: ',
+        //             $periodo
+        //         ]);
+
+        //         $sheet->cell('C4', function($cell) {
+
+        //             // manipulate the cell
+        //             $cell->setFontFamily('Arial Narrow');
+        //             $cell->setFontSize(12);
+        //             $cell->setAlignment('center');
+        //         });
+
+        //         $sheet->setColumnFormat(array(
+        //             'L' => '$#,##0.00',
+        //             'M' => '$#,##0.00',
+        //             'N' => '$#,##0.00',
+        //         ));
+
+        //         $sheet->row(8, [
+        //             'No.',
+        //             'Fraccionamiento',
+        //             'Etapa',
+        //             'Manzana',
+        //             'Lote',
+        //             'Cliente',
+        //             'Fecha de cancelación',
+        //             'Fecha de venta',
+        //             'Crédito',
+        //             'Institución',
+        //             'Promoción / Paquete',
+        //             'Valor de escrituración',
+        //             'Valor de terreno',
+        //             'Valor de construccion'
+        //         ]);
+                
+
+        //         $sheet->cells('A8:L8', function ($cells) {
+        //             // Set font family
+        //             $cells->setFontFamily('Calibri');
+
+        //             // Set font size
+        //             $cells->setFontSize(12);
+
+        //             // Set font weight to bold
+        //             $cells->setFontWeight('bold');
+        //             $cells->setAlignment('center');
+        //         });
+
+        //         $cont=9;
+
+                
+
+        //         foreach($cancelaciones as $index => $lote) {
+        //             $cont++;
+
+        //             $paquete = '';
+                    
+        //             if($lote->descripcion_promocion == null && $lote->descripcion_paquete == null) 
+        //                 $paquete = '';
+        //             elseif($lote->descripcion_promocion != null && $lote->descripcion_paquete == null)
+        //                 $paquete = 'Promo: '.$lote->descripcion_promocion;
+        //             elseif($lote->descripcion_promocion == null && $lote->descripcion_paquete != null)
+        //                 $paquete = 'Paquete: '.$lote->descripcion_paquete;
+        //             else 
+        //                 $paquete = 'Promo: ' . $lote->descripcion_promocion . ' / Paquete:' . $lote->descripcion_paquete;
+
+        //             $sheet->row($index+9, [
+        //                 $index+1,
+        //                 $lote->proyecto, 
+        //                 $lote->num_etapa,
+        //                 $lote->manzana,
+        //                 $lote->num_lote,
+        //                 $lote->nombre.' '.$lote->apellidos,
+        //                 $lote->fecha_status,
+        //                 $lote->fecha,
+        //                 $lote->tipo_credito,
+        //                 $lote->institucion,
+        //                 $paquete,
+        //                 $lote->precio_venta,
+        //                 $lote->valor_terreno,
+        //                 $lote->precio_venta - $lote->valor_terreno
+        //             ]);	
+        //         }
+            
+        //         $num='A8:N' . $cont;
+        //         $sheet->setBorder($num, 'thin');
+
+                
+        //     });
+            
+        // }
+        
+        // )->download('xls');
+
+
+    }
+
+    public function excelIngresos(Request $request){
+
+    }
+
+    public function excelEscrituras(Request $request){
+
+    }
+
     private function getRepExpedientes($mes, $anio, $empresa){
 
         $mes2 = $mes + 1;
@@ -1762,6 +2073,11 @@ class ReportesController extends Controller
                         $act = $act->where('lotes.emp_constructora','=',$empresa);
 
                     $act = $act->get();
+
+                $contrato = Contrato::select('send_exp','received_exp')->where('id','=',$deposito->id)->get();
+
+                $deposito->send_exp = $contrato[0]->send_exp;
+                $deposito->received_exp = $contrato[0]->received_exp;
                 
                 $deposito->totalCredito = round($inst[0]->monto_credito + $inst[0]->segundo_credito,2);
                 $deposito->totalDep = round($deposito->totalDep,2);
@@ -1833,6 +2149,7 @@ class ReportesController extends Controller
                 ->join('etapas as et','lotes.etapa_id','=','et.id')
                 ->select('contratos.id','p.nombre','p.apellidos','f.nombre as proyecto','et.num_etapa',
                         'lotes.num_lote',
+                        'contratos.received_exp','contratos.send_exp',
                         'lotes.manzana','ins.tipo_credito','ins.institucion','expedientes.fecha_firma_esc')
                 ->where('contratos.status','=',3)
                 ->where('ins.elegido','=',1)

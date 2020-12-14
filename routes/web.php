@@ -585,6 +585,11 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::put('/contrato/cambiarProceso','ContratoController@cambiarProceso');
 
+        Route::put('/contrato/sendExp','ExpedienteController@sendExp');
+        Route::put('/contrato/receivedExp','ExpedienteController@receivedExp');
+        Route::get('/contrato/getObsExpEntregados','ExpedienteController@getObsExpEntregados');
+        Route::post('/contratos/storeObsExpEntregado','ExpedienteController@storeObsExpEntregado');
+
     /************************** RUTAS Depositos y Pagares ***************************/
         Route::get('/pagares','DepositoController@indexPagares');
         Route::get('/pagares/excel','DepositoController@excelPagares');
@@ -944,6 +949,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::delete('/campanias/delete', 'CampaniaController@delete');
 
         Route::get('/leads/index','DigitalLeadController@index');
+        Route::delete('/leads/delete','DigitalLeadController@delete');
         Route::get('/leads/getObs','DigitalLeadController@getObs');
         Route::post('/leads/store', 'DigitalLeadController@store');
         Route::put('/leads/update', 'DigitalLeadController@update');
