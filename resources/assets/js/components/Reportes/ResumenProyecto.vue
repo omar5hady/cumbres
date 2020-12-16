@@ -157,7 +157,7 @@
                                     <th>Enganche</th>
                                     <th>Crédito</th>
                                     <th>Saldo</th>
-                                    <th v-if="rolId == 1 || rolId == 9">Auditoria</th>
+                                    <!-- <th v-if="rolId == 1 || rolId == 9">Auditoria</th> -->
                                 </tr>
                             </thead>
                             <tbody>
@@ -177,10 +177,10 @@
                                     <td class="td2" v-text="'$'+formatNumber(contrato.total_pagar)"></td>
                                     <td class="td2" v-text="'$'+formatNumber(contrato.monto_total_credito)"></td>
                                     <td class="td2" v-text="'$'+formatNumber(contrato.saldo)"></td>
-                                    <td v-if="rolId == 1 || rolId == 9" class="td2">
+                                    <!-- <td v-if="rolId == 1 || rolId == 9" class="td2">
                                         <button class="btn btn-dark" @click="abrirModal('auditar',contrato.id)" v-if="contrato.fecha_audit == null">Auditar</button>
                                         <button class="btn btn-success" @click="abrirModal('observaciones',contrato.id),listarObservacion(contrato.id)" v-else>{{'Auditado el: ' + this.moment(contrato.fecha_audit).locale('es').format('DD/MMM/YYYY')}}</button>
-                                    </td>
+                                    </td> -->
                                 </tr>                                
                             </tbody>
                         </table>

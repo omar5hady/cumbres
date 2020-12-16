@@ -96,11 +96,12 @@
                                                 <th>Etapa</th>
                                                 <th>Manzana</th>
                                                 <th>Lote</th>
-                                                <th>Canal de Ventas</th>
+                                                <th>Crédito</th>
                                                 <th></th>
                                                 <th>Envio de envio</th>
                                                 <th>Fecha de recibido</th>
                                                 <th></th>
+                                                <th v-if="rolId == 1 || userId == 24977"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -127,7 +128,12 @@
                                                 <td class="td2" v-else v-text="'Expediente recibido el: '+lote.received_exp"></td>
 
                                                 <td class="td2">
-                                                    <button class="btn btn-primary" @click="comentarios(lote.id)">Ver Comentarios</button>
+                                                    <button class="btn btn-primary" @click="comentarios(lote.id,0)">Ver Comentarios</button>
+                                                </td>
+
+                                                <td v-if="rolId == 1 || userId == 24977" class="td2">
+                                                    <button class="btn btn-dark" @click="comentarios(lote.id,1)" v-if="lote.fecha_audit == null">Auditar</button>
+                                                    <span v-else>{{'Auditado el: ' + this.moment(lote.fecha_audit).locale('es').format('DD/MMM/YYYY')}}</span>
                                                 </td>
                                                 
                                             </tr>                             
@@ -153,11 +159,12 @@
                                                 <th>Etapa</th>
                                                 <th>Manzana</th>
                                                 <th>Lote</th>
-                                                <th>Canal de Ventas</th>
+                                                <th>Crédito</th>
                                                  <th></th>
                                                 <th>Envio de envio</th>
                                                 <th>Fecha de recibido</th>
                                                 <th></th>
+                                                <th v-if="rolId == 1 || userId == 24977"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -184,7 +191,11 @@
                                                 <td class="td2" v-else v-text="'Expediente recibido el: '+lote.received_exp"></td>
 
                                                 <td class="td2">
-                                                    <button class="btn btn-primary" @click="comentarios(lote.id)">Ver Comentarios</button>
+                                                    <button class="btn btn-primary" @click="comentarios(lote.id,0)">Ver Comentarios</button>
+                                                </td>
+                                                <td v-if="rolId == 1 || userId == 24977" class="td2">
+                                                    <button class="btn btn-dark" @click="comentarios(lote.id,1)" v-if="lote.fecha_audit == null">Auditar</button>
+                                                    <span v-else>{{'Auditado el: ' + this.moment(lote.fecha_audit).locale('es').format('DD/MMM/YYYY')}}</span>
                                                 </td>
                                                 
                                             </tr>                             
@@ -205,7 +216,7 @@
                                                 <th>Etapa</th>
                                                 <th>Manzana</th>
                                                 <th>Lote</th>
-                                                <th>Canal de Ventas</th>
+                                                <th>Crédito</th>
                                                 <th></th>
                                             </tr>
                                         </thead>
@@ -219,7 +230,7 @@
                                                 <td class="td2" v-text="lote.num_lote"></td>
                                                 <td class="td2" v-text="lote.tipo_credito"></td>
                                                 <td class="td2">
-                                                    <button class="btn btn-primary" @click="comentarios(lote.id)">Ver Comentarios</button>
+                                                    <button class="btn btn-primary" @click="comentarios(lote.id,0)">Ver Comentarios</button>
                                                 </td>
                                                 
                                             </tr>                             
@@ -253,7 +264,7 @@
                                         <input type="text" v-model="observacion" class="form-control">
                                     </div>
 
-                                    <div class="col-md-3">
+                                    <div v-if="tipo == 0" class="col-md-3">
                                         <button class="btn btn-primary" @click="storeObservacion()">Guardar</button>
                                     </div>
                                 </div>
@@ -285,6 +296,7 @@
                             <!-- Botones del modal -->
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                                <button type="button" v-if="tipo == 1 && observacion != ''" class="btn btn-primary" @click="auditar()">Aceptar</button>
                             </div>
                         </div>
                         <!-- /.modal-content -->
@@ -302,6 +314,10 @@
 
 <script>
     export default {
+        props:{
+            rolId:{type: String},
+            userId:{type: String}
+        },
         data(){
             return{
                
@@ -318,6 +334,7 @@
 
                 modal:'',
                 id:'',
+                tipo:0,
             }
         },
         computed:{
@@ -344,8 +361,9 @@
                 });
             },
 
-            comentarios(id){
+            comentarios(id,tipo){
                 let me = this;
+                me.tipo = tipo;
                 var url = '/contrato/getObsExpEntregados?page=1&id=' + id ;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
@@ -361,8 +379,53 @@
                 this.id = id;
             },
 
+            auditar(){
+                 
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                
+                 Swal({
+                    title: 'Estas seguro?',
+                    animation: false,
+                    customClass: 'animated bounceInDown',
+                    text: "El expediente quedara auditado",
+                    type: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Cancelar',
+                    
+                    confirmButtonText: 'Si, auditar!'
+                    }).then((result) => {
+
+                    if (result.value) {
+                       
+                        axios.post('/contratos/auditar',{
+                            'id':this.id,
+                            'comentario' : this.observacion,
+                        }); 
+
+                        me.observacion = 'Auditado: ' + me.observacion;
+
+                        me.storeObservacion();
+                        
+                        //me.cerrarModal();
+                        me.listarReporte();
+                        Swal({
+                            title: 'Hecho!',
+                            text: 'Expediente auditado',
+                            type: 'success',
+                            animation: false,
+                            customClass: 'animated bounceInRight'
+                        })
+                    }
+                })
+              
+            },
+
             cerrarModal(){
                 this.modal=0;
+                this.tipo = 0;
                 this.observacion='';
                 this.arrayObservacion=[];
             },

@@ -52,13 +52,13 @@
                                     <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
-                                                <th colspan="9" class="text-center"> Reporte de Ingresos (Cobranza Institucional) </th>
+                                                <th colspan="10" class="text-center"> Reporte de Ingresos (Cobranza Institucional) </th>
                                             </tr>
                                             <tr></tr>
                                             <tr>
                                                 <th colspan="2"></th>
                                                 <th colspan="4" class="text-center">Ubicación</th>
-                                                <th colspan="3"></th>
+                                                <th colspan="4"></th>
                                             </tr>
                                             <tr>
                                                 <th></th>
@@ -70,6 +70,7 @@
                                                 <th>Monto Credito Neto</th>
                                                 <th>Fecha</th>
                                                 <th>Banco</th>
+                                                <th>Firma de escrituras</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -83,6 +84,7 @@
                                                 <td class="td2" v-text="'$'+formatNumber(ingresoCobranza.cant_depo)"></td>
                                                 <td class="td2" v-text="ingresoCobranza.fecha_deposito"></td>
                                                 <td class="td2" v-text="ingresoCobranza.banco"></td>
+                                                <td class="td2" v-text="ingresoCobranza.escrituras"></td>
                                             </tr>                             
                                         </tbody>
                                     </table>

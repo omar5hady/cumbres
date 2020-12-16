@@ -675,7 +675,10 @@
                                 @endif
                                 @if(Auth::user()->rep_ingresos == 1)
                                     <li @click="menu=251" class="nav-item">
-                                        <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de ingresos</a>
+                                        <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de ingresos de Créditos</a>
+                                    </li>
+                                    <li @click="menu=253" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de ingresos de Enganches</a>
                                     </li>
                                 @endif
                                 @if(Auth::user()->rep_escrituras == 1)

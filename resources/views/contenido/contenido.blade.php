@@ -432,7 +432,7 @@
             <rep-ventascanc></rep-ventascanc>
         </template>
         <template v-if="menu==240">
-            <rep-acumulado></rep-acumulado>
+            <rep-acumulado rol-id="{{Auth::user()->rol_id}}" user-id="{{Auth::user()->id}}"></rep-acumulado>
         </template>
 
         <template v-if="menu==241">
@@ -488,6 +488,10 @@
 
         <template v-if="menu==252">
             <rep-escrituras></rep-escrituras>
+        </template>
+
+        <template v-if="menu==253">
+            <rep-ingresosenganche></rep-ingresosenganche>
         </template>
 
         

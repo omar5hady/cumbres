@@ -1438,96 +1438,186 @@ class ReportesController extends Controller
                     'R' => '$#,##0.00',
                 ));
 
-                $sheet->row(8, [
-                    'No.',
-                    'Fraccionamiento',
-                    'Etapa',
-                    'Manzana',
-                    'Lote',
-                    'Cliente',
-                    'Fecha de venta',
-                    'Crédito',
-                    'Institución',
-                    'Promoción / Paquete',
-                    'Valor de escrituración',
-                    'Valor de terreno',
-                    'Valor de construccion',
-                    'Descuento precio de casa o equipamiento',
-                    'Descuento en el terreno',
-                    'Costo de Alarma',
-                    'Cuota de mantenimiento',
-                    'Protecciones'
-                ]);
-                
+                if($empresa == 'CONCRETANIA'){
 
-                $sheet->cells('A8:T8', function ($cells) {
-                    // Set font family
-                    $cells->setFontFamily('Calibri');
-
-                    // Set font size
-                    $cells->setFontSize(12);
-
-                    // Set font weight to bold
-                    $cells->setFontWeight('bold');
-                    $cells->setAlignment('center');
-                });
-
-                $cont=9;
-
-                
-
-                foreach($ventas as $index => $lote) {
-                    $cont++;
-
-                    $paquete = '';
-
-                    $status='';
-                    if($lote->status == 0)
-                        $status = 'Cancelado';
-                    elseif($lote->status == 1 || $lote->status == 3 && $lote->firmado == 0)
-                        $status = 'Vendida';
-                    elseif($lote->status == 3 && $lote->firmado == 1)
-                        $status = 'Individualizada';
-
-                    if($lote->descripcion_promocion == null && $lote->descripcion_paquete == null) 
+                    $sheet->row(8, [
+                        'No.',
+                        'Fraccionamiento',
+                        'Etapa',
+                        'Manzana',
+                        'Lote',
+                        'Cliente',
+                        'Fecha de venta',
+                        'Crédito',
+                        'Institución',
+                        'Promoción / Paquete',
+                        'Valor de escrituración',
+                        'Valor de terreno',
+                        'Valor de construccion',
+                        'Descuento precio de casa o equipamiento',
+                        'Descuento en el terreno',
+                        'Costo de Alarma',
+                        'Cuota de mantenimiento',
+                        'Protecciones'
+                    ]);
+                    
+    
+                    $sheet->cells('A8:T8', function ($cells) {
+                        // Set font family
+                        $cells->setFontFamily('Calibri');
+    
+                        // Set font size
+                        $cells->setFontSize(12);
+    
+                        // Set font weight to bold
+                        $cells->setFontWeight('bold');
+                        $cells->setAlignment('center');
+                    });
+    
+                    $cont=9;
+    
+                    
+    
+                    foreach($ventas as $index => $lote) {
+                        $cont++;
+    
                         $paquete = '';
-                    elseif($lote->descripcion_promocion != null && $lote->descripcion_paquete == null)
-                        $paquete = 'Promo: '.$lote->descripcion_promocion;
-                    elseif($lote->descripcion_promocion == null && $lote->descripcion_paquete != null)
-                        $paquete = 'Paquete: '.$lote->descripcion_paquete;
-                    else 
-                        $paquete = 'Promo: ' . $lote->descripcion_promocion . ' / Paquete:' . $lote->descripcion_paquete;
+    
+                        $status='';
+                        if($lote->status == 0)
+                            $status = 'Cancelado';
+                        elseif($lote->status == 1 || $lote->status == 3 && $lote->firmado == 0)
+                            $status = 'Vendida';
+                        elseif($lote->status == 3 && $lote->firmado == 1)
+                            $status = 'Individualizada';
+    
+                        if($lote->descripcion_promocion == null && $lote->descripcion_paquete == null) 
+                            $paquete = '';
+                        elseif($lote->descripcion_promocion != null && $lote->descripcion_paquete == null)
+                            $paquete = 'Promo: '.$lote->descripcion_promocion;
+                        elseif($lote->descripcion_promocion == null && $lote->descripcion_paquete != null)
+                            $paquete = 'Paquete: '.$lote->descripcion_paquete;
+                        else 
+                            $paquete = 'Promo: ' . $lote->descripcion_promocion . ' / Paquete:' . $lote->descripcion_paquete;
+    
+                        $sheet->row($index+9, [
+                            $index+1,
+                            $lote->proyecto, 
+                            $lote->num_etapa,
+                            $lote->manzana,
+                            $lote->num_lote,
+                            $lote->nombre.' '.$lote->apellidos,
+                            $lote->fecha,
+                            $lote->tipo_credito,
+                            $lote->institucion,
+                            $paquete,
+                            $lote->precio_venta,
+                            $lote->valor_terreno,
+                            $lote->precio_venta - $lote->valor_terreno,
+                            $lote->costo_descuento,
+                            $lote->descuento_terreno,
+                            $lote->costo_alarma,
+                            $lote->costo_cuota_mant,
+                            $lote->costo_protecciones,
+                            $status,
+                        ]);	
+                    }
+                
+                    $num='A8:S' . $cont;
+                    $sheet->setBorder($num, 'thin');
 
-                    $sheet->row($index+9, [
-                        $index+1,
-                        $lote->proyecto, 
-                        $lote->num_etapa,
-                        $lote->manzana,
-                        $lote->num_lote,
-                        $lote->nombre.' '.$lote->apellidos,
-                        $lote->fecha,
-                        $lote->tipo_credito,
-                        $lote->institucion,
-                        $paquete,
-                        $lote->precio_venta,
-                        $lote->valor_terreno,
-                        $lote->precio_venta - $lote->valor_terreno,
-                        $lote->costo_descuento,
-                        $lote->descuento_terreno,
-                        $lote->costo_alarma,
-                        $lote->costo_cuota_mant,
-                        $lote->costo_protecciones,
-                        $status,
-                    ]);	
                 }
-            
-                $num='A8:S' . $cont;
-                $sheet->setBorder($num, 'thin');
+                else{
+                    $sheet->row(8, [
+                        'No.',
+                        'Fraccionamiento',
+                        'Etapa',
+                        'Manzana',
+                        'Lote',
+                        'Cliente',
+                        'Fecha de venta',
+                        'Crédito',
+                        'Institución',
+                        'Promoción / Paquete',
+                        'Valor de escrituración',
+                        
+                        'Descuento precio de casa o equipamiento',
+                        'Descuento en el terreno',
+                        'Costo de Alarma',
+                        'Cuota de mantenimiento',
+                        'Protecciones'
+                    ]);
+                    
+    
+                    $sheet->cells('A8:T8', function ($cells) {
+                        // Set font family
+                        $cells->setFontFamily('Calibri');
+    
+                        // Set font size
+                        $cells->setFontSize(12);
+    
+                        // Set font weight to bold
+                        $cells->setFontWeight('bold');
+                        $cells->setAlignment('center');
+                    });
+    
+                    $cont=9;
+    
+                    
+    
+                    foreach($ventas as $index => $lote) {
+                        $cont++;
+    
+                        $paquete = '';
+    
+                        $status='';
+                        if($lote->status == 0)
+                            $status = 'Cancelado';
+                        elseif($lote->status == 1 || $lote->status == 3 && $lote->firmado == 0)
+                            $status = 'Vendida';
+                        elseif($lote->status == 3 && $lote->firmado == 1)
+                            $status = 'Individualizada';
+    
+                        if($lote->descripcion_promocion == null && $lote->descripcion_paquete == null) 
+                            $paquete = '';
+                        elseif($lote->descripcion_promocion != null && $lote->descripcion_paquete == null)
+                            $paquete = 'Promo: '.$lote->descripcion_promocion;
+                        elseif($lote->descripcion_promocion == null && $lote->descripcion_paquete != null)
+                            $paquete = 'Paquete: '.$lote->descripcion_paquete;
+                        else 
+                            $paquete = 'Promo: ' . $lote->descripcion_promocion . ' / Paquete:' . $lote->descripcion_paquete;
+    
+                        $sheet->row($index+9, [
+                            $index+1,
+                            $lote->proyecto, 
+                            $lote->num_etapa,
+                            $lote->manzana,
+                            $lote->num_lote,
+                            $lote->nombre.' '.$lote->apellidos,
+                            $lote->fecha,
+                            $lote->tipo_credito,
+                            $lote->institucion,
+                            $paquete,
+                            $lote->precio_venta,
+                            $lote->costo_descuento,
+                            $lote->descuento_terreno,
+                            $lote->costo_alarma,
+                            $lote->costo_cuota_mant,
+                            $lote->costo_protecciones,
+                            $status,
+                        ]);	
+                    }
+                
+                    $num='A8:S' . $cont;
+                    $sheet->setBorder($num, 'thin');
+                }
+
+                
 
                 
             });
 
-            $excel->sheet('Cancelaciones', function($sheet) use ($cancelaciones,$periodo){
+            $excel->sheet('Cancelaciones', function($sheet) use ($cancelaciones,$periodo, $empresa){
 
                 $sheet->mergeCells('A1:L1');
                 $sheet->mergeCells('A2:L2');
@@ -1583,74 +1673,148 @@ class ReportesController extends Controller
                     'N' => '$#,##0.00',
                 ));
 
-                $sheet->row(8, [
-                    'No.',
-                    'Fraccionamiento',
-                    'Etapa',
-                    'Manzana',
-                    'Lote',
-                    'Cliente',
-                    'Fecha de cancelación',
-                    'Fecha de venta',
-                    'Crédito',
-                    'Institución',
-                    'Promoción / Paquete',
-                    'Valor de escrituración',
-                    'Valor de terreno',
-                    'Valor de construccion'
-                ]);
-                
+                if($empresa == 'CONCRETANIA'){
 
-                $sheet->cells('A8:L8', function ($cells) {
-                    // Set font family
-                    $cells->setFontFamily('Calibri');
-
-                    // Set font size
-                    $cells->setFontSize(12);
-
-                    // Set font weight to bold
-                    $cells->setFontWeight('bold');
-                    $cells->setAlignment('center');
-                });
-
-                $cont=9;
-
-                
-
-                foreach($cancelaciones as $index => $lote) {
-                    $cont++;
-
-                    $paquete = '';
+                    $sheet->row(8, [
+                        'No.',
+                        'Fraccionamiento',
+                        'Etapa',
+                        'Manzana',
+                        'Lote',
+                        'Cliente',
+                        'Fecha de cancelación',
+                        'Fecha de venta',
+                        'Crédito',
+                        'Institución',
+                        'Promoción / Paquete',
+                        'Valor de escrituración',
+                        'Valor de terreno',
+                        'Valor de construccion'
+                    ]);
                     
-                    if($lote->descripcion_promocion == null && $lote->descripcion_paquete == null) 
+    
+                    $sheet->cells('A8:L8', function ($cells) {
+                        // Set font family
+                        $cells->setFontFamily('Calibri');
+    
+                        // Set font size
+                        $cells->setFontSize(12);
+    
+                        // Set font weight to bold
+                        $cells->setFontWeight('bold');
+                        $cells->setAlignment('center');
+                    });
+    
+                    $cont=9;
+    
+                    
+    
+                    foreach($cancelaciones as $index => $lote) {
+                        $cont++;
+    
                         $paquete = '';
-                    elseif($lote->descripcion_promocion != null && $lote->descripcion_paquete == null)
-                        $paquete = 'Promo: '.$lote->descripcion_promocion;
-                    elseif($lote->descripcion_promocion == null && $lote->descripcion_paquete != null)
-                        $paquete = 'Paquete: '.$lote->descripcion_paquete;
-                    else 
-                        $paquete = 'Promo: ' . $lote->descripcion_promocion . ' / Paquete:' . $lote->descripcion_paquete;
+                        
+                        if($lote->descripcion_promocion == null && $lote->descripcion_paquete == null) 
+                            $paquete = '';
+                        elseif($lote->descripcion_promocion != null && $lote->descripcion_paquete == null)
+                            $paquete = 'Promo: '.$lote->descripcion_promocion;
+                        elseif($lote->descripcion_promocion == null && $lote->descripcion_paquete != null)
+                            $paquete = 'Paquete: '.$lote->descripcion_paquete;
+                        else 
+                            $paquete = 'Promo: ' . $lote->descripcion_promocion . ' / Paquete:' . $lote->descripcion_paquete;
+    
+                        $sheet->row($index+9, [
+                            $index+1,
+                            $lote->proyecto, 
+                            $lote->num_etapa,
+                            $lote->manzana,
+                            $lote->num_lote,
+                            $lote->nombre.' '.$lote->apellidos,
+                            $lote->fecha_status,
+                            $lote->fecha,
+                            $lote->tipo_credito,
+                            $lote->institucion,
+                            $paquete,
+                            $lote->precio_venta,
+                            $lote->valor_terreno,
+                            $lote->precio_venta - $lote->valor_terreno
+                        ]);	
+                    }
+                
+                    $num='A8:N' . $cont;
+                    $sheet->setBorder($num, 'thin');
 
-                    $sheet->row($index+9, [
-                        $index+1,
-                        $lote->proyecto, 
-                        $lote->num_etapa,
-                        $lote->manzana,
-                        $lote->num_lote,
-                        $lote->nombre.' '.$lote->apellidos,
-                        $lote->fecha_status,
-                        $lote->fecha,
-                        $lote->tipo_credito,
-                        $lote->institucion,
-                        $paquete,
-                        $lote->precio_venta,
-                        $lote->valor_terreno,
-                        $lote->precio_venta - $lote->valor_terreno
-                    ]);	
                 }
-            
-                $num='A8:N' . $cont;
-                $sheet->setBorder($num, 'thin');
+                else{
+                    $sheet->row(8, [
+                        'No.',
+                        'Fraccionamiento',
+                        'Etapa',
+                        'Manzana',
+                        'Lote',
+                        'Cliente',
+                        'Fecha de cancelación',
+                        'Fecha de venta',
+                        'Crédito',
+                        'Institución',
+                        'Promoción / Paquete',
+                        'Valor de escrituración',
+                        
+                    ]);
+                    
+    
+                    $sheet->cells('A8:L8', function ($cells) {
+                        // Set font family
+                        $cells->setFontFamily('Calibri');
+    
+                        // Set font size
+                        $cells->setFontSize(12);
+    
+                        // Set font weight to bold
+                        $cells->setFontWeight('bold');
+                        $cells->setAlignment('center');
+                    });
+    
+                    $cont=9;
+    
+                    
+    
+                    foreach($cancelaciones as $index => $lote) {
+                        $cont++;
+    
+                        $paquete = '';
+                        
+                        if($lote->descripcion_promocion == null && $lote->descripcion_paquete == null) 
+                            $paquete = '';
+                        elseif($lote->descripcion_promocion != null && $lote->descripcion_paquete == null)
+                            $paquete = 'Promo: '.$lote->descripcion_promocion;
+                        elseif($lote->descripcion_promocion == null && $lote->descripcion_paquete != null)
+                            $paquete = 'Paquete: '.$lote->descripcion_paquete;
+                        else 
+                            $paquete = 'Promo: ' . $lote->descripcion_promocion . ' / Paquete:' . $lote->descripcion_paquete;
+    
+                        $sheet->row($index+9, [
+                            $index+1,
+                            $lote->proyecto, 
+                            $lote->num_etapa,
+                            $lote->manzana,
+                            $lote->num_lote,
+                            $lote->nombre.' '.$lote->apellidos,
+                            $lote->fecha_status,
+                            $lote->fecha,
+                            $lote->tipo_credito,
+                            $lote->institucion,
+                            $paquete,
+                            $lote->precio_venta,
+                           
+                        ]);	
+                    }
+                
+                    $num='A8:N' . $cont;
+                    $sheet->setBorder($num, 'thin');
+                }
+
+                
 
                 
             });
@@ -1706,12 +1870,7 @@ class ReportesController extends Controller
                 break;
             }
         }
-       
-        
-        
-        
-        
-        
+           
 
     }
 
@@ -1783,7 +1942,7 @@ class ReportesController extends Controller
                 });
 
                 $sheet->row(7,[
-                    '# Ref.', 'Cliente','Fraccionamiento', 'Etapa', 'Manzana', 'Lote', 'Canal de ventas', 'Emp. Const.'
+                    '# Ref.', 'Cliente','Fraccionamiento', 'Etapa', 'Manzana', 'Lote', 'Crédito', 'Emp. Const.'
                 ]);
 
                 $cont = 7;
@@ -1865,7 +2024,7 @@ class ReportesController extends Controller
                 });
 
                 $sheet->row(7,[
-                    '# Ref.', 'Cliente','Fraccionamiento', 'Etapa', 'Manzana', 'Lote', 'Canal de ventas', 'Emp. Const.'
+                    '# Ref.', 'Cliente','Fraccionamiento', 'Etapa', 'Manzana', 'Lote', 'Crédito', 'Emp. Const.'
                 ]);
 
                 $cont = 7;
@@ -1949,7 +2108,7 @@ class ReportesController extends Controller
                 });
 
                 $sheet->row(7,[
-                    '# Ref.', 'Cliente','Fraccionamiento', 'Etapa', 'Manzana', 'Lote', 'Canal de ventas', 'Emp. Const.'
+                    '# Ref.', 'Cliente','Fraccionamiento', 'Etapa', 'Manzana', 'Lote', 'Crédito', 'Emp. Const.'
                 ]);
 
                 $cont = 7;
@@ -1997,8 +2156,8 @@ class ReportesController extends Controller
             $excel->sheet('Cobranza institucional', function($sheet) use ($ingresosCobranza,$empresa){
 
                 
-                $sheet->mergeCells('A1:J4');
-                $sheet->mergeCells('A5:J5');
+                $sheet->mergeCells('A1:K4');
+                $sheet->mergeCells('A5:K5');
                 $sheet->mergeCells('A6:B6');
                 $sheet->mergeCells('C6:F6');
 
@@ -2036,7 +2195,7 @@ class ReportesController extends Controller
                
 
 
-                    $sheet->cells('A7:J7', function ($cells) {
+                    $sheet->cells('A7:K7', function ($cells) {
                         $cells->setBackground('#052154');
                         $cells->setFontColor('#ffffff');
                         // Set font family
@@ -2056,7 +2215,8 @@ class ReportesController extends Controller
                     ));
 
                     $sheet->row(7,[
-                        '', 'Cliente','Fraccionamiento', 'Etapa', 'Manzana', 'Lote', 'Monto Crédito Neto', 'Fecha', 'Banco','Empresa const'
+                        '', 'Cliente','Fraccionamiento', 'Etapa', 'Manzana', 'Lote', 
+                        'Monto Crédito Neto', 'Fecha', 'Banco','Empresa const', 'Firma de escrituras'
                     ]);
     
                     $cont = 7;
@@ -2075,13 +2235,14 @@ class ReportesController extends Controller
                                 $lote->cant_depo,
                                 $lote->fecha_deposito,
                                 $lote->banco,
-                                $lote->emp_constructora
+                                $lote->emp_constructora,
+                                $lote->escrituras
                                 
                             ]);	
     
                     }
 
-                    $num='A5:J' . $cont;
+                    $num='A5:K' . $cont;
 
                 
                 
@@ -2403,10 +2564,11 @@ class ReportesController extends Controller
 
                     $act = $act->get();
 
-                $contrato = Contrato::select('send_exp','received_exp')->where('id','=',$deposito->id)->get();
+                $contrato = Contrato::select('send_exp','received_exp','fecha_audit')->where('id','=',$deposito->id)->get();
 
                 $deposito->send_exp = $contrato[0]->send_exp;
                 $deposito->received_exp = $contrato[0]->received_exp;
+                $deposito->fecha_audit = $contrato[0]->fecha_audit;
                 
                 $deposito->totalCredito = round($inst[0]->monto_credito + $inst[0]->segundo_credito,2);
                 $deposito->totalDep = round($deposito->totalDep,2);
@@ -2478,7 +2640,7 @@ class ReportesController extends Controller
                 ->join('etapas as et','lotes.etapa_id','=','et.id')
                 ->select('contratos.id','p.nombre','p.apellidos','f.nombre as proyecto','et.num_etapa',
                         'lotes.num_lote', 'lotes.emp_constructora',
-                        'contratos.received_exp','contratos.send_exp',
+                        'contratos.received_exp','contratos.send_exp', 'contratos.fecha_audit',
                         'lotes.manzana','ins.tipo_credito','ins.institucion','expedientes.fecha_firma_esc')
                 ->where('contratos.status','=',3)
                 ->where('ins.elegido','=',1)
@@ -2558,7 +2720,7 @@ class ReportesController extends Controller
                 ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
                 ->join('etapas as et','lotes.etapa_id','=','et.id')
                 ->select('p.nombre','p.apellidos','f.nombre as proyecto','et.num_etapa',
-                        'lotes.emp_constructora',
+                        'lotes.emp_constructora','contratos.id',
                         'lotes.manzana','lotes.num_lote','dep.cant_depo','dep.fecha_deposito','dep.banco')
 
                 ->whereBetween('dep.fecha_deposito',[$fecha1, $fecha2]);
@@ -2567,6 +2729,17 @@ class ReportesController extends Controller
                     $ingresosCobranza = $ingresosCobranza->where('lotes.emp_constructora','=',$empresa);
 
             $ingresosCobranza = $ingresosCobranza->orderBy('dep.fecha_deposito')->get();
+
+            foreach($ingresosCobranza as $index => $ingreso){
+                $exp = Expediente::select('fecha_firma_esc')->where('id','=',$ingreso->id)->get();
+
+                if(sizeOf($exp)){
+                    $ingreso->escrituras = $exp[0]->fecha_firma_esc;
+                }
+                else{
+                    $ingreso->escrituras = '';
+                }
+            }
 
         return $ingresosCobranza;
     }
