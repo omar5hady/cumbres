@@ -1376,8 +1376,8 @@ class ReportesController extends Controller
                         $periodo = 'Del '.$fecha1.' al '.$fecha2;
 
         
-        return Excel::create('Reporte de ventas y cancelaciones', function($excel) use ($ventas,$cancelaciones,$periodo){
-            $excel->sheet('Ventas', function($sheet) use ($ventas,$periodo){
+        return Excel::create('Reporte de ventas y cancelaciones', function($excel) use ($ventas,$cancelaciones,$periodo,$empresa){
+            $excel->sheet('Ventas', function($sheet) use ($ventas,$periodo, $empresa){
 
                 $sheet->mergeCells('A1:K1');
                 $sheet->mergeCells('A2:K2');
@@ -1726,303 +1726,632 @@ class ReportesController extends Controller
         $expContado = $this->getRepExpContado($mes, $anio, $empresa);
         $sinEntregar = $this->getSinEntregarRep($mes,$anio, $empresa);
 
-        // return [
-        //     'expCreditos'=>$expCreditos,
-        //     'expContado'=>$expContado,
-        //     'pendientes'=>$sinEntregar
-        // ];
 
-        // return Excel::create('Reporte de expedientes', function($excel) use ($expCreditos,$expContado,$sinEntregar){
-        //     $excel->sheet('Expedientes', function($sheet) use ($expCreditos,$expContado,$sinEntregar){
 
-        //         $sheet->mergeCells('A1:K1');
-        //         $sheet->mergeCells('A2:K2');
-        //         $sheet->mergeCells('C4:G4');
-
-        //         $sheet->cell('A1', function($cell) {
-
-        //             // manipulate the cell
-        //             $cell->setValue(  'GRUPO CONSTRUCTOR CUMBRES, SA DE C.V.');
-        //             $cell->setFontFamily('Arial Narrow');
-        //             $cell->setFontSize(14);
-        //             $cell->setFontWeight('bold');
-        //             $cell->setAlignment('center');
-                
-        //         });
-        //         $sheet->cell('A2', function($cell) {
-
-        //             // manipulate the cell
-        //             $cell->setValue(  'REPORTE DE VENTAS');
-        //             $cell->setFontFamily('Arial Narrow');
-        //             $cell->setFontSize(14);
-        //             $cell->setFontWeight('bold');
-        //             $cell->setAlignment('center');
-                
-        //         });
-
-        //         $sheet->cell('B4', function($cell) {
-
-        //             // manipulate the cell
-        //             $cell->setFontFamily('Arial Narrow');
-        //             $cell->setFontSize(12);
-        //             $cell->setAlignment('center');
-                
-        //         });
-
-        //         $sheet->row(4,[
-        //             '',
-        //             'Periodo: ',
-        //             $periodo
-        //         ]);
-
-        //         $sheet->cell('C4', function($cell) {
-
-        //             // manipulate the cell
-        //             $cell->setFontFamily('Arial Narrow');
-        //             $cell->setFontSize(12);
-        //             $cell->setAlignment('center');
-        //         });
-
-        //         $sheet->setColumnFormat(array(
-        //             'K' => '$#,##0.00',
-        //             'L' => '$#,##0.00',
-        //             'M' => '$#,##0.00',
-        //             'N' => '$#,##0.00',
-        //             'O' => '$#,##0.00',
-        //             'P' => '$#,##0.00',
-        //             'Q' => '$#,##0.00',
-        //             'R' => '$#,##0.00',
-        //         ));
-
-        //         $sheet->row(8, [
-        //             'No.',
-        //             'Fraccionamiento',
-        //             'Etapa',
-        //             'Manzana',
-        //             'Lote',
-        //             'Cliente',
-        //             'Fecha de venta',
-        //             'Crédito',
-        //             'Institución',
-        //             'Promoción / Paquete',
-        //             'Valor de escrituración',
-        //             'Valor de terreno',
-        //             'Valor de construccion',
-        //             'Descuento precio de casa o equipamiento',
-        //             'Descuento en el terreno',
-        //             'Costo de Alarma',
-        //             'Cuota de mantenimiento',
-        //             'Protecciones'
-        //         ]);
-                
-
-        //         $sheet->cells('A8:T8', function ($cells) {
-        //             // Set font family
-        //             $cells->setFontFamily('Calibri');
-
-        //             // Set font size
-        //             $cells->setFontSize(12);
-
-        //             // Set font weight to bold
-        //             $cells->setFontWeight('bold');
-        //             $cells->setAlignment('center');
-        //         });
-
-        //         $cont=9;
+        return Excel::create('Reporte de expedientes', function($excel) use ($expCreditos,$expContado,$sinEntregar){
+            $excel->sheet('Expedientes', function($sheet) use ($expCreditos,$sinEntregar){
 
                 
+                $sheet->mergeCells('A1:H4');
+                $sheet->mergeCells('A5:H5');
+                $sheet->mergeCells('A6:B6');
+                $sheet->mergeCells('C6:F6');
 
-        //         foreach($ventas as $index => $lote) {
-        //             $cont++;
+                $sheet->cell('A1', function($cell) {
 
-        //             $paquete = '';
-
-        //             $status='';
-        //             if($lote->status == 0)
-        //                 $status = 'Cancelado';
-        //             elseif($lote->status == 1 || $lote->status == 3 && $lote->firmado == 0)
-        //                 $status = 'Vendida';
-        //             elseif($lote->status == 3 && $lote->firmado == 1)
-        //                 $status = 'Individualizada';
-
-        //             if($lote->descripcion_promocion == null && $lote->descripcion_paquete == null) 
-        //                 $paquete = '';
-        //             elseif($lote->descripcion_promocion != null && $lote->descripcion_paquete == null)
-        //                 $paquete = 'Promo: '.$lote->descripcion_promocion;
-        //             elseif($lote->descripcion_promocion == null && $lote->descripcion_paquete != null)
-        //                 $paquete = 'Paquete: '.$lote->descripcion_paquete;
-        //             else 
-        //                 $paquete = 'Promo: ' . $lote->descripcion_promocion . ' / Paquete:' . $lote->descripcion_paquete;
-
-        //             $sheet->row($index+9, [
-        //                 $index+1,
-        //                 $lote->proyecto, 
-        //                 $lote->num_etapa,
-        //                 $lote->manzana,
-        //                 $lote->num_lote,
-        //                 $lote->nombre.' '.$lote->apellidos,
-        //                 $lote->fecha,
-        //                 $lote->tipo_credito,
-        //                 $lote->institucion,
-        //                 $paquete,
-        //                 $lote->precio_venta,
-        //                 $lote->valor_terreno,
-        //                 $lote->precio_venta - $lote->valor_terreno,
-        //                 $lote->costo_descuento,
-        //                 $lote->descuento_terreno,
-        //                 $lote->costo_alarma,
-        //                 $lote->costo_cuota_mant,
-        //                 $lote->costo_protecciones,
-        //                 $status,
-        //             ]);	
-        //         }
-            
-        //         $num='A8:S' . $cont;
-        //         $sheet->setBorder($num, 'thin');
-
+                    // manipulate the cell
+                    $cell->setValue(  '');
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(13);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
                 
-        //     });
+                });
+                $sheet->cell('A5', function($cell) {
 
-        //     $excel->sheet('Cancelaciones', function($sheet) use ($cancelaciones,$periodo){
-
-        //         $sheet->mergeCells('A1:L1');
-        //         $sheet->mergeCells('A2:L2');
-        //         $sheet->mergeCells('C4:G4');
-
-        //         $sheet->cell('A1', function($cell) {
-
-        //             // manipulate the cell
-        //             $cell->setValue(  'GRUPO CONSTRUCTOR CUMBRES, SA DE C.V.');
-        //             $cell->setFontFamily('Arial Narrow');
-        //             $cell->setFontSize(14);
-        //             $cell->setFontWeight('bold');
-        //             $cell->setAlignment('center');
+                    // manipulate the cell
+                    $cell->setValue(  'REPORTE DE EXPEDIENTES ENTREGADOS');
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(12);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
                 
-        //         });
-        //         $sheet->cell('A2', function($cell) {
+                });
 
-        //             // manipulate the cell
-        //             $cell->setValue(  'REPORTE DE CANCELACIONES');
-        //             $cell->setFontFamily('Arial Narrow');
-        //             $cell->setFontSize(14);
-        //             $cell->setFontWeight('bold');
-        //             $cell->setAlignment('center');
+                $sheet->cell('C6', function($cell) {
+
+                    $cell->setValue(  'Ubicación / Plantio');
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(11);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
                 
-        //         });
+                });
 
-        //         $sheet->cell('B4', function($cell) {
+                $sheet->cells('A7:H7', function ($cells) {
+                    $cells->setBackground('#052154');
+                    $cells->setFontColor('#ffffff');
+                    // Set font family
+                    $cells->setFontFamily('Arial Narrow');
 
-        //             // manipulate the cell
-        //             $cell->setFontFamily('Arial Narrow');
-        //             $cell->setFontSize(12);
-        //             $cell->setAlignment('center');
-                
-        //         });
+                    // Set font size
+                    $cells->setFontSize(11);
 
-        //         $sheet->row(4,[
-        //             '',
-        //             'Periodo: ',
-        //             $periodo
-        //         ]);
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
 
-        //         $sheet->cell('C4', function($cell) {
+                $sheet->row(7,[
+                    '# Ref.', 'Cliente','Fraccionamiento', 'Etapa', 'Manzana', 'Lote', 'Canal de ventas', 'Emp. Const.'
+                ]);
 
-        //             // manipulate the cell
-        //             $cell->setFontFamily('Arial Narrow');
-        //             $cell->setFontSize(12);
-        //             $cell->setAlignment('center');
-        //         });
+                $cont = 7;
+              
+                foreach($expCreditos as $index => $lote) {
+                    if($lote->flag == 1 && $lote->mes == 1){
+                        $cont++;
 
-        //         $sheet->setColumnFormat(array(
-        //             'L' => '$#,##0.00',
-        //             'M' => '$#,##0.00',
-        //             'N' => '$#,##0.00',
-        //         ));
+                        $sheet->row($cont, [
+                            $lote->id,
+                            $lote->nombre, 
+                            $lote->proyecto,
+                            $lote->num_etapa,
+                            $lote->manzana,
+                            $lote->num_lote,
+                            $lote->tipo_credito,
+                            $lote->emp_constructora
+                        ]);	
 
-        //         $sheet->row(8, [
-        //             'No.',
-        //             'Fraccionamiento',
-        //             'Etapa',
-        //             'Manzana',
-        //             'Lote',
-        //             'Cliente',
-        //             'Fecha de cancelación',
-        //             'Fecha de venta',
-        //             'Crédito',
-        //             'Institución',
-        //             'Promoción / Paquete',
-        //             'Valor de escrituración',
-        //             'Valor de terreno',
-        //             'Valor de construccion'
-        //         ]);
-                
-
-        //         $sheet->cells('A8:L8', function ($cells) {
-        //             // Set font family
-        //             $cells->setFontFamily('Calibri');
-
-        //             // Set font size
-        //             $cells->setFontSize(12);
-
-        //             // Set font weight to bold
-        //             $cells->setFontWeight('bold');
-        //             $cells->setAlignment('center');
-        //         });
-
-        //         $cont=9;
-
-                
-
-        //         foreach($cancelaciones as $index => $lote) {
-        //             $cont++;
-
-        //             $paquete = '';
+                    }
                     
-        //             if($lote->descripcion_promocion == null && $lote->descripcion_paquete == null) 
-        //                 $paquete = '';
-        //             elseif($lote->descripcion_promocion != null && $lote->descripcion_paquete == null)
-        //                 $paquete = 'Promo: '.$lote->descripcion_promocion;
-        //             elseif($lote->descripcion_promocion == null && $lote->descripcion_paquete != null)
-        //                 $paquete = 'Paquete: '.$lote->descripcion_paquete;
-        //             else 
-        //                 $paquete = 'Promo: ' . $lote->descripcion_promocion . ' / Paquete:' . $lote->descripcion_paquete;
-
-        //             $sheet->row($index+9, [
-        //                 $index+1,
-        //                 $lote->proyecto, 
-        //                 $lote->num_etapa,
-        //                 $lote->manzana,
-        //                 $lote->num_lote,
-        //                 $lote->nombre.' '.$lote->apellidos,
-        //                 $lote->fecha_status,
-        //                 $lote->fecha,
-        //                 $lote->tipo_credito,
-        //                 $lote->institucion,
-        //                 $paquete,
-        //                 $lote->precio_venta,
-        //                 $lote->valor_terreno,
-        //                 $lote->precio_venta - $lote->valor_terreno
-        //             ]);	
-        //         }
+                }
             
-        //         $num='A8:N' . $cont;
-        //         $sheet->setBorder($num, 'thin');
-
+                $num='A5:H' . $cont;
+                $sheet->setBorder($num, 'thin');
                 
-        //     });
+            });
+
+            $excel->sheet('Expedientes de contado', function($sheet) use ($expContado){
+
+                $sheet->mergeCells('A1:H4');
+                $sheet->mergeCells('A5:H5');
+                $sheet->mergeCells('A6:B6');
+                $sheet->mergeCells('C6:F6');
+
+                $sheet->cell('A1', function($cell) {
+
+                    // manipulate the cell
+                    $cell->setValue(  '');
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(13);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                
+                });
+                $sheet->cell('A5', function($cell) {
+
+                    // manipulate the cell
+                    $cell->setValue(  'REPORTE DE EXPEDIENTES DE CONTADO' );
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(12);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                
+                });
+
+                $sheet->cell('C6', function($cell) {
+
+                    $cell->setValue(  'Ubicación / Plantio');
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(11);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                
+                });
+
+                $sheet->cells('A7:H7', function ($cells) {
+                    $cells->setBackground('#052154');
+                    $cells->setFontColor('#ffffff');
+                    // Set font family
+                    $cells->setFontFamily('Arial Narrow');
+
+                    // Set font size
+                    $cells->setFontSize(11);
+
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+
+                $sheet->row(7,[
+                    '# Ref.', 'Cliente','Fraccionamiento', 'Etapa', 'Manzana', 'Lote', 'Canal de ventas', 'Emp. Const.'
+                ]);
+
+                $cont = 7;
+                
+
+               
+                foreach($expContado as $index => $lote) {
+                   
+                        $cont++;
+
+                        $sheet->row($cont, [
+                            $lote->id,
+                            $lote->nombre, 
+                            $lote->proyecto,
+                            $lote->num_etapa,
+                            $lote->manzana,
+                            $lote->num_lote,
+                            $lote->tipo_credito,
+                            $lote->emp_constructora
+                        ]);	
+
+                    
+                    
+                }
             
-        // }
+                $num='A5:H' . $cont;
+                $sheet->setBorder($num, 'thin');
+                
+            });
+
+            $excel->sheet('Pendientes de cobro', function($sheet) use ($sinEntregar){
+
+                $sheet->mergeCells('A1:H4');
+                $sheet->mergeCells('A5:H5');
+                $sheet->mergeCells('A6:B6');
+                $sheet->mergeCells('C6:F6');
+
+                $sheet->cell('A1', function($cell) {
+
+                    // manipulate the cell
+                    $cell->setValue(  '');
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(13);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                
+                });
+                $sheet->cell('A5', function($cell) {
+
+                    // manipulate the cell
+                    $cell->setValue(  'PENDIENTES DE COBRO' );
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(12);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                
+                });
+
+                $sheet->cell('C6', function($cell) {
+
+                    $cell->setValue(  'Ubicación / Plantio');
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(11);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                
+                });
+
+                $sheet->cells('A7:H7', function ($cells) {
+                    $cells->setBackground('#052154');
+                    $cells->setFontColor('#ffffff');
+                    // Set font family
+                    $cells->setFontFamily('Arial Narrow');
+
+                    // Set font size
+                    $cells->setFontSize(11);
+
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+
+                $sheet->row(7,[
+                    '# Ref.', 'Cliente','Fraccionamiento', 'Etapa', 'Manzana', 'Lote', 'Canal de ventas', 'Emp. Const.'
+                ]);
+
+                $cont = 7;
+                
+               
+                foreach($sinEntregar as $index => $lote) {
+                   
+                        $cont++;
+
+                        $sheet->row($cont, [
+                            $lote->id,
+                            $lote->nombre, 
+                            $lote->proyecto,
+                            $lote->num_etapa,
+                            $lote->manzana,
+                            $lote->num_lote,
+                            $lote->tipo_credito,
+                            $lote->emp_constructora
+                        ]);	
+              
+                }
+            
+                $num='A5:H' . $cont;
+                $sheet->setBorder($num, 'thin');
+                
+            });
+            
+        }
         
-        // )->download('xls');
+        )->download('xls');
 
 
     }
 
     public function excelIngresos(Request $request){
 
+        $fecha1 = $request->fecha1;
+        $fecha2 = $request->fecha2;
+
+        $empresa = $request->empresa;
+
+        $ingresosCobranza = $this->getIngresosCobranza($fecha1,$fecha2, $empresa);
+
+        return Excel::create('Reporte mensual de ingresos', function($excel) use ($ingresosCobranza,$empresa){
+            $excel->sheet('Cobranza institucional', function($sheet) use ($ingresosCobranza,$empresa){
+
+                
+                $sheet->mergeCells('A1:J4');
+                $sheet->mergeCells('A5:J5');
+                $sheet->mergeCells('A6:B6');
+                $sheet->mergeCells('C6:F6');
+
+                $sheet->cell('A1', function($cell) {
+
+                    // manipulate the cell
+                    $cell->setValue(  '');
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(13);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                
+                });
+                $sheet->cell('A5', function($cell) {
+
+                    // manipulate the cell
+                    $cell->setValue(  'REPORTE DE INGRESOS (COBRANZA INSTITUCIONAL)');
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(12);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                
+                });
+
+                $sheet->cell('C6', function($cell) {
+
+                    $cell->setValue(  'Ubicación / Plantio');
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(11);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                
+                });
+
+               
+
+
+                    $sheet->cells('A7:J7', function ($cells) {
+                        $cells->setBackground('#052154');
+                        $cells->setFontColor('#ffffff');
+                        // Set font family
+                        $cells->setFontFamily('Arial Narrow');
+    
+                        // Set font size
+                        $cells->setFontSize(11);
+    
+                        // Set font weight to bold
+                        $cells->setFontWeight('bold');
+                        $cells->setAlignment('center');
+                    });
+    
+
+                    $sheet->setColumnFormat(array(
+                        'G' => '$#,##0.00'
+                    ));
+
+                    $sheet->row(7,[
+                        '', 'Cliente','Fraccionamiento', 'Etapa', 'Manzana', 'Lote', 'Monto Crédito Neto', 'Fecha', 'Banco','Empresa const'
+                    ]);
+    
+                    $cont = 7;
+                  
+                    foreach($ingresosCobranza as $index => $lote) {
+                        
+                            $cont++;
+    
+                            $sheet->row($cont, [
+                                $index+1,
+                                $lote->nombre.' '.$lote->apellidos, 
+                                $lote->proyecto,
+                                $lote->num_etapa,
+                                $lote->manzana,
+                                $lote->num_lote,
+                                $lote->cant_depo,
+                                $lote->fecha_deposito,
+                                $lote->banco,
+                                $lote->emp_constructora
+                                
+                            ]);	
+    
+                    }
+
+                    $num='A5:J' . $cont;
+
+                
+                
+                $sheet->setBorder($num, 'thin');
+                
+            });
+            
+        }
+        
+        )->download('xls');
+
     }
 
     public function excelEscrituras(Request $request){
+
+        $mes = $request->mes;
+        $anio = $request->anio;
+
+        $empresa = $request->empresa;
+
+        $escrituras = $this->getEscriturasRep($mes, $anio, $empresa);
+        $contadoSinEscrituras = $this->getContadoSinEscrituras($mes, $anio, $empresa);
+
+        return Excel::create('Reporte mensual de escrituras', function($excel) use ($escrituras,$contadoSinEscrituras,$empresa){
+            $excel->sheet('Ventas de crédito', function($sheet) use ($escrituras,$empresa){
+
+                
+                $sheet->mergeCells('A1:J4');
+                $sheet->mergeCells('A5:J5');
+                $sheet->mergeCells('A6:B6');
+                $sheet->mergeCells('C6:F6');
+
+                $sheet->cell('A1', function($cell) {
+
+                    // manipulate the cell
+                    $cell->setValue(  'GRUPO CONSTRUCTOR CUMBRES, SA DE C.V.');
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(13);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                
+                });
+                $sheet->cell('A5', function($cell) {
+
+                    // manipulate the cell
+                    $cell->setValue(  'ESCRITURAS VENTAS DE CRÉDITO');
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(12);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                
+                });
+
+                $sheet->cell('C6', function($cell) {
+
+                    $cell->setValue(  'Ubicación / Plantio');
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(11);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                
+                });
+
+                $sheet->cells('A7:J7', function ($cells) {
+                    $cells->setBackground('#052154');
+                    $cells->setFontColor('#ffffff');
+                    // Set font family
+                    $cells->setFontFamily('Arial Narrow');
+
+                    // Set font size
+                    $cells->setFontSize(11);
+
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+
+                if($empresa == 'CONCRETANIA'){
+
+                    $sheet->cells('A7:L7', function ($cells) {
+                        $cells->setBackground('#052154');
+                        $cells->setFontColor('#ffffff');
+                        // Set font family
+                        $cells->setFontFamily('Arial Narrow');
+    
+                        // Set font size
+                        $cells->setFontSize(11);
+    
+                        // Set font weight to bold
+                        $cells->setFontWeight('bold');
+                        $cells->setAlignment('center');
+                    });
+    
+
+                    $sheet->setColumnFormat(array(
+                        'H' => '$#,##0.00',
+                        'I' => '$#,##0.00',
+                        'K' => '$#,##0.00'
+                    ));
+
+                    $sheet->row(7,[
+                        '# Ref.', 'Cliente','Fraccionamiento', 'Etapa', 'Manzana', 'Lote', 'Crédito', 'Valor de terreno', 'Valor de casa', 'Fecha de firma de escrituras', 'Valor de escrituración', 'Notaria'
+                    ]);
+    
+                    $cont = 7;
+                  
+                    foreach($escrituras as $index => $lote) {
+                        
+                            $cont++;
+    
+                            $sheet->row($cont, [
+                                $lote->id,
+                                $lote->nombre.' '.$lote->apellidos, 
+                                $lote->proyecto,
+                                $lote->num_etapa,
+                                $lote->manzana,
+                                $lote->num_lote,
+                                $lote->tipo_credito.' ('.$lote->institucion.')',
+                                $lote->valor_terreno,
+                                $lote->valor_escrituras-$lote->valor_terreno,
+                                $lote->fecha_firma_esc,
+                                $lote->valor_escrituras,
+                                $lote->notaria
+                                
+                            ]);	
+    
+                        
+                        
+                    }
+
+                    $num='A5:L' . $cont;
+
+                }
+                else{
+
+                    $sheet->setColumnFormat(array(
+                        'I' => '$#,##0.00'
+                    ));
+
+                    $sheet->row(7,[
+                        '# Ref.', 'Cliente','Fraccionamiento', 'Etapa', 'Manzana', 'Lote', 'Crédito', 'Fecha de firma de escrituras', 'Valor de escrituración', 'Notaria'
+                    ]);
+    
+                    $cont = 7;
+                  
+                    foreach($escrituras as $index => $lote) {
+                        
+                            $cont++;
+    
+                            $sheet->row($cont, [
+                                $lote->id,
+                                $lote->nombre.' '.$lote->apellidos, 
+                                $lote->proyecto,
+                                $lote->num_etapa,
+                                $lote->manzana,
+                                $lote->num_lote,
+                                $lote->tipo_credito.' ('.$lote->institucion.')',
+                                $lote->fecha_firma_esc,
+                                $lote->valor_escrituras,
+                                $lote->notaria
+                                
+                            ]);	
+    
+                        
+                        
+                    }
+
+                    $num='A5:J' . $cont;
+
+                }
+
+                
+            
+                
+                $sheet->setBorder($num, 'thin');
+                
+            });
+
+            $excel->sheet('Pendientes de escriturar', 
+                function($sheet) use ($contadoSinEscrituras){
+
+                $sheet->mergeCells('A1:I4');
+                $sheet->mergeCells('A5:I5');
+                $sheet->mergeCells('A6:B6');
+                $sheet->mergeCells('C6:F6');
+
+                $sheet->cell('A1', function($cell) {
+
+                    // manipulate the cell
+                    $cell->setValue( '');
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(13);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                
+                });
+                $sheet->cell('A5', function($cell) {
+
+                    // manipulate the cell
+                    $cell->setValue(  'CONTADOS PENDIENTES DE ESCRITURAR' );
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(12);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                
+                });
+
+                $sheet->cell('C6', function($cell) {
+
+                    $cell->setValue(  'Ubicación / Plantio');
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(11);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                
+                });
+
+                $sheet->cells('A7:I7', function ($cells) {
+                    $cells->setBackground('#052154');
+                    $cells->setFontColor('#ffffff');
+                    // Set font family
+                    $cells->setFontFamily('Arial Narrow');
+
+                    // Set font size
+                    $cells->setFontSize(11);
+
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+
+                $sheet->row(7,[
+                    '# Ref.', 'Cliente','Fraccionamiento', 'Etapa', 
+                    'Manzana', 'Lote', 'Crédito', 'Fecha de venta', 'Responsable'
+                ]);
+
+                $cont = 7;
+                
+
+               
+                foreach($contadoSinEscrituras as $index => $lote) {
+                   
+                        $cont++;
+
+                        $sheet->row($cont, [
+                            $lote->id,
+                            $lote->nombre.' '.$lote->apellidos, 
+                            $lote->proyecto,
+                            $lote->num_etapa,
+                            $lote->manzana,
+                            $lote->num_lote,
+                            $lote->tipo_credito.' ('.$lote->institucion.')',
+                            $lote->fecha,
+                            $lote->nombre_gestor
+                        ]);	
+
+                    
+                    
+                }
+            
+                $num='A5:I' . $cont;
+                $sheet->setBorder($num, 'thin');
+                
+            });
+            
+        }
+        
+        )->download('xls');
+
+
 
     }
 
@@ -2040,7 +2369,7 @@ class ReportesController extends Controller
                 ->select(//'dep_creditos.inst_sel_id',
                             'contratos.id','p.nombre','p.apellidos',
                             'f.nombre as proyecto','et.num_etapa',
-                            'lotes.manzana','lotes.num_lote',
+                            'lotes.manzana','lotes.num_lote', 'lotes.emp_constructora',
                             DB::raw("SUM(dep_creditos.cant_depo) as totalDep")
                             )
                 ->where('dep_creditos.fecha_deposito','<',$fecha);
@@ -2110,7 +2439,7 @@ class ReportesController extends Controller
                             'contratos.id','p.nombre','p.apellidos',
                             'f.nombre as proyecto','et.num_etapa',
                             'inst_seleccionadas.tipo_credito','inst_seleccionadas.institucion',
-                            'lotes.manzana','lotes.num_lote'
+                            'lotes.manzana','lotes.num_lote','lotes.emp_constructora'
                             )
                 ->where('inst_seleccionadas.tipo','=',0)
                 ->where('inst_seleccionadas.elegido','=',1)
@@ -2148,7 +2477,7 @@ class ReportesController extends Controller
                 ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
                 ->join('etapas as et','lotes.etapa_id','=','et.id')
                 ->select('contratos.id','p.nombre','p.apellidos','f.nombre as proyecto','et.num_etapa',
-                        'lotes.num_lote',
+                        'lotes.num_lote', 'lotes.emp_constructora',
                         'contratos.received_exp','contratos.send_exp',
                         'lotes.manzana','ins.tipo_credito','ins.institucion','expedientes.fecha_firma_esc')
                 ->where('contratos.status','=',3)
@@ -2229,6 +2558,7 @@ class ReportesController extends Controller
                 ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
                 ->join('etapas as et','lotes.etapa_id','=','et.id')
                 ->select('p.nombre','p.apellidos','f.nombre as proyecto','et.num_etapa',
+                        'lotes.emp_constructora',
                         'lotes.manzana','lotes.num_lote','dep.cant_depo','dep.fecha_deposito','dep.banco')
 
                 ->whereBetween('dep.fecha_deposito',[$fecha1, $fecha2]);

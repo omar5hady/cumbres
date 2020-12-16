@@ -1163,6 +1163,7 @@ class EntregaController extends Controller
             'entregas.hora_entrega_prog',
             'entregas.fecha_entrega_real',
             'entregas.hora_entrega_real',
+            'fraccionamientos.logo_fracc',
             DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
         )
         ->where('contratos.status', '!=', 0)

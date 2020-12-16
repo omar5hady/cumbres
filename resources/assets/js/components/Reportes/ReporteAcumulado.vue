@@ -9,11 +9,7 @@
                 <div class="card scroll-box">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Reporte acumulado mensual &nbsp;&nbsp;
-                        <!--   Boton Nuevo    -->
-                        <!-- <a class="btn btn-success" v-bind:href="'/reprotes/reporteVentasExcel?mes=' + mes + '&anio=' + anio">
-                            <i class="fa fa-file-text"></i>&nbsp; Excel
-                        </a> -->
-                        <!-- <a :href="'/etapa/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel </a> -->
+                        <a v-if="mes != '' && anio != ''" :href="'/reprotes/excelExpedientes?mes=' + mes + '&anio=' + anio + '&empresa=' + emp_constructora"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel </a>
                         <!---->
                     </div>
                     <div class="card-body">
@@ -210,6 +206,7 @@
                                                 <th>Manzana</th>
                                                 <th>Lote</th>
                                                 <th>Canal de Ventas</th>
+                                                <th></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -221,6 +218,9 @@
                                                 <td class="td2" v-text="lote.manzana"></td>
                                                 <td class="td2" v-text="lote.num_lote"></td>
                                                 <td class="td2" v-text="lote.tipo_credito"></td>
+                                                <td class="td2">
+                                                    <button class="btn btn-primary" @click="comentarios(lote.id)">Ver Comentarios</button>
+                                                </td>
                                                 
                                             </tr>                             
                                         </tbody>

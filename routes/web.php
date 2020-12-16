@@ -646,6 +646,9 @@ Route::group(['middleware' => ['auth']],function(){
             Route::get('/reprotes/reporteVentasExcel','ReportesController@reporteVentasExcel');
 
             Route::get('/reprotes/reporteAcumulado','ReportesController@reporteAcumulado');
+            Route::get('/reprotes/excelExpedientes','ReportesController@excelExpedientes');
+            Route::get('/reprotes/excelEscrituras','ReportesController@excelEscrituras');
+            Route::get('/reprotes/excelIngresos','ReportesController@excelIngresos');
 
             Route::get('/reprotes/reporteRecursosPropios','ReportesController@reporteRecursosPropios');
             Route::get('/reprotes/excelReporteRecursosPropios','ReportesController@excelRecursosPropios');

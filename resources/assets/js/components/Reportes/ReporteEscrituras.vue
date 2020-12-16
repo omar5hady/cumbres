@@ -9,6 +9,8 @@
                 <div class="card scroll-box">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Reporte acumulado mensual &nbsp;&nbsp;
+
+                        <a v-if="mes != '' && anio != ''" :href="'/reprotes/excelEscrituras?mes=' + mes + '&anio=' + anio + '&empresa=' + emp_constructora"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel </a>
                        
                     </div>
                     <div class="card-body">
@@ -79,13 +81,13 @@
                                     <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
-                                                <th colspan="11" class="text-center"> Reporte Mensual de Escrituras Ventas de Crédito </th>
+                                                <th colspan="12" class="text-center"> Reporte Mensual de Escrituras Ventas de Crédito </th>
                                             </tr>
                                             <tr></tr>
                                             <tr>
                                                 <th colspan="3"></th>
                                                 <th colspan="4" class="text-center">Ubicación</th>
-                                                <th colspan="4"></th>
+                                                <th colspan="5"></th>
                                             </tr>
                                             <tr>
                                                 <th></th>
@@ -97,10 +99,11 @@
                                                 <th>Lote</th>
                                                 <th>Crédito</th>
                                                 <th v-if="emp_constructora == 'CONCRETANIA'">Valor de terreno</th>
-                                                <th v-if="emp_constructora == 'CONCRETANIA'">Valor de casa</th>
+                                                <th v-if="emp_constructora == 'CONCRETANIA'">Valor de construcción</th>
                                                 <th>Fecha de firma de escrituras</th>
                                                 <th>Valor de escrituración</th>
                                                 <th>Notaria</th>
+                                                <th></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -127,6 +130,10 @@
                                                 <td class="td2" v-text="escrituras.fecha_firma_esc"></td>
                                                 <td class="td2" v-text="'$'+formatNumber(escrituras.valor_escrituras)"></td>
                                                 <td class="td2" v-text="escrituras.notaria"></td>
+
+                                                <td class="td2">
+                                                    <button class="btn btn-primary" @click="comentarios(escrituras.id)">Ver Comentarios</button>
+                                                </td>
                                                 
                                             </tr>                             
                                         </tbody>
@@ -137,13 +144,13 @@
                                     <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
-                                                <th colspan="10" class="text-center"> Contados Pendientes de Escriturar </th>
+                                                <th colspan="11" class="text-center"> Contados Pendientes de Escriturar </th>
                                             </tr>
                                             <tr></tr>
                                             <tr>
                                                 <th colspan="3"></th>
                                                 <th colspan="4" class="text-center">Ubicación</th>
-                                                <th colspan="3"></th>
+                                                <th colspan="4"></th>
                                             </tr>
                                             <tr>
                                                 <th></th>
@@ -156,6 +163,7 @@
                                                 <th>Crédito</th>
                                                 <th>Fecha de Venta</th>
                                                 <th>Responsable</th>
+                                                <th></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -170,6 +178,9 @@
                                                 <td class="td2" v-text="contadoSinEsc.tipo_credito+' ('+contadoSinEsc.institucion+')'"></td>
                                                 <td class="td2" v-text="contadoSinEsc.fecha"></td>
                                                 <td class="td2" v-text="contadoSinEsc.nombre_gestor"></td>
+                                                <td class="td2">
+                                                    <button class="btn btn-primary" @click="comentarios(contadoSinEsc.id)">Ver Comentarios</button>
+                                                </td>
                                             </tr>                             
                                         </tbody>
                                     </table>
@@ -183,7 +194,7 @@
             </div>     
 
             <!-- Modal para la carga pdf -->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 1}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-primary modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -215,6 +226,64 @@
             </div>
             <!--Fin del modal-->     
 
+            <!--Inicio del modal observaciones-->
+                <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog modal-primary modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" v-text="'Observaciones'"></h4>
+                                <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Nueva observación</label>
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="observacion" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <button class="btn btn-primary" @click="storeObservacion()">Guardar</button>
+                                    </div>
+                                </div>
+
+
+                                <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                                    
+                                    <table class="table table-bordered table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Usuario</th>
+                                                <th>Observacion</th>
+                                                <th>Fecha</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="observacion in arrayObservacion" :key="observacion.id">
+                                                
+                                                <td v-text="observacion.usuario" ></td>
+                                                <td v-text="observacion.observacion" ></td>
+                                                <td v-text="observacion.created_at"></td>
+                                            </tr>                               
+                                        </tbody>
+                                    </table>
+                                    
+                                </form>
+                            </div>
+                            <!-- Botones del modal -->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+            <!--Fin del modal-->   
+
         </main>
 </template>
 
@@ -237,6 +306,9 @@
                 id:'',
                 archivo:'',
                 modal:0,
+
+                observacion:'',
+                arrayObservacion: []
             }
         },
         computed:{
@@ -260,6 +332,23 @@
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+
+            comentarios(id){
+                let me = this;
+                var url = '/contrato/getObsExpEntregados?page=1&id=' + id ;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayObservacion = respuesta.observacion.data;
+                    console.log(url);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
+                this.modal = 2;
+                this.observacion = '';
+                this.id = id;
             },
 
             onImageChange(e){
@@ -319,7 +408,35 @@
                 this.modal=0;
                 this.id = '';
                 this.archivo = '';
-            }
+                this.observacion = '';
+            },
+
+            storeObservacion(){
+                 let me = this;
+                //Con axios se llama el metodo update de LoteController
+                axios.post('/contratos/storeObsExpEntregado',{
+                    'observacion' : this.observacion,
+                    'id':this.id,
+                    
+                }).then(function (response){
+                    me.listarReporte();
+                    me.cerrarModal();
+                    //window.alert("Cambios guardados correctamente");
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Observación guardada correctamente'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
         
         },
         mounted() {

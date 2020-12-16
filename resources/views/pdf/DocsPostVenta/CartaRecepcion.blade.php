@@ -20,12 +20,12 @@ body {
 </style>
     <body>
         <div style="display: inline-block; float: center;">
-            <div style="display: inline-block; float: left;" >
-                    <IMG SRC="img/logosFraccionamientos/{{ $contratos[0]->logo_fracc }}" width="100" height="100">
-                </div>
-                <div style="display: inline-block; float: right;" >
-                    <IMG SRC="img/contratos/logoContrato.jpg" width="120" height="120">
-                </div>
+            <div margin: 10px; style="display: inline-block; float: left;" >
+                <IMG SRC="img/logosFraccionamientos/{{ $contratos[0]->logo_fracc }}" width="17%" height="17%">
+            </div>
+            <div style="display: inline-block; float: right;" >
+                <IMG SRC="img/contratos/logoContrato.jpg" width="120" height="120">
+            </div>
         </div>
        
         <div style="margin: 60px; margin-top: 120px;"> 

@@ -71,6 +71,7 @@ class DigitalLeadController extends Controller
     }
     
     public function store(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $fecha = Carbon::now();
         $lead = new Digital_lead();
         $lead->nombre = $request->nombre;
@@ -163,11 +164,13 @@ class DigitalLeadController extends Controller
     }
     
     public function delete(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $lead = Digital_lead::findOrFail($request->id);
         $lead->delete();
     }
 
     public function update(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $fecha = Carbon::now();
         $lead = Digital_lead::findOrFail($request->id);
         $lead->nombre = $request->nombre;
@@ -244,6 +247,7 @@ class DigitalLeadController extends Controller
     }
 
     public function sendProspectos(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $fecha = Carbon::now();
         $cliente = Personal::select('id')->where('rfc','=',$request->rfc)->get();
         
@@ -400,6 +404,7 @@ class DigitalLeadController extends Controller
     }
 
     public function asignarLead(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         try{
             DB::beginTransaction();
             $lead = Digital_lead::findOrFail($request->id);
@@ -459,6 +464,7 @@ class DigitalLeadController extends Controller
     }
 
     public function changeStatus(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $lead = Digital_lead::findOrFail($request->id);
         $lead->status = $request->status;
         $lead->save();

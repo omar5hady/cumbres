@@ -9,6 +9,7 @@
                 <div class="card scroll-box">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Reporte acumulado mensual &nbsp;&nbsp;
+                        <a v-if="b_fecha1 != '' && b_fecha2 != ''" :href="'/reprotes/excelIngresos?fecha1=' + b_fecha1 + '&fecha2=' + b_fecha2 + '&empresa=' + emp_constructora"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel </a>
                        
                     </div>
                     <div class="card-body">

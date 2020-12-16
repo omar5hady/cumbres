@@ -5783,6 +5783,7 @@ class ExpedienteController extends Controller
     }
 
     public function sendExp(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $fecha = Carbon::now();
 
         $contrato = Contrato::findOrFail($request->id);
@@ -5797,6 +5798,7 @@ class ExpedienteController extends Controller
     }
 
     public function receivedExp(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
         $fecha = Carbon::now();
 

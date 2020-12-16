@@ -45,7 +45,7 @@
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
-                                        <th colspan="11" class="text-center"> Reporte al {{fecha}} </th>
+                                        <th colspan="12" class="text-center"> Reporte al {{fecha}} </th>
                                     </tr>
                                     <tr>
                                         <th></th>
@@ -59,6 +59,7 @@
                                         <th>Disponible Proceso</th>
                                         <th>Disponible Terminadas</th>
                                         <th>Disponibles</th>
+                                        <th>Inventario</th>
                                         <th v-if="meses != 0">Promedio mensual de venta</th>
                                         
                                     </tr>
@@ -77,6 +78,7 @@
                                             <td class="td2 text-center" v-text="lote.disponibleProc"></td>
                                             <td class="td2 text-center" v-text="lote.disponibleTerm"></td>
                                             <td class="td2 text-center" v-text="lote.disponible"></td>
+                                            <td class="td2 text-center" v-text="(lote.disponible + lote.vendida)"></td>
                                             <td v-if="meses != 0" class="td2 text-center"> {{((lote.vendida + lote.indiv)/meses).toFixed(2)}} </td>
                                             
                                         </template>

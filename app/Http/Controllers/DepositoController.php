@@ -2498,6 +2498,7 @@ class DepositoController extends Controller
                     ->where('monto_terreno','>',0)
                     ->where('fecha_ingreso_concretania','=',NULL)
                     ->get();
+
         $ingresosCreditos = $ingresosCreditos
                     ->where('monto_terreno','>',0)
                     ->where('fecha_ingreso_concretania','=',NULL)
@@ -2579,6 +2580,11 @@ class DepositoController extends Controller
             ->whereBetween('dep_creditos.fecha_ingreso_concretania', [$request->fecha, $request->fecha2])
             ->where('monto_terreno','>',0);
 
+            if($request->cuenta != ''){
+                $depositos = $depositos->where('depositos.cuenta','=',$request->cuenta);
+                $ingresosCreditos = $ingresosCreditos->where('dep_creditos.cuenta','=',$request->cuenta);
+            }
+
         
 
         
@@ -2590,8 +2596,8 @@ class DepositoController extends Controller
                 break;
             }
             case 'fraccionamiento':{
-                $depositos = $depositos->where('lotes.fraccionamiento_id','=',$request->buscar);;
-                $ingresosCreditos = $ingresosCreditos->where('lotes.fraccionamiento_id','=',$request->buscar);;
+                $depositos = $depositos->where('lotes.fraccionamiento_id','=',$request->buscar);
+                $ingresosCreditos = $ingresosCreditos->where('lotes.fraccionamiento_id','=',$request->buscar);
                 
                 if($request->etapa != '')
                     $depositos = $depositos->where('lotes.etapa_id','=',$request->etapa);

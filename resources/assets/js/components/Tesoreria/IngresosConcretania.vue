@@ -636,7 +636,7 @@
             listarHistorial(){
                 let me = this;
                 var url = '/ingresosConcretania/historialIngresos?fecha=' + me.b_fecha + '&fecha2=' + me.b_fecha2 + '&buscar=' + me.buscar + '&etapa=' + me.b_etapa
-                + '&manzana=' + me.b_manzana + '&lote=' + me.b_lote + '&criterio=' + me.criterio;
+                + '&manzana=' + me.b_manzana + '&lote=' + me.b_lote + '&criterio=' + me.criterio + '&cuenta=' + me.b_cuenta;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayHistorial = respuesta.ingresos;
@@ -731,6 +731,7 @@
                         this.fecha ='';
                         this.cuenta = '';
                         this.tipoAccion = 1;
+                        this.ver = 1;
                         break;
                     }
                     case 'detalle':

@@ -21,6 +21,7 @@ class CampaniaController extends Controller
     }
 
     public function update(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $campania = Campania::findOrFail($request->id);
         $campania->nombre_campania = $request->nombre;
         $campania->medio_digital = $request->medio_digital;
@@ -30,6 +31,7 @@ class CampaniaController extends Controller
     }
 
     public function store(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $data = $request->medio_digital;
 
         foreach ($data as $index => $medio) {
@@ -44,6 +46,7 @@ class CampaniaController extends Controller
     }
 
     public function delete(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $campania = Campania::findOrFail($request->id);
         $campania->delete();
     }
