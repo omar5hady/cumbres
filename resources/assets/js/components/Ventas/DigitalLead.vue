@@ -1195,7 +1195,7 @@ export default {
 
         changeStatus(id){
             Swal.fire({
-                title: '¿Estas seguro de finzalizar el seguimiento de este lead?',
+                title: '¿Estas seguro de finalizar el seguimiento de este lead?',
                 text: "Este cambio no se podrá deshacer!",
                 type: 'warning',
                 showCancelButton: true,
@@ -1224,7 +1224,7 @@ export default {
 
         descartar(){
             Swal.fire({
-                title: '¿Estas seguro de finzalizar el seguimiento de este lead?',
+                title: '¿Estas seguro de finalizar el seguimiento de este lead?',
                 text: "Este cambio no se podrá deshacer!",
                 type: 'warning',
                 showCancelButton: true,

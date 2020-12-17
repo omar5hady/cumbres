@@ -1059,9 +1059,43 @@ class ClienteController extends Controller
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         //FindOrFail se utiliza para buscar lo que recibe de argumento
-        $cliente = Cliente::findOrFail($request->id);
-        $cliente->vendedor_id = $request->asesor_id;
-        $cliente->save();
+        try{
+            
+            DB::beginTransaction();
+            $persona = Personal::findOrFail($request->id);
+            $cliente = Cliente::findOrFail($request->id);
+            $vendedorAnt = Personal::select('id','nombre','apellidos')->where('id','=',$cliente->vendedor_id)->get();
+            $vendedorNew = Personal::select('id','nombre','apellidos')->where('id','=',$request->asesor_id)->get();
+            $cliente->vendedor_id = $request->asesor_id;
+            $cliente->save();
+
+            $observacion = new Cliente_observacion();
+            $observacion->cliente_id = $request->id;
+            $observacion->comentario = 'Cliente reasignado del asesor '.$vendedorAnt[0]->nombre.' '.$vendedorAnt[0]->apellidos.' al asesor '.$vendedorNew[0]->nombre.' '.$vendedorNew[0]->apellidos;
+            $observacion->usuario = Auth::user()->usuario;
+            $observacion->save();
+
+            $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
+            $fecha = Carbon::now();
+            $msj = 'Se ha asignado el cliente '.$persona->nombre.' '.$persona->apellidos.' al asesor '.$vendedorNew[0]->nombre.' '.$vendedorNew[0]->apellidos;
+            $arregloAceptado = [
+                'notificacion' => [
+                    'usuario' => $imagenUsuario[0]->usuario,
+                    'foto' => $imagenUsuario[0]->foto_user,
+                    'fecha' => $fecha,
+                    'msj' => $msj,
+                    'titulo' => 'Prospecto reasignado'
+                ]
+            ];
+
+            User::findOrFail($vendedorNew[0]->id)->notify(new NotifyAdmin($arregloAceptado));
+            User::findOrFail(10)->notify(new NotifyAdmin($arregloAceptado));
+
+            DB::commit();
+ 
+        } catch (Exception $e){
+            DB::rollBack();
+        }
     }
 
     public function asignarCliente2(Request $request)

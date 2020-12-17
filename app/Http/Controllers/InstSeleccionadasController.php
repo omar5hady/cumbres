@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use App\Dep_credito;
 use Excel;
 use App\Contrato;
+use App\Credito;
 use App\Dev_credito;
 use Auth;
 use App\Pago_contrato;
@@ -673,6 +674,13 @@ class InstSeleccionadasController extends Controller
             $contrato = Contrato::findOrFail($credito->credito_id);
             $contrato->saldo = round($contrato->saldo - $deposito->cant_depo,2);
             $contrato->save();
+            
+            $credit = Credito::findOrFail($credito->credito_id);
+
+            if($credit->porcentaje_terreno > 0){
+                $porcentaje = $credit->porcentaje_terreno/100;
+                $deposito->monto_terreno = $deposito->cant_depo*$porcentaje;
+            }
 
             $credito->save();
 
@@ -719,6 +727,13 @@ class InstSeleccionadasController extends Controller
             $contrato = Contrato::findOrFail($credito->credito_id);
             $contrato->saldo = round($contrato->saldo + $deposito->cant_depo - $request->cant_depo,2);
             $contrato->save();
+
+            $credit = Credito::findOrFail($credito->credito_id);
+
+            if($credit->porcentaje_terreno > 0){
+                $porcentaje = $credit->porcentaje_terreno/100;
+                $deposito->monto_terreno = $deposito->cant_depo*$porcentaje;
+            }
 
             $credito->save();
             $deposito->inst_sel_id = $request->inst_sel_id;

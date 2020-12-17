@@ -177,7 +177,7 @@ class FacturasController extends Controller
             if($moved){
                 $deposito->factura_terreno = $name;
                 $deposito->folio_factura_terreno = $request->upFolioTer;
-                $deposito->monto_terreno = $request->upMontoTer;
+                //$deposito->monto_terreno = $request->upMontoTer;
                 $deposito->f_carga_factura_terreno = Carbon::now()->format('Y-m-d');
                 $deposito->save();
             }
@@ -582,7 +582,7 @@ class FacturasController extends Controller
             if($moved){
                 $deposito->factura_terreno = $name;
                 $deposito->folio_factura_terreno = $request->upFolioTer;
-                $deposito->monto_terreno = $request->upMontoTer;
+                //$deposito->monto_terreno = $request->upMontoTer;
                 $deposito->f_carga_factura_terreno = Carbon::now()->format('Y-m-d');
                 $deposito->save();
             }

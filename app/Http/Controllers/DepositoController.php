@@ -1010,6 +1010,7 @@ class DepositoController extends Controller
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         try{
             DB::beginTransaction();
+
             $deposito = new Deposito();
             $deposito->pago_id = $request->pago_id;
             $deposito->cant_depo = $request->cant_depo;
@@ -1054,6 +1055,13 @@ class DepositoController extends Controller
 
             $contrato = Contrato::findOrFail($pago_contrato->contrato_id);
             $contrato->saldo = round($contrato->saldo - $pago,2);
+
+            $credit = Credito::findOrFail($pago_contrato->contrato_id);
+
+            if($credit->porcentaje_terreno > 0){
+                $porcentaje = $credit->porcentaje_terreno/100;
+                $deposito->monto_terreno = $pago*$porcentaje;
+            }
             
             $contrato->save(); 
 
@@ -1237,6 +1245,13 @@ class DepositoController extends Controller
             $contrato = Contrato::findOrFail($pago_contrato->contrato_id);
             $contrato->saldo = round($contrato->saldo + $pagoAnt - $pago,2);
             $contrato->save(); 
+
+            $credit = Credito::findOrFail($pago_contrato->contrato_id);
+
+            if($credit->porcentaje_terreno > 0){
+                $porcentaje = $credit->porcentaje_terreno/100;
+                $deposito->monto_terreno = $pago*$porcentaje;
+            }
 
             $pago_contrato->save();
 
@@ -2471,11 +2486,11 @@ class DepositoController extends Controller
             ->join('clientes','creditos.prospecto_id','=','clientes.id')
             ->join('personal','clientes.id','=','personal.id')
             ->select('contratos.id','depositos.id as depId',
-                    'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
+                    'creditos.fraccionamiento',
                     'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
                     'personal.nombre','personal.apellidos','depositos.concepto',
                     'depositos.monto_terreno', 
-                    'depositos.f_carga_factura_terreno','depositos.cuenta');
+                    'depositos.fecha_pago as fecha_dep','depositos.cuenta');
 
         $ingresosCreditos = Dep_credito::join('inst_seleccionadas','inst_seleccionadas.id','=','dep_creditos.inst_sel_id')
             ->join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
@@ -2483,15 +2498,15 @@ class DepositoController extends Controller
             ->join('lotes','lotes.id','=','creditos.lote_id')
             ->join('personal','personal.id','=','creditos.prospecto_id')
             ->select('contratos.id', 'dep_creditos.id as depId',
-                    'dep_creditos.fecha_deposito as fecha_pago','creditos.fraccionamiento',
+                    'creditos.fraccionamiento',
                     'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
                     'personal.nombre','personal.apellidos', 'dep_creditos.concepto',
                     'dep_creditos.monto_terreno', 
-                    'dep_creditos.f_carga_factura_terreno','dep_creditos.cuenta');
+                    'dep_creditos.fecha_deposito as fecha_dep','dep_creditos.cuenta');
 
             if($request->b_fecha != '' && $request->b_fecha2 != ''){
-                $depositos = $depositos->whereBetween('depositos.f_carga_factura_terreno', [$request->b_fecha, $request->b_fecha2]);
-                $ingresosCreditos = $ingresosCreditos->whereBetween('dep_creditos.f_carga_factura_terreno', [$request->b_fecha, $request->b_fecha2]);
+                $depositos = $depositos->whereBetween('depositos.fecha_pago', [$request->b_fecha, $request->b_fecha2]);
+                $ingresosCreditos = $ingresosCreditos->whereBetween('dep_creditos.fecha_deposito', [$request->b_fecha, $request->b_fecha2]);
             }
 
         $depositos = $depositos

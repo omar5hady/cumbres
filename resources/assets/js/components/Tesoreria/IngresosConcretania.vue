@@ -88,7 +88,7 @@
                                             <td class="td2" v-text="'Deposito de crédito'"></td>
                                         </template>
                                         <td class="td2" v-text="'$'+formatNumber(lote.monto_terreno)"></td>
-                                        <td class="td2" v-text="lote.f_carga_factura_terreno"></td>
+                                        <td class="td2" v-text="lote.fecha_dep"></td>
                                     </tr>                               
                                 </tbody>
                             </table>

@@ -348,50 +348,7 @@
                                     </div>
                                 </div> 
                                 
-                                <!-- listado para privilegios del menu Reportes -->
-                                <div class="col-md-4">
-                                    <div class="form-group row border">
-                                            <a class="nav-link nav-dropdown-toggle"><i class="icon-people"></i> <input @click="limpiarReportes()" v-model="reportes" type="checkbox" value="1"/> Modulo Reportes</a>
-                                                <ul class="nav-dropdown-items" v-if="reportes==1">
-                                                    <li class="nav-item">
-                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="mejora" type="checkbox" value="1"/> Estadisticas Mejora</a>
-                                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_proy" type="checkbox" value="1"/> Resumen por proyecto</a>
-                                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_publi" type="checkbox" value="1"/> Estadisticas de Publicidad</a>
-                                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="inventario" type="checkbox" value="1"/> Inventario contable</a>
-                                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_venta_canc" type="checkbox" value="1"/> Reporte de ventas y cancelaciones</a>
-                                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_asesores" type="checkbox" value="1"/> Reporte de asesores</a>
-                                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_ini_term_ventas" type="checkbox" value="1"/> Reporte de inicio, termino, ventas y cobranza</a>
-                                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_recursos_propios" type="checkbox" value="1"/> Reporte de recursos propios</a>
-                                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_vent_modelos" type="checkbox" value="1"/> Reporte por modelo</a>
-                                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_detalles_post" type="checkbox" value="1"/> Reporte de detalles</a>
-                                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_acumulado" type="checkbox" value="1"/> Reporte acumulado</a>
-                                                    </li>
-                                                    
-                                                </ul>
-                                    </div>
-                                </div> 
-
-
+                             
                                 <!-- listado para privilegios del menu Reportes -->
                                 <div class="col-md-4">
                                     <div class="form-group row border">

@@ -357,7 +357,7 @@ class CreditoController extends Controller
 
         $cliente = Cliente::select('vendedor_id')->where('id','=',$simulacion->prospecto_id)->get();
 
-        $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
+            $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
             $fecha = Carbon::now();
             $msj = "Se ha rechazado el credito # " . $simulacion->id;
             $arregloAceptado = [
@@ -1047,6 +1047,7 @@ class CreditoController extends Controller
             }
 
         $contratos = $contratos->where('lotes.emp_constructora','=','CONCRETANIA')
+                    ->where('lotes.emp_terreno','=','Grupo Constructor Cumbres')
                     ->where('contratos.status','!=',0)
                     ->where('contratos.status','!=',2)
                     ->orderBy('contratos.id')->paginate(10);
@@ -1093,6 +1094,7 @@ class CreditoController extends Controller
             }
 
         $contratos = $contratos->where('lotes.emp_constructora','=','CONCRETANIA')
+                    ->where('lotes.emp_terreno','=','Grupo Constructor Cumbres')
                     ->where('contratos.status','!=',0)
                     ->where('contratos.status','!=',2)
                     ->orderBy('contratos.id')

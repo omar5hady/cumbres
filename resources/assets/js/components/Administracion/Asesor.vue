@@ -76,9 +76,9 @@
                                                 </button>
                                             </template>
 
-                                            <button type="button" @click="abrirModal('Vacaciones','',Personal)" class="btn btn-success btn-sm" title="Periodo vacacional">
+                                            <!-- <button type="button" @click="abrirModal('Vacaciones','',Personal)" class="btn btn-success btn-sm" title="Periodo vacacional">
                                                 <i class="fa fa-calendar"></i>
-                                            </button>
+                                            </button> -->
                                       
                                         </td>
                                         <td title="Ver prospectos">
@@ -1328,6 +1328,7 @@
                 this.arrayProspectos=[];
                 this.buscar2='';
                 this.criterio2='personal.nombre';
+                this.selectAsesores();
             },
             /**Metodo para registrar  */
             registrarPersonal(){
@@ -1772,7 +1773,6 @@
                 this.tipo_vendedor=0;
                 this.tituloModal2='';
                 this.modal2=0;
-                this.arrayAsesores=[];
             
 
             },
