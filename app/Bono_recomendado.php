@@ -24,7 +24,10 @@ class Bono_recomendado extends Model
         'etapa_rec',
         'manzana_rec',
         'lote_rec',
-        'fecha_compra_rec'
+        'fecha_compra_rec',
+        'obs',
+        'num_recibo',
+        'banco'
 
     ];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
 

@@ -312,6 +312,28 @@
                                 <div class="col-md-3">
                                     <input type="date" v-model="fecha_pago" class="form-control">
                                 </div>
+
+                                <label class="col-md-1 form-control-label" for="text-input"># Recibo:</label>
+                                <div class="col-md-3">
+                                    <input type="text" v-model="num_recibo" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-md-2 form-control-label">Cuenta</label>
+                                <div  class="col-md-5">
+                                    <select class="form-control" v-model="banco">
+                                        <option value="">Seleccione</option>
+                                        <option v-for="banco in arrayBancos" :key="banco.num_cuenta + '-' + banco.banco" :value="banco.num_cuenta + '-' + banco.banco" v-text="banco.num_cuenta + '-' + banco.banco"></option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-md-2 form-control-label">Observaciones</label>
+                                <div  class="col-md-6">
+                                    <textarea class="form-control" name="" id="" cols="60" rows="2" v-model="observacion"></textarea>
+                                </div>
                             </div>
 
 
@@ -405,6 +427,25 @@
                                 <label class="col-md-2 form-control-label" for="text-input">Fecha de pago:</label>
                                 <div class="col-md-3">
                                     <input type="date" readonly v-model="fecha_pago" class="form-control">
+                                </div>
+
+                                <label class="col-md-1 form-control-label" for="text-input"># Recibo:</label>
+                                <div class="col-md-3">
+                                    <input type="text" readonly v-model="num_recibo" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-md-2 form-control-label">Cuenta</label>
+                                <div  class="col-md-8">
+                                    <input type="text" readonly v-model="banco" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-md-2 form-control-label">Observaciones</label>
+                                <div  class="col-md-6">
+                                    <textarea class="form-control" readonly name="" id="" cols="60" rows="2" v-model="observacion"></textarea>
                                 </div>
                             </div>
 
@@ -602,6 +643,7 @@
                 arrayFraccionamientos: [],
                 arrayEtapas: [],
                 arrayClientes:[],
+                arrayBancos:[],
                 modal : 0,
                 tituloModal : '',
                 tipoAccion: 0,
@@ -625,6 +667,8 @@
 
                 id:'',
                 observacion:'',
+                num_recibo:'',
+                banco:'',
                 arrayObservacion:[],
                 modal2:'',
 
@@ -678,6 +722,19 @@
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+            selectCuenta(){
+                let me = this;
+                me.arrayBancos=[];
+                var url = '/select_cuenta';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayBancos = respuesta.cuentas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
             },
             listarObservacion(buscar){
                 let me = this;
@@ -865,6 +922,9 @@
                 axios.post('/bono_recomendado/generarPago',{
                     'id': this.id,
                     'fecha_pago' : this.fecha_pago,
+                    'num_recibo' : this.num_recibo,
+                    'obs' : this.observacion,
+                    'banco' : this.banco
                 }).then(function (response){
                     me.listarBonos(me.pagination.current_page);
                     me.cerrarModal();
@@ -1031,9 +1091,13 @@
                     
                     case 'pagar':
                     {
-                        if(this.rolId == 9 || this.rolId == 6){
+                        this.selectCuenta();
+                        if(this.rolId == 9 || this.rolId == 6 || this.rolId == 1){
                         //console.log(data);
                         this.modal =1;
+                        this.banco = '';
+                        this.num_recibo = '';
+                        this.observacion = '';
                         this.tituloModal='Generar pago';
                         this.tipoAccion=1;
                         this.id=data['id'];
@@ -1089,6 +1153,10 @@
                         this.manzana_rec = data['manzana_rec'];
                         this.lote_rec = data['lote_rec'];
                         this.fecha_pago = data['fecha_pago'];
+
+                        this.banco = data['banco'];
+                        this.num_recibo = data['num_recibo'];
+                        this.observacion = data['obs'];
                     }
                 }
 

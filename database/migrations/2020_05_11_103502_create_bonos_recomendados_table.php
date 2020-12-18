@@ -31,6 +31,9 @@ class CreateBonosRecomendadosTable extends Migration
             $table->date('fecha_compra_rec')->nullable();
             
             $table->date('fecha_pago')->nullable();
+            $table->string('num_recibo')->nullable();
+            $table->string('banco')->nullable();
+            $table->text('obs')->nullable();
             $table->boolean('status')->default(0);
             
             $table->timestamps();

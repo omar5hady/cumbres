@@ -52,21 +52,7 @@ class BonoRecomendadoController extends Controller
                     ->select('con.id','l.num_lote','e.num_etapa','f.nombre as proyecto',
                                 DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                                 DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
-                                'l.manzana','con.fecha', 'bonos_recomendados.fecha_aut1',
-                                'bonos_recomendados.fecha_aut2',
-                                'bonos_recomendados.monto',
-                                'bonos_recomendados.descripcion',
-                                'bonos_recomendados.ini_promo',
-                                'bonos_recomendados.fin_promo',
-                                'bonos_recomendados.recomendado',
-                                'bonos_recomendados.fecha_pago',
-                                'bonos_recomendados.status',
-
-                                'bonos_recomendados.proyecto_rec',
-                                'bonos_recomendados.etapa_rec',
-                                'bonos_recomendados.manzana_rec',
-                                'bonos_recomendados.lote_rec',
-                                'bonos_recomendados.fecha_compra_rec'
+                                'l.manzana','con.fecha', 'bonos_recomendados.*'
         );      
 
         
@@ -388,6 +374,9 @@ class BonoRecomendadoController extends Controller
 
         $bono = Bono_recomendado::findOrFail($request->id);
         $bono->fecha_pago = $request->fecha_pago;
+        $bono->obs = $request->obs;
+        $bono->banco = $request->banco;
+        $bono->num_recibo = $request->num_recibo;
         $bono->status = 3;
         $bono->save();
 
