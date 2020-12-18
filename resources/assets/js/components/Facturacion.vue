@@ -727,7 +727,7 @@
                                     <input type="number" name="upMonto" id="upMonto" step="0.01" style="right: 10px;" class="form-control col-sm-8" required>
                                 </div>
 
-                                <template v-if="statusTerreno.emp_constructora == 'CONCRETANIA' && (statusTerreno.pendiente_terre != 0 || statusTerreno.factura_terreno)">
+                                <template v-if="statusTerreno.emp_constructora == 'CONCRETANIA' && (statusTerreno.pendiente_terre != 0 || statusTerreno.factura_terreno) && tipoFactura != 'liqDeposito' && tipoFactura != 'contrato'">
                                     
                                     <hr>
                                     <div class="row">
@@ -746,8 +746,8 @@
                                     </div>
                                     <br>
                                     <div class="row">
-                                        <div class="col-sm-12">
-                                            <h5 class="text-info" v-text="'El porcentage de este deposito para la factura del terreno es: $'+statusTerreno.porc_deposito"></h5>
+                                        <div class="col-sm-12" v-if="tipoFactura != 'liqDeposito' && tipoFactura != 'contrato'">
+                                            <h5 class="text-info" v-text="'El porcentaje de este deposito para la factura del terreno es: $'+statusTerreno.porc_deposito"></h5>
                                             <h5 class="text-info" v-text="'El saldo pendiente a facturar para este terreno es: $'+statusTerreno.pendiente_terre"></h5>
                                             <h4 class="text-danger" v-if="(statusTerreno.pendiente_terre - montoTer) < 0"
                                                 v-text="'El monto de la factura(s) no puede exceder el valor pendiente del terreno.'">
@@ -757,7 +757,7 @@
                                 </template>
                         </div>
                         <div class="modal-footer">
-                            <template v-if="statusTerreno.emp_constructora == 'CONCRETANIA'">
+                            <template v-if="statusTerreno.emp_constructora == 'CONCRETANIA' && tipoFactura != 'liqDeposito' && tipoFactura != 'contrato'">
                                 <button v-if="(statusTerreno.pendiente_terre - montoTer) >= 0" type="submit" class="btn btn-primary">Guardar</button>
                             </template>
                             <button v-else type="submit" class="btn btn-primary">Guardar</button>

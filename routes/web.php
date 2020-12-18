@@ -904,6 +904,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::delete('/cat_bono/delete', 'CatalogoBonoController@delete');
 
         Route::get('/bono_recomendado/index','BonoRecomendadoController@index');
+        Route::get('/bono_recomendado/excel','BonoRecomendadoController@excel');
         Route::get('/bono_recomendado/listarObs','BonoRecomendadoController@listarObservaciones');
         Route::post('/bono_recomendado/storeObservacion', 'BonoRecomendadoController@storeObservacion');
 

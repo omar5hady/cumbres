@@ -9,9 +9,10 @@
                 <div class="card scroll-box">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Bonos por recomendación
-                        <!--   Boton Nuevo    -->
-                        
-                        <!---->
+                        <a :href="'/bono_recomendado/excel?criterio=' + criterio + '&buscar=' + buscar + '&b_etapa=' + b_etapa
+                                     + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote + '&status=' + status + '&b_empresa=' + b_empresa"
+                            class="btn btn-success"><i class="fa fa-file-text"></i> Excel
+                        </a>
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
@@ -668,7 +669,7 @@
             listarBonos(page){
                 let me = this;
                 var url = '/bono_recomendado/index?page=' + page  + '&criterio=' + me.criterio + '&buscar=' + me.buscar + '&b_etapa=' + me.b_etapa
-                                     + '&b_manzana=' + me.b_manzana + '&b_lote=' + me.b_lote + '&status=' + me.status +'&b_empresa='+this.b_empresa;
+                                     + '&b_manzana=' + me.b_manzana + '&b_lote=' + me.b_lote + '&status=' + me.status +'&b_empresa='+me.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayBonos = respuesta.bonos.data;
