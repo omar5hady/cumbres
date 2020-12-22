@@ -96,6 +96,10 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/select/asesores2','UserController@selectAsesores2');
         Route::put('/cliente/reasignar','ClienteController@asignarCliente');
 
+        Route::get('/asesores/getAsesoresProyecto','UserController@getAsesoresProyecto');
+        Route::post('/asesores/asignarProyecto','UserController@asignarProyecto');
+        Route::delete('/asesores/deleteAsignarProy','UserController@deleteAsignarProy');
+
         Route::get('/pruebaLead','ClienteController@asignarClienteAleatorio');
         
         Route::post('/cliente/reasignar2','ClienteController@asignarCliente2'); // desde vista mis Prospectos
@@ -304,6 +308,7 @@ Route::group(['middleware' => ['auth']],function(){
 
     ///////////////////// RUTAS INGRESOS CONCRETANIA
         Route::get('/ingresosConcretania/pendeintesIngresar','DepositoController@pendeintesIngresar');
+        Route::get('/ingresosConcretania/pendeintesIngresarExcel','DepositoController@pendeintesIngresarExcel');
         Route::get('/ingresosConcretania/historialIngresos','DepositoController@historialIngresos');
         Route::put('/ingresosConcretania/guardarIngreso','DepositoController@guardarIngreso');
 

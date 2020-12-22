@@ -12,6 +12,7 @@ use File;
 use Excel;
 use Carbon\Carbon;
 use App\Cliente;
+Use App\Asign_proyecto;
 
 
 class UserController extends Controller
@@ -1034,6 +1035,9 @@ class UserController extends Controller
             if($request->tipo != ''){
                 $personas = $personas->where('vendedores.tipo','=',$request->tipo);
             }
+            if($request->condicion != ''){
+                $personas = $personas->where('users.condicion','=',1);
+            }
             $personas = $personas->orderBy('personal.nombre', 'asc')
             ->orderBy('personal.apellidos', 'asc')
             ->get();
@@ -1423,6 +1427,28 @@ class UserController extends Controller
                         ->paginate(6);
 
         return $users;
+    }
+
+    public function getAsesoresProyecto(Request $request){
+        $asesores = Personal::join('asign_proyectos','personal.id','=','asign_proyectos.asesor_id')
+                ->select('personal.nombre','personal.apellidos','asign_proyectos.id')
+                ->where('asign_proyectos.proyecto_id','=',$request->proyecto)->get();
+
+        return ['asesores'=>$asesores];
+    }
+
+    public function asignarProyecto(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $asign = new Asign_proyecto();
+        $asign->proyecto_id = $request->proyecto;
+        $asign->asesor_id = $request->asesor;
+        $asign->save();
+    }
+
+    public function deleteAsignarProy(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $asign = Asign_proyecto::findOrFail($request->id);
+        $asign->delete();
     }
 
     

@@ -138,6 +138,9 @@
                                     <li @click="menu=73" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-user-circle-o"></i>Mis Asesores</a>
                                     </li>
+                                    <li @click="menu=254" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-user-circle-o"></i>Asignacion de proyectos</a>
+                                    </li>
                                 @endif
 
                                 @if(Auth::user()->cuenta == 1)

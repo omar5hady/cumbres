@@ -51,6 +51,10 @@
                             <div class="col-md-9">
                                 <div class="input-group">
                                     <button type="submit" @click="listarLotes()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <a :href="'/ingresosConcretania/pendeintesIngresarExcel?b_fecha=' + b_fecha + '&b_fecha2=' + b_fecha2"
+                                        class="btn btn-success">
+                                        <i class="fa fa-file-excel-o"></i>&nbsp;Excel
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -67,7 +71,8 @@
                                         <th># Lote</th>
                                         <th>Cliente</th>
                                         <th>Clasificación</th>
-                                        <th>Importe</th>
+                                        <th>Total de deposito</th>
+                                        <th>Importe a ingresar</th>
                                         <th>Fecha</th>
                                     </tr>
                                 </thead>
@@ -87,6 +92,7 @@
                                         <template v-else>
                                             <td class="td2" v-text="'Deposito de crédito'"></td>
                                         </template>
+                                        <td class="td2" v-text="'$'+formatNumber(lote.cant_depo)"></td>
                                         <td class="td2" v-text="'$'+formatNumber(lote.monto_terreno)"></td>
                                         <td class="td2" v-text="lote.fecha_dep"></td>
                                     </tr>                               
@@ -253,6 +259,7 @@
                                         <th># Lote</th>
                                         <th>Cliente</th>
                                         <th>Valor de venta</th>
+                                        <th>Valor de escrituracion</th>
                                         <th>Valor de terreno</th>
                                         <th>Total pagado</th>
                                         <th>Por pagar</th>
@@ -268,6 +275,8 @@
                                         <td v-text="lote.num_lote"></td>
                                         <td class="td2" v-text="lote.nombre + ' ' + lote.apellidos"></td>
                                         <td class="td2" v-text="'$'+formatNumber(lote.precio_venta)"></td>
+                                        <td class="td2" v-if="lote.valor_escrituras != null" v-text="'$'+formatNumber(lote.valor_escrituras)"></td>
+                                        <td class="td2" v-else v-text="'$'+formatNumber(0)"></td>
                                         <td class="td2" v-text="'$'+formatNumber(lote.monto_terreno)"></td>
                                         <td class="td2" v-text="'$'+formatNumber(lote.saldo_terreno)"></td>
                                         <td class="td2" v-text="'$'+formatNumber(lote.monto_terreno - lote.saldo_terreno)"></td>

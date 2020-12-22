@@ -1059,8 +1059,16 @@ class DepositoController extends Controller
             $credit = Credito::findOrFail($pago_contrato->contrato_id);
 
             if($credit->porcentaje_terreno > 0){
+                $saldo = $credit->monto_terreno - $credit->saldo_terreno;
+
                 $porcentaje = $credit->porcentaje_terreno/100;
-                $deposito->monto_terreno = $pago*$porcentaje;
+                $monto_terreno = $pago*$porcentaje;
+                
+                if($deposito->monto_terreno > $saldo)
+                    $deposito->monto_terreno = $saldo;
+                else
+                    $deposito->monto_terreno = $monto_terreno;
+
             }
             
             $contrato->save(); 
@@ -1249,8 +1257,16 @@ class DepositoController extends Controller
             $credit = Credito::findOrFail($pago_contrato->contrato_id);
 
             if($credit->porcentaje_terreno > 0){
+                $saldo = $credit->monto_terreno - $credit->saldo_terreno;
+
                 $porcentaje = $credit->porcentaje_terreno/100;
-                $deposito->monto_terreno = $pago*$porcentaje;
+                $monto_terreno = $pago*$porcentaje;
+                
+                if($deposito->monto_terreno > $saldo)
+                    $deposito->monto_terreno = $saldo;
+                else
+                    $deposito->monto_terreno = $monto_terreno;
+
             }
 
             $pago_contrato->save();
@@ -2479,6 +2495,74 @@ class DepositoController extends Controller
 
     public function pendeintesIngresar(Request $request){
         if(!$request->ajax())return redirect('/');
+        $pendientes = $this->pendientesIngresoConcretania($request->b_fecha,$request->b_fecha2);
+        return['pendientes' => $pendientes];
+    }
+
+    public function pendeintesIngresarExcel(Request $request){
+        //if(!$request->ajax())return redirect('/');
+        $pendientes = $this->pendientesIngresoConcretania($request->b_fecha,$request->b_fecha2);
+        //return['pendientes' => $pendientes];
+        
+        return Excel::create('Pendientes de ingresar', function($excel) use ($pendientes){
+            $excel->sheet('Pendientes', function($sheet) use ($pendientes){
+                
+                $sheet->row(1, [
+                    'Proyecto', 'Etapa', 'Manzana', '# Lote', 'Cliente', 'Clasificación', 'Total de deposito', 'Importe a ingresar', 'Fecha'
+                ]);
+
+                $sheet->cells('A1:I1', function ($cells) {
+                    $cells->setBackground('#052154');
+                    $cells->setFontColor('#ffffff');
+                    // Set font family
+                    $cells->setFontFamily('Calibri');
+
+                    // Set font size
+                    $cells->setFontSize(12);
+
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+                $cont=1;            
+                $sheet->setColumnFormat(array(
+                    'H' => '$#,##0.00',
+                    'G' => '$#,##0.00',
+                ));
+                
+                foreach($pendientes as $index => $pendiente) {
+                    $cont++;
+
+                    $concepto = 'Deposito de crédito';
+                    if($pendiente->tipo == 0)
+                        $concepto = $lote->concepto;
+                    
+                    $sheet->row($index+2, [
+                        $pendiente->fraccionamiento, 
+                        $pendiente->etapa, 
+                        $pendiente->manzana, 
+                        $pendiente->num_lote, 
+                        $pendiente->nombre.' '.$pendiente->apellidos,
+                        $concepto,
+                        $pendiente->cant_depo, 
+                        $pendiente->monto_terreno, 
+                        $pendiente->fecha_dep, 
+                       
+                    ]);	
+                }
+
+
+                $num='A1:I' . $cont;
+                $sheet->setBorder($num, 'thin');
+                
+            });
+        }
+        
+        )->download('xls');
+    }
+
+    private function pendientesIngresoConcretania($fecha1, $fecha2){
+
         $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
             ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
             ->join('creditos','creditos.id','=','contratos.id')
@@ -2489,7 +2573,7 @@ class DepositoController extends Controller
                     'creditos.fraccionamiento',
                     'creditos.etapa', 'creditos.manzana', 'creditos.num_lote',
                     'personal.nombre','personal.apellidos','depositos.concepto',
-                    'depositos.monto_terreno', 
+                    'depositos.monto_terreno', 'depositos.cant_depo',
                     'depositos.fecha_pago as fecha_dep','depositos.cuenta');
 
         $ingresosCreditos = Dep_credito::join('inst_seleccionadas','inst_seleccionadas.id','=','dep_creditos.inst_sel_id')
@@ -2501,12 +2585,12 @@ class DepositoController extends Controller
                     'creditos.fraccionamiento',
                     'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
                     'personal.nombre','personal.apellidos', 'dep_creditos.concepto',
-                    'dep_creditos.monto_terreno', 
+                    'dep_creditos.monto_terreno', 'dep_creditos.cant_depo',
                     'dep_creditos.fecha_deposito as fecha_dep','dep_creditos.cuenta');
 
-            if($request->b_fecha != '' && $request->b_fecha2 != ''){
-                $depositos = $depositos->whereBetween('depositos.fecha_pago', [$request->b_fecha, $request->b_fecha2]);
-                $ingresosCreditos = $ingresosCreditos->whereBetween('dep_creditos.fecha_deposito', [$request->b_fecha, $request->b_fecha2]);
+            if($fecha1 != '' && $fecha2 != ''){
+                $depositos = $depositos->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2]);
+                $ingresosCreditos = $ingresosCreditos->whereBetween('dep_creditos.fecha_deposito', [$fecha1, $fecha2]);
             }
 
         $depositos = $depositos
@@ -2537,10 +2621,8 @@ class DepositoController extends Controller
         $pendienteIngresar = collect($depositos)->merge(collect($ingresosCreditos));
 
 
-        return['depositos' => $depositos,
-                'ingresosCreditos' => $ingresosCreditos,
-                'pendientes' => $pendienteIngresar
-            ];
+        return $pendienteIngresar;
+
     }
 
     public function guardarIngreso(Request $request){

@@ -494,6 +494,10 @@
             <rep-ingresosenganche></rep-ingresosenganche>
         </template>
 
+        <template v-if="menu==254">
+            <asesores-fracc></asesores-fracc>
+        </template>
+
         
 
         

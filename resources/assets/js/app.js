@@ -42,6 +42,7 @@ Vue.component('lugar-contacto', require('./components/Administracion/LugarContac
 Vue.component('institucion-financiamiento', require('./components/Administracion/InstitucionFinanciamiento.vue'));
 Vue.component('tipo-credito', require('./components/Administracion/TipoCredito.vue'));
 Vue.component('asesores', require('./components/Administracion/Asesor.vue'));
+Vue.component('asesores-fracc', require('./components/Administracion/AsesoresFracc.vue'));
 Vue.component('notarias', require('./components/Administracion/Notaria.vue'));
 Vue.component('proveedores', require('./components/Administracion/Proveedores.vue'));
 Vue.component('campanias', require('./components/Administracion/Campania.vue'));

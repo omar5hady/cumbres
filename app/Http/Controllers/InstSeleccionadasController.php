@@ -678,8 +678,16 @@ class InstSeleccionadasController extends Controller
             $credit = Credito::findOrFail($credito->credito_id);
 
             if($credit->porcentaje_terreno > 0){
+                $saldo = $credit->monto_terreno - $credit->saldo_terreno;
+
                 $porcentaje = $credit->porcentaje_terreno/100;
-                $deposito->monto_terreno = $deposito->cant_depo*$porcentaje;
+                $monto_terreno = $deposito->cant_depo*$porcentaje;
+                
+                if($deposito->monto_terreno > $saldo)
+                    $deposito->monto_terreno = $saldo;
+                else
+                    $deposito->monto_terreno =  $monto_terreno;
+
             }
 
             $credito->save();
@@ -731,8 +739,15 @@ class InstSeleccionadasController extends Controller
             $credit = Credito::findOrFail($credito->credito_id);
 
             if($credit->porcentaje_terreno > 0){
+                $saldo = $credit->monto_terreno - $credit->saldo_terreno;
+
                 $porcentaje = $credit->porcentaje_terreno/100;
-                $deposito->monto_terreno = $deposito->cant_depo*$porcentaje;
+                $monto_terreno = $deposito->cant_depo*$porcentaje;
+                
+                if($deposito->monto_terreno > $saldo)
+                    $deposito->monto_terreno = $saldo;
+                else
+                    $deposito->monto_terreno =  $monto_terreno;
             }
 
             $credito->save();

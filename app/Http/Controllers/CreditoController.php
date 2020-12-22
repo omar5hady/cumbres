@@ -1021,11 +1021,13 @@ class CreditoController extends Controller
 
     public function indexEdoCuentaTerreno(Request $request){
         $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
+                ->leftJoin('expedientes','contratos.id','=','expedientes.id')
                 ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                 ->select('contratos.id','creditos.saldo_terreno','creditos.precio_venta',
                             'creditos.valor_terreno as monto_terreno', 'contratos.status',
                             'creditos.fraccionamiento','creditos.etapa','creditos.manzana',
+                            'expedientes.valor_escrituras',
                             'creditos.num_lote','personal.nombre','personal.apellidos');
 
         if($request->buscar != '')                            
@@ -1068,11 +1070,13 @@ class CreditoController extends Controller
     public function indexEdoCuentaTerrenoExcel(Request $request){
 
         $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
+                ->leftJoin('expedientes','contratos.id','=','expedientes.id')
                 ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                 ->select('contratos.id','creditos.saldo_terreno','creditos.precio_venta',
                             'creditos.valor_terreno as monto_terreno', 'contratos.status',
                             'creditos.fraccionamiento','creditos.etapa','creditos.manzana',
+                            'expedientes.valor_escrituras',
                             'creditos.num_lote','personal.nombre','personal.apellidos');
 
         if($request->buscar != '')                            
@@ -1104,11 +1108,11 @@ class CreditoController extends Controller
             $excel->sheet('Estado de cuenta', function($sheet) use ($contratos){
                 
                 $sheet->row(1, [
-                    'Fraccionamiento', 'Etapa', 'Manzana', '# Lote', 'Cliente', 'Valor de venta',
+                    'Fraccionamiento', 'Etapa', 'Manzana', '# Lote', 'Cliente', 'Valor de venta', 'Valor de escrituracion',
                     'Valor de terreno', 'Total pagado', 'Por pagar', 'Estatus'
                 ]);
 
-                $sheet->cells('A1:J1', function ($cells) {
+                $sheet->cells('A1:K1', function ($cells) {
                     $cells->setBackground('#052154');
                     $cells->setFontColor('#ffffff');
                     // Set font family
@@ -1129,6 +1133,7 @@ class CreditoController extends Controller
                     'G' => '$#,##0.00',
                     'H' => '$#,##0.00',
                     'I' => '$#,##0.00',
+                    'J' => '$#,##0.00',
                 ));
 
                 foreach($contratos as $index => $contrato) {
@@ -1149,13 +1154,14 @@ class CreditoController extends Controller
                         $contrato->num_lote,
                         $contrato->nombre.' '.$contrato->apellidos,
                         $contrato->precio_venta,
+                        $contrato->valor_escrituras,
                         $contrato->monto_terreno,
                         $contrato->saldo_terreno,
                         $contrato->monto_terreno+$contrato->saldo_terreno,
                         $contrato->status,
                     ]);	
                 }
-                $num='A1:J' . $cont;
+                $num='A1:K' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
         })->download('xls');
