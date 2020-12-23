@@ -8,7 +8,7 @@
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card scroll-box">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i> Carga de carta de bienvenida
+                        <i class="fa fa-align-justify"></i> Carga de archivos
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
@@ -18,8 +18,8 @@
                                     <select class="form-control col-md-4" v-model="criterio" @click="limpiarBusqueda()">
                                         <option value="fraccionamientos.nombre">Fraccionamiento</option>
                                     </select>
-                                    <input type="text" v-if="criterio=='fraccionamientos.nombre'"  v-model="buscar" @keyup.enter="listarEtapa(1,buscar,buscar2,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarEtapa(1,buscar,buscar2,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <input type="text" v-if="criterio=='fraccionamientos.nombre'"  v-model="buscar" @keyup.enter="listarEtapa(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <button type="submit" @click="listarEtapa(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </div>
@@ -31,18 +31,31 @@
                                         <th>Etapa</th>
                                         <th>Fraccionamiento</th>
                                         <th>Carta de bienvenida</th>
+                                        <th>Factibilidad</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="etapa in arrayEtapa" :key="etapa.id">
                                         <td class="td2" style="width:10%">
-                                            <button type="button" @click="abrirModal('etapa','subirArchivo',etapa)" class="btn btn-info btn-sm">
-                                            <i class="icon-cloud-upload"></i>
-                                            </button> &nbsp;
+                                            <button id="btnFiles" class="dropdown-toggle btn-light btn btn-sm" data-toggle="dropdown" type="button"
+                                                aria-haspopup="true" aria-expanded="false">
+                                                <i class="fa fa-cloud-upload"></i>
+                                            </button>
+                                            <div class="dropdown-menu" aria-labelleadby="btnFiles">
+                                                <button style="background-color: #1E1E1E !important;" type="button" @click="abrirModal('etapa','subirArchivo',etapa)" class="dropdown-item btn btn-danger btn-sm">
+                                                    <i class="icon-cloud-upload">&nbsp;Carta de bienvenida</i>
+                                                </button>
+                                                <button style="background-color: #1E1E1E !important;" type="button" @click="abrirModal('etapa','factibilidad',etapa)" class="dropdown-item btn btn-primary btn-sm">
+                                                    <i class="icon-cloud-upload">&nbsp;Factibilidad</i>
+                                                </button>
+                                            </div>
+                                            
                                         </td>
                                         <td class="td2" v-text="etapa.num_etapa"></td>
                                         <td class="td2" v-text="etapa.fraccionamiento"></td>
                                         <td class="td2" style="width:7%" v-if = "etapa.carta_bienvenida"><a class="btn btn-success btn-sm" v-bind:href="'/downloadCartaBienvenida/'+etapa.carta_bienvenida"><i class="fa fa-download fa-spin"></i></a></td>
+                                        <td class="td2" v-else></td>
+                                        <td class="td2" style="width:7%" v-if = "etapa.factibilidad"><a class="btn btn-primary btn-sm" v-bind:href="'/downloadFactibilidad/'+etapa.factibilidad"><i class="fa fa-download fa-spin"></i></a></td>
                                         <td class="td2" v-else></td>
                                     </tr>                               
                                 </tbody>
@@ -52,13 +65,13 @@
                             <!--Botones de paginacion -->
                             <ul class="pagination">
                                 <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,buscar2,criterio)">Ant</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
                                 </li>
                                 <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,buscar2,criterio)" v-text="page"></a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
                                 </li>
                                 <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,buscar2,criterio)">Sig</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
                                 </li>
                             </ul>
                         </nav>
@@ -76,26 +89,37 @@
                               <span aria-hidden="true">×</span>
                             </button>
                         </div>
-                        <div v-if="tipoAccion != 2" class="modal-body">
+                        <div class="modal-body">
 
-                        <div class="form-group row">
-                            <label class="col-md-3 form-control-label" for="text-input">Numero de etapa</label>
-                            <div class="col-md-4">
-                                <input type="text" readonly v-model="num_etapa" class="form-control" placeholder="# de etapa">
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Etapa</label>
+                                <div class="col-md-4">
+                                    <input type="text" readonly v-model="num_etapa" class="form-control" placeholder="# de etapa">
+                                </div>
                             </div>
-                        </div>
 
-                                
-                        <div v-if="tipoAccion != 2">
-                             <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
+                                    
+                            <div v-if="tipoAccion != 2">
+                                <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
 
-                                    <strong>Sube aqui la carta de bienvenida para esta etapa (PDF)</strong>
+                                        <strong>Sube aqui la carta de bienvenida para esta etapa (PDF)</strong>
 
-                                    <input type="file" class="form-control" v-on:change="onImageChange">
-                                    <br/>
-                                    <button type="submit" class="btn btn-success">Cargar</button>
-                            </form>
-                        </div>
+                                        <input type="file" class="form-control" v-on:change="onImageChange">
+                                        <br/>
+                                        <button type="submit" class="btn btn-success">Cargar</button>
+                                </form>
+                            </div>
+
+                            <div v-else>
+                                <form  method="post" @submit="formSubmitFactibilidad" enctype="multipart/form-data">
+
+                                        <strong>Sube aqui la factibilidad esta etapa (PDF)</strong>
+
+                                        <input type="file" class="form-control" v-on:change="onImageChangeFactibilidad">
+                                        <br/>
+                                        <button type="submit" class="btn btn-success">Cargar</button>
+                                </form>
+                            </div>
                         </div>       
                     
                         <!-- Botones del modal -->
@@ -126,6 +150,7 @@
                 id:0,
                 num_etapa : 0,
                 carta_bienvenida: '',
+                factibilidad: '',
                 arrayEtapa : [],
                 modal : 0,
                 tituloModal : '',
@@ -198,8 +223,40 @@
                         showConfirmButton: false,
                         timer: 2000
                         })
-                    me.cerrarModal4();
-                    me.listarEtapa(1,'','','fraccionamiento.nombre');
+                    me.cerrarModal();
+                    me.listarEtapa(me.pagination.current_page,me.buscar,'fraccionamiento.nombre');
+
+                }).catch(function (error) {
+                    currentObj.output = error;
+
+                });
+
+            },
+
+            onImageChangeFactibilidad(e){
+                console.log(e.target.files[0]);
+                this.factibilidad = e.target.files[0];
+            },
+
+            formSubmitFactibilidad(e) {
+                e.preventDefault();
+                let currentObj = this;
+            
+                let formData = new FormData();
+                formData.append('factibilidad', this.factibilidad);
+                let me = this;
+                axios.post('/formSubmitFactibilidad/'+this.id, formData)
+                .then(function (response) {
+                    currentObj.success = response.data.success;
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo guardado correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+                    me.cerrarModal();
+                    me.listarEtapa(me.pagination.current_page,me.buscar,'fraccionamiento.nombre');
 
                 }).catch(function (error) {
                     currentObj.output = error;
@@ -210,9 +267,9 @@
 
 
             /**Metodo para mostrar los registros */
-            listarEtapa(page, buscar, buscar2, criterio){
+            listarEtapa(page, buscar, criterio){
                 let me = this;
-                var url = '/etapa?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&criterio=' + criterio;
+                var url = '/etapa?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayEtapa = respuesta.etapas.data;
@@ -223,12 +280,12 @@
                 });
             },
            
-            cambiarPagina(page, buscar, buscar2, criterio){
+            cambiarPagina(page, buscar, criterio){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarEtapa(page,buscar,buscar2,criterio);
+                me.listarEtapa(page,buscar,criterio);
             },
             limpiarBusqueda(){
                 let me=this;
@@ -239,6 +296,8 @@
                 this.modal = 0;
                 this.tituloModal = '';
                 this.num_etapa = '';
+                this.factibilidad='';
+                this.carta_bienvenida='';
             },
 
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
@@ -257,6 +316,16 @@
                                 this.tipoAccion = 1;
                                 break;
                             }
+                            case 'factibilidad':
+                            {
+                                this.modal = 1;
+                                this.tituloModal = 'Subir factibilidad';
+                                this.num_etapa = data['num_etapa'];
+                                this.id=data['id'];
+                                this.carta_bienvenida=data['carta_bienvenida'];
+                                this.tipoAccion = 2;
+                                break;
+                            }
                            
                         }
                     }
@@ -264,7 +333,7 @@
             }
         },
         mounted() {
-            this.listarEtapa(1,this.buscar,this.buscar2,this.criterio);
+            this.listarEtapa(1,this.buscar,this.criterio);
         }
     }
 </script>

@@ -34,6 +34,7 @@ class EtapaController extends Controller
             ->join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
             ->select('etapas.num_etapa','etapas.f_ini',
                 'etapas.f_fin','etapas.id','etapas.personal_id', 'etapas.fecha_ini_venta',
+                'etapas.factibilidad',
                 DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
                 'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento',
                 'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','etapas.plantilla_telecom','etapas.empresas_telecom',
@@ -473,6 +474,48 @@ class EtapaController extends Controller
 
     public function downloadCartaBienvenida ($fileName){
         $pathtoFile = public_path().'/files/etapas/cartasBienvenida/'.$fileName;
+        return response()->download($pathtoFile);
+    }
+
+    public function formSubmitFactibilidad (Request $request, $id){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $ultimaCartaB = Etapa::select('factibilidad','id')
+                                 ->where('id','=',$id)
+                                 ->get();
+
+        if($ultimaCartaB->isEmpty()==1){
+            $fileName = uniqid().'.'.$request->factibilidad->getClientOriginalExtension();
+            $moved =  $request->factibilidad->move(public_path('/files/etapas/factibilidad/'), $fileName);
+    
+            if($moved){
+                if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+                $reglamentoEtapa = Etapa::findOrFail($request->id);
+                $reglamentoEtapa->factibilidad = $fileName;
+                $reglamentoEtapa->id = $id;
+                $reglamentoEtapa->save(); //Insert
+        
+                }
+            return back();
+            }else{
+                $pathAnterior = public_path().'/files/etapas/factibilidad/'.$ultimaCartaB[0]->factibilidad;
+                File::delete($pathAnterior);
+                $fileName = uniqid().'.'.$request->factibilidad->getClientOriginalExtension();
+                $moved =  $request->factibilidad->move(public_path('/files/etapas/factibilidad/'), $fileName);
+        
+                if($moved){
+                    if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+                    $reglamentoEtapa = Etapa::findOrFail($request->id);
+                    $reglamentoEtapa->factibilidad = $fileName;
+                    $reglamentoEtapa->id = $id;
+                    $reglamentoEtapa->save(); //Insert
+            
+                    }
+                return back();
+            }
+    }
+
+    public function downloadFactibilidad ($fileName){
+        $pathtoFile = public_path().'/files/etapas/factibilidad/'.$fileName;
         return response()->download($pathtoFile);
     }
 }

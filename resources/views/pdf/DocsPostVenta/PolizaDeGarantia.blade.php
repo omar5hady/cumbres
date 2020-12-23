@@ -46,9 +46,10 @@
 
             <p>GARANTÍA QUE OTORGA <b>GRUPO CONSTRUCTOR CUMBRES S.A. DE C.V.,</b> EN LO SUCESIVO <i>"LA CONSTRUCTORA"</i>, REPRESENTADA
                 POR <b>SU APODERADO LEGAL EL C.P. MARTÍN HERRERA SÁNCHEZ,</b> CON DOMICILIO <b>MANUEL GUTIERREZ NAJERA NO.190</b> COL.
-                <b>TEQUISQUIAPAN</b> DE LA CIUDAD DE <b>SAN LUIS POTOSI, S.L.P.</b> CON TELÉFONO <b>833-46-83</b>, A FAVOR DEL <b>C.{{mb_strtoupper($contratos[0]->nombre_cliente)}},</b>
+                <b>TEQUISQUIAPAN</b> DE LA CIUDAD DE <b>SAN LUIS POTOSI, S.L.P.</b> CON TELÉFONO <b>444-833-46-83</b>, A FAVOR DEL <b>C. {{mb_strtoupper($contratos[0]->nombre_cliente)}},</b>
                 EN LO SUCESIVO <i>"EL ACREDITADO",</i> RESPECTO A LA VIVIENDA UBICADA EN EL LOTE <b>{{$contratos[0]->num_lote}}</b> DE LA MANZANA <b>{{$contratos[0]->manzana}}</b> DE LA CALLE
-                <b>{{mb_strtoupper($contratos[0]->calle)}} NO. {{$contratos[0]->numero}}</b> DEL CONJUNTO HABITACIONAL <b>"{{mb_strtoupper($contratos[0]->proyecto)}}"</b> LOCALIZADO EN LA DELEGACION DE <b>{{$contratos[0]->ciudadFraccionamiento}}</b>.
+                <b>{{mb_strtoupper($contratos[0]->calle)}} NO. {{$contratos[0]->numero}}</b> DEL CONJUNTO HABITACIONAL <b>"{{mb_strtoupper($contratos[0]->proyecto)}}"</b> 
+                LOCALIZADO EN EL MUNICIPIO DE <b>{{mb_strtoupper($contratos[0]->delegacion)}}</b> DE LA CIUDAD DE <b>{{mb_strtoupper($contratos[0]->ciudadFraccionamiento)}}</b>.
             </p>
 
             <p>LA PRESENTE PÓLIZA SE EXPIDE EN CUMPLIMIENTO A LO DISPUESTO EN EL CONTRATO DE COMPRAVENTA DEL INMUEBLE ARRIBA CITADO, <i>LA CONSTRUCTORA</i>,
@@ -58,12 +59,24 @@
             <h3 style="text-align: center;">O B L I G A C I O N E S</h3><br>
 
             <p><u><b>PRIMERA</b></u>.- <i>"LA CONSTRUCTORA"</i> SE OBLIGA A RESPONDER POR LAS FALLAS TÉCNICAS Y VICIOS OCULTOS QUE APARECIEREN EN LA VIVIENDA DESCRITA EN ÉSTA 
-                PÓLIZA, DURANTE UN TÉRMINO QUE NO EXCEDERÁ DE DOS AÑOS, CONTANDO A PARTIR DE LA FECHA DE LA ENTREG DE LA VIVIENDA.
+                PÓLIZA, DURANTE UN TÉRMINO QUE NO EXCEDERÁ DE 
+                @if($tiempo == 2)
+                    DOS AÑOS, 
+                @else
+                    CINCO AÑOS, 
+                @endif
+                CONTANDO A PARTIR DE LA FECHA DE LA ENTREG DE LA VIVIENDA.
             </p>
 
             <p><u><b>SEGUNDA</b></u>.- <i>"LA CONSTRUCTORA"</i>, SE COMPROMETE, FRENTE A <i>"EL ACREDITADO"</i> Y/O SUS BENEFICIARIOS,
-            DURANTE EL TÉRMINO DE DOS AÑOS A PROCEDER A LA REPARACIÓN, POR SU CUENTA Y COSTO, DE LAS FALLAS TÉCNICAS Y VICIOS OCULTOS QUE
-            SE PRESENTEN EN LA VIVIENDA OBJETO DE LA PRESENTE P+OLIZA. DICHOS TRABAJOS LOS INICIARÁ <i>"LA CONSTRUCTORA"</i> DENTRO DE UN PLAZO
+            DURANTE EL TÉRMINO DE 
+            @if($tiempo == 2)
+                DOS AÑOS 
+            @else
+                CINCO AÑOS 
+            @endif
+            A PROCEDER A LA REPARACIÓN, POR SU CUENTA Y COSTO, DE LAS FALLAS TÉCNICAS Y VICIOS OCULTOS QUE
+            SE PRESENTEN EN LA VIVIENDA OBJETO DE LA PRESENTE PÓLIZA. DICHOS TRABAJOS LOS INICIARÁ <i>"LA CONSTRUCTORA"</i> DENTRO DE UN PLAZO
             NO MAYOR DE 10 DÍAS HÁBILES CONTADOS A PARTIR DE LA FECHA EN QUE RECIBA LA COMUNICACIÓN RESPECTIVA POR PARTE DE <i>"EL ACREDITADO"</i>, 
             DEBIENDO CONCLUIRLOS DENTRO DE UNA PLAZO DE 15 DÍAS HÁBILES. <i>"LA COSTRUCTORA"</i> NO RESPONDERÁ POR DESPERFECTOS DERIVADOS DEL MAL USO O POR 
             FALTA DE MANTENIMIENTO DE LA VIVIENDA, POR PARTE DE <i>"EL ACREDITADO"</i>.
@@ -83,7 +96,7 @@
                     <div class="table-cell" style="text-align:center;"><br><br> {{mb_strtoupper($contratos[0]->nombre_cliente)}}</div>
                 </div>
             </div>
-            <br><br>
+            <br>
 
             <p style="text-align:center; font-size: 9pt;"><b>DIRECCION DE LA VIVIENDA:</b> {{mb_strtoupper($contratos[0]->calle)}} NO. {{$contratos[0]->numero}}, FRACC. "{{mb_strtoupper($contratos[0]->proyecto)}}", {{$contratos[0]->ciudadFraccionamiento}}.</p>
         </div>
@@ -103,7 +116,7 @@
             </p>
 
             <p><u><b>QUINTA</b></u>.- <i>"EL ACREDITADO"</i> DEBERÁ CONSERVAR EN SU PODER LA PRESENTE PÓLIZA DE GARANTÍA Y AL 
-                REPORTAR ALGÚN DESPERFECTO, OBTENER DE LA <i>"LA CONSTRUCTORA"</i> EL QUE HAYA ATENDIDO SATISFACTORIAMENTE EL DESPERFECTO 
+                REPORTAR ALGÚN DESPERFECTO, OBTENER DE <i>"LA CONSTRUCTORA"</i> EL QUE HAYA ATENDIDO SATISFACTORIAMENTE EL DESPERFECTO 
                 REPORTADO, TENIENDO LA OBLIGACION DE FIRMAR A ÉSTA, EL DOCUMENTO EN DONDE SE ACREDITE TAL CIRCUNSTANCIA.
             </p>
 
@@ -113,8 +126,13 @@
 
             <p><u><b>SEPTIMA</b></u>.- EL TÉRMINO DE VIGENCIA DE LA PRESENTE PÓLIZA COMENZARÁ A PARTIR DEL DÍA ______ DEL MES DE 
                 ___________________ DEL AÑO DE __________, Y CONCLUIRÁ EL DÍA _______ DEL MES DE _____________________ DEL AÑO DE 
-                ____________. AJUSTANDO CADA CONCEPTO AL PERIODO DE COBERTURA QUE SE ESPECIFICA EN EL APENDICE 1 Y APENDICE 2, DE 
-                ESTA MISMA PÓLIZA.
+                ____________. AJUSTANDO CADA CONCEPTO AL PERIODO DE COBERTURA QUE SE ESPECIFICA EN EL 
+                @if($tiempo == 2)
+                    APENDICE 1 Y APENDICE 2, 
+                @else
+                    APENDICE 1, APENDICE 2 Y APENDICE 3, 
+                @endif
+                DE ESTA MISMA PÓLIZA.
             </p> 
             
             <br><br><br><br>
@@ -376,32 +394,70 @@
 
 
         <div style="margin: 20px;">
-            <h3>A P E N D I C E No.1</h3>
-            <p>COBERTURA DE GARANTIA POR FALLAS TECNICAS Y VICIOS OCULTOS QUE REPORTE LA VIVIENDA</p>
-            <h3>BIENES E INSTALACIONES CON GARANTIA DE TRES MESES</h3>
-            <ul>
-                <li>TUBERÍAS DE GAS, AGUA O SANITARIAS TAPADAS, CON FUGAS O EN MAL ESTADO.</li>
-                <li>MUEBLES DE BAÑO, REGADERAS, MONOMANDOS, LLAVES, FREGADERO, LAVADERO Y SUS ACCESORIOS.</li>
-                <li>ACCESORIOS DE BAÑO, MAL COLOCADOS O CON DEFECTO.</li>
-                <li>DEFECTO EN FUNCIONAMIENTO DEL CALENTADOR A GAS LP Y CALENTADOR SOLAR (SI LA VIVIENDA LO INCLUYE EN SU EQUIPAMIENTO)</li>
-                <li>FALLAS EN INSTALACIÓN ELÉCTRICA</li>
-                <li>ACCESORIOS ELECTRICOS DEFECTUOSOS</li>
-                <li>PISOS Y AZULEJOS MAL EMBOQUILLADOS</li>
-                <li>PISOS Y AZULEJOS, FLOJOS O FISURADOS (ABERTURA MAYOR A 1.5 MM)</li>
-                <li>VENTANAS, PUERTAS Y CHAPAS EN MAL ESTADO O DEFECTUOSAS.</li>
-                <li>HUMEDAD EN MUROS, NO DERIVADO DE UNA CAUSA EXTERNA PROPIA DE LA VIVIENDA.</li>
-                <li>CANCELERIA Y DOMOS, MALA INSTALACIÓN Y SELLADOS</li>
-            </ul>
-            <h3>A P E N D I C E No.2</h3>
-            <p>COBERTURA DE GARANTIA POR VICIOS OCULTOS QUE REPORTE LA VIVIENDA.</p>
-            <h3>BIENES E INSTALACIONES CON GARANTIA DE DOS AÑOS</h3>
-            <ul>
-                <li>DEFECTOS EN IMPERMEABILIZACIÓN, NO DERVADO DE UNA CAUSA EXTERNA PROPIA DE LA VIVIENDA.</li>
-                <li>DEFECTOS ESTRUCTURALES, GRIETAS O FISURAS QUE AFECTEN MUROS Y PLAFONES, AQUELLAS EN LAS QUE SE PUEDE VER DE LADO A LADO, O QUE TENGA UNA APERTURA MAYOR A 1.5 MM</li>
-            </ul>
+            
+            @if($tiempo == 2)
+                <h3>A P E N D I C E No. 1</h3>
+                <p>COBERTURA DE GARANTIA POR FALLAS TECNICAS Y VICIOS OCULTOS QUE REPORTE LA VIVIENDA</p>
+                <h3>BIENES E INSTALACIONES CON GARANTIA DE TRES MESES.</h3>
+                <ul>
+                    <li>TUBERÍAS DE GAS, AGUA O SANITARIAS TAPADAS, CON FUGAS O EN MAL ESTADO.</li>
+                    <li>MUEBLES DE BAÑO, REGADERAS, MONOMANDOS, LLAVES, FREGADERO, LAVADERO Y SUS ACCESORIOS.</li>
+                    <li>ACCESORIOS DE BAÑO, MAL COLOCADOS O CON DEFECTO.</li>
+                    <li>DEFECTO EN FUNCIONAMIENTO DEL CALENTADOR A GAS LP Y CALENTADOR SOLAR (SI LA VIVIENDA LO INCLUYE EN SU EQUIPAMIENTO)</li>
+                    <li>FALLAS EN INSTALACIÓN ELÉCTRICA</li>
+                    <li>ACCESORIOS ELECTRICOS DEFECTUOSOS</li>
+                    <li>PISOS Y AZULEJOS MAL EMBOQUILLADOS</li>
+                    <li>PISOS Y AZULEJOS, FLOJOS O FISURADOS (ABERTURA MAYOR A 1.5 MM)</li>
+                    <li>VENTANAS, PUERTAS Y CHAPAS EN MAL ESTADO O DEFECTUOSAS.</li>
+                    <li>HUMEDAD EN MUROS, NO DERIVADO DE UNA CAUSA EXTERNA PROPIA DE LA VIVIENDA.</li>
+                    <li>CANCELERIA Y DOMOS, MALA INSTALACIÓN Y SELLADOS</li>
+                </ul>
+                <h3>A P E N D I C E No. 2</h3>
+                <p>COBERTURA DE GARANTIA POR VICIOS OCULTOS QUE REPORTE LA VIVIENDA.</p>
+                <h3>BIENES E INSTALACIONES CON GARANTIA DE DOS AÑOS </h3>
+                <ul>
+                    <li>DEFECTOS EN IMPERMEABILIZACIÓN, NO DERVADO DE UNA CAUSA EXTERNA PROPIA DE LA VIVIENDA.</li>
+                    <li>DEFECTOS ESTRUCTURALES, GRIETAS O FISURAS QUE AFECTEN MUROS Y PLAFONES, AQUELLAS EN LAS QUE SE PUEDE VER DE LADO A LADO, O QUE TENGA UNA APERTURA MAYOR A 1.5 MM</li>
+                </ul>
+
+            @else
+                <h3>A P E N D I C E No. 1</h3>
+                <p>COBERTURA DE GARANTIA POR VICIOS OCULTOS QUE REPORTE LA VIVIENDA.</p>
+                <h3>BIENES E INSTALACIONES CON GARANTIA DE DOCE MESES.</h3>
+                <ul>
+                    <li>TUBERÍAS DE GAS, AGUA O SANITARIAS TAPADAS, CON FUGAS O EN MAL ESTADO.</li>
+                    <li>MUEBLES DE BAÑO, REGADERAS, MONOMANDOS, LLAVES, FREGADERO, LAVADERO Y SUS ACCESORIOS.</li>
+                    <li>ACCESORIOS DE BAÑO, MAL COLOCADOS O CON DEFECTO.</li>
+                    <li>DEFECTO EN FUNCIONAMIENTO DEL CALENTADOR A GAS LP Y CALENTADOR SOLAR (SI LA VIVIENDA LO INCLUYE EN SU EQUIPAMIENTO)</li>
+                    <li>FALLAS EN INSTALACIÓN ELÉCTRICA</li>
+                    <li>ACCESORIOS ELECTRICOS DEFECTUOSOS</li>
+                    <li>PISOS Y AZULEJOS MAL EMBOQUILLADOS</li>
+                    <li>PISOS Y AZULEJOS, FLOJOS O FISURADOS (ABERTURA MAYOR A 1.5 MM)</li>
+                    <li>FUNCIONAMIENTO DE VENTANAS</li>
+                    <li>HUMEDAD EN MUROS, NO DERIVADO DE UNA CAUSA EXTERNA PROPIA DE LA VIVIENDA.</li>
+                    <li>CANCELERIA Y DOMOS, MALA INSTALACIÓN Y SELLADOS</li>
+                </ul>
+                <h3>A P E N D I C E No. 2</h3>
+                <p>COBERTURA DE GARANTIA POR FALLAS TECNICAS QUE REPORTE LA VIVIENDA.</p>
+                <h3>BIENES E INSTALACIONES CON GARANTIA DE CINCO AÑOS. </h3>
+                <ul>
+                    <li>DEFECTOS EN IMPERMEABILIZACIÓN, NO DERVADO DE UNA CAUSA EXTERNA PROPIA DE LA VIVIENDA.</li>
+                    <li>DEFECTOS ESTRUCTURALES, GRIETAS O FISURAS QUE AFECTEN MUROS Y PLAFONES, AQUELLAS EN LAS 
+                        QUE SE PUEDE VER DE LADO A LADO, O QUE TENGA UNA APERTURA MAYOR A 1.5 MM</li>
+                </ul>
+
+                <h3>A P E N D I C E No. 3</h3>
+                <h3>BIENES E INSTALACIONES CON GARANTIA DE SEIS MESES. </h3>
+                <ul>
+                    <li>PUERTAS EXTERIORES E INTERIORES Y CHAPAS EN MAL ESTADO O DEFECTUOSAS.</li>
+                    
+                </ul>
+            @endif
+
             <h4>NOTA:</h4>
-            <p>LA PÓLIZA <b>NO</b> APLICA PARA NINGÚN DEFECTO EN VIDRIOS; YA SEAN ROTOS, FISURADOS O RAYADOS; EN PUERTAS, VENTANAS NI DOMOS, DESPUÉS DE ENTREGADA LA VIVIENDA A <i>"EL ACREDITADO"</i>.</p>
-            <br><br><br><br>
+            <p>LA PÓLIZA <b>NO</b> APLICA PARA NINGÚN DEFECTO EN VIDRIOS; YA SEAN ROTOS, FISURADOS O RAYADOS; 
+                EN PUERTAS, VENTANAS NI DOMOS, DESPUÉS DE ENTREGADA LA VIVIENDA A <i>"EL ACREDITADO"</i>.</p>
+            <br>
             <div class="table">
                 <div class="table-row">
                     <div class="table-cell" style="text-align:center;"><b>POR LA CONSTRUCTORA</b></div>
@@ -413,7 +469,7 @@
                 </div>
             </div>
             
-            <br><br>
+            <br>
 
             <p style="text-align:center; font-size: 9pt;"><b>DIRECCION DE LA VIVIENDA:</b> {{mb_strtoupper($contratos[0]->calle)}} NO. {{$contratos[0]->numero}}, FRACC. "{{mb_strtoupper($contratos[0]->proyecto)}}", {{$contratos[0]->ciudadFraccionamiento}}.</p>
 

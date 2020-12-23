@@ -15,6 +15,7 @@ use App\Mail\NotificationReceived;
 use App\Notifications\NotifyAdmin;
 use App\User;
 use App\Calendar;
+Use App\Asign_proyecto;
 
 class ClienteController extends Controller
 {
@@ -1948,6 +1949,7 @@ class ClienteController extends Controller
                 ->get();
 
         $cal = [];
+        $as = [];
         
         if(sizeof($calendario))
             foreach($calendario as $index => $calendar){
@@ -1969,17 +1971,46 @@ class ClienteController extends Controller
         }
             
         else{
-            $vendedores = User::join('personal','users.id','=','personal.id')
-            ->join('vendedores','personal.id','vendedores.id')
-            ->select('personal.id',
-                    DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS vendedor"))
-            ->where('vendedores.tipo','=',0)
-            ->where('users.condicion','=',1)
-            ->whereNotIn('users.id',$cal)
-            ->whereIn('users.id',[28020,28230])
-            ->where('users.usuario','!=','descartado')
-            ->where('users.usuario','!=','oficina')
-            ->orderBy('vendedor','asc')->get();
+            $asesProy = Asign_proyecto::select('asesor_id')->where('proyecto_id','=',$tipo)->get();
+            
+            if(sizeof($asesProy)){
+
+                foreach($asesProy as $index => $a){
+                    array_push($as,$a->asesor_id);
+                }
+
+
+                $vendedores = User::join('personal','users.id','=','personal.id')
+                    ->join('vendedores','personal.id','vendedores.id')
+                    ->select('personal.id',
+                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS vendedor"))
+                    ->where('vendedores.tipo','=',0)
+                    ->where('users.condicion','=',1)
+                    ->whereNotIn('users.id',$cal)
+                    ->whereIn('users.id',$as)
+                    ->where('users.usuario','!=','descartado')
+                    ->where('users.usuario','!=','oficina')
+                    ->orderBy('vendedor','asc')->get();
+
+            }
+            else{
+
+                $vendedores = User::join('personal','users.id','=','personal.id')
+                    ->join('vendedores','personal.id','vendedores.id')
+                    ->select('personal.id',
+                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS vendedor"))
+                    ->where('vendedores.tipo','=',0)
+                    ->where('users.condicion','=',1)
+                    ->whereNotIn('users.id',$cal)
+                    ->whereNotIn('users.id',[28020,28230,55])
+                    ->where('users.usuario','!=','descartado')
+                    ->where('users.usuario','!=','oficina')
+                    ->orderBy('vendedor','asc')->get();
+
+            }
+                
+
+            
         }
         $ids = [];
 

@@ -456,7 +456,7 @@ class EntregaController extends Controller
                     'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                     'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
                     'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                    'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
+                    'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida', 'etapas.factibilidad',
 
                     'creditos.fraccionamiento as proyecto',
                     'creditos.etapa',
@@ -872,7 +872,7 @@ class EntregaController extends Controller
                 'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                 'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
                 'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
+                'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida', 'etapas.factibilidad',
 
                 'creditos.fraccionamiento as proyecto',
                 'creditos.etapa',
@@ -1118,7 +1118,7 @@ class EntregaController extends Controller
             return $pdf->stream('carta_cuota_mantenimiento.pdf');
     }
 
-    public function polizaDeGarantia($id){
+    public function polizaDeGarantia(Request $request,$id){
         $contratos = Entrega::join('contratos','entregas.id','contratos.id')
         ->join('expedientes','contratos.id','expedientes.id')
         ->join('creditos', 'contratos.id', '=', 'creditos.id')
@@ -1159,6 +1159,7 @@ class EntregaController extends Controller
             'lotes.calle',
             'lotes.numero',
             'fraccionamientos.ciudad as ciudadFraccionamiento',
+            'fraccionamientos.delegacion',
             'entregas.fecha_program',
             'entregas.hora_entrega_prog',
             'entregas.fecha_entrega_real',
@@ -1174,8 +1175,23 @@ class EntregaController extends Controller
         ->orderBy('lotes.fecha_entrega_obra','desc')
         ->get();
 
-        $pdf = \PDF::loadview('pdf.DocsPostVenta.PolizaDeGarantia', ['contratos' => $contratos]);
+        $pdf = \PDF::loadview('pdf.DocsPostVenta.PolizaDeGarantia', ['contratos' => $contratos, 'tiempo' => $request->tiempo]);
         return $pdf->stream('poliza_de_garantia.pdf');
+    }
+
+    public function cartaAlarma(Request $request){
+        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
+        ->join('creditos', 'contratos.id', '=', 'creditos.id')
+        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+        ->join('personal as c', 'clientes.id', '=', 'c.id')
+        ->select('contratos.id as folio', 
+            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente")
+        )
+        ->where('contratos.id','=',$request->id)
+        ->get();
+
+        $pdf = \PDF::loadview('pdf.DocsPostVenta.CartaAlarma', ['alarma' => $contratos]);
+        return $pdf->stream('carta_alarma.pdf');
     }
 
     public function select_ultimaFecha_instalacion(Request $request){

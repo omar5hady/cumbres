@@ -411,10 +411,10 @@ class DigitalLeadController extends Controller
 
             $cliente = new ClienteController();
             
-            if($lead->proyecto_interes != 12 )
+            if($lead->proyecto_interes == 0 )
                 $vendedor_asign = $cliente->asignarClienteAleatorio(0);
             else
-                $vendedor_asign = $cliente->asignarClienteAleatorio(1);
+                $vendedor_asign = $cliente->asignarClienteAleatorio($lead->proyecto_interes);
                 
             $lead->vendedor_asign = $vendedor_asign['vendedor_elegido'];
             

@@ -27,6 +27,7 @@ class CreateEtapasTable extends Migration
             $table->string('empresas_telecom',120)->nullable();
             $table->string('empresas_telecom_satelital',120)->nullable();
             $table->string('carta_bienvenida',191)->nullable();
+            $table->string('factibilidad',191)->nullable();
             
             $table->string('num_cuenta_admin',50)->nullable();
             $table->string('clabe_admin',50)->nullable();

@@ -182,7 +182,8 @@
                         <li class="nav-item nav-dropdown">
                             <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-plug"></i> Contratistas</a>
                             <ul class="nav-dropdown-items">
-                                @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 13 || Auth::user()->id == 25694)
+                                @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 13 
+                                        || Auth::user()->id == 25694 || Auth::user()->id == 26001 || Auth::user()->id == 26000)
                                     <li @click="menu=217" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-archive"></i> Solicitudes</a>
                                     </li>
@@ -535,7 +536,7 @@
                             </li>
                         @endif
                             <li @click="menu=218" class="nav-item">
-                                <a class="nav-link" href="#"><i class="fa fa-address-card-o"></i> Cartas de bienvenida</a>
+                                <a class="nav-link" href="#"><i class="fa fa-address-card-o"></i> Documentos</a>
                             </li>
                         @if(Auth::user()->postventa == 1)
                             <li @click="menu=220" class="nav-item">

@@ -184,7 +184,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/formSubmitTelecom/{id}','EtapaController@uploadPlantillaTelecom');
         Route::get('/downloadPlantilla/ServiciosTelecom/{fileName}' , 'EtapaController@downloadPlantillaTelecom');
         Route::get('/downloadCartaBienvenida/{fileName}' , 'EtapaController@downloadCartaBienvenida');
+        Route::get('/downloadFactibilidad/{fileName}' , 'EtapaController@downloadFactibilidad');
         Route::post('/formSubmitCartaBienvenida/{id}','EtapaController@uploadCartaBienvenida');
+        Route::post('/formSubmitFactibilidad/{id}','EtapaController@formSubmitFactibilidad');
 
         
     ///////////////////     RUTAS PERSONAL      ////////////////////////////////////
@@ -485,6 +487,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::get('/postventa/cartaMantenimiento/{id}','EntregaController@cartaCuotaMantenimiento');
         Route::get('/postventa/polizaDeGarantia/{id}','EntregaController@polizaDeGarantia');
+        Route::get('/postventa/cartaAlarma','EntregaController@cartaAlarma');
 
         Route::get('/postventa/cartaRecepcion/{id}','EntregaController@cartaRecepcion');
 

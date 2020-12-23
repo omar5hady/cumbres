@@ -108,18 +108,26 @@
                                                 <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
                                                     <a class="dropdown-item" @click="abrirPDF(contratos.folio)">Estado de cuenta</a>
                                                     <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ contratos.folio">Contrato de compra venta</a>
-                                                    <a v-if="contratos.carta_bienvenida" class="dropdown-item" target="_blank"  v-bind:href="'/downloadCartaBienvenida/'+contratos.carta_bienvenida">Carta de bienvenida</a>
-                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ contratos.folio">Servicios de telecomunición</a>
-                                                    <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ contratos.folio">Reglamento de la etapa</a>
-                                                    <a class="dropdown-item" @click="selectNombreArchivoModelo(contratos.folio)">Catalogo de especificaciones</a>
                                                     <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/cartaMantenimiento/'+ contratos.folio">Carta de mantenimiento</a>
                                                     <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/cartaRecepcion/'+ contratos.folio">Carta de recepción</a>
-                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/polizaDeGarantia/'+ contratos.folio">Poliza de garantia</a>
-                                                    <a v-if="contratos.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ contratos.foto_predial">Predial</a>
-                                                    <a v-if="contratos.num_licencia" class="dropdown-item"  v-text="'Licencia: '+contratos.num_licencia" v-bind:href="'/downloadLicencias/'+contratos.foto_lic"></a>
+                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/cartaAlarma?id='+ contratos.folio">Carta de alarma</a>
+                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/polizaDeGarantia/'+ contratos.folio+'?tiempo=2'">Poliza de garantia 2 años</a>
+                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/polizaDeGarantia/'+ contratos.folio+'?tiempo=5'">Poliza de garantia 5 años</a>
                                                 </div>
                                             </td>
-                                            <td class="td2" v-text="contratos.proyecto"></td>
+                                            <td class="td2">
+                                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{contratos.proyecto}}</a>
+                                                <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                    <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ contratos.folio">Reglamento de la etapa</a>
+                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ contratos.folio">Servicios de telecomunición</a>
+                                                    <a class="dropdown-item" @click="selectNombreArchivoModelo(contratos.folio)">Catalogo de especificaciones</a>
+                                                    <a v-if="contratos.carta_bienvenida" class="dropdown-item" target="_blank"  v-bind:href="'/downloadCartaBienvenida/'+contratos.carta_bienvenida">Carta de bienvenida</a>
+                                                    <a v-if="contratos.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ contratos.foto_predial">Predial</a>
+                                                    <a v-if="contratos.factibilidad" class="dropdown-item" v-bind:href="'/downloadFactibilidad/'+ contratos.factibilidad" onclick="window.open('/pdf/INTERAPAS.pdf','_blank')">Factibilidad</a>
+                                                    <a v-if="contratos.num_licencia" class="dropdown-item"  v-text="'Licencia: '+contratos.num_licencia" v-bind:href="'/downloadLicencias/'+contratos.foto_lic"></a>
+                                                </div>
+                                                
+                                            </td>
                                             <td class="td2" v-text="contratos.etapa"></td>
                                             <td class="td2" v-text="contratos.manzana"></td>
                                             <td class="td2" v-text="contratos.num_lote"></td>
@@ -350,18 +358,26 @@
                                                 <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
                                                     <a class="dropdown-item" @click="abrirPDF(entregas.folio)">Estado de cuenta</a>
                                                     <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ entregas.folio">Contrato de compra venta</a>
-                                                    <a v-if="entregas.carta_bienvenida" class="dropdown-item" target="_blank"  v-bind:href="'/downloadCartaBienvenida/'+entregas.carta_bienvenida">Carta de bienvenida</a>
-                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ entregas.folio">Servicios de telecomunición</a>
-                                                    <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ entregas.folio">Reglamento de la etapa</a>
-                                                    <a class="dropdown-item" @click="selectNombreArchivoModelo(entregas.folio)">Catalogo de especificaciones</a>
                                                     <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/cartaMantenimiento/'+ entregas.folio">Carta de mantenimiento</a>
                                                     <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/cartaRecepcion/'+ entregas.folio">Carta de recepción</a>
-                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/polizaDeGarantia/'+ entregas.folio">Poliza de garantia</a>
-                                                    <a v-if="entregas.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ entregas.foto_predial">Predial</a>
-                                                    <a v-if="entregas.num_licencia" class="dropdown-item"  v-text="'Licencia: '+entregas.num_licencia" v-bind:href="'/downloadLicencias/'+entregas.foto_lic"></a>
+                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/cartaAlarma?id='+ entregas.folio">Carta de alarma</a>
+                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/polizaDeGarantia/'+ entregas.folio+'?tiempo=2'">Poliza de garantia 2 años</a>
+                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/polizaDeGarantia/'+ entregas.folio+'?tiempo=5'">Poliza de garantia 5 años</a>
                                                 </div>
                                             </td>
-                                            <td class="td2" v-text="entregas.proyecto"></td>
+                                            <td class="td2">
+                                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{entregas.proyecto}}</a>
+                                                <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                    <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ entregas.folio">Reglamento de la etapa</a>
+                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ entregas.folio">Servicios de telecomunición</a>
+                                                    <a class="dropdown-item" @click="selectNombreArchivoModelo(entregas.folio)">Catalogo de especificaciones</a>
+                                                    <a v-if="entregas.carta_bienvenida" class="dropdown-item" target="_blank"  v-bind:href="'/downloadCartaBienvenida/'+entregas.carta_bienvenida">Carta de bienvenida</a>
+                                                    <a v-if="entregas.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ entregas.foto_predial">Predial</a>
+                                                    <a v-if="entregas.factibilidad" class="dropdown-item" v-bind:href="'/downloadFactibilidad/'+ entregas.factibilidad" onclick="window.open('/pdf/INTERAPAS.pdf','_blank')">Factibilidad</a>
+                                                    <a v-if="entregas.num_licencia" class="dropdown-item"  v-text="'Licencia: '+entregas.num_licencia" v-bind:href="'/downloadLicencias/'+entregas.foto_lic"></a>
+                                                </div>
+                                                
+                                            </td>
                                             <td class="td2" v-text="entregas.etapa"></td>
                                             <td class="td2" v-text="entregas.manzana"></td>
                                             <td class="td2" v-text="entregas.num_lote"></td>

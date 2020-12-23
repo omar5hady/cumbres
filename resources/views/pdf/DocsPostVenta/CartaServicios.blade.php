@@ -18,7 +18,7 @@ body {
 </style>
 <body>
 <div style="display: inline-block; float: left;" >
-    <IMG SRC="img/logosFraccionamientos/{{ $contratos[0]->logo_fracc }}" width="100" height="100">
+    <IMG SRC="img/logosFraccionamientos/{{ $contratos[0]->logo_fracc }}" width="17%" height="17%">
 </div>
 <div style="margin: 70px; margin-top: 120px;"> 
     <hr>
