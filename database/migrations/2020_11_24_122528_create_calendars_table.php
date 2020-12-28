@@ -21,6 +21,7 @@ class CreateCalendarsTable extends Migration
             $table->string('color');
             $table->string('description')->nullable();
             $table->integer('user_id');
+            $table->integer('proyecto_id')->default(0);
             $table->timestamps();
         });
     }

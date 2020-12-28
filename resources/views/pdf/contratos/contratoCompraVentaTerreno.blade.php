@@ -79,7 +79,7 @@
             <div class="table-cell1">INSTITUCION: <u>CONCRETANIA</u> </div>
         </div>
         <div class="table-row">
-            <div class="table-cell1">PLAZO: <u>{$pago[0]->numPagos}} PAGOS</u> </div>
+            <div class="table-cell1">PLAZO: <u>{{$pago[0]->numPagos}} PAGOS</u> </div>
             <div class="table-cell1">DENOMINACION: <u>PESOS</u> </div>
         </div>
     </div>

@@ -23,6 +23,7 @@ class CalendarResource extends JsonResource
             'color' => $this->color,
             'description' => $this->description,
             'user_id' => $this->user_id,
+            'proyecto_id' => $this->proyecto_id,
             'nombre' => $this->nombre.' '.$this->apellidos
         ];
     }

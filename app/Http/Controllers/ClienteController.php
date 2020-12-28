@@ -1943,10 +1943,17 @@ class ClienteController extends Controller
         $current = Carbon::now();
 
         $calendario = Calendar::select('user_id')
-                ->whereDate('end_date','>=',$current)
-                ->whereDate('start_date','<=',$current)
                 ->where('event_name','!=','Guardia')
-                ->get();
+                ->whereDate('end_date','>=',$current)
+                ->whereDate('start_date','<=',$current);
+                if($tipo != 0){
+                    $calendario = $calendario
+                    ->orWhere('event_name','=','Guardia')
+                    ->where('proyecto_id','!=',$tipo)
+                    ->whereDate('end_date','>=',$current)
+                    ->whereDate('start_date','<=',$current);
+                }
+                $calendario = $calendario->get();
 
         $cal = [];
         $as = [];

@@ -41,6 +41,18 @@
                 </div>
               </div>
             </div>
+            <div class="row" v-if="newEvent.event_name == 'Guardia'">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="usersName">Proyecto de guardia: </label>
+                  <select class="form-control" v-model="newEvent.proyecto_id" >
+                      <option value="0">Fraccionamiento</option>
+                      <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
+                  </select>
+                  
+                </div>
+              </div>
+            </div>
             <div class="row">
               <div class="col-md-5">
                 <div class="form-group">
@@ -130,11 +142,13 @@ export default {
         end_date: "",
         color :"",
         description:'',
-        user_id:''
+        user_id:'',
+        proyecto_id:0,
       },
       addingMode: true,
       indexToUpdate: "",
       arrayUsers:[],
+      arrayFraccionamientos:[],
       nombre:'',
       vista:1
     };
@@ -168,6 +182,18 @@ export default {
       .catch(function (error) {
           console.log(error);
       });
+    },
+    selectFraccionamientos(){
+        let me = this;
+        me.arrayFraccionamientos=[];
+        var url = '/select_fraccionamiento';
+        axios.get(url).then(function (response) {
+            var respuesta = response.data;
+            me.arrayFraccionamientos = respuesta.fraccionamientos;
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
     },
     changeColor(){
       switch(this.newEvent.event_name){
@@ -211,7 +237,7 @@ export default {
     showEvent(arg) {
       this.addingMode = false;
       this.vista = 2;
-      const { id, event_name, start, end, color, description, user_id,nombre } = this.calendarOptions.events.find(
+      const { id, event_name, start, end, color, description, user_id,nombre, proyecto_id } = this.calendarOptions.events.find(
         event => event.id === +arg.event.id
       );
       this.indexToUpdate = id;
@@ -222,6 +248,7 @@ export default {
         color: color,
         description: description,
         user_id : user_id,
+        proyecto_id : proyecto_id,
       };
       this.nombre = nombre;
     },
@@ -254,6 +281,7 @@ export default {
         );
     },
     getEvents() {
+      this.selectFraccionamientos();
       axios
         .get("/api/calendar")
         .then(resp => (this.calendarOptions.events = resp.data.data))
