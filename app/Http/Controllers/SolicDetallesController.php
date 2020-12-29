@@ -10,6 +10,7 @@ use App\Notifications\NotifyAdmin;
 use Auth;
 use DB;
 use Excel;
+use PHPExcel_Worksheet_Drawing;
 use Carbon\Carbon;
 
 class SolicDetallesController extends Controller
@@ -961,6 +962,165 @@ class SolicDetallesController extends Controller
 
         $pdf = \PDF::loadview('pdf.DocsPostVenta.ReporteConclusion', ['solicitud' => $solicitud ,'detalles' => $detalles]);
                     return $pdf->stream('ReporteConclusion.pdf');
+    }
+
+    public function agendaContratista(Request $request){
+
+        $fecha1 = $request->fecha1;
+        $fecha2 = $request->fecha2;
+
+        $agenda = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
+                        ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
+                        ->join('creditos','contratos.id','=','creditos.id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                        ->join('etapas','lotes.etapa_id','=','etapas.id')
+
+                        ->select('solic_detalles.id','lotes.num_lote','fraccionamientos.nombre as proyecto','etapas.num_etapa',
+                            'contratistas.nombre as contratista','solic_detalles.cliente','solic_detalles.fecha_program',
+                            'solic_detalles.hora_program', 'lotes.calle','lotes.numero','lotes.interior','lotes.emp_constructora',
+                            'lotes.manzana'
+                        )
+
+                        ->where('fraccionamientos.id','=',$request->proyecto)
+                        ->where('contratistas.id','=',$request->contratista)
+                        ->whereBetween('solic_detalles.fecha_program', [$fecha1, $fecha2])
+
+                        ->orderBy('fecha_program','asc')
+                        ->orderBy('hora_program','asc')
+
+                        ->get();
+
+        // return ['agenda'=>$agenda];
+
+        return Excel::create(
+            'Agenda contratistas',
+            function ($excel) use ($agenda, $fecha1, $fecha2) {
+                $excel->sheet('Agenda', function ($sheet) use ($agenda, $fecha1, $fecha2) {
+
+                $sheet->mergeCells('A1:E1');
+                $sheet->mergeCells('A2:E2');
+                $sheet->mergeCells('A3:E3');
+                $sheet->mergeCells('A4:E4');
+                $sheet->mergeCells('A5:E5');
+                
+                
+                $sheet->setSize('A1', 40, 60);
+                $sheet->setSize('B1', 30, 60);
+                $sheet->setSize('C1', 30, 60);
+                $sheet->setSize('D1', 30, 60);
+                $sheet->setSize('E1', 30, 60);
+                
+    
+                $objDrawing = new PHPExcel_Worksheet_Drawing;
+                if($agenda[0]->emp_constructora == 'Grupo Constructor Cumbres')
+                    $objDrawing->setPath(public_path('img/contratos/CONTRATOS_html_7790d2bb.png')); //your image path
+                if($agenda[0]->emp_constructora == 'CONCRETANIA');
+                    $objDrawing->setPath(public_path('img/contratos/logoConcretaniaObra.png')); //your image path
+                $objDrawing->setCoordinates('A1');
+                $objDrawing->setWorksheet($sheet);
+
+                if($agenda[0]->emp_constructora == 'Grupo Constructor Cumbres')
+                    $sheet->cell('A1', function($cell) {
+
+                        // manipulate the cell
+                        $cell->setValue(  'GRUPO CONSTRUCTOR CUMBRES, SA DE CV');
+                        $cell->setFontFamily('Arial Narrow');
+                        $cell->setFontSize(16);
+                        $cell->setFontWeight('bold');
+                        $cell->setAlignment('center');
+                    
+                    });
+                if($agenda[0]->emp_constructora == 'CONCRETANIA');
+                    $sheet->cell('A1', function($cell) {
+
+                        // manipulate the cell
+                        $cell->setValue(  'CONCRETANIA, SA DE CV');
+                        $cell->setFontFamily('Arial Narrow');
+                        $cell->setFontSize(18);
+                        $cell->setFontWeight('bold');
+                        $cell->setAlignment('center');
+                    
+                    });
+
+                setlocale(LC_TIME, 'es_MX.utf8');
+                $fecha1Aux = new Carbon($fecha1);
+                $fecha1Aux  = $fecha1Aux->formatLocalized('%d de %B de %Y');
+
+                $fecha2Aux = new Carbon($fecha1);
+                $fecha2Aux  = $fecha2Aux->formatLocalized('%d de %B de %Y');
+
+
+                
+                $sheet->row(2, [
+                    'Departamento de Post Venta' 
+                ]);
+
+                $sheet->row(3, [
+                    'Programa de atencion de detalles ('.$fecha1Aux . ' al '.$fecha2Aux.')' 
+                ]);
+                $sheet->row(4, [
+                    'Contratista '.$agenda[0]->contratista 
+                ]);
+
+                $sheet->row(5, [
+                    'Proyecto '.$agenda[0]->proyecto 
+                ]);
+
+                $sheet->cells('A2:A5', function($cells) {
+
+                    // manipulate the cell
+                    $cells->setFontFamily('Arial Narrow');
+                    $cells->setFontSize(12);
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                
+                });
+
+        
+                $sheet->row(7, [
+                    'Cliente', 'Direccion','Manzana', 'Fecha programada', 'Hora programada' 
+                ]);
+
+
+
+                    $sheet->cells('A7:E7', function ($cells) {
+                        $cells->setBackground('#052154');
+                        $cells->setFontColor('#ffffff');
+                        // Set font family
+                        $cells->setFontFamily('Calibri');
+
+                        // Set font size
+                        $cells->setFontSize(12);
+
+                        // Set font weight to bold
+                        $cells->setFontWeight('bold');
+                        $cells->setAlignment('center');
+                    });
+
+                    $cont = 7;
+
+                    foreach ($agenda as $index => $lote) {
+                        $cont++;
+                        $fecha = new Carbon($lote->fecha_program);
+                        $fecha  = $fecha->formatLocalized("%A %d %B %Y");
+                        
+                        $sheet->row($cont, [
+                            $lote->cliente,
+                            $lote->calle.' No. '.$lote->numero,
+                            $lote->manzana,
+                            $fecha,
+                            $lote->hora_program,
+                            
+                        ]);
+                    }
+                    $num = 'A7:E' . $cont;
+                    $sheet->setBorder($num, 'thin');
+                });
+            }
+
+        )->download('xls');
+
     }
 
 }

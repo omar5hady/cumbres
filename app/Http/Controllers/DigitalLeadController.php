@@ -205,7 +205,14 @@ class DigitalLeadController extends Controller
                         'titulo' => 'Lead Digital'
                     ]
                 ];
-    
+
+                $obs = new Obs_lead();
+                $obs->lead_id = $lead->id;
+                $obs->comentario = 'Aviso!, se le ha asignado un nuevo lead para seguimiento, 
+                                    favor de ingresar al modulo de Digital Leads para mas información. ';
+                $obs->usuario = Auth::user()->usuario;
+                $obs->save();
+        
                 User::findOrFail($request->vendedor_asign)->notify(new NotifyAdmin($arreglo));
             }
             $lead->vendedor_asign = $request->vendedor_asign;

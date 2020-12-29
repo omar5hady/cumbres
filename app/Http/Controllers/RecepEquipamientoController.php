@@ -329,11 +329,11 @@ class RecepEquipamientoController extends Controller
 
                         if($recepcion->resultado == 2){
                             $solicitud->status = 4;
-                            $msj= "Equipamiento aprobado: ".$equipamiento->equipamiento. "para el lote ".$credito->num_lote. " del proyecto ".$credito->fraccionamiento." etapa ".$credito->etapa;
+                            $msj= "Equipamiento aprobado: ".$equipamiento->equipamiento. " para el lote ".$credito->num_lote. " del proyecto ".$credito->fraccionamiento." etapa ".$credito->etapa;
                         }
                         else{
                             $solicitud->status = 0;
-                            $msj= "Equipamiento rechazado: ".$equipamiento->equipamiento. "para el lote ".$credito->num_lote. " del proyecto ".$credito->fraccionamiento." etapa ".$credito->etapa;
+                            $msj= "Equipamiento rechazado: ".$equipamiento->equipamiento. " para el lote ".$credito->num_lote. " del proyecto ".$credito->fraccionamiento." etapa ".$credito->etapa;
                         }
                         $solicitud->recepcion = 1;
                         $solicitud->save();

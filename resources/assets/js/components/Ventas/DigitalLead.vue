@@ -440,6 +440,12 @@
 
                                     <div v-if="vendedor_asign != 0 && vendedor_asign != null" class="col-md-12">
                                         <h6 v-if="vendedor_asign != 0 && vendedor_asign != null" align="center">Vendedor asignado: <strong> {{vendedor}} </strong></h6>
+
+                                        <select class="form-control" v-if="userId == 25511 || rolId == 1"  v-model="vendedor_asign" >
+                                            <option value="">Vendedor asignado</option>
+                                            <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
+                                        </select>
+
                                     </div>
 
                                 </template>
@@ -694,7 +700,6 @@
                                                 <option value="Pagina web">Pagina web</option>
                                                 <option value="Llamada Telefonica">Llamada Telefónica</option>
                                                 <option value="Correo Electrónico">Correo Electrónico</option>
-                                                
                                             </datalist>
                                         </div>
                                     </div>
@@ -1294,7 +1299,7 @@ export default {
         selectAsesores(){
                 let me = this;
                 me.arrayAsesores=[];
-                var url = '/select/asesores';
+                var url = '/select/asesores?tipo=0';
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayAsesores = respuesta.personas;

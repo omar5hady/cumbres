@@ -15,6 +15,10 @@
                         </button> &nbsp;&nbsp;
                         <button type="submit" v-if="descripcion == 1" @click="listarSolicitudes(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2,status)" class="btn btn-default">
                             <i class="fa fa-mail-reply-all"></i> Regresar
+                        </button>&nbsp;
+
+                        <button type="button" @click="abrirModal('agenda')" class="btn btn-dark">
+                            <i class="icon-calendar"></i>&nbsp;Agenda
                         </button>
                     </div>
 
@@ -277,7 +281,7 @@
             </div>
          
             <!--Inicio del modal para diversos llenados de tabla en historial -->
-                <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 1}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                     <div class="modal-dialog modal-primary modal-lg" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -509,7 +513,7 @@
                 </div>
             <!--Fin del modal-->
 
-            <!--Inicio del modal para diversos llenados de tabla en historial -->
+            <!--Inicio del modal para archivos -->
                 <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modalArchivo}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                     <div class="modal-dialog modal-primary modal-lg" role="document">
                         <div class="modal-content">
@@ -636,6 +640,68 @@
                     <!-- /.modal-dialog -->
                 </div>
             <!--Fin del modal-->
+
+            <!--Inicio del modal para archivos -->
+                <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog modal-primary modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" v-text="tituloModal"></h5>
+                                <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Proyecto</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control" v-model="proyecto" @click="selectEtapa(proyecto)">
+                                            <option value="">Fraccionamiento</option>
+                                            <option v-for="fraccionamiento in arrayFraccionamientos2" :key="fraccionamiento.nombre" :value="fraccionamiento.id" v-text="fraccionamiento.nombre"></option>
+                                        </select>
+
+                                        <select class="form-control" v-model="etapa"> 
+                                            <option value="">Etapa</option>
+                                            <option v-for="etapa in arrayEtapas2" :key="etapa.num_etapa" :value="etapa.id" v-text="etapa.num_etapa"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Contratista</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control" v-model="contratista">
+                                            <option value=''> Seleccione </option>
+                                            <option v-for="contratista in arrayContratistas" :key="contratista.id" :value="contratista.id" v-text="contratista.nombre"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Fecha</label>
+                                    <div class="col-md-4">
+                                        <input type="date" v-model="fecha1" class="form-control">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input type="date" v-model="fecha2" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Botones del modal -->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+
+                                <a :href="'/detalles/agendaContratista?proyecto=' + proyecto + '&contratista=' + contratista + '&fecha1=' + fecha1 + '&fecha2=' + fecha2"  class="btn btn-success">
+                                    <i class="fa fa-file-text"></i> Descargar
+                                </a>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+            <!--Fin del modal-->
             
          
      </main>
@@ -738,6 +804,12 @@
 
                 errorEntrega : 0,
                 errorMostrarMsjEntrega : [],
+
+                proyecto :'',
+                etapa:'',
+                fecha1:'',
+                fecha2:''
+
                
             }
         },
@@ -1438,6 +1510,17 @@
                         this.tituloModal = 'Subir solicitud para solicitud: ' + this.solicitud_id;
                         
                         break;
+                    }
+
+                    case 'agenda':{
+                        this.proyecto = '';
+                        this.etapa = '';
+                        this.contratista = '';
+                        this.fecha1 = '';
+                        this.fecha2 = '';
+
+                        this.modal = 2;
+                        this.tituloModal = 'Descargar Agenda';
                     }
                 }
             }
