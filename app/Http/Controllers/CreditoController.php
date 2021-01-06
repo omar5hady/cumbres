@@ -442,248 +442,58 @@ class CreditoController extends Controller
                 'inst_seleccionadas.institucion','personal.nombre','personal.apellidos',
                 'creditos.fraccionamiento','clientes.id as prospecto_id','v.nombre as vendedor_nombre',
                 'v.apellidos as vendedor_apellidos');
+        
+            if($buscar==''){
+                $creditos = $query;
+            }
+            else{
+                switch($criterio){
+                    case 'personal.nombre':
+                    {
+                        $creditos = $query
+                            ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
+                            
+                        break;
+                    }
+                    case 'v.nombre':
+                    {
+                        $creditos = $query
+                            ->where(DB::raw("CONCAT(v.nombre,' ',v.apellidos)"), 'like', '%'. $buscar . '%');
+                        break;
+                    }
+                    case 'inst_seleccionadas.tipo_credito':
+                    {
+                        $creditos = $query
+                            ->where($criterio, 'like', '%'. $buscar . '%');
+                        break;
+                    }
+                    case 'creditos.id':
+                    {
+                        $creditos = $query
+                            ->where($criterio, '=',$buscar);
+                        break;
+                    }
+                    case 'creditos.fraccionamiento':
+                    {
+                        $creditos = $query
+                            ->where('lotes.fraccionamiento_id', '=',  $buscar);
 
-        if($criterio2==''){
-            if($buscar==''){
-                $creditos = $query
-                    ->where('creditos.status','!=','1')
-                    ->where('inst_seleccionadas.elegido','=','1')
-                    ->orderBy('id','desc')->paginate(8);
-            }
-            else{
-                switch($criterio){
-                    case 'personal.nombre':
-                    {
-                        $creditos = $query
-                        
-                            ->where($criterio, 'like', '%'. $buscar . '%')
-                            ->where('creditos.status','!=','1')
-                            ->where('inst_seleccionadas.elegido','=','1')
-                            ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
-                            ->where('creditos.status','!=','1')
-                            ->where('inst_seleccionadas.elegido','=','1')
-                            ->orderBy('id','desc')->paginate(8);
-                        break;
-                    }
-                    case 'v.nombre':
-                    {
-                        $creditos = $query
-                        
-                            ->where($criterio, 'like', '%'. $buscar . '%')
-                            ->where('creditos.status','!=','1')
-                            ->where('inst_seleccionadas.elegido','=','1')
-                            ->orWhere('v.apellidos', 'like', '%'. $buscar . '%')
-                            ->where('creditos.status','!=','1')
-                            ->where('inst_seleccionadas.elegido','=','1')
-                            ->orderBy('id','desc')->paginate(8);
-                        break;
-                    }
-                    case 'inst_seleccionadas.tipo_credito':
-                    {
-                        $creditos = $query
-                            ->where($criterio, 'like', '%'. $buscar . '%')
-                            ->where('creditos.status','!=','1')
-                            ->where('inst_seleccionadas.elegido','=','1')
-                            ->orderBy('id','desc')->paginate(8);
-                        break;
-                    }
-                    case 'creditos.id':
-                    {
-                        $creditos = $query
-                            ->where($criterio, 'like', '%'. $buscar . '%')
-                            ->where('creditos.status','!=','1')
-                            ->where('inst_seleccionadas.elegido','=','1')
-                            ->orderBy('id','desc')->paginate(8);
-                        break;
-                    }
-                    case 'creditos.fraccionamiento':
-                    {
-                        if($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
-                            $creditos = $query
-                                ->where('creditos.status','!=','1')
-                                ->where('inst_seleccionadas.elegido','=','1')
-                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                ->where('creditos.etapa','=',$b_etapa)
-                                ->where('creditos.manzana', '=', $b_manzana)
-                                ->where('creditos.num_lote','=',$b_lote)
-                                ->orderBy('id','desc')->paginate(8);
-                        
-                        }
-                        else{
-                            if($b_etapa != '' && $b_manzana != ''){
-                                $creditos = $query
-                                    ->where('creditos.status','!=','1')
-                                    ->where('inst_seleccionadas.elegido','=','1')
-                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                    ->where('creditos.etapa','like','%'.$b_etapa.'%')
-                                    ->where('creditos.manzana', '=', $b_manzana)
-                                    ->orderBy('id','desc')->paginate(8);
-                            }
-                            else{
-                                if($b_etapa != ''){
-                                    $creditos = $query
-                                        ->where('creditos.status','!=','1')
-                                        ->where('inst_seleccionadas.elegido','=','1')
-                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                        ->where('creditos.etapa','like','%'.$b_etapa.'%')
-                                        ->orderBy('id','desc')->paginate(8);
-                                }
-                                else{
-                                    if($b_manzana != ''){
-                                        $creditos = $query
-                                            ->where('creditos.status','!=','1')
-                                            ->where('inst_seleccionadas.elegido','=','1')
-                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                            ->where('creditos.manzana', '=', $b_manzana)
-                                            ->orderBy('id','desc')->paginate(8);
-                                    }
-                                    else{
-                                        if($b_lote != ''){
-                                            $creditos = $query
-                                                ->where('creditos.status','!=','1')
-                                                ->where('inst_seleccionadas.elegido','=','1')
-                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                ->where('creditos.num_lote','=',$b_lote)
-                                                ->orderBy('id','desc')->paginate(8);
-                                        }
-                                        else{
-                                            $creditos = $query
-                                                ->where('creditos.status','!=','1')
-                                                ->where('inst_seleccionadas.elegido','=','1')
-                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                ->orderBy('id','desc')->paginate(8);
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                            if($b_etapa != '')
+                                $creditos = $creditos->where('creditos.etapa','=',$b_etapa);
+                            if($b_manzana != '')
+                                $creditos = $creditos->where('creditos.manzana', '=', $b_manzana);
+                            if($b_lote != '')
+                                $creditos = $creditos->where('creditos.num_lote','=',$b_lote);
+
                         break;
                     }
                 }
     
             }
-        }
-        else{
-            if($buscar==''){
-                $creditos = $query
-                    ->where('creditos.status','=','1')
-                    ->where('inst_seleccionadas.elegido','=','1')
-                    ->orderBy('id','desc')->paginate(8);
-            }
-            else{
-                switch($criterio){
-                    case 'personal.nombre':
-                    {
-                        $creditos = $query
-                        
-                            ->where($criterio, 'like', '%'. $buscar . '%')
-                            ->where('creditos.status','=','1')
-                            ->where('inst_seleccionadas.elegido','=','1')
-                            ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
-                            ->where('creditos.status','=','1')
-                            ->where('inst_seleccionadas.elegido','=','1')
-                            ->orderBy('id','desc')->paginate(8);
-                        break;
-                    }
-                    case 'v.nombre':
-                    {
-                        $creditos = $query
-                        
-                            ->where($criterio, 'like', '%'. $buscar . '%')
-                            ->where('creditos.status','=','1')
-                            ->where('inst_seleccionadas.elegido','=','1')
-                            ->orWhere('v.apellidos', 'like', '%'. $buscar . '%')
-                            ->where('creditos.status','=','1')
-                            ->where('inst_seleccionadas.elegido','=','1')
-                            ->orderBy('id','desc')->paginate(8);
-                        break;
-                    }
-                    case 'inst_seleccionadas.tipo_credito':
-                    {
-                        $creditos = $query
-                            ->where($criterio, 'like', '%'. $buscar . '%')
-                            ->where('creditos.status','=','1')
-                            ->where('inst_seleccionadas.elegido','=','1')
-                            ->orderBy('id','desc')->paginate(8);
-                        break;
-                    }
-                    case 'creditos.id':
-                    {
-                        $creditos = $query
-                            ->where($criterio, 'like', '%'. $buscar . '%')
-                            ->where('creditos.status','=','1')
-                            ->where('inst_seleccionadas.elegido','=','1')
-                            ->orderBy('id','desc')->paginate(8);
-                        break;
-                    }
-                    case 'creditos.fraccionamiento':
-                    {
-                        if($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
-                            $creditos = $query
-                                ->where('creditos.status','=','1')
-                                ->where('inst_seleccionadas.elegido','=','1')
-                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                ->where('creditos.etapa','=',$b_etapa)
-                                ->where('creditos.manzana', '=', $b_manzana)
-                                ->where('creditos.num_lote','=',$b_lote)
-                                ->orderBy('id','desc')->paginate(8);
-                        
-                        }
-                        else{
-                            if($b_etapa != '' && $b_manzana != ''){
-                                $creditos = $query
-                                    ->where('creditos.status','=','1')
-                                    ->where('inst_seleccionadas.elegido','=','1')
-                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                    ->where('creditos.etapa','like','%'.$b_etapa.'%')
-                                    ->where('creditos.manzana', '=', $b_manzana)
-                                    ->orderBy('id','desc')->paginate(8);
-                            }
-                            else{
-                                if($b_etapa != ''){
-                                    $creditos = $query
-                                        ->where('creditos.status','=','1')
-                                        ->where('inst_seleccionadas.elegido','=','1')
-                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                        ->where('creditos.etapa','like','%'.$b_etapa.'%')
-                                        ->orderBy('id','desc')->paginate(8);
-                                }
-                                else{
-                                    if($b_manzana != ''){
-                                        $creditos = $query
-                                            ->where('creditos.status','=','1')
-                                            ->where('inst_seleccionadas.elegido','=','1')
-                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                            ->where('creditos.manzana', '=', $b_manzana)
-                                            ->orderBy('id','desc')->paginate(8);
-                                    }
-                                    else{
-                                        if($b_lote != ''){
-                                            $creditos = $query
-                                                ->where('creditos.status','=','1')
-                                                ->where('inst_seleccionadas.elegido','=','1')
-                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                ->where('creditos.num_lote','=',$b_lote)
-                                                ->orderBy('id','desc')->paginate(8);
-                                        }
-                                        else{
-                                            $creditos = $query
-                                                ->where('creditos.status','=','1')
-                                                ->where('inst_seleccionadas.elegido','=','1')
-                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                ->orderBy('id','desc')->paginate(8);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        break;
-                    }
-                }
-    
-            }
-        }
-       
+
+            $creditos = $creditos->where('creditos.status','=','1')
+                ->where('inst_seleccionadas.elegido','=','1')
+                ->orderBy('id','desc')->paginate(8);
 
     
         return[
@@ -715,42 +525,32 @@ class CreditoController extends Controller
 
         if($buscar == ''){
                 $Historialcreditos = $query
-                    ->where('inst_seleccionadas.status','=',$buscar2)
-                    ->orderBy('id','desc')->paginate(8);
+                    ->where('inst_seleccionadas.status','=',$buscar2);
         } 
         else{
             switch($criterio){
                 case 'personal.nombre':{
-                    $Historialcreditos = $query
-                        ->where('inst_seleccionadas.status','=',$buscar2)
-                        ->where($criterio,'like','%'.$buscar.'%')
-                        ->orwhere('inst_seleccionadas.status','=',$buscar2)
-                        ->where('personal.apellidos','like','%'.$buscar.'%')
-                        ->orderBy('id','desc')->paginate(8);
+                    $Historialcreditos = $query 
+                        ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
                     break;
                 }
 
                 case 'v.nombre':{
                     $Historialcreditos = $query
-                        ->where('inst_seleccionadas.status','=',$buscar2)
-                        ->where($criterio,'like','%'.$buscar.'%')
-                        ->where('inst_seleccionadas.status','=',$buscar2)
-                        ->orwhere('v.apellidos','like','%'.$buscar.'%')
-                        ->where('inst_seleccionadas.status','=',$buscar2)
-                        ->orderBy('id','desc')->paginate(8);
+                        ->where(DB::raw("CONCAT(v.nombre,' ',v.apellidos)"), 'like', '%'. $buscar . '%');
                     break;
                 }
 
                 default: {
                     $Historialcreditos = $query
-                        ->where('inst_seleccionadas.status','=',$buscar2)
-                        ->where($criterio,'like','%'.$buscar.'%')
-                        ->orderBy('id','desc')->paginate(8);
+                        ->where($criterio,'like','%'.$buscar.'%');
                     break;
                 }
 
             }
         }
+
+        $Historialcreditos = $Historialcreditos->orderBy('id','desc')->paginate(8);
 
         
         return[

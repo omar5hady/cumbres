@@ -79,6 +79,7 @@ class ServicioController extends Controller
         ->join('lotes','creditos.lote_id','=','lotes.id')
         ->join('etapas','lotes.etapa_id','=','etapas.id')
         ->select('personal.nombre','personal.apellidos','creditos.fraccionamiento as proyecto','etapas.empresas_telecom',
+        'lotes.emp_constructora',
          'etapas.empresas_telecom_satelital','etapas.plantilla_telecom','creditos.manzana','creditos.num_lote')
         ->where('contratos.id','=',$id)
         ->get();
@@ -96,8 +97,11 @@ class ServicioController extends Controller
          ->join('personal','creditos.prospecto_id','=','personal.id')
          ->join('clientes','creditos.prospecto_id','=','clientes.id')
          ->join('lotes','creditos.lote_id','=','lotes.id')
+         ->join('modelos','lotes.modelo_id','=','modelos.id')
          ->join('etapas','lotes.etapa_id','=','etapas.id')
-         ->select('personal.nombre','personal.apellidos','etapas.plantilla_carta_servicios','etapas.costo_mantenimiento')
+         ->select('personal.nombre','personal.apellidos','etapas.plantilla_carta_servicios','etapas.costo_mantenimiento',
+            'etapas.costo_mantenimiento2', 'etapas.plantilla_carta_servicios2',
+            'lotes.emp_constructora','lotes.emp_terreno','modelos.nombre as modelo','etapas.num_etapa')
          ->where('contratos.id','=',$id)
          ->get();
 
@@ -115,8 +119,9 @@ class ServicioController extends Controller
             $datos[0]->fecha_hoy = $now->formatLocalized('%d de %B de %Y');
  
             $datos[0]->costoMantenimientoLetra = NumerosEnLetras::convertir($datos[0]->costo_mantenimiento,'Pesos',true,'Centavos');
+            $datos[0]->costoMantenimientoLetra2 = NumerosEnLetras::convertir($datos[0]->costo_mantenimiento2,'Pesos',true,'Centavos');
  
-             $pdf = \PDF::loadview('pdf.contratos.cartaDeServicios',['datos' => $datos , 'servicios' => $servicios]);
+            $pdf = \PDF::loadview('pdf.contratos.cartaDeServicios',['datos' => $datos , 'servicios' => $servicios]);
              return $pdf->stream('CartaDeservicios.pdf');
              
     }

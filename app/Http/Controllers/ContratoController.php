@@ -193,1880 +193,116 @@ class ContratoController extends Controller
             $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
         }
 
-        if(Auth::user()->rol_id != 2){
-            if($b_status == ''){
-                if ($buscar == '' && $criterio != 'creditos.vendedor_id') {
-                    $contratos = $query
-                        ->where('inst_seleccionadas.elegido', '=', '1')
-                        ->orderBy('id', 'desc')->paginate(20);
+        if($b_status != '')
+            $query= $query->where('contratos.status','=',$b_status);
 
-                } else {
-                    switch ($criterio) {
-                        case 'personal.nombre': {
-                                $contratos = $query
-                                    ->where($criterio, 'like', '%' . $buscar . '%')
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->orWhere('personal.apellidos', 'like', '%' . $buscar . '%')
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->orderBy('id', 'desc')->paginate(20);
-                                break;
-                            }
-                        case 'v.nombre': {
-                                $contratos = $query
+        if(Auth::user()->rol_id == 2)
+            $query= $query->where('creditos.vendedor_id', '=', Auth::user()->id);
 
-                                    ->where($criterio, 'like', '%' . $buscar . '%')
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->orWhere('v.apellidos', 'like', '%' . $buscar . '%')
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->orderBy('id', 'desc')->paginate(20);
-                                break;
-                            }
-                        case 'inst_seleccionadas.tipo_credito': {
-                                $contratos = $query
-                                    ->where($criterio, 'like', '%' . $buscar . '%')
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->orderBy('id', 'desc')->paginate(20);
-                                break;
-                            }
-                        case 'creditos.id': {
-                                $contratos = $query
+        
+            if ($buscar == '' && $criterio != 'creditos.vendedor_id') {
+                $contratos = $query
+                    ->where('inst_seleccionadas.elegido', '=', '1')
+                    ->orderBy('id', 'desc')->paginate(20);
 
-                                    ->where($criterio, 'like', '%' . $buscar . '%')
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->orderBy('id', 'desc')->paginate(20);
-                                break;
-                            }
-                        case 'creditos.vendedor_id': {
-                            if($f_ini =='' || $f_fin =='')
-                                if($b_etapa == "" && $buscar3 == "" && $buscar != ""){
-                                    $contratos = $query
-                
-                                        ->where($criterio, '=',$buscar)
-                                        ->where('inst_seleccionadas.elegido', '=', '1')
-                                        ->orderBy('id', 'desc')->paginate(20);
-                                }else{
-                                    if($b_etapa == "" && $buscar3 != "" && $buscar != ""){
-                                        $contratos = $query
-                
-                                            ->where($criterio, '=',$buscar)
-                                            ->where('lotes.fraccionamiento_id','=',$buscar3)
-                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                            ->orderBy('id', 'desc')->paginate(20);
-                                    }else{
-                                        if($b_etapa != "" && $buscar3 != "" && $buscar != ""){
-                                            $contratos = $query
-                    
-                                                ->where($criterio, '=',$buscar)
-                                                ->where('lotes.fraccionamiento_id','=',$buscar3)
-                                                ->where('lotes.etapa_id','=',$b_etapa)
-                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->orderBy('id', 'desc')->paginate(20);
-                                        }
-                                    }
-                                }
-                            else{
-                                if($b_etapa == "" && $buscar3 == "" && $buscar != ""){
-                                    $contratos = $query
-                                        ->where($criterio, '=',$buscar)
-                                        ->where('inst_seleccionadas.elegido', '=', '1')
-                                        ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                        ->orderBy('id', 'desc')->paginate(20);
-                                }else{
-                                    if($b_etapa == "" && $buscar3 != "" && $buscar != ""){
-                                        $contratos = $query
-                
-                                            ->where($criterio, '=',$buscar)
-                                            ->where('lotes.fraccionamiento_id','=',$buscar3)
-                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                            ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                            ->orderBy('id', 'desc')->paginate(20);
-                                    }else{
-                                        if($b_etapa != "" && $buscar3 != "" && $buscar != ""){
-                                            $contratos = $query
-                    
-                                            ->where($criterio, '=',$buscar)
-                                            ->where('lotes.fraccionamiento_id','=',$buscar3)
-                                            ->where('lotes.etapa_id','=',$b_etapa)
-                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                            ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                            ->orderBy('id', 'desc')->paginate(20);
-                                        }
-                                    }
-                                }
-                            }
-
-                            break;
-                            }
-                        case 'contratos.fecha': {
-                                $contratos = $query
-
-                                    ->whereBetween($criterio, [$buscar, $buscar3])
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->orderBy('id', 'desc')->paginate(20);
-                                break;
-                            }
-                        case 'contratos.fecha_status': {
-                                $contratos = $query
-
-                                    ->whereBetween($criterio, [$buscar,  $buscar3])
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->orderBy('id', 'desc')->paginate(20);
-                                break;
-                            }
-                        
-                        case 'creditos.fraccionamiento': {
-                            if($publicidad == ''){
-                                if($b_modelo == ''){
-                                    if($f_ini == '' || $f_fin == ''){
-                                        if ($b_etapa != '' && $b_manzana != '' && $b_lote != '' && $b_modelo == '') {
-                                            $contratos = $query
-                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                ->where('lotes.etapa_id', '=', $b_etapa)
-                                                ->where('lotes.manzana', '=', $b_manzana)
-                                                ->where('lotes.num_lote', '=', $b_lote)
-                                                ->orderBy('id', 'desc')->paginate(20);
-                                        } else {
-                                            if ($b_etapa != '' && $b_manzana != '') {
-                                                $contratos = $query
-                                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                    ->where('lotes.etapa_id', '=', $b_etapa)
-                                                    ->where('lotes.manzana', '=', $b_manzana)
-                                                    ->orderBy('id', 'desc')->paginate(20);
-                                            } else {
-                                                if ($b_etapa != '') {
-                                                    $contratos = $query
-                                                        ->where('inst_seleccionadas.elegido', '=', '1')
-                                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                        ->where('lotes.etapa_id', '=',  $b_etapa )
-                                                        ->orderBy('id', 'desc')->paginate(20);
-                                                } else {
-                                                    if ($b_manzana != '') {
-                                                        $contratos = $query
-                                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                            ->where('lotes.manzana', '=', $b_manzana)
-                                                            ->orderBy('id', 'desc')->paginate(20);
-                                                    } else {
-                                                        if ($b_lote != '') {
-                                                            $contratos = $query
-                                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                                ->where('lotes.num_lote', '=', $b_lote)
-                                                                ->orderBy('id', 'desc')->paginate(20);
-                                                        } else {
-                                                            $contratos = $query
-                                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                                ->orderBy('id', 'desc')->paginate(20);
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    else{
-                                        if ($b_etapa != '' && $b_manzana != '' && $b_lote != '') {
-                                            $contratos = $query
-                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                ->where('lotes.etapa_id', '=', $b_etapa)
-                                                ->where('lotes.manzana', '=', $b_manzana)
-                                                ->where('lotes.num_lote', '=', $b_lote)
-                                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                ->orderBy('id', 'desc')->paginate(20);
-                                        } else {
-                                            if ($b_etapa != '' && $b_manzana != '') {
-                                                $contratos = $query
-                                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                    ->where('lotes.etapa_id', '=', $b_etapa)
-                                                    ->where('lotes.manzana', '=', $b_manzana)
-                                                    ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                    ->orderBy('id', 'desc')->paginate(20);
-                                            } else {
-                                                if ($b_etapa != '') {
-                                                    $contratos = $query
-                                                        ->where('inst_seleccionadas.elegido', '=', '1')
-                                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                        ->where('lotes.etapa_id', '=',  $b_etapa )
-                                                        ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                        ->orderBy('id', 'desc')->paginate(20);
-                                                } else {
-                                                    if ($b_manzana != '') {
-                                                        $contratos = $query
-                                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                            ->where('lotes.manzana', '=', $b_manzana)
-                                                            ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                            ->orderBy('id', 'desc')->paginate(20);
-                                                    } else {
-                                                        if ($b_lote != '') {
-                                                            $contratos = $query
-                                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                                ->where('lotes.num_lote', '=', $b_lote)
-                                                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                                ->orderBy('id', 'desc')->paginate(20);
-                                                        } else {
-                                                            $contratos = $query
-                                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                                ->orderBy('id', 'desc')->paginate(20);
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                else{
-                                    if($f_ini == '' || $f_fin == ''){
-                                        if ($b_etapa != '' && $b_manzana != '' && $b_lote != '' && $b_modelo == '') {
-                                            $contratos = $query
-                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                ->where('lotes.etapa_id', '=', $b_etapa)
-                                                ->where('lotes.manzana', '=', $b_manzana)
-                                                ->where('lotes.num_lote', '=', $b_lote)
-                                                ->orderBy('id', 'desc')->paginate(20);
-                                        } else {
-                                            if ($b_etapa != '' && $b_manzana != '') {
-                                                $contratos = $query
-                                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                    ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                    ->where('lotes.etapa_id', '=', $b_etapa)
-                                                    ->where('lotes.manzana', '=', $b_manzana)
-                                                    ->orderBy('id', 'desc')->paginate(20);
-        
-                                                
-                                            } else {
-                                                if ($b_etapa != '') {
-                                                    $contratos = $query
-                                                        ->where('inst_seleccionadas.elegido', '=', '1')
-                                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                        ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                        ->where('lotes.etapa_id', '=',  $b_etapa )
-                                                        ->orderBy('id', 'desc')->paginate(20);
-        
-                                                    
-                                                } else {
-                                                    if ($b_manzana != '') {
-                                                        $contratos = $query
-                                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                            ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                            ->where('lotes.manzana', '=', $b_manzana)
-                                                            ->orderBy('id', 'desc')->paginate(20);
-        
-                                                        
-                                                    } else {
-                                                        if ($b_lote != '') {
-                                                            $contratos = $query
-                                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                                ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                                ->where('lotes.num_lote', '=', $b_lote)
-                                                                ->orderBy('id', 'desc')->paginate(20);
-        
-                                                            
-                                                        } else {
-                                                            $contratos = $query
-                                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                                ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                                ->orderBy('id', 'desc')->paginate(20);
-        
-                                                            
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    else{
-                                        if ($b_etapa != '' && $b_manzana != '' && $b_lote != '') {
-                                            $contratos = $query
-                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                ->where('lotes.etapa_id', '=', $b_etapa)
-                                                ->where('lotes.manzana', '=', $b_manzana)
-                                                ->where('lotes.num_lote', '=', $b_lote)
-                                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                ->orderBy('id', 'desc')->paginate(20);
-        
-                                            
-                                        } else {
-                                            if ($b_etapa != '' && $b_manzana != '' && $b_lote == '') {
-                                                $contratos = $query
-                                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                    ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                    ->where('lotes.etapa_id', '=', $b_etapa)
-                                                    ->where('lotes.manzana', '=', $b_manzana)
-                                                    ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                    ->orderBy('id', 'desc')->paginate(20);
-        
-                                                
-                                            } else {
-                                                if ($b_etapa != '' && $b_manzana == '' && $b_lote == '') {
-                                                    $contratos = $query
-                                                        ->where('inst_seleccionadas.elegido', '=', '1')
-                                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                        ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                        ->where('lotes.etapa_id', '=',  $b_etapa )
-                                                        ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                        ->orderBy('id', 'desc')->paginate(20);
-        
-                                                    
-                                                } else {
-                                                    if ($b_manzana != '' && $b_etapa == '' && $b_lote == '') {
-                                                        $contratos = $query
-                                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                            ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                            ->where('lotes.manzana', '=', $b_manzana)
-                                                            ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                            ->orderBy('id', 'desc')->paginate(20);
-        
-                                                        
-                                                    } else {
-                                                        if ($b_lote != '' && $b_manzana == '' && $b_etapa == '') {
-                                                            $contratos = $query
-                                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                                ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                                ->where('lotes.num_lote', '=', $b_lote)
-                                                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                                ->orderBy('id', 'desc')->paginate(20);
-        
-                                                            
-                                                        } else {
-                                                            $contratos = $query
-                                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                                ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                                ->orderBy('id', 'desc')->paginate(20);
-        
-                                                            
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            else{
-                                if($b_modelo == ''){
-                                    if($f_ini == '' || $f_fin == ''){
-                                        if ($b_etapa != '' && $b_manzana != '' && $b_lote != '' && $b_modelo == '') {
-                                            $contratos = $query
-                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                ->where('lotes.etapa_id', '=', $b_etapa)
-                                                ->where('lotes.manzana', '=', $b_manzana)
-                                                ->where('lotes.num_lote', '=', $b_lote)
-                                                ->orderBy('id', 'desc')->paginate(20);
-        
-                                           
-                                        } else {
-                                            if ($b_etapa != '' && $b_manzana != '') {
-                                                $contratos = $query
-                                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                    ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                    ->where('lotes.etapa_id', '=', $b_etapa)
-                                                    ->where('lotes.manzana', '=', $b_manzana)
-                                                    ->orderBy('id', 'desc')->paginate(20);
-        
-                                               
-                                            } else {
-                                                if ($b_etapa != '') {
-                                                    $contratos = $query
-                                                        ->where('inst_seleccionadas.elegido', '=', '1')
-                                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                        ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                        ->where('lotes.etapa_id', '=',  $b_etapa )
-                                                        ->orderBy('id', 'desc')->paginate(20);
-        
-                                                   
-                                                } else {
-                                                    if ($b_manzana != '') {
-                                                        $contratos = $query
-                                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                            ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                            ->where('lotes.manzana', '=', $b_manzana)
-                                                            ->orderBy('id', 'desc')->paginate(20);
-        
-                                                        
-                                                    } else {
-                                                        if ($b_lote != '') {
-                                                            $contratos = $query
-                                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                                ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                                ->where('lotes.num_lote', '=', $b_lote)
-                                                                ->orderBy('id', 'desc')->paginate(20);
-        
-                                                           
-                                                        } else {
-                                                            $contratos = $query
-                                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                                ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                                ->orderBy('id', 'desc')->paginate(20);
-        
-                                                          
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    else{
-                                        if ($b_etapa != '' && $b_manzana != '' && $b_lote != '') {
-                                            $contratos = $query
-                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                ->where('lotes.etapa_id', '=', $b_etapa)
-                                                ->where('lotes.manzana', '=', $b_manzana)
-                                                ->where('lotes.num_lote', '=', $b_lote)
-                                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                ->orderBy('id', 'desc')->paginate(20);
-        
-                                           
-                                        } else {
-                                            if ($b_etapa != '' && $b_manzana != '') {
-                                                $contratos = $query
-                                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                    ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                    ->where('lotes.etapa_id', '=', $b_etapa)
-                                                    ->where('lotes.manzana', '=', $b_manzana)
-                                                    ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                    ->orderBy('id', 'desc')->paginate(20);
-        
-                                                
-                                            } else {
-                                                if ($b_etapa != '') {
-                                                    $contratos = $query
-                                                        ->where('inst_seleccionadas.elegido', '=', '1')
-                                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                        ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                        ->where('lotes.etapa_id', '=',  $b_etapa )
-                                                        ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                        ->orderBy('id', 'desc')->paginate(20);
-        
-                                                   
-                                                } else {
-                                                    if ($b_manzana != '') {
-                                                        $contratos = $query
-                                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                            ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                            ->where('lotes.manzana', '=', $b_manzana)
-                                                            ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                            ->orderBy('id', 'desc')->paginate(20);
-        
-                                                     
-                                                    } else {
-                                                        if ($b_lote != '') {
-                                                            $contratos = $query
-                                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                                ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                                ->where('lotes.num_lote', '=', $b_lote)
-                                                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                                ->orderBy('id', 'desc')->paginate(20);
-        
-                                                       
-                                                        } else {
-                                                            $contratos = $query
-                                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                                ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                                ->orderBy('id', 'desc')->paginate(20);
-        
-                              
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                else{
-                                    if($f_ini == '' || $f_fin == ''){
-                                        if ($b_etapa != '' && $b_manzana != '' && $b_lote != '' && $b_modelo == '') {
-                                            $contratos = $query
-                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                ->where('lotes.etapa_id', '=', $b_etapa)
-                                                ->where('lotes.manzana', '=', $b_manzana)
-                                                ->where('lotes.num_lote', '=', $b_lote)
-                                                ->orderBy('id', 'desc')->paginate(20);
-        
-                                    
-                                        } else {
-                                            if ($b_etapa != '' && $b_manzana != '') {
-                                                $contratos = $query
-                                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                    ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                    ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                    ->where('lotes.etapa_id', '=', $b_etapa)
-                                                    ->where('lotes.manzana', '=', $b_manzana)
-                                                    ->orderBy('id', 'desc')->paginate(20);
-        
-                               
-                                            } else {
-                                                if ($b_etapa != '') {
-                                                    $contratos = $query
-                                                        ->where('inst_seleccionadas.elegido', '=', '1')
-                                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                        ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                        ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                        ->where('lotes.etapa_id', '=',  $b_etapa )
-                                                        ->orderBy('id', 'desc')->paginate(20);
-        
-                                      
-                                                } else {
-                                                    if ($b_manzana != '') {
-                                                        $contratos = $query
-                                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                            ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                            ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                            ->where('lotes.manzana', '=', $b_manzana)
-                                                            ->orderBy('id', 'desc')->paginate(20);
-        
-                                     
-                                                    } else {
-                                                        if ($b_lote != '') {
-                                                            $contratos = $query
-                                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                                ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                                ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                                ->where('lotes.num_lote', '=', $b_lote)
-                                                                ->orderBy('id', 'desc')->paginate(20);
-        
-                                
-                                                        } else {
-                                                            $contratos = $query
-                                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                                ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                                ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                                ->orderBy('id', 'desc')->paginate(20);
-        
-                                        
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    else{
-                                        if ($b_etapa != '' && $b_manzana != '' && $b_lote != '') {
-                                            $contratos = $query
-                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                ->where('lotes.etapa_id', '=', $b_etapa)
-                                                ->where('lotes.manzana', '=', $b_manzana)
-                                                ->where('lotes.num_lote', '=', $b_lote)
-                                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                ->orderBy('id', 'desc')->paginate(20);
-        
-                                    
-                                        } else {
-                                            if ($b_etapa != '' && $b_manzana != '') {
-                                                $contratos = $query
-                                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                    ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                    ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                    ->where('lotes.etapa_id', '=', $b_etapa)
-                                                    ->where('lotes.manzana', '=', $b_manzana)
-                                                    ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                    ->orderBy('id', 'desc')->paginate(20);
-        
-                  
-                                            } else {
-                                                if ($b_etapa != '') {
-                                                    $contratos = $query
-                                                        ->where('inst_seleccionadas.elegido', '=', '1')
-                                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                        ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                        ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                        ->where('lotes.etapa_id', '=',  $b_etapa )
-                                                        ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                        ->orderBy('id', 'desc')->paginate(20);
-        
-                                          
-                                                } else {
-                                                    if ($b_manzana != '') {
-                                                        $contratos = $query
-                                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                            ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                            ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                            ->where('lotes.manzana', '=', $b_manzana)
-                                                            ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                            ->orderBy('id', 'desc')->paginate(20);
-        
-                                           
-                                                    } else {
-                                                        if ($b_lote != '') {
-                                                            $contratos = $query
-                                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                                ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                                ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                                ->where('lotes.num_lote', '=', $b_lote)
-                                                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                                ->orderBy('id', 'desc')->paginate(20);
-        
-                                             
-                                                        } else {
-                                                            $contratos = $query
-                                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                                ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                                ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                                ->orderBy('id', 'desc')->paginate(20);
-        
-                                               
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            
-                                break;
-                            }
-                    
-                        
-                        }
-                }
-            }
-            else{
-                if ($buscar == '' && $criterio != 'creditos.vendedor_id') {
-                    $contratos = $query
-                        ->where('inst_seleccionadas.elegido', '=', '1')
-                        ->where('contratos.status','=',$b_status)
-                        ->orderBy('id', 'desc')->paginate(20);
-
-             
-                } else {
-                    switch ($criterio) {
-                        case 'personal.nombre': {
-                                $contratos = $query
-
-                                    ->where($criterio, 'like', '%' . $buscar . '%')
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orWhere('personal.apellidos', 'like', '%' . $buscar . '%')
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('id', 'desc')->paginate(20);
-
-                         
-                                break;
-                            }
-                        case 'v.nombre': {
-                                $contratos = $query
-
-                                    ->where($criterio, 'like', '%' . $buscar . '%')
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orWhere('v.apellidos', 'like', '%' . $buscar . '%')
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('id', 'desc')->paginate(20);
-
-                         
-                                break;
-                            }
-                        case 'inst_seleccionadas.tipo_credito': {
-                                $contratos = $query
-                                    ->where($criterio, 'like', '%' . $buscar . '%')
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('id', 'desc')->paginate(20);
-
-                            
-                                break;
-                            }
-                        case 'creditos.id': {
-                                $contratos = $query
-
-                                    ->where($criterio, 'like', '%' . $buscar . '%')
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('id', 'desc')->paginate(20);
-
-                           
-                                break;
-                            }
-                        case 'creditos.vendedor_id': {
-                            if($f_ini == '' || $f_fin == ''){
-                                if($b_etapa == "" && $buscar3 == "" && $buscar != ""){
-                                    $contratos = $query
-            
-                                        ->where($criterio, '=',$buscar)
-                                        ->where('contratos.status','=',$b_status)
-                                        ->where('inst_seleccionadas.elegido', '=', '1')
-                                        ->orderBy('id', 'desc')->paginate(20);
-            
-                              
-                                }else{
-                                    if($b_etapa == "" && $buscar3 != "" && $buscar != ""){
-                                        $contratos = $query
-                
-                                            ->where($criterio, '=',$buscar)
-                                            ->where('lotes.fraccionamiento_id','=',$buscar3)
-                                            ->where('contratos.status','=',$b_status)
-                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                            ->orderBy('id', 'desc')->paginate(20);
-                
-                             
-                                    }else{
-                                        if($b_etapa != "" && $buscar3 != "" && $buscar != ""){
-                                            $contratos = $query
-                    
-                                                ->where($criterio, '=',$buscar)
-                                                ->where('lotes.fraccionamiento_id','=',$buscar3)
-                                                ->where('lotes.etapa_id','=',$b_etapa)
-                                                ->where('contratos.status','=',$b_status)
-                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->orderBy('id', 'desc')->paginate(20);
-                    
-                            
-                                        }
-                                    }
-                                }
-                            }
-                            else{
-                                if($b_etapa == "" && $buscar3 == "" && $buscar != ""){
-                                    $contratos = $query
-            
-                                        ->where($criterio, '=',$buscar)
-                                        ->where('contratos.status','=',$b_status)
-                                        ->where('inst_seleccionadas.elegido', '=', '1')
-                                        ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                        ->orderBy('id', 'desc')->paginate(20);
-            
-                             
-                                }else{
-                                    if($b_etapa == "" && $buscar3 != "" && $buscar != ""){
-                                        $contratos = $query
-                
-                                            ->where($criterio, '=',$buscar)
-                                            ->where('lotes.fraccionamiento_id','=',$buscar3)
-                                            ->where('contratos.status','=',$b_status)
-                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                            ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                            ->orderBy('id', 'desc')->paginate(20);
-                
-                                   
-                                    }else{
-                                        if($b_etapa != "" && $buscar3 != "" && $buscar != ""){
-                                            $contratos = $query
-                    
-                                                ->where($criterio, '=',$buscar)
-                                                ->where('lotes.fraccionamiento_id','=',$buscar3)
-                                                ->where('lotes.etapa_id','=',$b_etapa)
-                                                ->where('contratos.status','=',$b_status)
-                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                ->orderBy('id', 'desc')->paginate(20);
-                    
-                            
-                                        }
-                                    }
-                                }
-                            }
-                            
-                            break;
-                            }
-                    
-                        case 'contratos.fecha': {
-                                $contratos = $query
-
-                                    ->whereBetween($criterio, [$buscar, $buscar3])
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('id', 'desc')->paginate(20);
-
-                   
-                                break;
-                            }
-
-                        case 'contratos.fecha_status': {
-                                $contratos = $query
-
-                                    ->whereBetween($criterio, [$buscar,  $buscar3])
-                                    ->where('contratos.status','=',$b_status)
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->orderBy('id', 'desc')->paginate(20);
-
-                      
-                                break;
-                            }
-                        
-                        case 'creditos.fraccionamiento': {
-                            if($publicidad == ''){
-                                if($b_modelo == ''){
-                                    if($f_ini == '' || $f_fin == ''){
-                                        if ($b_etapa != '' && $b_manzana != '' && $b_lote != '' && $b_status!= '' && $buscar != '') {
-                                            $contratos = $query
-                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->where('contratos.status','=',$b_status)
-                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                ->where('lotes.etapa_id', '=', $b_etapa)
-                                                ->where('lotes.manzana', '=', $b_manzana)
-                                                ->where('lotes.num_lote', '=', $b_lote)
-                                                ->orderBy('id', 'desc')->paginate(20);
-            
-                                         
-                                        } else {
-                                            if ($b_etapa != '' && $b_manzana != '') {
-                                                $contratos = $query
-                                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                                    ->where('contratos.status','=',$b_status)
-                                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                    ->where('lotes.etapa_id', '=', $b_etapa)
-                                                    ->where('lotes.manzana', '=', $b_manzana)
-                                                    ->orderBy('id', 'desc')->paginate(20);
-            
-                                  
-                                            } else {
-                                                if ($b_etapa != '') {
-                                                    $contratos = $query
-                                                        ->where('inst_seleccionadas.elegido', '=', '1')
-                                                        ->where('contratos.status','=',$b_status)
-                                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                        ->where('lotes.etapa_id', '=',  $b_etapa )
-                                                        ->orderBy('id', 'desc')->paginate(20);
-            
-                                      
-                                                } else {
-                                                    if ($b_manzana != '') {
-                                                        $contratos = $query
-                                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                                            ->where('contratos.status','=',$b_status)
-                                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                            ->where('lotes.manzana', '=', $b_manzana)
-                                                            ->orderBy('id', 'desc')->paginate(20);
-            
-                                    
-                                                    } else {
-                                                        if ($b_lote != '') {
-                                                            $contratos = $query
-                                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                                ->where('contratos.status','=',$b_status)
-                                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                                ->where('lotes.num_lote', '=', $b_lote)
-                                                                ->orderBy('id', 'desc')->paginate(20);
-            
-                                                
-                                                        } else {
-                                                            $contratos = $query
-                                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                                ->where('contratos.status','=',$b_status)
-                                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                                ->orderBy('id', 'desc')->paginate(20);
-            
-                                  
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    else{
-                                        if ($b_etapa != '' && $b_manzana != '' && $b_lote != '' && $b_status!= '' && $buscar != '') {
-                                            $contratos = $query
-                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->where('contratos.status','=',$b_status)
-                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                ->where('lotes.etapa_id', '=', $b_etapa)
-                                                ->where('lotes.manzana', '=', $b_manzana)
-                                                ->where('lotes.num_lote', '=', $b_lote)
-                                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                ->orderBy('id', 'desc')->paginate(20);
-            
-                                       
-                                        } else {
-                                            if ($b_etapa != '' && $b_manzana != '') {
-                                                $contratos = $query
-                                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                                    ->where('contratos.status','=',$b_status)
-                                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                    ->where('lotes.etapa_id', '=', $b_etapa)
-                                                    ->where('lotes.manzana', '=', $b_manzana)
-                                                    ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                    ->orderBy('id', 'desc')->paginate(20);
-            
-                                    
-                                            } else {
-                                                if ($b_etapa != '') {
-                                                    $contratos = $query
-                                                        ->where('inst_seleccionadas.elegido', '=', '1')
-                                                        ->where('contratos.status','=',$b_status)
-                                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                        ->where('lotes.etapa_id', '=',  $b_etapa )
-                                                        ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                        ->orderBy('id', 'desc')->paginate(20);
-            
-                                      
-                                                } else {
-                                                    if ($b_manzana != '') {
-                                                        $contratos = $query
-                                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                                            ->where('contratos.status','=',$b_status)
-                                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                            ->where('lotes.manzana', '=', $b_manzana)
-                                                            ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                            ->orderBy('id', 'desc')->paginate(20);
-            
-                                       
-                                                    } else {
-                                                        if ($b_lote != '') {
-                                                            $contratos = $query
-                                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                                ->where('contratos.status','=',$b_status)
-                                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                                ->where('lotes.num_lote', '=', $b_lote)
-                                                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                                ->orderBy('id', 'desc')->paginate(20);
-            
-                                           
-                                                        } else {
-                                                            $contratos = $query
-                                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                                ->where('contratos.status','=',$b_status)
-                                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                                ->orderBy('id', 'desc')->paginate(20);
-            
-                                          
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                else{
-                                    if($f_ini == '' || $f_fin == ''){
-                                        if ($b_etapa != '' && $b_manzana != '' && $b_lote != '' && $b_status!= '' && $buscar != '') {
-                                            $contratos = $query
-                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->where('contratos.status','=',$b_status)
-                                                ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                ->where('lotes.etapa_id', '=', $b_etapa)
-                                                ->where('lotes.manzana', '=', $b_manzana)
-                                                ->where('lotes.num_lote', '=', $b_lote)
-                                                ->orderBy('id', 'desc')->paginate(20);
-            
-                                    
-                                        } else {
-                                            if ($b_etapa != '' && $b_manzana != '') {
-                                                $contratos = $query
-                                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                                    ->where('contratos.status','=',$b_status)
-                                                    ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                    ->where('lotes.etapa_id', '=', $b_etapa)
-                                                    ->where('lotes.manzana', '=', $b_manzana)
-                                                    ->orderBy('id', 'desc')->paginate(20);
-            
-                                  
-                                            } else {
-                                                if ($b_etapa != '') {
-                                                    $contratos = $query
-                                                        ->where('inst_seleccionadas.elegido', '=', '1')
-                                                        ->where('contratos.status','=',$b_status)
-                                                        ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                        ->where('lotes.etapa_id', '=',  $b_etapa )
-                                                        ->orderBy('id', 'desc')->paginate(20);
-            
-                                 
-                                                } else {
-                                                    if ($b_manzana != '') {
-                                                        $contratos = $query
-                                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                                            ->where('contratos.status','=',$b_status)
-                                                            ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                            ->where('lotes.manzana', '=', $b_manzana)
-                                                            ->orderBy('id', 'desc')->paginate(20);
-            
-                                        
-                                                    } else {
-                                                        if ($b_lote != '') {
-                                                            $contratos = $query
-                                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                                ->where('contratos.status','=',$b_status)
-                                                                ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                                ->where('lotes.num_lote', '=', $b_lote)
-                                                                ->orderBy('id', 'desc')->paginate(20);
-            
-                                       
-                                                        } else {
-                                                            $contratos = $query
-                                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                                ->where('contratos.status','=',$b_status)
-                                                                ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                                ->orderBy('id', 'desc')->paginate(20);
-            
-                                        
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    else{
-                                        if ($b_etapa != '' && $b_manzana != '' && $b_lote != '' && $b_status!= '' && $buscar != '') {
-                                            $contratos = $query
-                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->where('contratos.status','=',$b_status)
-                                                ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                ->where('lotes.etapa_id', '=', $b_etapa)
-                                                ->where('lotes.manzana', '=', $b_manzana)
-                                                ->where('lotes.num_lote', '=', $b_lote)
-                                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                ->orderBy('id', 'desc')->paginate(20);
-            
-                                       
-                                        } else {
-                                            if ($b_etapa != '' && $b_manzana != '') {
-                                                $contratos = $query
-                                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                                    ->where('contratos.status','=',$b_status)
-                                                    ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                    ->where('lotes.etapa_id', '=', $b_etapa)
-                                                    ->where('lotes.manzana', '=', $b_manzana)
-                                                    ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                    ->orderBy('id', 'desc')->paginate(20);
-            
-                           
-                                            } else {
-                                                if ($b_etapa != '') {
-                                                    $contratos = $query
-                                                        ->where('inst_seleccionadas.elegido', '=', '1')
-                                                        ->where('contratos.status','=',$b_status)
-                                                        ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                        ->where('lotes.etapa_id', '=',  $b_etapa )
-                                                        ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                        ->orderBy('id', 'desc')->paginate(20);
-            
-                               
-                                                } else {
-                                                    if ($b_manzana != '') {
-                                                        $contratos = $query
-                                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                                            ->where('contratos.status','=',$b_status)
-                                                            ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                            ->where('lotes.manzana', '=', $b_manzana)
-                                                            ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                            ->orderBy('id', 'desc')->paginate(20);
-            
-                                      
-                                                    } else {
-                                                        if ($b_lote != '') {
-                                                            $contratos = $query
-                                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                                ->where('contratos.status','=',$b_status)
-                                                                ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                                ->where('lotes.num_lote', '=', $b_lote)
-                                                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                                ->orderBy('id', 'desc')->paginate(20);
-            
-                             
-                                                        } else {
-                                                            $contratos = $query
-                                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                                ->where('contratos.status','=',$b_status)
-                                                                ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                                ->orderBy('id', 'desc')->paginate(20);
-            
-                         
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            else{
-                                if($b_modelo == ''){
-                                    if($f_ini == '' || $f_fin == ''){
-                                        if ($b_etapa != '' && $b_manzana != '' && $b_lote != '' && $b_status!= '' && $buscar != '') {
-                                            $contratos = $query
-                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->where('contratos.status','=',$b_status)
-                                                ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                ->where('lotes.etapa_id', '=', $b_etapa)
-                                                ->where('lotes.manzana', '=', $b_manzana)
-                                                ->where('lotes.num_lote', '=', $b_lote)
-                                                ->orderBy('id', 'desc')->paginate(20);
-            
-                 
-                                        } else {
-                                            if ($b_etapa != '' && $b_manzana != '') {
-                                                $contratos = $query
-                                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                                    ->where('contratos.status','=',$b_status)
-                                                    ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                    ->where('lotes.etapa_id', '=', $b_etapa)
-                                                    ->where('lotes.manzana', '=', $b_manzana)
-                                                    ->orderBy('id', 'desc')->paginate(20);
-            
-                  
-                                            } else {
-                                                if ($b_etapa != '') {
-                                                    $contratos = $query
-                                                        ->where('inst_seleccionadas.elegido', '=', '1')
-                                                        ->where('contratos.status','=',$b_status)
-                                                        ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                        ->where('lotes.etapa_id', '=',  $b_etapa )
-                                                        ->orderBy('id', 'desc')->paginate(20);
-            
-                  
-                                                } else {
-                                                    if ($b_manzana != '') {
-                                                        $contratos = $query
-                                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                                            ->where('contratos.status','=',$b_status)
-                                                            ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                            ->where('lotes.manzana', '=', $b_manzana)
-                                                            ->orderBy('id', 'desc')->paginate(20);
-            
-                                     
-                                                    } else {
-                                                        if ($b_lote != '') {
-                                                            $contratos = $query
-                                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                                ->where('contratos.status','=',$b_status)
-                                                                ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                                ->where('lotes.num_lote', '=', $b_lote)
-                                                                ->orderBy('id', 'desc')->paginate(20);
-            
-                                      
-                                                        } else {
-                                                            $contratos = $query
-                                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                                ->where('contratos.status','=',$b_status)
-                                                                ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                                ->orderBy('id', 'desc')->paginate(20);
-            
-                                     
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    else{
-                                        if ($b_etapa != '' && $b_manzana != '' && $b_lote != '' && $b_status!= '' && $buscar != '') {
-                                            $contratos = $query
-                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->where('contratos.status','=',$b_status)
-                                                ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                ->where('lotes.etapa_id', '=', $b_etapa)
-                                                ->where('lotes.manzana', '=', $b_manzana)
-                                                ->where('lotes.num_lote', '=', $b_lote)
-                                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                ->orderBy('id', 'desc')->paginate(20);
-                                        } else {
-                                            if ($b_etapa != '' && $b_manzana != '') {
-                                                $contratos = $query
-                                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                                    ->where('contratos.status','=',$b_status)
-                                                    ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                    ->where('lotes.etapa_id', '=', $b_etapa)
-                                                    ->where('lotes.manzana', '=', $b_manzana)
-                                                    ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                    ->orderBy('id', 'desc')->paginate(20);
-            
-                                         
-                                            } else {
-                                                if ($b_etapa != '') {
-                                                    $contratos = $query
-                                                        ->where('inst_seleccionadas.elegido', '=', '1')
-                                                        ->where('contratos.status','=',$b_status)
-                                                        ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                        ->where('lotes.etapa_id', '=',  $b_etapa )
-                                                        ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                        ->orderBy('id', 'desc')->paginate(20);
-            
-                               
-                                                } else {
-                                                    if ($b_manzana != '') {
-                                                        $contratos = $query
-                                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                                            ->where('contratos.status','=',$b_status)
-                                                            ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                            ->where('lotes.manzana', '=', $b_manzana)
-                                                            ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                            ->orderBy('id', 'desc')->paginate(20);
-            
-                            
-                                                    } else {
-                                                        if ($b_lote != '') {
-                                                            $contratos = $query
-                                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                                ->where('contratos.status','=',$b_status)
-                                                                ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                                ->where('lotes.num_lote', '=', $b_lote)
-                                                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                                ->orderBy('id', 'desc')->paginate(20);
-            
-                                            
-                                                        } else {
-                                                            $contratos = $query
-                                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                                ->where('contratos.status','=',$b_status)
-                                                                ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                                ->orderBy('id', 'desc')->paginate(20);
-            
-                             
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                else{
-                                    if($f_ini == '' || $f_fin == ''){
-                                        if ($b_etapa != '' && $b_manzana != '' && $b_lote != '' && $b_status!= '' && $buscar != '') {
-                                            $contratos = $query
-                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->where('contratos.status','=',$b_status)
-                                                ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                ->where('lotes.etapa_id', '=', $b_etapa)
-                                                ->where('lotes.manzana', '=', $b_manzana)
-                                                ->where('lotes.num_lote', '=', $b_lote)
-                                                ->orderBy('id', 'desc')->paginate(20);
-            
-                              
-                                        } else {
-                                            if ($b_etapa != '' && $b_manzana != '') {
-                                                $contratos = $query
-                                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                                    ->where('contratos.status','=',$b_status)
-                                                    ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                    ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                    ->where('lotes.etapa_id', '=', $b_etapa)
-                                                    ->where('lotes.manzana', '=', $b_manzana)
-                                                    ->orderBy('id', 'desc')->paginate(20);
-            
-                                
-                                            } else {
-                                                if ($b_etapa != '') {
-                                                    $contratos = $query
-                                                        ->where('inst_seleccionadas.elegido', '=', '1')
-                                                        ->where('contratos.status','=',$b_status)
-                                                        ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                        ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                        ->where('lotes.etapa_id', '=',  $b_etapa )
-                                                        ->orderBy('id', 'desc')->paginate(20);
-            
-                                     
-                                                } else {
-                                                    if ($b_manzana != '') {
-                                                        $contratos = $query
-                                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                                            ->where('contratos.status','=',$b_status)
-                                                            ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                            ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                            ->where('lotes.manzana', '=', $b_manzana)
-                                                            ->orderBy('id', 'desc')->paginate(20);
-            
-                                       
-                                                    } else {
-                                                        if ($b_lote != '') {
-                                                            $contratos = $query
-                                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                                ->where('contratos.status','=',$b_status)
-                                                                ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                                ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                                ->where('lotes.num_lote', '=', $b_lote)
-                                                                ->orderBy('id', 'desc')->paginate(20);
-            
-                                      
-                                                        } else {
-                                                            $contratos = $query
-                                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                                ->where('contratos.status','=',$b_status)
-                                                                ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                                ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                                ->orderBy('id', 'desc')->paginate(20);
-            
-                                            
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    else{
-                                        if ($b_etapa != '' && $b_manzana != '' && $b_lote != '' && $b_status!= '' && $buscar != '') {
-                                            $contratos = $query
-                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->where('contratos.status','=',$b_status)
-                                                ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                ->where('lotes.etapa_id', '=', $b_etapa)
-                                                ->where('lotes.manzana', '=', $b_manzana)
-                                                ->where('lotes.num_lote', '=', $b_lote)
-                                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                ->orderBy('id', 'desc')->paginate(20);
-            
-                                 
-                                        } else {
-                                            if ($b_etapa != '' && $b_manzana != '') {
-                                                $contratos = $query
-                                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                                    ->where('contratos.status','=',$b_status)
-                                                    ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                    ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                    ->where('lotes.etapa_id', '=', $b_etapa)
-                                                    ->where('lotes.manzana', '=', $b_manzana)
-                                                    ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                    ->orderBy('id', 'desc')->paginate(20);
-            
-                             
-                                            } else {
-                                                if ($b_etapa != '') {
-                                                    $contratos = $query
-                                                        ->where('inst_seleccionadas.elegido', '=', '1')
-                                                        ->where('contratos.status','=',$b_status)
-                                                        ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                        ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                        ->where('lotes.etapa_id', '=',  $b_etapa )
-                                                        ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                        ->orderBy('id', 'desc')->paginate(20);
-            
-                                  
-                                                } else {
-                                                    if ($b_manzana != '') {
-                                                        $contratos = $query
-                                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                                            ->where('contratos.status','=',$b_status)
-                                                            ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                            ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                            ->where('lotes.manzana', '=', $b_manzana)
-                                                            ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                            ->orderBy('id', 'desc')->paginate(20);
-            
-                                   
-                                                    } else {
-                                                        if ($b_lote != '') {
-                                                            $contratos = $query
-                                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                                ->where('contratos.status','=',$b_status)
-                                                                ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                                ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                                ->where('lotes.num_lote', '=', $b_lote)
-                                                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                                ->orderBy('id', 'desc')->paginate(20);
-                                                        } else {
-                                                            $contratos = $query
-                                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                                ->where('contratos.status','=',$b_status)
-                                                                ->where('contratos.publicidad_id', '=',  $publicidad)
-                                                                ->where('lotes.modelo_id', '=',  $b_modelo)
-                                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                                ->orderBy('id', 'desc')->paginate(20);
-            
-                                     
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            break;
-                        }
+            } 
+            else {
+                switch ($criterio) {
+                    case 'personal.nombre': {
+                        $contratos = $query
+                            ->where($criterio, 'like', '%' . $buscar . '%')
+                            ->where('inst_seleccionadas.elegido', '=', '1')
+                            ->orWhere('personal.apellidos', 'like', '%' . $buscar . '%')
+                            ->where('inst_seleccionadas.elegido', '=', '1')
+                            ->orderBy('id', 'desc')->paginate(20);
+                        break;
                     }
-                }
+                    case 'v.nombre': {
+                        $contratos = $query
 
-            }
-        }
-        ///////// AUTH 2
-        else{
-            if($b_status == ''){
-                if ($buscar == '' && $criterio != 'creditos.vendedor_id') {
-                    $contratos = $query
-                        ->where('inst_seleccionadas.elegido', '=', '1')
-                        ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                        ->orderBy('id', 'desc')->paginate(20);
-
-            
-                } else {
-                    switch ($criterio) {
-                        case 'personal.nombre': {
-                                $contratos = $query
-
-                                    ->where($criterio, 'like', '%' . $buscar . '%')
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                                    ->orWhere('personal.apellidos', 'like', '%' . $buscar . '%')
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                                    ->orderBy('id', 'desc')->paginate(20);
-
-                  
-                                break;
-                            }
-
-                        case 'inst_seleccionadas.tipo_credito': {
-                                $contratos = $query
-                                    ->where($criterio, 'like', '%' . $buscar . '%')
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                                    ->orderBy('id', 'desc')->paginate(20);
-
-                  
-                                break;
-                            }
-                        case 'creditos.id': {
-                                $contratos = $query
-
-                                    ->where($criterio, 'like', '%' . $buscar . '%')
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                                    ->orderBy('id', 'desc')->paginate(20);
-
-               
-                                break;
-                            }
-
-                        case 'contratos.fecha': {
-                                $contratos = $query
-
-                                    ->whereBetween($criterio, [$buscar, $buscar3])
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                                    ->orderBy('id', 'desc')->paginate(20);
-
-               
-                                break;
-                            }
-                        case 'contratos.fecha_status': {
-                                $contratos = $query
-
-                                    ->whereBetween($criterio, [$buscar,  $buscar3])
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                                    ->orderBy('id', 'desc')->paginate(20);
-
-                 
-                                break;
-                            }       
+                            ->where($criterio, 'like', '%' . $buscar . '%')
+                            ->where('inst_seleccionadas.elegido', '=', '1')
+                            ->orWhere('v.apellidos', 'like', '%' . $buscar . '%')
+                            ->where('inst_seleccionadas.elegido', '=', '1')
+                            ->orderBy('id', 'desc')->paginate(20);
+                        break;
                     }
-                }
-            }
-            else{
-                if ($buscar == '' && $criterio != 'creditos.vendedor_id') {
-                    $contratos = $query
-                        ->where('inst_seleccionadas.elegido', '=', '1')
-                        ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                        ->where('contratos.status','=',$b_status)
-                        ->orderBy('id', 'desc')->paginate(20);
-
-              
-                } else {
-                    switch ($criterio) {
-                        case 'personal.nombre': {
-                                $contratos = $query
-
-                                    ->where($criterio, 'like', '%' . $buscar . '%')
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orWhere('personal.apellidos', 'like', '%' . $buscar . '%')
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('id', 'desc')->paginate(20);
-
-                 
-                                break;
-                            }
-                        case 'v.nombre': {
-                                $contratos = $query
-
-                                    ->where($criterio, 'like', '%' . $buscar . '%')
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orWhere('v.apellidos', 'like', '%' . $buscar . '%')
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('id', 'desc')->paginate(20);
-
-                  
-                                break;
-                            }
-                        case 'inst_seleccionadas.tipo_credito': {
-                                $contratos = $query
-                                    ->where($criterio, 'like', '%' . $buscar . '%')
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('id', 'desc')->paginate(20);
-
-                
-                                break;
-                            }
-                        case 'creditos.id': {
-                                $contratos = $query
-
-                                    ->where($criterio, 'like', '%' . $buscar . '%')
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('id', 'desc')->paginate(20);
-
-                      
-                                break;
-                            }
-                        case 'creditos.vendedor_id': {
-                                if($f_ini == '' || $f_fin == ''){
-                                    if($b_etapa == "" && $buscar3 == "" && $buscar != ""){
-                                        $contratos = $query
-                
-                                            ->where($criterio, '=',$buscar)
-                                            ->where('contratos.status','=',$b_status)
-                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                            ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                                            ->orderBy('id', 'desc')->paginate(20);
-                
-                  
-                                    }else{
-                                        if($b_etapa == "" && $buscar3 != "" && $buscar != ""){
-                                            $contratos = $query
-                                                ->where($criterio, '=',$buscar)
-                                                ->where('lotes.fraccionamiento_id','=',$buscar3)
-                                                ->where('contratos.status','=',$b_status)
-                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                                                ->orderBy('id', 'desc')->paginate(20);
-                    
-                             
-                                        }else{
-                                            if($b_etapa != "" && $buscar3 != "" && $buscar != ""){
-                                                $contratos = $query
-                                                    ->where($criterio, '=',$buscar)
-                                                    ->where('lotes.fraccionamiento_id','=',$buscar3)
-                                                    ->where('lotes.etapa_id','=',$b_etapa)
-                                                    ->where('contratos.status','=',$b_status)
-                                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                                    ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                                                    ->orderBy('id', 'desc')->paginate(20);
-                        
-                          
-                                            }
-                                        }
-                                    }
-                                }
-                                else{
-                                    if($b_etapa == "" && $buscar3 == "" && $buscar != ""){
-                                        $contratos = $query
-                                            ->where($criterio, '=',$buscar)
-                                            ->where('contratos.status','=',$b_status)
-                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                            ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                                            ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                            ->orderBy('id', 'desc')->paginate(20);
-                
-                        
-                                    }else{
-                                        if($b_etapa == "" && $buscar3 != "" && $buscar != ""){
-                                            $contratos = $query
-                                                ->where($criterio, '=',$buscar)
-                                                ->where('lotes.fraccionamiento_id','=',$buscar3)
-                                                ->where('contratos.status','=',$b_status)
-                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                ->orderBy('id', 'desc')->paginate(20);
-                    
-                                    
-                                        }else{
-                                            if($b_etapa != "" && $buscar3 != "" && $buscar != ""){
-                                                $contratos = $query
-                                                    ->where($criterio, '=',$buscar)
-                                                    ->where('lotes.fraccionamiento_id','=',$buscar3)
-                                                    ->where('lotes.etapa_id','=',$b_etapa)
-                                                    ->where('contratos.status','=',$b_status)
-                                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                                    ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                                                    ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                    ->orderBy('id', 'desc')->paginate(20);
-                        
-                                
-                                            }
-                                        }
-                                    }
-                                }
-                            
-                            break;
-                            }
-                    
-                        case 'contratos.fecha': {
-                                $contratos = $query
-
-                                    ->whereBetween($criterio, [$buscar, $buscar3])
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->orderBy('id', 'desc')->paginate(20);
-
-           
-                                break;
-                            }
-
-                        case 'contratos.fecha_status': {
-                                $contratos = $query
-
-                                    ->whereBetween($criterio, [$buscar,  $buscar3])
-                                    ->where('contratos.status','=',$b_status)
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                                    ->orderBy('id', 'desc')->paginate(20);
-
-            
-                                break;
-                            }
-                        
-                        case 'creditos.fraccionamiento': {
-                                if($f_ini == '' || $f_fin == ''){
-                                    if ($b_etapa != '' && $b_manzana != '' && $b_lote != '' && $b_status!= '' && $buscar != '') {
-                                        $contratos = $query
-                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                            ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                                            ->where('contratos.status','=',$b_status)
-                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                            ->where('lotes.etapa_id', '=', $b_etapa)
-                                            ->where('lotes.manzana', '=', $b_manzana)
-                                            ->where('lotes.num_lote', '=', $b_lote)
-                                            ->orderBy('id', 'desc')->paginate(20);
-        
-                            
-                                    } else {
-                                        if ($b_etapa != '' && $b_manzana != '') {
-                                            $contratos = $query
-                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                                                ->where('contratos.status','=',$b_status)
-                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                ->where('lotes.etapa_id', '=', $b_etapa)
-                                                ->where('lotes.manzana', '=', $b_manzana)
-                                                ->orderBy('id', 'desc')->paginate(20);
-        
-                         
-                                        } else {
-                                            if ($b_etapa != '') {
-                                                $contratos = $query
-                                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                                    ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                                                    ->where('contratos.status','=',$b_status)
-                                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                    ->where('lotes.etapa_id', '=',  $b_etapa )
-                                                    ->orderBy('id', 'desc')->paginate(20);
-        
-                                   
-                                            } else {
-                                                if ($b_manzana != '') {
-                                                    $contratos = $query
-                                                        ->where('inst_seleccionadas.elegido', '=', '1')
-                                                        ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                                                        ->where('contratos.status','=',$b_status)
-                                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                        ->where('lotes.manzana', '=', $b_manzana)
-                                                        ->orderBy('id', 'desc')->paginate(20);
-        
-                                     
-                                                } else {
-                                                    if ($b_lote != '') {
-                                                        $contratos = $query
-                                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                                            ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                                                            ->where('contratos.status','=',$b_status)
-                                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                            ->where('lotes.num_lote', '=', $b_lote)
-                                                            ->orderBy('id', 'desc')->paginate(20);
-        
-                                      
-                                                    } else {
-                                                        $contratos = $query
-                                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                                            ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                                                            ->where('contratos.status','=',$b_status)
-                                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                            ->orderBy('id', 'desc')->paginate(20);
-        
-                           
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                else{
-                                    if ($b_etapa != '' && $b_manzana != '' && $b_lote != '' && $b_status!= '' && $buscar != '') {
-                                        $contratos = $query
-                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                            ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                                            ->where('contratos.status','=',$b_status)
-                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                            ->where('lotes.etapa_id', '=', $b_etapa)
-                                            ->where('lotes.manzana', '=', $b_manzana)
-                                            ->where('lotes.num_lote', '=', $b_lote)
-                                            ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                            ->orderBy('id', 'desc')->paginate(20);
-        
-                  
-                                    } else {
-                                        if ($b_etapa != '' && $b_manzana != '') {
-                                            $contratos = $query
-                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                                                ->where('contratos.status','=',$b_status)
-                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                ->where('lotes.etapa_id', '=', $b_etapa)
-                                                ->where('lotes.manzana', '=', $b_manzana)
-                                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                ->orderBy('id', 'desc')->paginate(20);
-        
-                       
-                                        } else {
-                                            if ($b_etapa != '') {
-                                                $contratos = $query
-                                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                                    ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                                                    ->where('contratos.status','=',$b_status)
-                                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                    ->where('lotes.etapa_id', '=',  $b_etapa )
-                                                    ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                    ->orderBy('id', 'desc')->paginate(20);
-        
-                                 
-                                            } else {
-                                                if ($b_manzana != '') {
-                                                    $contratos = $query
-                                                        ->where('inst_seleccionadas.elegido', '=', '1')
-                                                        ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                                                        ->where('contratos.status','=',$b_status)
-                                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                        ->where('lotes.manzana', '=', $b_manzana)
-                                                        ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                        ->orderBy('id', 'desc')->paginate(20);
-        
-                                
-                                                } else {
-                                                    if ($b_lote != '') {
-                                                        $contratos = $query
-                                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                                            ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                                                            ->where('contratos.status','=',$b_status)
-                                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                            ->where('lotes.num_lote', '=', $b_lote)
-                                                            ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                            ->orderBy('id', 'desc')->paginate(20);
-        
-                                     
-                                                    } else {
-                                                        $contratos = $query
-                                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                                            ->where('creditos.vendedor_id', '=', Auth::user()->id)
-                                                            ->where('contratos.status','=',$b_status)
-                                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                            ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                            ->orderBy('id', 'desc')->paginate(20);
-        
-                     
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                
-                                break;
-                            }
+                    case 'inst_seleccionadas.tipo_credito': {
+                        $contratos = $query
+                            ->where($criterio, 'like', '%' . $buscar . '%')
+                            ->where('inst_seleccionadas.elegido', '=', '1')
+                            ->orderBy('id', 'desc')->paginate(20);
+                        break;
                     }
+                    case 'creditos.id': {
+                        $contratos = $query
+
+                            ->where($criterio, 'like', '%' . $buscar . '%')
+                            ->where('inst_seleccionadas.elegido', '=', '1')
+                            ->orderBy('id', 'desc')->paginate(20);
+                        break;
+                    }
+                    case 'creditos.vendedor_id': {
+                        $contratos = $query
+                            ->where($criterio, '=',$buscar)
+                            ->where('inst_seleccionadas.elegido', '=', '1');
+
+                            if($buscar != "")
+                                $contratos = $contratos->where($criterio, '=',$buscar);
+                            if($buscar3 != "")
+                                $contratos = $contratos->where('lotes.fraccionamiento_id','=',$buscar3);
+                            if($b_etapa != "")
+                                $contratos = $contratos->where('lotes.etapa_id','=',$b_etapa);
+
+                            if($f_ini !='' && $f_fin !='')
+                                $contratos = $contratos->whereBetween('contratos.fecha', [$f_ini, $f_fin]);
+
+                            $contratos = $contratos->orderBy('id', 'desc')->paginate(20);
+                        break;
+                    }
+                    case 'contratos.fecha': {
+                        $contratos = $query
+                            ->whereBetween($criterio, [$buscar, $buscar3])
+                            ->where('inst_seleccionadas.elegido', '=', '1')
+                            ->orderBy('id', 'desc')->paginate(20);
+                        break;
+                    }
+                    case 'contratos.fecha_status': {
+                        $contratos = $query
+                            ->whereBetween($criterio, [$buscar,  $buscar3])
+                            ->where('inst_seleccionadas.elegido', '=', '1')
+                            ->orderBy('id', 'desc')->paginate(20);
+                        break;
+                    }
+                    case 'creditos.fraccionamiento': {
+                        
+                        $contratos = $query
+                            ->where('inst_seleccionadas.elegido', '=', '1');
+                            
+                            if($buscar != '')
+                                $contratos  = $contratos->where('lotes.fraccionamiento_id', '=',  $buscar);
+                            if($publicidad != '')
+                                $contratos  = $contratos->where('contratos.publicidad_id', '=',  $publicidad);
+                            if($b_modelo != '')
+                                $contratos  = $contratos->where('lotes.modelo_id', '=',  $b_modelo);
+                            if($b_etapa != '')
+                                $contratos  = $contratos->where('lotes.etapa_id', '=', $b_etapa);
+                            if($b_manzana != '')
+                                $contratos  = $contratos->where('lotes.manzana', '=', $b_manzana);
+                            if($b_lote != '')
+                                $contratos  = $contratos->where('lotes.num_lote', '=', $b_lote);
+                            if($f_ini != '' && $f_fin != '')
+                                $contratos  = $contratos->whereBetween('contratos.fecha', [$f_ini, $f_fin]);
+                            
+                        $contratos  = $contratos->orderBy('id', 'desc')->paginate(20);
+
+                    
+                        break;
+                    }  
                 }
-            }
-        }
+            } 
+        
+
 
         if(sizeOf($contratos)){
             foreach($contratos as $index => $contrato) 
@@ -2144,119 +380,73 @@ class ContratoController extends Controller
             $creditos = $query
                 ->where('creditos.status', '=', '2')
                 ->where('inst_seleccionadas.elegido', '=', '1')
-                ->where('creditos.contrato', '=', '0')
-                ->orderBy('id', 'desc')->paginate(8);
-        } else {
+                ->where('creditos.contrato', '=', '0');
+        } 
+        else {
             switch ($criterio) {
                 case 'personal.nombre': {
-                        $creditos = $query
-                            ->where($criterio, 'like', '%' . $buscar . '%')
-                            ->where('creditos.status', '=', '2')
-                            ->where('inst_seleccionadas.elegido', '=', '1')
-                            ->where('creditos.contrato', '=', '0')
-                            ->orWhere('personal.apellidos', 'like', '%' . $buscar . '%')
-                            ->where('creditos.status', '=', '2')
-                            ->where('inst_seleccionadas.elegido', '=', '1')
-                            ->where('creditos.contrato', '=', '0')
-                            ->orderBy('id', 'desc')->paginate(8);
-                        break;
-                    }
+                    $creditos = $query
+                        ->where($criterio, 'like', '%' . $buscar . '%')
+                        ->where('creditos.status', '=', '2')
+                        ->where('inst_seleccionadas.elegido', '=', '1')
+                        ->where('creditos.contrato', '=', '0')
+                        ->orWhere('personal.apellidos', 'like', '%' . $buscar . '%')
+                        ->where('creditos.status', '=', '2')
+                        ->where('inst_seleccionadas.elegido', '=', '1')
+                        ->where('creditos.contrato', '=', '0');
+                    break;
+                }
                 case 'v.nombre': {
-                        $creditos = $query
+                    $creditos = $query
 
-                            ->where($criterio, 'like', '%' . $buscar . '%')
-                            ->where('creditos.status', '=', '2')
-                            ->where('inst_seleccionadas.elegido', '=', '1')
-                            ->where('creditos.contrato', '=', '0')
-                            ->orWhere('v.apellidos', 'like', '%' . $buscar . '%')
-                            ->where('creditos.status', '=', '2')
-                            ->where('inst_seleccionadas.elegido', '=', '1')
-                            ->where('creditos.contrato', '=', '0')
-                            ->orderBy('id', 'desc')->paginate(8);
-                        break;
-                    }
+                        ->where($criterio, 'like', '%' . $buscar . '%')
+                        ->where('creditos.status', '=', '2')
+                        ->where('inst_seleccionadas.elegido', '=', '1')
+                        ->where('creditos.contrato', '=', '0')
+                        ->orWhere('v.apellidos', 'like', '%' . $buscar . '%')
+                        ->where('creditos.status', '=', '2')
+                        ->where('inst_seleccionadas.elegido', '=', '1')
+                        ->where('creditos.contrato', '=', '0');
+                    break;
+                }
                 case 'inst_seleccionadas.tipo_credito': {
-                        $creditos = $query
-                            ->where($criterio, 'like', '%' . $buscar . '%')
-                            ->where('creditos.status', '=', '2')
-                            ->where('inst_seleccionadas.elegido', '=', '1')
-                            ->where('creditos.contrato', '=', '0')
-                            ->orderBy('id', 'desc')->paginate(8);
-                        break;
-                    }
+                    $creditos = $query
+                        ->where($criterio, 'like', '%' . $buscar . '%')
+                        ->where('creditos.status', '=', '2')
+                        ->where('inst_seleccionadas.elegido', '=', '1')
+                        ->where('creditos.contrato', '=', '0');
+                    break;
+                }
                 case 'creditos.id': {
-                        $creditos = $query
-                            ->where($criterio, 'like', '%' . $buscar . '%')
-                            ->where('creditos.status', '=', '2')
-                            ->where('inst_seleccionadas.elegido', '=', '1')
-                            ->where('creditos.contrato', '=', '0')
-                            ->orderBy('id', 'desc')->paginate(8);
-                        break;
-                    }
+                    $creditos = $query
+                        ->where($criterio, 'like', '%' . $buscar . '%')
+                        ->where('creditos.status', '=', '2')
+                        ->where('inst_seleccionadas.elegido', '=', '1')
+                        ->where('creditos.contrato', '=', '0');
+                    break;
+                }
                 case 'creditos.fraccionamiento': {
-                        if ($b_etapa != '' && $b_manzana != '' && $b_lote != '') {
-                            $creditos = $query
-                                ->where('creditos.status', '=', '2')
-                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                ->where('lotes.etapa_id', '=', $b_etapa)
-                                ->where('lotes.manzana', '=', $b_manzana)
-                                ->where('lotes.num_lote', '=', $b_lote)
-                                ->where('creditos.contrato', '=', '0')
-                                ->orderBy('id', 'desc')->paginate(8);
-                        } else {
-                            if ($b_etapa != '' && $b_manzana != '') {
-                                $creditos = $query
-                                    ->where('creditos.status', '=', '2')
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                    ->where('lotes.etapa_id', '=', $b_etapa )
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('creditos.contrato', '=', '0')
-                                    ->orderBy('id', 'desc')->paginate(8);
-                            } else {
-                                if ($b_etapa != '') {
-                                    $creditos = $query
-                                        ->where('creditos.status', '=', '2')
-                                        ->where('inst_seleccionadas.elegido', '=', '1')
-                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                        ->where('lotes.etapa_id', '=',  $b_etapa )
-                                        ->where('creditos.contrato', '=', '0')
-                                        ->orderBy('id', 'desc')->paginate(8);
-                                } else {
-                                    if ($b_manzana != '') {
-                                        $creditos = $query
-                                            ->where('creditos.status', '=', '2')
-                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                            ->where('lotes.manzana', '=', $b_manzana)
-                                            ->where('creditos.contrato', '=', '0')
-                                            ->orderBy('id', 'desc')->paginate(8);
-                                    } else {
-                                        if ($b_lote != '') {
-                                            $creditos = $query
-                                                ->where('creditos.status', '=', '2')
-                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                ->where('lotes.num_lote', '=', $b_lote)
-                                                ->where('creditos.contrato', '=', '0')
-                                                ->orderBy('id', 'desc')->paginate(8);
-                                        } else {
-                                            $creditos = $query
-                                                ->where('creditos.status', '=', '2')
-                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                ->where('creditos.contrato', '=', '0')
-                                                ->orderBy('id', 'desc')->paginate(8);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        break;
-                    }
+                    $creditos = $query
+                        ->where('creditos.status', '=', '2')
+                        ->where('inst_seleccionadas.elegido', '=', '1')
+                        ->where('lotes.fraccionamiento_id', '=',  $buscar);
+
+                        if ($b_etapa != '' )
+                            $creditos = $creditos->where('lotes.etapa_id', '=', $b_etapa);
+
+                        if ($b_manzana != '')
+                            $creditos = $creditos->where('lotes.manzana', '=', $b_manzana);
+
+                        if ($b_lote != '')
+                            $creditos = $creditos->where('lotes.num_lote', '=', $b_lote);
+
+                        $creditos = $creditos->where('creditos.contrato', '=', '0');
+                    break;
+                }
             }
         }
+
+        $creditos = $creditos->orderBy('id', 'desc')->paginate(8);
 
         return [
             'pagination' => [
@@ -4007,6 +2197,7 @@ class ContratoController extends Controller
         $b_status = $request->b_status;
         $f_ini = $request->f_ini;
         $f_fin = $request->f_fin;
+        $publicidad = $request->publicidad;
 
         $query = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
             ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -4132,470 +2323,98 @@ class ContratoController extends Controller
                 'contratos.enganche_total',
                 'contratos.avance_lote',
                 'contratos.observacion'
-        );
+        )->where('inst_seleccionadas.elegido', '=', '1');
 
         if($request->b_empresa != ''){
             $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
         }
 
-        if($b_status == ''){
-            if ($buscar == '') {
-                $contratos = $query
-                    ->where('inst_seleccionadas.elegido', '=', '1')
-                    ->orderBy('id', 'desc')->get();
+        if($publicidad != '')
+            $query  = $query->where('contratos.publicidad_id', '=',  $publicidad);
 
-            } else {
-                switch ($criterio) {
-                    case 'personal.nombre': {
-                            $contratos = $query
+        if($b_status != ''){
+            $query= $query->where('contratos.status','=',$b_status);
+        }
 
-                                ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                ->orWhere('personal.apellidos', 'like', '%' . $buscar . '%')
-                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                ->orderBy('id', 'desc')->get();
-
-                          
-                            break;
-                        }
-                    case 'v.nombre': {
-                            $contratos = $query
-
-                                ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                ->orWhere('v.apellidos', 'like', '%' . $buscar . '%')
-                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                ->orderBy('id', 'desc')->get();
-
-                            break;
-                        }
-                    case 'inst_seleccionadas.tipo_credito': {
-                            $contratos = $query
-                                ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                ->orderBy('id', 'desc')->get();
-                            break;
-                        }
-                    case 'creditos.id': {
-                            $contratos = $query
-
-                                ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                ->orderBy('id', 'desc')->get();
-
-                            break;
-                        }
-                    case 'creditos.vendedor_id': {
-                        if($f_fin == '' || $f_ini == ''){
-                            if($b_etapa == "" && $buscar3 == "" && $buscar != ""){
-                                $contratos = $query
         
-                                    ->where($criterio, '=',$buscar)
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->orderBy('id', 'desc')->get();
-        
-                            }else{
-                                if($b_etapa == "" && $buscar3 != "" && $buscar != ""){
-                                    $contratos =$query
-            
-                                        ->where($criterio, '=',$buscar)
-                                        ->where('lotes.fraccionamiento_id','=',$buscar3)
-                                        ->where('inst_seleccionadas.elegido', '=', '1')
-                                        ->orderBy('id', 'desc')->get();
-            
-                                }else{
-                                    if($b_etapa != "" && $buscar3 != "" && $buscar != ""){
-                                        $contratos = $query
-                    
-                                            ->where($criterio, '=',$buscar)
-                                            ->where('lotes.fraccionamiento_id','=',$buscar3)
-                                            ->where('lotes.etapa_id','=',$b_etapa)
-                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                            ->orderBy('id', 'desc')->get();
-                
-                                       
-                                    }
-                                }
-                            }
-                        }
-                        else{
-                            if($b_etapa == "" && $buscar3 == "" && $buscar != ""){
-                                $contratos = $query
-        
-                                    ->where($criterio, '=',$buscar)
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                    ->orderBy('id', 'desc')->get();
-        
-                            }else{
-                                if($b_etapa == "" && $buscar3 != "" && $buscar != ""){
-                                    $contratos = $query
-            
-                                        ->where($criterio, '=',$buscar)
-                                        ->where('lotes.fraccionamiento_id','=',$buscar3)
-                                        ->where('inst_seleccionadas.elegido', '=', '1')
-                                        ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                        ->orderBy('id', 'desc')->get();
-            
-                                }else{
-                                    if($b_etapa != "" && $buscar3 != "" && $buscar != ""){
-                                        $contratos = $query
-                
-                                            ->where($criterio, '=',$buscar)
-                                            ->where('lotes.fraccionamiento_id','=',$buscar3)
-                                            ->where('lotes.etapa_id','=',$b_etapa)
-                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                            ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                            ->orderBy('id', 'desc')->get();
-                
-                                       
-                                    }
-                                }
-                            }
-                        }
+        if ($buscar == '') {
+            $contratos = $query;
+
+        } else {
+            switch ($criterio) {
+                case 'personal.nombre': {
+                        $contratos = $query
+
+                            ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
+
                         break;
-                        }
-                    case 'contratos.fecha': {
-                            $contratos = $query
+                    }
+                case 'v.nombre': {
+                        $contratos = $query
+                            ->where(DB::raw("CONCAT(v.nombre,' ',v.apellidos)"), 'like', '%'. $buscar . '%');
 
-                                ->whereBetween($criterio, [$buscar, $buscar3])
-                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                ->orderBy('id', 'desc')->get();
+                        break;
+                    }
+                case 'inst_seleccionadas.tipo_credito': {
+                        $contratos = $query
+                            ->where($criterio, 'like', '%' . $buscar . '%');
+                        break;
+                    }
+                case 'creditos.id': {
+                        $contratos = $query
 
-                           
-                            break;
-                        }
+                            ->where($criterio, 'like', '%' . $buscar . '%');
 
-                    case 'contratos.fecha_status': {
-                            $contratos = $query
+                        break;
+                    }
+                case 'creditos.vendedor_id': {
+                        
+                    $contratos = $query;
 
-                                ->whereBetween($criterio, [$buscar,  $buscar3])
-                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                ->orderBy('id', 'desc')->get();
- 
-                            break;
-                        }
-                    
-                    case 'creditos.fraccionamiento': {
-                        if($f_ini == '' || $f_fin == ''){
-                            if ($b_etapa != '' && $b_manzana != '' && $b_lote != '') {
-                                $contratos = $query
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                    ->where('lotes.etapa_id', '=', $b_etapa)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->orderBy('id', 'desc')->get();
+                        if($buscar != '')
+                            $contratos = $contratos->where($criterio, '=',$buscar);
+                        if($buscar3 != '')
+                            $contratos = $contratos->where('lotes.fraccionamiento_id','=',$buscar3);
+                        if($b_etapa != '')
+                            $contratos = $contratos->where('lotes.etapa_id','=',$b_etapa);
+                        if($f_fin != '' || $f_ini != '')
+                            $contratos = $contratos->whereBetween('contratos.fecha', [$f_ini, $f_fin]);
+                        
+                    break;
+                    }
+                case 'contratos.fecha': {
+                        $contratos = $query
+                            ->whereBetween($criterio, [$buscar, $buscar3]);
+                        break;
+                    }
 
-                            
-                            } else {
-                                if ($b_etapa != '' && $b_manzana != '') {
-                                    $contratos = $query
-                                        ->where('inst_seleccionadas.elegido', '=', '1')
-                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                        ->where('lotes.etapa_id', '=', $b_etapa)
-                                        ->where('lotes.manzana', '=', $b_manzana)
-                                        ->orderBy('id', 'desc')->get();
+                case 'contratos.fecha_status': {
+                        $contratos = $query
+                            ->whereBetween($criterio, [$buscar,  $buscar3]);
+                        break;
+                    }
+                
+                case 'creditos.fraccionamiento': {
+                        $contratos = $query;
 
-                                  
-                                } else {
-                                    if ($b_etapa != '') {
-                                        $contratos = $query
-                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                            ->where('lotes.etapa_id', '=',  $b_etapa )
-                                            ->orderBy('id', 'desc')->get();
+                            if($buscar != '')
+                                $contratos = $contratos->where('lotes.fraccionamiento_id', '=',  $buscar);
+                            if($b_etapa != '')
+                                $contratos = $contratos->where('lotes.etapa_id', '=', $b_etapa);
+                            if($b_manzana != '')
+                                $contratos = $contratos->where('lotes.manzana', '=', $b_manzana);
+                            if($b_lote != '')
+                                $contratos = $contratos->where('lotes.num_lote', '=', $b_lote);
+                            if($f_ini != '' || $f_fin != '')
+                                $contratos = $contratos->whereBetween('contratos.fecha', [$f_ini, $f_fin]);
 
-                                      
-                                    } else {
-                                        if ($b_manzana != '') {
-                                            $contratos = $query
-                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                ->where('lotes.manzana', '=', $b_manzana)
-                                                ->orderBy('id', 'desc')->get();
-
-                                           
-                                        } else {
-                                            if ($b_lote != '') {
-                                                $contratos = $query
-                                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                    ->where('lotes.num_lote', '=', $b_lote)
-                                                    ->orderBy('id', 'desc')->get();
-
-                                        
-                                            } else {
-                                                $contratos = $query
-                                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                    ->orderBy('id', 'desc')->get();
-
-                                              
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        else{
-                            if ($b_etapa != '' && $b_manzana != '' && $b_lote != '') {
-                                $contratos = $query
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                    ->where('lotes.etapa_id', '=', $b_etapa)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                    ->orderBy('id', 'desc')->get();
-
-                            
-                            } else {
-                                if ($b_etapa != '' && $b_manzana != '') {
-                                    $contratos = $query
-                                        ->where('inst_seleccionadas.elegido', '=', '1')
-                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                        ->where('lotes.etapa_id', '=', $b_etapa)
-                                        ->where('lotes.manzana', '=', $b_manzana)
-                                        ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                        ->orderBy('id', 'desc')->get();
-
-                                  
-                                } else {
-                                    if ($b_etapa != '') {
-                                        $contratos = $query
-                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                            ->where('lotes.etapa_id', '=',  $b_etapa )
-                                            ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                            ->orderBy('id', 'desc')->get();
-
-                                      
-                                    } else {
-                                        if ($b_manzana != '') {
-                                            $contratos = $query
-                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                ->where('lotes.manzana', '=', $b_manzana)
-                                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                ->orderBy('id', 'desc')->get();
-
-                                           
-                                        } else {
-                                            if ($b_lote != '') {
-                                                $contratos = $query
-                                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                    ->where('lotes.num_lote', '=', $b_lote)
-                                                    ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                    ->orderBy('id', 'desc')->get();
-
-                                        
-                                            } else {
-                                                $contratos = $query
-                                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                    ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
-                                                    ->orderBy('id', 'desc')->get();
-
-                                              
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                            
-                            break;
-                        }
-                }
+                        break;
+                    }
             }
         }
-        else{
-            if ($buscar == '' && $criterio != 'creditos.vendedor_id') {
-                $contratos = $query
-                    ->where('inst_seleccionadas.elegido', '=', '1')
-                    ->where('contratos.status','=',$b_status)
-                    ->orderBy('id', 'desc')->get();
 
-            } else {
-                switch ($criterio) {
-                    case 'personal.nombre': {
-                            $contratos = $query
-
-                                ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                ->where('contratos.status','=',$b_status)
-                                ->orWhere('personal.apellidos', 'like', '%' . $buscar . '%')
-                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                ->where('contratos.status','=',$b_status)
-                                ->orderBy('id', 'desc')->get();
-                           
-                            break;
-                        }
-                    case 'v.nombre': {
-                            $contratos = $query
-
-                                ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                ->where('contratos.status','=',$b_status)
-                                ->orWhere('v.apellidos', 'like', '%' . $buscar . '%')
-                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                ->where('contratos.status','=',$b_status)
-                                ->orderBy('id', 'desc')->get();
-
-                            break;
-                        }
-                    case 'inst_seleccionadas.tipo_credito': {
-                            $contratos = $query
-                                ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                ->where('contratos.status','=',$b_status)
-                                ->orderBy('id', 'desc')->get();
-
-                            
-                            break;
-                        }
-                    case 'creditos.id': {
-                            $contratos = $query
-
-                                ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                ->where('contratos.status','=',$b_status)
-                                ->orderBy('id', 'desc')->get();
-
-                            
-                            break;
-                        }
-                    case 'creditos.vendedor_id': {
-                            if($b_etapa == "" && $buscar3 == "" && $buscar != ""){
-                                $contratos = $query
+        $contratos = $contratos->orderBy('id', 'desc')->get();
         
-                                    ->where($criterio, '=',$buscar)
-                                    ->where('contratos.status','=',$b_status)
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->orderBy('id', 'desc')->get();
-        
-                            }else{
-                                if($b_etapa == "" && $buscar3 != "" && $buscar != ""){
-                                    $contratos = $query
-            
-                                        ->where($criterio, '=',$buscar)
-                                        ->where('lotes.fraccionamiento_id','=',$buscar3)
-                                        ->where('contratos.status','=',$b_status)
-                                        ->where('inst_seleccionadas.elegido', '=', '1')
-                                        ->orderBy('id', 'desc')->get();
-            
-                                }else{
-                                    if($b_etapa != "" && $buscar3 != "" && $buscar != ""){
-                                        $contratos = $query
-                
-                                            ->where($criterio, '=',$buscar)
-                                            ->where('lotes.fraccionamiento_id','=',$buscar3)
-                                            ->where('lotes.etapa_id','=',$b_etapa)
-                                            ->where('contratos.status','=',$b_status)
-                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                            ->orderBy('id', 'desc')->get();
-                
-                                    }
-                                }
-                            }
-    
-                            break;
-                            }
-                    case 'contratos.fecha': {
-                            $contratos = $query
-
-                                ->whereBetween($criterio, [$buscar, $buscar3])
-                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                ->where('contratos.status','=',$b_status)
-                                ->orderBy('id', 'desc')->get();
-
-                           
-                            break;
-                        }
-
-                    case 'contratos.fecha_status': {
-                            $contratos = $query
-
-                                ->whereBetween($criterio, [$buscar,  $buscar3])
-                                ->where('contratos.status','=',$b_status)
-                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                ->orderBy('id', 'desc')->get();
-                        }
-                    
-                    case 'creditos.fraccionamiento': {
-                            if ($b_etapa != '' && $b_manzana != '' && $b_lote != '') {
-                                $contratos = $query
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->where('contratos.status','=',$b_status)
-                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                    ->where('lotes.etapa_id', '=', $b_etapa)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->orderBy('id', 'desc')->get();
-
-                               
-                            } else {
-                                if ($b_etapa != '' && $b_manzana != '') {
-                                    $contratos = $query
-                                        ->where('inst_seleccionadas.elegido', '=', '1')
-                                        ->where('contratos.status','=',$b_status)
-                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                        ->where('lotes.etapa_id','=', $b_etapa)
-                                        ->where('lotes.manzana', '=', $b_manzana)
-                                        ->orderBy('id', 'desc')->get();
-
-                                   
-                                } else {
-                                    if ($b_etapa != '') {
-                                        $contratos = $query
-                                            ->where('inst_seleccionadas.elegido', '=', '1')
-                                            ->where('contratos.status','=',$b_status)
-                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                            ->where('lotes.etapa_id', '=',  $b_etapa )
-                                            ->orderBy('id', 'desc')->get();
-
-                                        
-                                    } else {
-                                        if ($b_manzana != '') {
-                                            $contratos = $query
-                                                ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->where('contratos.status','=',$b_status)
-                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                ->where('lotes.manzana', '=', $b_manzana)
-                                                ->orderBy('id', 'desc')->get();
-
-                                           
-                                        } else {
-                                            if ($b_lote != '') {
-                                                $contratos = $query
-                                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                                    ->where('contratos.status','=',$b_status)
-                                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                    ->where('lotes.num_lote', '=', $b_lote)
-                                                    ->orderBy('id', 'desc')->get();
-
-                                              
-                                            } else {
-                                                $contratos = $query
-                                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                                    ->where('contratos.status','=',$b_status)
-                                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                    ->orderBy('id', 'desc')->get();
-
-                                         
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            break;
-                        }
-                }
-            }
-
-        }
 
 
         return Excel::create('contratos', function($excel) use ($contratos){

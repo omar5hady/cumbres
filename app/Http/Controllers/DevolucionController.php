@@ -88,91 +88,40 @@ class DevolucionController extends Controller
         }
        
         if ($buscar == '') {
-            $contratos = $query
-                ->where('contratos.status', '=', '0')
-                ->where('contratos.devolucion', '!=', '2')
-                ->orderBy('id', 'desc')->paginate(30);
+            $contratos = $query;
         }
         else{
             switch ($criterio){
                 case 'lotes.fraccionamiento_id':{
-                    if($b_etapa == '' && $b_manzana == '' && $b_lote == '')
-                    {
-                        $contratos = $query
-                        ->where('contratos.status', '=', '0')
-                        ->where('contratos.devolucion', '!=', '2')
-                        ->where($criterio, '=', $buscar)
-                        ->orderBy('id', 'desc')->paginate(30);
-                    }
-                    elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
-                        $contratos = $query
-                        ->where('contratos.status', '=', '0')
-                        ->where('contratos.devolucion', '!=', '2')
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->orderBy('id', 'desc')->paginate(30);
-                    }
-                    elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
-                        $contratos = $query
-                        ->where('contratos.status', '=', '0')
-                        ->where('contratos.devolucion', '!=', '2')
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->where('lotes.manzana', '=', $b_manzana)
-                        ->orderBy('id', 'desc')->paginate(30);
-                    }
-                    elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
-                        $contratos = $query
-                        ->where('contratos.status', '=', '0')
-                        ->where('contratos.devolucion', '!=', '2')
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->where('lotes.manzana', '=', $b_manzana)
-                        ->where('lotes.num_lote', '=', $b_lote)
-                        ->orderBy('id', 'desc')->paginate(30);
-                    }
-                    elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
-                        $contratos = $query
-                        ->where('contratos.status', '=', '0')
-                        ->where('contratos.devolucion', '!=', '2')
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->where('lotes.num_lote', '=', $b_lote)
-                        ->orderBy('id', 'desc')->paginate(30);
-                    }
-                    elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
-                        $contratos = $query
-                        ->where('contratos.status', '=', '0')
-                        ->where('contratos.devolucion', '!=', '2')
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.num_lote', '=', $b_lote)
-                        ->orderBy('id', 'desc')->paginate(30);
-                    }
-                    
+
+                    $contratos = $query->where($criterio, '=', $buscar);
+
+                    if($b_etapa != '')
+                        $contratos = $contratos->where('lotes.etapa_id', '=', $b_etapa);
+                    if($b_manzana != '')
+                        $contratos = $contratos->where('lotes.manzana', '=', $b_manzana);
+                    if($b_lote != '')
+                        $contratos = $contratos->where('lotes.num_lote', '=', $b_lote);
+ 
                     break;
                 }
                 case 'creditos.id':{
                     $contratos = $query
-                    ->where('contratos.status', '=', '0')
-                    ->where('contratos.devolucion', '!=', '2')
-                    ->where($criterio, '=', $buscar)
-                    ->orderBy('id', 'desc')->paginate(30);
+                    ->where($criterio, '=', $buscar);
                     break;
                 }
                 case 'personal.nombre':{
                     $contratos = $query
-                        ->where($criterio, 'like', '%' . $buscar . '%')
-                        ->where('contratos.status', '=', '0')
-                        ->where('contratos.devolucion', '!=', '2')
-                        ->orWhere('personal.apellidos', 'like', '%' . $buscar . '%')
-                        ->where('contratos.status', '=', '0')
-                        ->where('contratos.devolucion', '!=', '2')
-                        ->orderBy('id', 'desc')->paginate(30);
-                    
+                        ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
                     break;
                 }
             }
         }
+
+        $contratos = $contratos
+            ->where('contratos.status', '=', '0')
+            ->where('contratos.devolucion', '!=', '2')
+            ->orderBy('id', 'desc')->paginate(30);
         
         return [
             'pagination' => [
@@ -301,91 +250,43 @@ class DevolucionController extends Controller
         }
        
         if ($buscar == '') {
-            $devoluciones = $query
-                ->where('contratos.status', '=', '0')
-                ->where('contratos.devolucion', '=', '2')
-                ->orderBy('id', 'desc')->paginate(8);
+            $devoluciones = $query;
         }
         else{
             switch ($criterio){
                 case 'lotes.fraccionamiento_id':{
-                    if($b_etapa == '' && $b_manzana == '' && $b_lote == '')
-                    {
-                        $devoluciones = $query
-                        ->where('contratos.status', '=', '0')
-                        ->where('contratos.devolucion', '=', '2')
-                        ->where($criterio, '=', $buscar)
-                        ->orderBy('id', 'desc')->paginate(8);
-                    }
-                    elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
-                        $devoluciones = $query
-                        ->where('contratos.status', '=', '0')
-                        ->where('contratos.devolucion', '=', '2')
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->orderBy('id', 'desc')->paginate(8);
-                    }
-                    elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
-                        $devoluciones = $query
-                        ->where('contratos.status', '=', '0')
-                        ->where('contratos.devolucion', '=', '2')
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->where('lotes.manzana', '=', $b_manzana)
-                        ->orderBy('id', 'desc')->paginate(8);
-                    }
-                    elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
-                        $devoluciones = $query
-                        ->where('contratos.status', '=', '0')
-                        ->where('contratos.devolucion', '=', '2')
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->where('lotes.manzana', '=', $b_manzana)
-                        ->where('lotes.num_lote', '=', $b_lote)
-                        ->orderBy('id', 'desc')->paginate(8);
-                    }
-                    elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
-                        $devoluciones = $query
-                        ->where('contratos.status', '=', '0')
-                        ->where('contratos.devolucion', '=', '2')
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->where('lotes.num_lote', '=', $b_lote)
-                        ->orderBy('id', 'desc')->paginate(8);
-                    }
-                    elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
-                        $devoluciones = $query
-                        ->where('contratos.status', '=', '0')
-                        ->where('contratos.devolucion', '=', '2')
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.num_lote', '=', $b_lote)
-                        ->orderBy('id', 'desc')->paginate(8);
-                    }
+
+                    $devoluciones = $query
+                    ->where($criterio, '=', $buscar);
+
+                    if($b_etapa != '')
+                        $devoluciones = $devoluciones->where('lotes.etapa_id', '=', $b_etapa);
+                    if($b_etapa != '')
+                        $devoluciones = $devoluciones->where('lotes.manzana', '=', $b_manzana);
+                    if($b_etapa != '')
+                        $devoluciones = $devoluciones->where('lotes.num_lote', '=', $b_lote);
+                    
                     
                     break;
                 }
                 case 'creditos.id':{
                     $devoluciones = $query
-                    ->where('contratos.status', '=', '0')
-                    ->where('contratos.devolucion', '=', '2')
-                    ->where($criterio, '=', $buscar)
-                    ->orderBy('id', 'desc')->paginate(8);
+                    ->where($criterio, '=', $buscar);
                     break;
                 }
                 case 'personal.nombre':{
                     $devoluciones = $query
-                        ->where($criterio, 'like', '%' . $buscar . '%')
-                        ->where('contratos.status', '=', '0')
-                        ->where('contratos.devolucion', '=', '2')
-                        ->orWhere('personal.apellidos', 'like', '%' . $buscar . '%')
-                        ->where('contratos.status', '=', '0')
-                        ->where('contratos.devolucion', '=', '2')
-                        ->orderBy('id', 'desc')->paginate(8);
+                        ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
                     
                     break;
                 }
             }
         }
+
+        $devoluciones = $devoluciones
+            ->where('contratos.status', '=', '0')
+            ->where('contratos.devolucion', '=', '2')
+            ->orderBy('id', 'desc')->paginate(8);
         
         return [
             'pagination' => [
@@ -471,91 +372,40 @@ class DevolucionController extends Controller
         }
        
         if ($buscar == '') {
-            $contratos = $query
-                ->where('contratos.status', '=', '0')
-                ->where('contratos.devolucion', '!=', '2')
-                ->orderBy('id', 'desc')->get();
+            $contratos = $query;
         }
         else{
             switch ($criterio){
-                case 'lotes.fraccionamiento_id':{
-                    if($b_etapa == '' && $b_manzana == '' && $b_lote == '')
-                    {
-                        $contratos = $query
-                        ->where('contratos.status', '=', '0')
-                        ->where('contratos.devolucion', '!=', '2')
-                        ->where($criterio, '=', $buscar)
-                        ->orderBy('id', 'desc')->get();
-                    }
-                    elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
-                        $contratos = $query
-                        ->where('contratos.status', '=', '0')
-                        ->where('contratos.devolucion', '!=', '2')
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->orderBy('id', 'desc')->get();
-                    }
-                    elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
-                        $contratos = $query
-                        ->where('contratos.status', '=', '0')
-                        ->where('contratos.devolucion', '!=', '2')
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->where('lotes.manzana', '=', $b_manzana)
-                        ->orderBy('id', 'desc')->get();
-                    }
-                    elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
-                        $contratos = $query
-                        ->where('contratos.status', '=', '0')
-                        ->where('contratos.devolucion', '!=', '2')
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->where('lotes.manzana', '=', $b_manzana)
-                        ->where('lotes.num_lote', '=', $b_lote)
-                        ->orderBy('id', 'desc')->get();
-                    }
-                    elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
-                        $contratos = $query
-                        ->where('contratos.status', '=', '0')
-                        ->where('contratos.devolucion', '!=', '2')
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->where('lotes.num_lote', '=', $b_lote)
-                        ->orderBy('id', 'desc')->get();
-                    }
-                    elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
-                        $contratos = $query
-                        ->where('contratos.status', '=', '0')
-                        ->where('contratos.devolucion', '!=', '2')
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.num_lote', '=', $b_lote)
-                        ->orderBy('id', 'desc')->get();
-                    }
-                    
+                case 'lotes.fraccionamiento_id':{        
+                    $contratos = $query
+                        ->where($criterio, '=', $buscar);
+
+                    if($b_etapa != '')
+                        $contratos = $contratos->where('lotes.etapa_id', '=', $b_etapa);
+                    if($b_manzana != '')
+                        $contratos = $contratos->where('lotes.manzana', '=', $b_manzana);
+                    if($b_lote != '')
+                        $contratos = $contratos->where('lotes.num_lote', '=', $b_lote);
+
                     break;
                 }
                 case 'creditos.id':{
                     $contratos = $query
-                    ->where('contratos.status', '=', '0')
-                    ->where('contratos.devolucion', '!=', '2')
-                    ->where($criterio, '=', $buscar)
-                    ->orderBy('id', 'desc')->get();
+                    ->where($criterio, '=', $buscar);
                     break;
                 }
                 case 'personal.nombre':{
                     $contratos = $query
-                        ->where($criterio, 'like', '%' . $buscar . '%')
-                        ->where('contratos.status', '=', '0')
-                        ->where('contratos.devolucion', '!=', '2')
-                        ->orWhere('personal.apellidos', 'like', '%' . $buscar . '%')
-                        ->where('contratos.status', '=', '0')
-                        ->where('contratos.devolucion', '!=', '2')
-                        ->orderBy('id', 'desc')->get();
-                    
+                        ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
                     break;
                 }
             }
         }
+
+        $contratos = $contratos
+            ->where('contratos.status', '=', '0')
+            ->where('contratos.devolucion', '!=', '2')
+            ->orderBy('id', 'desc')->get();
         
         return Excel::create('Devoluciones pendientes por cancelación', function($excel) use ($contratos){
             $excel->sheet('cancelaciones', function($sheet) use ($contratos){
@@ -697,92 +547,41 @@ class DevolucionController extends Controller
         }
        
         if ($buscar == '') {
-            $devoluciones = $query
-                ->where('contratos.status', '=', '0')
-                ->where('contratos.devolucion', '=', '2')
-                ->orderBy('id', 'desc')->paginate(8);
-
+            $devoluciones = $query;
         }
         else{
             switch ($criterio){
                 case 'lotes.fraccionamiento_id':{
-                    if($b_etapa == '' && $b_manzana == '' && $b_lote == '')
-                    {
-                        $devoluciones = $query
-                        ->where('contratos.status', '=', '0')
-                        ->where('contratos.devolucion', '=', '2')
-                        ->where($criterio, '=', $buscar)
-                        ->orderBy('id', 'desc')->paginate(8);
-                    }
-                    elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
-                        $devoluciones = $query
-                        ->where('contratos.status', '=', '0')
-                        ->where('contratos.devolucion', '=', '2')
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->orderBy('id', 'desc')->paginate(8);
-                    }
-                    elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
-                        $devoluciones = $query
-                        ->where('contratos.status', '=', '0')
-                        ->where('contratos.devolucion', '=', '2')
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->where('lotes.manzana', '=', $b_manzana)
-                        ->orderBy('id', 'desc')->paginate(8);
-                    }
-                    elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
-                        $devoluciones = $query
-                        ->where('contratos.status', '=', '0')
-                        ->where('contratos.devolucion', '=', '2')
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->where('lotes.manzana', '=', $b_manzana)
-                        ->where('lotes.num_lote', '=', $b_lote)
-                        ->orderBy('id', 'desc')->paginate(8);
-                    }
-                    elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
-                        $devoluciones = $query
-                        ->where('contratos.status', '=', '0')
-                        ->where('contratos.devolucion', '=', '2')
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->where('lotes.num_lote', '=', $b_lote)
-                        ->orderBy('id', 'desc')->paginate(8);
-                    }
-                    elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
-                        $devoluciones = $query
-                        ->where('contratos.status', '=', '0')
-                        ->where('contratos.devolucion', '=', '2')
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.num_lote', '=', $b_lote)
-                        ->orderBy('id', 'desc')->paginate(8);
-                    }
-                    
+
+                    $devoluciones = $query
+                    ->where($criterio, '=', $buscar);
+                    if($b_etapa != '')
+                        $devoluciones = $devoluciones->where('lotes.etapa_id', '=', $b_etapa);
+                    if($b_manzana != '')
+                        $devoluciones = $devoluciones->where('lotes.manzana', '=', $b_manzana);
+                    if($b_lote != '')
+                        $devoluciones = $devoluciones->where('lotes.num_lote', '=', $b_lote);
+             
                     break;
                 }
                 case 'creditos.id':{
                     $devoluciones = $query
-                    ->where('contratos.status', '=', '0')
-                    ->where('contratos.devolucion', '=', '2')
-                    ->where($criterio, '=', $buscar)
-                    ->orderBy('id', 'desc')->paginate(8);
+                    ->where($criterio, '=', $buscar);
                     break;
                 }
                 case 'personal.nombre':{
                     $devoluciones = $query
-                        ->where($criterio, 'like', '%' . $buscar . '%')
-                        ->where('contratos.status', '=', '0')
-                        ->where('contratos.devolucion', '=', '2')
-                        ->orWhere('personal.apellidos', 'like', '%' . $buscar . '%')
-                        ->where('contratos.status', '=', '0')
-                        ->where('contratos.devolucion', '=', '2')
-                        ->orderBy('id', 'desc')->paginate(8);
+                        ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
                     
                     break;
                 }
             }
         }
+
+        $devoluciones = $devoluciones
+            ->where('contratos.status', '=', '0')
+            ->where('contratos.devolucion', '=', '2')
+            ->orderBy('id', 'desc')->paginate(8);
         
         return Excel::create('devoluciones', function($excel) use ($devoluciones){
             $excel->sheet('devoluciones', function($sheet) use ($devoluciones){

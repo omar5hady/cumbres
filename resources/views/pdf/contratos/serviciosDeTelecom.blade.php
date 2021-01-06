@@ -28,15 +28,46 @@ body {
     <p align="justify">Agradecemos la confianza depositada en nuestra empresa en tan importante decisión de compra.</p>
 
     <p align="justify">
-   Referente al servicio de telefonía, Internet y tv por cable. Le informamos  que <strong>Grupo Constructor Cumbres, S.A de C.V.</strong> 
-   se responsabiliza en dejar los ductos necesarios para que a futuro la empresa(s) {{$serviciosTele[0]->empresas_telecom}}, realice el cableado para llevar los servicios antes mencionados a su nueva casa.
-   </p>
+        Referente al servicio de telefonía, Internet y tv por cable. Le informamos  que
+        @if($serviciosTele[0]->emp_constructora == "CONCRETANIA")
+            <strong>Concretania, S.A de C.V.</strong> 
+        @else
+            <strong>Grupo Constructor Cumbres, S.A de C.V.</strong> 
+        @endif
 
-   <p align="justify">La fecha en la que podrá disponer con tales servicios,<strong> NO depende de Grupo Constructor Cumbres, S.A de C.V.</strong>
-    Es decir, la empresa(s) {{$serviciosTele[0]->empresas_telecom}} definirá en que fecha podrá otorgar estos servicios.</p>
+        se responsabiliza en dejar los ductos necesarios para que a futuro la empresa(s) 
+        @if($serviciosTele[0]->empresas_telecom != NULL)
+            {{$serviciosTele[0]->empresas_telecom}}, 
+        @else
+            que presente el servicio de telefonía, 
+        @endif
+        realice el cableado para llevar los servicios antes mencionados a su nueva casa.
+    </p>
 
-    <p align="justify">Una vez entregada su casa, usted podrá contratar los servicios con empresas que los proporcionen de manera satelital tales como: {{$serviciosTele[0]->empresas_telecom_satelital}} entre otros o bien el de su conveniencia.
-        Aclarando además que la disponibilidad del servicio que brindan estas empresas tampoco es responsabilidad de <strong>Grupo Constructor Cumbres, S.A de C.V.</strong></p>
+   <p align="justify">La fecha en la que podrá disponer con tales servicios,
+    @if($serviciosTele[0]->emp_constructora == "CONCRETANIA")
+        <strong>NO depende de Concretania, S.A de C.V.</strong> 
+    @else
+       <strong> NO depende de Grupo Constructor Cumbres, S.A de C.V.</strong>
+    @endif
+
+    Es decir, la empresa(s) 
+    @if($serviciosTele[0]->empresas_telecom != NULL)
+        {{$serviciosTele[0]->empresas_telecom}} 
+    @else
+        que presente el servicio de telefonía 
+    @endif    
+    definirá en que fecha podrá otorgar estos servicios.</p>
+
+    <p align="justify">Una vez entregada su casa, usted podrá contratar los servicios con empresas que los proporcionen 
+        de manera satelital tales como: {{$serviciosTele[0]->empresas_telecom_satelital}} entre otros o bien el de su conveniencia.
+        Aclarando además que la disponibilidad del servicio que brindan estas empresas tampoco es responsabilidad de 
+        @if($serviciosTele[0]->emp_constructora == "CONCRETANIA")
+            <strong>Concretania, S.A de C.V.</strong>
+        @else
+            <strong>Grupo Constructor Cumbres, S.A de C.V.</strong>
+        @endif
+    </p>
 
     
 

@@ -178,8 +178,10 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::post('/formSubmitReglamento/{id}','EtapaController@uploadReglamento');
         Route::post('/formSubmitCartaServicios/{id}','EtapaController@uploadPlantillaCartaServicios');
+        Route::post('/formSubmitCartaServicios2/{id}','EtapaController@uploadPlantillaCartaServicios2');
         Route::get('/downloadReglamento/{fileName}' , 'EtapaController@downloadReglamento');
         Route::get('/downloadPlantilla/cartaServicios/{fileName}' , 'EtapaController@downloadPlantillaCartaServicios');
+        Route::get('/downloadPlantilla/cartaServicios2/{fileName}' , 'EtapaController@downloadPlantillaCartaServicios2');
         Route::post('/etapas/costoMantenimiento/registrar/{id}','EtapaController@registrarCostoMantenimiento');
         Route::post('/formSubmitTelecom/{id}','EtapaController@uploadPlantillaTelecom');
         Route::get('/downloadPlantilla/ServiciosTelecom/{fileName}' , 'EtapaController@downloadPlantillaTelecom');

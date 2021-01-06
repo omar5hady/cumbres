@@ -36,8 +36,8 @@ class EtapaController extends Controller
                 'etapas.f_fin','etapas.id','etapas.personal_id', 'etapas.fecha_ini_venta',
                 'etapas.factibilidad',
                 DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
-                'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento',
-                'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','etapas.plantilla_telecom','etapas.empresas_telecom',
+                'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento', 'etapas.plantilla_carta_servicios2',
+                'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento', 'etapas.costo_mantenimiento2','etapas.plantilla_telecom','etapas.empresas_telecom',
                 'etapas.empresas_telecom_satelital','etapas.num_cuenta_admin','etapas.clabe_admin','etapas.sucursal_admin',
                 'etapas.titular_admin','etapas.banco_admin','etapas.carta_bienvenida');
         
@@ -333,12 +333,55 @@ class EtapaController extends Controller
         }
     }
 
+    public function uploadPlantillaCartaServicios2 (Request $request, $id){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $ultimaPlantilla = Etapa::select('plantilla_carta_servicios2','id')
+                                 ->where('id','=',$id)
+                                 ->get();
+
+        if($ultimaPlantilla->isEmpty()==1){
+            $fileName = uniqid().'.'.$request->plantilla_carta_servicios2->getClientOriginalExtension();
+            $moved =  $request->plantilla_carta_servicios2->move(public_path('/files/etapas/plantillasCartaServicios/'), $fileName);
+    
+            if($moved){
+                if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+                $plantillaCartaServicios = Etapa::findOrFail($request->id);
+                $plantillaCartaServicios->plantilla_carta_servicios2 = $fileName;
+                $plantillaCartaServicios->id = $id;
+                $plantillaCartaServicios->save(); //Insert
+        
+                }
+            return back();
+            }else{
+                $pathAnterior = public_path().'/files/etapas/plantillasCartaServicios/'.$ultimaPlantilla[0]->plantilla_carta_servicios2;
+                File::delete($pathAnterior);
+
+                $fileName = uniqid().'.'.$request->plantilla_carta_servicios2->getClientOriginalExtension();
+                $moved =  $request->plantilla_carta_servicios2->move(public_path('/files/etapas/plantillasCartaServicios/'), $fileName);
+    
+            if($moved){
+                if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+                $plantillaCartaServicios = Etapa::findOrFail($request->id);
+                $plantillaCartaServicios->plantilla_carta_servicios2 = $fileName;
+                $plantillaCartaServicios->id = $id;
+                $plantillaCartaServicios->save(); //Insert
+        
+                }
+            return back();
+        }
+    }
+
     public function downloadReglamento ($fileName){
         $pathtoFile = public_path().'/files/etapas/reglamentos/'.$fileName;
         return response()->download($pathtoFile);
     }
 
     public function downloadPlantillaCartaServicios ($fileName){
+        $pathtoFile = public_path().'/files/etapas/plantillasCartaServicios/'.$fileName;
+        return response()->download($pathtoFile);
+    }
+
+    public function downloadPlantillaCartaServicios2 ($fileName){
         $pathtoFile = public_path().'/files/etapas/plantillasCartaServicios/'.$fileName;
         return response()->download($pathtoFile);
     }
@@ -364,12 +407,14 @@ class EtapaController extends Controller
         if($costoAnterior->isEmpty()==1){
             $costoMantenimiento = new Etapa();
             $costoMantenimiento->costo_mantenimiento = $request->costo_mantenimiento;
+            $costoMantenimiento->costo_mantenimiento2 = $request->costo_mantenimiento2;
             $costoMantenimiento->empresas_telecom = $request->empresas_telecom;
             $costoMantenimiento->empresas_telecom_satelital = $request->empresas_telecom_satelital;
             $costoMantenimiento->save();
         }else{
             $costoMantenimiento = Etapa::findOrFail($request->id);
             $costoMantenimiento->costo_mantenimiento = $request->costo_mantenimiento;
+            $costoMantenimiento->costo_mantenimiento2 = $request->costo_mantenimiento2;
             $costoMantenimiento->empresas_telecom = $request->empresas_telecom;
             $costoMantenimiento->empresas_telecom_satelital = $request->empresas_telecom_satelital;
             $costoMantenimiento->save();

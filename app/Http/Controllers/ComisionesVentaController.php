@@ -196,52 +196,15 @@ class ComisionesVentaController extends Controller
                         'vendedores.tipo'
             );
 
-        if($asesor == ''){
-            if($mes == '' && $anio == ''){
-                $comisiones = $query;
-            }
-            elseif($mes != '' && $anio == ''){
-                $comisiones = $query
-                        ->where('comisiones_ventas.mes','=',$mes);
-            }
-            elseif($mes == '' && $anio != ''){
-                $comisiones = $query
-                        ->where('comisiones_ventas.anio','=',$anio);
-            }
-            else{
-                $comisiones = $query
-                        ->where('comisiones_ventas.mes','=',$mes)
-                        ->where('comisiones_ventas.anio','=',$anio);
-            }
+            $comisiones = $query;
 
-            if($request->tipo != ''){
-                $comisiones =  $comisiones->where('vendedores.tipo','=',$request->tipo);
-            }
+                if($asesor != '')
+                    $comisiones = $comisiones->where('comisiones_ventas.asesor_id','=',$asesor);
+                if($mes != '')
+                    $comisiones = $comisiones->where('comisiones_ventas.mes','=',$mes);
+                if($anio != '')
+                    $comisiones = $comisiones->where('comisiones_ventas.anio','=',$anio);
 
-        }
-        else{
-            if($mes == '' && $anio == ''){
-                $comisiones = $query
-                        ->where('comisiones_ventas.asesor_id','=',$asesor);
-            }
-            elseif($mes != '' && $anio == ''){
-                $comisiones = $query
-                        ->where('comisiones_ventas.asesor_id','=',$asesor)
-                        ->where('comisiones_ventas.mes','=',$mes);
-            }
-            elseif($mes == '' && $anio != ''){
-                $comisiones = $query
-                        ->where('comisiones_ventas.asesor_id','=',$asesor)
-                        ->where('comisiones_ventas.anio','=',$anio);
-            }
-            else{
-                $comisiones = $query
-                        ->where('comisiones_ventas.asesor_id','=',$asesor)
-                        ->where('comisiones_ventas.mes','=',$mes)
-                        ->where('comisiones_ventas.anio','=',$anio);
-            }
-
-        }
 
         $comisiones = $comisiones->orderBy('comisiones_ventas.anio','desc')
                     ->orderBy('comisiones_ventas.mes','desc')

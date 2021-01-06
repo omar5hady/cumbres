@@ -357,7 +357,14 @@ para su revisión y pago.</SPAN></FONT></FONT></P>
 
 <P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>14.
 - </B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">Todos
-los pagos se efectuarán en Manuel Gutiérrez Nájera # 190 Col.
+los pagos se efectuarán en Manuel Gutiérrez Nájera # 
+@if($cabecera[0]->emp_constructora == 'Grupo Constructor Cumbres')
+	190
+@else
+	180
+@endif
+
+Col.
 Tequisquiapan, en San Luis Potosí, S.L.P. </SPAN></FONT></FONT>
 </P>
 <br>

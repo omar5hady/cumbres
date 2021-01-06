@@ -54,34 +54,15 @@ class CatalogoDetalleController extends Controller
         $id_gral = $request->id_gral;
         $subconcepto = $request->b_subconcepto;
 
-        if($id_gral == '' && $subconcepto == '')
-        {
-            $subconceptos = Cat_detalle_subconcepto::join('cat_detalles_generales as gen','cat_detalles_subconceptos.id_gral','=','gen.id')
-                        ->select('gen.general','cat_detalles_subconceptos.id', 'cat_detalles_subconceptos.id_gral','cat_detalles_subconceptos.subconcepto')
-                        ->orderBy('gen.general','asc')->orderBy('cat_detalles_subconceptos.subconcepto','asc')->paginate(12);
-        }
-        else{
-            if($subconcepto == '' && $id_gral != ''){
-                $subconceptos = Cat_detalle_subconcepto::join('cat_detalles_generales as gen','cat_detalles_subconceptos.id_gral','=','gen.id')
-                        ->select('gen.general','cat_detalles_subconceptos.id', 'cat_detalles_subconceptos.id_gral','cat_detalles_subconceptos.subconcepto')
-                        ->where('cat_detalles_subconceptos.id_gral','=',$id_gral)
-                        ->orderBy('gen.general','asc')->orderBy('cat_detalles_subconceptos.subconcepto','asc')->paginate(12);
-            }
-            elseif($subconcepto != '' && $id_gral == ''){
-                $subconceptos = Cat_detalle_subconcepto::join('cat_detalles_generales as gen','cat_detalles_subconceptos.id_gral','=','gen.id')
-                        ->select('gen.general','cat_detalles_subconceptos.id', 'cat_detalles_subconceptos.id_gral','cat_detalles_subconceptos.subconcepto')
-                        ->where('cat_detalles_subconceptos.subconcepto','like','%'. $subconcepto .'%')
-                        ->orderBy('gen.general','asc')->orderBy('cat_detalles_subconceptos.subconcepto','asc')->paginate(12);
-            }
-            else{
-                $subconceptos = Cat_detalle_subconcepto::join('cat_detalles_generales as gen','cat_detalles_subconceptos.id_gral','=','gen.id')
-                        ->select('gen.general','cat_detalles_subconceptos.id', 'cat_detalles_subconceptos.id_gral','cat_detalles_subconceptos.subconcepto')
-                        ->where('cat_detalles_subconceptos.id_gral','=',$id_gral)
-                        ->where('cat_detalles_subconceptos.subconcepto','like','%'. $subconcepto .'%')
-                        ->orderBy('gen.general','asc')->orderBy('cat_detalles_subconceptos.subconcepto','asc')->paginate(12);
-            }
-            
-        }
+        $subconceptos = Cat_detalle_subconcepto::join('cat_detalles_generales as gen','cat_detalles_subconceptos.id_gral','=','gen.id')
+                    ->select('gen.general','cat_detalles_subconceptos.id', 'cat_detalles_subconceptos.id_gral','cat_detalles_subconceptos.subconcepto');
+        
+            if($id_gral != '')
+                $subconceptos = $subconceptos->where('cat_detalles_subconceptos.id_gral','=',$id_gral);
+            if($subconcepto != '')
+                $subconceptos = $subconceptos->where('cat_detalles_subconceptos.subconcepto','like','%'. $subconcepto .'%');
+
+        $subconceptos = $subconceptos->orderBy('gen.general','asc')->orderBy('cat_detalles_subconceptos.subconcepto','asc')->paginate(12);
 
         return [
             'pagination' => [
@@ -101,20 +82,15 @@ class CatalogoDetalleController extends Controller
         $id_sub = $request->id_sub;
         $detalle = $request->detalle;
 
-        if($detalle == '')
-        {
-            $detalles = Cat_detalle::join('cat_detalles_subconceptos as sub','cat_detalles.id_sub','=','sub.id')
+        $detalles = Cat_detalle::join('cat_detalles_subconceptos as sub','cat_detalles.id_sub','=','sub.id')
                         ->select('sub.subconcepto','cat_detalles.id','cat_detalles.detalle','cat_detalles.activo')
-                        ->where('sub.id','=',$id_sub)->orderBy('cat_detalles.activo','desc')
-                        ->orderBy('sub.subconcepto','asc')->orderBy('cat_detalles.detalle','asc')->paginate(12);
-        }
-        else{
-            $detalles = Cat_detalle::join('cat_detalles_subconceptos as sub','cat_detalles.id_sub','=','sub.id')
-                        ->select('sub.subconcepto','cat_detalles.id','cat_detalles.detalle','cat_detalles.activo')
-                        ->where('sub.id','=',$id_sub)
-                        ->where('cat_detalles.detalle','like','%'. $detalle .'%')->orderBy('cat_detalles.activo','desc')
-                        ->orderBy('sub.subconcepto','asc')->orderBy('cat_detalles.detalle','asc')->paginate(12);
-        }
+                        ->where('sub.id','=',$id_sub);
+            
+            if($detalle != '')
+                $detalles = $detalles->where('cat_detalles.detalle','like','%'. $detalle .'%');
+
+                        $detalles=$detalles->orderBy('cat_detalles.activo','desc')
+                            ->orderBy('sub.subconcepto','asc')->orderBy('cat_detalles.detalle','asc')->paginate(12);
 
         return [
             'pagination' => [

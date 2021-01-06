@@ -8,7 +8,7 @@
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card scroll-box">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i> Etapas
+                        <i class="fa fa-align-justify"></i> Documentos anexos
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
@@ -40,7 +40,8 @@
                                         <th>Fecha de termino</th>
                                         <th>Reglamento</th>
                                         <th>Plantilla para carta de servicios</th>
-                                        <th>Costo de mantenimiento</th>
+                                        <th>Costo de mantenimiento Casa</th>
+                                        <th>Costo de mantenimiento Lote</th>
                                         <th>Empresa(s) de telecomunicacion</th>
                                         <th>Empresa(s) de telecomunicacion satelital</th>
                                         <th>Plantilla servicios de telecomunicacion</th>
@@ -63,9 +64,17 @@
                                         <td class="td2" v-text="etapa.f_fin"></td>
                                         <td class="td2" style="width:7%" v-if = "etapa.archivo_reglamento"><a class="btn btn-success btn-sm" v-bind:href="'/downloadReglamento/'+etapa.archivo_reglamento"><i class="fa fa-download fa-spin"></i></a></td>
                                         <td class="td2" v-else></td>
-                                        <td class="td2"  v-if = "etapa.plantilla_carta_servicios"><a class="btn btn-success btn-sm" v-bind:href="'/downloadPlantilla/cartaServicios/'+etapa.plantilla_carta_servicios"><i class="fa fa-download fa-spin"></i></a></td>
+                                        <td class="td2"  v-if="etapa.plantilla_carta_servicios || etapa.plantilla_carta_servicios2">
+                                            
+                                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">Plantilla de servicio</a>
+                                                <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                    <a v-if="etapa.plantilla_carta_servicios" class="btn btn-success btn-sm" v-bind:href="'/downloadPlantilla/cartaServicios/'+etapa.plantilla_carta_servicios"><i class="fa fa-download"> Casa</i></a>
+                                                    <a v-if="etapa.plantilla_carta_servicios2" class="btn btn-primary btn-sm" v-bind:href="'/downloadPlantilla/cartaServicios2/'+etapa.plantilla_carta_servicios2"><i class="fa fa-download"> Lote</i></a>
+                                                </div>
+                                        </td>
                                         <td class="td2" v-else></td>
                                         <td class="td2" v-text="'$' + etapa.costo_mantenimiento"></td>
+                                        <td class="td2" v-text="'$' + etapa.costo_mantenimiento2"></td>
                                         <td class="td2" v-text="etapa.empresas_telecom"></td>
                                         <td class="td2" v-text="etapa.empresas_telecom_satelital"></td>
                                         <td class="td2" v-if = "etapa.plantilla_telecom"><a class="btn btn-success btn-sm" v-bind:href="'/downloadPlantilla/ServiciosTelecom/'+etapa.plantilla_telecom"><i class="fa fa-download fa-spin"></i></a></td>
@@ -112,13 +121,24 @@
                                 </div>
 
                                 <div>
-                                     <form  method="post" @submit="formSubmitServicios" enctype="multipart/form-data">
+                                    <form  method="post" @submit="formSubmitServicios" enctype="multipart/form-data">
 
-                                    <strong>Sube aqui la plantilla para la carta de los servicios <u>794 x 986</u></strong>
+                                        <strong>Sube aqui la plantilla para la carta de los servicios Casa <u>794 x 986</u></strong>
 
-                                    <input type="file" accept="image/*" class="form-control" v-on:change="onImageChangeServicios">
-                                    <br/>
-                                    <button type="submit" class="btn btn-success">Cargar</button>
+                                        <input type="file" accept="image/*" class="form-control" v-on:change="onImageChangeServicios">
+                                        <br/>
+                                        <button type="submit" class="btn btn-success">Cargar</button>
+                                   </form>
+
+                                    <br/>   
+
+                                    <form  method="post" @submit="formSubmitServiciosL" enctype="multipart/form-data">
+
+                                        <strong>Sube aqui la plantilla para la carta de los servicios Lote<u>794 x 986</u></strong>
+
+                                        <input type="file" accept="image/*" class="form-control" v-on:change="onImageChangeServiciosL">
+                                        <br/>
+                                        <button type="submit" class="btn btn-success">Cargar</button>
                                    </form>
 
                                     <br/>   
@@ -148,9 +168,16 @@
                     
                         <div v-if="tipoAccion == 2" class="modal-body">
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Costo mantenimiento</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">Costo mantenimiento Casa</label>
                                     <div class="col-md-4">
                                         <input type="text" v-on:keypress="isNumber($event)" v-model="costo_mantenimiento" class="form-control" placeholder="$">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Costo mantenimiento Lote</label>
+                                    <div class="col-md-4">
+                                        <input type="text" v-on:keypress="isNumber($event)" v-model="costo_mantenimiento2" class="form-control" placeholder="$">
                                     </div>
                                 </div>
  
@@ -198,8 +225,10 @@
                 id:0,
                 num_etapa : 0,
                 archivo_plantilla_servicio: '',
+                archivo_plantilla_servicio2: '',
                 archivo_reglamento: '',
                 costo_mantenimiento: 0,
+                costo_mantenimiento2: 0,
                 empresas_telecom: '',
                 empresas_telecom_satelital: '',
                 archivo_plantilla_telecom: '',
@@ -284,6 +313,39 @@
                 });
 
             },
+
+            onImageChangeServiciosL(e){
+                console.log(e.target.files[0]);
+                this.archivo_plantilla_servicios2 = e.target.files[0];
+            },
+
+            formSubmitServiciosL(e) {
+                e.preventDefault();
+                let currentObj = this;
+            
+                let formData = new FormData();
+                formData.append('plantilla_carta_servicios2', this.archivo_plantilla_servicios2);
+                let me = this;
+                axios.post('/formSubmitCartaServicios2/'+this.id, formData)
+                .then(function (response) {
+                    currentObj.success = response.data.success;
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo guardado correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+                    me.cerrarModal4();
+                    me.listarEtapa(1,'','','fraccionamiento.nombre');
+
+                }).catch(function (error) {
+                    currentObj.output = error;
+
+                });
+
+            },
+
             onImageChangeReglamento(e){
 
                 console.log(e.target.files[0]);
@@ -364,6 +426,7 @@
                 //Con axios se llama el metodo store de FraccionaminetoController
                 axios.post('/etapas/costoMantenimiento/registrar/'+this.id,{
                     'costo_mantenimiento': this.costo_mantenimiento,
+                    'costo_mantenimiento2': this.costo_mantenimiento2,
                     'empresas_telecom': this.empresas_telecom,
                     'empresas_telecom_satelital': this.empresas_telecom_satelital,
                     
@@ -454,6 +517,7 @@
                                 this.num_etapa = data['num_etapa'];
                                 this.id=data['id'];
                                 this.costo_matenimiento = data['costo_mantenimiento'];
+                                this.costo_mantenimiento2 = data['costo_mantenimiento2'];
                                 this.empresas_telecom =data['empresas_telecom'];
                                 this.empresas_telecom_satelital =data['empresas_telecom_satelital'];
                                 this.tipoAccion = 2;
@@ -480,6 +544,8 @@
         opacity: 1 !important;
         position: fixed !important;
         background-color: #3c29297a !important;
+         overflow-y: auto;
+        
     }
     .div-error{
         display:flex;

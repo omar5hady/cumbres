@@ -18,7 +18,7 @@
                         </button>&nbsp;
 
                         <button type="button" @click="abrirModal('agenda')" class="btn btn-dark">
-                            <i class="icon-calendar"></i>&nbsp;Agenda
+                            <i class="icon-calendar"></i>&nbsp; Agenda
                         </button>
                     </div>
 

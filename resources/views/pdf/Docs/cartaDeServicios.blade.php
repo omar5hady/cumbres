@@ -33,7 +33,7 @@ ul{
 
     <p align="right">México, San Luis Potosí, S.L.P, a <u>{{$archivos[0]->fecha_hoy}}</u></p>
     <p align="left">Bienvenido a la Familia Cumbres Sr (a) </p>
-    <p align="left">¡Muchas felicidades por tu nueva casa!</p>
+    <p align="center"><b>¡Muchas felicidades por tu nueva casa!</b></p>
 
     <p align="justify">&nbsp; &nbsp; Queremos informarte por la presente que para mantener la belleza, tranquilidad y seguridad de la privada
                        se manejara una cuota de mantenimiento la cual tendrá como objetivo el solventar los gastos comunes de la 
