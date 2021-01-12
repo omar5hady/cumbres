@@ -58,94 +58,45 @@ class DepositoController extends Controller
 
         if($vencido == 1){ //VENCIDOS
             if($buscar == ''){
-                $pagares = $query
-                    ->where('pagos_contratos.pagado','!=',2)
-                    ->where('pagos_contratos.pagado','!=',3)
-                    ->where('contratos.status','!=',0)
-                    ->where('contratos.status','!=',2) 
-                    ->where('pagos_contratos.fecha_pago','<',$hoy)
-                    ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
+                $pagares = $query;
             }
             else{
                 switch($criterio){
                     case 'personal.nombre':{
                         $pagares = $query
-                            ->where('pagos_contratos.pagado','!=',2)
-                            ->where('pagos_contratos.pagado','!=',3)
-                            ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2)
-                            ->where('pagos_contratos.fecha_pago','<',$hoy)
-                            ->where('personal.nombre','like', '%'. $buscar . '%')
-                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
-                            ->orWhere('pagos_contratos.pagado','!=',2)
-                            ->where('pagos_contratos.pagado','!=',3)
-                            ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2)
-                            ->where('pagos_contratos.fecha_pago','<',$hoy)
-                            ->where('personal.apellidos','like', '%'. $buscar . '%')
-                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
+                            ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
                         break;
                     }
                     case 'pagos_contratos.fecha_pago':{
                         $pagares = $query
-                            ->where('pagos_contratos.pagado','!=',2)
-                            ->where('pagos_contratos.pagado','!=',3)
-                            ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2)
-                            ->where('pagos_contratos.fecha_pago','<',$hoy)
-                            ->whereBetween($criterio, [$buscar,$buscar2])
-                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
+                            ->whereBetween($criterio, [$buscar,$buscar2]);
                         break;
                     }
                     case 'creditos.fraccionamiento':{
-                        if($buscar2=='' && $buscar3==''){
-                            $pagares = $query
-                                ->where('pagos_contratos.pagado','!=',2)
-                                ->where('pagos_contratos.pagado','!=',3)
-                                ->where('contratos.status','!=',0)
-                                ->where('contratos.status','!=',2)
-                                ->where('pagos_contratos.fecha_pago','<',$hoy)
-                                ->where($criterio,'=',$buscar)
-                                ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
-                        }
-                        if($buscar!='' && $buscar2 !='' && $buscar3 == ''){
-                            $pagares = $query
-                                ->where('pagos_contratos.pagado','!=',2)
-                                ->where('pagos_contratos.pagado','!=',3)
-                                ->where('contratos.status','!=',0)
-                                ->where('contratos.status','!=',2)
-                                ->where('pagos_contratos.fecha_pago','<',$hoy)
-                                ->where($criterio,'=',$buscar)
-                                ->where('creditos.etapa','=',$buscar2)
-                                ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
-                        }
-                        if($buscar!='' && $buscar2 !='' && $buscar3 != ''){
-                            $pagares = $query
-                                ->where('pagos_contratos.pagado','!=',2)
-                                ->where('pagos_contratos.pagado','!=',3)
-                                ->where('contratos.status','!=',0)
-                                ->where('contratos.status','!=',2)
-                                ->where('pagos_contratos.fecha_pago','<',$hoy)
-                                ->where($criterio,'=',$buscar)
-                                ->where('creditos.etapa','=',$buscar2)
-                                ->where('creditos.manzana','=',$buscar3)
-                                ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
-                        }
+                        
+                        $pagares = $query;
+                            if($buscar!='')
+                                $pagares = $pagares->where($criterio,'=',$buscar);
+                            if($buscar2!='')
+                                $pagares = $pagares->where('creditos.etapa','=',$buscar2);
+                            if($buscar3!='')
+                                $pagares = $pagares->where('creditos.manzana','=',$buscar3);
                         break;
                     }
                     default:{
                         $pagares = $query
-                            ->where('pagos_contratos.pagado','!=',2)
-                            ->where('pagos_contratos.pagado','!=',3)
-                            ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2)
-                            ->where('pagos_contratos.fecha_pago','<',$hoy)
-                            ->where($criterio,'=',$buscar)
-                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
+                            ->where($criterio,'=',$buscar);
                         break;
                     }
                 }
             }
+
+            $pagares = $pagares->where('pagos_contratos.pagado','!=',2)
+                ->where('pagos_contratos.pagado','!=',3)
+                ->where('contratos.status','!=',0)
+                ->where('contratos.status','!=',2) 
+                ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
+                ->where('pagos_contratos.fecha_pago','<',$hoy);
             
         } 
         elseif($vencido == 2){ //CANCELADOS
@@ -165,19 +116,11 @@ class DepositoController extends Controller
                             //
                         
                             ->where('contratos.status','=',0)
-                            ->where('personal.nombre','like', '%'. $buscar . '%')
+                            ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
                             ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
 
                             ->orWhere('contratos.status','=',2)
-                            ->where('personal.nombre','like', '%'. $buscar . '%')
-                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
-
-                            ->orWhere('contratos.status','=',2)
-                            ->where('personal.apellidos','like', '%'. $buscar . '%')
-                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
-
-                            ->orWhere('contratos.status','=',0)
-                            ->where('personal.apellidos','like', '%'. $buscar . '%')
+                            ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
                             ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
                         break;
                     }
@@ -194,42 +137,29 @@ class DepositoController extends Controller
                         break;
                     }
                     case 'creditos.fraccionamiento':{
-                        if($buscar2=='' && $buscar3==''){
-                            $pagares = $query
+                    
+                        $pagares = $query;
+                        
+                        $pagares = $pagares->where('contratos.status','=',0)
+                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
+
+                            if($buscar!='')
+                                $pagares = $pagares->where($criterio,'=',$buscar);
+                            if($buscar2 !='')
+                                $pagares = $pagares->where('creditos.etapa','=',$buscar2);
+                            if($buscar3 != '')
+                                $pagares = $pagares->where('creditos.manzana','=',$buscar3);
+
                             
-                                ->where('contratos.status','=',0)
-                                ->where($criterio,'=',$buscar)
-                                ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
-                                ->orWhere('contratos.status','=',2)
-                                ->where($criterio,'=',$buscar)
+                        $pagares = $pagares->orWhere('contratos.status','=',2)
                                 ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
-                        }
-                        if($buscar!='' && $buscar2 !='' && $buscar3 == ''){
-                            $pagares = $query
                             
-                                ->where('contratos.status','=',0)
-                                ->where($criterio,'=',$buscar)
-                                ->where('creditos.etapa','=',$buscar2)
-                                ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
-                                ->orWhere('contratos.status','=',2)
-                                ->where($criterio,'=',$buscar)
-                                ->where('creditos.etapa','=',$buscar2)
-                                ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
-                        }
-                        if($buscar!='' && $buscar2 !='' && $buscar3 != ''){
-                            $pagares = $query
-                            
-                                ->where('contratos.status','=',0)
-                                ->where($criterio,'=',$buscar)
-                                ->where('creditos.etapa','=',$buscar2)
-                                ->where('creditos.manzana','=',$buscar3)
-                                ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
-                                ->orWhere('contratos.status','=',2)
-                                ->where($criterio,'=',$buscar)
-                                ->where('creditos.etapa','=',$buscar2)
-                                ->where('creditos.manzana','=',$buscar3)
-                                ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
-                        }
+                            if($buscar!='')
+                                $pagares = $pagares->where($criterio,'=',$buscar);
+                            if($buscar2 !='')
+                                $pagares = $pagares->where('creditos.etapa','=',$buscar2);
+                            if($buscar3 != '')
+                                $pagares = $pagares->where('creditos.manzana','=',$buscar3);
                         break;
                     }
                     default:{
@@ -249,86 +179,49 @@ class DepositoController extends Controller
         }
         else{ //TODOS
             if($buscar==''){
-                $pagares = $query
-                            ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2)
-                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
-                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
+                $pagares = $query;
             }
             else{
                 switch($criterio){
                     case 'personal.nombre':{
                         $pagares = $query
-                            ->where('personal.nombre','like', '%'. $buscar . '%')
-                            ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2)
-                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
-                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
-                            ->orwhere('personal.apellidos','like', '%'. $buscar . '%')
-                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
-                            ->where('contratos.status','!=',0)
-                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
-                            ->where('contratos.status','!=',2);
+                            ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
                         break;
                     }
                     case 'pagos_contratos.fecha_pago':{
                         $pagares = $query
-                            ->whereBetween($criterio, [$buscar,$buscar2])
-                            ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2)
-                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
-                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
+                            ->whereBetween($criterio, [$buscar,$buscar2]);
                         break;
                     }
                     case 'creditos.fraccionamiento':{
-                        if($buscar2=='' && $buscar3==''){
-                            $pagares = $query
-                                ->where($criterio,'=',$buscar)
-                                ->where('contratos.status','!=',0)
-                                ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
-                                ->where('contratos.status','!=',2);
-                        }
-                        if($buscar!='' && $buscar2 !='' && $buscar3 == ''){
-                            $pagares = $query
-                                ->where($criterio,'=',$buscar)
-                                ->where('creditos.etapa','=',$buscar2)
-                                ->where('contratos.status','!=',0)
-                                ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
-                                ->where('contratos.status','!=',2);
-                        }
-                        if($buscar!='' && $buscar2 !='' && $buscar3 != ''){
-                            $pagares = $query
-                                ->where($criterio,'=',$buscar)
-                                ->where('creditos.etapa','=',$buscar2)
-                                ->where('creditos.manzana','=',$buscar3)
-                                ->where('contratos.status','!=',0)
-                                ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
-                                ->where('contratos.status','!=',2);
-                        }
+                        $pagares = $query;
+                        if($buscar != '')
+                            $pagares = $pagares->where($criterio,'=',$buscar);
+                        if($buscar2 != '')
+                            $pagares = $pagares->where('creditos.etapa','=',$buscar2);
+                        if($buscar3 != '')
+                            $pagares = $pagares->where('creditos.manzana','=',$buscar3);
+                        
                         break;
                     }
                     default:{
                         $pagares = $query
-                            ->where($criterio,'=',$buscar)
-                            ->where('contratos.status','!=',0)
-                            ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%')
-                            ->where('contratos.status','!=',2);
+                            ->where($criterio,'=',$buscar);
                         break;
                     }
                 }
             }
-        }
 
-        
+            $pagares = $pagares->where('contratos.status','!=',0)
+                                ->where('contratos.status','!=',2)
+                                ->where('lotes.emp_constructora','like','%'.$request->b_empresa.'%');
+        }
 
         $pagares = $pagares->orderBy('pagos_contratos.pagado', 'asc')
                         ->orderBy('pagos_contratos.fecha_pago', 'asc')
                         ->orderBy('pagos_contratos.pagado', 'asc')
                         ->paginate(10);
 
-    
-        
-        
         return[
             'pagination' => [
             'total'         => $pagares->total(),
@@ -375,86 +268,44 @@ class DepositoController extends Controller
 
         if($vencido == 1){ //VENCIDOS
             if($buscar == ''){
-                $pagares = $query
-                    ->where('pagos_contratos.pagado','!=',2)
-                    ->where('pagos_contratos.pagado','!=',3)
-                    ->where('contratos.status','!=',0)
-                    ->where('contratos.status','!=',2) 
-                    ->where('pagos_contratos.fecha_pago','<',$hoy);
+                $pagares = $query;
             }
             else{
                 switch($criterio){
                     case 'personal.nombre':{
                         $pagares = $query
-                            ->where('pagos_contratos.pagado','!=',2)
-                            ->where('pagos_contratos.pagado','!=',3)
-                            ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2)
-                            ->where('pagos_contratos.fecha_pago','<',$hoy)
-                            ->where('personal.nombre','like', '%'. $buscar . '%')
-                            ->orWhere('pagos_contratos.pagado','!=',2)
-                            ->where('pagos_contratos.pagado','!=',3)
-                            ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2)
-                            ->where('pagos_contratos.fecha_pago','<',$hoy)
-                            ->where('personal.apellidos','like', '%'. $buscar . '%');
+                            ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
                         break;
                     }
                     case 'pagos_contratos.fecha_pago':{
                         $pagares = $query
-                            ->where('pagos_contratos.pagado','!=',2)
-                            ->where('pagos_contratos.pagado','!=',3)
-                            ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2)
-                            ->where('pagos_contratos.fecha_pago','<',$hoy)
                             ->whereBetween($criterio, [$buscar,$buscar2]);
                         break;
                     }
                     case 'creditos.fraccionamiento':{
-                        if($buscar2=='' && $buscar3==''){
-                            $pagares = $query
-                                ->where('pagos_contratos.pagado','!=',2)
-                                ->where('pagos_contratos.pagado','!=',3)
-                                ->where('contratos.status','!=',0)
-                                ->where('contratos.status','!=',2)
-                                ->where('pagos_contratos.fecha_pago','<',$hoy)
-                                ->where($criterio,'=',$buscar);
-                        }
-                        if($buscar!='' && $buscar2 !='' && $buscar3 == ''){
-                            $pagares = $query
-                                ->where('pagos_contratos.pagado','!=',2)
-                                ->where('pagos_contratos.pagado','!=',3)
-                                ->where('contratos.status','!=',0)
-                                ->where('contratos.status','!=',2)
-                                ->where('pagos_contratos.fecha_pago','<',$hoy)
-                                ->where($criterio,'=',$buscar)
-                                ->where('creditos.etapa','=',$buscar2);
-                        }
-                        if($buscar!='' && $buscar2 !='' && $buscar3 != ''){
-                            $pagares = $query
-                                ->where('pagos_contratos.pagado','!=',2)
-                                ->where('pagos_contratos.pagado','!=',3)
-                                ->where('contratos.status','!=',0)
-                                ->where('contratos.status','!=',2)
-                                ->where('pagos_contratos.fecha_pago','<',$hoy)
-                                ->where($criterio,'=',$buscar)
-                                ->where('creditos.etapa','=',$buscar2)
-                                ->where('creditos.manzana','=',$buscar3);
-                        }
+                        
+                        $pagares = $query;
+                            if($buscar!='')
+                                $pagares = $pagares->where($criterio,'=',$buscar);
+                            if($buscar2!='')
+                                $pagares = $pagares->where('creditos.etapa','=',$buscar2);
+                            if($buscar3!='')
+                                $pagares = $pagares->where('creditos.manzana','=',$buscar3);
                         break;
                     }
                     default:{
                         $pagares = $query
-                            ->where('pagos_contratos.pagado','!=',2)
-                            ->where('pagos_contratos.pagado','!=',3)
-                            ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2)
-                            ->where('pagos_contratos.fecha_pago','<',$hoy)
                             ->where($criterio,'=',$buscar);
                         break;
                     }
                 }
             }
+
+            $pagares = $pagares->where('pagos_contratos.pagado','!=',2)
+                ->where('pagos_contratos.pagado','!=',3)
+                ->where('contratos.status','!=',0)
+                ->where('contratos.status','!=',2) 
+                ->where('pagos_contratos.fecha_pago','<',$hoy);
             
         } 
         elseif($vencido == 2){ //CANCELADOS
@@ -472,16 +323,10 @@ class DepositoController extends Controller
                             //
                         
                             ->where('contratos.status','=',0)
-                            ->where('personal.nombre','like', '%'. $buscar . '%')
+                            ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
 
                             ->orWhere('contratos.status','=',2)
-                            ->where('personal.nombre','like', '%'. $buscar . '%')
-
-                            ->orWhere('contratos.status','=',2)
-                            ->where('personal.apellidos','like', '%'. $buscar . '%')
-
-                            ->orWhere('contratos.status','=',0)
-                            ->where('personal.apellidos','like', '%'. $buscar . '%');
+                            ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
                         break;
                     }
                     case 'pagos_contratos.fecha_pago':{
@@ -495,36 +340,27 @@ class DepositoController extends Controller
                         break;
                     }
                     case 'creditos.fraccionamiento':{
-                        if($buscar2=='' && $buscar3==''){
-                            $pagares = $query
+                    
+                        $pagares = $query;
+                        
+                        $pagares = $pagares->where('contratos.status','=',0);
+
+                            if($buscar!='')
+                                $pagares = $pagares->where($criterio,'=',$buscar);
+                            if($buscar2 !='')
+                                $pagares = $pagares->where('creditos.etapa','=',$buscar2);
+                            if($buscar3 != '')
+                                $pagares = $pagares->where('creditos.manzana','=',$buscar3);
+
                             
-                                ->where('contratos.status','=',0)
-                                ->where($criterio,'=',$buscar)
-                                ->orWhere('contratos.status','=',2)
-                                ->where($criterio,'=',$buscar);
-                        }
-                        if($buscar!='' && $buscar2 !='' && $buscar3 == ''){
-                            $pagares = $query
+                        $pagares = $pagares->orWhere('contratos.status','=',2);
                             
-                                ->where('contratos.status','=',0)
-                                ->where($criterio,'=',$buscar)
-                                ->where('creditos.etapa','=',$buscar2)
-                                ->orWhere('contratos.status','=',2)
-                                ->where($criterio,'=',$buscar)
-                                ->where('creditos.etapa','=',$buscar2);
-                        }
-                        if($buscar!='' && $buscar2 !='' && $buscar3 != ''){
-                            $pagares = $query
-                            
-                                ->where('contratos.status','=',0)
-                                ->where($criterio,'=',$buscar)
-                                ->where('creditos.etapa','=',$buscar2)
-                                ->where('creditos.manzana','=',$buscar3)
-                                ->orWhere('contratos.status','=',2)
-                                ->where($criterio,'=',$buscar)
-                                ->where('creditos.etapa','=',$buscar2)
-                                ->where('creditos.manzana','=',$buscar3);
-                        }
+                            if($buscar!='')
+                                $pagares = $pagares->where($criterio,'=',$buscar);
+                            if($buscar2 !='')
+                                $pagares = $pagares->where('creditos.etapa','=',$buscar2);
+                            if($buscar3 != '')
+                                $pagares = $pagares->where('creditos.manzana','=',$buscar3);
                         break;
                     }
                     default:{
@@ -542,62 +378,41 @@ class DepositoController extends Controller
         }
         else{ //TODOS
             if($buscar==''){
-                $pagares = $query
-                            ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2);
+                $pagares = $query;
             }
             else{
                 switch($criterio){
                     case 'personal.nombre':{
                         $pagares = $query
-                            ->where('personal.nombre','like', '%'. $buscar . '%')
-                            ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2)
-                            ->orwhere('personal.apellidos','like', '%'. $buscar . '%')
-                            ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2);
+                            ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
                         break;
                     }
                     case 'pagos_contratos.fecha_pago':{
                         $pagares = $query
-                            ->whereBetween($criterio, [$buscar,$buscar2])
-                            ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2);
+                            ->whereBetween($criterio, [$buscar,$buscar2]);
                         break;
                     }
                     case 'creditos.fraccionamiento':{
-                        if($buscar2=='' && $buscar3==''){
-                            $pagares = $query
-                                ->where($criterio,'=',$buscar)
-                                ->where('contratos.status','!=',0)
-                                ->where('contratos.status','!=',2);
-                        }
-                        if($buscar!='' && $buscar2 !='' && $buscar3 == ''){
-                            $pagares = $query
-                                ->where($criterio,'=',$buscar)
-                                ->where('creditos.etapa','=',$buscar2)
-                                ->where('contratos.status','!=',0)
-                                ->where('contratos.status','!=',2);
-                        }
-                        if($buscar!='' && $buscar2 !='' && $buscar3 != ''){
-                            $pagares = $query
-                                ->where($criterio,'=',$buscar)
-                                ->where('creditos.etapa','=',$buscar2)
-                                ->where('creditos.manzana','=',$buscar3)
-                                ->where('contratos.status','!=',0)
-                                ->where('contratos.status','!=',2);
-                        }
+                        $pagares = $query;
+                        if($buscar != '')
+                            $pagares = $pagares->where($criterio,'=',$buscar);
+                        if($buscar2 != '')
+                            $pagares = $pagares->where('creditos.etapa','=',$buscar2);
+                        if($buscar3 != '')
+                            $pagares = $pagares->where('creditos.manzana','=',$buscar3);
+                        
                         break;
                     }
                     default:{
                         $pagares = $query
-                            ->where($criterio,'=',$buscar)
-                            ->where('contratos.status','!=',0)
-                            ->where('contratos.status','!=',2);
+                            ->where($criterio,'=',$buscar);
                         break;
                     }
                 }
             }
+
+            $pagares = $pagares->where('contratos.status','!=',0)
+                                ->where('contratos.status','!=',2);
         }
 
         if($request->b_empresa != ''){
@@ -713,59 +528,17 @@ class DepositoController extends Controller
             $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
         }
 
-        if($fecha1 == '' && $fecha2 == ''){
-            if($banco == '' && $monto == ''){
-                $depositos = $query
-                        ->orderBy('depositos.fecha_pago','desc')->paginate(8);
-            }
-            elseif($banco != '' && $monto == ''){
-                $depositos = $query
-                        ->where('depositos.banco','=',$banco)
-                        ->orderBy('depositos.fecha_pago','desc')->paginate(8);
-            }
-            elseif($banco != '' && $monto != ''){
-                $depositos = $query
-                        ->where('depositos.banco','=',$banco)
-                        ->where('depositos.cant_depo','=',$monto)
-                        ->orderBy('depositos.fecha_pago','desc')->paginate(8);
+        $depositos = $query;
 
-            }
-            elseif($banco == '' && $monto != ''){
-                $depositos = $query
-                        ->where('depositos.cant_depo','=',$monto)
-                        ->orderBy('depositos.fecha_pago','desc')->paginate(8);
+        if($fecha1 != '' && $fecha2 != '')
+            $depositos = $depositos->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2]);
+        if($banco != '')
+            $depositos = $depositos->where('depositos.banco','=',$banco);
+        if($monto != '')
+            $depositos = $depositos->where('depositos.cant_depo','=',$monto);
 
-            }
-        }
-        elseif($fecha1 != '' && $fecha2 != ''){
-            if($banco == '' && $monto == ''){
-                $depositos = $query
-                        ->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2])
-                        ->orderBy('depositos.fecha_pago','desc')->paginate(8);
-            }
-            elseif($banco != '' && $monto == ''){
-                $depositos = $query
-                        ->where('depositos.banco','=',$banco)
-                        ->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2])
-                        ->orderBy('depositos.fecha_pago','desc')->paginate(8);
-            }
-            elseif($banco != '' && $monto != ''){
-                $depositos = $query
-                        ->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2])
-                        ->where('depositos.banco','=',$banco)
-                        ->where('depositos.cant_depo','=',$monto)
-                        ->orderBy('depositos.fecha_pago','desc')->paginate(8);
+        $depositos = $depositos->orderBy('depositos.fecha_pago','desc')->paginate(8);
 
-            }
-            elseif($banco == '' && $monto != ''){
-                $depositos = $query
-                        ->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2])
-                        ->where('depositos.cant_depo','=',$monto)
-                        ->orderBy('depositos.fecha_pago','desc')->paginate(8);
-
-            }
-        }
-        
         
         return[
             'pagination' => [
@@ -804,58 +577,14 @@ class DepositoController extends Controller
             $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
         }
 
-        if($fecha1 == '' && $fecha2 == ''){
-            if($banco == '' && $monto == ''){
-                $depositos = $query
-                        ->orderBy('depositos.fecha_pago','desc')->get();
-            }
-            elseif($banco != '' && $monto == ''){
-                $depositos = $query
-                        ->where('depositos.banco','=',$banco)
-                        ->orderBy('depositos.fecha_pago','desc')->get();
-            }
-            elseif($banco != '' && $monto != ''){
-                $depositos = $query
-                        ->where('depositos.banco','=',$banco)
-                        ->where('depositos.cant_depo','=',$monto)
-                        ->orderBy('depositos.fecha_pago','desc')->get();
+        if($fecha1 != '' && $fecha2 != '')
+            $depositos = $depositos->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2]);
+        if($banco != '')
+            $depositos = $depositos->where('depositos.banco','=',$banco);
+        if($monto != '')
+            $depositos = $depositos->where('depositos.cant_depo','=',$monto);
 
-            }
-            elseif($banco == '' && $monto != ''){
-                $depositos = $query
-                        ->where('depositos.cant_depo','=',$monto)
-                        ->orderBy('depositos.fecha_pago','desc')->get();
-
-            }
-        }
-        elseif($fecha1 != '' && $fecha2 != ''){
-            if($banco == '' && $monto == ''){
-                $depositos = $query
-                        ->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2])
-                        ->orderBy('depositos.fecha_pago','desc')->get();
-            }
-            elseif($banco != '' && $monto == ''){
-                $depositos = $query
-                        ->where('depositos.banco','=',$banco)
-                        ->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2])
-                        ->orderBy('depositos.fecha_pago','desc')->get();
-            }
-            elseif($banco != '' && $monto != ''){
-                $depositos = $query
-                        ->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2])
-                        ->where('depositos.banco','=',$banco)
-                        ->where('depositos.cant_depo','=',$monto)
-                        ->orderBy('depositos.fecha_pago','desc')->get();
-
-            }
-            elseif($banco == '' && $monto != ''){
-                $depositos = $query
-                        ->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2])
-                        ->where('depositos.cant_depo','=',$monto)
-                        ->orderBy('depositos.fecha_pago','desc')->get();
-
-            }
-        }
+        $depositos = $depositos->orderBy('depositos.fecha_pago','desc')->get();
 
         return Excel::create('Depositos', function($excel) use ($depositos){
             $excel->sheet('Depositos', function($sheet) use ($depositos){
@@ -915,38 +644,20 @@ class DepositoController extends Controller
 
     public function excelDepositos(Request $request){
 
-        $query = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+        $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
             ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
             ->join('creditos','contratos.id','=','creditos.id')
             ->select('pagos_contratos.contrato_id','depositos.cant_depo','depositos.num_recibo',
                     'depositos.banco', 'depositos.fecha_pago', 'depositos.concepto',
                     'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.num_lote');
-        
-        if($request->desde == ''){
-            if($request->banco == ''){
-                $depositos = $query
-                            ->get();
-            }
-            else{
-                $depositos = $query
-                            ->where('depositos.banco','=',$request->banco)
-                            ->get();
 
-            }
-        }
-        else{
-            if($request->banco == ''){
-                $depositos = $query
-                            ->whereBetween('depositos.fecha_pago', [$request->desde, $request->hasta])
-                            ->get();
-            }
-            else{
-                $depositos = $query
-                            ->where('depositos.banco','=',$request->banco)
-                            ->whereBetween('depositos.fecha_pago', [$request->desde, $request->hasta])
-                            ->get();
-            }
-        }
+
+        if($banco != '')
+            $depositos = $depositos->where('depositos.banco','=',$request->banco);
+        if($desde != '')
+            $depositos = $depositos->whereBetween('depositos.fecha_pago', [$request->desde, $request->hasta]);
+
+        $depositos = $depositos->get();
 
         return Excel::create('Depositos', function($excel) use ($depositos){
                 $excel->sheet('Depositos', function($sheet) use ($depositos){
@@ -1398,399 +1109,62 @@ class DepositoController extends Controller
                             WHERE gastos_admin.contrato_id = contratos.id 
                             GROUP BY gastos_admin.contrato_id) as gastos")
 
-                );
+            );
+
+        $query = $query->where('i.elegido', '=', 1);
+
+        if($b_status != '')
+            $query = $query
+                ->where('contratos.status','=',$b_status);
+                
 
 
-        if($b_status == ""){
-            if($buscar == '' && $criterio!='c.nombre'){
-                $contratos = $query
-                                ->where('i.elegido', '=', 1);
+        switch($criterio){
+            case 'c.nombre':{
+                $contratos = $query;
+                if($buscar != '')
+                    $contratos = $contratos->where('c.nombre','like','%'. $buscar . '%');
+                if($buscar2 != '')
+                    $contratos = $contratos->where('c.apellidos','like','%'. $buscar2 . '%');
+                break;
             }
-            else{
-                switch($criterio){
-                    case 'c.nombre':{
-                        if($buscar2 == ''){
-                            $contratos = $query
-                                ->where('i.elegido', '=', 1)
-                                ->where('c.nombre','like','%'. $buscar . '%');
 
-                        }
-                        else{
-                            $contratos = $query
-                                ->where('i.elegido', '=', 1)
-                                ->where('c.nombre','like','%'. $buscar . '%')
-                                ->where('c.apellidos','like','%'. $buscar2 . '%');
-                        }
-                        break;
-                    }
+            case 'contratos.id':{
+                $contratos = $query;
+                if($buscar != '')
+                    $contratos = $contratos->where('contratos.id','=', $buscar );
+                break;
+            }
 
-                    case 'contratos.id':{
-                        $contratos = $query
-                                ->where('i.elegido', '=', 1)
-                                ->where('contratos.id','=', $buscar );
-
-                                break;
-                    }
-
-                    case 'contratos.fecha':{
-                        if($buscar2 == ''){
-                            $contratos = $query
-                            ->where('i.elegido', '=', 1)
-                            ->where('contratos.fecha','=', $buscar );
-                        }
-                        else{
-                            $contratos = $query
-                            ->where('i.elegido', '=', 1)
-                            ->whereBetween('contratos.fecha', [$buscar, $buscar2] );
-                        }
-                        
-                        break;
-                    }
-
-                    case 'lotes.fraccionamiento_id':{
-                        if($credito == ''){
-                            if($buscar != '' && $buscar2 == '' && $b_manzana == '' && $b_lote == ''){
-
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar);
-                            }
-                            elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote == ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2);
-                            }
-    
-                            elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote == ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana);
-                            }
-    
-                            elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote != ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote);
-                            }
-    
-                            elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote != ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    //->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote);
-                            }
-                            
-                            elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote == ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    //->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana);
-                            }
-    
-                            elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote != ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    //->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote);
-                            }
-                        }
-                        else{
-                            if($buscar != '' && $buscar2 == '' && $b_manzana == '' && $b_lote == ''){
-
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar);
-                            }
-                            elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote == ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2);
-                            }
-    
-                            elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote == ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana);
-                            }
-    
-                            elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote != ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote);
-                            }
-    
-                            elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote != ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    //->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote);
-                            }
-                            
-                            elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote == ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    //->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana);
-                            }
-    
-                            elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote != ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    //->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote);
-                            }
-                        }
-                        
-                        break;
-                    }
+            case 'contratos.fecha':{
+                if($buscar2 == '' && $buscar != ''){
+                    $contratos = $query
+                        ->where('contratos.fecha','=', $buscar );
                 }
-            }
-
-        }else{
-            if($buscar == '' && $criterio!='c.nombre'){
-                $contratos = $query
-                                ->where('i.elegido', '=', 1)
-                                ->where('contratos.status','=',$b_status);
-            }
-            else{
-                switch($criterio){
-                    case 'c.nombre':{
-                        if($buscar2 == ''){
-                            $contratos = $query
-                                ->where('i.elegido', '=', 1)
-                                ->where('c.nombre','like','%'. $buscar . '%')
-                                ->where('contratos.status','=',$b_status);
-                        }
-                        else{
-                            $contratos = $query
-                                ->where('i.elegido', '=', 1)
-                                ->where('c.nombre','like','%'. $buscar . '%')
-                                ->where('c.apellidos','like','%'. $buscar2 . '%')
-                                ->where('contratos.status','=',$b_status);
-                        }
-                        break;
-                    }
-
-                    case 'contratos.id':{
-                        $contratos = $query
-                                ->where('i.elegido', '=', 1)
-                                ->where('contratos.id','=', $buscar )
-                                ->where('contratos.status','=',$b_status);
-                                break;
-                    }
-
-                    case 'contratos.fecha':{
-                        if($buscar2 == ''){
-                            $contratos = $query
-                            ->where('i.elegido', '=', 1)
-                            ->where('contratos.fecha','=', $buscar );
-                        }
-                        else{
-                            $contratos = $query
-                            ->where('i.elegido', '=', 1)
-                            ->whereBetween('contratos.fecha', [$buscar, $buscar2] );
-                        }
-                        
-                        break;
-                    }
-
-                    case 'lotes.fraccionamiento_id':{
-                        if($credito == ''){
-                            if($buscar != '' && $buscar2 == '' && $b_manzana == '' && $b_lote == ''){
-
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('contratos.status','=',$b_status);
-                            }
-                            elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote == ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('contratos.status','=',$b_status);
-                            }
-    
-                            elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote == ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('contratos.status','=',$b_status);
-                            }
-    
-                            elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote != ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status);
-                            }
-    
-                            elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote != ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    //->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status);
-                            }
-                            
-                            elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote == ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    //->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    //->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status);
-                            }
-    
-                            elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote != ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    //->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status);
-                            }
-                        }
-                        else{
-                            if($buscar != '' && $buscar2 == '' && $b_manzana == '' && $b_lote == ''){
-
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('contratos.status','=',$b_status);
-                            }
-                            elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote == ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('contratos.status','=',$b_status);
-                            }
-    
-                            elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote == ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('contratos.status','=',$b_status);
-                            }
-    
-                            elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote != ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status);
-                            }
-    
-                            elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote != ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    //->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status);
-                            }
-                            
-                            elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote == ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    //->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    //->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status);
-                            }
-    
-                            elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote != ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    //->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status);
-                            }
-                        }
-                        break;
-                    }
+                else{
+                    $contratos = $query
+                        ->whereBetween('contratos.fecha', [$buscar, $buscar2] );
                 }
+                break;
+            }
+
+            case 'lotes.fraccionamiento_id':{
+                $contratos = $query;
+
+                if($credito != '')
+                    $contratos = $contratos->where('i.tipo_credito','=',$credito);
+                if($buscar != '')
+                    $contratos = $contratos->where($criterio, '=', $buscar);
+                if($buscar2 != '')
+                    $contratos = $contratos->where('lotes.etapa_id', '=', $buscar2);
+                if($b_manzana != '')
+                    $contratos = $contratos->where('lotes.manzana', '=', $b_manzana);
+                if($b_lote != '')
+                    $contratos = $contratos->where('lotes.num_lote', '=', $b_lote);
+                break;
             }
         }
-
+            
         if($request->b_empresa != ''){
             $contratos= $contratos->where('lotes.emp_constructora','=',$request->b_empresa);
         }
@@ -1887,365 +1261,55 @@ class DepositoController extends Controller
 
         );
 
-        if($b_status == ""){
-            if($buscar == '' && $criterio!='c.nombre'){
-                $contratos = $query
-                                ->where('i.elegido', '=', 1);
+        $query = $query->where('i.elegido', '=', 1);
 
+        if($b_status != '')
+            $query = $query
+                ->where('contratos.status','=',$b_status);
+                
+        switch($criterio){
+            case 'c.nombre':{
+                $contratos = $query;
+                if($buscar != '')
+                    $contratos = $contratos->where('c.nombre','like','%'. $buscar . '%');
+                if($buscar2 != '')
+                    $contratos = $contratos->where('c.apellidos','like','%'. $buscar2 . '%');
+                break;
             }
-            else{
-                switch($criterio){
-                    case 'c.nombre':{
-                        if($buscar2 == ''){
-                            $contratos = $query
-                                ->where('i.elegido', '=', 1)
-                                ->where('c.nombre','like','%'. $buscar . '%');
-                        }
-                        else{
-                            $contratos = $query
-                                ->where('i.elegido', '=', 1)
-                                ->where('c.nombre','like','%'. $buscar . '%')
-                                ->where('c.apellidos','like','%'. $buscar2 . '%');
-                        }
-                        break;
-                    }
 
-                    case 'contratos.id':{
-                        $contratos = $query
-                                ->where('i.elegido', '=', 1)
-                                ->where('contratos.id','=', $buscar );
+            case 'contratos.id':{
+                $contratos = $query;
+                if($buscar != '')
+                    $contratos = $contratos->where('contratos.id','=', $buscar );
+                break;
+            }
 
-                                break;
-                    }
-
-                    case 'lotes.fraccionamiento_id':{
-                        if($credito==''){
-                            if($buscar != '' && $buscar2 == '' && $b_manzana == '' && $b_lote == ''){
-
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar);
-                            }
-                            elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote == ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2);
-                            }
-    
-                            elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote == ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana);
-                            }
-    
-                            elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote != ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote);
-                            }
-    
-                            elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote != ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    //->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote);
-                            }
-                            
-                            elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote == ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    //->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana);
-                            }
-    
-                            elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote != ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    //->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote);
-                            }
-                        }
-                        else{
-                            if($buscar != '' && $buscar2 == '' && $b_manzana == '' && $b_lote == ''){
-
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar);
-                            }
-                            elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote == ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2);
-                            }
-    
-                            elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote == ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana);
-                            }
-    
-                            elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote != ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote);
-                            }
-    
-                            elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote != ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    //->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote);
-                            }
-                            
-                            elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote == ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    //->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana);
-                            }
-    
-                            elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote != ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    //->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote);
-                            }
-                        }
-                        
-                        break;
-                    }
+            case 'contratos.fecha':{
+                if($buscar2 == '' && $buscar != ''){
+                    $contratos = $query
+                        ->where('contratos.fecha','=', $buscar );
                 }
-            }
-
-        }else{
-            if($buscar == '' && $criterio!='c.nombre'){
-                $contratos = $query
-                                ->where('i.elegido', '=', 1)
-                                ->where('contratos.status','=',$b_status);
-
-            }
-            else{
-                switch($criterio){
-                    case 'c.nombre':{
-                        if($buscar2 == ''){
-                            $contratos = $query
-                                ->where('i.elegido', '=', 1)
-                                ->where('c.nombre','like','%'. $buscar . '%')
-                                ->where('contratos.status','=',$b_status);
-                        }
-                        else{
-                            $contratos = $query
-                                ->where('i.elegido', '=', 1)
-                                ->where('c.nombre','like','%'. $buscar . '%')
-                                ->where('c.apellidos','like','%'. $buscar2 . '%')
-                                ->where('contratos.status','=',$b_status);
-                        }
-                        break;
-                    }
-
-                    case 'contratos.id':{
-                        $contratos = $query
-                                ->where('i.elegido', '=', 1)
-                                ->where('contratos.id','=', $buscar )
-                                ->where('contratos.status','=',$b_status);
-
-                                break;
-                    }
-
-                    case 'lotes.fraccionamiento_id':{
-                        if($credito==''){
-                            if($buscar != '' && $buscar2 == '' && $b_manzana == '' && $b_lote == ''){
-
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('contratos.status','=',$b_status);
-                            }
-                            elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote == ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('contratos.status','=',$b_status);
-                            }
-    
-                            elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote == ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('contratos.status','=',$b_status);
-                            }
-    
-                            elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote != ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status);
-                            }
-    
-                            elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote != ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    //->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status);
-                            }
-                            
-                            elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote == ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    //->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    //->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status);
-                            }
-    
-                            elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote != ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    //->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status);
-                            }
-                        }
-                        else{
-                            if($buscar != '' && $buscar2 == '' && $b_manzana == '' && $b_lote == ''){
-
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('contratos.status','=',$b_status);
-                            }
-                            elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote == ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('contratos.status','=',$b_status);
-                            }
-    
-                            elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote == ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('contratos.status','=',$b_status);
-                            }
-    
-                            elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote != ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status);
-                            }
-    
-                            elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote != ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    //->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status);
-                            }
-                            
-                            elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote == ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    //->where('lotes.etapa_id', '=', $buscar2)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    //->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status);
-                            }
-    
-                            elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote != ''){
-    
-                                $contratos = $query
-                                    ->where('i.elegido', '=', 1)
-                                    ->where('i.tipo_credito','=',$credito)
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $buscar2)
-                                    //->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('contratos.status','=',$b_status);
-                            }
-                        }
-                        break;
-                    }
+                else{
+                    $contratos = $query
+                        ->whereBetween('contratos.fecha', [$buscar, $buscar2] );
                 }
+                break;
+            }
+
+            case 'lotes.fraccionamiento_id':{
+                $contratos = $query;
+
+                if($credito != '')
+                    $contratos = $contratos->where('i.tipo_credito','=',$credito);
+                if($buscar != '')
+                    $contratos = $contratos->where($criterio, '=', $buscar);
+                if($buscar2 != '')
+                    $contratos = $contratos->where('lotes.etapa_id', '=', $buscar2);
+                if($b_manzana != '')
+                    $contratos = $contratos->where('lotes.manzana', '=', $b_manzana);
+                if($b_lote != '')
+                    $contratos = $contratos->where('lotes.num_lote', '=', $b_lote);
+                break;
             }
         }
 

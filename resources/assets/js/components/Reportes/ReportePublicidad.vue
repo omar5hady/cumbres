@@ -64,11 +64,11 @@
                     <div class="card-body">
                         <div class="form-group row">
                             <div class="col-md-6" >
-                                <div class="text-value-sm text-primary"><h5 style="font-weight: bold;">Ventas (Total {{totalVentas}})</h5></div>
+                                <div class="text-value-sm text-primary"><h5 style="font-weight: bold;">Ventas (Total {{totalVentas}}) {{porcVentas.toFixed(2) + '%'}}</h5></div>
                                 <div class="card text-dark bg-light" v-for="venta in arrayDatosVentas" :key="venta.id">
                                     <div class="card-body">
                                         <div class="h5 text-muted text-left mb-2">{{venta.publicidad}}</div>
-                                        <div class="text-muted text-uppercase font-weight-bold">{{venta.cant}}</div>
+                                        <div class="text-muted text-uppercase font-weight-bold">{{venta.cant}} ({{((venta.cant/totalVentas)*100).toFixed(2) + '%'}})</div>
                                         <div class="progress progress-primary progress-xs my-2">
                                             <div class="progress-bar" role="progressbar" v-bind:style="{ width: (venta.cant/totalVentas)*100 + '%' }" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
                                         </div>
@@ -113,6 +113,7 @@
                arrayAllEtapas:[],
                arrayAsesores:[],
                totalVentas:0,
+               porcVentas:0,
                totalProspectos:0,
                filtros:1,
                desde:'',
@@ -198,6 +199,8 @@
                     me.arrayDatosVentas.forEach(element => {
                         me.totalVentas += element.cant;
                     });
+
+                    me.porcVentas = (me.totalVentas/me.totalProspectos)*100;
 
                     me.arrayDatosProspectos.sort((b, a) => a.cant - b.cant);
                     me.arrayDatosVentas.sort((b, a) => a.cant - b.cant);

@@ -217,6 +217,7 @@
                                                 <th>Manzana</th>
                                                 <th>Lote</th>
                                                 <th>Crédito</th>
+                                                <th>Monto pendiente</th>
                                                 <th></th>
                                             </tr>
                                         </thead>
@@ -229,6 +230,7 @@
                                                 <td class="td2" v-text="lote.manzana"></td>
                                                 <td class="td2" v-text="lote.num_lote"></td>
                                                 <td class="td2" v-text="lote.tipo_credito"></td>
+                                                <td class="td2" v-text="`$ ${formatNumber(lote.monto_credito - lote.cobrado)}`"></td>
                                                 <td class="td2">
                                                     <button class="btn btn-primary" @click="comentarios(lote.id,0)">Ver Comentarios</button>
                                                 </td>

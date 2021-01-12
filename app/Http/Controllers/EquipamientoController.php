@@ -130,170 +130,39 @@ class EquipamientoController extends Controller
         } else{
             switch($criterio){
                 case 'lotes.fraccionamiento_id':{
-                    if($b_etapa == '' && $b_manzana == '' && $b_lote == ''){
-                        $contratos = $query
-                            ->where('contratos.status', '!=', 0)
-                            ->where('contratos.status', '!=', 2)
-                            ->where('contratos.entregado', '=',0)
-                            ->where('inst_seleccionadas.elegido','=',1)
-                            ->where('inst_seleccionadas.status','=',2)
-                            ->where($criterio, '=', $buscar)
-                            ->whereNotNull('creditos.descripcion_paquete')
-                            ->orWhere('contratos.status', '!=', 0)
-                            ->where('contratos.status', '!=', 2)
-                            ->where('contratos.entregado', '=',0)
-                            ->where('inst_seleccionadas.elegido','=',1)
-                            ->where('inst_seleccionadas.status','=',2)
-                            ->where($criterio, '=', $buscar)
-                            ->whereNotNull('creditos.descripcion_promocion');
-                    }
-                    elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
-                        $contratos = $query
-                            ->where('contratos.status', '!=', 0)
-                            ->where('contratos.status', '!=', 2)
-                            ->where('contratos.entregado', '=',0)
-                            ->where('inst_seleccionadas.elegido','=',1)
-                            ->where('inst_seleccionadas.status','=',2)
-                            ->where($criterio, '=', $buscar)
-                            ->where('lotes.etapa_id', '=', $b_etapa)
-                            ->whereNotNull('creditos.descripcion_paquete')
-                            ->orWhere('contratos.status', '!=', 0)
-                            ->where('contratos.status', '!=', 2)
-                            ->where('contratos.entregado', '=',0)
-                            ->where('inst_seleccionadas.elegido','=',1)
-                            ->where('inst_seleccionadas.status','=',2)
-                            ->where($criterio, '=', $buscar)
-                            ->where('lotes.etapa_id', '=', $b_etapa)
-                            ->whereNotNull('creditos.descripcion_promocion');
-                    }
-                    elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
-                        $contratos = $query
-                            ->where('contratos.status', '!=', 0)
-                            ->where('contratos.status', '!=', 2)
-                            ->where('contratos.entregado', '=',0)
-                            ->where('inst_seleccionadas.elegido','=',1)
-                            ->where('inst_seleccionadas.status','=',2)
-                            ->where($criterio, '=', $buscar)
-                            ->where('lotes.etapa_id', '=', $b_etapa)
-                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                            ->whereNotNull('creditos.descripcion_paquete')
-                            ->orWhere('contratos.status', '!=', 0)
-                            ->where('contratos.status', '!=', 2)
-                            ->where('contratos.entregado', '=',0)
-                            ->where('inst_seleccionadas.elegido','=',1)
-                            ->where('inst_seleccionadas.status','=',2)
-                            ->where($criterio, '=', $buscar)
-                            ->where('lotes.etapa_id', '=', $b_etapa)
-                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                            ->whereNotNull('creditos.descripcion_promocion');
-                    }
-                    elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
-                        $contratos = $query
-                            ->where('contratos.status', '!=', 0)
-                            ->where('contratos.status', '!=', 2)
-                            ->where('contratos.entregado', '=',0)
-                            ->where('inst_seleccionadas.elegido','=',1)
-                            ->where('inst_seleccionadas.status','=',2)
-                            ->where($criterio, '=', $buscar)
-                            ->where('lotes.etapa_id', '=', $b_etapa)
-                            ->where('lotes.num_lote', '=', $b_lote)
-                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                            ->whereNotNull('creditos.descripcion_paquete')
-                            ->orWhere('contratos.status', '!=', 0)
-                            ->where('contratos.status', '!=', 2)
-                            ->where('contratos.entregado', '=',0)
-                            ->where('inst_seleccionadas.elegido','=',1)
-                            ->where('inst_seleccionadas.status','=',2)
-                            ->where($criterio, '=', $buscar)
-                            ->where('lotes.etapa_id', '=', $b_etapa)
-                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                            ->where('lotes.num_lote', '=', $b_lote)
-                            ->whereNotNull('creditos.descripcion_promocion');
-                    }
-                    elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
-                        $contratos = $query
-                            ->where('contratos.status', '!=', 0)
-                            ->where('contratos.status', '!=', 2)
-                            ->where('contratos.entregado', '=',0)
-                            ->where('inst_seleccionadas.elegido','=',1)
-                            ->where('inst_seleccionadas.status','=',2)
-                            ->where($criterio, '=', $buscar)
-                            ->where('lotes.etapa_id', '=', $b_etapa)
-                            ->where('lotes.num_lote', '=', $b_lote)
-                            ->whereNotNull('creditos.descripcion_paquete')
-                            ->orWhere('contratos.status', '!=', 0)
-                            ->where('contratos.status', '!=', 2)
-                            ->where('contratos.entregado', '=',0)
-                            ->where('inst_seleccionadas.elegido','=',1)
-                            ->where('inst_seleccionadas.status','=',2)
-                            ->where($criterio, '=', $buscar)
-                            ->where('lotes.etapa_id', '=', $b_etapa)
-                            ->where('lotes.num_lote', '=', $b_lote)
-                            ->whereNotNull('creditos.descripcion_promocion');
-                    }
+                    $contratos = $query;
 
-                    elseif($b_etapa == '' && $b_manzana != '' && $b_lote != ''){
-                        $contratos = $query
-                            ->where('contratos.status', '!=', 0)
-                            ->where('contratos.status', '!=', 2)
-                            ->where('contratos.entregado', '=',0)
-                            ->where('inst_seleccionadas.elegido','=',1)
-                            ->where('inst_seleccionadas.status','=',2)
-                            ->where($criterio, '=', $buscar)
-                            ->where('lotes.num_lote', '=', $b_lote)
-                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                            ->whereNotNull('creditos.descripcion_paquete')
-                            ->orWhere('contratos.status', '!=', 0)
-                            ->where('contratos.status', '!=', 2)
-                            ->where('contratos.entregado', '=',0)
-                            ->where('inst_seleccionadas.elegido','=',1)
-                            ->where('inst_seleccionadas.status','=',2)
-                            ->where($criterio, '=', $buscar)
-                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                            ->where('lotes.num_lote', '=', $b_lote)
-                            ->whereNotNull('creditos.descripcion_promocion');
-                    }
-                    elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
-                        $contratos = $query
-                            ->where('contratos.status', '!=', 0)
-                            ->where('contratos.status', '!=', 2)
-                            ->where('contratos.entregado', '=',0)
-                            ->where('inst_seleccionadas.elegido','=',1)
-                            ->where('inst_seleccionadas.status','=',2)
-                            ->where($criterio, '=', $buscar)
-                            ->where('lotes.num_lote', '=', $b_lote)
-                            ->whereNotNull('creditos.descripcion_paquete')
-                            ->orWhere('contratos.status', '!=', 0)
-                            ->where('contratos.status', '!=', 2)
-                            ->where('contratos.entregado', '=',0)
-                            ->where('inst_seleccionadas.elegido','=',1)
-                            ->where('inst_seleccionadas.status','=',2)
-                            ->where($criterio, '=', $buscar)
-                            ->where('lotes.num_lote', '=', $b_lote)
-                            ->whereNotNull('creditos.descripcion_promocion');
-                    }
-                    elseif($b_etapa == '' && $b_manzana != '' && $b_lote == ''){
-                        $contratos = $query
-                            ->where('contratos.status', '!=', 0)
-                            ->where('contratos.status', '!=', 2)
-                            ->where('contratos.entregado', '=',0)
-                            ->where('inst_seleccionadas.elegido','=',1)
-                            ->where('inst_seleccionadas.status','=',2)
-                            ->where($criterio, '=', $buscar)
-                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                            ->whereNotNull('creditos.descripcion_paquete')
-                            ->orWhere('contratos.status', '!=', 0)
-                            ->where('contratos.status', '!=', 2)
-                            ->where('contratos.entregado', '=',0)
-                            ->where('inst_seleccionadas.elegido','=',1)
-                            ->where('inst_seleccionadas.status','=',2)
-                            ->where($criterio, '=', $buscar)
-                            ->where('lotes.etapa_id', '=', $b_etapa)
-                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                            ->where('lotes.num_lote', '=', $b_lote)
-                            ->whereNotNull('creditos.descripcion_promocion');
-                    }
+                    $contratos = $contratos->where('contratos.status', '!=', 0)
+                        ->where('contratos.status', '!=', 2)
+                        ->where('contratos.entregado', '=',0)
+                        ->where('inst_seleccionadas.elegido','=',1)
+                        ->where('inst_seleccionadas.status','=',2);
 
+                        if($buscar != '')
+                            $contratos = $contratos->where($criterio, '=', $buscar);
+                        if($buscar != '')
+                            $contratos = $contratos->where('lotes.etapa_id', '=', $b_etapa);
+                        if($buscar != '')
+                            $contratos = $contratos->where('lotes.num_lote', '=', $b_lote);
+                        if($buscar != '')
+                            $contratos = $contratos->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
+
+                    $contratos = $contratos->whereNotNull('creditos.descripcion_paquete')
+                        ->orWhere('contratos.status', '!=', 0)
+                        ->where('contratos.status', '!=', 2)
+                        ->where('contratos.entregado', '=',0)
+                        ->where('inst_seleccionadas.elegido','=',1)
+                        ->where('inst_seleccionadas.status','=',2)
+                        ->whereNotNull('creditos.descripcion_promocion');
+
+                        if($buscar != '')
+                            $contratos = $contratos->where($criterio, '=', $buscar);
+                        if($buscar != '')
+                            $contratos = $contratos->where('lotes.etapa_id', '=', $b_etapa);
+                        if($buscar != '')
+                            $contratos = $contratos->where('lotes.num_lote', '=', $b_lote);
+                        if($buscar != '')
+                            $contratos = $contratos->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
                     break;
                 }
 

@@ -2601,7 +2601,8 @@ class ReportesController extends Controller
                             'contratos.id','p.nombre','p.apellidos',
                             'f.nombre as proyecto','et.num_etapa',
                             'inst_seleccionadas.tipo_credito','inst_seleccionadas.institucion',
-                            'lotes.manzana','lotes.num_lote','lotes.emp_constructora'
+                            'lotes.manzana','lotes.num_lote','lotes.emp_constructora',
+                            'inst_seleccionadas.cobrado','inst_seleccionadas.monto_credito'
                             )
                 ->where('inst_seleccionadas.tipo','=',0)
                 ->where('inst_seleccionadas.elegido','=',1)
@@ -2609,7 +2610,7 @@ class ReportesController extends Controller
                 ->where('expedientes.fecha_firma_esc','!=', NULL)
                 ->where('contratos.status','=',3)
                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                ->whereRaw('inst_seleccionadas.cobrado < inst_seleccionadas.monto_credito');
 
                 if($empresa != '')
                     $sinEntregar = $sinEntregar->where('lotes.emp_constructora','=',$empresa);
@@ -2620,7 +2621,7 @@ class ReportesController extends Controller
                 ->where('inst_seleccionadas.status','=',2)
                 ->where('expedientes.fecha_firma_esc','!=', NULL)
                 ->where('contratos.status','=',3)
-                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo');
+                ->where('inst_seleccionadas.tipo_credito','<','Crédito Directo');
 
                 if($empresa != '')
                     $sinEntregar = $sinEntregar->where('lotes.emp_constructora','=',$empresa);

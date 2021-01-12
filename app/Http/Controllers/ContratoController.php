@@ -809,7 +809,7 @@ class ContratoController extends Controller
             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
             ->join('personal as v', 'clientes.vendedor_id', 'v.id')
             ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-            ->join('medios_publicitarios', 'clientes.publicidad_id', '=', 'medios_publicitarios.id')
+            ->join('medios_publicitarios', 'contratos.publicidad_id', '=', 'medios_publicitarios.id')
             ->select(
                 'creditos.id',
                 'creditos.prospecto_id',

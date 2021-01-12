@@ -937,6 +937,11 @@ class LoteController extends Controller
         
         $lote->save();
 
+        $lic = Licencia::findOrFail($request->id);
+        if($lic->avance == 0)
+            $lic->avance = 1;
+        $lic->save();
+
         if($aviso != '0'){
                 
             $loteIni = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')

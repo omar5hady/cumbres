@@ -41,1802 +41,483 @@ class EstadisticasController extends Controller
                                 );
 
 
-        if($fecha == '' || $fecha2 == ''){
-                if($etapa == "" && $proyecto!=""){
-                        $conPerro = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
+                $conPerro = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
                                 ->join('lotes','creditos.lote_id','=','lotes.id')
                                 ->join('contratos','creditos.id','=','contratos.id')
-                                ->where('lotes.fraccionamiento_id',$proyecto)
                                 ->where('datos_extra.mascota','=',1)
                                 ->where('datos_extra.num_perros','>',0)
-                                ->where('contratos.status','=',3)
-                                ->get()->count();
+                                ->where('contratos.status','=',3);
 
-                        $autos->sinAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('contratos','creditos.id','=','contratos.id')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('datos_extra.num_vehiculos','=',0)
-                                        ->where('contratos.status','=',3)
-                                        ->get()->count();
-        
-                        $autos->unAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('contratos','creditos.id','=','contratos.id')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('datos_extra.num_vehiculos','=',1)
-                                        ->where('contratos.status','=',3)
-                                        ->get()->count();
-        
-                        $autos->dosAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('contratos','creditos.id','=','contratos.id')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('datos_extra.num_vehiculos','=',2)
-                                        ->where('contratos.status','=',3)
-                                        ->get()->count();
-        
-                        $autos->tresAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('contratos','creditos.id','=','contratos.id')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('datos_extra.num_vehiculos','=',3)
-                                        ->where('contratos.status','=',3)
-                                        ->get()->count();
-                                        
-                        $autos->cuatroAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('contratos','creditos.id','=','contratos.id')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('datos_extra.num_vehiculos','>',3)
-                                        ->where('contratos.status','=',3)
-                                        ->get()->count();
-        
-                        $total = Contrato::join('creditos','contratos.id','=','creditos.id')
+                        if($proyecto != '')
+                                $conPerro = $conPerro->where('lotes.fraccionamiento_id',$proyecto);
+                        if($etapa != '')
+                                $conPerro = $conPerro->where('lotes.etapa_id',$etapa);
+
+                                
+                        if($fecha != '' && $fecha2 != '')
+                                $conPerro = $conPerro->whereBetween('contratos.fecha', [$fecha, $fecha2]);
+                                
+                        $conPerro = $conPerro->get()->count();
+
+
+                $autos->sinAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->join('contratos','creditos.id','=','contratos.id')
+                                ->where('datos_extra.num_vehiculos','=',0)
+                                ->where('contratos.status','=',3);
+                        if($proyecto != '')
+                                $autos->sinAuto = $autos->sinAuto->where('lotes.fraccionamiento_id',$proyecto);
+                        if($etapa != '')
+                                $autos->sinAuto = $autos->sinAuto->where('lotes.etapa_id',$etapa);
+                                
+                        if($fecha != '' && $fecha2 != '')
+                                $autos->sinAuto = $autos->sinAuto->whereBetween('contratos.fecha', [$fecha, $fecha2]);
+                        
+                        $autos->sinAuto = $autos->sinAuto->get()->count();
+
+                $autos->unAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->join('contratos','creditos.id','=','contratos.id')
+                                ->where('datos_extra.num_vehiculos','=',1)
+                                ->where('contratos.status','=',3);
+
+                        if($proyecto != '')
+                                $autos->unAuto = $autos->unAuto->where('lotes.fraccionamiento_id',$proyecto);
+
+                        if($etapa != '')
+                                $autos->unAuto = $autos->unAuto->where('lotes.etapa_id',$etapa);
+
+                        if($fecha != '' && $fecha2 != '')
+                                $autos->unAuto = $autos->unAuto->whereBetween('contratos.fecha', [$fecha, $fecha2]);
+
+                        $autos->unAuto = $autos->unAuto->get()->count();
+
+                $autos->dosAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->join('contratos','creditos.id','=','contratos.id')
+                                ->where('datos_extra.num_vehiculos','=',2)
+                                ->where('contratos.status','=',3);
+
+                        if($proyecto != '')
+                                $autos->dosAuto = $autos->dosAuto->where('lotes.fraccionamiento_id',$proyecto);
+                        if($etapa != '')
+                                $autos->dosAuto = $autos->dosAuto->where('lotes.etapa_id',$etapa);
+                        if($fecha != '' && $fecha2 != '')
+                                $autos->dosAuto = $autos->dosAuto->whereBetween('contratos.fecha', [$fecha, $fecha2]);
+                        
+                        $autos->dosAuto = $autos->dosAuto->get()->count();
+
+                $autos->tresAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->join('contratos','creditos.id','=','contratos.id')
+                                ->where('datos_extra.num_vehiculos','=',3)
+                                ->where('contratos.status','=',3);
+
+                        if($proyecto != '')
+                                $autos->tresAuto = $autos->tresAuto->where('lotes.fraccionamiento_id',$proyecto);
+
+                        if($etapa != '')
+                                $autos->tresAuto = $autos->tresAuto->where('lotes.etapa_id',$etapa);
+
+                        if($fecha != '' && $fecha2 != '')
+                                $autos->tresAuto = $autos->tresAuto->whereBetween('contratos.fecha', [$fecha, $fecha2]);
+                                
+                        $autos->tresAuto = $autos->tresAuto->get()->count();
+                                
+                $autos->cuatroAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->join('contratos','creditos.id','=','contratos.id')
+                                ->where('datos_extra.num_vehiculos','>',3)
+                                ->where('contratos.status','=',3);
+
+                        if($proyecto != '')
+                                $autos->cuatroAuto = $autos->cuatroAuto->where('lotes.fraccionamiento_id',$proyecto);
+                        if($etapa != '')
+                                $autos->cuatroAuto = $autos->cuatroAuto->where('lotes.etapa_id',$etapa);
+                        if($fecha != '' && $fecha2 != '')
+                                $autos->cuatroAuto = $autos->cuatroAuto->whereBetween('contratos.fecha', [$fecha, $fecha2]);
+
+                        $autos->cuatroAuto = $autos->cuatroAuto->get()->count();
+
+                $total = Contrato::join('creditos','contratos.id','=','creditos.id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                        ->select('contratos.id');
+
+                        if($proyecto != '')
+                                $total = $total->where('lotes.fraccionamiento_id',$proyecto);
+                        if($etapa != '')
+                                $total = $total->where('lotes.etapa_id',$etapa);
+                        if($fecha != '' && $fecha2 != '')
+                                $total = $total->whereBetween('contratos.fecha', [$fecha, $fecha2]);
+                        
+                        $total = $total->where('contratos.status','=',3)
+                        ->count();
+
+                $edoCivil->separacionBienes = Contrato::join('creditos','contratos.id','=','creditos.id')
                                 ->join('lotes','creditos.lote_id','=','lotes.id')
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->select('contratos.id')
-                                ->where('lotes.fraccionamiento_id',$proyecto)
+                                ->select('clientes.edo_civil');
+                                
+                                if($proyecto != '')
+                                        $edoCivil->separacionBienes = $edoCivil->separacionBienes->where('lotes.fraccionamiento_id',$proyecto);
+                                if($etapa != '')
+                                        $edoCivil->separacionBienes = $edoCivil->separacionBienes->where('lotes.etapa_id',$etapa);
+                                if($fecha != '' && $fecha2 != '')
+                                        $edoCivil->separacionBienes = $edoCivil->separacionBienes->whereBetween('contratos.fecha', [$fecha, $fecha2]);
+                                
+                                $edoCivil->separacionBienes = $edoCivil->separacionBienes->where('clientes.edo_civil','=',1)
+                                        ->where('contratos.status','=',3)
+                                        ->count();
+                                        
+                $edoCivil->sociedadConyugal = Contrato::join('creditos','contratos.id','=','creditos.id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                ->select('clientes.edo_civil');
+
+                                if($proyecto != '')
+                                        $edoCivil->sociedadConyugal = $edoCivil->sociedadConyugal->where('lotes.fraccionamiento_id',$proyecto);
+                                if($etapa != '')
+                                        $edoCivil->sociedadConyugal = $edoCivil->sociedadConyugal->where('lotes.etapa_id',$etapa);
+                                if($fecha != '' && $fecha2 != '')
+                                        $edoCivil->sociedadConyugal = $edoCivil->sociedadConyugal->whereBetween('contratos.fecha', [$fecha, $fecha2]);
+                                
+                                $edoCivil->sociedadConyugal = $edoCivil->sociedadConyugal->where('clientes.edo_civil','=',2)
+                                        ->where('contratos.status','=',3)
+                                        ->count();
+
+                $edoCivil->divorciado = Contrato::join('creditos','contratos.id','=','creditos.id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                ->select('clientes.edo_civil');
+
+                                if($proyecto != '')
+                                        $edoCivil->divorciado = $edoCivil->divorciado->where('lotes.fraccionamiento_id',$proyecto);
+                                if($etapa != '')
+                                        $edoCivil->divorciado = $edoCivil->divorciado->where('lotes.etapa_id',$etapa);
+                                if($fecha != '' && $fecha2)
+                                        $edoCivil->divorciado = $edoCivil->divorciado->whereBetween('contratos.fecha', [$fecha, $fecha2]);
+                                
+                                $edoCivil->divorciado = $edoCivil->divorciado->where('clientes.edo_civil','=',3)
                                 ->where('contratos.status','=',3)
                                 ->count();
-        
-                        $edoCivil->separacionBienes = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->select('clientes.edo_civil')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('clientes.edo_civil','=',1)
-                                        ->where('contratos.status','=',3)
-                                        ->count();
-                        $edoCivil->sociedadConyugal = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->select('clientes.edo_civil')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('clientes.edo_civil','=',2)
-                                        ->where('contratos.status','=',3)
-                                        ->count();
-                        $edoCivil->divorciado = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->select('clientes.edo_civil')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('clientes.edo_civil','=',3)
-                                        ->where('contratos.status','=',3)
-                                        ->count();
-                        $edoCivil->soltero = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->select('clientes.edo_civil')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('clientes.edo_civil','=',4)
-                                        ->where('contratos.status','=',3)
-                                        ->count();
-                        $edoCivil->unionLibre = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->select('clientes.edo_civil')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('clientes.edo_civil','=',5)
-                                        ->where('contratos.status','=',3)
-                                        ->count();
-                        $edoCivil->viudo = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->select('clientes.edo_civil')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('clientes.edo_civil','=',6)
-                                        ->where('contratos.status','=',3)
-                                        ->count();
-                        $edoCivil->otro = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->select('clientes.edo_civil')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('clientes.edo_civil','=',7)
-                                        ->where('contratos.status','=',3)
-                                        ->count();
-        
-                        $edades = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
+
+                $edoCivil->soltero = Contrato::join('creditos','contratos.id','=','creditos.id')
                                 ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('contratos','creditos.id','=','contratos.id')
-                                ->select(DB::raw('SUM(datos_extra.rang010) as sum010'),
+                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                ->select('clientes.edo_civil');
+
+                                if($proyecto != '')
+                                        $edoCivil->soltero = $edoCivil->soltero->where('lotes.fraccionamiento_id',$proyecto);
+                                if($etapa != '')
+                                        $edoCivil->soltero = $edoCivil->soltero->where('lotes.etapa_id',$etapa);
+                                if($fecha != '' && $fecha2 != '')
+                                        $edoCivil->soltero = $edoCivil->soltero->whereBetween('contratos.fecha', [$fecha, $fecha2]);
+                                
+                                $edoCivil->soltero = $edoCivil->soltero->where('clientes.edo_civil','=',4)
+                                        ->where('contratos.status','=',3)
+                                        ->count();
+
+                $edoCivil->unionLibre = Contrato::join('creditos','contratos.id','=','creditos.id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                ->select('clientes.edo_civil');
+
+                                if($proyecto != '')
+                                        $edoCivil->unionLibre = $edoCivil->unionLibre->where('lotes.fraccionamiento_id',$proyecto);
+                                if($etapa != '')
+                                        $edoCivil->unionLibre = $edoCivil->unionLibre->where('lotes.etapa_id',$etapa);
+                                if($fecha != '' && $fecha2 != '')
+                                        $edoCivil->unionLibre = $edoCivil->unionLibre->whereBetween('contratos.fecha', [$fecha, $fecha2]);
+
+                                $edoCivil->unionLibre = $edoCivil->unionLibre->where('clientes.edo_civil','=',5)
+                                        ->where('contratos.status','=',3)
+                                        ->count();
+
+                $edoCivil->viudo = Contrato::join('creditos','contratos.id','=','creditos.id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                ->select('clientes.edo_civil');
+
+                                if($proyecto != '')
+                                        $edoCivil->viudo = $edoCivil->viudo->where('lotes.fraccionamiento_id',$proyecto);
+                                if($etapa != '')
+                                        $edoCivil->viudo = $edoCivil->viudo->where('lotes.etapa_id',$etapa);
+                                if($fecha != '' && $fecha2 != '')
+                                        $edoCivil->viudo = $edoCivil->viudo->whereBetween('contratos.fecha', [$fecha, $fecha2]);
+                                
+                                $edoCivil->viudo = $edoCivil->viudo->where('clientes.edo_civil','=',6)
+                                ->where('contratos.status','=',3)
+                                ->count();
+
+                $edoCivil->otro = Contrato::join('creditos','contratos.id','=','creditos.id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                ->select('clientes.edo_civil');
+                                if($proyecto != '')
+                                        $edoCivil->otro = $edoCivil->otro->where('lotes.fraccionamiento_id',$proyecto);
+                                if($etapa != '')
+                                        $edoCivil->otro = $edoCivil->otro->where('lotes.etapa_id',$etapa);
+                                if($fecha != '' && $fecha2 != '')
+                                        $edoCivil->otro = $edoCivil->otro->whereBetween('contratos.fecha', [$fecha, $fecha2]);
+
+                                $edoCivil->otro = $edoCivil->otro->where('clientes.edo_civil','=',7)
+                                ->where('contratos.status','=',3)
+                                ->count();
+
+
+                $edades = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('contratos','creditos.id','=','contratos.id')
+                        ->select(DB::raw('SUM(datos_extra.rang010) as sum010'),
                                 DB::raw('SUM(datos_extra.rang1120) as sum1120'),
                                 DB::raw('SUM(datos_extra.rang21) as sum21'))
-                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                ->where('contratos.status','=',3)
-                                ->get();
-        
-                        $edadesVenta = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->select('personal.f_nacimiento','contratos.fecha')
-                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                ->where('contratos.status','=',3)->distinct()->get();
-        
-                        $genero->mujeres = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->select('clientes.sexo')
-                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                ->where('clientes.sexo','=','F')
-                                ->where('contratos.status','=',3)
-                                ->count();
-        
-                        $participantes->dosParticipantes = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->select('clientes.coacreditado')
-                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                ->where('clientes.coacreditado','=',1)
-                                ->where('contratos.status','=',3)
-                                ->count();
-        
-                        $participantes->unParticipante = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->select('clientes.coacreditado')
-                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                ->where('clientes.coacreditado','=',0)
-                                ->where('contratos.status','=',3)
-                                ->count();
-        
-                        $genero->hombres = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->select('clientes.sexo')
-                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                ->where('clientes.sexo','=','M')
-                                ->where('contratos.status','=',3)
-                                ->count();
-        
-                        $origen = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->select('clientes.lugar_nacimiento')
-                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                ->where('contratos.status','=',3)
-                                ->orderBy('clientes.lugar_nacimiento','asc')->distinct()->get();
+                        ->where('contratos.status','=',3);
 
-                        $empresas = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->select('clientes.empresa')
-                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                ->where('contratos.status','=',3)
-                                ->orderBy('clientes.empresa','asc')->distinct()->get();
+                        if($proyecto != '')
+                                $edades = $edades->where('lotes.fraccionamiento_id',$proyecto);
+                        if($etapa != '')
+                                $edades = $edades->where('lotes.etapa_id',$etapa);
+                        if($fecha != '' && $fecha2 != '')
+                                $edades = $edades->whereBetween('contratos.fecha', [$fecha, $fecha2]);
 
-                                if(sizeof($empresas)){
-                                        $empresas_cliente=[];
-                                        foreach($empresas as $er=>$empresa){
-                                                $empresas_cliente[$er] = $empresa->empresa;
-                                              $empresa->num = Contrato::join('creditos','contratos.id','=','creditos.id')
+                        $edades = $edades->get();
+
+                $edadesVenta = Contrato::join('creditos','contratos.id','=','creditos.id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                        ->select('personal.f_nacimiento','contratos.fecha')
+                        ->where('contratos.status','=',3);
+
+                        if($proyecto != '')
+                                $edadesVenta = $edadesVenta->where('lotes.fraccionamiento_id',$proyecto);
+                        if($etapa != '')
+                                $edadesVenta = $edadesVenta->where('lotes.etapa_id',$etapa);
+                        if($fecha != '' && $fecha2 != '')
+                                $edadesVenta = $edadesVenta->whereBetween('contratos.fecha', [$fecha, $fecha2]);
+                                
+                        $edadesVenta = $edadesVenta->distinct()->get();
+
+                $participantes->dosParticipantes = Contrato::join('creditos','contratos.id','=','creditos.id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                        ->select('clientes.coacreditado')
+                        ->where('clientes.coacreditado','=',1)
+                        ->where('contratos.status','=',3);
+
+                        if($proyecto != '')
+                                $participantes->dosParticipantes = $participantes->dosParticipantes->where('lotes.fraccionamiento_id',$proyecto);
+                        if($etapa != '')
+                                $participantes->dosParticipantes = $participantes->dosParticipantes->where('lotes.etapa_id',$etapa);
+                        if($fecha != '' && $fecha2 != '')
+                                $participantes->dosParticipantes = $participantes->dosParticipantes->whereBetween('contratos.fecha', [$fecha, $fecha2]);
+                        
+                        $participantes->dosParticipantes = $participantes->dosParticipantes->count();
+
+                $participantes->unParticipante = Contrato::join('creditos','contratos.id','=','creditos.id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                        ->select('clientes.coacreditado')
+                        ->where('clientes.coacreditado','=',0)
+                        ->where('contratos.status','=',3);
+
+                        if($proyecto != '')
+                                $participantes->unParticipante = $participantes->unParticipante->where('lotes.fraccionamiento_id',$proyecto);
+                        if($etapa != '')
+                                $participantes->unParticipante = $participantes->unParticipante->where('lotes.etapa_id',$etapa);
+                        if($fecha != '' && $fecha2 != '')
+                                $participantes->unParticipante = $participantes->unParticipante->whereBetween('contratos.fecha', [$fecha, $fecha2]);
+                        
+                        $participantes->unParticipante = $participantes->unParticipante->count();
+
+                $genero->mujeres = Contrato::join('creditos','contratos.id','=','creditos.id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                        ->select('clientes.sexo')
+                        ->where('clientes.sexo','=','F')
+                        ->where('contratos.status','=',3);
+
+                        if($proyecto != '')
+                                $genero->mujeres = $genero->mujeres->where('lotes.fraccionamiento_id',$proyecto);
+                        if($etapa != '')
+                                $genero->mujeres = $genero->mujeres->where('lotes.etapa_id',$etapa);
+                        if($fecha != '' && $fecha2 != '')
+                                $genero->mujeres = $genero->mujeres->whereBetween('contratos.fecha', [$fecha, $fecha2]);
+                        
+                        $genero->mujeres = $genero->mujeres->count();
+
+                $genero->hombres = Contrato::join('creditos','contratos.id','=','creditos.id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                        ->select('clientes.sexo')
+                        ->where('clientes.sexo','=','M')
+                        ->where('contratos.status','=',3);
+                        if($proyecto != '')
+                                $genero->hombres = $genero->hombres->where('lotes.fraccionamiento_id',$proyecto);
+                        if($etapa != '')
+                                $genero->hombres = $genero->hombres->where('lotes.etapa_id',$etapa);
+                        if($fecha != '' && $fecha2!= '')
+                                $genero->hombres = $genero->hombres->whereBetween('contratos.fecha', [$fecha, $fecha2]);
+                        
+                        $genero->hombres = $genero->hombres->count();
+
+                $origen = Contrato::join('creditos','contratos.id','=','creditos.id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                        ->select('clientes.lugar_nacimiento')
+                        ->where('contratos.status','=',3);
+
+                        if($proyecto != '')
+                                $origen = $origen->where('lotes.fraccionamiento_id',$proyecto);
+                        if($etapa != '')
+                                $origen = $origen->where('lotes.etapa_id',$etapa);
+                        if($fecha != '' && $fecha2 != '')
+                                $origen = $origen->whereBetween('contratos.fecha', [$fecha, $fecha2]);
+
+                        $origen = $origen->orderBy('clientes.lugar_nacimiento','asc')->distinct()->get();
+
+                $empresas = Contrato::join('creditos','contratos.id','=','creditos.id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                        ->select('clientes.empresa')
+                        ->where('contratos.status','=',3);
+
+                        if($proyecto != '')
+                                $empresas = $empresas->where('lotes.fraccionamiento_id',$proyecto);
+                        if($etapa != '')
+                                $empresas = $empresas->where('lotes.etapa_id',$etapa);
+                        if($fecha != '' && $fecha2 != '')
+                                $empresas = $empresas->whereBetween('contratos.fecha', [$fecha, $fecha2]);
+
+                        $empresas = $empresas->orderBy('clientes.empresa','asc')->distinct()->get();
+
+                        if(sizeof($empresas)){
+                                $empresas_cliente=[];
+                                foreach($empresas as $er=>$empresa){
+                                        $empresas_cliente[$er] = $empresa->empresa;
+                                        $empresa->num = Contrato::join('creditos','contratos.id','=','creditos.id')
                                                 ->join('lotes','creditos.lote_id','=','lotes.id')
                                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                 ->select('clientes.empresa')
-                                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                                ->where('clientes.empresa','=',$empresa->empresa)
-                                                ->where('contratos.status','=',3)->count();
-                                        }
-                                }
-        
-        
-                                if(sizeof($origen)){
-                                        $lugarNacimiento=[];
-                                        foreach($origen as $er=>$lugar){
-                                                $lugarNacimiento[$er] = $lugar->lugar_nacimiento;
-                                              $lugar->num = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                ->select('clientes.lugar_nacimiento')
-                                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                                ->where('clientes.lugar_nacimiento','=',$lugar->lugar_nacimiento)
-                                                ->where('contratos.status','=',3)->count();
-                                        }
-                                }
-                                
-                        
-                        $discapacitados = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('contratos','creditos.id','=','contratos.id')
-                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                ->where('datos_extra.persona_discap','=',1)
-                                ->where('contratos.status','=',3)
-                                ->get()->count();
-                        
-                        $silla_ruedas = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('contratos','creditos.id','=','contratos.id')
-                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                ->where('datos_extra.silla_ruedas','=',1)
-                                ->where('contratos.status','=',3)
-                                ->get()->count();
-        
-                        
-                        $SinMascotas = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('contratos','creditos.id','=','contratos.id')
-                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                ->where('datos_extra.mascota','=',0)
-                                ->where('contratos.status','=',3)
-                                ->get()->count();
-        
-                        $mascotas = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('contratos','creditos.id','=','contratos.id')
-                                ->select(
-                                        DB::raw('SUM(datos_extra.ama_casa) as totalAmaCasa'),
-                                        DB::raw('SUM(datos_extra.num_vehiculos) as totalAutos'),
-                                        DB::raw('SUM(datos_extra.mascota) as sumMascota'),
-                                        DB::raw('SUM(datos_extra.num_perros) as perros')
-                                        )
-                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                ->where('contratos.status','=',3)
-                                ->get();
-                }else{
-                        if($etapa!="" && $proyecto!=""){
-                                $conPerro = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('contratos','creditos.id','=','contratos.id')
-                                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('datos_extra.mascota','=',1)
-                                                ->where('datos_extra.num_perros','>',0)
-                                                ->where('contratos.status','=',3)
-                                                ->get()->count();
+                                                ->where('contratos.status','=',3);
 
-                                $autos->sinAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('contratos','creditos.id','=','contratos.id')
-                                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('datos_extra.num_vehiculos','=',0)
-                                                ->where('contratos.status','=',3)
-                                                ->get()->count();
-        
-                                $autos->unAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('contratos','creditos.id','=','contratos.id')
-                                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('datos_extra.num_vehiculos','=',1)
-                                                ->where('contratos.status','=',3)
-                                                ->get()->count();
-        
-                                $autos->dosAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('contratos','creditos.id','=','contratos.id')
-                                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('datos_extra.num_vehiculos','=',2)
-                                                ->where('contratos.status','=',3)
-                                                ->get()->count();
-        
-                                $autos->tresAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('contratos','creditos.id','=','contratos.id')
-                                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('datos_extra.num_vehiculos','=',3)
-                                                ->where('contratos.status','=',3)
-                                                ->get()->count();
+                                                if($proyecto != '')
+                                                        $empresa->num = $empresa->num->where('lotes.fraccionamiento_id',$proyecto);
+                                                if($etapa != '')
+                                                        $empresa->num = $empresa->num->where('lotes.etapa_id',$etapa);
+                                                if($fecha != '' && $fecha2 != '')
+                                                        $empresa->num = $empresa->num->whereBetween('contratos.fecha', [$fecha, $fecha2]);
                                                 
-                                $autos->cuatroAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('contratos','creditos.id','=','contratos.id')
-                                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('datos_extra.num_vehiculos','>',3)
-                                                ->where('contratos.status','=',3)
-                                                ->get()->count();
-        
-                                $total = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->select('contratos.id')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('lotes.etapa_id',$etapa)
-                                        ->where('contratos.status','=',3)
-                                        ->count();
-        
-                                $edoCivil->separacionBienes = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                ->select('clientes.edo_civil')
-                                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('clientes.edo_civil','=',1)
-                                                ->where('contratos.status','=',3)
+                                                $empresa->num = $empresa->num->where('clientes.empresa','=',$empresa->empresa)
                                                 ->count();
-                                $edoCivil->sociedadConyugal = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                ->select('clientes.edo_civil')
-                                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('clientes.edo_civil','=',2)
-                                                ->where('contratos.status','=',3)
-                                                ->count();
-                                $edoCivil->divorciado = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                ->select('clientes.edo_civil')
-                                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('clientes.edo_civil','=',3)
-                                                ->where('contratos.status','=',3)
-                                                ->count();
-                                $edoCivil->soltero = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                ->select('clientes.edo_civil')
-                                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('clientes.edo_civil','=',4)
-                                                ->where('contratos.status','=',3)
-                                                ->count();
-                                $edoCivil->unionLibre = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                ->select('clientes.edo_civil')
-                                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('clientes.edo_civil','=',5)
-                                                ->where('contratos.status','=',3)
-                                                ->count();
-                                $edoCivil->viudo = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                ->select('clientes.edo_civil')
-                                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('clientes.edo_civil','=',6)
-                                                ->where('contratos.status','=',3)
-                                                ->count();
-                                $edoCivil->otro = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                ->select('clientes.edo_civil')
-                                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('clientes.edo_civil','=',7)
-                                                ->where('contratos.status','=',3)
-                                                ->count();
-        
-        
-                                $edades = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('contratos','creditos.id','=','contratos.id')
-                                        ->select(DB::raw('SUM(datos_extra.rang010) as sum010'),
-                                        DB::raw('SUM(datos_extra.rang1120) as sum1120'),
-                                        DB::raw('SUM(datos_extra.rang21) as sum21'))
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('lotes.etapa_id',$etapa)
-                                        ->where('contratos.status','=',3)
-                                        ->get();
-        
-                                $edadesVenta = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->select('personal.f_nacimiento','contratos.fecha')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('lotes.etapa_id',$etapa)
-                                        ->where('contratos.status','=',3)->distinct()->get();
-        
-                                $participantes->dosParticipantes = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->select('clientes.coacreditado')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('lotes.etapa_id',$etapa)
-                                        ->where('clientes.coacreditado','=',1)
-                                        ->where('contratos.status','=',3)
-                                        ->count();
-        
-                                $participantes->unParticipante = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->select('clientes.coacreditado')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('lotes.etapa_id',$etapa)
-                                        ->where('clientes.coacreditado','=',0)
-                                        ->where('contratos.status','=',3)
-                                        ->count();
-        
-                                $genero->mujeres = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->select('clientes.sexo')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('lotes.etapa_id',$etapa)
-                                        ->where('clientes.sexo','=','F')
-                                        ->where('contratos.status','=',3)
-                                        ->count();
-        
-                                $genero->hombres = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->select('clientes.sexo')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('lotes.etapa_id',$etapa)
-                                        ->where('clientes.sexo','=','M')
-                                        ->where('contratos.status','=',3)
-                                        ->count();
-        
-                                $origen = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->select('clientes.lugar_nacimiento')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('lotes.etapa_id',$etapa)
-                                        ->where('contratos.status','=',3)
-                                        ->orderBy('clientes.lugar_nacimiento','asc')->distinct()->get();
-
-                                $empresas = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->select('clientes.empresa')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('lotes.etapa_id',$etapa)
-                                        ->where('contratos.status','=',3)
-                                        ->orderBy('clientes.empresa','asc')->distinct()->get();
-        
-                                        if(sizeof($empresas)){
-                                                $empresas_cliente=[];
-                                                foreach($empresas as $er=>$empresa){
-                                                        $empresas_cliente[$er] = $empresa->empresa;
-                                                      $empresa->num = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                        ->select('clientes.empresa')
-                                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                                        ->where('lotes.etapa_id',$etapa)
-                                                        ->where('clientes.empresa','=',$empresa->empresa)
-                                                        ->where('contratos.status','=',3)->count();
-                                                }
-                                        }
-        
-                                        if(sizeof($origen)){
-                                                $lugarNacimiento=[];
-                                                foreach($origen as $er=>$lugar){
-                                                        $lugarNacimiento[$er] = $lugar->lugar_nacimiento;
-                                                      $lugar->num = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                        ->select('clientes.lugar_nacimiento')
-                                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                                        ->where('lotes.etapa_id',$etapa)
-                                                        ->where('clientes.lugar_nacimiento','=',$lugar->lugar_nacimiento)
-                                                        ->where('contratos.status','=',3)
-                                                        ->count();
-                                                }
-                                        }
-                                        
-                                
-                                $discapacitados = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('contratos','creditos.id','=','contratos.id')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('lotes.etapa_id',$etapa)
-                                        ->where('datos_extra.persona_discap','=',1)
-                                        ->where('contratos.status','=',3)
-                                        ->get()->count();
-                                
-                                $silla_ruedas = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('contratos','creditos.id','=','contratos.id')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('lotes.etapa_id',$etapa)
-                                        ->where('datos_extra.silla_ruedas','=',1)
-                                        ->where('contratos.status','=',3)
-                                        ->get()->count();
-                        
-                                
-                                $SinMascotas = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('contratos','creditos.id','=','contratos.id')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('lotes.etapa_id',$etapa)
-                                        ->where('datos_extra.mascota','=',0)
-                                        ->where('contratos.status','=',3)
-                                        ->get()->count();
-                        
-                                $mascotas = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('contratos','creditos.id','=','contratos.id')
-                                        ->select(
-                                                DB::raw('SUM(datos_extra.ama_casa) as totalAmaCasa'),
-                                                DB::raw('SUM(datos_extra.num_vehiculos) as totalAutos'),
-                                                DB::raw('SUM(datos_extra.mascota) as sumMascota'),
-                                                DB::raw('SUM(datos_extra.num_perros) as perros')
-                                                )
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('lotes.etapa_id',$etapa)
-                                        ->where('contratos.status','=',3)
-                                        ->get();
+                                }
                         }
-                        else{
-                                if($etapa!="" && $proyecto==""){
-                                        $conPerro = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('contratos','creditos.id','=','contratos.id')
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('datos_extra.mascota','=',1)
-                                                ->where('datos_extra.num_perros','>',0)
-                                                ->where('contratos.status','=',3)
-                                                ->get()->count();
 
-                                        $autos->sinAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                        ->join('contratos','creditos.id','=','contratos.id')
-                                                        ->where('lotes.etapa_id',$etapa)
-                                                        ->where('datos_extra.num_vehiculos','=',0)
-                                                        ->where('contratos.status','=',3)
-                                                        ->get()->count();
-        
-                                        $autos->unAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                        ->join('contratos','creditos.id','=','contratos.id')
-                                                        ->where('lotes.etapa_id',$etapa)
-                                                        ->where('datos_extra.num_vehiculos','=',1)
-                                                        ->where('contratos.status','=',3)
-                                                        ->get()->count();
-        
-                                        $autos->dosAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                        ->join('contratos','creditos.id','=','contratos.id')
-                                                        ->where('lotes.etapa_id',$etapa)
-                                                        ->where('datos_extra.num_vehiculos','=',2)
-                                                        ->where('contratos.status','=',3)
-                                                        ->get()->count();
-        
-                                        $autos->tresAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                        ->join('contratos','creditos.id','=','contratos.id')
-                                                        ->where('lotes.etapa_id',$etapa)
-                                                        ->where('datos_extra.num_vehiculos','=',3)
-                                                        ->where('contratos.status','=',3)
-                                                        ->get()->count();
-                                                        
-                                        $autos->cuatroAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                        ->join('contratos','creditos.id','=','contratos.id')
-                                                        ->where('lotes.etapa_id',$etapa)
-                                                        ->where('datos_extra.num_vehiculos','>',3)
-                                                        ->where('contratos.status','=',3)
-                                                        ->get()->count();
-        
-                                        $total = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                ->select('contratos.id')
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('contratos.status','=',3)
-                                                ->count();
-        
-                                        $edoCivil->separacionBienes = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                        ->select('clientes.edo_civil')
-                                                        ->where('lotes.etapa_id',$etapa)
-                                                        ->where('clientes.edo_civil','=',1)
-                                                        ->where('contratos.status','=',3)
-                                                        ->count();
-                                        $edoCivil->sociedadConyugal = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                        ->select('clientes.edo_civil')
-                                                        ->where('lotes.etapa_id',$etapa)
-                                                        ->where('clientes.edo_civil','=',2)
-                                                        ->where('contratos.status','=',3)
-                                                        ->count();
-                                        $edoCivil->divorciado = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                        ->select('clientes.edo_civil')
-                                                        ->where('lotes.etapa_id',$etapa)
-                                                        ->where('clientes.edo_civil','=',3)
-                                                        ->where('contratos.status','=',3)
-                                                        ->count();
-                                        $edoCivil->soltero = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                        ->select('clientes.edo_civil')
-                                                        ->where('lotes.etapa_id',$etapa)
-                                                        ->where('clientes.edo_civil','=',4)
-                                                        ->where('contratos.status','=',3)
-                                                        ->count();
-                                        $edoCivil->unionLibre = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                        ->select('clientes.edo_civil')
-                                                        ->where('lotes.etapa_id',$etapa)
-                                                        ->where('clientes.edo_civil','=',5)
-                                                        ->where('contratos.status','=',3)
-                                                        ->count();
-                                        $edoCivil->viudo = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                        ->select('clientes.edo_civil')
-                                                        ->where('lotes.etapa_id',$etapa)
-                                                        ->where('clientes.edo_civil','=',6)
-                                                        ->where('contratos.status','=',3)
-                                                        ->count();
-                                        $edoCivil->otro = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                        ->select('clientes.edo_civil')
-                                                        ->where('lotes.etapa_id',$etapa)
-                                                        ->where('clientes.edo_civil','=',7)
-                                                        ->where('contratos.status','=',3)
-                                                        ->count();
-        
-                                        $edades = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('contratos','creditos.id','=','contratos.id')
-                                                ->select(DB::raw('SUM(datos_extra.rang010) as sum010'),
-                                                DB::raw('SUM(datos_extra.rang1120) as sum1120'),
-                                                DB::raw('SUM(datos_extra.rang21) as sum21'))
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('contratos.status','=',3)
-                                                ->get();
-                                        
-                                        $edadesVenta = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                ->select('personal.f_nacimiento','contratos.fecha')
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('contratos.status','=',3)->distinct()->get();
-        
-                                        $origen = Contrato::join('creditos','contratos.id','=','creditos.id')
+                        if(sizeof($origen)){
+                                $lugarNacimiento=[];
+                                foreach($origen as $er=>$lugar){
+                                        $lugarNacimiento[$er] = $lugar->lugar_nacimiento;
+                                        $lugar->num = Contrato::join('creditos','contratos.id','=','creditos.id')
                                                 ->join('lotes','creditos.lote_id','=','lotes.id')
                                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                 ->select('clientes.lugar_nacimiento')
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('contratos.status','=',3)
-                                                ->orderBy('clientes.lugar_nacimiento','asc')->distinct()->get();
+                                                ->where('contratos.status','=',3);
 
-                                        $empresas = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                ->select('clientes.empresa')
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('contratos.status','=',3)
-                                                ->orderBy('clientes.empresa','asc')->distinct()->get();
-                
-                                                if(sizeof($empresas)){
-                                                        $empresas_cliente=[];
-                                                        foreach($empresas as $er=>$empresa){
-                                                                $empresas_cliente[$er] = $empresa->empresa;
-                                                              $empresa->num = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                                ->select('clientes.empresa')
-                                                                ->where('lotes.etapa_id',$etapa)
-                                                                ->where('clientes.empresa','=',$empresa->empresa)
-                                                                ->where('contratos.status','=',3)->count();
-                                                        }
-                                                }
-        
-                                                if(sizeof($origen)){
-                                                        $lugarNacimiento=[];
-                                                        foreach($origen as $er=>$lugar){
-                                                                $lugarNacimiento[$er] = $lugar->lugar_nacimiento;
-                                                              $lugar->num = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                                ->select('clientes.lugar_nacimiento')
-                                                                ->where('lotes.etapa_id',$etapa)
-                                                                ->where('clientes.lugar_nacimiento','=',$lugar->lugar_nacimiento)
-                                                                ->where('contratos.status','=',3)
-                                                                ->count();
-                                                        }
-                                                }
-        
-                                        $genero->mujeres = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                ->select('clientes.sexo')
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('clientes.sexo','=','F')
-                                                ->where('contratos.status','=',3)
-                                                ->count();
-                        
-                                        $genero->hombres = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                ->select('clientes.sexo')
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('clientes.sexo','=','M')
-                                                ->where('contratos.status','=',3)
-                                                ->count();
-        
-                                        $participantes->dosParticipantes = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                ->select('clientes.coacreditado')
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('clientes.coacreditado','=',1)
-                                                ->where('contratos.status','=',3)
-                                                ->count();
-                
-                                        $participantes->unParticipante = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                ->select('clientes.coacreditado')
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('clientes.coacreditado','=',0)
-                                                ->where('contratos.status','=',3)
-                                                ->count();
-        
-                                                if(sizeof($origen)){
-                                                        foreach($origen as $er=>$lugar){
-                                                              $lugar->num = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                                ->select('clientes.lugar_nacimiento')
-                                                                ->where('lotes.etapa_id',$etapa)
-                                                                ->where('clientes.lugar_nacimiento','=',$lugar->lugar_nacimiento)
-                                                                ->where('contratos.status','=',3)->count();
-                                                        }
-                                                }
-                                
-                                        $discapacitados = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('contratos','creditos.id','=','contratos.id')
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('datos_extra.persona_discap','=',1)
-                                                ->where('contratos.status','=',3)
-                                                ->get()->count();
-                                        
-                                        $silla_ruedas = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('contratos','creditos.id','=','contratos.id')
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('datos_extra.silla_ruedas','=',1)
-                                                ->where('contratos.status','=',3)
-                                                ->get()->count();
-                                
-                                        
-                                        $SinMascotas = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('contratos','creditos.id','=','contratos.id')
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('datos_extra.mascota','=',0)
-                                                ->where('contratos.status','=',3)
-                                                ->get()->count();
-                                
-                                        $mascotas = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('contratos','creditos.id','=','contratos.id')
-                                                ->select(
-                                                        DB::raw('SUM(datos_extra.ama_casa) as totalAmaCasa'),
-                                                        DB::raw('SUM(datos_extra.num_vehiculos) as totalAutos'),
-                                                        DB::raw('SUM(datos_extra.mascota) as sumMascota'),
-                                                        DB::raw('SUM(datos_extra.num_perros) as perros')
-                                                        )
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('contratos.status','=',3)
-                                                ->get();    
-                                }
-                        }
-                
-                }
-        }
-        else{
-                if($etapa == "" && $proyecto!=""){
-
-                        $conPerro = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('contratos','creditos.id','=','contratos.id')
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('datos_extra.mascota','=',1)
-                                                ->where('datos_extra.num_perros','>',0)
-                                                ->where('contratos.status','=',3)
-                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                ->get()->count();
-
-                        $autos->sinAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('contratos','creditos.id','=','contratos.id')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('datos_extra.num_vehiculos','=',0)
-                                        ->where('contratos.status','=',3)
-                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                        ->get()->count();
-        
-                        $autos->unAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('contratos','creditos.id','=','contratos.id')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('datos_extra.num_vehiculos','=',1)
-                                        ->where('contratos.status','=',3)
-                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                        ->get()->count();
-        
-                        $autos->dosAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('contratos','creditos.id','=','contratos.id')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('datos_extra.num_vehiculos','=',2)
-                                        ->where('contratos.status','=',3)
-                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                        ->get()->count();
-        
-                        $autos->tresAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('contratos','creditos.id','=','contratos.id')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('datos_extra.num_vehiculos','=',3)
-                                        ->where('contratos.status','=',3)
-                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                        ->get()->count();
-                                        
-                        $autos->cuatroAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('contratos','creditos.id','=','contratos.id')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('datos_extra.num_vehiculos','>',3)
-                                        ->where('contratos.status','=',3)
-                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                        ->get()->count();
-        
-                        $total = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->select('contratos.id')
-                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                ->where('contratos.status','=',3)
-                                ->count();
-        
-                        $edoCivil->separacionBienes = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->select('clientes.edo_civil')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                        ->where('clientes.edo_civil','=',1)
-                                        ->where('contratos.status','=',3)
-                                        ->count();
-                        $edoCivil->sociedadConyugal = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->select('clientes.edo_civil')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                        ->where('clientes.edo_civil','=',2)
-                                        ->where('contratos.status','=',3)
-                                        ->count();
-                        $edoCivil->divorciado = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->select('clientes.edo_civil')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                        ->where('clientes.edo_civil','=',3)
-                                        ->where('contratos.status','=',3)
-                                        ->count();
-                        $edoCivil->soltero = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->select('clientes.edo_civil')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                        ->where('clientes.edo_civil','=',4)
-                                        ->where('contratos.status','=',3)
-                                        ->count();
-                        $edoCivil->unionLibre = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->select('clientes.edo_civil')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                        ->where('clientes.edo_civil','=',5)
-                                        ->where('contratos.status','=',3)
-                                        ->count();
-                        $edoCivil->viudo = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->select('clientes.edo_civil')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                        ->where('clientes.edo_civil','=',6)
-                                        ->where('contratos.status','=',3)
-                                        ->count();
-                        $edoCivil->otro = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->select('clientes.edo_civil')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                        ->where('clientes.edo_civil','=',7)
-                                        ->where('contratos.status','=',3)
-                                        ->count();
-        
-                        $edades = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('contratos','creditos.id','=','contratos.id')
-                                ->select(DB::raw('SUM(datos_extra.rang010) as sum010'),
-                                DB::raw('SUM(datos_extra.rang1120) as sum1120'),
-                                DB::raw('SUM(datos_extra.rang21) as sum21'))
-                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                ->where('contratos.status','=',3)
-                                ->get();
-        
-                        $edadesVenta = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->select('personal.f_nacimiento','contratos.fecha')
-                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                ->where('contratos.status','=',3)->distinct()->get();
-        
-                        $genero->mujeres = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->select('clientes.sexo')
-                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                ->where('clientes.sexo','=','F')
-                                ->where('contratos.status','=',3)
-                                ->count();
-        
-                        $participantes->dosParticipantes = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->select('clientes.coacreditado')
-                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                ->where('clientes.coacreditado','=',1)
-                                ->where('contratos.status','=',3)
-                                ->count();
-        
-                        $participantes->unParticipante = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->select('clientes.coacreditado')
-                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                ->where('clientes.coacreditado','=',0)
-                                ->where('contratos.status','=',3)
-                                ->count();
-        
-                        $genero->hombres = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->select('clientes.sexo')
-                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                ->where('clientes.sexo','=','M')
-                                ->where('contratos.status','=',3)
-                                ->count();
-        
-                        $origen = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->select('clientes.lugar_nacimiento')
-                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                ->where('contratos.status','=',3)
-                                ->orderBy('clientes.lugar_nacimiento','asc')->distinct()->get();
-
-                        $empresas = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->select('clientes.empresa')
-                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                ->where('contratos.status','=',3)
-                                ->orderBy('clientes.empresa','asc')->distinct()->get();
-
-                                if(sizeof($empresas)){
-                                        $empresas_cliente=[];
-                                        foreach($empresas as $er=>$empresa){
-                                                $empresas_cliente[$er] = $empresa->empresa;
-                                              $empresa->num = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                ->select('clientes.empresa')
-                                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                ->where('clientes.empresa','=',$empresa->empresa)
-                                                ->where('contratos.status','=',3)->count();
-                                        }
-                                }
-        
-        
-                                if(sizeof($origen)){
-                                        $lugarNacimiento=[];
-                                        foreach($origen as $er=>$lugar){
-                                                $lugarNacimiento[$er] = $lugar->lugar_nacimiento;
-                                              $lugar->num = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                ->select('clientes.lugar_nacimiento')
-                                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                ->where('clientes.lugar_nacimiento','=',$lugar->lugar_nacimiento)
-                                                ->where('contratos.status','=',3)->count();
-                                        }
-                                }
-                                
-                        
-                        $discapacitados = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('contratos','creditos.id','=','contratos.id')
-                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                ->where('datos_extra.persona_discap','=',1)
-                                ->where('contratos.status','=',3)
-                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                ->get()->count();
-                        
-                        $silla_ruedas = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('contratos','creditos.id','=','contratos.id')
-                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                ->where('datos_extra.silla_ruedas','=',1)
-                                ->where('contratos.status','=',3)
-                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                ->get()->count();
-        
-                        
-                        $SinMascotas = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('contratos','creditos.id','=','contratos.id')
-                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                ->where('datos_extra.mascota','=',0)
-                                ->where('contratos.status','=',3)
-                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                ->get()->count();
-        
-                        $mascotas = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('contratos','creditos.id','=','contratos.id')
-                                ->select(
-                                        DB::raw('SUM(datos_extra.ama_casa) as totalAmaCasa'),
-                                        DB::raw('SUM(datos_extra.num_vehiculos) as totalAutos'),
-                                        DB::raw('SUM(datos_extra.mascota) as sumMascota'),
-                                        DB::raw('SUM(datos_extra.num_perros) as perros')
-                                        )
-                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                ->where('contratos.status','=',3)
-                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                ->get();
-                }else{
-                        if($etapa!="" && $proyecto!=""){
-                                $conPerro = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('contratos','creditos.id','=','contratos.id')
-                                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('datos_extra.mascota','=',1)
-                                                ->where('datos_extra.num_perros','>',0)
-                                                ->where('contratos.status','=',3)
-                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                ->get()->count();
-
-                                $autos->sinAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('contratos','creditos.id','=','contratos.id')
-                                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('datos_extra.num_vehiculos','=',0)
-                                                ->where('contratos.status','=',3)
-                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                ->get()->count();
-        
-                                $autos->unAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('contratos','creditos.id','=','contratos.id')
-                                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('datos_extra.num_vehiculos','=',1)
-                                                ->where('contratos.status','=',3)
-                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                ->get()->count();
-        
-                                $autos->dosAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('contratos','creditos.id','=','contratos.id')
-                                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('datos_extra.num_vehiculos','=',2)
-                                                ->where('contratos.status','=',3)
-                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                ->get()->count();
-        
-                                $autos->tresAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('contratos','creditos.id','=','contratos.id')
-                                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('datos_extra.num_vehiculos','=',3)
-                                                ->where('contratos.status','=',3)
-                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                ->get()->count();
+                                                if($proyecto != '')
+                                                        $lugar->num = $lugar->num->where('lotes.fraccionamiento_id',$proyecto);
+                                                if($etapa != '')
+                                                        $lugar->num = $lugar->num->where('lotes.etapa_id',$etapa);
+                                                if($fecha != '' && $fecha2 != '')
+                                                        $lugar->num = $lugar->num->whereBetween('contratos.fecha', [$fecha, $fecha2]);
                                                 
-                                $autos->cuatroAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('contratos','creditos.id','=','contratos.id')
-                                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('datos_extra.num_vehiculos','>',3)
-                                                ->where('contratos.status','=',3)
-                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                ->get()->count();
-        
-                                $total = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->select('contratos.id')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('lotes.etapa_id',$etapa)
-                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                        ->where('contratos.status','=',3)
-                                        ->count();
-        
-                                $edoCivil->separacionBienes = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                ->select('clientes.edo_civil')
-                                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                ->where('clientes.edo_civil','=',1)
-                                                ->where('contratos.status','=',3)
+                                                $lugar->num = $lugar->num->where('clientes.lugar_nacimiento','=',$lugar->lugar_nacimiento)
                                                 ->count();
-                                $edoCivil->sociedadConyugal = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                ->select('clientes.edo_civil')
-                                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                ->where('clientes.edo_civil','=',2)
-                                                ->where('contratos.status','=',3)
-                                                ->count();
-                                $edoCivil->divorciado = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                ->select('clientes.edo_civil')
-                                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                ->where('clientes.edo_civil','=',3)
-                                                ->where('contratos.status','=',3)
-                                                ->count();
-                                $edoCivil->soltero = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                ->select('clientes.edo_civil')
-                                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                ->where('clientes.edo_civil','=',4)
-                                                ->where('contratos.status','=',3)
-                                                ->count();
-                                $edoCivil->unionLibre = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                ->select('clientes.edo_civil')
-                                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                ->where('clientes.edo_civil','=',5)
-                                                ->where('contratos.status','=',3)
-                                                ->count();
-                                $edoCivil->viudo = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                ->select('clientes.edo_civil')
-                                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                ->where('clientes.edo_civil','=',6)
-                                                ->where('contratos.status','=',3)
-                                                ->count();
-                                $edoCivil->otro = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                ->select('clientes.edo_civil')
-                                                ->where('lotes.fraccionamiento_id',$proyecto)
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                ->where('clientes.edo_civil','=',7)
-                                                ->where('contratos.status','=',3)
-                                                ->count();
-        
-        
-                                $edades = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('contratos','creditos.id','=','contratos.id')
-                                        ->select(DB::raw('SUM(datos_extra.rang010) as sum010'),
-                                        DB::raw('SUM(datos_extra.rang1120) as sum1120'),
-                                        DB::raw('SUM(datos_extra.rang21) as sum21'))
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('lotes.etapa_id',$etapa)
-                                        ->where('contratos.status','=',3)
-                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                        ->get();
-        
-                                $edadesVenta = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->select('personal.f_nacimiento','contratos.fecha')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('lotes.etapa_id',$etapa)
-                                        ->where('contratos.status','=',3)
-                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])->distinct()->get();
-        
-                                $participantes->dosParticipantes = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->select('clientes.coacreditado')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('lotes.etapa_id',$etapa)
-                                        ->where('clientes.coacreditado','=',1)
-                                        ->where('contratos.status','=',3)
-                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                        ->count();
-        
-                                $participantes->unParticipante = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->select('clientes.coacreditado')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('lotes.etapa_id',$etapa)
-                                        ->where('clientes.coacreditado','=',0)
-                                        ->where('contratos.status','=',3)
-                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                        ->count();
-        
-                                $genero->mujeres = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->select('clientes.sexo')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('lotes.etapa_id',$etapa)
-                                        ->where('clientes.sexo','=','F')
-                                        ->where('contratos.status','=',3)
-                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                        ->count();
-        
-                                $genero->hombres = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->select('clientes.sexo')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('lotes.etapa_id',$etapa)
-                                        ->where('clientes.sexo','=','M')
-                                        ->where('contratos.status','=',3)
-                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                        ->count();
-        
-                                $origen = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->select('clientes.lugar_nacimiento')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('lotes.etapa_id',$etapa)
-                                        ->where('contratos.status','=',3)
-                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                        ->orderBy('clientes.lugar_nacimiento','asc')->distinct()->get();
-
-                                $empresas = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->select('clientes.empresa')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('lotes.etapa_id',$etapa)
-                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                        ->where('contratos.status','=',3)
-                                        ->orderBy('clientes.empresa','asc')->distinct()->get();
-        
-                                        if(sizeof($empresas)){
-                                                $empresas_cliente=[];
-                                                foreach($empresas as $er=>$empresa){
-                                                        $empresas_cliente[$er] = $empresa->empresa;
-                                                      $empresa->num = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                        ->select('clientes.empresa')
-                                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                                        ->where('lotes.etapa_id',$etapa)
-                                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                        ->where('clientes.empresa','=',$empresa->empresa)
-                                                        ->where('contratos.status','=',3)->count();
-                                                }
-                                        }
-        
-                                        if(sizeof($origen)){
-                                                $lugarNacimiento=[];
-                                                foreach($origen as $er=>$lugar){
-                                                        $lugarNacimiento[$er] = $lugar->lugar_nacimiento;
-                                                      $lugar->num = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                        ->select('clientes.lugar_nacimiento')
-                                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                                        ->where('lotes.etapa_id',$etapa)
-                                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                        ->where('clientes.lugar_nacimiento','=',$lugar->lugar_nacimiento)
-                                                        ->where('contratos.status','=',3)
-                                                        ->count();
-                                                }
-                                        }
-                                        
-                                
-                                $discapacitados = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('contratos','creditos.id','=','contratos.id')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('lotes.etapa_id',$etapa)
-                                        ->where('datos_extra.persona_discap','=',1)
-                                        ->where('contratos.status','=',3)
-                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                        ->get()->count();
-                                
-                                $silla_ruedas = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('contratos','creditos.id','=','contratos.id')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('lotes.etapa_id',$etapa)
-                                        ->where('datos_extra.silla_ruedas','=',1)
-                                        ->where('contratos.status','=',3)
-                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                        ->get()->count();
-                        
-                                
-                                $SinMascotas = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('contratos','creditos.id','=','contratos.id')
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('lotes.etapa_id',$etapa)
-                                        ->where('datos_extra.mascota','=',0)
-                                        ->where('contratos.status','=',3)
-                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                        ->get()->count();
-                        
-                                $mascotas = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                        ->join('contratos','creditos.id','=','contratos.id')
-                                        ->select(
-                                                DB::raw('SUM(datos_extra.ama_casa) as totalAmaCasa'),
-                                                DB::raw('SUM(datos_extra.num_vehiculos) as totalAutos'),
-                                                DB::raw('SUM(datos_extra.mascota) as sumMascota'),
-                                                DB::raw('SUM(datos_extra.num_perros) as perros')
-                                                )
-                                        ->where('lotes.fraccionamiento_id',$proyecto)
-                                        ->where('lotes.etapa_id',$etapa)
-                                        ->where('contratos.status','=',3)
-                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                        ->get();
-                        }
-                        else{
-                                if($etapa!="" && $proyecto==""){
-                                        $conPerro = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('contratos','creditos.id','=','contratos.id')
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('datos_extra.mascota','=',1)
-                                                ->where('datos_extra.num_perros','>',0)
-                                                ->where('contratos.status','=',3)
-                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                ->get()->count();
-
-                                        $autos->sinAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                        ->join('contratos','creditos.id','=','contratos.id')
-                                                        ->where('lotes.etapa_id',$etapa)
-                                                        ->where('datos_extra.num_vehiculos','=',0)
-                                                        ->where('contratos.status','=',3)
-                                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                        ->get()->count();
-        
-                                        $autos->unAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                        ->join('contratos','creditos.id','=','contratos.id')
-                                                        ->where('lotes.etapa_id',$etapa)
-                                                        ->where('datos_extra.num_vehiculos','=',1)
-                                                        ->where('contratos.status','=',3)
-                                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                        ->get()->count();
-        
-                                        $autos->dosAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                        ->join('contratos','creditos.id','=','contratos.id')
-                                                        ->where('lotes.etapa_id',$etapa)
-                                                        ->where('datos_extra.num_vehiculos','=',2)
-                                                        ->where('contratos.status','=',3)
-                                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                        ->get()->count();
-        
-                                        $autos->tresAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                        ->join('contratos','creditos.id','=','contratos.id')
-                                                        ->where('lotes.etapa_id',$etapa)
-                                                        ->where('datos_extra.num_vehiculos','=',3)
-                                                        ->where('contratos.status','=',3)
-                                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                        ->get()->count();
-                                                        
-                                        $autos->cuatroAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                        ->join('contratos','creditos.id','=','contratos.id')
-                                                        ->where('lotes.etapa_id',$etapa)
-                                                        ->where('datos_extra.num_vehiculos','>',3)
-                                                        ->where('contratos.status','=',3)
-                                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                        ->get()->count();
-        
-                                        $total = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                ->select('contratos.id')
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                ->where('contratos.status','=',3)
-                                                ->count();
-        
-                                        $edoCivil->separacionBienes = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                        ->select('clientes.edo_civil')
-                                                        ->where('lotes.etapa_id',$etapa)
-                                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                        ->where('clientes.edo_civil','=',1)
-                                                        ->where('contratos.status','=',3)
-                                                        ->count();
-                                        $edoCivil->sociedadConyugal = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                        ->select('clientes.edo_civil')
-                                                        ->where('lotes.etapa_id',$etapa)
-                                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                        ->where('clientes.edo_civil','=',2)
-                                                        ->where('contratos.status','=',3)
-                                                        ->count();
-                                        $edoCivil->divorciado = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                        ->select('clientes.edo_civil')
-                                                        ->where('lotes.etapa_id',$etapa)
-                                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                        ->where('clientes.edo_civil','=',3)
-                                                        ->where('contratos.status','=',3)
-                                                        ->count();
-                                        $edoCivil->soltero = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                        ->select('clientes.edo_civil')
-                                                        ->where('lotes.etapa_id',$etapa)
-                                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                        ->where('clientes.edo_civil','=',4)
-                                                        ->where('contratos.status','=',3)
-                                                        ->count();
-                                        $edoCivil->unionLibre = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                        ->select('clientes.edo_civil')
-                                                        ->where('lotes.etapa_id',$etapa)
-                                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                        ->where('clientes.edo_civil','=',5)
-                                                        ->where('contratos.status','=',3)
-                                                        ->count();
-                                        $edoCivil->viudo = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                        ->select('clientes.edo_civil')
-                                                        ->where('lotes.etapa_id',$etapa)
-                                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                        ->where('clientes.edo_civil','=',6)
-                                                        ->where('contratos.status','=',3)
-                                                        ->count();
-                                        $edoCivil->otro = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                        ->select('clientes.edo_civil')
-                                                        ->where('lotes.etapa_id',$etapa)
-                                                        ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                        ->where('clientes.edo_civil','=',7)
-                                                        ->where('contratos.status','=',3)
-                                                        ->count();
-        
-                                        $edades = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('contratos','creditos.id','=','contratos.id')
-                                                ->select(DB::raw('SUM(datos_extra.rang010) as sum010'),
-                                                DB::raw('SUM(datos_extra.rang1120) as sum1120'),
-                                                DB::raw('SUM(datos_extra.rang21) as sum21'))
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('contratos.status','=',3)
-                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                ->get();
-                                        
-                                        $edadesVenta = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                ->select('personal.f_nacimiento','contratos.fecha')
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                ->where('contratos.status','=',3)->distinct()->get();
-        
-                                        $origen = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                ->select('clientes.lugar_nacimiento')
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                ->where('contratos.status','=',3)
-                                                ->orderBy('clientes.lugar_nacimiento','asc')->distinct()->get();
-
-                                        $empresas = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                ->select('clientes.empresa')
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                ->where('contratos.status','=',3)
-                                                ->orderBy('clientes.empresa','asc')->distinct()->get();
-                
-                                                if(sizeof($empresas)){
-                                                        $empresas_cliente=[];
-                                                        foreach($empresas as $er=>$empresa){
-                                                                $empresas_cliente[$er] = $empresa->empresa;
-                                                              $empresa->num = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                                ->select('clientes.empresa')
-                                                                ->where('lotes.etapa_id',$etapa)
-                                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                                ->where('clientes.empresa','=',$empresa->empresa)
-                                                                ->where('contratos.status','=',3)->count();
-                                                        }
-                                                }
-        
-                                                if(sizeof($origen)){
-                                                        $lugarNacimiento=[];
-                                                        foreach($origen as $er=>$lugar){
-                                                                $lugarNacimiento[$er] = $lugar->lugar_nacimiento;
-                                                              $lugar->num = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                                ->select('clientes.lugar_nacimiento')
-                                                                ->where('lotes.etapa_id',$etapa)
-                                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                                ->where('clientes.lugar_nacimiento','=',$lugar->lugar_nacimiento)
-                                                                ->where('contratos.status','=',3)
-                                                                ->count();
-                                                        }
-                                                }
-        
-                                        $genero->mujeres = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                ->select('clientes.sexo')
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                ->where('clientes.sexo','=','F')
-                                                ->where('contratos.status','=',3)
-                                                ->count();
-                        
-                                        $genero->hombres = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                ->select('clientes.sexo')
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                ->where('clientes.sexo','=','M')
-                                                ->where('contratos.status','=',3)
-                                                ->count();
-        
-                                        $participantes->dosParticipantes = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                ->select('clientes.coacreditado')
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                ->where('clientes.coacreditado','=',1)
-                                                ->where('contratos.status','=',3)
-                                                ->count();
-                
-                                        $participantes->unParticipante = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                ->select('clientes.coacreditado')
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                ->where('clientes.coacreditado','=',0)
-                                                ->where('contratos.status','=',3)
-                                                ->count();
-        
-                                                if(sizeof($origen)){
-                                                        foreach($origen as $er=>$lugar){
-                                                              $lugar->num = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                                ->select('clientes.lugar_nacimiento')
-                                                                ->where('lotes.etapa_id',$etapa)
-                                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                                ->where('clientes.lugar_nacimiento','=',$lugar->lugar_nacimiento)
-                                                                ->where('contratos.status','=',3)->count();
-                                                        }
-                                                }
-                                
-                                        $discapacitados = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('contratos','creditos.id','=','contratos.id')
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('datos_extra.persona_discap','=',1)
-                                                ->where('contratos.status','=',3)
-                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                ->get()->count();
-                                        
-                                        $silla_ruedas = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('contratos','creditos.id','=','contratos.id')
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('datos_extra.silla_ruedas','=',1)
-                                                ->where('contratos.status','=',3)
-                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                ->get()->count();
-                                
-                                        
-                                        $SinMascotas = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('contratos','creditos.id','=','contratos.id')
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('datos_extra.mascota','=',0)
-                                                ->where('contratos.status','=',3)
-                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                ->get()->count();
-                                
-                                        $mascotas = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                                ->join('contratos','creditos.id','=','contratos.id')
-                                                ->select(
-                                                        DB::raw('SUM(datos_extra.ama_casa) as totalAmaCasa'),
-                                                        DB::raw('SUM(datos_extra.num_vehiculos) as totalAutos'),
-                                                        DB::raw('SUM(datos_extra.mascota) as sumMascota'),
-                                                        DB::raw('SUM(datos_extra.num_perros) as perros')
-                                                        )
-                                                ->where('lotes.etapa_id',$etapa)
-                                                ->where('contratos.status','=',3)
-                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
-                                                ->get();    
                                 }
                         }
+                        
                 
-                }
-        }
-        
+                $discapacitados = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('contratos','creditos.id','=','contratos.id')
+                        ->where('datos_extra.persona_discap','=',1)
+                        ->where('contratos.status','=',3);
 
+                        if($proyecto != '')
+                                $discapacitados = $discapacitados->where('lotes.fraccionamiento_id',$proyecto);
+                        if($etapa != '')
+                                $discapacitados = $discapacitados->where('lotes.etapa_id',$etapa);
+                        if($fecha != '' && $fecha2 != '')
+                                $discapacitados = $discapacitados->whereBetween('contratos.fecha', [$fecha, $fecha2]);
+                        
+                        $discapacitados = $discapacitados->get()->count();
+                
+                $silla_ruedas = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('contratos','creditos.id','=','contratos.id')
+                        ->where('datos_extra.silla_ruedas','=',1)
+                        ->where('contratos.status','=',3);
+                        if($proyecto != '')
+                                $silla_ruedas = $silla_ruedas->where('lotes.fraccionamiento_id',$proyecto);
+                        if($etapa != '')
+                                $silla_ruedas = $silla_ruedas->where('lotes.etapa_id',$etapa);
+                        if($fecha != '')
+                                $silla_ruedas = $silla_ruedas->whereBetween('contratos.fecha', [$fecha, $fecha2]);
+                                
+                        $silla_ruedas = $silla_ruedas->get()->count();
+        
+                
+                $SinMascotas = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('contratos','creditos.id','=','contratos.id')
+                        ->where('datos_extra.mascota','=',0)
+                        ->where('contratos.status','=',3);
+
+                        if($proyecto != '')
+                                $SinMascotas = $SinMascotas->where('lotes.fraccionamiento_id',$proyecto);
+                        if($etapa != '')
+                                $SinMascotas = $SinMascotas->where('lotes.etapa_id',$etapa);
+                        if($fecha != '' && $fecha2 != '')
+                                $SinMascotas = $SinMascotas->whereBetween('contratos.fecha', [$fecha, $fecha2]);
+                        
+                        $SinMascotas = $SinMascotas->get()->count();
+        
+                $mascotas = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('contratos','creditos.id','=','contratos.id')
+                        ->select(
+                                DB::raw('SUM(datos_extra.ama_casa) as totalAmaCasa'),
+                                DB::raw('SUM(datos_extra.num_vehiculos) as totalAutos'),
+                                DB::raw('SUM(datos_extra.mascota) as sumMascota'),
+                                DB::raw('SUM(datos_extra.num_perros) as perros')
+                                )
+                        ->where('contratos.status','=',3);
+                        if($proyecto != '')
+                                $mascotas = $mascotas->where('lotes.fraccionamiento_id',$proyecto);
+                        if($proyecto != '')
+                                $mascotas = $mascotas->where('lotes.etapa_id',$etapa);
+                        
+                        if($proyecto != '')
+                                $mascotas = $mascotas->whereBetween('contratos.fecha', [$fecha, $fecha2]);
+
+                        $mascotas = $mascotas->get();
+        
         
         $mascotas[0]->sin_mascotas = $SinMascotas;
         $totalPersonas = $mascotas[0]->sin_mascotas + $mascotas[0]->sumMascota;
@@ -1937,64 +618,76 @@ class EstadisticasController extends Controller
         $to = Carbon::now();
 
 
-        if($etapa!=''){
+        $vendidasFin = Contrato::join('creditos','contratos.id','=','creditos.id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->select('contratos.fecha')
+                        ->where('lotes.fraccionamiento_id','=',$proyecto);
 
-                $vendidasFin = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->select('contratos.fecha')
-                                ->where('lotes.fraccionamiento_id','=',$proyecto)
-                                ->where('lotes.etapa_id','=',$etapa)
-                                ->where('contratos.status','=',3)
-                                ->orderBy('contratos.fecha','desc')
-                                ->get();
-
+                        if($etapa != '')
+                                $vendidasFin = $vendidasFin->where('lotes.etapa_id','=',$etapa);
+                        
+                        $vendidasFin = $vendidasFin->where('contratos.status','=',3)
+                        ->orderBy('contratos.fecha','desc')
+                        ->get();
+        if($etapa=='')
+                $fracc = Fraccionamiento::select('fecha_ini_venta')->where('id','=',$proyecto)->get();
+                
+        else
                 $fracc = Etapa::select('fecha_ini_venta')->where('id','=',$etapa)->where('fraccionamiento_id','=',$proyecto)->get();
-                $fecha = $fracc[0]->fecha_ini_venta;
-                if($fecha){
-                        $to = Carbon::createFromFormat('Y-m-d', $vendidasFin[0]->fecha);
-                        $from = Carbon::createFromFormat('Y-m-d', $fecha);
-                        $diff_in_months = $to->diffInMonths($from);
-                }
-                else{
-                        $diff_in_months = 0;
-                }
-                
 
-                $lotes = Lote::where('fraccionamiento_id','=',$proyecto)
-                                ->where('etapa_id','=',$etapa)->count();
-                
-                $lotesHabilitados = Lote::where('fraccionamiento_id','=',$proyecto)
-                        ->where('etapa_id','=',$etapa)
-                        ->where('habilitado','=',1)->count();
+        $fecha = $fracc[0]->fecha_ini_venta;
 
-                $disponibles = Lote::where('fraccionamiento_id','=',$proyecto)
-                                ->where('etapa_id','=',$etapa)
-                                ->where('habilitado','=',1)
-                                ->where('contrato','=',0)->count();
+        if($fecha){
+                $to = Carbon::createFromFormat('Y-m-d', $vendidasFin[0]->fecha);
+                $from = Carbon::createFromFormat('Y-m-d', $fecha);
+                $diff_in_months = $to->diffInMonths($from);
+        }
+        else{
+                $diff_in_months = 0;
+        }
+        
 
-                $vendidas = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->where('lotes.fraccionamiento_id','=',$proyecto)
-                                ->where('lotes.etapa_id','=',$etapa)
-                                ->where('contratos.status','=',3)
-                                ->count();
+        $lotes = Lote::where('fraccionamiento_id','=',$proyecto);
+                if($etapa!='')
+                        $lotes = $lotes->where('etapa_id','=',$etapa);        
+                $lotes =$lotes->count();
+        
+        $lotesHabilitados = Lote::where('fraccionamiento_id','=',$proyecto);
+                if($etapa!='')
+                        $lotesHabilitados = $lotesHabilitados->where('etapa_id','=',$etapa);        
+                $lotesHabilitados = $lotesHabilitados->where('habilitado','=',1)->count();
 
-                $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->select('lotes.id')
-                                ->where('lotes.fraccionamiento_id','=',$proyecto)
-                                ->where('lotes.etapa_id','=',$etapa)
-                                ->where('contratos.status','=',1)
+        $disponibles = Lote::where('fraccionamiento_id','=',$proyecto);
+                if($etapa!='')
+                        $disponibles = $disponibles->where('etapa_id','=',$etapa);
+                $disponibles = $disponibles->where('habilitado','=',1)
+                        ->where('contrato','=',0)->count();
+
+        $vendidas = Contrato::join('creditos','contratos.id','=','creditos.id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->where('lotes.fraccionamiento_id','=',$proyecto);
+                        if($etapa!='')
+                                $vendidas = $vendidas->where('lotes.etapa_id','=',$etapa);
+                        $vendidas = $vendidas->where('contratos.status','=',3)->count();
+
+        $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->select('lotes.id')
+                        ->where('lotes.fraccionamiento_id','=',$proyecto);
+                        if($etapa!='')
+                                $contratos = $contratos->where('lotes.etapa_id','=',$etapa);
+                        $contratos = $contratos->where('contratos.status','=',1)
                                 ->where('contratos.integracion','=',0)->distinct()
                                 ->count();
-                
-                $individualizadas = Expediente::join('contratos','expedientes.id','=','contratos.id')
-                                ->join('creditos','contratos.id','=','creditos.id')
-                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->where('lotes.fraccionamiento_id','=',$proyecto)
-                                ->where('lotes.etapa_id','=',$etapa)
-                                ->where('contratos.status','=',3)
+        
+        $individualizadas = Expediente::join('contratos','expedientes.id','=','contratos.id')
+                        ->join('creditos','contratos.id','=','creditos.id')
+                        ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->where('lotes.fraccionamiento_id','=',$proyecto);
+                        if($etapa!='')
+                                $individualizadas = $individualizadas->where('lotes.etapa_id','=',$etapa);
+                        $individualizadas = $individualizadas->where('contratos.status','=',3)
                                 ->where('contratos.integracion','=',1)
                                 ->where('expedientes.liquidado','=',1)
                                 ->where('i.elegido', '=', 1)
@@ -2002,13 +695,14 @@ class EstadisticasController extends Controller
                                 ->distinct('contratos.id')
                                 ->count();
 
-                $indiviDirecto = Expediente::join('contratos','expedientes.id','=','contratos.id')
-                                ->join('creditos','contratos.id','=','creditos.id')
-                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->where('lotes.fraccionamiento_id','=',$proyecto)
-                                ->where('lotes.etapa_id','=',$etapa)
-                                ->where('contratos.status','=',3)
+        $indiviDirecto = Expediente::join('contratos','expedientes.id','=','contratos.id')
+                        ->join('creditos','contratos.id','=','creditos.id')
+                        ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->where('lotes.fraccionamiento_id','=',$proyecto);
+                        if($etapa != '')
+                                $indiviDirecto = $indiviDirecto->where('lotes.etapa_id','=',$etapa);
+                        $indiviDirecto = $indiviDirecto->where('contratos.status','=',3)
                                 ->where('contratos.integracion','=',1)                        
                                 ->where('contratos.saldo','<=',0)
                                 ->where('i.elegido', '=', 1)
@@ -2016,225 +710,85 @@ class EstadisticasController extends Controller
                                 ->distinct('contratos.id')
                                 ->count();
 
-                $sumas = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->select(       DB::raw("SUM(creditos.precio_venta) as precio"),
-                                                DB::raw("SUM(creditos.descuento_promocion) as descuento"),
-                                                DB::raw("SUM(creditos.costo_paquete) as paquete"),
-                                                DB::raw("SUM(contratos.total_pagar) as enganche"),
-                                                DB::raw("SUM(contratos.monto_total_credito) as credito_netoSum"),
-                                                DB::raw("SUM(contratos.saldo) as totSaldo")
-                                        )
-                                ->where('lotes.fraccionamiento_id','=',$proyecto)
-                                ->where('lotes.etapa_id','=',$etapa)
-                                ->where('contratos.status','=',3)
+        $sumas = Contrato::join('creditos','contratos.id','=','creditos.id')
+                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->select(       DB::raw("SUM(creditos.precio_venta) as precio"),
+                                        DB::raw("SUM(creditos.descuento_promocion) as descuento"),
+                                        DB::raw("SUM(creditos.costo_paquete) as paquete"),
+                                        DB::raw("SUM(contratos.total_pagar) as enganche"),
+                                        DB::raw("SUM(contratos.monto_total_credito) as credito_netoSum"),
+                                        DB::raw("SUM(contratos.saldo) as totSaldo")
+                                )
+                        ->where('lotes.fraccionamiento_id','=',$proyecto);
+                        if($etapa != '')
+                                $sumas = $sumas->where('lotes.etapa_id','=',$etapa);
+                        $sumas = $sumas->where('contratos.status','=',3)
                                 ->where('inst_seleccionadas.elegido', '=', 1)->get();
 
-                $sumaDirecto = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->select(       
-                                                DB::raw("SUM(contratos.total_pagar) as enganche")
-                                        )
-                                ->where('lotes.fraccionamiento_id','=',$proyecto)
-                                ->where('lotes.etapa_id','=',$etapa)
-                                ->where('contratos.status','=',3)
+        $sumaDirecto = Contrato::join('creditos','contratos.id','=','creditos.id')
+                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->select(       
+                                        DB::raw("SUM(contratos.total_pagar) as enganche")
+                                )
+                        ->where('lotes.fraccionamiento_id','=',$proyecto);
+                        if($etapa != '')
+                                $sumaDirecto = $sumaDirecto->where('lotes.etapa_id','=',$etapa);
+                        $sumaDirecto = $sumaDirecto->where('contratos.status','=',3)
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('inst_seleccionadas.tipo_credito', '=', 'Crédito Directo')->get();
-                                        
-                $resContratos = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                //->leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                ->join('personal as c', 'creditos.prospecto_id', '=', 'c.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->select(       DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                                'creditos.fraccionamiento as proyecto',
-                                                'creditos.etapa',
-                                                'creditos.manzana',
-                                                'creditos.num_lote',
-                                                'contratos.fecha_status',
-                                                'i.tipo_credito',
-                                                'i.institucion', 
-                                                'creditos.precio_venta',
-                                                'creditos.descuento_promocion',
-                                                'creditos.costo_paquete',
-                                                'contratos.total_pagar',
-                                                'contratos.saldo',
-                                                'contratos.monto_total_credito','lotes.interior',
-                                                'lotes.calle','lotes.numero',//'expedientes.fecha_firma_esc',
-                                                'modelos.nombre as modelo','contratos.fecha_audit','contratos.id'
-                                        )
-                                ->when($request->bAudit,function($query, $audit){
-                                                if($audit == 1){
-                                                        $query->whereNull('contratos.fecha_audit')->get();
-                                                }elseif($audit == 2) $query->whereNotNull('contratos.fecha_audit')->get();
-                                        }
+                                
+        $resContratos = Contrato::join('creditos','contratos.id','=','creditos.id')
+                        //->leftJoin('expedientes','contratos.id','=','expedientes.id')
+                        ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('modelos','lotes.modelo_id','=','modelos.id')
+                        ->join('personal as c', 'creditos.prospecto_id', '=', 'c.id')
+                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                        ->select(       DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.etapa',
+                                        'creditos.manzana',
+                                        'creditos.num_lote',
+                                        'contratos.fecha_status',
+                                        'i.tipo_credito',
+                                        'i.institucion', 
+                                        'creditos.precio_venta',
+                                        'creditos.descuento_promocion',
+                                        'creditos.costo_paquete',
+                                        'contratos.total_pagar',
+                                        'contratos.saldo',
+                                        'contratos.monto_total_credito','lotes.interior',
+                                        'lotes.calle','lotes.numero',//'expedientes.fecha_firma_esc',
+                                        'modelos.nombre as modelo','contratos.fecha_audit','contratos.id'
                                 )
-                                ->where('lotes.fraccionamiento_id','=',$proyecto)
-                                ->where('lotes.etapa_id','=',$etapa)
-                                ->where('contratos.status','=',3)
+                        ->when($request->bAudit,function($query, $audit){
+                                        if($audit == 1){
+                                                $query->whereNull('contratos.fecha_audit')->get();
+                                        }elseif($audit == 2) $query->whereNotNull('contratos.fecha_audit')->get();
+                                }
+                        )
+                        ->where('lotes.fraccionamiento_id','=',$proyecto);
+                        if($etapa != '')
+                                $resContratos = $resContratos->where('lotes.etapa_id','=',$etapa);
+                        $resContratos = $resContratos->where('contratos.status','=',3)
                                 ->where('i.elegido', '=', 1)->paginate(20);
 
-                if(sizeOf($resContratos)){
-                        foreach($resContratos as $index => $contrato){
-                                $contrato->fecha_firma_esc ='';
-                                $expedientes = Expediente::select('fecha_firma_esc')->where('id','=',$contrato->id)->get();
-                                if(sizeof($expedientes))
-                                        $contrato->fecha_firma_esc = $expedientes[0]->fecha_firma_esc;
-                        }
+        if(sizeOf($resContratos)){
+                foreach($resContratos as $index => $contrato){
+                        $contrato->fecha_firma_esc ='';
+                        $expedientes = Expediente::select('fecha_firma_esc')->where('id','=',$contrato->id)->get();
+                        if(sizeof($expedientes))
+                                $contrato->fecha_firma_esc = $expedientes[0]->fecha_firma_esc;
                 }
-
-                $disponibles  = $disponibles + $contratos;
-                $vendidas = $vendidas - $individualizadas - $indiviDirecto;
-                $individualizadas = $individualizadas + $indiviDirecto;
         }
-        else{
-                $vendidasFin = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->select('contratos.fecha')
-                                ->where('lotes.fraccionamiento_id','=',$proyecto)
-                                ->where('contratos.status','=',3)
-                                ->orderBy('contratos.fecha','desc')
-                                ->get();
 
-                $fracc = Fraccionamiento::select('fecha_ini_venta')->where('id','=',$proyecto)->get();
-                $fecha = $fracc[0]->fecha_ini_venta;
+        $disponibles  = $disponibles + $contratos;
+        $vendidas = $vendidas - $individualizadas - $indiviDirecto;
+        $individualizadas = $individualizadas + $indiviDirecto;
 
-                if($fecha){
-                        $to = Carbon::createFromFormat('Y-m-d', $vendidasFin[0]->fecha);
-                        $from = Carbon::createFromFormat('Y-m-d', $fecha);
-                        $diff_in_months = $to->diffInMonths($from);
-                }
-                else{
-                        $diff_in_months = 0;
-                }
-
-                $lotes = Lote::where('fraccionamiento_id','=',$proyecto)
-                                ->count();
-
-                $lotesHabilitados = Lote::where('fraccionamiento_id','=',$proyecto)
-                        ->where('habilitado','=',1)->count();
-
-                $disponibles = Lote::where('fraccionamiento_id','=',$proyecto)
-                                ->where('contrato','=',0)
-                                ->where('habilitado','=',1)->count();
-
-                $vendidas = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->where('lotes.fraccionamiento_id','=',$proyecto)
-                                ->where('contratos.status','=',3)
-                                ->count();
-
-                $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->select('lotes.id')
-                                ->where('lotes.fraccionamiento_id','=',$proyecto)
-                                ->where('contratos.status','=',1)
-                                ->where('contratos.integracion','=',0)
-                                ->distinct()
-                                ->count();
-                
-                $individualizadas = Expediente::join('contratos','expedientes.id','=','contratos.id')
-                                ->join('creditos','contratos.id','=','creditos.id')
-                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->where('lotes.fraccionamiento_id','=',$proyecto)
-                                ->where('contratos.status','=',3)
-                                ->where('contratos.integracion','=',1)
-                                ->where('expedientes.liquidado','=',1)
-                                ->where('i.tipo_credito', '!=', 'Crédito Directo')
-                                ->where('i.elegido', '=', 1)
-                                ->distinct('contratos.id')
-                                ->count();
-                
-                $indiviDirecto = Expediente::join('contratos','expedientes.id','=','contratos.id')
-                                ->join('creditos','contratos.id','=','creditos.id')
-                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->where('lotes.fraccionamiento_id','=',$proyecto)
-                                ->where('contratos.status','=',3)
-                                ->where('contratos.integracion','=',1)
-                                ->where('contratos.saldo','<=',0)
-                                ->where('i.elegido', '=', 1)
-                                ->where('i.tipo_credito', '=', 'Crédito Directo')
-                                ->distinct('contratos.id')
-                                ->count();
-
-                $sumas = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->select(       DB::raw("SUM(creditos.precio_venta) as precio"),
-                                                DB::raw("SUM(creditos.descuento_promocion) as descuento"),
-                                                DB::raw("SUM(creditos.costo_paquete) as paquete"),
-                                                DB::raw("SUM(contratos.total_pagar) as enganche"),
-                                                DB::raw("SUM(contratos.monto_total_credito) as credito_netoSum"),
-                                                DB::raw("SUM(contratos.saldo) as totSaldo")
-                                        )
-                                ->where('lotes.fraccionamiento_id','=',$proyecto)
-                                ->where('contratos.status','=',3)
-                                ->where('inst_seleccionadas.elegido', '=', 1)->get();
-
-                $sumaDirecto = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->select(       
-                                                DB::raw("SUM(contratos.total_pagar) as enganche")
-                                        )
-                                ->where('lotes.fraccionamiento_id','=',$proyecto)
-                                ->where('contratos.status','=',3)
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('inst_seleccionadas.tipo_credito', '=', 'Crédito Directo')->get();
-
-                $resContratos = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                //->leftJoin('expedientes','contratos.id','=','expedientes.id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')
-                                ->join('modelos','lotes.modelo_id','=','modelos.id')
-                                ->join('personal as c', 'creditos.prospecto_id', '=', 'c.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->select(       DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                                'creditos.fraccionamiento as proyecto',
-                                                'creditos.etapa',
-                                                'creditos.manzana',
-                                                'creditos.num_lote',
-                                                'contratos.fecha_status',
-                                                'i.tipo_credito',
-                                                'i.institucion', 
-                                                'creditos.precio_venta',
-                                                'creditos.descuento_promocion',
-                                                'creditos.costo_paquete',
-                                                'contratos.total_pagar',
-                                                'contratos.saldo',
-                                                'contratos.monto_total_credito', 'lotes.interior',
-                                                'lotes.calle','lotes.numero',//'expedientes.fecha_firma_esc',
-                                                'modelos.nombre as modelo','contratos.fecha_audit','contratos.id'
-                                        )
-                                ->when($request->bAudit,function($query, $audit){
-                                                if($audit == 1){
-                                                        $query->whereNull('contratos.fecha_audit')->get();
-                                                }elseif($audit == 2) $query->whereNotNull('contratos.fecha_audit')->get();
-                                        }
-                                )
-                                ->where('lotes.fraccionamiento_id','=',$proyecto)
-                                ->where('contratos.status','=',3)
-                                ->where('i.elegido', '=', 1)->paginate(20);
-
-                if(sizeOf($resContratos)){
-                        foreach($resContratos as $index => $contrato){
-                                $contrato->fecha_firma_esc ='';
-                                $expedientes = Expediente::select('fecha_firma_esc')->where('id','=',$contrato->id)->get();
-                                if(sizeof($expedientes))
-                                        $contrato->fecha_firma_esc = $expedientes[0]->fecha_firma_esc;
-                        }
-                }
-
-                $disponibles  = $disponibles + $contratos;
-                $vendidas = $vendidas - $individualizadas - $indiviDirecto;
-                $individualizadas = $individualizadas + $indiviDirecto;
-        }
+        
 
         setlocale(LC_TIME, 'es_MX.utf8');
         if($fecha){
