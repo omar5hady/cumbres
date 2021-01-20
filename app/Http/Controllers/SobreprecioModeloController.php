@@ -20,7 +20,7 @@ class SobreprecioModeloController extends Controller
         $buscar2 = $request->buscar2;
         $buscar3= $request->buscar3;
 
-        $query = Sobreprecio_modelo::join('lotes','sobreprecios_modelos.lote_id','=','lotes.id')
+        $sobreprecio_modelo = Sobreprecio_modelo::join('lotes','sobreprecios_modelos.lote_id','=','lotes.id')
             ->join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
             ->join('sobreprecios','sobreprecios_etapas.sobreprecio_id','=','sobreprecios.id')
             ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
@@ -30,36 +30,13 @@ class SobreprecioModeloController extends Controller
                 'sobreprecios_modelos.sobreprecio_etapa_id', 
                 'lotes.id as lote_id', 'lotes.manzana as manzana',
                 'etapas.num_etapa as etapa','fraccionamientos.nombre as proyecto');
-        
-        if($buscar == ''){
-        $sobreprecio_modelo = $query;
-        }
-        else{
-            if($buscar2 == '' && $buscar3 == '') {
-                $sobreprecio_modelo = $query
-                    ->where('sobreprecios_etapas.etapa_id','=', $buscar);
-            }
-            else{
-                if($buscar2 == ''){
-                    $sobreprecio_modelo = $query
-                        ->where('sobreprecios_etapas.etapa_id','=', $buscar)
-                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%');
-                    }
-                
-                if($buscar3 == ''){
-                    $sobreprecio_modelo = $query
-                        ->where('sobreprecios_etapas.etapa_id','=', $buscar)
-                        ->where('lotes.num_lote', 'like', '%'. $buscar2 . '%');
-                    }
-                else{
-                    $sobreprecio_modelo = $query
-                        ->where('sobreprecios_etapas.etapa_id','=', $buscar)
-                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                        ->where('lotes.num_lote', 'like', '%'. $buscar2 . '%');
 
-                    }
-            }
-        }
+        if($buscar != '')
+            $sobreprecio_modelo = $sobreprecio_modelo->where('sobreprecios_etapas.etapa_id','=', $buscar);
+        if($buscar3 != '')
+            $sobreprecio_modelo = $sobreprecio_modelo->where('lotes.manzana', 'like', '%'. $buscar3 . '%');
+        if($buscar2 != '')
+            $sobreprecio_modelo = $sobreprecio_modelo->where('lotes.num_lote', 'like', '%'. $buscar2 . '%');
 
         $sobreprecio_modelo = $sobreprecio_modelo->orderBy('fraccionamientos.nombre','ASC')
                                     ->orderBy('etapas.num_etapa','ASC')
@@ -159,8 +136,6 @@ class SobreprecioModeloController extends Controller
                 $sobreprecioslote->sobreprecio = $sobreprecio->sobreprecios;
                 $sobreprecioslote->save();
                 if($sobreprecioslote->contrato==0){
-                    
-                
 
                     $creditos = Credito::select('id')->where('lote_id','=',$lote_id)->get();
                     foreach($creditos as $creditosid){
@@ -168,13 +143,9 @@ class SobreprecioModeloController extends Controller
                         $credito = Credito::findOrFail($creditosid->id);
                         $credito->precio_venta = $sobreprecio->sobreprecios + $credito->precio_base + $credito->precio_terreno_excedente + $credito->precio_obra_extra - $credito->descuento_promocion + $credito->costo_paquete;
                         $credito->save();
-                        
 
                     }
                 }
             } 
-        
-
-        
     }
 }

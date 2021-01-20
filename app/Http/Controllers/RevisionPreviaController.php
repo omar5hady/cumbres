@@ -61,127 +61,43 @@ class RevisionPreviaController extends Controller
                 DB::raw('DATEDIFF(current_date,entregas.fecha_program) as diferencia')
             );
 
-        if($buscar == ''){
             $contratos = $query
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
                     ->where('contratos.entregado', '=', 0)
                     ->where('entregas.fecha_program','!=',NULL);
-        }
-        else{
+        
             switch($criterio){
                 case 'c.nombre':{
-                    $contratos = $query
-                    ->where('contratos.status', '!=', 0)
-                    ->where('contratos.status', '!=', 2)
-                    ->where('contratos.entregado', '=', 0)
-                    ->where('entregas.fecha_program','!=',NULL)
-                    ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%');
+                    if($buscar != '')
+                        $contratos = $contratos->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%');
                     break;
                 }
 
                 case 'entregas.fecha_program':{
-                    $contratos = $query
-                    ->where('contratos.status', '!=', 0)
-                    ->where('contratos.status', '!=', 2)
-                    ->where('contratos.entregado', '=', 0)
-                    ->where('entregas.fecha_program','!=',NULL)
-                    ->whereBetween($criterio, [$buscar, $b_etapa]);
+                    if($buscar != '')
+                        $contratos = $contratos->whereBetween($criterio, [$buscar, $b_etapa]);
                     break;
                 }
 
                 case 'contratos.id':{
-                    $contratos = $query
-                    ->where('contratos.status', '!=', 0)
-                    ->where('contratos.status', '!=', 2)
-                    ->where('contratos.entregado', '=', 0)
-                    ->where('entregas.fecha_program','!=',NULL)
-                    ->where($criterio, '=', $buscar);
+                    if($buscar != '')
+                        $contratos = $contratos->where($criterio, '=', $buscar);
                     break;
                 }
 
                 case 'lotes.fraccionamiento_id':{
-                    if($b_etapa == '' && $b_manzana == '' && $b_lote == ''){
-                        $contratos = $query
-                        ->where('contratos.status', '!=', 0)
-                        ->where('contratos.status', '!=', 2)
-                        ->where('contratos.entregado', '=', 0)
-                        ->where('entregas.fecha_program','!=',NULL)
-                        ->where($criterio, '=', $buscar);
-                    }
-                    elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
-                        $contratos = $query
-                        ->where('contratos.status', '!=', 0)
-                        ->where('contratos.status', '!=', 2)
-                        ->where('contratos.entregado', '=', 0)
-                        ->where('entregas.fecha_program','!=',NULL)
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa);
-                    }
-                    elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
-                        $contratos = $query
-                        ->where('contratos.status', '!=', 0)
-                        ->where('contratos.status', '!=', 2)
-                        ->where('contratos.entregado', '=', 0)
-                        ->where('entregas.fecha_program','!=',NULL)
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
-                    }
-                    elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
-                        $contratos = $query
-                        ->where('contratos.status', '!=', 0)
-                        ->where('contratos.status', '!=', 2)
-                        ->where('contratos.entregado', '=', 0)
-                        ->where('entregas.fecha_program','!=',NULL)
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->where('lotes.num_lote', '=', $b_lote)
-                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
-                    }
-                    elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
-                        $contratos = $query
-                        ->where('contratos.status', '!=', 0)
-                        ->where('contratos.status', '!=', 2)
-                        ->where('contratos.entregado', '=', 0)
-                        ->where('entregas.fecha_program','!=',NULL)
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->where('lotes.num_lote', '=', $b_lote);
-                    }
-                    elseif($b_etapa == '' && $b_manzana != '' && $b_lote != ''){
-                        $contratos = $query
-                        ->where('contratos.status', '!=', 0)
-                        ->where('contratos.status', '!=', 2)
-                        ->where('contratos.entregado', '=', 0)
-                        ->where('entregas.fecha_program','!=',NULL)
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.num_lote', '=', $b_lote)
-                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
-                    }
-                    elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
-                        $contratos = $query
-                        ->where('contratos.status', '!=', 0)
-                        ->where('contratos.status', '!=', 2)
-                        ->where('contratos.entregado', '=', 0)
-                        ->where('entregas.fecha_program','!=',NULL)
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.num_lote', '=', $b_lote);
-                    }
-                    elseif($b_etapa == '' && $b_manzana != '' && $b_lote == ''){
-                        $contratos = $query
-                        ->where('contratos.status', '!=', 0)
-                        ->where('contratos.status', '!=', 2)
-                        ->where('contratos.entregado', '=', 0)
-                        ->where('entregas.fecha_program','!=',NULL)
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
-                    }
-
+                        if($buscar != '')
+                            $contratos = $contratos->where($criterio, '=', $buscar);
+                        if($b_etapa != '')
+                            $contratos = $contratos->where('lotes.etapa_id', '=', $b_etapa);
+                        if($b_lote != '')
+                            $contratos = $contratos->where('lotes.num_lote', '=', $b_lote);
+                        if($b_manzana != '')
+                            $contratos = $contratos->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
                     break;
                 }
             }
-        }
 
         $contratos = $contratos->orderBy('licencias.avance','desc')
                     ->orderBy('lotes.fecha_entrega_obra','desc')
@@ -239,143 +155,42 @@ class RevisionPreviaController extends Controller
                 
                 DB::raw('DATEDIFF(current_date,entregas.fecha_program) as diferencia')
         );
-
-        if($buscar == ''){
+ 
             $contratos = $query
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
                     ->where('entregas.fecha_program','!=',NULL)
                     ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
                     ->where('entregas.revision_previa','!=',0);
-        }
-        else{
+        
             switch($criterio){
                 case 'c.nombre':{
-                    $contratos = $query
-                        ->where('contratos.status', '!=', 0)
-                        ->where('contratos.status', '!=', 2)
-                        ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
-                        ->where('entregas.revision_previa','!=',0)
-                        ->where('entregas.fecha_program','!=',NULL)
-                        ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%');
+                    if($buscar != '')
+                        $contratos = $contratos->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%');
                     break;
                 }
-
                 case 'entregas.fecha_program':{
-                    $contratos = $query
-                        ->where('contratos.status', '!=', 0)
-                        ->where('contratos.status', '!=', 2)
-                        ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
-                        ->where('entregas.revision_previa','!=',0)
-                        ->where('entregas.fecha_program','!=',NULL)
-                        ->whereBetween($criterio, [$buscar, $b_etapa]);
+                    if($buscar != '')
+                        $contratos = $contratos->whereBetween($criterio, [$buscar, $b_etapa]);
                     break;
                 }
-
                 case 'contratos.id':{
-                    $contratos = $query
-                        ->where('contratos.status', '!=', 0)
-                        ->where('contratos.status', '!=', 2)
-                        ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
-                        ->where('entregas.revision_previa','!=',0)
-                        ->where('entregas.fecha_program','!=',NULL)
-                        ->where($criterio, '=', $buscar);
+                    if($buscar != '')
+                        $contratos = $contratos->where($criterio, '=', $buscar);
                     break;
                 }
-
                 case 'lotes.fraccionamiento_id':{
-                    if($b_etapa == '' && $b_manzana == '' && $b_lote == ''){
-                        $contratos = $query
-                            ->where('contratos.status', '!=', 0)
-                            ->where('contratos.status', '!=', 2)
-                            ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
-                            ->where('entregas.revision_previa','!=',0)
-                            ->where('entregas.fecha_program','!=',NULL)
-                            ->where($criterio, '=', $buscar);
-                    }
-                    elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
-                        $contratos = $query
-                            ->where('contratos.status', '!=', 0)
-                            ->where('contratos.status', '!=', 2)
-                            ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
-                            ->where('entregas.revision_previa','!=',0)
-                            ->where('entregas.fecha_program','!=',NULL)
-                            ->where($criterio, '=', $buscar)
-                            ->where('lotes.etapa_id', '=', $b_etapa);
-
-                    }
-                    elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
-                        $contratos = $query
-                            ->where('contratos.status', '!=', 0)
-                            ->where('contratos.status', '!=', 2)
-                            ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
-                            ->where('entregas.revision_previa','!=',0)
-                            ->where('entregas.fecha_program','!=',NULL)
-                            ->where($criterio, '=', $buscar)
-                            ->where('lotes.etapa_id', '=', $b_etapa)
-                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
-                    }
-                    elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
-                        $contratos = $query
-                            ->where('contratos.status', '!=', 0)
-                            ->where('contratos.status', '!=', 2)
-                            ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
-                            ->where('entregas.revision_previa','!=',0)
-                            ->where('entregas.fecha_program','!=',NULL)
-                            ->where($criterio, '=', $buscar)
-                            ->where('lotes.etapa_id', '=', $b_etapa)
-                            ->where('lotes.num_lote', '=', $b_lote)
-                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
-
-                    }
-                    elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
-                        $contratos = $query
-                            ->where('contratos.status', '!=', 0)
-                            ->where('contratos.status', '!=', 2)
-                            ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
-                            ->where('entregas.revision_previa','!=',0)
-                            ->where('entregas.fecha_program','!=',NULL)
-                            ->where($criterio, '=', $buscar)
-                            ->where('lotes.etapa_id', '=', $b_etapa)
-                            ->where('lotes.num_lote', '=', $b_lote);
-                        }
-                    elseif($b_etapa == '' && $b_manzana != '' && $b_lote != ''){
-                        $contratos = $query
-                            ->where('contratos.status', '!=', 0)
-                            ->where('contratos.status', '!=', 2)
-                            ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
-                            ->where('entregas.revision_previa','!=',0)
-                            ->where('entregas.fecha_program','!=',NULL)
-                            ->where($criterio, '=', $buscar)
-                            ->where('lotes.num_lote', '=', $b_lote)
-                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
-
-                    }
-                    elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
-                        $contratos = $query
-                            ->where('contratos.status', '!=', 0)
-                            ->where('contratos.status', '!=', 2)
-                            ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
-                            ->where('entregas.revision_previa','!=',0)
-                            ->where('entregas.fecha_program','!=',NULL)
-                            ->where($criterio, '=', $buscar)
-                            ->where('lotes.num_lote', '=', $b_lote);
-
-                    }
-                    elseif($b_etapa == '' && $b_manzana != '' && $b_lote == ''){
-                        $contratos = $query
-                            ->where('contratos.status', '!=', 0)
-                            ->where('contratos.status', '!=', 2)
-                            ->where('revisiones_previas.id_contratista','=',Auth::user()->id)
-                            ->where('entregas.revision_previa','!=',0)
-                            ->where('entregas.fecha_program','!=',NULL)
-                            ->where($criterio, '=', $buscar)
-                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
-                    }
+                        if($buscar != '')
+                            $contratos = $contratos->where($criterio, '=', $buscar);
+                        if($b_etapa != '')
+                            $contratos = $contratos->where('lotes.etapa_id', '=', $b_etapa);
+                        if($b_lote != '')
+                            $contratos = $contratos->where('lotes.num_lote', '=', $b_lote);
+                        if($b_manzana != '')
+                            $contratos = $contratos->where('lotes.manzana', 'like', '%'. $b_manzana . '%');
                     break;
                 }
             }
-        }
 
         $contratos = $contratos->orderBy('licencias.avance','desc')
                                 ->orderBy('lotes.fecha_entrega_obra','desc')

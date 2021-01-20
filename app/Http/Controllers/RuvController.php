@@ -26,32 +26,15 @@ class RuvController extends Controller
                             'modelos.nombre as modelo', 'lotes.manzana','lotes.calle','lotes.numero','lotes.paq_ruv',
                             'lotes.terreno','lotes.construccion','lotes.paq_ruv')
                             ->where('modelos.nombre','!=','Terreno');
-
-        if($proyecto == ''){
+        
             $lotes = $query->where('lotes.paq_ruv','=',NULL);
-        }
-        else{
-            if($etapa == '' && $manzana == ''){
-                $lotes = $query->where('lotes.paq_ruv','=',NULL)
-                    ->where('lotes.fraccionamiento_id','=',$proyecto);
-            }
-            elseif($etapa != '' && $manzana == ''){
-                $lotes = $query->where('lotes.paq_ruv','=',NULL)
-                    ->where('lotes.fraccionamiento_id','=',$proyecto)
-                    ->where('lotes.etapa_id','=',$etapa);
-            }
-            elseif($etapa == '' && $manzana != ''){
-                $lotes = $query->where('lotes.paq_ruv','=',NULL)
-                    ->where('lotes.fraccionamiento_id','=',$proyecto)
-                    ->where('lotes.manzana','like','%'.$manzana.'%');
-            }
-            elseif($etapa != '' && $manzana != ''){
-                $lotes = $query->where('lotes.paq_ruv','=',NULL)
-                    ->where('lotes.fraccionamiento_id','=',$proyecto)
-                    ->where('lotes.etapa_id','=',$etapa)
-                    ->where('lotes.manzana','like','%'.$manzana.'%');
-            }
-        }
+          
+            if($proyecto != '')
+                $lotes = $lotes->where('lotes.fraccionamiento_id','=',$proyecto);
+            if($etapa != '')
+                $lotes = $lotes->where('lotes.etapa_id','=',$etapa);
+            if($manzana != '')
+                $lotes = $lotes->where('lotes.manzana','like','%'.$manzana.'%');
 
         if($request->empresa != ''){
             $lotes = $lotes->where('lotes.emp_constructora','=',$request->empresa);
@@ -91,72 +74,18 @@ class RuvController extends Controller
                     ->select('lotes.id','etapas.num_etapa','fraccionamientos.nombre as proyecto','lotes.num_lote',
                             'modelos.nombre as modelo', 'lotes.manzana','lotes.calle','lotes.numero','lotes.paq_ruv',
                             'lotes.terreno','lotes.construccion','ruvs.fecha_siembra');
-
-        if($fecha == ''){
-            if($proyecto == ''){
-                $lotes = $query->where('lotes.paq_ruv','!=',NULL);
-            }
-            else{
-                if($etapa == '' && $manzana == ''){
-                    $lotes = $query->where('lotes.paq_ruv','!=',NULL)
-                        ->where('lotes.fraccionamiento_id','=',$proyecto);
-                }
-                elseif($etapa != '' && $manzana == ''){
-                    $lotes = $query->where('lotes.paq_ruv','!=',NULL)
-                        ->where('lotes.fraccionamiento_id','=',$proyecto)
-                        ->where('lotes.etapa_id','=',$etapa);
-                }
-                elseif($etapa == '' && $manzana != ''){
-                    $lotes = $query->where('lotes.paq_ruv','!=',NULL)
-                        ->where('lotes.fraccionamiento_id','=',$proyecto)
-                        ->where('lotes.manzana','like','%'.$manzana.'%');
-                }
-                elseif($etapa != '' && $manzana != ''){
-                    $lotes = $query->where('lotes.paq_ruv','!=',NULL)
-                        ->where('lotes.fraccionamiento_id','=',$proyecto)
-                        ->where('lotes.etapa_id','=',$etapa)
-                        ->where('lotes.manzana','like','%'.$manzana.'%');
-                }
-    
-            }
-        }
-        else{
-            if($proyecto == ''){
-                $lotes = $query->where('lotes.paq_ruv','!=',NULL)
-                    ->whereBetween('ruvs.fecha_siembra', [$fecha, $fecha2]);
-            }
-            else{
-                if($etapa == '' && $manzana == ''){
-                    $lotes = $query->where('lotes.paq_ruv','!=',NULL)
-                        ->where('lotes.fraccionamiento_id','=',$proyecto)
-                        ->whereBetween('ruvs.fecha_siembra', [$fecha, $fecha2]);
-                }
-                elseif($etapa != '' && $manzana == ''){
-                    $lotes = $query->where('lotes.paq_ruv','!=',NULL)
-                        ->where('lotes.fraccionamiento_id','=',$proyecto)
-                        ->whereBetween('ruvs.fecha_siembra', [$fecha, $fecha2])
-                        ->where('lotes.etapa_id','=',$etapa);
-                }
-                elseif($etapa == '' && $manzana != ''){
-                    $lotes = $query->where('lotes.paq_ruv','!=',NULL)
-                        ->where('lotes.fraccionamiento_id','=',$proyecto)
-                        ->whereBetween('ruvs.fecha_siembra', [$fecha, $fecha2])
-                        ->where('lotes.manzana','like','%'.$manzana.'%');
-                }
-                elseif($etapa != '' && $manzana != ''){
-                    $lotes = $query->where('lotes.paq_ruv','!=',NULL)
-                        ->where('lotes.fraccionamiento_id','=',$proyecto)
-                        ->whereBetween('ruvs.fecha_siembra', [$fecha, $fecha2])
-                        ->where('lotes.etapa_id','=',$etapa)
-                        ->where('lotes.manzana','like','%'.$manzana.'%');
-                }
-    
-            }
-        }
-
-        if($request->empresa != ''){
+        $lotes = $query->where('lotes.paq_ruv','!=',NULL);
+ 
+        if($proyecto != '')
+            $lotes = $lotes->where('lotes.fraccionamiento_id','=',$proyecto);
+        if($fecha != '')
+            $lotes = $lotes->whereBetween('ruvs.fecha_siembra', [$fecha, $fecha2]);
+        if($etapa != '')
+            $lotes = $lotes->where('lotes.etapa_id','=',$etapa);
+        if($manzana != '')
+            $lotes = $lotes->where('lotes.manzana','like','%'.$manzana.'%');
+        if($request->empresa != '')
             $lotes = $lotes->where('lotes.emp_constructora','=',$request->empresa);
-        }
         
         $lotes = $lotes->orderBy('proyecto','asc')->orderBy('etapas.num_etapa','asc')
         ->orderBy('lotes.num_lote','asc')->paginate(10);
@@ -197,7 +126,6 @@ class RuvController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
         }
-
     }
 
     public function indexRuv(Request $request){
@@ -207,7 +135,7 @@ class RuvController extends Controller
         $lote = $request->b_lote;
         $paquete = $request->b_paquete;
 
-        $query = Ruv::join('lotes','ruvs.id','=','lotes.id')
+        $lotes = Ruv::join('lotes','ruvs.id','=','lotes.id')
                 ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                 ->join('etapas','lotes.etapa_id','=','etapas.id')
                 ->join('modelos','lotes.modelo_id','=','modelos.id')
@@ -219,26 +147,14 @@ class RuvController extends Controller
                         'ruvs.fecha_dtu', 'lotes.emp_constructora', 'lotes.emp_terreno',
                         'personal.nombre','personal.apellidos','lotes.manzana');
 
-        
-        if($buscar == '' && $etapa == '' && $manzana == '' && $lote == ''){
-            $lotes = $query;
-        }
-        elseif($buscar != ''  && $lote == ''){
-            $lotes = $query->where('lotes.fraccionamiento_id','=',$buscar)
-                            ->where('etapas.num_etapa','like','%'.$etapa.'%')
-                            ->where('lotes.manzana','like','%'.$manzana.'%');
-        }
-        elseif($buscar != '' && $lote != ''){
-            $lotes = $query->where('lotes.fraccionamiento_id','=',$buscar)
-                            ->where('etapas.num_etapa','like','%'.$etapa.'%')
-                            ->where('lotes.manzana','like','%'.$manzana.'%')
-                            ->where('lotes.num_lote','=',$lote);
-        }
-        elseif($buscar == '' && $lote != ''){
-            $lotes = $query->where('etapas.num_etapa','like','%'.$etapa.'%')
-                            ->where('lotes.manzana','like','%'.$manzana.'%')
-                            ->where('lotes.num_lote','=',$lote);
-        }
+        if($buscar != '')
+            $lotes = $lotes->where('lotes.fraccionamiento_id','=',$buscar);
+        if($etapa != '')
+            $lotes = $lotes->where('etapas.num_etapa','like','%'.$etapa.'%');
+        if($manzana != '')
+            $lotes = $lotes->where('lotes.manzana','like','%'.$manzana.'%');
+        if($lote != '')
+            $lotes = $lotes->where('lotes.num_lote','=',$lote);
 
         if($paquete != ''){
             $lotes = $lotes->where('lotes.paq_ruv','like','%'.$paquete.'%');
@@ -247,8 +163,6 @@ class RuvController extends Controller
         if($request->empresa != ''){
             $lotes = $lotes->where('lotes.emp_constructora','=',$request->empresa);
         }
-       
-        
 
              $lotes= $lotes->orderBy('proyecto','asc')
                     ->orderBy('etapas.num_etapa','asc')
@@ -331,7 +245,7 @@ class RuvController extends Controller
         $lote = $request->b_lote;
         $paquete = $request->b_paquete;
 
-        $query = Ruv::join('lotes','ruvs.id','=','lotes.id')
+        $lotes = Ruv::join('lotes','ruvs.id','=','lotes.id')
                 ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                 ->join('etapas','lotes.etapa_id','=','etapas.id')
                 ->join('modelos','lotes.modelo_id','=','modelos.id')
@@ -343,26 +257,14 @@ class RuvController extends Controller
                         'ruvs.fecha_dtu',
                         'personal.nombre','personal.apellidos','lotes.manzana');
 
-        
-        if($buscar == '' && $etapa == '' && $manzana == '' && $lote == ''){
-            $lotes = $query;
-        }
-        elseif($buscar != ''  && $lote == ''){
-            $lotes = $query->where('lotes.fraccionamiento_id','=',$buscar)
-                            ->where('etapas.num_etapa','like','%'.$etapa.'%')
-                            ->where('lotes.manzana','like','%'.$manzana.'%');
-        }
-        elseif($buscar != '' && $lote != ''){
-            $lotes = $query->where('lotes.fraccionamiento_id','=',$buscar)
-                            ->where('etapas.num_etapa','like','%'.$etapa.'%')
-                            ->where('lotes.manzana','like','%'.$manzana.'%')
-                            ->where('lotes.num_lote','=',$lote);
-        }
-        elseif($buscar == '' && $lote != ''){
-            $lotes = $query->where('etapas.num_etapa','like','%'.$etapa.'%')
-                            ->where('lotes.manzana','like','%'.$manzana.'%')
-                            ->where('lotes.num_lote','=',$lote);
-        }
+        if($buscar != '')
+            $lotes = $lotes->where('lotes.fraccionamiento_id','=',$buscar);
+        if($etapa != '')
+            $lotes = $lotes->where('etapas.num_etapa','like','%'.$etapa.'%');
+        if($manzana != '')
+            $lotes = $lotes->where('lotes.manzana','like','%'.$manzana.'%');
+        if($lote != '')
+            $lotes = $lotes->where('lotes.num_lote','=',$lote);
 
         if($paquete != ''){
             $lotes = $lotes->where('lotes.paq_ruv','like','%'.$paquete.'%');
@@ -371,15 +273,12 @@ class RuvController extends Controller
         if($request->empresa != ''){
             $lotes = $lotes->where('lotes.emp_constructora','=',$request->empresa);
         }
-       
-        
 
              $lotes= $lotes->orderBy('proyecto','asc')
                     ->orderBy('etapas.num_etapa','asc')
                     ->orderBy('modelo','asc')
                     ->orderBy('lotes.num_lote','asc')
                     ->orderBy('lotes.paq_ruv','asc')->get();
-
 
             return Excel::create(
                 'RUV',

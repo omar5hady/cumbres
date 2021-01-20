@@ -88,180 +88,46 @@ class MedioPublicitarioController extends Controller
         $publicidadVentas = Medio_publicitario::select('id','nombre as publicidad')->orderBy('publicidad','asc')->get();
         $publicidadProspectos = Medio_publicitario::select('id','nombre as publicidad')->orderBy('publicidad','asc')->get();
 
-        ///Filtros 
-        if($desde == '' && $hasta == '' && $etapa == '' && $asesor == '' && $proyecto == ''){
-            ////////// Arreglo de ID de clientes con contrato firmado //////////////
-                $clientesID_contrato = Contrato::join('creditos','contratos.id','=','creditos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->select('clientes.id')->where('contratos.status','=',3)
-                            ->whereBetween('clientes.created_at', ['2000-02-01', $hoy])
-                            ->orderBy('clientes.id','asc')->get();
-
-            ////////// Arreglo de ID de todos los prospectos (con y sin contrato) //////////////
-                $prospectos = Cliente::select('id')->where('clasificacion','!=',7)
-                            ->whereBetween('clientes.created_at', ['2000-02-01', $hoy])
-                            ->where('clasificacion','!=',5)->orderBy('id','asc')->distinct()->get();
-        }
-        if($desde != '' && $hasta != '' && $etapa == '' && $asesor == '' && $proyecto == ''){
-            ////////// Arreglo de ID de clientes con contrato firmado //////////////
-                $clientesID_contrato = Contrato::join('creditos','contratos.id','=','creditos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->select('clientes.id','clientes.created_at')->where('contratos.status','=',3)
-                            ->whereBetween('contratos.fecha', [$desde, $hasta])
-                            ->orderBy('clientes.id','asc')->get();
-
-            ////////// Arreglo de ID de todos los prospectos (con y sin contrato) //////////////
-                $prospectos = Cliente::select('id')->where('clasificacion','!=',7)
-                ->where('clasificacion','!=',5)
-                ->whereBetween('created_at', [$desde, $hasta])->orderBy('id','asc')->distinct()->get();
-        }
-        elseif($desde == '' && $hasta == '' && $etapa == '' && $asesor == '' && $proyecto != ''){
+        ///Filtros             
             ////////// Arreglo de ID de clientes con contrato firmado //////////////
             $clientesID_contrato = Contrato::join('creditos','contratos.id','=','creditos.id')
                         ->join('lotes','creditos.lote_id','=','lotes.id')
                         ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->select('clientes.id')->where('contratos.status','=',3)
-                        ->where('lotes.fraccionamiento_id','=',$proyecto)
-                        ->orderBy('clientes.id','asc')->get();
+                        ->select('clientes.id')->where('contratos.status','=',3);
+
+                        if($proyecto != '')
+                            $clientesID_contrato = $clientesID_contrato->where('lotes.fraccionamiento_id','=',$proyecto);
+                        if($etapa != '')
+                            $clientesID_contrato = $clientesID_contrato->where('lotes.etapa_id','=',$etapa);
+                        if($asesor != '')
+                            $clientesID_contrato = $clientesID_contrato->where('creditos.vendedor_id','=',$asesor);
+                        if($desde != '' && $hasta != ''){
+                            $clientesID_contrato = $clientesID_contrato->whereBetween('contratos.fecha', [$desde, $hasta]);
+                        }
+                        else{
+                            $clientesID_contrato = $clientesID_contrato->whereBetween('clientes.created_at', ['2000-02-01', $hoy]);
+                        }
+                        
+                        
+                        $clientesID_contrato = $clientesID_contrato->orderBy('clientes.id','asc')->get();
 
             ////////// Arreglo de ID de todos los prospectos (con y sin contrato) //////////////
             $prospectos = Cliente::select('id')->where('clasificacion','!=',7)
-                        ->where('clasificacion','!=',5)
-                        ->where('proyecto_interes_id','=',$proyecto)->orderBy('id','asc')->distinct()->get();
-        }
-        elseif($desde == '' && $hasta == '' && $etapa != '' && $asesor == '' && $proyecto != ''){
-            ////////// Arreglo de ID de clientes con contrato firmado //////////////
-            $clientesID_contrato = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->select('clientes.id')->where('contratos.status','=',3)
-                        ->where('lotes.fraccionamiento_id','=',$proyecto)
-                        ->where('lotes.etapa_id','=',$etapa)
-                        ->orderBy('clientes.id','asc')->get();
+                        ->where('clasificacion','!=',5);
+                        if($proyecto != '')
+                            $prospectos = $prospectos->where('proyecto_interes_id','=',$proyecto);
+                        if($asesor != '')
+                            $prospectos = $prospectos->where('vendedor_id','=',$asesor);
+                        if($desde != '' && $hasta != ''){
+                            $prospectos = $prospectos->whereBetween('created_at', [$desde, $hasta]);
+                        }
+                        else{
+                            $prospectos = $prospectos->whereBetween('clientes.created_at', ['2000-02-01', $hoy]);
+                        }
 
-            ////////// Arreglo de ID de todos los prospectos (con y sin contrato) //////////////
-            $prospectos = Cliente::select('id')->where('clasificacion','!=',7)
-                        ->where('clasificacion','!=',5)
-                        ->where('proyecto_interes_id','=',$proyecto)->orderBy('id','asc')->distinct()->get();
-        }
-        elseif($desde == '' && $hasta == '' && $etapa == '' && $asesor != '' && $proyecto == ''){
-            ////////// Arreglo de ID de clientes con contrato firmado //////////////
-            $clientesID_contrato = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->select('clientes.id')->where('contratos.status','=',3)
-                        ->where('creditos.vendedor_id','=',$asesor)
-                        ->orderBy('clientes.id','asc')->get();
-
-            ////////// Arreglo de ID de todos los prospectos (con y sin contrato) //////////////
-            $prospectos = Cliente::select('id')->where('clasificacion','!=',7)
-                        ->where('clasificacion','!=',5)
-                        ->where('vendedor_id','=',$asesor)
-                        ->orderBy('id','asc')->distinct()->get();
-        }
-        //Filtros 2
-        elseif($desde != '' && $hasta != '' && $etapa == '' && $asesor != '' && $proyecto == ''){
-            ////////// Arreglo de ID de clientes con contrato firmado //////////////
-                $clientesID_contrato = Contrato::join('creditos','contratos.id','=','creditos.id')
-                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->select('clientes.id','clientes.created_at')->where('contratos.status','=',3)
-                            ->where('creditos.vendedor_id','=',$asesor)
-                            ->whereBetween('contratos.fecha', [$desde, $hasta])
-                            ->orderBy('clientes.id','asc')->get();
-
-            ////////// Arreglo de ID de todos los prospectos (con y sin contrato) //////////////
-                $prospectos = Cliente::select('id')->where('clasificacion','!=',7)
-                ->where('clasificacion','!=',5)
-                ->whereBetween('created_at', [$desde, $hasta])
-                ->where('vendedor_id','=',$asesor)->orderBy('id','asc')->distinct()->get();
-        }
-        elseif($desde != '' && $hasta != '' && $etapa == '' && $asesor == '' && $proyecto != ''){
-            ////////// Arreglo de ID de clientes con contrato firmado //////////////
-            $clientesID_contrato = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->select('clientes.id')->where('contratos.status','=',3)
-                        ->where('lotes.fraccionamiento_id','=',$proyecto)
-                        ->whereBetween('contratos.fecha', [$desde, $hasta])
-                        ->orderBy('clientes.id','asc')->get();
-
-            ////////// Arreglo de ID de todos los prospectos (con y sin contrato) //////////////
-            $prospectos = Cliente::select('id')->where('clasificacion','!=',7)
-                        ->where('clasificacion','!=',5)
-                        ->whereBetween('created_at', [$desde, $hasta])
-                        ->where('proyecto_interes_id','=',$proyecto)->orderBy('id','asc')->distinct()->get();
-        }
-        elseif($desde != '' && $hasta != '' && $etapa != '' && $asesor == '' && $proyecto != ''){
-            ////////// Arreglo de ID de clientes con contrato firmado //////////////
-            $clientesID_contrato = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->select('clientes.id')->where('contratos.status','=',3)
-                        ->where('lotes.fraccionamiento_id','=',$proyecto)
-                        ->where('lotes.etapa_id','=',$etapa)
-                        ->whereBetween('contratos.fecha', [$desde, $hasta])
-                        ->orderBy('clientes.id','asc')->get();
-
-            ////////// Arreglo de ID de todos los prospectos (con y sin contrato) //////////////
-            $prospectos = Cliente::select('id')->where('clasificacion','!=',7)
-                        ->where('clasificacion','!=',5)
-                        ->where('proyecto_interes_id','=',$proyecto)
-                        ->whereBetween('created_at', [$desde, $hasta])->orderBy('id','asc')->distinct()->get();
-        }
-        elseif($desde == '' && $hasta == '' && $etapa == '' && $asesor != '' && $proyecto != ''){
-            ////////// Arreglo de ID de clientes con contrato firmado //////////////
-            $clientesID_contrato = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->select('clientes.id')->where('contratos.status','=',3)
-                        ->where('creditos.vendedor_id','=',$asesor)
-                        ->where('lotes.fraccionamiento_id','=',$proyecto)
-                        ->orderBy('clientes.id','asc')->get();
-
-            ////////// Arreglo de ID de todos los prospectos (con y sin contrato) //////////////
-            $prospectos = Cliente::select('id')->where('clasificacion','!=',7)
-                        ->where('clasificacion','!=',5)
-                        ->where('vendedor_id','=',$asesor)
-                        ->where('proyecto_interes_id','=',$proyecto)
-                        ->orderBy('id','asc')->distinct()->get();
-        }
-        elseif($desde == '' && $hasta == '' && $etapa != '' && $asesor != '' && $proyecto != ''){
-            ////////// Arreglo de ID de clientes con contrato firmado //////////////
-            $clientesID_contrato = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->select('clientes.id')->where('contratos.status','=',3)
-                        ->where('creditos.vendedor_id','=',$asesor)
-                        ->where('lotes.fraccionamiento_id','=',$proyecto)
-                        ->where('lotes.etapa_id','=',$etapa)
-                        ->orderBy('clientes.id','asc')->get();
-
-            ////////// Arreglo de ID de todos los prospectos (con y sin contrato) //////////////
-            $prospectos = Cliente::select('id')->where('clasificacion','!=',7)
-                        ->where('clasificacion','!=',5)
-                        ->where('vendedor_id','=',$asesor)
-                        ->where('proyecto_interes_id','=',$proyecto)
-                        ->orderBy('id','asc')->distinct()->get();
-        }
-        elseif($desde != '' && $hasta != '' && $etapa != '' && $asesor != '' && $proyecto != ''){
-            ////////// Arreglo de ID de clientes con contrato firmado //////////////
-            $clientesID_contrato = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->select('clientes.id')->where('contratos.status','=',3)
-                        ->where('lotes.fraccionamiento_id','=',$proyecto)
-                        ->where('lotes.etapa_id','=',$etapa)
-                        ->where('creditos.vendedor_id','=',$asesor)
-                        ->whereBetween('contratos.fecha', [$desde, $hasta])
-                        ->orderBy('clientes.id','asc')->get();
-
-            ////////// Arreglo de ID de todos los prospectos (con y sin contrato) //////////////
-            $prospectos = Cliente::select('id')->where('clasificacion','!=',7)
-                        ->where('clasificacion','!=',5)
-                        ->where('proyecto_interes_id','=',$proyecto)
-                        ->where('vendedor_id','=',$asesor)
-                        ->whereBetween('created_at', [$desde, $hasta])->orderBy('id','asc')->distinct()->get();
-        }
+                        $prospectos = $prospectos->orderBy('id','asc')->distinct()->get();
+        
+        
 
         ////////// Llenado por publicidad para ventas
 

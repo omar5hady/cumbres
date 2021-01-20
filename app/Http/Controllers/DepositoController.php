@@ -577,6 +577,8 @@ class DepositoController extends Controller
             $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
         }
 
+        $depositos = $query;
+
         if($fecha1 != '' && $fecha2 != '')
             $depositos = $depositos->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2]);
         if($banco != '')

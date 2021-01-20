@@ -19,21 +19,16 @@ class PrecioEtapaController extends Controller
         $buscar = $request->buscar;
         $criterio = $request->criterio;
 
-        $query = Precio_etapa::join('fraccionamientos','precios_etapas.fraccionamiento_id','=','fraccionamientos.id')
+        $precios_etapas = Precio_etapa::join('fraccionamientos','precios_etapas.fraccionamiento_id','=','fraccionamientos.id')
             ->join('etapas','precios_etapas.etapa_id','=','etapas.id')
             ->select('fraccionamientos.nombre as fraccionamiento','etapas.num_etapa as etapas', 
                 'precios_etapas.precio_excedente','precios_etapas.id',
                 'precios_etapas.etapa_id','precios_etapas.fraccionamiento_id' );
         
-        if($buscar==''){
-            $precios_etapas = $query
-                ->orderBy('id','precios_etapas.fraccionamiento_id')->paginate(8);
-        }
-       else{
-        $precios_etapas = $query
-            ->where($criterio, 'like', '%'. $buscar . '%')
-            ->orderBy('id','precios_etapas.fraccionamiento_id')->paginate(8);
-        }
+            if($buscar != '')
+                $precios_etapas = $precios_etapas->where($criterio, 'like', '%'. $buscar . '%');
+
+        $precios_etapas = $precios_etapas->orderBy('id','precios_etapas.fraccionamiento_id')->paginate(8);
 
         return [
             'pagination' => [
@@ -57,11 +52,6 @@ class PrecioEtapaController extends Controller
         $precio_etapa->etapa_id = $request->etapa_id;
         $precio_etapa->precio_excedente = $request->precio_excedente;
         $precio_etapa->save();
-    }
-
-    public function edit($id)
-    {
-        //
     }
 
     //funcion para actualizar los datos
@@ -102,18 +92,6 @@ class PrecioEtapaController extends Controller
         $precio_etapa = Precio_etapa::findOrFail($request->id);
         $precio_etapa->delete();
     }
-
-    /*public function storePrecioModelo(Request $request){
-        if(!$request->ajax())return redirect('/');
-        $precio_etapa = Precio_etapa::findOrfail($request->id);
-        $precio_modelo = new Precio_modelo();
-                
-         $precio_modelo->precio_etapa_id = $precio_etapa->id;
-         $precio_modelo->modelo_id = $request->modelo_id;
-         $precio_modelo->precio_modelo = $request->arrayPreciosModelos;
-         $precio_modelo->save();
-
-    }*/
 
     public function selectPrecioEtapa(Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu

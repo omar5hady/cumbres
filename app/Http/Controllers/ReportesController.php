@@ -38,143 +38,92 @@ class ReportesController extends Controller
         $empresa_const = $request->empresa;
         $empresa_terreno = $request->empresa2;
 
-        if($proyecto == ''){
-            $proyectos = Etapa::join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
-                ->select('etapas.num_etapa','fraccionamientos.nombre as proyecto',
-                        'etapas.id','etapas.fraccionamiento_id')->orderBy('fraccionamientos.nombre','asc')
-                ->orderBy('etapas.num_etapa','asc')->get();
-        }
-        else{
-            if($etapa == ''){
-                $proyectos = Etapa::join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
-                    ->select('etapas.num_etapa','fraccionamientos.nombre as proyecto',
-                            'etapas.id','etapas.fraccionamiento_id')
-                            ->where('etapas.fraccionamiento_id','=',$proyecto)
-                            ->orderBy('fraccionamientos.nombre','asc')
-                    ->orderBy('etapas.num_etapa','asc')->get();
-            }
-            else{
-                $proyectos = Etapa::join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
-                    ->select('etapas.num_etapa','fraccionamientos.nombre as proyecto',
-                            'etapas.id','etapas.fraccionamiento_id')
-                            ->where('etapas.fraccionamiento_id','=',$proyecto)
-                            ->where('etapas.id','=',$etapa)->orderBy('fraccionamientos.nombre','asc')
-                    ->orderBy('etapas.num_etapa','asc')->get();
-
-            }
-        }
-
-
+        
+        $proyectos = Etapa::join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
+            ->select('etapas.num_etapa','fraccionamientos.nombre as proyecto','etapas.id','etapas.fraccionamiento_id');
         
 
+        if($proyecto != '')
+            $proyectos = $proyectos->where('etapas.fraccionamiento_id','=',$proyecto);
+        if($etapa != '')
+            $proyectos = $proyectos->where('etapas.id','=',$etapa);
+
+        $proyectos = $proyectos->orderBy('fraccionamientos.nombre','asc')
+                                ->orderBy('etapas.num_etapa','asc')->get();
+
         foreach($proyectos as $index => $proyecto){
-            if($empresa_terreno == '' && $empresa_const == ''){
-                $proyecto->totalLotes = Lote::where('fraccionamiento_id','=',$proyecto->fraccionamiento_id)
-                                    ->where('etapa_id','=',$proyecto->id)->count();
+            
+            $proyecto->totalLotes = Lote::where('fraccionamiento_id','=',$proyecto->fraccionamiento_id)
+                    ->where('etapa_id','=',$proyecto->id);
+                if($empresa_terreno != '')
+                    $proyecto->totalLotes = $proyecto->totalLotes->where('lotes.emp_terreno','like','%'.$empresa_terreno.'%');
+                if($empresa_const != '')
+                    $proyecto->totalLotes = $proyecto->totalLotes->where('lotes.emp_constructora','like','%'.$empresa_const.'%');
+            
+                $proyecto->totalLotes = $proyecto->totalLotes->count();
 
-                $firmadasAct = Expediente::join('contratos','expedientes.id','=','contratos.id')
-                                ->join('creditos','contratos.id','=','creditos.id')
-                                ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')->select('expedientes.id')
-                                ->where('expedientes.fecha_firma_esc','!=',NULL)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where('inst_seleccionadas.elegido','=',1)
-                                ->whereBetween('contratos.fecha', [$fecha1, $fecha2])
-                                ->where('lotes.fraccionamiento_id','=',$proyecto->fraccionamiento_id)
-                                ->where('lotes.etapa_id','=',$proyecto->id)->distinct()->count();
+            $firmadasAct = Expediente::join('contratos','expedientes.id','=','contratos.id')
+                    ->join('creditos','contratos.id','=','creditos.id')
+                    ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                    ->join('lotes','creditos.lote_id','=','lotes.id')->select('expedientes.id')
+                    ->where('expedientes.fecha_firma_esc','!=',NULL)
+                    ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
+                    ->where('inst_seleccionadas.elegido','=',1)
+                    ->where('lotes.fraccionamiento_id','=',$proyecto->fraccionamiento_id)
+                    ->where('lotes.etapa_id','=',$proyecto->id)
+                    ->whereBetween('contratos.fecha', [$fecha1, $fecha2]);
+                if($empresa_terreno != '')
+                    $firmadasAct = $firmadasAct->where('lotes.emp_terreno','like','%'.$empresa_terreno.'%');
+                if($empresa_const != '')
+                    $firmadasAct = $firmadasAct->where('lotes.emp_constructora','like','%'.$empresa_const.'%');
+                $firmadasAct = $firmadasAct->distinct()->count();
 
-                $firmadasAnt = Expediente::join('contratos','expedientes.id','=','contratos.id')
-                                ->join('creditos','contratos.id','=','creditos.id')
-                                ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')->select('expedientes.id')
-                                ->where('expedientes.fecha_firma_esc','!=',NULL)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where('inst_seleccionadas.elegido','=',1)
-                                ->where('contratos.fecha','<',$fecha1)
-                                ->where('lotes.fraccionamiento_id','=',$proyecto->fraccionamiento_id)
-                                ->where('lotes.etapa_id','=',$proyecto->id)->distinct()->count();
+            $firmadasAnt = Expediente::join('contratos','expedientes.id','=','contratos.id')
+                    ->join('creditos','contratos.id','=','creditos.id')
+                    ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                    ->join('lotes','creditos.lote_id','=','lotes.id')->select('expedientes.id')
+                    ->where('expedientes.fecha_firma_esc','!=',NULL)
+                    ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
+                    ->where('inst_seleccionadas.elegido','=',1)
+                    ->where('contratos.fecha','<',$fecha1)
+                    ->where('lotes.fraccionamiento_id','=',$proyecto->fraccionamiento_id)
+                    ->where('lotes.etapa_id','=',$proyecto->id);
+                if($empresa_terreno != '')
+                    $firmadasAnt = $firmadasAnt->where('lotes.emp_terreno','like','%'.$empresa_terreno.'%');
+                if($empresa_const != '')
+                    $firmadasAnt = $firmadasAnt->where('lotes.emp_constructora','like','%'.$empresa_const.'%');
+                $firmadasAnt = $firmadasAnt->distinct()->count();
 
-                $contadoAct = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')->select('expedientes.id')
-                                ->where('contratos.status','=',3)
-                                ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
-                                ->where('inst_seleccionadas.elegido','=',1)
-                                ->where('lotes.fraccionamiento_id','=',$proyecto->fraccionamiento_id)
-                                ->whereBetween('contratos.fecha', [$fecha1, $fecha2])
-                                ->where('lotes.etapa_id','=',$proyecto->id)->distinct()->count();
+            $contadoAct = Contrato::join('creditos','contratos.id','=','creditos.id')
+                    ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                    ->join('lotes','creditos.lote_id','=','lotes.id')->select('expedientes.id')
+                    ->where('contratos.status','=',3)
+                    ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
+                    ->where('inst_seleccionadas.elegido','=',1)
+                    ->where('lotes.fraccionamiento_id','=',$proyecto->fraccionamiento_id)
+                    ->whereBetween('contratos.fecha', [$fecha1, $fecha2])
+                    ->where('lotes.etapa_id','=',$proyecto->id);
+                if($empresa_terreno != '')
+                    $contadoAct = $contadoAct->where('lotes.emp_terreno','like','%'.$empresa_terreno.'%');
+                if($empresa_const != '')
+                    $contadoAct = $contadoAct->where('lotes.emp_constructora','like','%'.$empresa_const.'%');
+                $contadoAct = $contadoAct->distinct()->count();
 
-                $contadoAnt = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')->select('expedientes.id')
-                                ->where('contratos.status','=',3)
-                                ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
-                                ->where('inst_seleccionadas.elegido','=',1)
-                                ->where('lotes.fraccionamiento_id','=',$proyecto->fraccionamiento_id)
-                                ->where('contratos.fecha','<',$fecha1)
-                                ->where('lotes.etapa_id','=',$proyecto->id)->distinct()->count();
-
-            }
-            else{
-                $proyecto->totalLotes = Lote::where('fraccionamiento_id','=',$proyecto->fraccionamiento_id)
-                                    ->where('lotes.emp_terreno','like','%'.$empresa_terreno.'%')
-                                    ->where('lotes.emp_constructora','like','%'.$empresa_const.'%')
-                                    ->where('etapa_id','=',$proyecto->id)->count();
-
-                $firmadasAct = Expediente::join('contratos','expedientes.id','=','contratos.id')
-                                ->join('creditos','contratos.id','=','creditos.id')
-                                ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')->select('expedientes.id')
-                                ->where('expedientes.fecha_firma_esc','!=',NULL)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where('inst_seleccionadas.elegido','=',1)
-                                ->whereBetween('contratos.fecha', [$fecha1, $fecha2])
-                                ->where('lotes.fraccionamiento_id','=',$proyecto->fraccionamiento_id)
-                                ->where('lotes.etapa_id','=',$proyecto->id)
-                                ->where('lotes.emp_terreno','like','%'.$empresa_terreno.'%')
-                                    ->where('lotes.emp_constructora','like','%'.$empresa_const.'%')
-                                ->distinct()->count();
-
-                $firmadasAnt = Expediente::join('contratos','expedientes.id','=','contratos.id')
-                                ->join('creditos','contratos.id','=','creditos.id')
-                                ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')->select('expedientes.id')
-                                ->where('expedientes.fecha_firma_esc','!=',NULL)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where('inst_seleccionadas.elegido','=',1)
-                                ->where('contratos.fecha','<',$fecha1)
-                                ->where('lotes.fraccionamiento_id','=',$proyecto->fraccionamiento_id)
-                                ->where('lotes.etapa_id','=',$proyecto->id)
-                                ->where('lotes.emp_terreno','like','%'.$empresa_terreno.'%')
-                                    ->where('lotes.emp_constructora','like','%'.$empresa_const.'%')
-                                ->distinct()->count();
-
-                $contadoAct = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')->select('expedientes.id')
-                                ->where('contratos.status','=',3)
-                                ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
-                                ->where('inst_seleccionadas.elegido','=',1)
-                                ->where('lotes.fraccionamiento_id','=',$proyecto->fraccionamiento_id)
-                                ->whereBetween('contratos.fecha', [$fecha1, $fecha2])
-                                ->where('lotes.etapa_id','=',$proyecto->id)
-                                ->where('lotes.emp_terreno','like','%'.$empresa_terreno.'%')
-                                    ->where('lotes.emp_constructora','like','%'.$empresa_const.'%')
-                                ->distinct()->count();
-
-                $contadoAnt = Contrato::join('creditos','contratos.id','=','creditos.id')
-                                ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
-                                ->join('lotes','creditos.lote_id','=','lotes.id')->select('expedientes.id')
-                                ->where('contratos.status','=',3)
-                                ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
-                                ->where('inst_seleccionadas.elegido','=',1)
-                                ->where('lotes.fraccionamiento_id','=',$proyecto->fraccionamiento_id)
-                                ->where('contratos.fecha','<',$fecha1)
-                                ->where('lotes.etapa_id','=',$proyecto->id)
-                                ->where('lotes.emp_terreno','like','%'.$empresa_terreno.'%')
-                                    ->where('lotes.emp_constructora','like','%'.$empresa_const.'%')
-                                ->distinct()->count();
-            }
+            $contadoAnt = Contrato::join('creditos','contratos.id','=','creditos.id')
+                    ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                    ->join('lotes','creditos.lote_id','=','lotes.id')->select('expedientes.id')
+                    ->where('contratos.status','=',3)
+                    ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
+                    ->where('inst_seleccionadas.elegido','=',1)
+                    ->where('lotes.fraccionamiento_id','=',$proyecto->fraccionamiento_id)
+                    ->where('contratos.fecha','<',$fecha1)
+                    ->where('lotes.etapa_id','=',$proyecto->id);
+                if($empresa_terreno != '')
+                    $contadoAnt = $contadoAnt->where('lotes.emp_terreno','like','%'.$empresa_terreno.'%');
+                if($empresa_terreno != '')
+                    $contadoAnt = $contadoAnt->where('lotes.emp_constructora','like','%'.$empresa_const.'%');
+                    $contadoAnt = $contadoAnt->distinct()->count();
+            
             
 
             $proyecto->descAnt = $firmadasAnt + $contadoAnt;
@@ -2779,52 +2728,34 @@ class ReportesController extends Controller
                                 'lotes.precio_base', 'lotes.excedente_terreno','lotes.sobreprecio',
                                 'lotes.ajuste','lotes.obra_extra');
     
-        if($request->proyecto == ''){
-            $lotes = $lotes->where('lotes.credito_puente','like','NO TIENE CREDITO PUENTE%')
-                        ->whereNotIn('lotes.id',$indiv)
-                        ->where('licencias.avance','>',1)
-                        ->orWhere('lotes.credito_puente','like','EN PROCESO%')
-                        ->whereNotIn('lotes.id',$indiv)
-                        ->where('licencias.avance','>',1)
-                        ->orWhere('lotes.credito_puente','like','LIQUIDADO%')
+                $lotes = $lotes->where('lotes.credito_puente','like','NO TIENE CREDITO PUENTE%')
                         ->whereNotIn('lotes.id',$indiv)
                         ->where('licencias.avance','>',1);
+
+                        if($request->proyecto != '')
+                            $lotes = $lotes->where('lotes.fraccionamiento_id','=',$request->proyecto);
+                        if($request->etapa != '')
+                            $lotes = $lotes->where('lotes.etapa_id','=',$request->etapa);
+
+                        $lotes = $lotes->orWhere('lotes.credito_puente','like','EN PROCESO%')
+                        ->whereNotIn('lotes.id',$indiv)
+                        ->where('licencias.avance','>',1);
+
+                        if($request->proyecto != '')
+                            $lotes = $lotes->where('lotes.fraccionamiento_id','=',$request->proyecto);
+                        if($request->etapa != '')
+                            $lotes = $lotes->where('lotes.etapa_id','=',$request->etapa);
                         
-        }
-        else{
-            if($request->etapa == ''){
-                $lotes->where('lotes.credito_puente','like','NO TIENE CREDITO PUENTE%')
+                        $lotes = $lotes->orWhere('lotes.credito_puente','like','LIQUIDADO%')
                         ->whereNotIn('lotes.id',$indiv)
-                        ->where('licencias.avance','>',1)
-                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
-                        ->orWhere('lotes.credito_puente','like','EN PROCESO%')
-                        ->whereNotIn('lotes.id',$indiv)
-                        ->where('licencias.avance','>',1)
-                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
-                        ->orWhere('lotes.credito_puente','like','LIQUIDADO%')
-                        ->whereNotIn('lotes.id',$indiv)
-                        ->where('licencias.avance','>',1)
-                        ->where('lotes.fraccionamiento_id','=',$request->proyecto);
-            }
-            else{
-                $lotes->where('lotes.credito_puente','like','NO TIENE CREDITO PUENTE%')
-                        ->whereNotIn('lotes.id',$indiv)
-                        ->where('licencias.avance','>',1)
-                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
-                        ->where('lotes.etapa_id','=',$request->etapa)
-                        ->orWhere('lotes.credito_puente','like','EN PROCESO%')
-                        ->whereNotIn('lotes.id',$indiv)
-                        ->where('licencias.avance','>',1)
-                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
-                        ->where('lotes.etapa_id','=',$request->etapa)
-                        ->orWhere('lotes.credito_puente','like','LIQUIDADO%')
-                        ->whereNotIn('lotes.id',$indiv)
-                        ->where('licencias.avance','>',1)
-                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
-                        ->where('lotes.etapa_id','=',$request->etapa);
-            }
-        }
-                        
+                        ->where('licencias.avance','>',1);
+
+                        if($request->proyecto != '')
+                            $lotes = $lotes->where('lotes.fraccionamiento_id','=',$request->proyecto);
+                        if($request->etapa != '')
+                            $lotes = $lotes->where('lotes.etapa_id','=',$request->etapa);
+            
+                  
         $lotes2 = $lotes->get();
 
         $lotes = $lotes->orderBy('proyecto','asc')
@@ -2963,51 +2894,32 @@ class ReportesController extends Controller
                                 'lotes.precio_base', 'lotes.excedente_terreno','lotes.sobreprecio',
                                 'lotes.ajuste','lotes.obra_extra');
     
-        if($request->proyecto == ''){
-            $lotes = $lotes->where('lotes.credito_puente','like','NO TIENE CREDITO PUENTE%')
-                        ->whereNotIn('lotes.id',$indiv)
-                        ->where('licencias.avance','>',1)
-                        ->orWhere('lotes.credito_puente','like','EN PROCESO%')
-                        ->whereNotIn('lotes.id',$indiv)
-                        ->where('licencias.avance','>',1)
-                        ->orWhere('lotes.credito_puente','like','LIQUIDADO%')
+                        $lotes = $lotes->where('lotes.credito_puente','like','NO TIENE CREDITO PUENTE%')
                         ->whereNotIn('lotes.id',$indiv)
                         ->where('licencias.avance','>',1);
+
+                        if($request->proyecto != '')
+                            $lotes = $lotes->where('lotes.fraccionamiento_id','=',$request->proyecto);
+                        if($request->etapa != '')
+                            $lotes = $lotes->where('lotes.etapa_id','=',$request->etapa);
+
+                        $lotes = $lotes->orWhere('lotes.credito_puente','like','EN PROCESO%')
+                        ->whereNotIn('lotes.id',$indiv)
+                        ->where('licencias.avance','>',1);
+
+                        if($request->proyecto != '')
+                            $lotes = $lotes->where('lotes.fraccionamiento_id','=',$request->proyecto);
+                        if($request->etapa != '')
+                            $lotes = $lotes->where('lotes.etapa_id','=',$request->etapa);
                         
-        }
-        else{
-            if($request->etapa == ''){
-                $lotes->where('lotes.credito_puente','like','NO TIENE CREDITO PUENTE%')
+                        $lotes = $lotes->orWhere('lotes.credito_puente','like','LIQUIDADO%')
                         ->whereNotIn('lotes.id',$indiv)
-                        ->where('licencias.avance','>',1)
-                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
-                        ->orWhere('lotes.credito_puente','like','EN PROCESO%')
-                        ->whereNotIn('lotes.id',$indiv)
-                        ->where('licencias.avance','>',1)
-                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
-                        ->orWhere('lotes.credito_puente','like','LIQUIDADO%')
-                        ->whereNotIn('lotes.id',$indiv)
-                        ->where('licencias.avance','>',1)
-                        ->where('lotes.fraccionamiento_id','=',$request->proyecto);
-            }
-            else{
-                $lotes->where('lotes.credito_puente','like','NO TIENE CREDITO PUENTE%')
-                        ->whereNotIn('lotes.id',$indiv)
-                        ->where('licencias.avance','>',1)
-                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
-                        ->where('lotes.etapa_id','=',$request->etapa)
-                        ->orWhere('lotes.credito_puente','like','EN PROCESO%')
-                        ->whereNotIn('lotes.id',$indiv)
-                        ->where('licencias.avance','>',1)
-                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
-                        ->where('lotes.etapa_id','=',$request->etapa)
-                        ->orWhere('lotes.credito_puente','like','LIQUIDADO%')
-                        ->whereNotIn('lotes.id',$indiv)
-                        ->where('licencias.avance','>',1)
-                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
-                        ->where('lotes.etapa_id','=',$request->etapa);
-            }
-        }
+                        ->where('licencias.avance','>',1);
+
+                        if($request->proyecto != '')
+                            $lotes = $lotes->where('lotes.fraccionamiento_id','=',$request->proyecto);
+                        if($request->etapa != '')
+                            $lotes = $lotes->where('lotes.etapa_id','=',$request->etapa);
                         
         // $lotes2 = $lotes->get();
 
@@ -3206,46 +3118,24 @@ class ReportesController extends Controller
                                 'licencias.id', 'lotes.credito_puente','licencias.avance', 'lotes.num_lote',
                                 'lotes.precio_base', 'lotes.excedente_terreno','lotes.sobreprecio',
                                 'lotes.ajuste','lotes.obra_extra');
-    
-        if($request->proyecto == ''){
-            $lotes = $lotes->where('lotes.credito_puente','NOT LIKE','NO TIENE CREDITO PUENTE%')
+
+                $lotes = $lotes->where('lotes.credito_puente','not like','NO TIENE CREDITO PUENTE%')
                         ->whereNotIn('lotes.id',$indiv)
                         ->where('licencias.avance','>',1)
                         ->where('lotes.credito_puente','NOT LIKE','EN PROCESO%')
                         ->where('lotes.credito_puente','NOT LIKE','LIQUIDADO%');
+                        if($request->proyecto != '')
+                            $lotes = $lotes->where('lotes.fraccionamiento_id','=',$request->proyecto);
+                        if($request->etapa != '')
+                            $lotes = $lotes->where('lotes.etapa_id','=',$request->etapa);
                         
-                       
-                        
-        }
-        else{
-            if($request->etapa == ''){
-                $lotes->where('lotes.credito_puente','not like','NO TIENE CREDITO PUENTE%')
-                        ->whereNotIn('lotes.id',$indiv)
-                        ->where('licencias.avance','>',1)
-                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
-                        ->where('lotes.credito_puente','NOT LIKE','EN PROCESO%')
-                        ->where('lotes.credito_puente','NOT LIKE','LIQUIDADO%');
-            }
-            else{
-                $lotes->where('lotes.credito_puente','not like','NO TIENE CREDITO PUENTE%')
-                        ->whereNotIn('lotes.id',$indiv)
-                        ->where('licencias.avance','>',1)
-                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
-                        ->where('lotes.etapa_id','=',$request->etapa)
-                        ->where('lotes.credito_puente','NOT LIKE','EN PROCESO%')
-                        ->where('lotes.credito_puente','NOT LIKE','LIQUIDADO%');
-            }
-        }
                         
         $lotes2 = $lotes->get();
 
         $lotes = $lotes->orderBy('proyecto','asc')
                         ->orderBy('etapas.num_etapa','asc')
                         ->orderBy('etapas.num_etapa','asc')->paginate(25);
-
-        
-
-        
+       
         if(sizeOf($lotes)){
             foreach($lotes as $index => $lote){
 
@@ -3324,7 +3214,6 @@ class ReportesController extends Controller
             }
         }
 
-
         return [
             'pagination' => [
                 'total'         => $lotes->total(),
@@ -3374,46 +3263,21 @@ class ReportesController extends Controller
                                 'licencias.id', 'lotes.credito_puente','licencias.avance', 'lotes.num_lote',
                                 'lotes.precio_base', 'lotes.excedente_terreno','lotes.sobreprecio',
                                 'lotes.ajuste','lotes.obra_extra');
-    
-        if($request->proyecto == ''){
-            $lotes = $lotes->where('lotes.credito_puente','NOT LIKE','NO TIENE CREDITO PUENTE%')
+
+                $lotes = $lotes->where('lotes.credito_puente','not like','NO TIENE CREDITO PUENTE%')
                         ->whereNotIn('lotes.id',$indiv)
                         ->where('licencias.avance','>',1)
                         ->where('lotes.credito_puente','NOT LIKE','EN PROCESO%')
                         ->where('lotes.credito_puente','NOT LIKE','LIQUIDADO%');
-                        
-                        
-                        
-        }
-        else{
-            if($request->etapa == ''){
-                $lotes->where('lotes.credito_puente','not like','NO TIENE CREDITO PUENTE%')
-                        ->whereNotIn('lotes.id',$indiv)
-                        ->where('licencias.avance','>',1)
-                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
-                        ->where('lotes.credito_puente','NOT LIKE','EN PROCESO%')
-                        ->where('lotes.credito_puente','NOT LIKE','LIQUIDADO%');
-            }
-            else{
-                $lotes->where('lotes.credito_puente','not like','NO TIENE CREDITO PUENTE%')
-                        ->whereNotIn('lotes.id',$indiv)
-                        ->where('licencias.avance','>',1)
-                        ->where('lotes.fraccionamiento_id','=',$request->proyecto)
-                        ->where('lotes.etapa_id','=',$request->etapa)
-                        ->where('lotes.credito_puente','NOT LIKE','EN PROCESO%')
-                        ->where('lotes.credito_puente','NOT LIKE','LIQUIDADO%');
-            }
-        }
-                        
-        // $lotes2 = $lotes->get();
+                        if($request->proyecto == '')
+                            $lotes = $lotes->where('lotes.fraccionamiento_id','=',$request->proyecto);
+                        if($request->etapa == '')
+                            $lotes = $lotes->where('lotes.etapa_id','=',$request->etapa);
 
         $lotes = $lotes->orderBy('proyecto','asc')
                         ->orderBy('etapas.num_etapa','asc')
                         ->orderBy('etapas.num_etapa','asc')->get();
 
-        
-
-        
         if(sizeOf($lotes)){
             $suma1=0;
             $suma2=0;

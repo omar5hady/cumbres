@@ -12,13 +12,6 @@ use Auth;
 class PartidaController extends Controller
 {
 
-    /*public function selectPartidas($modelo_id){
-        $partidas = Partida::select('id','partida')
-            ->where('modelo_id','=',$modelo_id)->get();
-        
-            return $partidas;
-    }*/
-
     public function index(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
@@ -31,26 +24,18 @@ class PartidaController extends Controller
         $query = Partida::join('modelos','partidas.modelo_id','=','modelos.id')
             ->select('modelos.nombre as modelo','partidas.partida', 'partidas.costo', 
             'partidas.porcentaje','modelos.fraccionamiento_id','partidas.modelo_id','partidas.id')
-            ->join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')->addSelect('fraccionamientos.nombre as proyecto');
+            ->join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
+            ->addSelect('fraccionamientos.nombre as proyecto');
         
-        if($buscar==''){
-            $partidas = $query
-                ->orderBy('partidas.id','ASC')->paginate(49);
-        }
-       else{
-           if($buscar2==''){
-                $partidas = $query
-                    ->where($criterio, 'like', '%'. $buscar . '%')
-                    ->orderBy('partidas.id','ASC')->paginate(49);
-           }
-           else{
-                $partidas = $query
-                    ->where($criterio, '=', $buscar)
-                    ->where('modelos.nombre',  'like', '%'. $buscar2 . '%')
-                    ->orderBy('partidas.id','ASC')->paginate(49);
-            }
-        }
-
+        $partidas = $query;
+    
+            if($buscar != '')
+                $partidas = $partidas->where($criterio, '=', $buscar);
+            if($buscar2 != '')
+                $partidas = $partidas->where('modelos.nombre',  'like', '%'. $buscar2 . '%');
+                
+        $partidas = $partidas->orderBy('partidas.id','ASC')->paginate(49);
+            
         return [
             'pagination' => [
                 'total'         => $partidas->total(),

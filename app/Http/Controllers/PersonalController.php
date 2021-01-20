@@ -25,34 +25,29 @@ class PersonalController extends Controller
         $query = Personal::join('departamento','personal.departamento_id','=','departamento.id_departamento')
                 ->join('empresas','personal.empresa_id','=','empresas.id')
                 ->select('personal.nombre','personal.apellidos',
-                    'personal.f_nacimiento','personal.rfc','personal.homoclave','personal.direccion','personal.colonia','personal.cp',
+                    'personal.f_nacimiento','personal.rfc','personal.homoclave',
+                    'personal.direccion','personal.colonia','personal.cp',
                     'personal.telefono','personal.ext','personal.celular','personal.email','personal.activo',
                     'personal.id','personal.departamento_id','departamento.departamento as departamento',
                     'personal.empresa_id','empresas.nombre as empresa',
                     'departamento.id_departamento');
-        
-        if($buscar==''){
+
             $Personales = $query
                 ->where('personal.nombre','!=','Sin Asignar');
-        }
-        else{
+        
             if($criterio == 'id_departamento'){
-                $Personales = $query
-                    ->where($criterio, '=', $buscar )
-                    ->where('personal.nombre','!=','Sin Asignar');
+                $Personales = $Personales
+                    ->where($criterio, '=', $buscar );
             }
             elseif($criterio == 'personal.nombre'){
-                $Personales = $query
-                    ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
-                    ->where('personal.nombre','!=','Sin Asignar');
+                $Personales = $Personales
+                    ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
             }
             else{
-                $Personales = $query
-                    ->where($criterio, 'like', '%'. $buscar . '%')
-                    ->where('personal.nombre','!=','Sin Asignar');
+                $Personales = $Personales
+                    ->where($criterio, 'like', '%'. $buscar . '%');
             }
-        }
-
+        
         $Personales = $Personales->orderBy('id','desc')->paginate(8);
 
         return [
@@ -224,148 +219,36 @@ class PersonalController extends Controller
                 'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
                 'clientes.created_at',
                 'medios_publicitarios.nombre as publicidad',
-                'fraccionamientos.nombre as proyecto');
+                'fraccionamientos.nombre as proyecto'
+            );
 
         if($clasificacion != 5){
-            if($desde == '' && $hasta == '' && $proyecto == '' && $publicidad == ''){
-                $cliente = $query
-                    ->where('clientes.clasificacion', '=', $clasificacion)
-                    ->orderBy('personal.nombre', 'asc')
-                    ->orderBy('personal.apellidos', 'asc')
+            
+            $cliente = $query->where('clientes.clasificacion', '=', $clasificacion);
+           
+                if($desde != '' && $hasta != '')
+                    $cliente= $cliente->whereBetween('clientes.created_at', [$desde, $hasta]);
+                if($proyecto != '')
+                    $cliente= $cliente->whereBetween->where('clientes.proyecto_interes_id', '=', $proyecto);
+                if($publicidad != '')
+                    $cliente= $cliente->whereBetween->where('clientes.publicidad_id', '=', $publicidad);
+
+            $cliente = $cliente->orderBy('personal.nombre', 'asc')
+                ->orderBy('personal.apellidos', 'asc')
                 ->paginate(15);
-            }
-            elseif($desde != '' && $hasta != '' && $proyecto == '' && $publicidad == ''){
-                $cliente= $query
-                    ->where('clientes.clasificacion', '=', $clasificacion)
-                    ->whereBetween('clientes.created_at', [$desde, $hasta])
-                    ->orderBy('personal.nombre', 'asc')
-                    ->orderBy('personal.apellidos', 'asc')
-                ->paginate(15);
-            }
-            elseif($desde == '' && $hasta == '' && $proyecto != '' && $publicidad == ''){
-                $cliente= $query
-                    ->where('clientes.clasificacion', '=', $clasificacion)
-                    ->where('clientes.proyecto_interes_id', '=', $proyecto)
-                    ->orderBy('personal.nombre', 'asc')
-                    ->orderBy('personal.apellidos', 'asc')
-                ->paginate(15);
-            }
-            elseif($desde == '' && $hasta == '' && $proyecto == '' && $publicidad != ''){
-                $cliente= $query
-                    ->where('clientes.clasificacion', '=', $clasificacion)
-                    ->where('clientes.publicidad_id', '=', $publicidad)
-                    ->orderBy('personal.nombre', 'asc')
-                    ->orderBy('personal.apellidos', 'asc')
-                ->paginate(15);
-            }
-            elseif($desde != '' && $hasta != '' && $proyecto != '' && $publicidad == ''){
-                $cliente= $query
-                    ->where('clientes.clasificacion', '=', $clasificacion)
-                    ->whereBetween('clientes.created_at', [$desde, $hasta])
-                    ->where('clientes.proyecto_interes_id', '=', $proyecto)
-                    ->orderBy('personal.nombre', 'asc')
-                    ->orderBy('personal.apellidos', 'asc')
-                ->paginate(15);
-            }
-            elseif($desde != '' && $hasta != '' && $proyecto != '' && $publicidad != ''){
-                $cliente= $query
-                    ->where('clientes.clasificacion', '=', $clasificacion)
-                    ->whereBetween('clientes.created_at', [$desde, $hasta])
-                    ->where('clientes.proyecto_interes_id', '=', $proyecto)
-                    ->where('clientes.publicidad_id', '=', $publicidad)
-                    ->orderBy('personal.nombre', 'asc')
-                    ->orderBy('personal.apellidos', 'asc')
-                ->paginate(15);
-            }
-            elseif($desde == '' && $hasta == '' && $proyecto != '' && $publicidad != ''){
-                $cliente= $query
-                    ->where('clientes.clasificacion', '=', $clasificacion)
-                    ->where('clientes.proyecto_interes_id', '=', $proyecto)
-                    ->where('clientes.publicidad_id', '=', $publicidad)
-                    ->orderBy('personal.nombre', 'asc')
-                    ->orderBy('personal.apellidos', 'asc')
-                ->paginate(15);
-            }
-            elseif($desde != '' && $hasta != '' && $proyecto == '' && $publicidad != ''){
-                $cliente= $query
-                    ->where('clientes.clasificacion', '=', $clasificacion)
-                    ->whereBetween('clientes.created_at', [$desde, $hasta])
-                    ->where('clientes.publicidad_id', '=', $publicidad)
-                    ->orderBy('personal.nombre', 'asc')
-                    ->orderBy('personal.apellidos', 'asc')
-                ->paginate(15);
-            }
         }
         else{
-            if($desde == '' && $hasta == '' && $proyecto == '' && $publicidad == ''){
-                $cliente = $query
-                    ->where('expedientes.fecha_firma_esc','!=',NULL)
-                    
-                    ->distinct()
-                    // ->orderBy('personal.nombre', 'asc')
-                    // ->orderBy('personal.apellidos', 'asc')
-                    ->paginate(15);
-            }
-            elseif($desde != '' && $hasta != '' && $proyecto == '' && $publicidad == ''){
-                $cliente = $query
-                    ->whereBetween('clientes.created_at', [$desde, $hasta])
-                    ->where('expedientes.fecha_firma_esc','!=',NULL)
-                    ->distinct()
-                    // ->orderBy('personal.nombre', 'asc')
-                    // ->orderBy('personal.apellidos', 'asc')
-                ->paginate(15);
-            }
-            elseif($desde == '' && $hasta == '' && $proyecto != '' && $publicidad == ''){
-                $cliente= $query
-                    ->where('clientes.proyecto_interes_id', '=', $proyecto)
-                    ->where('expedientes.fecha_firma_esc','=',NULL)
-                    ->orderBy('personal.nombre', 'asc')
-                    ->orderBy('personal.apellidos', 'asc')
-                ->paginate(15);
-            }
-            elseif($desde == '' && $hasta == '' && $proyecto == '' && $publicidad != ''){
-                $cliente= $query
-                    ->where('clientes.publicidad_id', '=', $publicidad)
-                    ->where('expedientes.fecha_firma_esc','!=',NULL)
-                    ->distinct()
-                    // ->orderBy('personal.nombre', 'asc')
-                    // ->orderBy('personal.apellidos', 'asc')
-                ->paginate(15);
-            }
-            elseif($desde != '' && $hasta != '' && $proyecto != '' && $publicidad == ''){
-                $cliente= $query
-                    ->whereBetween('clientes.created_at', [$desde, $hasta])
-                    ->where('clientes.proyecto_interes_id', '=', $proyecto)
-                    ->where('expedientes.fecha_firma_esc','!=',NULL)
-                    ->distinct()
-                ->paginate(15);
-            }
-            elseif($desde != '' && $hasta != '' && $proyecto != '' && $publicidad != ''){
-                $cliente= $query
-                    ->whereBetween('clientes.created_at', [$desde, $hasta])
-                    ->where('clientes.proyecto_interes_id', '=', $proyecto)
-                    ->where('clientes.publicidad_id', '=', $publicidad)
-                    ->where('expedientes.fecha_firma_esc','!=',NULL)
-                    ->distinct()
-                ->paginate(15);
-            }
-            elseif($desde == '' && $hasta == '' && $proyecto != '' && $publicidad != ''){
-                $cliente= $query
-                    ->where('clientes.proyecto_interes_id', '=', $proyecto)
-                    ->where('clientes.publicidad_id', '=', $publicidad)
-                    ->where('expedientes.fecha_firma_esc','!=',NULL)
-                    ->distinct()
-                ->paginate(15);
-            }
-            elseif($desde != '' && $hasta != '' && $proyecto == '' && $publicidad != ''){
-                $cliente= $query
-                    ->whereBetween('clientes.created_at', [$desde, $hasta])
-                    ->where('clientes.publicidad_id', '=', $publicidad)
-                    ->where('expedientes.fecha_firma_esc','!=',NULL)
-                    ->distinct()
-                ->paginate(15);
-            }
-       }
+            $cliente = $query->where('expedientes.fecha_firma_esc','!=',NULL);
+
+                if($desde != '' && $hasta != '')
+                    $cliente= $cliente->whereBetween('clientes.created_at', [$desde, $hasta]);
+                if($proyecto != '')
+                    $cliente= $cliente->where('clientes.proyecto_interes_id', '=', $proyecto);
+                if($publicidad != '')
+                    $cliente= $cliente->where('clientes.publicidad_id', '=', $publicidad);
+
+            $cliente = $cliente->distinct()->paginate(15);
+        }
            
         return [
             'pagination' => [
@@ -405,226 +288,122 @@ class PersonalController extends Controller
                 'clientes.vendedor_id','clientes.empresa','clientes.clasificacion',
                 'clientes.created_at',
                 'medios_publicitarios.nombre as publicidad',
-                'fraccionamientos.nombre as proyecto');
+                'fraccionamientos.nombre as proyecto'
+            );
 
         if($clasificacion != 5){
-            if($desde == '' && $hasta == '' && $proyecto == '' && $publicidad == ''){
-                $cliente= $query
-                    ->where('clientes.clasificacion', '=', $clasificacion)
-                    ->orderBy('personal.nombre', 'asc')
-                    ->orderBy('personal.apellidos', 'asc')
+            
+            $cliente= $query->where('clientes.clasificacion', '=', $clasificacion);
+
+                if($desde != '' && $hasta != '')
+                    $cliente= $cliente->whereBetween('clientes.created_at', [$desde, $hasta]);
+                if($proyecto != '')
+                    $cliente= $cliente->where('clientes.proyecto_interes_id', '=', $proyecto);
+                if($publicidad != '')
+                    $cliente= $cliente->where('clientes.publicidad_id', '=', $publicidad);
+
+            $cliente = $cliente->orderBy('personal.nombre', 'asc')
+                ->orderBy('personal.apellidos', 'asc')
                 ->get();
-            }
-            elseif($desde != '' && $hasta != '' && $proyecto == '' && $publicidad == ''){
-                $cliente= $query
-                    ->where('clientes.clasificacion', '=', $clasificacion)
-                    ->whereBetween('clientes.created_at', [$desde, $hasta])
-                    ->orderBy('personal.nombre', 'asc')
-                    ->orderBy('personal.apellidos', 'asc')
-                ->get();
-            }
-            elseif($desde == '' && $hasta == '' && $proyecto != '' && $publicidad == ''){
-                $cliente= $query
-                    ->where('clientes.clasificacion', '=', $clasificacion)
-                    ->where('clientes.proyecto_interes_id', '=', $proyecto)
-                    ->orderBy('personal.nombre', 'asc')
-                    ->orderBy('personal.apellidos', 'asc')
-                ->get();
-            }
-            elseif($desde == '' && $hasta == '' && $proyecto == '' && $publicidad != ''){
-                $cliente= $query
-                    ->where('clientes.clasificacion', '=', $clasificacion)
-                    ->where('clientes.publicidad_id', '=', $publicidad)
-                    ->orderBy('personal.nombre', 'asc')
-                    ->orderBy('personal.apellidos', 'asc')
-                ->get();
-            }
-            elseif($desde != '' && $hasta != '' && $proyecto != '' && $publicidad == ''){
-                $cliente= $query
-                    ->where('clientes.clasificacion', '=', $clasificacion)
-                    ->whereBetween('clientes.created_at', [$desde, $hasta])
-                    ->where('clientes.proyecto_interes_id', '=', $proyecto)
-                    ->orderBy('personal.nombre', 'asc')
-                    ->orderBy('personal.apellidos', 'asc')
-                ->get();
-            }
-            elseif($desde != '' && $hasta != '' && $proyecto != '' && $publicidad != ''){
-                $cliente= $query
-                    ->where('clientes.clasificacion', '=', $clasificacion)
-                    ->whereBetween('clientes.created_at', [$desde, $hasta])
-                    ->where('clientes.proyecto_interes_id', '=', $proyecto)
-                    ->where('clientes.publicidad_id', '=', $publicidad)
-                    ->orderBy('personal.nombre', 'asc')
-                    ->orderBy('personal.apellidos', 'asc')
-                ->get();
-            }
-            elseif($desde == '' && $hasta == '' && $proyecto != '' && $publicidad != ''){
-                $cliente= $query
-                    ->where('clientes.clasificacion', '=', $clasificacion)
-                    ->where('clientes.proyecto_interes_id', '=', $proyecto)
-                    ->where('clientes.publicidad_id', '=', $publicidad)
-                    ->orderBy('personal.nombre', 'asc')
-                    ->orderBy('personal.apellidos', 'asc')
-                ->get();
-            }
-            elseif($desde != '' && $hasta != '' && $proyecto == '' && $publicidad != ''){
-                $cliente= $query
-                    ->where('clientes.clasificacion', '=', $clasificacion)
-                    ->whereBetween('clientes.created_at', [$desde, $hasta])
-                    ->where('clientes.publicidad_id', '=', $publicidad)
-                    ->orderBy('personal.nombre', 'asc')
-                    ->orderBy('personal.apellidos', 'asc')
-                ->get();
-            }
         }
         else{
-            if($desde == '' && $hasta == '' && $proyecto == '' && $publicidad == ''){
-                $cliente = $query
-                    ->where('expedientes.fecha_firma_esc','!=',NULL)
-                    ->distinct()
-                    ->get();
-            }
-            elseif($desde != '' && $hasta != '' && $proyecto == '' && $publicidad == ''){
-                $cliente = $query
-                    ->whereBetween('clientes.created_at', [$desde, $hasta])
-                    ->where('expedientes.fecha_firma_esc','!=',NULL)
-                    ->distinct()
-                ->get();
-            }
-            elseif($desde == '' && $hasta == '' && $proyecto != '' && $publicidad == ''){
-                $cliente= $query
-                    ->where('clientes.proyecto_interes_id', '=', $proyecto)
-                    ->where('expedientes.fecha_firma_esc','=',NULL)
-                    ->orderBy('personal.nombre', 'asc')
-                    ->orderBy('personal.apellidos', 'asc')
-                ->get();
-            }
-            elseif($desde == '' && $hasta == '' && $proyecto == '' && $publicidad != ''){
-                $cliente= $query
-                    ->where('clientes.publicidad_id', '=', $publicidad)
-                    ->where('expedientes.fecha_firma_esc','!=',NULL)
-                    ->distinct()
-                ->get();
-            }
-            elseif($desde != '' && $hasta != '' && $proyecto != '' && $publicidad == ''){
-                $cliente= $query
-                    ->whereBetween('clientes.created_at', [$desde, $hasta])
-                    ->where('clientes.proyecto_interes_id', '=', $proyecto)
-                    ->where('expedientes.fecha_firma_esc','!=',NULL)
-                    ->distinct()
-                ->get();
-            }
-            elseif($desde != '' && $hasta != '' && $proyecto != '' && $publicidad != ''){
-                    $cliente= $query
-                    ->whereBetween('clientes.created_at', [$desde, $hasta])
-                    ->where('clientes.proyecto_interes_id', '=', $proyecto)
-                    ->where('clientes.publicidad_id', '=', $publicidad)
-                    ->where('expedientes.fecha_firma_esc','!=',NULL)
-                    ->distinct()
-                ->get();
-            }
-            elseif($desde == '' && $hasta == '' && $proyecto != '' && $publicidad != ''){
-                $cliente= $query
-                    ->where('clientes.proyecto_interes_id', '=', $proyecto)
-                    ->where('clientes.publicidad_id', '=', $publicidad)
-                    ->where('expedientes.fecha_firma_esc','!=',NULL)
-                    ->distinct()
-                ->get();
-            }
-            elseif($desde != '' && $hasta != '' && $proyecto == '' && $publicidad != ''){
-                $cliente= $query
-                    ->whereBetween('clientes.created_at', [$desde, $hasta])
-                    ->where('clientes.publicidad_id', '=', $publicidad)
-                    ->where('expedientes.fecha_firma_esc','!=',NULL)
-                    ->distinct()
-                ->get();
-            }
-       }
+            
+            $cliente = $query->where('expedientes.fecha_firma_esc','!=',NULL);
+
+                if($desde != '' && $hasta != '')
+                    $cliente= $cliente->whereBetween('clientes.created_at', [$desde, $hasta]);
+                if($proyecto != '')
+                    $cliente= $cliente->where('clientes.proyecto_interes_id', '=', $proyecto);
+                if($publicidad != '')
+                    $cliente= $cliente->where('clientes.publicidad_id', '=', $publicidad);
+            
+            $cliente = $cliente->distinct()->get();
+        }
            
-       return Excel::create('Prospectos', function($excel) use ($cliente){
-        $excel->sheet('Prospectos', function($sheet) use ($cliente){
-            
-            $sheet->row(1, [
-                'Nombre', 'Edad', 'Direccion', 'Celular', 'Email', 'Email Institucional',
-                'Proyecto de interes','Clasificación', 'Fecha de alta', 'Publicidad'
-            ]);
+        return Excel::create('Prospectos', function($excel) use ($cliente){
+                $excel->sheet('Prospectos', function($sheet) use ($cliente){
+                    
+                    $sheet->row(1, [
+                        'Nombre', 'Edad', 'Direccion', 'Celular', 'Email', 'Email Institucional',
+                        'Proyecto de interes','Clasificación', 'Fecha de alta', 'Publicidad'
+                    ]);
 
 
-            $sheet->cells('A1:J1', function ($cells) {
-                $cells->setBackground('#052154');
-                $cells->setFontColor('#ffffff');
-                // Set font family
-                $cells->setFontFamily('Calibri');
+                    $sheet->cells('A1:J1', function ($cells) {
+                        $cells->setBackground('#052154');
+                        $cells->setFontColor('#ffffff');
+                        // Set font family
+                        $cells->setFontFamily('Calibri');
 
-                // Set font size
-                $cells->setFontSize(13);
+                        // Set font size
+                        $cells->setFontSize(13);
 
-                // Set font weight to bold
-                $cells->setFontWeight('bold');
-                $cells->setAlignment('center');
-            });
+                        // Set font weight to bold
+                        $cells->setFontWeight('bold');
+                        $cells->setAlignment('center');
+                    });
 
-            
-            $cont=1;
+                    
+                    $cont=1;
 
-            foreach($cliente as $index => $prospecto) {
-                $cont++;
+                    foreach($cliente as $index => $prospecto) {
+                        $cont++;
 
-                setlocale(LC_TIME, 'es_MX.utf8');
-                $actual = Carbon::now();
-                $edad = Carbon::parse($prospecto->f_nacimiento)->age;
-                $prospecto->edad = $actual->diffForHumans($prospecto->f_nacimiento, $actual);
-                
-                switch($prospecto->clasificacion){
-                    case 1:{
-                        $clasificacion = 'No viable';
-                        break;
+                        setlocale(LC_TIME, 'es_MX.utf8');
+                        $actual = Carbon::now();
+                        $edad = Carbon::parse($prospecto->f_nacimiento)->age;
+                        $prospecto->edad = $actual->diffForHumans($prospecto->f_nacimiento, $actual);
+                        
+                        switch($prospecto->clasificacion){
+                            case 1:{
+                                $clasificacion = 'No viable';
+                                break;
+                            }
+                            case 2:{
+                                $clasificacion = 'A';
+                                break;
+                            }
+                            case 3:{
+                                $clasificacion = 'B';
+                                break;
+                            }
+                            case 4:{
+                                $clasificacion = 'C';
+                                break;
+                            }
+                            case 5:{
+                                $clasificacion = 'Venta';
+                                break;
+                            }
+                            case 6:{
+                                $clasificacion = 'Cancelado';
+                                break;
+                            }
+                            case 7:{
+                                $clasificacion = 'Coacreditado';
+                                break;
+                            }
+                        }
+
+                        $sheet->row($index+2, [
+                            $prospecto->n_completo,
+                            $edad,
+                            $prospecto->direccion.' Col. '.$prospecto->colonia,
+                            $prospecto->celular,
+                            $prospecto->email,
+                            $prospecto->email_institucional,
+                            $prospecto->proyecto,
+                            $clasificacion,
+                            $prospecto->created_at,
+                            $prospecto->publicidad
+
+                        ]);	
                     }
-                    case 2:{
-                        $clasificacion = 'A';
-                        break;
-                    }
-                    case 3:{
-                        $clasificacion = 'B';
-                        break;
-                    }
-                    case 4:{
-                        $clasificacion = 'C';
-                        break;
-                    }
-                    case 5:{
-                        $clasificacion = 'Venta';
-                        break;
-                    }
-                    case 6:{
-                        $clasificacion = 'Cancelado';
-                        break;
-                    }
-                    case 7:{
-                        $clasificacion = 'Coacreditado';
-                        break;
-                    }
-                }
-
-                $sheet->row($index+2, [
-                    $prospecto->n_completo,
-                    $edad,
-                    $prospecto->direccion.' Col. '.$prospecto->colonia,
-                    $prospecto->celular,
-                    $prospecto->email,
-                    $prospecto->email_institucional,
-                    $prospecto->proyecto,
-                    $clasificacion,
-                    $prospecto->created_at,
-                    $prospecto->publicidad
-
-                ]);	
+                    $num='A1:J' . $cont;
+                    $sheet->setBorder($num, 'thin');
+                });
             }
-            $num='A1:J' . $cont;
-            $sheet->setBorder($num, 'thin');
-        });
-    }
-)->download('xls');
+        )->download('xls');
     }
 
     public function selectClientesVenta(Request $request){

@@ -21,29 +21,17 @@ class PromocionController extends Controller
         $criterio = $request->criterio;
         $current = Carbon::today()->format('ymd');
 
-        $query = Promocion::join('fraccionamientos','promociones.fraccionamiento_id','=','fraccionamientos.id')
+        $promociones = Promocion::join('fraccionamientos','promociones.fraccionamiento_id','=','fraccionamientos.id')
             ->join('etapas','promociones.etapa_id','=','etapas.id')
             ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas',
                     'promociones.id','promociones.fraccionamiento_id', 'promociones.etapa_id','promociones.nombre',
                     'promociones.v_ini','promociones.v_fin','promociones.descuento','promociones.descripcion',
                     DB::raw('(CASE WHEN promociones.v_fin >= ' . $current . ' THEN 1 ELSE 0 END) AS is_active'));
                 
-        if($buscar==''){
-            $promociones = $query;
-        }
-        else{
-            if($buscar2 == ''){
-                $promociones = $query
-                ->where($criterio, 'like', '%'. $buscar . '%');
-            }
-            else{
-                $promociones = $query
-                ->where($criterio, '=', $buscar)
-                ->where('etapas.id', '=', $buscar2);
-
-            }
-            
-        }
+            if($buscar != '')
+                $promociones = $promociones->where($criterio, '=', $buscar);
+            if($buscar2 != '')
+                $promociones = $promociones->where('etapas.id', '=', $buscar2);
 
         $promociones = $promociones->orderBy('is_active', 'desc')
                                     ->orderBy('promociones.v_ini','desc')

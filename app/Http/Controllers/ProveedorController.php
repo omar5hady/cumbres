@@ -16,18 +16,15 @@ class ProveedorController extends Controller
         $buscar = $request->buscar;
         $criterio = $request->criterio;
 
-        if($buscar == ''){
-            $proveedores = Proveedor::select('id','proveedor', 'contacto', 'direccion', 'colonia',
-                    'telefono', 'email', 'email2', 'poliza')->orderBy('proveedor','asc')
+       
+        $proveedores = Proveedor::select('id','proveedor', 'contacto', 'direccion', 'colonia',
+                    'telefono', 'email', 'email2', 'poliza');
+                    
+        if($buscar != '') $proveedores = $proveedores->where($criterio, 'like', '%'. $buscar . '%');
+                    
+
+        $proveedores = $proveedores->orderBy('proveedor','asc')
                     ->paginate(20);
-        }
-        else{
-            $proveedores = Proveedor::select('id','proveedor', 'contacto', 'direccion', 'colonia',
-                    'telefono', 'email', 'email2', 'poliza')
-                    ->where($criterio, 'like', '%'. $buscar . '%')
-                    ->orderBy('proveedor','asc')
-                    ->paginate(20);
-        }
         
 
         return [

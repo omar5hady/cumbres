@@ -57,479 +57,24 @@ class LoteController extends Controller
                   'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios',
                   'lotes.regimen_condom','lotes.extra', 'lotes.extra_ext','lotes.emp_terreno', 'lotes.emp_constructora',
                   'lotes.fecha_termino_ventas');
+        
+        if($b_habilitado != '')
+            $query = $query->where('lotes.habilitado','=', $b_habilitado);
 
-        if($b_habilitado != ''){
-            if($buscar==''){
-                $lotes = $query
-                          ->where('lotes.habilitado','=', $b_habilitado);
-            }
-            else{
-                if($buscar2=='' && $buscar3=='' && $b_modelo=='' && $b_lote=='')
-                {
-                    if($b_puente == ''){
-                        $lotes = $query
-                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                ->where('lotes.habilitado','=', $b_habilitado);                         
-                    }
-                    else{
-                        $lotes = $query
-                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                ->where('lotes.habilitado','=', $b_habilitado)
-                                ->where('lotes.credito_puente','=',$b_puente);
-                    }
-                    
-                }
-                else{
-                    if($b_puente == ''){
-                        if($buscar2!='' && $b_lote=='' && $buscar3=='' && $b_modelo==''){
-                            $lotes = $query
-                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                ->where('lotes.etapa_id','=',  $buscar2 )
-                                ->where('lotes.habilitado','=', $b_habilitado);
-                        }else {
-                            if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' )
-                            {
-                                $lotes = $query
-                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                ->where('modelos.id', '=', $b_modelo )
-                                ->where('lotes.manzana', '=',  $buscar3)
-                                ->where('lotes.habilitado','=', $b_habilitado);     
-                            } else{
-                                if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
-                                {
-                                    $lotes = $query
-                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                        ->where('modelos.id', '=', $b_modelo )
-                                        ->where('lotes.num_lote', '=',$b_lote)
-                                        ->where('lotes.habilitado','=', $b_habilitado);
-                                }
-                                else{
-                                    if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
-                
-                                        $lotes = $query
-                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                            ->where('lotes.habilitado','=', $b_habilitado)
-                                            ->where('modelos.id', '=', $b_modelo ); 
-                                    }else{
-                                        if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
-                
-                                            $lotes = $query
-                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                ->where('lotes.manzana', '=',$buscar3)
-                                                ->where('lotes.habilitado','=', $b_habilitado);
-                                        }else{
-                                            if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
-                                                $lotes = $query
-                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                    ->where('lotes.manzana', '=',$buscar3)
-                                                    ->where('lotes.habilitado','=', $b_habilitado)
-                                                    ->where('modelos.id', '=', $b_modelo );
-                                            }else{
-                                                if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
-                                                    $lotes = $query
-                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                        ->where('lotes.manzana', '=',$buscar3)
-                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                        ->where('lotes.habilitado','=', $b_habilitado);
-                                                }else{
-                                                    if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !=''  ){
-                                                        $lotes = $query
-                                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                                            ->where('modelos.id', '=', $b_modelo )
-                                                            ->where('lotes.habilitado','=', $b_habilitado);
-                                                    }else{
-                                                        if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                            $lotes = $query
-                                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                ->where('modelos.id', '=', $b_modelo )
-                                                                ->where('lotes.manzana', '=',$buscar3)
-                                                                ->where('lotes.num_lote', '=',$b_lote)
-                                                                ->where('lotes.habilitado','=', $b_habilitado);
-                                                        }else{
-                                                            if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
-                                                                $lotes = $query
-                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                    ->where('lotes.manzana', '=',$buscar3)
-                                                                    ->where('lotes.num_lote', '=',$b_lote)
-                                                                    ->where('lotes.habilitado','=', $b_habilitado);
-                                                            }else{
-                                                                if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                    $lotes = $query
-                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                        ->where('modelos.id', '=', $b_modelo )
-                                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                        ->where('lotes.manzana', '=',$buscar3)
-                                                                        ->where('lotes.num_lote', '=',$b_lote)
-                                                                        ->where('lotes.habilitado','=', $b_habilitado);
-                                                                }
-                                                                elseif($buscar2!='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
-                                                                    $lotes = $query
-                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                        ->where('lotes.num_lote', '=',$b_lote)
-                                                                        ->where('lotes.habilitado','=', $b_habilitado);
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }           
-                        }
-                    }
-                    else{
-                        if($buscar2!='' && $b_lote=='' && $buscar3=='' && $b_modelo==''){
-                            $lotes = $query
-                            ->where($criterio, 'like', '%'. $buscar . '%')
-                            ->where('lotes.credito_puente','=',$b_puente)
-                            ->where('lotes.etapa_id','=',  $buscar2 )
-                            ->where('lotes.habilitado','=', $b_habilitado); 
-                        }else {
-                            if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' )
-                            {
-                                $lotes = $query
-                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                ->where('lotes.credito_puente','=',$b_puente)
-                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                ->where('modelos.id', '=', $b_modelo )
-                                ->where('lotes.manzana', '=',  $buscar3)
-                                ->where('lotes.habilitado','=', $b_habilitado);   
-                            } else{
-                                if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
-                                {
-                                    $lotes = $query
-                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                        ->where('lotes.credito_puente','=',$b_puente)
-                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                        ->where('modelos.id', '=', $b_modelo )
-                                        ->where('lotes.num_lote', '=',$b_lote)
-                                        ->where('lotes.habilitado','=', $b_habilitado);
-                                }
-                                else{
-                                    if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
-                
-                                        $lotes = $query
-                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                            ->where('lotes.credito_puente','=',$b_puente)
-                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                            ->where('lotes.habilitado','=', $b_habilitado)
-                                            ->where('modelos.id', '=', $b_modelo );
-                                    }else{
-                                        if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
-                
-                                            $lotes = $query
-                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                ->where('lotes.credito_puente','=',$b_puente)
-                                                ->where('lotes.manzana', '=',$buscar3)
-                                                ->where('lotes.habilitado','=', $b_habilitado);
-                                        }else{
-                                            if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
-                                                $lotes = $query
-                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                    ->where('lotes.credito_puente','=',$b_puente)
-                                                    ->where('lotes.manzana', '=',$buscar3)
-                                                    ->where('lotes.habilitado','=', $b_habilitado)
-                                                    ->where('modelos.id', '=', $b_modelo );
-                                            }else{
-                                                if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
-                                                    $lotes = $query
-                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                        ->where('lotes.credito_puente','=',$b_puente)
-                                                        ->where('lotes.manzana', '=',$buscar3)
-                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                        ->where('lotes.habilitado','=', $b_habilitado);
-                                                }else{
-                                                    if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !=''  ){
-                                                        $lotes = $query
-                                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                                            ->where('lotes.credito_puente','=',$b_puente)
-                                                            ->where('modelos.id', '=', $b_modelo )
-                                                            ->where('lotes.habilitado','=', $b_habilitado);
-                                                          
-                                                    }else{
-                                                        if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                            $lotes = $query
-                                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                ->where('lotes.credito_puente','=',$b_puente)
-                                                                ->where('modelos.id', '=', $b_modelo )
-                                                                ->where('lotes.manzana', '=',$buscar3)
-                                                                ->where('lotes.num_lote', '=',$b_lote)
-                                                                ->where('lotes.habilitado','=', $b_habilitado);
-                                                        }else{
-                                                            if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
-                                                                $lotes = $query
-                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                    ->where('lotes.credito_puente','=',$b_puente)
-                                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                    ->where('lotes.manzana', '=',$buscar3)
-                                                                    ->where('lotes.num_lote', '=',$b_lote)
-                                                                    ->where('lotes.habilitado','=', $b_habilitado);  
-                                                            }else{
-                                                                if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                    $lotes = $query
-                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                        ->where('lotes.credito_puente','=',$b_puente)
-                                                                        ->where('modelos.id', '=', $b_modelo )
-                                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                        ->where('lotes.manzana', '=',$buscar3)
-                                                                        ->where('lotes.num_lote', '=',$b_lote)
-                                                                        ->where('lotes.habilitado','=', $b_habilitado);
-                                                                }
-                                                                elseif($buscar2!='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
-                                                                    $lotes = $query
-                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                        ->where('lotes.credito_puente','=',$b_puente)
-                                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                        ->where('lotes.num_lote', '=',$b_lote)
-                                                                        ->where('lotes.habilitado','=', $b_habilitado);
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }           
-                        }
-                    }
-                }
-            }
-        }
-        else{
-            if($buscar==''){
-                $lotes = $query;       
-            }
-            else{
-                if($buscar2=='' && $buscar3=='' && $b_modelo=='' && $b_lote=='')
-                {
-                    if($b_puente == ''){
-                        $lotes = $query
-                                ->where($criterio, 'like', '%'. $buscar . '%');
-                    }
-                    else{
-                        $lotes = $query
-                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                ->where('lotes.credito_puente','=',$b_puente);
-                    }
-                }
-                else{
-                    if($b_puente == ''){
-                        if($buscar2!='' && $b_lote=='' && $buscar3=='' && $b_modelo==''){
-                            $lotes = $query
-                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                ->where('lotes.etapa_id','=',  $buscar2 );
-                        }else {
-                            if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' )
-                            {
-                                $lotes = $query
-                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                    ->where('modelos.id', '=', $b_modelo )
-                                    ->where('lotes.manzana', '=',  $buscar3);
-                            } else{
-                                if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
-                                {
-                                    $lotes = $query
-                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                        ->where('modelos.id', '=', $b_modelo )
-                                        ->where('lotes.num_lote', '=',$b_lote);
-                                }
-                                else{
-                                    if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
-                
-                                        $lotes = $query
-                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                            ->where('modelos.id', '=', $b_modelo );
-                                    }else{
-                                        if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
-                
-                                            $lotes = $query
-                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                ->where('lotes.manzana', '=',$buscar3);
-        
-                                        }else{
-                                            if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
-                                                $lotes = $query
-                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                    ->where('lotes.manzana', '=',$buscar3)
-                                                    ->where('modelos.id', '=', $b_modelo );
-        
-                                            }else{
-                                                if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
-                                                    $lotes = $query
-                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                        ->where('lotes.manzana', '=',$buscar3)
-                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%');
-        
-                                                }else{
-                                                    if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !=''  ){
-                                                        $lotes = $query
-                                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                                            ->where('modelos.id', '=', $b_modelo );
-        
-                                                    }else{
-                                                        if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                            $lotes = $query
-                                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                ->where('modelos.id', '=', $b_modelo )
-                                                                ->where('lotes.manzana', '=',$buscar3)
-                                                                ->where('lotes.num_lote', '=',$b_lote);
-        
-                                                        }else{
-                                                            if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
-                                                                $lotes = $query
-                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                    ->where('lotes.manzana', '=',$buscar3)
-                                                                    ->where('lotes.num_lote', '=',$b_lote);
-    
-                                                           
-                                                            }else{
-                                                                if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                    $lotes = $query
-                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                        ->where('modelos.id', '=', $b_modelo )
-                                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                        ->where('lotes.manzana', '=',$buscar3)
-                                                                        ->where('lotes.num_lote', '=',$b_lote);
-                                                                }
-                                                                elseif($buscar2!='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
-                                                                    $lotes = $query
-                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                        ->where('lotes.num_lote', '=',$b_lote);
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }           
-                        }
-                    }
-                    else{
-                        if($buscar2!='' && $b_lote=='' && $buscar3=='' && $b_modelo==''){
-                            $lotes = $query
-                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                ->where('lotes.credito_puente','=',$b_puente)
-                                ->where('lotes.etapa_id','=',  $buscar2 );
-                        }else {
-                            if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' )
-                            {
-                                $lotes = $query
-                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                    ->where('lotes.credito_puente','=',$b_puente)
-                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                    ->where('modelos.id', '=', $b_modelo )
-                                    ->where('lotes.manzana', '=',  $buscar3);
-                            } else{
-                                if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
-                                {
-                                    $lotes = $query
-                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                        ->where('lotes.credito_puente','=',$b_puente)
-                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                        ->where('modelos.id', '=', $b_modelo )
-                                        ->where('lotes.num_lote', '=',$b_lote);
-                                }
-                                else{
-                                    if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
-                
-                                        $lotes = $query
-                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                            ->where('lotes.credito_puente','=',$b_puente)
-                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                            ->where('modelos.id', '=', $b_modelo );
-                                    }else{
-                                        if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
-                
-                                            $lotes = $query
-                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                ->where('lotes.credito_puente','=',$b_puente)
-                                                ->where('lotes.manzana', '=',$buscar3);
-                                        }else{
-                                            if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
-                                                $lotes = $query
-                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                    ->where('lotes.credito_puente','=',$b_puente)
-                                                    ->where('lotes.manzana', '=',$buscar3)
-                                                    ->where('modelos.id', '=', $b_modelo );
-                                            }else{
-                                                if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
-                                                    $lotes = $query
-                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                        ->where('lotes.credito_puente','=',$b_puente)
-                                                        ->where('lotes.manzana', '=',$buscar3)
-                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%');    
-                                                }else{
-                                                    if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !=''  ){
-                                                        $lotes = $query
-                                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                                            ->where('lotes.credito_puente','=',$b_puente)
-                                                            ->where('modelos.id', '=', $b_modelo );
-                                                    }else{
-                                                        if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                            $lotes = $query
-                                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                ->where('lotes.credito_puente','=',$b_puente)
-                                                                ->where('modelos.id', '=', $b_modelo )
-                                                                ->where('lotes.manzana', '=',$buscar3)
-                                                                ->where('lotes.num_lote', '=',$b_lote);
-                                                          
-                                                        }else{
-                                                            if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
-                                                                $lotes = $query
-                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                    ->where('lotes.credito_puente','=',$b_puente)
-                                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                    ->where('lotes.manzana', '=',$buscar3)
-                                                                    ->where('lotes.num_lote', '=',$b_lote);
-                                                                
-                                                            }else{
-                                                                if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                    $lotes = $query
-                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                        ->where('lotes.credito_puente','=',$b_puente)
-                                                                        ->where('modelos.id', '=', $b_modelo )
-                                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                        ->where('lotes.manzana', '=',$buscar3)
-                                                                        ->where('lotes.num_lote', '=',$b_lote);
-                                                                }
-                                                                elseif($buscar2!='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
-                                                                    $lotes = $query
-                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                        ->where('lotes.credito_puente','=',$b_puente)
-                                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                        ->where('lotes.num_lote', '=',$b_lote);
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }          
-                        }
-                    }
-                }
-            }
-        }
+            $lotes = $query;
+            if($buscar != '')
+                $lotes = $lotes->where($criterio, 'like', '%'. $buscar . '%');
+            if($b_puente != '')
+                $lotes = $lotes->where('lotes.credito_puente','=',$b_puente);
+            if($b_modelo != '')
+                $lotes = $lotes->where('modelos.id', '=', $b_modelo );
+            if($buscar2 != '')
+                $lotes = $lotes->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%');
+            if($buscar3 != '')
+                $lotes = $lotes->where('lotes.manzana', '=',$buscar3);
+            if($b_lote != '')
+                $lotes = $lotes->where('lotes.num_lote', '=',$b_lote);
+            
 
         if($request->b_empresa != ''){
             $lotes= $lotes->where('lotes.emp_constructora','=',$request->b_empresa);
@@ -582,41 +127,20 @@ class LoteController extends Controller
                     'lotes.emp_terreno', 'lotes.emp_constructora',
                     'lotes.clv_catastral','lotes.etapa_servicios');
         
-        if($buscar==''){
             $lotes = $query;
+            
+            if($buscar!='')
+                $lotes = $lotes->where($criterio, 'like', '%'. $buscar . '%');
+            if($buscar2!='')
+                $lotes = $lotes->where('lotes.etapa_servicios', 'like', '%'. $buscar2 . '%');
+            if($buscar3!='')
+                $lotes = $lotes->where('lotes.manzana', '=', $buscar3);
+    
+            
+        if($request->b_etapa != ''){
+            $lotes = $lotes->where('lotes.etapa_id', '=', $request->b_etapa);
         }
-        else{
-            if($buscar2=='' &&$buscar3=='')
-            {
-                $lotes = $query
-                    ->where($criterio, 'like', '%'. $buscar . '%');
-            }
-            else{
-                if($buscar3=='')
-                {
-                    $lotes = $query
-                        ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('lotes.etapa_servicios', 'like', '%'. $buscar2 . '%');
-                }
-                else{
-                    if($buscar2!=''){
-                        $lotes = $query
-                            ->where($criterio, 'like', '%'. $buscar . '%')
-                            ->where('lotes.etapa_servicios', 'like', '%'. $buscar2 . '%')
-                            ->where('lotes.manzana', '=', $buscar3);
-                    }
-                    else{
-                        $lotes = $query
-                            ->where($criterio, 'like', '%'. $buscar . '%')
-                            ->where('lotes.manzana','like', '%'. $buscar3 . '%');
-                    }
-                    
-                }
-            }
-            if($request->b_etapa != ''){
-                $lotes = $lotes->where('lotes.etapa_id', '=', $request->b_etapa);
-            }
-        }
+        
 
         if($request->b_empresa != ''){
             $lotes= $lotes->where('lotes.emp_constructora','=',$request->b_empresa);
@@ -1166,52 +690,25 @@ class LoteController extends Controller
                   'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','lotes.fecha_termino_ventas')
                   ->where('modelos.nombre','!=','Terreno');
         
-        if($buscar==''){
-            $lotes = $query
-                ->where('lotes.ini_obra', '=', '0')
-                ->where('modelos.nombre','!=','Por Asignar');
+       
                 
-        }
+        
+            $lotes = $query->where('lotes.ini_obra', '=', '0')
+                ->where('modelos.nombre','!=','Por Asignar');
 
-        elseif($buscar2 == '' && $buscar3 == ''){
-            $lotes = $query
-                ->where($criterio, '=',$buscar)
-                ->where('lotes.ini_obra', '=', '0')
-                ->where('modelos.nombre','!=','Por Asignar');
-        }
-
-        elseif($buscar2 != '' && $buscar3 == ''){
-            $lotes = $query
-                ->where($criterio, '=',$buscar)
-                ->where('lotes.etapa_id', '=',$buscar2 )
-                ->where('lotes.ini_obra', '=', '0')
-                ->where('modelos.nombre','!=','Por Asignar');
-        }
-
-        elseif($buscar2 == '' && $buscar3 != ''){
-            $lotes = $query
-                ->where($criterio, '=',$buscar)
-                ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                ->where('lotes.ini_obra', '=', '0')
-                ->where('modelos.nombre','!=','Por Asignar');
-        }
-                
-        elseif($buscar2 != '' && $buscar3 != ''){
-            $lotes = $query
-                ->where($criterio, '=',$buscar)
-                ->where('lotes.etapa_id', '=',$buscar2 )
-                ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                ->where('lotes.ini_obra', '=', '0')
-                ->where('modelos.nombre','!=','Por Asignar');
-        }
+                if($buscar != '')
+                    $lotes = $lotes->where($criterio, '=',$buscar);
+                if($buscar2 != '')
+                    $lotes = $lotes->where('lotes.etapa_id', '=',$buscar2 );
+                if($buscar3 != '')
+                    $lotes = $lotes->where('lotes.manzana', 'like', '%'. $buscar3 . '%');
+        
 
         if($request->b_empresa != ''){
             $lotes= $lotes->where('lotes.emp_constructora','=',$request->b_empresa);
         }
 
         $lotes = $lotes->orderBy('fraccionamientos.nombre','lotes.id')->paginate(15);
-           
-        
 
         return [
             'pagination' => [
@@ -1246,88 +743,21 @@ class LoteController extends Controller
                   'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                   'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id','lotes.num_inicio',
                   'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                  'lotes.fecha_termino_ventas', 'lotes.ehl_solicitado');
+                  'lotes.fecha_termino_ventas', 'lotes.ehl_solicitado')
+            ->where('modelos.nombre','!=','Por Asignar');
+
+            $lotes = $query;
+            if($buscar != '')
+                $lotes = $lotes->where($criterio, '=',$buscar);
+            if($buscar != '')
+                $lotes = $lotes->where('lotes.etapa_id', '=',$buscar2 );
+            if($buscar != '')
+                $lotes = $lotes->where('lotes.manzana', 'like', '%'. $buscar3 . '%');
+            if($fecha == '' && $fecha2 == '')
+                $lotes = $lotes->whereBetween('lotes.ehl_solicitado', [$fecha, $fecha2]);
+                  
         
-        if($fecha == '' && $fecha2 == ''){
-            if($buscar==''){
-                $lotes = $query
-                    ->where('lotes.ehl_solicitado','!=',NULL)
-                    ->where('modelos.nombre','!=','Por Asignar');
-                    
-            }
-    
-            elseif($buscar2 == '' && $buscar3 == ''){
-                $lotes = $query
-                    ->where($criterio, '=',$buscar)
-                    ->where('lotes.ehl_solicitado','!=',NULL)
-                    ->where('modelos.nombre','!=','Por Asignar');
-            }
-    
-            elseif($buscar2 != '' && $buscar3 == ''){
-                $lotes = $query
-                    ->where($criterio, '=',$buscar)
-                    ->where('lotes.etapa_id', '=',$buscar2 )
-                    ->where('lotes.ehl_solicitado','!=',NULL)
-                    ->where('modelos.nombre','!=','Por Asignar');
-            }
-    
-            elseif($buscar2 == '' && $buscar3 != ''){
-                $lotes = $query
-                    ->where($criterio, '=',$buscar)
-                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                    ->where('lotes.ehl_solicitado','!=',NULL)
-                    ->where('modelos.nombre','!=','Por Asignar');
-            }
-                    
-            elseif($buscar2 != '' && $buscar3 != ''){
-                $lotes = $query
-                    ->where($criterio, '=',$buscar)
-                    ->where('lotes.etapa_id', '=',$buscar2 )
-                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                    ->where('lotes.ehl_solicitado','!=',NULL)
-                    ->where('modelos.nombre','!=','Por Asignar');
-            }
-        }
-        else{
-            if($buscar==''){
-                $lotes = $query
-                    ->whereBetween('lotes.ehl_solicitado', [$fecha, $fecha2])
-                    ->where('modelos.nombre','!=','Por Asignar');
-                    
-            }
-    
-            elseif($buscar2 == '' && $buscar3 == ''){
-                $lotes = $query
-                    ->where($criterio, '=',$buscar)
-                    ->whereBetween('lotes.ehl_solicitado', [$fecha, $fecha2])
-                    ->where('modelos.nombre','!=','Por Asignar');
-            }
-    
-            elseif($buscar2 != '' && $buscar3 == ''){
-                $lotes = $query
-                    ->where($criterio, '=',$buscar)
-                    ->where('lotes.etapa_id', '=',$buscar2 )
-                    ->whereBetween('lotes.ehl_solicitado', [$fecha, $fecha2])
-                    ->where('modelos.nombre','!=','Por Asignar');
-            }
-    
-            elseif($buscar2 == '' && $buscar3 != ''){
-                $lotes = $query
-                    ->where($criterio, '=',$buscar)
-                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                    ->whereBetween('lotes.ehl_solicitado', [$fecha, $fecha2])
-                    ->where('modelos.nombre','!=','Por Asignar');
-            }
-                    
-            elseif($buscar2 != '' && $buscar3 != ''){
-                $lotes = $query
-                    ->where($criterio, '=',$buscar)
-                    ->where('lotes.etapa_id', '=',$buscar2 )
-                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                    ->whereBetween('lotes.ehl_solicitado', [$fecha, $fecha2])
-                    ->where('modelos.nombre','!=','Por Asignar');
-            }
-        }
+        
 
         if($request->b_empresa != ''){
             $lotes= $lotes->where('lotes.emp_constructora','=',$request->b_empresa);
@@ -1466,643 +896,86 @@ class LoteController extends Controller
         if($rolId == 1 || $rolId == 4 || $rolId == 6 || $rolId == 8 || $rolId == 11 ){
             switch($b_apartado){
                 case '':{
-                    if($buscar==''){
+                    
                         $lotes = $query
-                                    ->where('lotes.habilitado','=',1)
-                                    ->where('lotes.contrato','=',0);
+                                ->where('lotes.habilitado','=',1)
+                                ->where('lotes.contrato','=',0);
+
+                        if($buscar != '')
+                            $lotes = $lotes->where($criterio, 'like', '%'. $buscar . '%');
+                        if($b_modelo != '')
+                            $lotes = $lotes->where('modelos.id', '=', $b_modelo );
+                        if($buscar2 != '')
+                            $lotes = $lotes->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%');
+                        if($buscar3 != '')
+                            $lotes = $lotes->where('lotes.manzana', 'like', '%'. $buscar3 . '%');
+                        if($b_lote != '')
+                            $lotes = $lotes->where('lotes.num_lote', 'like', '%'. $b_lote . '%');
     
-                    }
-                    else{
-                        if($buscar2=='' && $buscar3=='' && $b_modelo=='' && $b_lote=='')
-                        {
-                            $lotes = $query
-                                        ->where('lotes.habilitado','=',1)
-                                        ->where('lotes.contrato','=',0)
-                                        ->where($criterio, 'like', '%'. $buscar . '%');
-        
-                        }
-                        else{
-                            if($b_lote=='' && $buscar3=='' && $b_modelo=='' && $buscar2 !='')
-                            {
-                                $lotes = $query
-                                    ->where('lotes.habilitado','=',1)
-                                    ->where('lotes.contrato','=',0)
-                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                    ->where('etapas.id', 'like', '%'. $buscar2 . '%');
-
-                            }
-                            else{
-                            if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' ){
-                                $lotes = $query
-                                    ->where('lotes.habilitado','=',1)
-                                    ->where('lotes.contrato','=',0)
-                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                    ->where('modelos.id', '=', $b_modelo )
-                                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%');
-        
-                            }else{
-                                if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
-                                {
-                                    $lotes = $query
-                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                        ->where('lotes.habilitado','=',1)
-                                        ->where('lotes.contrato','=',0)
-                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                        ->where('modelos.id', '=', $b_modelo )
-                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%');
-
-                                }else{
-                                    if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
-    
-                                        $lotes = $query
-                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                            ->where('modelos.id', '=', $b_modelo )
-                                            ->where('lotes.habilitado','=',1)
-                                            ->where('lotes.contrato','=',0);
-
-                                    }else{
-                                        if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
-    
-                                            $lotes = $query
-                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                ->where('lotes.habilitado','=',1)
-                                                ->where('lotes.contrato','=',0);
-
-                                        }else{
-                                            if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
-                                                $lotes = $query
-                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                    ->where('lotes.habilitado','=',1)
-                                                    ->where('lotes.contrato','=',0)
-                                                    ->where('modelos.id', '=', $b_modelo );
-
-                                            }else{
-                                                if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
-                                                    $lotes = $query
-                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                        ->where('lotes.habilitado','=',1)
-                                                        ->where('lotes.contrato','=',0);
-
-                                                }else{
-                                                    if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !='' ){
-                                                        $lotes = $query
-                                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                                            ->where('modelos.id', '=', $b_modelo )
-                                                            ->where('lotes.habilitado','=',1)
-                                                            ->where('lotes.contrato','=',0);
-
-                                                    }else{
-                                                        if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                            $lotes = $query
-                                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                ->where('modelos.id', '=', $b_modelo )
-                                                                ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                ->where('lotes.habilitado','=',1)
-                                                                ->where('lotes.contrato','=',0);
-
-                                                        }else{
-                                                            if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
-                                                                $lotes = $query
-                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                    ->where('lotes.habilitado','=',1)
-                                                                    ->where('lotes.contrato','=',0);
-
-                                                            }else{
-                                                                if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                    $lotes = $query
-                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                        ->where('modelos.id', '=', $b_modelo )
-                                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                        ->where('lotes.habilitado','=',1)
-                                                                        ->where('lotes.contrato','=',0);
-
-                                                                }else{
-                                                                    if($buscar2!='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
-                                                                        $lotes = $query
-                                                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                            ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                            ->where('lotes.habilitado','=',1)
-                                                                            ->where('lotes.contrato','=',0);
-
-                                                                    }
-                                                                    elseif($buscar2=='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
-                                                                        $lotes = $query
-                                                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                            ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                            ->where('lotes.habilitado','=',1)
-                                                                            ->where('lotes.contrato','=',0);
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                }
-                            }
-                        }
-                    }
                     break;
                 }
                 case '0':{
-                    if($buscar==''){
+                    
                         $lotes = $query
                                     ->where('lotes.habilitado','=',1)
                                     ->where('lotes.contrato','=',0)
                                     ->where('lotes.apartado','=',0);
-                    }
-                    else{
-                        if($buscar2=='' && $buscar3=='' && $b_modelo=='' && $b_lote=='')
-                        {
-                            $lotes = $query
-                                        ->where('lotes.habilitado','=',1)
-                                        ->where('lotes.contrato','=',0)
-                                        ->where('lotes.apartado','=',0)
-                                        ->where($criterio, 'like', '%'. $buscar . '%');
-        
-                           
-                        }
-                        else{
-                            if($b_lote=='' && $buscar3=='' && $b_modelo=='' && $buscar2 !='')
-                            {
-                                $lotes = $query
-                                    ->where('lotes.habilitado','=',1)
-                                    ->where('lotes.contrato','=',0)
-                                    ->where('lotes.apartado','=',0)
-                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                    ->where('etapas.id', 'like', '%'. $buscar2 . '%');
-        
-                              
-                            }
-                            else{
-                            if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' ){
-                                $lotes = $query
-                                    ->where('lotes.habilitado','=',1)
-                                    ->where('lotes.contrato','=',0)
-                                    ->where('lotes.apartado','=',0)
-                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                    ->where('modelos.id', '=', $b_modelo )
-                                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%');
-        
-                              
-                            }else{
-                                        if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
-                                        {
-                                            $lotes = $query
-                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                ->where('lotes.habilitado','=',1)
-                                                ->where('lotes.contrato','=',0)
-                                                ->where('lotes.apartado','=',0)
-                                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                ->where('modelos.id', '=', $b_modelo )
-                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%');
-        
-                                        }else{
-                                            if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
-            
-                                                $lotes = $query
-                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                    ->where('modelos.id', '=', $b_modelo )
-                                                    ->where('lotes.habilitado','=',1)
-                                                    ->where('lotes.contrato','=',0)
-                                                    ->where('lotes.apartado','=',0);
-                                            }else{
-                                                if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
-            
-                                                    $lotes = $query
-                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                        ->where('lotes.habilitado','=',1)
-                                                        ->where('lotes.contrato','=',0)
-                                                        ->where('lotes.apartado','=',0);
-                                                }else{
-                                                    if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
-                                                        $lotes = $query
-                                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                                            ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                            ->where('lotes.habilitado','=',1)
-                                                            ->where('lotes.contrato','=',0)
-                                                            ->where('lotes.apartado','=',0)
-                                                            ->where('modelos.id', '=', $b_modelo );
-                                                    }else{
-                                                        if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
-                                                            $lotes = $query
-                                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                ->where('lotes.habilitado','=',1)
-                                                                ->where('lotes.contrato','=',0)
-                                                                ->where('lotes.apartado','=',0);  
-                                                        }else{
-                                                            if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !='' ){
-                                                                $lotes = $query
-                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                    ->where('modelos.id', '=', $b_modelo )
-                                                                    ->where('lotes.habilitado','=',1)
-                                                                    ->where('lotes.contrato','=',0)
-                                                                    ->where('lotes.apartado','=',0);
-                                                            }else{
-                                                                if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                    $lotes = $query
-                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                        ->where('modelos.id', '=', $b_modelo )
-                                                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                        ->where('lotes.habilitado','=',1)
-                                                                        ->where('lotes.contrato','=',0)
-                                                                        ->where('lotes.apartado','=',0);
-                                                                }else{
-                                                                    if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
-                                                                        $lotes = $query
-                                                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                            ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                            ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                            ->where('lotes.habilitado','=',1)
-                                                                            ->where('lotes.contrato','=',0)
-                                                                            ->where('lotes.apartado','=',0);
-                                                                    }else{
-                                                                        if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                            $lotes = $query
-                                                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                                ->where('modelos.id', '=', $b_modelo )
-                                                                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                                ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                                ->where('lotes.habilitado','=',1)
-                                                                                ->where('lotes.contrato','=',0)
-                                                                                ->where('lotes.apartado','=',0);  
-                                                                        }else{
-                                                                            if($buscar2!='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
-                                                                                $lotes = $query
-                                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                                    ->where('lotes.habilitado','=',1)
-                                                                                    ->where('lotes.contrato','=',0)
-                                                                                    ->where('lotes.apartado','=',0);
-                                                                            }
-                                                                            elseif($buscar2=='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
-                                                                                $lotes = $query
-                                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                                    ->where('lotes.habilitado','=',1)
-                                                                                    ->where('lotes.contrato','=',0)
-                                                                                    ->where('lotes.apartado','=',0);
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                            }
-                        }
-                    }
+
+                        if($buscar != '')
+                            $lotes = $lotes->where($criterio, 'like', '%'. $buscar . '%');
+                        if($buscar != '')
+                            $lotes = $lotes->where('modelos.id', '=', $b_modelo );
+                        if($buscar != '')
+                            $lotes = $lotes->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%');
+                        if($buscar != '')
+                            $lotes = $lotes->where('lotes.manzana', 'like', '%'. $buscar3 . '%');
+                        if($buscar != '')
+                            $lotes = $lotes->where('lotes.num_lote', 'like', '%'. $b_lote . '%');
+                    
                     break;
                 }
                 default:{
-                    if($buscar==''){
+                    
                         $lotes = $query
                             ->where('lotes.habilitado','=',1)
                             ->where('lotes.contrato','=',0)
                             ->where('lotes.apartado','!=',0);
-                    }
-                    else{
-                        if($buscar2=='' && $buscar3=='' && $b_modelo=='' && $b_lote=='')
-                        {
-                            $lotes = $query
-                                ->where('lotes.habilitado','=',1)
-                                ->where('lotes.contrato','=',0)
-                                ->where('lotes.apartado','!=',0)
-                                ->where($criterio, 'like', '%'. $buscar . '%');
-                        }
-                        else{
-                            if($b_lote=='' && $buscar3=='' && $b_modelo=='' && $buscar2 !='')
-                            {
-                                $lotes = $query
-                                    ->where('lotes.habilitado','=',1)
-                                    ->where('lotes.contrato','=',0)
-                                    ->where('lotes.apartado','!=',0)
-                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                    ->where('etapas.id', 'like', '%'. $buscar2 . '%');
-                            }
-                            else{
-                            if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' ){
-                                $lotes = $query
-                                    ->where('lotes.habilitado','=',1)
-                                    ->where('lotes.contrato','=',0)
-                                    ->where('lotes.apartado','!=',0)
-                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                    ->where('modelos.id', '=', $b_modelo )
-                                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%');
-                            }else{
-                                    if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
-                                    {
-                                        $lotes = $query
-                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                            ->where('lotes.habilitado','=',1)
-                                            ->where('lotes.contrato','=',0)
-                                            ->where('lotes.apartado','!=',0)
-                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                            ->where('modelos.id', '=', $b_modelo )
-                                            ->where('lotes.num_lote', 'like', '%'. $b_lote . '%');
-                                    }else{
-                                        if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
-        
-                                            $lotes = $query
-                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                ->where('modelos.id', '=', $b_modelo )
-                                                ->where('lotes.habilitado','=',1)
-                                                ->where('lotes.contrato','=',0)
-                                                ->where('lotes.apartado','!=',0);
-                                       
-                                        }else{
-                                            if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
-        
-                                                $lotes = $query
-                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                    ->where('lotes.habilitado','=',1)
-                                                    ->where('lotes.contrato','=',0)
-                                                    ->where('lotes.apartado','!=',0);
-                                            }else{
-                                                if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
-                                                    $lotes = $query
-                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                        ->where('lotes.habilitado','=',1)
-                                                        ->where('lotes.contrato','=',0)
-                                                        ->where('lotes.apartado','!=',0)
-                                                        ->where('modelos.id', '=', $b_modelo );
-                                                }else{
-                                                    if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
-                                                        $lotes = $query
-                                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                                            ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                            ->where('lotes.habilitado','=',1)
-                                                            ->where('lotes.contrato','=',0)
-                                                            ->where('lotes.apartado','!=',0);
-                                                    }else{
-                                                        if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !='' ){
-                                                            $lotes = $query
-                                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                ->where('modelos.id', '=', $b_modelo )
-                                                                ->where('lotes.habilitado','=',1)
-                                                                ->where('lotes.contrato','=',0)
-                                                                ->where('lotes.apartado','!=',0);
-                                                        }else{
-                                                            if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                $lotes = $query
-                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                    ->where('modelos.id', '=', $b_modelo )
-                                                                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                    ->where('lotes.habilitado','=',1)
-                                                                    ->where('lotes.contrato','=',0)
-                                                                    ->where('lotes.apartado','!=',0);
-                                                            }else{
-                                                                if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
-                                                                    $lotes = $query
-                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                        ->where('lotes.habilitado','=',1)
-                                                                        ->where('lotes.contrato','=',0)
-                                                                        ->where('lotes.apartado','!=',0);
-                                                                }else{
-                                                                    if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                        $lotes = $query
-                                                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                            ->where('modelos.id', '=', $b_modelo )
-                                                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                            ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                            ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                            ->where('lotes.habilitado','=',1)
-                                                                            ->where('lotes.contrato','=',0)
-                                                                            ->where('lotes.apartado','!=',0);
-                                                                    }else{
-                                                                        if($buscar2!='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
-                                                                            $lotes = $query
-                                                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                                ->where('lotes.habilitado','=',1)
-                                                                                ->where('lotes.contrato','=',0)
-                                                                                ->where('lotes.apartado','!=',0);
-                                                                        }
-                                                                        elseif($buscar2=='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
-                                                                            $lotes = $query
-                                                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                                ->where('lotes.habilitado','=',1)
-                                                                                ->where('lotes.contrato','=',0)
-                                                                                ->where('lotes.apartado','!=',0);
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+
+                        if($buscar != '')
+                            $lotes = $lotes->where($criterio, 'like', '%'. $buscar . '%');
+                        if($b_modelo != '')
+                            $lotes = $lotes->where('modelos.id', '=', $b_modelo );
+                        if($buscar2 != '')
+                            $lotes = $lotes->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%');
+                        if($buscar3 != '')
+                            $lotes = $lotes->where('lotes.manzana', 'like', '%'. $buscar3 . '%');
+                        if($b_lote != '')
+                            $lotes = $lotes->where('lotes.num_lote', 'like', '%'. $b_lote . '%');
+                    
                     break;
                 }
             }
             
         }
         else{
-            if($buscar==''){
+            
                 $lotes = $queryVendedores
                             ->where('lotes.habilitado','=',1)
                             ->where('lotes.apartado','=',0)
                             ->where('lotes.contrato','=',0);
-            }
-            else{
-                if($buscar2=='' && $buscar3=='' && $b_modelo=='' && $b_lote=='')
-                {
-                    $lotes = $queryVendedores
-                            ->where('lotes.habilitado','=',1)
-                            ->where('lotes.apartado','=',0)
-                            ->where('lotes.contrato','=',0)
-                            ->where($criterio, 'like', '%'. $buscar . '%');
-                }
-                else{
-                    if($b_lote=='' && $buscar3=='' && $b_modelo=='' && $buscar2 !='')
-                    {
-                        $lotes = $queryVendedores
-                                ->where('lotes.habilitado','=',1)
-                                ->where('lotes.apartado','=',0)
-                                ->where('lotes.contrato','=',0)
-                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                ->where('etapas.id', 'like', '%'. $buscar2 . '%');
-                    }
-                    else{
-                    if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' ){
-                            $lotes = $queryVendedores
-                                        ->where('lotes.habilitado','=',1)
-                                        ->where('lotes.apartado','=',0)
-                                        ->where('lotes.contrato','=',0)
-                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                        ->where('modelos.id', '=', $b_modelo )
-                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%');
-                    }else{
-                                if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
-                                {
-                                    $lotes = $queryVendedores
-                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                        ->where('lotes.habilitado','=',1)
-                                        ->where('lotes.apartado','=',0)
-                                        ->where('lotes.contrato','=',0)
-                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                        ->where('modelos.id', '=', $b_modelo )
-                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%');
-                                }else{
-                                    if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
-    
-                                        $lotes = $queryVendedores
-                                          
-                                            ->where('lotes.habilitado','=',1)
-                                            ->where('lotes.apartado','=',0)
-                                            ->where('lotes.contrato','=',0)
-                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                            ->where('modelos.id', '=', $b_modelo );
-                                    }else{
-                                        if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
-    
-                                            $lotes = $queryVendedores
-                                              
-                                                ->where('lotes.habilitado','=',1)
-                                                ->where('lotes.apartado','=',0)
-                                                ->where('lotes.contrato','=',0)
-                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                ->where('lotes.manzana', 'like', '%'. $buscar3 . '%');
-                                        }else{
-                                            if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
-                                                $lotes = $queryVendedores
-                                               
-                                                    ->where('lotes.habilitado','=',1)
-                                                    ->where('lotes.apartado','=',0)
-                                                    ->where('lotes.contrato','=',0)
-                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                    ->where('modelos.id', '=', $b_modelo );
-                                            }else{
-                                                if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
-                                                    $lotes = $queryVendedores
-                                                     
-                                                        ->where('lotes.habilitado','=',1)
-                                                        ->where('lotes.apartado','=',0)
-                                                        ->where('lotes.contrato','=',0)
-                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%');
-                                                }else{
-                                                    if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !='' ){
-                                                        $lotes = $queryVendedores
-                                                           
-                                                            ->where('lotes.habilitado','=',1)
-                                                            ->where('lotes.apartado','=',0)
-                                                            ->where('lotes.contrato','=',0)
-                                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                                            ->where('modelos.id', '=', $b_modelo );
-                                                    }else{
-                                                        if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                            $lotes = $queryVendedores
-                                                               
-                                                                ->where('lotes.habilitado','=',1)
-                                                                ->where('lotes.apartado','=',0)
-                                                                ->where('lotes.contrato','=',0)
-                                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                ->where('modelos.id', '=', $b_modelo )
-                                                                ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%');
-                                                        }else{
-                                                            if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
-                                                                $lotes = $queryVendedores
-                                                                  
-                                                                    ->where('lotes.habilitado','=',1)
-                                                                    ->where('lotes.apartado','=',0)
-                                                                    ->where('lotes.contrato','=',0)
-                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%');
-                                                            }else{
-                                                                if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                    $lotes = $queryVendedores
-                                                                     
-                                                                        ->where('lotes.habilitado','=',1)
-                                                                        ->where('lotes.apartado','=',0)
-                                                                        ->where('lotes.contrato','=',0)
-                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                        ->where('modelos.id', '=', $b_modelo )
-                                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%');
-                                                                }else{
-                                                                    if($buscar2!='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
-                                                                        $lotes = $queryVendedores
-                                                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                            ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                            ->where('lotes.habilitado','=',1)
-                                                                            ->where('lotes.contrato','=',0);
-                                                                    }
-                                                                    elseif($buscar2=='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
-                                                                        $lotes = $queryVendedor
-                                                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                            ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                            ->where('lotes.habilitado','=',1)
-                                                                            ->where('lotes.contrato','=',0);
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                    }
-                }
-            }
+
+                            
+                    if($buscar != '')
+                        $lotes = $lotes->where($criterio, 'like', '%'. $buscar . '%');
+                    if($b_modelo != '')
+                        $lotes = $lotes->where('modelos.id', '=', $b_modelo );
+                    if($buscar2 != '')
+                        $lotes = $lotes->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%');
+                    if($buscar3 != '')
+                        $lotes = $lotes->where('lotes.manzana', 'like', '%'. $buscar3 . '%');
+                    if($b_lote != '')
+                        $lotes = $lotes->where('lotes.num_lote', 'like', '%'. $b_lote . '%');
+            
         }
 
 
@@ -2344,602 +1217,90 @@ class LoteController extends Controller
 
                     
 
-        if($rolId == 1 || $rolId == 4 || $rolId == 6 || $rolId == 8 || $rolId == 11 ){
-            switch($b_apartado){
-                case '':{
-                    if($buscar==''){
-                        $lotes = $query
-                            ->where('lotes.habilitado','=',1)
-                            ->where('lotes.contrato','=',0);       
+            if($rolId == 1 || $rolId == 4 || $rolId == 6 || $rolId == 8 || $rolId == 11 ){
+                switch($b_apartado){
+                    case '':{
+                        
+                            $lotes = $query
+                                    ->where('lotes.habilitado','=',1)
+                                    ->where('lotes.contrato','=',0);
+    
+                            if($buscar != '')
+                                $lotes = $lotes->where($criterio, 'like', '%'. $buscar . '%');
+                            if($b_modelo != '')
+                                $lotes = $lotes->where('modelos.id', '=', $b_modelo );
+                            if($buscar2 != '')
+                                $lotes = $lotes->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%');
+                            if($buscar3 != '')
+                                $lotes = $lotes->where('lotes.manzana', 'like', '%'. $buscar3 . '%');
+                            if($b_lote != '')
+                                $lotes = $lotes->where('lotes.num_lote', 'like', '%'. $b_lote . '%');
+        
+                        break;
                     }
-                    else{
-                        if($buscar2=='' && $buscar3=='' && $b_modelo=='' && $b_lote=='')
-                        {
+                    case '0':{
+                        
+                            $lotes = $query
+                                        ->where('lotes.habilitado','=',1)
+                                        ->where('lotes.contrato','=',0)
+                                        ->where('lotes.apartado','=',0);
+    
+                            if($buscar != '')
+                                $lotes = $lotes->where($criterio, 'like', '%'. $buscar . '%');
+                            if($buscar != '')
+                                $lotes = $lotes->where('modelos.id', '=', $b_modelo );
+                            if($buscar != '')
+                                $lotes = $lotes->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%');
+                            if($buscar != '')
+                                $lotes = $lotes->where('lotes.manzana', 'like', '%'. $buscar3 . '%');
+                            if($buscar != '')
+                                $lotes = $lotes->where('lotes.num_lote', 'like', '%'. $b_lote . '%');
+                        
+                        break;
+                    }
+                    default:{
+                        
                             $lotes = $query
                                 ->where('lotes.habilitado','=',1)
                                 ->where('lotes.contrato','=',0)
-                                ->where($criterio, 'like', '%'. $buscar . '%');
-                        }
-                        else{
-                            if($b_lote=='' && $buscar3=='' && $b_modelo=='' && $buscar2 !='')
-                            {
-                                $lotes = $query
-                                    ->where('lotes.habilitado','=',1)
-                                    ->where('lotes.contrato','=',0)
-                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                    ->where('etapas.id', 'like', '%'. $buscar2 . '%');
-                            }
-                            else{
-                            if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' ){
-                                $lotes = $query
-                                    ->where('lotes.habilitado','=',1)
-                                    ->where('lotes.contrato','=',0)
-                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                    ->where('modelos.id', '=', $b_modelo )
-                                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%');
-                                    }else{
-                                        if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
-                                        {
-                                            $lotes = $query
-                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                ->where('lotes.habilitado','=',1)
-                                                ->where('lotes.contrato','=',0)
-                                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                ->where('modelos.id', '=', $b_modelo )
-                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%');  
-                                        }else{
-                                            if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
-            
-                                                $lotes = $query
-                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                    ->where('modelos.id', '=', $b_modelo )
-                                                    ->where('lotes.habilitado','=',1)
-                                                    ->where('lotes.contrato','=',0);
-                                            }else{
-                                                if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
-            
-                                                    $lotes = $query
-                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                        ->where('lotes.habilitado','=',1)
-                                                        ->where('lotes.contrato','=',0);     
-                                                }else{
-                                                    if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
-                                                        $lotes = $query
-                                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                                            ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                            ->where('lotes.habilitado','=',1)
-                                                            ->where('lotes.contrato','=',0)
-                                                            ->where('modelos.id', '=', $b_modelo );
-                                                    }else{
-                                                        if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
-                                                            $lotes = $query
-                                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                ->where('lotes.habilitado','=',1)
-                                                                ->where('lotes.contrato','=',0);
-                                                        }else{
-                                                            if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !='' ){
-                                                                $lotes = $query
-                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                    ->where('modelos.id', '=', $b_modelo )
-                                                                    ->where('lotes.habilitado','=',1)
-                                                                    ->where('lotes.contrato','=',0);
-                                                            }else{
-                                                                if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                    $lotes = $query
-                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                        ->where('modelos.id', '=', $b_modelo )
-                                                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                        ->where('lotes.habilitado','=',1)
-                                                                        ->where('lotes.contrato','=',0);
-                                                                }else{
-                                                                    if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
-                                                                        $lotes = $query
-                                                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                            ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                            ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                            ->where('lotes.habilitado','=',1)
-                                                                            ->where('lotes.contrato','=',0);
-                                                                    }else{
-                                                                        if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                            $lotes = $query
-                                                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                                ->where('modelos.id', '=', $b_modelo )
-                                                                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                                ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                                ->where('lotes.habilitado','=',1)
-                                                                                ->where('lotes.contrato','=',0);
-                                                                        }else{
-                                                                            if($buscar2!='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
-                                                                                $lotes = $query
-                                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                                    ->where('lotes.habilitado','=',1)
-                                                                                    ->where('lotes.contrato','=',0);
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                            }
-                        }
+                                ->where('lotes.apartado','!=',0);
+    
+                            if($buscar != '')
+                                $lotes = $lotes->where($criterio, 'like', '%'. $buscar . '%');
+                            if($b_modelo != '')
+                                $lotes = $lotes->where('modelos.id', '=', $b_modelo );
+                            if($buscar2 != '')
+                                $lotes = $lotes->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%');
+                            if($buscar3 != '')
+                                $lotes = $lotes->where('lotes.manzana', 'like', '%'. $buscar3 . '%');
+                            if($b_lote != '')
+                                $lotes = $lotes->where('lotes.num_lote', 'like', '%'. $b_lote . '%');
+                        
+                        break;
                     }
-                    break;
                 }
-                case '0':{
-                    if($buscar==''){
-                        $lotes = $query
-                                    ->where('lotes.habilitado','=',1)
-                                    ->where('lotes.contrato','=',0)
-                                    ->where('lotes.apartado','=',0);           
-                    }
-                    else{
-                        if($buscar2=='' && $buscar3=='' && $b_modelo=='' && $b_lote=='')
-                        {
-                            $lotes = $query
-                                        ->where('lotes.habilitado','=',1)
-                                        ->where('lotes.contrato','=',0)
-                                        ->where('lotes.apartado','=',0)
-                                        ->where($criterio, 'like', '%'. $buscar . '%');
-                        }
-                        else{
-                            if($b_lote=='' && $buscar3=='' && $b_modelo=='' && $buscar2 !='')
-                            {
-                                $lotes = $query
-                                    ->where('lotes.habilitado','=',1)
-                                    ->where('lotes.contrato','=',0)
-                                    ->where('lotes.apartado','=',0)
-                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                    ->where('etapas.id', 'like', '%'. $buscar2 . '%');
-                            }
-                            else{
-                            if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' ){
-                                $lotes = $query
-                                    ->where('lotes.habilitado','=',1)
-                                    ->where('lotes.contrato','=',0)
-                                    ->where('lotes.apartado','=',0)
-                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                    ->where('modelos.id', '=', $b_modelo )
-                                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%');
-                                   
-                                    }else{
-                                        if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
-                                        {
-                                            $lotes = $query
-                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                ->where('lotes.habilitado','=',1)
-                                                ->where('lotes.contrato','=',0)
-                                                ->where('lotes.apartado','=',0)
-                                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                ->where('modelos.id', '=', $b_modelo )
-                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%');
-        
-                                        }else{
-                                            if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
-            
-                                                $lotes = $query
-                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                    ->where('modelos.id', '=', $b_modelo )
-                                                    ->where('lotes.habilitado','=',1)
-                                                    ->where('lotes.contrato','=',0)
-                                                    ->where('lotes.apartado','=',0);
-        
-                                            }else{
-                                                if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
-            
-                                                    $lotes = $query
-                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                        ->where('lotes.habilitado','=',1)
-                                                        ->where('lotes.contrato','=',0)
-                                                        ->where('lotes.apartado','=',0);
-                                                }else{
-                                                    if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
-                                                        $lotes = $query
-                                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                                            ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                            ->where('lotes.habilitado','=',1)
-                                                            ->where('lotes.contrato','=',0)
-                                                            ->where('lotes.apartado','=',0)
-                                                            ->where('modelos.id', '=', $b_modelo );
-        
-                                                    }else{
-                                                        if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
-                                                            $lotes = $query
-                                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                ->where('lotes.habilitado','=',1)
-                                                                ->where('lotes.contrato','=',0)
-                                                                ->where('lotes.apartado','=',0);
-                                                        }else{
-                                                            if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !='' ){
-                                                                $lotes = $query
-                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                    ->where('modelos.id', '=', $b_modelo )
-                                                                    ->where('lotes.habilitado','=',1)
-                                                                    ->where('lotes.contrato','=',0)
-                                                                    ->where('lotes.apartado','=',0);    
-                                                            }else{
-                                                                if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                    $lotes = $query
-                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                        ->where('modelos.id', '=', $b_modelo )
-                                                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                        ->where('lotes.habilitado','=',1)
-                                                                        ->where('lotes.contrato','=',0)
-                                                                        ->where('lotes.apartado','=',0);
-                                                                }else{
-                                                                    if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
-                                                                        $lotes = $query
-                                                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                            ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                            ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                            ->where('lotes.habilitado','=',1)
-                                                                            ->where('lotes.contrato','=',0)
-                                                                            ->where('lotes.apartado','=',0);
-                                                                    }else{
-                                                                        if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                            $lotes = $query
-                                                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                                ->where('modelos.id', '=', $b_modelo )
-                                                                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                                ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                                ->where('lotes.habilitado','=',1)
-                                                                                ->where('lotes.contrato','=',0)
-                                                                                ->where('lotes.apartado','=',0);
-                                                                        }else{
-                                                                            if($buscar2!='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
-                                                                                $lotes = $query
-                                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                                    ->where('lotes.habilitado','=',1)
-                                                                                    ->where('lotes.contrato','=',0)
-                                                                                    ->where('lotes.apartado','=',0);
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                            }
-                        }
-                    }
-                    break;
-                }
-                default:{
-                    if($buscar==''){
-                        $lotes = $query
-                                    ->where('lotes.habilitado','=',1)
-                                    ->where('lotes.contrato','=',0)
-                                    ->where('lotes.apartado','!=',0);
-                    }
-                    else{
-                        if($buscar2=='' && $buscar3=='' && $b_modelo=='' && $b_lote=='')
-                        {
-                            $lotes = $query
-                                        ->where('lotes.habilitado','=',1)
-                                        ->where('lotes.contrato','=',0)
-                                        ->where('lotes.apartado','!=',0)
-                                        ->where($criterio, 'like', '%'. $buscar . '%');
-                        }
-                        else{
-                            if($b_lote=='' && $buscar3=='' && $b_modelo=='' && $buscar2 !='')
-                            {
-                                $lotes = $query
-                                    ->where('lotes.habilitado','=',1)
-                                    ->where('lotes.contrato','=',0)
-                                    ->where('lotes.apartado','!=',0)
-                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                    ->where('etapas.id', 'like', '%'. $buscar2 . '%');
-                            }
-                            else{
-                            if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' ){
-                                $lotes = $query
-                                    ->where('lotes.habilitado','=',1)
-                                    ->where('lotes.contrato','=',0)
-                                    ->where('lotes.apartado','!=',0)
-                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                    ->where('modelos.id', '=', $b_modelo )
-                                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%');
-        
-                                    }else{
-                                        if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
-                                        {
-                                            $lotes = $query
-                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                ->where('lotes.habilitado','=',1)
-                                                ->where('lotes.contrato','=',0)
-                                                ->where('lotes.apartado','!=',0)
-                                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                ->where('modelos.id', '=', $b_modelo )
-                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%');
-                                        }else{
-                                            if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
-            
-                                                $lotes = $query
-                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                    ->where('modelos.id', '=', $b_modelo )
-                                                    ->where('lotes.habilitado','=',1)
-                                                    ->where('lotes.contrato','=',0)
-                                                    ->where('lotes.apartado','!=',0);
-        
-                                            }else{
-                                                if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
-            
-                                                    $lotes = $query
-                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                        ->where('lotes.habilitado','=',1)
-                                                        ->where('lotes.contrato','=',0)
-                                                        ->where('lotes.apartado','!=',0);
-                                                }else{
-                                                    if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
-                                                        $lotes = $query
-                                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                                            ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                            ->where('lotes.habilitado','=',1)
-                                                            ->where('lotes.contrato','=',0)
-                                                            ->where('lotes.apartado','!=',0)
-                                                            ->where('modelos.id', '=', $b_modelo );
-                                                    }else{
-                                                        if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
-                                                            $lotes = $query
-                                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                ->where('lotes.habilitado','=',1)
-                                                                ->where('lotes.contrato','=',0)
-                                                                ->where('lotes.apartado','!=',0);
-                                                        }else{
-                                                            if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !='' ){
-                                                                $lotes = $query
-                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                    ->where('modelos.id', '=', $b_modelo )
-                                                                    ->where('lotes.habilitado','=',1)
-                                                                    ->where('lotes.contrato','=',0)
-                                                                    ->where('lotes.apartado','!=',0);
-                                                            }else{
-                                                                if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                    $lotes = $query
-                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                        ->where('modelos.id', '=', $b_modelo )
-                                                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                        ->where('lotes.habilitado','=',1)
-                                                                        ->where('lotes.contrato','=',0)
-                                                                        ->where('lotes.apartado','!=',0);
-                                                                }else{
-                                                                    if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
-                                                                        $lotes = $query
-                                                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                            ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                            ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                            ->where('lotes.habilitado','=',1)
-                                                                            ->where('lotes.contrato','=',0)
-                                                                            ->where('lotes.apartado','!=',0);
-                                                                    }else{
-                                                                        if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                            $lotes = $query
-                                                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                                ->where('modelos.id', '=', $b_modelo )
-                                                                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                                ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                                ->where('lotes.habilitado','=',1)
-                                                                                ->where('lotes.contrato','=',0)
-                                                                                ->where('lotes.apartado','!=',0);
-                                                                        }else{
-                                                                            if($buscar2!='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
-                                                                                $lotes = $query
-                                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                                    ->where('lotes.habilitado','=',1)
-                                                                                    ->where('lotes.contrato','=',0)
-                                                                                    ->where('lotes.apartado','!=',0);
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                            }
-                        }
-                    }
-                    break;
-                }
-            }
-            
-        }
-        else{
-            if($buscar==''){
-                $lotes = $queryVendedores
-                            ->where('lotes.habilitado','=',1)
-                            ->where('lotes.apartado','=',0)
-                            ->where('lotes.contrato','=',0);
+                
             }
             else{
-                if($buscar2=='' && $buscar3=='' && $b_modelo=='' && $b_lote=='')
-                {
+                
                     $lotes = $queryVendedores
-                            ->where('lotes.habilitado','=',1)
-                            ->where('lotes.apartado','=',0)
-                            ->where('lotes.contrato','=',0)
-                            ->where($criterio, 'like', '%'. $buscar . '%');        
-                }
-                else{
-                    if($b_lote=='' && $buscar3=='' && $b_modelo=='' && $buscar2 !='')
-                    {
-                        $lotes = $queryVendedores
-                            ->where('lotes.habilitado','=',1)
-                            ->where('lotes.apartado','=',0)
-                            ->where('lotes.contrato','=',0)
-                            ->where($criterio, 'like', '%'. $buscar . '%')
-                            ->where('etapas.id', 'like', '%'. $buscar2 . '%');
-                    }
-                    else{
-                        if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' ){
-                            $lotes = $queryVendedores
-                                        ->where('lotes.habilitado','=',1)
-                                        ->where('lotes.apartado','=',0)
-                                        ->where('lotes.contrato','=',0)
-                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                        ->where('modelos.id', '=', $b_modelo )
-                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%');
-                        }else{
-                            if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
-                            {
-                                $lotes = $queryVendedores
-                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                    ->where('lotes.habilitado','=',1)
-                                    ->where('lotes.apartado','=',0)
-                                    ->where('lotes.contrato','=',0)
-                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                    ->where('modelos.id', '=', $b_modelo )
-                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%');
-                            }else{
-                                if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
-
-                                    $lotes = $queryVendedores
-                                                            
-                                        ->where('lotes.habilitado','=',1)
-                                        ->where('lotes.apartado','=',0)
-                                        ->where('lotes.contrato','=',0)
-                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                        ->where('modelos.id', '=', $b_modelo );
-                                }else{
-                                    if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
-
-                                        $lotes = $queryVendedores
-                                            
-                                            ->where('lotes.habilitado','=',1)
-                                            ->where('lotes.apartado','=',0)
-                                            ->where('lotes.contrato','=',0)
-                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                            ->where('lotes.manzana', 'like', '%'. $buscar3 . '%'); 
-                                    }else{
-                                        if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
-                                            $lotes = $queryVendedores
-                                            
-                                                ->where('lotes.habilitado','=',1)
-                                                ->where('lotes.apartado','=',0)
-                                                ->where('lotes.contrato','=',0)
-                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                ->where('modelos.id', '=', $b_modelo );
-                                        }else{
-                                            if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
-                                                $lotes = $queryVendedores
-                                                    
-                                                    ->where('lotes.habilitado','=',1)
-                                                    ->where('lotes.apartado','=',0)
-                                                    ->where('lotes.contrato','=',0)
-                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%');
-                                            }else{
-                                                if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !='' ){
-                                                    $lotes = $queryVendedores
-                                                        
-                                                        ->where('lotes.habilitado','=',1)
-                                                        ->where('lotes.apartado','=',0)
-                                                        ->where('lotes.contrato','=',0)
-                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                        ->where('modelos.id', '=', $b_modelo );
-                                                }else{
-                                                    if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                        $lotes = $queryVendedores
-                                                            
-                                                            ->where('lotes.habilitado','=',1)
-                                                            ->where('lotes.apartado','=',0)
-                                                            ->where('lotes.contrato','=',0)
-                                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                                            ->where('modelos.id', '=', $b_modelo )
-                                                            ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                            ->where('lotes.num_lote', 'like', '%'. $b_lote . '%');
-                                                    }else{
-                                                        if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
-                                                            $lotes = $queryVendedores
-                                                                
-                                                                ->where('lotes.habilitado','=',1)
-                                                                ->where('lotes.apartado','=',0)
-                                                                ->where('lotes.contrato','=',0)
-                                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%');
-                                                        }else{
-                                                            if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                $lotes = $queryVendedores
-                                                                    
-                                                                    ->where('lotes.habilitado','=',1)
-                                                                    ->where('lotes.apartado','=',0)
-                                                                    ->where('lotes.contrato','=',0)
-                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                    ->where('modelos.id', '=', $b_modelo )
-                                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                                                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%');
-                                                            }else{
-                                                                if($buscar2!='' && $b_lote!='' && $buscar3 =='' && $b_modelo ==''  ){
-                                                                    $lotes = $queryVendedores
-                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                        ->where('lotes.habilitado','=',1)
-                                                                        ->where('lotes.apartado','=',0)
-                                                                        ->where('lotes.contrato','=',0);
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                                ->where('lotes.habilitado','=',1)
+                                ->where('lotes.apartado','=',0)
+                                ->where('lotes.contrato','=',0);
+    
+                                
+                        if($buscar != '')
+                            $lotes = $lotes->where($criterio, 'like', '%'. $buscar . '%');
+                        if($b_modelo != '')
+                            $lotes = $lotes->where('modelos.id', '=', $b_modelo );
+                        if($buscar2 != '')
+                            $lotes = $lotes->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%');
+                        if($buscar3 != '')
+                            $lotes = $lotes->where('lotes.manzana', 'like', '%'. $buscar3 . '%');
+                        if($b_lote != '')
+                            $lotes = $lotes->where('lotes.num_lote', 'like', '%'. $b_lote . '%');
+                
             }
-        }
         
 
         if($request->casa_muestra != ''){
@@ -3244,439 +1605,31 @@ class LoteController extends Controller
                   'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios',
                   'lotes.regimen_condom','licencias.avance');
         
-        if($b_habilitado != ''){
-            if($buscar==''){
-                $lotes = $query
-                          ->where('lotes.habilitado','=', $b_habilitado);
-            }
-            else{
-                if($b_puente == ''){
-                    if($buscar2=='' && $buscar3=='' && $b_modelo=='' && $b_lote=='')
-                    {
-                        $lotes = $query
-                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                ->where('lotes.habilitado','=', $b_habilitado);
-                    }
-                    else{
-                        if($b_lote=='' && $buscar3=='' && $b_modelo==''){
-                            $lotes = $query
-                            ->where($criterio, 'like', '%'. $buscar . '%')
-                            ->where('lotes.etapa_id','=',  $buscar2 )
-                            ->where('lotes.habilitado','=', $b_habilitado);
-                            
-                        }else {
-                            if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' )
-                            {
-                                $lotes = $query
-                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                ->where('modelos.id', '=', $b_modelo )
-                                ->where('lotes.manzana', '=',  $buscar3)
-                                ->where('lotes.habilitado','=', $b_habilitado);
-                            } else{
-                                if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
-                                {
-                                    $lotes = $query
-                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                        ->where('modelos.id', '=', $b_modelo )
-                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                        ->where('lotes.habilitado','=', $b_habilitado);
-                                }  else{
-                                    if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
-                
-                                        $lotes = $query
-                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                            ->where('lotes.habilitado','=', $b_habilitado)
-                                            ->where('modelos.id', '=', $b_modelo );
-                                    }else{
-                                        if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
-                
-                                            $lotes = $query
-                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                ->where('lotes.manzana', '=',$buscar3)
-                                                ->where('lotes.habilitado','=', $b_habilitado);
-                                        }else{
-                                            if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
-                                                $lotes = $query
-                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                    ->where('lotes.manzana', '=',$buscar3)
-                                                    ->where('lotes.habilitado','=', $b_habilitado)
-                                                    ->where('modelos.id', '=', $b_modelo );
-                                            }else{
-                                                if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
-                                                    $lotes = $query
-                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                        ->where('lotes.manzana', '=',$buscar3)
-                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                        ->where('lotes.habilitado','=', $b_habilitado);     
-                                                }else{
-                                                    if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !=''  ){
-                                                        $lotes = $query
-                                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                                            ->where('modelos.id', '=', $b_modelo )
-                                                            ->where('lotes.habilitado','=', $b_habilitado);  
-                                                    }else{
-                                                        if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                            $lotes = $query
-                                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                ->where('modelos.id', '=', $b_modelo )
-                                                                ->where('lotes.manzana', '=',$buscar3)
-                                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                ->where('lotes.habilitado','=', $b_habilitado);
-                                                        }else{
-                                                            if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
-                                                                $lotes = $query
-                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                    ->where('lotes.manzana', '=',$buscar3)
-                                                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                    ->where('lotes.habilitado','=', $b_habilitado);
-                                                            }else{
-                                                                if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                    $lotes = $query
-                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                        ->where('modelos.id', '=', $b_modelo )
-                                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                        ->where('lotes.manzana', '=',$buscar3)
-                                                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                        ->where('lotes.habilitado','=', $b_habilitado);  
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }              
-                        }
-                 
-                    }
-                }
-                else{
-                    if($buscar2=='' && $buscar3=='' && $b_modelo=='' && $b_lote=='')
-                    {
-                        $lotes = $query
-                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente);
-                    }
-                    else{
-                        if($b_lote=='' && $buscar3=='' && $b_modelo==''){
-                            $lotes = $query
-                            ->where($criterio, 'like', '%'. $buscar . '%')
-                            ->where('lotes.etapa_id','=',  $buscar2 )
-                            ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente);
-                            
-                        }else {
-                            if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' )
-                            {
-                                $lotes = $query
-                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                ->where('modelos.id', '=', $b_modelo )
-                                ->where('lotes.manzana', '=',  $buscar3)
-                                ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente);
-                            } else{
-                                if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
-                                {
-                                    $lotes = $query
-                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                        ->where('modelos.id', '=', $b_modelo )
-                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                        ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente);
-                                }  else{
-                                    if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
-                
-                                        $lotes = $query
-                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                            ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente)
-                                            ->where('modelos.id', '=', $b_modelo );   
-                                    }else{
-                                        if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
-                
-                                            $lotes = $query
-                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                ->where('lotes.manzana', '=',$buscar3)
-                                                ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente);
-                                        }else{
-                                            if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
-                                                $lotes = $query
-                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                    ->where('lotes.manzana', '=',$buscar3)
-                                                    ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente)
-                                                    ->where('modelos.id', '=', $b_modelo );   
-                                            }else{
-                                                if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
-                                                    $lotes = $query
-                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                        ->where('lotes.manzana', '=',$buscar3)
-                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                        ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente);   
-                                                }else{
-                                                    if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !=''  ){
-                                                        $lotes = $query
-                                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                                            ->where('modelos.id', '=', $b_modelo )
-                                                            ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente);
-                                                    }else{
-                                                        if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                            $lotes = $query
-                                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                ->where('modelos.id', '=', $b_modelo )
-                                                                ->where('lotes.manzana', '=',$buscar3)
-                                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente);
-                                                        }else{
-                                                            if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
-                                                                $lotes = $query
-                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                    ->where('lotes.manzana', '=',$buscar3)
-                                                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                    ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente);
-                                                            }else{
-                                                                if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                    $lotes = $query
-                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                        ->where('modelos.id', '=', $b_modelo )
-                                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                        ->where('lotes.manzana', '=',$buscar3)
-                                                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
-                                                                        ->where('lotes.habilitado','=', $b_habilitado)->where('lotes.credito_puente','=',$b_puente);
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-            
-                                    }
-                                }
-                            }              
-                        }
-                    }
-                } 
-            }
-        }
-        else{
-            if($buscar==''){
-                $lotes = $query;
-    
-                          
-            }
-            else{
-                if($b_puente == ''){
-                    if($buscar2=='' && $buscar3=='' && $b_modelo=='' && $b_lote=='')
-                    {
-                        $lotes = $query
-                                ->where($criterio, 'like', '%'. $buscar . '%');
-                    }
-                    else{
-                        if($b_lote=='' && $buscar3=='' && $b_modelo==''){
-                            $lotes = $query
-                            ->where($criterio, 'like', '%'. $buscar . '%')
-                            ->where('lotes.etapa_id','=',  $buscar2 );
-                        }else {
-                            if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' )
-                            {
-                                $lotes = $query
-                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                ->where('modelos.id', '=', $b_modelo )
-                                ->where('lotes.manzana', '=',  $buscar3); 
-                            } else{
-                                if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
-                                {
-                                    $lotes = $query
-                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                        ->where('modelos.id', '=', $b_modelo )
-                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%');  
-                                }  else{
-                                    if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
-                
-                                        $lotes = $query
-                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                            ->where('modelos.id', '=', $b_modelo );
-                                    }else{
-                                        if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
-                
-                                            $lotes = $query
-                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                ->where('lotes.manzana', '=',$buscar3);
-                                        }else{
-                                            if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
-                                                $lotes = $query
-                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                    ->where('lotes.manzana', '=',$buscar3)
-                                                    ->where('modelos.id', '=', $b_modelo );    
-                                            }else{
-                                                if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
-                                                    $lotes = $query
-                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                        ->where('lotes.manzana', '=',$buscar3)
-                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%');
-                                                }else{
-                                                    if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !=''  ){
-                                                        $lotes = $query
-                                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                                            ->where('modelos.id', '=', $b_modelo );
-                                                    }else{
-                                                        if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                            $lotes = $query
-                                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                ->where('modelos.id', '=', $b_modelo )
-                                                                ->where('lotes.manzana', '=',$buscar3)
-                                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%');   
-                                                        }else{
-                                                            if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
-                                                                $lotes = $query
-                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                    ->where('lotes.manzana', '=',$buscar3)
-                                                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%'); 
-                                                            }else{
-                                                                if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                    $lotes = $query
-                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                        ->where('modelos.id', '=', $b_modelo )
-                                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                        ->where('lotes.manzana', '=',$buscar3)
-                                                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%');   
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }           
-                        }
-                    }
-                }
-                else{
-                    if($buscar2=='' && $buscar3=='' && $b_modelo=='' && $b_lote=='')
-                    {
-                        $lotes = $query
-                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                ->where('lotes.credito_puente','=',$b_puente);
-                    }
-                    else{
-                        if($b_lote=='' && $buscar3=='' && $b_modelo==''){
-                            $lotes = $query
-                            ->where($criterio, 'like', '%'. $buscar . '%')
-                            ->where('lotes.credito_puente','=',$b_puente)
-                            ->where('lotes.etapa_id','=',  $buscar2 );
-                        }else {
-                            if($b_lote=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $buscar3 !='' )
-                            {
-                                $lotes = $query
-                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                ->where('lotes.credito_puente','=',$b_puente)
-                                ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                ->where('modelos.id', '=', $b_modelo )
-                                ->where('lotes.manzana', '=',  $buscar3);
-                            } else{
-                                if($buscar3=='' && $buscar !='' && $buscar2 !='' && $b_modelo !='' && $b_lote !='')
-                                {
-                                    $lotes = $query
-                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                        ->where('lotes.credito_puente','=',$b_puente)
-                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                        ->where('modelos.id', '=', $b_modelo )
-                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%');
-                                }  else{
-                                    if($b_lote=='' && $buscar3=='' && $buscar2 != '' && $b_modelo != ''){
-                
-                                        $lotes = $query
-                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                            ->where('lotes.credito_puente','=',$b_puente)
-                                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                            ->where('modelos.id', '=', $b_modelo );   
-                                    }else{
-                                        if( $buscar2=='' && $b_modelo=='' && $b_lote=='' && $buscar3 !=''){
-                
-                                            $lotes = $query
-                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                ->where('lotes.credito_puente','=',$b_puente)
-                                                ->where('lotes.manzana', '=',$buscar3);
-                                        }else{
-                                            if($buscar2=='' && $b_lote=='' && $buscar3 !='' && $b_modelo !=''){
-                                                $lotes = $query
-                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                    ->where('lotes.credito_puente','=',$b_puente)
-                                                    ->where('lotes.manzana', '=',$buscar3)
-                                                    ->where('modelos.id', '=', $b_modelo );
-                                            }else{
-                                                if($buscar2!='' && $b_lote=='' && $buscar3 !='' && $b_modelo ==''){
-                                                    $lotes = $query
-                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                        ->where('lotes.credito_puente','=',$b_puente)
-                                                        ->where('lotes.manzana', '=',$buscar3)
-                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%');
-                                                }else{
-                                                    if($buscar2=='' && $b_lote=='' && $buscar3 =='' && $b_modelo !=''  ){
-                                                        $lotes = $query
-                                                            ->where($criterio, 'like', '%'. $buscar . '%')
-                                                            ->where('lotes.credito_puente','=',$b_puente)
-                                                            ->where('modelos.id', '=', $b_modelo );
-                                                    }else{
-                                                        if($buscar2=='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                            $lotes = $query
-                                                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                ->where('lotes.credito_puente','=',$b_puente)
-                                                                ->where('modelos.id', '=', $b_modelo )
-                                                                ->where('lotes.manzana', '=',$buscar3)
-                                                                ->where('lotes.num_lote', 'like', '%'. $b_lote . '%');
-                                                        }else{
-                                                            if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo ==''  ){
-                                                                $lotes = $query
-                                                                    ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                    ->where('lotes.credito_puente','=',$b_puente)
-                                                                    ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                    ->where('lotes.manzana', '=',$buscar3)
-                                                                    ->where('lotes.num_lote', 'like', '%'. $b_lote . '%');    
-                                                            }else{
-                                                                if($buscar2!='' && $b_lote!='' && $buscar3 !='' && $b_modelo !=''  ){
-                                                                    $lotes = $query
-                                                                        ->where($criterio, 'like', '%'. $buscar . '%')
-                                                                        ->where('lotes.credito_puente','=',$b_puente)
-                                                                        ->where('modelos.id', '=', $b_modelo )
-                                                                        ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                                        ->where('lotes.manzana', '=',$buscar3)
-                                                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%');   
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }           
-                        }
-                    }
-                }
-            }
-        }
-
-        if($request->b_empresa != ''){
-            $lotes= $lotes->where('lotes.emp_constructora','=',$request->b_empresa);
-        }
-
-        if($request->b_empresa2 != ''){
-            $lotes= $lotes->where('lotes.emp_terreno','=',$request->b_empresa2);
-        }
+                  if($b_habilitado != '')
+                  $query = $query->where('lotes.habilitado','=', $b_habilitado);
+      
+                  $lotes = $query;
+                  if($buscar != '')
+                      $lotes = $lotes->where($criterio, 'like', '%'. $buscar . '%');
+                  if($b_puente != '')
+                      $lotes = $lotes->where('lotes.credito_puente','=',$b_puente);
+                  if($b_modelo != '')
+                      $lotes = $lotes->where('modelos.id', '=', $b_modelo );
+                  if($buscar2 != '')
+                      $lotes = $lotes->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%');
+                  if($buscar3 != '')
+                      $lotes = $lotes->where('lotes.manzana', '=',$buscar3);
+                  if($b_lote != '')
+                      $lotes = $lotes->where('lotes.num_lote', '=',$b_lote);
+                  
+      
+              if($request->b_empresa != ''){
+                  $lotes= $lotes->where('lotes.emp_constructora','=',$request->b_empresa);
+              }
+      
+              if($request->b_empresa2 != ''){
+                  $lotes= $lotes->where('lotes.emp_terreno','=',$request->b_empresa2);
+              }
 
         $lotes = $lotes->orderBy('fraccionamientos.nombre','ASC')
                         ->orderBy('etapas.num_etapa','ASC')

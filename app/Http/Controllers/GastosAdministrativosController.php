@@ -33,71 +33,39 @@ class GastosAdministrativosController extends Controller
             $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
         }
 
-        if($buscar==''){
-            $gastos = $query
-                    ->orderBy('contratos.id','asc')
-                    ->paginate(8);
-        }
-        else{
+        $gastos = $query;
+
             switch($criterio){
                 case 'gastos_admin.fecha':{
-                    $gastos = $query
-                        ->orderBy('contratos.id','asc')
-                        ->whereBetween($criterio, [$buscar,$buscar2])
-                        ->paginate(8);
+                    if($buscar != '')
+                        $gastos = $gastos->whereBetween($criterio, [$buscar,$buscar2]);
                     break;
                 }
                 case 'personal.nombre':{
-                    $gastos = $query
-                        ->orderBy('contratos.id','asc')
-                        ->where($criterio, 'like', '%'.$buscar . '%')
-                        ->orWhere('personal.apellidos','like', '%'.$buscar .'%')
-                        ->paginate(8);
+                    if($buscar != '')
+                        $gastos = $gastos->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
                     break;
                 }
                 case 'creditos.fraccionamiento':{
-                    if($buscar2 == '' && $buscar3 == ''){
-                        $gastos = $query
-                            ->orderBy('contratos.id','asc')
-                            ->where($criterio, '=', $buscar)
-                            ->paginate(8);
-                        break;
-                    }
-                    elseif($buscar2 != '' && $buscar3 == ''){
-                        $gastos = $query
-                            ->orderBy('contratos.id','asc')
-                            ->where($criterio, '=', $buscar)
-                            ->where('creditos.etapa', '=', $buscar2)
-                            ->paginate(8);
-                        break;
-                    }
-                    elseif($buscar2 == '' && $buscar3 != ''){
-                        $gastos =$query
-                            ->orderBy('contratos.id','asc')
-                            ->where($criterio, '=', $buscar)
-                            ->where('creditos.manzana', '=', $buscar3)
-                            ->paginate(8);
-                        break;
-                    }
-                    else{
-                        $gastos = $query
-                            ->orderBy('contratos.id','asc')
-                            ->where($criterio, '=', $buscar)
-                            ->where('creditos.etapa', '=', $buscar2)
-                            ->where('creditos.manzana', '=', $buscar3)
-                            ->paginate(8);
-                        break;
-                    }
+                    
+                    if($buscar != '')
+                        $gastos = $gastos->where($criterio, '=', $buscar);
+                    if($buscar2 != '')
+                        $gastos = $gastos->where('creditos.etapa', '=', $buscar2);
+                    if($buscar3 != '')
+                        $gastos = $gastos->where('creditos.manzana', '=', $buscar3);
+                    break;
+                    
                 }
                 default:{
-                    $gastos = $query
-                        ->orderBy('contratos.id','asc')
-                        ->where($criterio, '=', $buscar)
-                        ->paginate(8);
+                    if($buscar != '')
+                        $gastos = $gastos->where($criterio, '=', $buscar);
                     break;
                 }
             }
-        }
+        
+
+        $gastos = $gastos->orderBy('contratos.id','asc')->paginate(8);
         
         
         return [
@@ -131,71 +99,39 @@ class GastosAdministrativosController extends Controller
             $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
         }
 
-        if($buscar==''){
-            $gastos = $query
-                    ->orderBy('contratos.id','asc')
-                    ->get();
-        }
-        else{
+        $gastos = $query;
+
             switch($criterio){
                 case 'gastos_admin.fecha':{
-                    $gastos = $query
-                        ->orderBy('contratos.id','asc')
-                        ->whereBetween($criterio, [$buscar,$buscar2])
-                        ->get();
+                    if($buscar != '')
+                        $gastos = $gastos->whereBetween($criterio, [$buscar,$buscar2]);
                     break;
                 }
                 case 'personal.nombre':{
-                    $gastos = $query
-                        ->orderBy('contratos.id','asc')
-                        ->where($criterio, 'like', '%'.$buscar . '%')
-                        ->orWhere('personal.apellidos','like', '%'.$buscar .'%')
-                        ->get();
+                    if($buscar != '')
+                        $gastos = $gastos->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
                     break;
                 }
                 case 'creditos.fraccionamiento':{
-                    if($buscar2 == '' && $buscar3 == ''){
-                        $gastos = $query
-                            ->orderBy('contratos.id','asc')
-                            ->where($criterio, '=', $buscar)
-                            ->get();
-                        break;
-                    }
-                    elseif($buscar2 != '' && $buscar3 == ''){
-                        $gastos = $query
-                            ->orderBy('contratos.id','asc')
-                            ->where($criterio, '=', $buscar)
-                            ->where('creditos.etapa', '=', $buscar2)
-                            ->get();
-                        break;
-                    }
-                    elseif($buscar2 == '' && $buscar3 != ''){
-                        $gastos = $query
-                            ->orderBy('contratos.id','asc')
-                            ->where($criterio, '=', $buscar)
-                            ->where('creditos.manzana', '=', $buscar3)
-                            ->get();
-                        break;
-                    }
-                    else{
-                        $gastos = $query
-                            ->orderBy('contratos.id','asc')
-                            ->where($criterio, '=', $buscar)
-                            ->where('creditos.etapa', '=', $buscar2)
-                            ->where('creditos.manzana', '=', $buscar3)
-                            ->get();
-                        break;
-                    }
+                    
+                    if($buscar != '')
+                        $gastos = $gastos->where($criterio, '=', $buscar);
+                    if($buscar2 != '')
+                        $gastos = $gastos->where('creditos.etapa', '=', $buscar2);
+                    if($buscar3 != '')
+                        $gastos = $gastos->where('creditos.manzana', '=', $buscar3);
+                    break;
+                    
                 }
                 default:{
-                    $gastos = $query
-                        ->orderBy('contratos.id','asc')
-                        ->where($criterio, '=', $buscar)
-                        ->get();
+                    if($buscar != '')
+                        $gastos = $gastos->where($criterio, '=', $buscar);
                     break;
                 }
             }
-        }
+        
+
+        $gastos = $gastos->orderBy('contratos.id','asc')->get();
         
         return Excel::create('Gastos Administrativos', function($excel) use ($gastos){
                 $excel->sheet('gastos', function($sheet) use ($gastos){
@@ -343,77 +279,38 @@ class GastosAdministrativosController extends Controller
             $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
         }
 
-        if($b == ''){
-            $contratos = $query
-           ->where('contratos.status','!=',0)
-           ->orderBy('contratos.id','asc')
-           ->paginate(8);
-        }else{
+        $contratos = $query
+           ->where('contratos.status','!=',0);
+   
             switch($criterio2){
-                case 'contratos.id': {
-                    $contratos = $query
-                    ->where('contratos.status','!=',0)
-                    ->where('contratos.id','=',$b)
-                    ->orderBy('contratos.id','asc')
-                    ->paginate(8);
-                    break;
-                }
+                
                 case 'personal.nombre': {
-                    $contratos = $query
-                    ->where('contratos.status','!=',0)
-                    ->where('personal.nombre','LIKE','%'.$b.'%')
-                    ->orwhere('contratos.status','!=',0)
-                    ->where('personal.apellidos','LIKE','%'.$b.'%')
-                    ->orderBy('contratos.id','asc')
-                    ->paginate(8);
+                    if($b != '')
+                        $contratos = $contratos->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $b . '%');
                     break;
                 }
 
                 case 'creditos.fraccionamiento': {
-                    if($b2 == '' && $b3 == ''){
-                    $contratos = $query
-                    ->where('contratos.status','!=',0)
-                    ->where($criterio2,'=',$b)
-                    ->orderBy('contratos.id','asc')
-                    ->paginate(8);
-                    break;
-                    }elseif($b2 != '' && $b3 == ''){
-                        $contratos = $query
-                        ->where('contratos.status','!=',0)
-                        ->where($criterio2,'=',$b)
-                        ->where('creditos.etapa','=',$b2)
-                        ->orderBy('contratos.id','asc')
-                        ->paginate(8);
+                    
+                        if($b != '')
+                            $contratos = $contratos->where($criterio2,'=',$b);
+                        if($b2 != '')
+                            $contratos = $contratos->where('creditos.etapa','=',$b2);
+                        if($b3 != '')
+                            $contratos = $contratos->where('creditos.manzana','=',$b3);
                         break;
-                    }elseif ($b2 == '' && $b3 != '') {
-                        $contratos = $query
-                        ->where('contratos.status','!=',0)
-                        ->where($criterio2,'=',$b)
-                        ->where('creditos.manzana','=',$b3)
-                        ->orderBy('contratos.id','asc')
-                        ->paginate(8);
-                        break;
-                    }else {
-                        $contratos = $query
-                        ->where('contratos.status','!=',0)
-                        ->where($criterio2,'=',$b)
-                        ->where('creditos.etapa','=',$b2)
-                        ->where('creditos.manzana','=',$b3)
-                        ->orderBy('contratos.id','asc')
-                        ->paginate(8);
-                        break;
-                    }
+                    
                 }
                 default: {
-                    $contratos = $query
-                    ->where('contratos.status','!=',0)
-                    ->where($criterio2,'=',$b)
-                    ->orderBy('contratos.id','asc')
-                    ->paginate(8);
+                    if($b != '')
+                        $contratos = $contratos->where($criterio2,'=',$b);
                     break;
                 }
             }
-        }
+        
+
+        $contratos = $contratos->orderBy('contratos.id','asc')
+        ->paginate(8);
 
         return [
             'pagination' => [
@@ -425,8 +322,6 @@ class GastosAdministrativosController extends Controller
                 'to'            => $contratos->lastItem(),
             ],
             'contratos' => $contratos];
-        
-
     }
 
     public function store(Request $request){

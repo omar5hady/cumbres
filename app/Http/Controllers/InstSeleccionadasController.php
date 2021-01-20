@@ -46,184 +46,110 @@ class InstSeleccionadasController extends Controller
                     'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
             ->where('lotes.firmado','=',$request->firmado);
 
-        if($b_cobrados == 0){
+        
             if($buscar == '' && $criterio != 'personal.nombre'){
-                $creditos = $query
-                    ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                    ->where('lotes.emp_constructora','like','%'.$empresa.'%')
+                $creditos = $query;
+                if($b_cobrados == 0)
+                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                else
+                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+                    
+                    $creditos = $creditos->where('lotes.emp_constructora','like','%'.$empresa.'%')
                     ->where('inst_seleccionadas.elegido', '=', 1)
                     ->where('contratos.status', '=', 3)
                     ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                    ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                    ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                    ->where('lotes.emp_constructora','like','%'.$empresa.'%')
+                    ->orWhere('inst_seleccionadas.tipo', '=', 1);
+
+                    if($b_cobrados == 0)
+                        $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                    else
+                        $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+                    
+                    $creditos = $creditos->where('lotes.emp_constructora','like','%'.$empresa.'%')
                     ->where('contratos.status', '=', 3)
                     ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo');
             }
             else{
                 switch($criterio){
                     case 'personal.nombre':{
-                        if($buscar2 == ''){
                             $creditos = $query
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
+                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo');
+
+                                if($buscar != '')
+                                    $creditos = $creditos->where($criterio, 'like', '%' . $buscar . '%');
+                                if($buscar2 != '')
+                                    $creditos = $creditos->where('personal.apellidos', 'like', '%' . $buscar2 . '%');
+
+                                if($b_cobrados == 0)
+                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                                else
+                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+
+                                $creditos = $creditos->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
                                 ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
-                        elseif ($buscar2 != '' && $buscar == '') {
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
-                        else{
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-    
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
+
+                                if($buscar != '')
+                                    $creditos = $creditos->where($criterio, 'like', '%' . $buscar . '%');
+                                if($buscar2 != '')
+                                    $creditos = $creditos->where('personal.apellidos', 'like', '%' . $buscar2 . '%');
+                                
+                                if($b_cobrados == 0)
+                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                                else
+                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+                                
+                        
+                        
                         break;
     
                     }
                     case 'creditos.fraccionamiento': {
-                        if($buscar2 == '' && $buscar3 == '' && $buscar4 == ''){
                             $creditos = $query
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
                                 ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
-                        elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 == '') {
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
+
+                                if($buscar != '')
+                                    $creditos = $creditos->where($criterio, '=', $buscar);
+                                if($buscar2 != '')
+                                    $creditos = $creditos->where('creditos.etapa', '=', $buscar2);
+                                if($buscar3 != '')
+                                    $creditos = $creditos->where('creditos.manzana', '=', $buscar3);
+                                if($buscar4 != '')
+                                    $creditos = $creditos->where('creditos.num_lote', '=', $buscar4);
+
+                                if($b_cobrados == 0)
+                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                                else
+                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+                                
+                                $creditos = $creditos->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
                                 ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
-                        elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 == '') {
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.manzana', '=', $buscar3)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.manzana', '=', $buscar3)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
-                        elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 != '') {
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.manzana', '=', $buscar3)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-    
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.manzana', '=', $buscar3)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
-                        elseif ($buscar2 == '' && $buscar3 == '' && $buscar4 != '') {
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
-                        elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 != '') {
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
+
+                                if($buscar != '')
+                                    $creditos = $creditos->where($criterio, '=', $buscar);
+                                if($buscar2 != '')
+                                    $creditos = $creditos->where('creditos.etapa', '=', $buscar2);
+                                if($buscar3 != '')
+                                    $creditos = $creditos->where('creditos.manzana', '=', $buscar3);
+                                if($buscar4 != '')
+                                    $creditos = $creditos->where('creditos.num_lote', '=', $buscar4);
+
+                                if($b_cobrados == 0)
+                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                                else
+                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+                                
+                        
+                        
                         break;
                     }
     
@@ -231,220 +157,36 @@ class InstSeleccionadasController extends Controller
                         $creditos = $query
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
+                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo');
+
+                                if($buscar != '')
+                                    $creditos = $creditos->where($criterio, '=', $buscar);
+
+                                if($b_cobrados == 0)
+                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                                else
+                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+
+                                $creditos = $creditos->where('lotes.emp_constructora','like','%'.$empresa.'%')
+                                    ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                    ->where('contratos.status', '=', 3)
+                                    ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
+                                    ->where('lotes.emp_constructora','like','%'.$empresa.'%');
+                                
+                                if($buscar != '')
+                                    $creditos = $creditos->where($criterio, '=', $buscar);
+
+                                 if($b_cobrados == 0)
+                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                                else
+                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+                                
                     }
     
                 }
             }
-        }
-        else{
-            if($buscar == '' && $criterio != 'personal.nombre'){
-                $creditos = $query
-                    ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                    ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                    ->where('inst_seleccionadas.elegido', '=', 1)
-                    ->where('contratos.status', '=', 3)
-                    ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                    ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                    ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                    ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                    ->where('contratos.status', '=', 3)
-                    ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo');
-            }
-            else{
-                switch($criterio){
-                    case 'personal.nombre':{
-                        if($buscar2 == ''){
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
-                        elseif ($buscar2 != '' && $buscar == '') {
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
-                        else{
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-    
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
-                        break;
-    
-                    }
-                    case 'creditos.fraccionamiento': {
-                        if($buscar2 == '' && $buscar3 == '' && $buscar4 == ''){
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
-                        elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 == '') {
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
-                        elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 == '') {
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.manzana', '=', $buscar3)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.manzana', '=', $buscar3)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
-                        elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 != '') {
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.manzana', '=', $buscar3)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-    
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.manzana', '=', $buscar3)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
-                        elseif ($buscar2 == '' && $buscar3 == '' && $buscar4 != '') {
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
-                        elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 != '') {
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
-                        break;
-                    }
-    
-                    case 'contratos.id': {
-                        $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                    }
-                }
-            }
-        }
+        
+       
 
         $creditos = $creditos->orderBy('inst_seleccionadas.cobrado','asc')
                             ->orderBy('inst_seleccionadas.monto_credito','desc')
@@ -785,405 +527,144 @@ class InstSeleccionadasController extends Controller
                             'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
                             ->where('lotes.firmado','=',$request->firmado);
 
-        if($b_cobrados == 0){
             if($buscar == '' && $criterio != 'personal.nombre'){
-                $creditos = $query
-                    ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                    ->where('lotes.emp_constructora','like','%'.$empresa.'%')
+                $creditos = $query;
+                if($b_cobrados == 0)
+                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                else
+                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+                    
+                    $creditos = $creditos->where('lotes.emp_constructora','like','%'.$empresa.'%')
                     ->where('inst_seleccionadas.elegido', '=', 1)
                     ->where('contratos.status', '=', 3)
                     ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                    ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                    ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                    ->where('lotes.emp_constructora','like','%'.$empresa.'%')
+                    ->orWhere('inst_seleccionadas.tipo', '=', 1);
+
+                    if($b_cobrados == 0)
+                        $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                    else
+                        $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+                    
+                    $creditos = $creditos->where('lotes.emp_constructora','like','%'.$empresa.'%')
                     ->where('contratos.status', '=', 3)
                     ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo');
             }
             else{
                 switch($criterio){
                     case 'personal.nombre':{
-                        if($buscar2 == ''){
                             $creditos = $query
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
+                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo');
+
+                                if($buscar != '')
+                                    $creditos = $creditos->where($criterio, 'like', '%' . $buscar . '%');
+                                if($buscar2 != '')
+                                    $creditos = $creditos->where('personal.apellidos', 'like', '%' . $buscar2 . '%');
+
+                                if($b_cobrados == 0)
+                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                                else
+                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+
+                                $creditos = $creditos->where('lotes.emp_constructora','like','%'.$empresa.'%')
                                 ->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
                                 ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
-                        elseif ($buscar2 != '' && $buscar == '') {
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
-                        else{
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-    
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
+
+                                if($buscar != '')
+                                    $creditos = $creditos->where($criterio, 'like', '%' . $buscar . '%');
+                                if($buscar2 != '')
+                                    $creditos = $creditos->where('personal.apellidos', 'like', '%' . $buscar2 . '%');
+                                
+                                if($b_cobrados == 0)
+                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                                else
+                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+                                
+                        
+                        
                         break;
-    
+
                     }
                     case 'creditos.fraccionamiento': {
-                        if($buscar2 == '' && $buscar3 == '' && $buscar4 == ''){
                             $creditos = $query
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
                                 ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
-                        elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 == '') {
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
+
+                                if($buscar != '')
+                                    $creditos = $creditos->where($criterio, '=', $buscar);
+                                if($buscar2 != '')
+                                    $creditos = $creditos->where('creditos.etapa', '=', $buscar2);
+                                if($buscar3 != '')
+                                    $creditos = $creditos->where('creditos.manzana', '=', $buscar3);
+                                if($buscar4 != '')
+                                    $creditos = $creditos->where('creditos.num_lote', '=', $buscar4);
+
+                                if($b_cobrados == 0)
+                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                                else
+                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+                                
+                                $creditos = $creditos->orWhere('inst_seleccionadas.tipo', '=', 1)
                                 ->where('contratos.status', '=', 3)
                                 ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
                                 ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
-                        elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 == '') {
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.manzana', '=', $buscar3)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.manzana', '=', $buscar3)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
-                        elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 != '') {
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.manzana', '=', $buscar3)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-    
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.manzana', '=', $buscar3)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
-                        elseif ($buscar2 == '' && $buscar3 == '' && $buscar4 != '') {
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
-                        elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 != '') {
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
+
+                                if($buscar != '')
+                                    $creditos = $creditos->where($criterio, '=', $buscar);
+                                if($buscar2 != '')
+                                    $creditos = $creditos->where('creditos.etapa', '=', $buscar2);
+                                if($buscar3 != '')
+                                    $creditos = $creditos->where('creditos.manzana', '=', $buscar3);
+                                if($buscar4 != '')
+                                    $creditos = $creditos->where('creditos.num_lote', '=', $buscar4);
+
+                                if($b_cobrados == 0)
+                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                                else
+                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+                                
+                        
+                        
                         break;
                     }
-    
+
                     case 'contratos.id': {
                         $creditos = $query
                                 ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
+                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo');
+
+                                if($buscar != '')
+                                    $creditos = $creditos->where($criterio, '=', $buscar);
+
+                                if($b_cobrados == 0)
+                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                                else
+                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+
+                                $creditos = $creditos->where('lotes.emp_constructora','like','%'.$empresa.'%')
+                                    ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                    ->where('contratos.status', '=', 3)
+                                    ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
+                                    ->where('lotes.emp_constructora','like','%'.$empresa.'%');
+                                
+                                if($buscar != '')
+                                    $creditos = $creditos->where($criterio, '=', $buscar);
+
+                                    if($b_cobrados == 0)
+                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado != inst_seleccionadas.monto_credito');
+                                else
+                                    $creditos = $creditos->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito');
+                                
                     }
-    
+
                 }
             }
-        }
-        else{
-            if($buscar == '' && $criterio != 'personal.nombre'){
-                $creditos = $query
-                    ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                    ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                    ->where('inst_seleccionadas.elegido', '=', 1)
-                    ->where('contratos.status', '=', 3)
-                    ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                    ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                    ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                    ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                    ->where('contratos.status', '=', 3)
-                    ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo');
-            }
-            else{
-                switch($criterio){
-                    case 'personal.nombre':{
-                        if($buscar2 == ''){
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
-                        elseif ($buscar2 != '' && $buscar == '') {
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
-                        else{
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-    
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, 'like', '%' . $buscar . '%')
-                                ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
-                        break;
-    
-                    }
-                    case 'creditos.fraccionamiento': {
-                        if($buscar2 == '' && $buscar3 == '' && $buscar4 == ''){
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
-                        elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 == '') {
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
-                        elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 == '') {
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.manzana', '=', $buscar3)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.manzana', '=', $buscar3)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
-                        elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 != '') {
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.manzana', '=', $buscar3)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-    
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.manzana', '=', $buscar3)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
-                        elseif ($buscar2 == '' && $buscar3 == '' && $buscar4 != '') {
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
-                        elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 != '') {
-                            $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->where('creditos.etapa', '=', $buscar2)
-                                ->where('creditos.num_lote', '=', $buscar4)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                        }
-                        break;
-                    }
-    
-                    case 'contratos.id': {
-                        $creditos = $query
-                                ->where('inst_seleccionadas.elegido', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%')
-                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                                ->where('contratos.status', '=', 3)
-                                ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
-                                ->where($criterio, '=', $buscar)
-                                ->whereRaw('inst_seleccionadas.cobrado = inst_seleccionadas.monto_credito')
-                                ->where('lotes.emp_constructora','like','%'.$empresa.'%');
-                    }
-                }
-            }
-        }
 
         $creditos = $creditos->orderBy('inst_seleccionadas.cobrado','asc')
                             ->orderBy('inst_seleccionadas.monto_credito','desc')
@@ -1283,81 +764,37 @@ class InstSeleccionadasController extends Controller
                     'inst_seleccionadas.id as inst_sel_id', 'contratos.saldo',
                     'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
                     'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
-        );
-
-        if($buscar == ''){
-            $creditos = $query
-
-                    ->where('contratos.saldo','<',0)
-                    ->where('inst_seleccionadas.elegido', '=', 1);
-        }
-        else{
+        )
+        ->where('contratos.saldo','<',0)
+        ->where('inst_seleccionadas.elegido', '=', 1);
+        
             switch($criterio){
                 case 'creditos.id':{
-                    $creditos = $query
-
-                        ->where('contratos.saldo','<',0)
-                        ->where('inst_seleccionadas.elegido', '=', 1)
-                        ->where($criterio,'=',$buscar);
+                    $creditos = $query;
+                    if($buscar != '')
+                        $creditos = $creditos->where($criterio,'=',$buscar);
                     break;
                 }
                 case 'personal.nombre':{
-                    $creditos = $query
-                        ->where('contratos.saldo','<',0)
-                        ->where('inst_seleccionadas.elegido', '=', 1)
-                        ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
+                    $creditos = $query;
+                    if($buscar != '')
+                        $creditos = $creditos->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
                     break;
                 }
                 case 'lotes.fraccionamiento_id':{
-                    if($b_etapa == '' && $b_manzana == '' && $b_lote == ''){
-                        $creditos = $query
-                        ->where('contratos.saldo','<',0)
-                        ->where('inst_seleccionadas.elegido', '=', 1)
-                        ->where($criterio,'=',$buscar);
-                    }
-                    elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
-                        $creditos = $query
-                        ->where('contratos.saldo','<',0)
-                        ->where('inst_seleccionadas.elegido', '=', 1)
-                        ->where($criterio,'=',$buscar)
-                        ->where('lotes.etapa_id','=',$b_etapa);
-                    }
-                    elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
-                        $creditos = $query
-                        ->where('contratos.saldo','<',0)
-                        ->where('inst_seleccionadas.elegido', '=', 1)
-                        ->where($criterio,'=',$buscar)
-                        ->where('lotes.etapa_id','=',$b_etapa)
-                        ->where('lotes.manzana','=',$b_manzana);
-                    }
-                    elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
-                        $creditos = $query
-                        ->where('contratos.saldo','<',0)
-                        ->where('inst_seleccionadas.elegido', '=', 1)
-                        ->where($criterio,'=',$buscar)
-                        ->where('lotes.etapa_id','=',$b_etapa)
-                        ->where('lotes.manzana','=',$b_manzana)
-                        ->where('lotes.num_lote','=',$b_lote);
-                    }
-                    elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
-                        $creditos = $query
-                        ->where('contratos.saldo','<',0)
-                        ->where('inst_seleccionadas.elegido', '=', 1)
-                        ->where($criterio,'=',$buscar)
-                        ->where('lotes.etapa_id','=',$b_etapa)
-                        ->where('lotes.num_lote','=',$b_lote);
-                    }
-                    elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
-                        $creditos = $query
-                        ->where('contratos.saldo','<',0)
-                        ->where('inst_seleccionadas.elegido', '=', 1)
-                        ->where($criterio,'=',$buscar)
-                        ->where('lotes.num_lote','=',$b_lote);
-                    }
+                        $creditos = $query;
+                        if($buscar != '')
+                            $creditos = $creditos->where($criterio,'=',$buscar);
+                        if($b_etapa != '')
+                            $creditos = $creditos->where('lotes.etapa_id','=',$b_etapa);
+                        if($b_manzana != '')
+                            $creditos = $creditos->where('lotes.manzana','=',$b_manzana);
+                        if($b_lote != '')
+                            $creditos = $creditos->where('lotes.num_lote','=',$b_lote);
                     break;
                 }
             }
-        }
+        
 
         if($request->b_empresa != ''){
             $creditos= $creditos->where('lotes.emp_constructora','=',$request->b_empresa);
@@ -1402,125 +839,45 @@ class InstSeleccionadasController extends Controller
                 'inst_seleccionadas.id as inst_sel_id', 'contratos.saldo',
                 'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
                 'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
-        );
+        )
+        ->where('contratos.saldo','<',0)
+        ->where('inst_seleccionadas.elegido', '=', 1);
 
         if($request->b_empresa != ''){
             $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
         }
 
-        if($buscar == ''){
-            $creditos = $query
-
-                    ->where('contratos.saldo','<',0)
-                    ->where('inst_seleccionadas.elegido', '=', 1)
-                    ->orderBy('inst_seleccionadas.cobrado','asc')
-                    ->orderBy('inst_seleccionadas.monto_credito','desc')
-                    
-                    ->get();
-        }
-        else{
-            switch($criterio){
-                case 'creditos.id':{
-                    $creditos = $query
-
-                        ->where('contratos.saldo','<',0)
-                        ->where('inst_seleccionadas.elegido', '=', 1)
-                        ->where($criterio,'=',$buscar)
-                        ->orderBy('inst_seleccionadas.cobrado','asc')
-                        ->orderBy('inst_seleccionadas.monto_credito','desc')
-                        
-                        ->get();
-
-                    break;
-                }
-                case 'personal.nombre':{
-                    $creditos = $query
-                        ->where('contratos.saldo','<',0)
-                        ->where('inst_seleccionadas.elegido', '=', 1)
-                        ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
-                        ->orderBy('inst_seleccionadas.cobrado','asc')
-                        ->orderBy('inst_seleccionadas.monto_credito','desc')
-                        
-                        ->get();
-                    break;
-                }
-                case 'lotes.fraccionamiento_id':{
-                    if($b_etapa == '' && $b_manzana == '' && $b_lote == ''){
-                        $creditos = $query
-                        ->where('contratos.saldo','<',0)
-                        ->where('inst_seleccionadas.elegido', '=', 1)
-                        ->where($criterio,'=',$buscar)
-                        ->orderBy('inst_seleccionadas.cobrado','asc')
-                        ->orderBy('inst_seleccionadas.monto_credito','desc')
-                        
-                        ->get();
-                        
-                    }
-                    elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
-                        $creditos = $query
-                        ->where('contratos.saldo','<',0)
-                        ->where('inst_seleccionadas.elegido', '=', 1)
-                        ->where($criterio,'=',$buscar)
-                        ->where('lotes.etapa_id','=',$b_etapa)
-                        ->orderBy('inst_seleccionadas.cobrado','asc')
-                        ->orderBy('inst_seleccionadas.monto_credito','desc')
-                        
-                        ->get();
-                        
-                    }
-                    elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
-                        $creditos = $query
-                        ->where('contratos.saldo','<',0)
-                        ->where('inst_seleccionadas.elegido', '=', 1)
-                        ->where($criterio,'=',$buscar)
-                        ->where('lotes.etapa_id','=',$b_etapa)
-                        ->where('lotes.manzana','=',$b_manzana)
-                        ->orderBy('inst_seleccionadas.cobrado','asc')
-                        ->orderBy('inst_seleccionadas.monto_credito','desc')
-                        
-                        ->get();
-                    }
-                    elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
-                        $creditos = $query
-                        ->where('contratos.saldo','<',0)
-                        ->where('inst_seleccionadas.elegido', '=', 1)
-                        ->where($criterio,'=',$buscar)
-                        ->where('lotes.etapa_id','=',$b_etapa)
-                        ->where('lotes.manzana','=',$b_manzana)
-                        ->where('lotes.num_lote','=',$b_lote)
-                        ->orderBy('inst_seleccionadas.cobrado','asc')
-                        ->orderBy('inst_seleccionadas.monto_credito','desc')
-                        
-                        ->get();
-                    }
-                    elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
-                        $creditos = $query
-                        ->where('contratos.saldo','<',0)
-                        ->where('inst_seleccionadas.elegido', '=', 1)
-                        ->where($criterio,'=',$buscar)
-                        ->where('lotes.etapa_id','=',$b_etapa)
-                        ->where('lotes.num_lote','=',$b_lote)
-                        ->orderBy('inst_seleccionadas.cobrado','asc')
-                        ->orderBy('inst_seleccionadas.monto_credito','desc')
-                        
-                        ->get();
-                    }
-                    elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
-                        $creditos = $query
-                        ->where('contratos.saldo','<',0)
-                        ->where('inst_seleccionadas.elegido', '=', 1)
-                        ->where($criterio,'=',$buscar)
-                        ->where('lotes.num_lote','=',$b_lote)
-                        ->orderBy('inst_seleccionadas.cobrado','asc')
-                        ->orderBy('inst_seleccionadas.monto_credito','desc')
-                        
-                        ->get();
-                    }
-
-                    break;
-                }
+        switch($criterio){
+            case 'creditos.id':{
+                $creditos = $query;
+                if($buscar != '')
+                    $creditos = $creditos->where($criterio,'=',$buscar);
+                break;
+            }
+            case 'personal.nombre':{
+                $creditos = $query;
+                if($buscar != '')
+                    $creditos = $creditos->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
+                break;
+            }
+            case 'lotes.fraccionamiento_id':{
+                    $creditos = $query;
+                    if($buscar != '')
+                        $creditos = $creditos->where($criterio,'=',$buscar);
+                    if($b_etapa != '')
+                        $creditos = $creditos->where('lotes.etapa_id','=',$b_etapa);
+                    if($b_manzana != '')
+                        $creditos = $creditos->where('lotes.manzana','=',$b_manzana);
+                    if($b_lote != '')
+                        $creditos = $creditos->where('lotes.num_lote','=',$b_lote);
+                break;
             }
         }
+
+        $creditos = $creditos->where('contratos.status','!=',0)
+                            ->orderBy('inst_seleccionadas.cobrado','asc')
+                            ->orderBy('inst_seleccionadas.monto_credito','desc')
+                            ->paginate(10);
         
 
         return Excel::create('Pendientes por excedente', function($excel) use ($creditos){
@@ -1701,73 +1058,37 @@ class InstSeleccionadasController extends Controller
             $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
         }
        
-        if ($buscar == '') {
-            $devoluciones = $query
-                ->orderBy('id', 'desc')->paginate(8);
-           
-        }
-        else{
-            switch ($criterio){
-                case 'lotes.fraccionamiento_id':{
-                    if($b_etapa == '' && $b_manzana == '' && $b_lote == '')
-                    {
-                        $devoluciones = $query
-                        ->where($criterio, '=', $buscar)
-                        ->orderBy('id', 'desc')->paginate(8);
-                    }
-                    elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
-                        $devoluciones = $query
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->orderBy('id', 'desc')->paginate(8);
-                    }
-                    elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
-                        $devoluciones = $query
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->where('lotes.manzana', '=', $b_manzana)
-                        ->orderBy('id', 'desc')->paginate(8);
-                    }
-                    elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
-                        $devoluciones = $query
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->where('lotes.manzana', '=', $b_manzana)
-                        ->where('lotes.num_lote', '=', $b_lote)
-                        ->orderBy('id', 'desc')->paginate(8);
-                    }
-                    elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
-                        $devoluciones = $query
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->where('lotes.num_lote', '=', $b_lote)
-                        ->orderBy('id', 'desc')->paginate(8);
-                    }
-                    elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
-                        $devoluciones = $query
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.num_lote', '=', $b_lote)
-                        ->orderBy('id', 'desc')->paginate(8);
-                    }
-                    
-                    break;
-                }
-                case 'creditos.id':{
-                    $devoluciones = $query
-                    ->where($criterio, '=', $buscar)
-                    ->orderBy('id', 'desc')->paginate(8);
-                    break;
-                }
-                case 'personal.nombre':{
-                    $devoluciones = $query
-                        ->where($criterio, 'like', '%' . $buscar . '%')
-                        ->orWhere('personal.apellidos', 'like', '%' . $buscar . '%')
-                        ->orderBy('id', 'desc')->paginate(8);
-                    
-                    break;
-                }
+        
+        switch ($criterio){
+            case 'lotes.fraccionamiento_id':{
+                $devoluciones = $query;
+                if($buscar != '')
+                    $devoluciones = $devoluciones->where($criterio, '=', $buscar);
+                if($b_etapa != '')
+                    $devoluciones = $devoluciones->where('lotes.etapa_id', '=', $b_etapa);
+                if($b_manzana != '')
+                    $devoluciones = $devoluciones->where('lotes.manzana', '=', $b_manzana);
+                if($b_lote != '')
+                    $devoluciones = $devoluciones->where('lotes.num_lote', '=', $b_lote);
+
+                break;
+            }
+            case 'creditos.id':{
+                $devoluciones = $query;
+                if($buscar != '')
+                    $devoluciones = $devoluciones->where($criterio, '=', $buscar);
+                break;
+            }
+            case 'personal.nombre':{
+                $devoluciones = $query;
+                if($buscar != '')
+                    $devoluciones = $devoluciones->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
+                break;
             }
         }
+        
+
+        $devoluciones = $devoluciones->orderBy('id', 'desc')->paginate(8);
         
         return [
             'pagination' => [
@@ -1852,74 +1173,39 @@ class InstSeleccionadasController extends Controller
         if($request->b_empresa != ''){
             $query= $query->where('lotes.emp_constructora','=',$request->b_empresa);
         }
-       
-        if ($buscar == '') {
-            $devoluciones = $query
-                ->orderBy('id', 'desc')->paginate(8);
-           
-        }
-        else{
-            switch ($criterio){
-                case 'lotes.fraccionamiento_id':{
-                    if($b_etapa == '' && $b_manzana == '' && $b_lote == '')
-                    {
-                        $devoluciones = $query
-                        ->where($criterio, '=', $buscar)
-                        ->orderBy('id', 'desc')->paginate(8);
-                    }
-                    elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
-                        $devoluciones = $query
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->orderBy('id', 'desc')->paginate(8);
-                    }
-                    elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
-                        $devoluciones = $query
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->where('lotes.manzana', '=', $b_manzana)
-                        ->orderBy('id', 'desc')->paginate(8);
-                    }
-                    elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
-                        $devoluciones = $query
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->where('lotes.manzana', '=', $b_manzana)
-                        ->where('lotes.num_lote', '=', $b_lote)
-                        ->orderBy('id', 'desc')->paginate(8);
-                    }
-                    elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
-                        $devoluciones = $query
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->where('lotes.num_lote', '=', $b_lote)
-                        ->orderBy('id', 'desc')->paginate(8);
-                    }
-                    elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
-                        $devoluciones = $query
-                        ->where($criterio, '=', $buscar)
-                        ->where('lotes.num_lote', '=', $b_lote)
-                        ->orderBy('id', 'desc')->paginate(8);
-                    }
-                    
-                    break;
-                }
-                case 'creditos.id':{
-                    $devoluciones = $query
-                    ->where($criterio, '=', $buscar)
-                    ->orderBy('id', 'desc')->paginate(8);
-                    break;
-                }
-                case 'personal.nombre':{
-                    $devoluciones = $query
-                        ->where($criterio, 'like', '%' . $buscar . '%')
-                        ->orWhere('personal.apellidos', 'like', '%' . $buscar . '%')
-                        ->orderBy('id', 'desc')->paginate(8);
-                    
-                    break;
-                }
+
+        switch ($criterio){
+            case 'lotes.fraccionamiento_id':{
+                $devoluciones = $query;
+                if($buscar != '')
+                    $devoluciones = $devoluciones->where($criterio, '=', $buscar);
+                if($b_etapa != '')
+                    $devoluciones = $devoluciones->where('lotes.etapa_id', '=', $b_etapa);
+                if($b_manzana != '')
+                    $devoluciones = $devoluciones->where('lotes.manzana', '=', $b_manzana);
+                if($b_lote != '')
+                    $devoluciones = $devoluciones->where('lotes.num_lote', '=', $b_lote);
+
+                break;
+            }
+            case 'creditos.id':{
+                $devoluciones = $query;
+                if($buscar != '')
+                    $devoluciones = $devoluciones->where($criterio, '=', $buscar);
+                break;
+            }
+            case 'personal.nombre':{
+                $devoluciones = $query;
+                if($buscar != '')
+                    $devoluciones = $devoluciones->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
+                break;
             }
         }
+        
+
+        $devoluciones = $devoluciones->orderBy('id', 'desc')->paginate(8);
+       
+        
         
         return Excel::create('devoluciones', function($excel) use ($devoluciones){
             $excel->sheet('devoluciones', function($sheet) use ($devoluciones){
