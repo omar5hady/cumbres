@@ -65,9 +65,46 @@ class DigitalLeadController extends Controller
             $date = Carbon::parse($persona->fecha_update);
             $now = Carbon::now();
             $persona->diferencia = $date->diffInDays($now);
+
+            $persona->progress = round($this->getProgress($persona),2);
         }
                         
         return $leads;
+    }
+
+    private function getProgress($lead){
+        $progress = 0;
+
+        if($lead->medio_contacto != '') $progress++;
+        if($lead->medio_publicidad != '' && $lead->medio_publicidad != NULL) $progress++;
+        if($lead->nombre != '' && $lead->nombre != NULL) $progress++;
+        if($lead->apellidos != '' && $lead->apellidos != NULL) $progress++;
+        if($lead->email != '' && $lead->email != NULL) $progress++;
+        if($lead->celular != '' && $lead->celular != NULL) $progress++;
+        if($lead->telefono != '' && $lead->telefono != NULL) $progress++;
+        if($lead->proyecto_interes != NULL) $progress++;
+        if($lead->modelo_interes != '' && $lead->modelo_interes != NULL) $progress++;
+        if($lead->rango1 != '' && $lead->rango1 != NULL) $progress++;
+        if($lead->rango2 != '' && $lead->rango2 != NULL) $progress++;
+        if($lead->edo_civil != '' && $lead->edo_civil != NULL) $progress++;
+        if($lead->perfil_cliente != '' && $lead->perfil_cliente != NULL) $progress++;
+        if($lead->ingresos != '' && $lead->ingresos != NULL) $progress++;
+        if($lead->coacreditado != '' && $lead->coacreditado != NULL) $progress++;
+        if($lead->hijos != '' && $lead->hijos != NULL) $progress++;
+        if($lead->mascotas != '' && $lead->mascotas != NULL) $progress++;
+        if($lead->tipo_credito != '' && $lead->tipo_credito != NULL) $progress++;
+        if($lead->tipo_uso != '' && $lead->tipo_uso != NULL) $progress++;
+        if($lead->empresa != '' && $lead->empresa != NULL) $progress++;
+        if($lead->rfc != '' && $lead->rfc != NULL) $progress++;
+        if($lead->nss != '' && $lead->nss != NULL) $progress++;
+        if($lead->sexo != '' && $lead->sexo != NULL) $progress++;
+        if($lead->f_nacimiento != '' && $lead->f_nacimiento != NULL) $progress++;
+        if($lead->autos != '' && $lead->autos != NULL) $progress++;
+        if($lead->pago_mensual != '' && $lead->pago_mensual != NULL) $progress++;
+
+        $progress = ($progress/26) * 100;
+        return $progress;
+
     }
     
     public function store(Request $request){

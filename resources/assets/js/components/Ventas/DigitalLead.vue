@@ -84,6 +84,7 @@
                                 <thead>
                                     <tr>
                                         <th></th>
+                                        <th>Avance</th>
                                         <th>Nombre</th>
                                         <th>Celular</th>
                                         <th>Correo</th>
@@ -109,6 +110,14 @@
                                             <button v-if="userId == 25511 || rolId == 1" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
                                                 <i class="icon-close"></i>
                                             </button>                           
+                                        </td>
+                                        <td>
+                                            <div class="clearfix">
+                                                <div class="float-left"><strong>{{lead.progress}}%</strong></div>
+                                            </div>
+                                            <div class="progress progress-xs">
+                                                <div class="progress-bar bg-success" role="progressbar" v-bind:style="{ width: lead.progress + '%' }" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
                                         </td>
                                         <td v-if="lead.diferencia < 7" class="td2" v-text="lead.nombre + ' ' + lead.apellidos "></td>                                                    
                                         <td v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15  " class="td2">

@@ -1213,6 +1213,7 @@
                     {
                         sw=true;
                     }
+                    if(emp_constructora != '' )
                     if(this.arrayAvisoObraLotes[i].emp_constructora != emp_constructora){
                         sw=true;
                     }
