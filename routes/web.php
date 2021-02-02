@@ -909,7 +909,10 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/detalles/finalizarReporte','SolicDetallesController@finalizarReporte');
         Route::put('/detalles/updateHora','SolicDetallesController@updateHora');
         Route::put('/detalles/updateResultado','SolicDetallesController@updateResultado');
-
+    
+    /////////////////////////// RUTAS CREDITOS PUENTE ////////////////////////
+        Route::get('/c_puente/indexSinCredito','CreditoPuenteController@indexSinCredito');
+        
     //////////////////// RUTAS BONOS RECOMENDADOS ///////////////////////
         Route::get('/cat_bono/index','CatalogoBonoController@index');
         Route::post('/cat_bono/store', 'CatalogoBonoController@store');

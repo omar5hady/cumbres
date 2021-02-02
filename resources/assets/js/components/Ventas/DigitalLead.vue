@@ -64,6 +64,7 @@
                                         <option value="1">En Seguimiento</option>
                                         <option value="0">Descartado</option>
                                         <option value="2">Potencial</option>
+                                        <option value="3">Finalizado</option>
                                     </select>
                                 </div>
                                 <div class="input-group">
@@ -141,6 +142,7 @@
                                         <td class="td2" v-if="lead.status == '1'"><span class="badge badge-warning">En Seguimiento</span></td>
                                         <td class="td2" v-if="lead.status == '0'"><span class="badge badge-danger">Descartado</span></td>
                                         <td class="td2" v-if="lead.status == '2'"><span class="badge badge-success">Potencial</span></td>
+                                        <td class="td2" v-if="lead.status == '3'"><span class="badge badge-success">Finalizado</span></td>
                                         <td class="td2" v-text="lead.vendedor"></td>
                                         <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2"> 
@@ -887,12 +889,17 @@
                         <!-- Botones del modal -->
                         <div class="modal-footer">
                             <button type="button" 
-                                v-if="(tipoAccion == 2 && motivo == 1 && vendedor_asign == userId && prospecto == 0) || rolId == 1 && prospecto == 0"
+                                v-if="(tipoAccion == 2 && motivo == 1 && vendedor_asign == userId && prospecto == 0 && rfc != '' && status !=0) || rolId == 1 && prospecto == 0 && status !=0"
                             class="btn btn-dark" @click="sendProspecto()">Enviar a prospectos</button>
 
                             <button type="button" 
-                                v-if="(tipoAccion == 2 && motivo == 1 )"
+                                v-if="(tipoAccion == 2 && motivo == 1 && status != 3 && status !=0)"
                                 class="btn btn-danger" @click="descartar()">Descartar
+                            </button>
+
+                            <button type="button" 
+                                v-if="(tipoAccion == 2 && motivo == 1 && status !=0 && status !=3)"
+                                class="btn btn-success" @click="finalizar()">Finalizar
                             </button>
 
                             <div></div>
@@ -1061,6 +1068,7 @@ export default {
             motivo:0,
             descripcion:'',
             direccion:'',
+            status:'',
 
             errorMostrarMsjProspecto : [],
             errorProspecto : 0,
@@ -1233,6 +1241,53 @@ export default {
                     ).catch(error => console.log(error));
                 }
             });
+
+        },
+
+        finalizar(){
+            
+            let me = this;
+            (async function getFruit () {
+                const {value: comentario} = await Swal({
+                    title: 'Finalizar proceso de seguimiento',
+                    input: 'textarea',
+                    inputPlaceholder: 'Agregue una observación aqui...',
+                    showCancelButton: true,
+                    inputValidator: (value) => {
+                        return new Promise((resolve) => {
+                        if (value != '') {
+                            resolve()
+                        } else {
+                            resolve('Es necesario escribir una observación :)')
+                        }
+                        })
+                    }
+                })
+
+                if (comentario) {
+
+                        axios.post('/leads/storeObs',{
+
+                        'lead_id' : me.id,
+                        'comentario' :comentario,
+                        
+                })
+                    //Con axios se llama el metodo update de LoteController
+                    axios.put('/leads/changeStatus',{
+                    'id': me.id,
+                    'status':3
+                }).then(
+                    rsponse => {
+                        me.myAlerts.popAlert('finalizado correctamente');
+                        me.listarLeads(me.arrayLeads.current_page);
+                        me.cerrarModal();
+
+                        return response.data;
+                    }
+                ).catch(error => console.log(error));
+                }
+
+                })()
 
         },
 
@@ -1720,6 +1775,8 @@ export default {
                     this.detalle_casa = data['detalle_casa'];
                     this.perfil_cliente = data['perfil_cliente'];
                     this.prospecto = data['prospecto'];
+
+                    this.status = data['status'];
                     
                     break;
                 }

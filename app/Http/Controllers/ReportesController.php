@@ -1902,7 +1902,7 @@ class ReportesController extends Controller
 
                         $sheet->row($cont, [
                             $lote->id,
-                            $lote->nombre, 
+                            $lote->nombre.' '.$lote->apellidos, 
                             $lote->proyecto,
                             $lote->num_etapa,
                             $lote->manzana,
@@ -1986,7 +1986,7 @@ class ReportesController extends Controller
 
                         $sheet->row($cont, [
                             $lote->id,
-                            $lote->nombre, 
+                            $lote->nombre.' '.$lote->apellidos, 
                             $lote->proyecto,
                             $lote->num_etapa,
                             $lote->manzana,
@@ -2069,7 +2069,7 @@ class ReportesController extends Controller
 
                         $sheet->row($cont, [
                             $lote->id,
-                            $lote->nombre, 
+                            $lote->nombre.' '.$lote->apellidos, 
                             $lote->proyecto,
                             $lote->num_etapa,
                             $lote->manzana,

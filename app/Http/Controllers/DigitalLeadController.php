@@ -358,6 +358,7 @@ class DigitalLeadController extends Controller
             }
             $lead = Digital_lead::findOrFail($request->id);
             $lead->prospecto = 1;
+            $lead->status = 3;
             $lead->save();
 
             $obs = new Obs_lead();

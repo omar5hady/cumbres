@@ -175,6 +175,9 @@ Vue.component('cotizador-editar', require('./components/Cotizador/CotizadorEdita
 //Estimaciones
 Vue.component('estimaciones', require('./components/Obra/Estimaciones.vue'));
 
+//CREDITOS PUENTE
+Vue.component('solic-puente', require('./components/CPuente/SolicitarCredito.vue'));
+
 const app = new Vue({
     el: '#app',
     data: {

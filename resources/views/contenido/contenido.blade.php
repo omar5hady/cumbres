@@ -498,6 +498,10 @@
             <asesores-fracc></asesores-fracc>
         </template>
 
+        <template v-if="menu==255">
+            <solic-puente></solic-puente>
+        </template>
+
         
 
         
