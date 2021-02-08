@@ -3724,7 +3724,7 @@ class ReportesController extends Controller
                 }
 
                 if($request->desde != '' && $request->hasta != ''){
-                    $resumen = $resumen->whereBetween('solic_detalles.created_at', [$request->desde, $request->hasta]);
+                    $resumen = $resumen->whereBetween('solic_detalles.created_at', [$request->desde.' 00:00:00', $request->hasta.' 23:59:59']);
                 }
                                     
         $resumen1 = $resumen->orderBy('solic_detalles.status','desc')

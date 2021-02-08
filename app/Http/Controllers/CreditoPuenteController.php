@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Lote;
+use App\Credito_puente;
 use DB;
+use Auth;
 
 class CreditoPuenteController extends Controller
 {
@@ -37,7 +39,8 @@ class CreditoPuenteController extends Controller
                     'm.nombre as modelo', 'e.num_etapa','f.nombre as proyecto'
                 )
                 ->where('lotes.credito_puente','=',NULL)
-                ->where('lotes.habilitado','=',0);
+                ->where('lotes.contrato','=',0);
+                //->where('lotes.habilitado','=',1);
 
                 if($request->proyecto != '')
                     $lotes = $lotes->where('lotes.fraccionamiento_id','=',$request->proyecto);
@@ -60,8 +63,52 @@ class CreditoPuenteController extends Controller
                 if($request->emp_constructora != '')
                     $lotes = $lotes->where('lotes.emp_constructora','=',$request->emp_constructora);
         
-        $lotes = $lotes->paginate(15);
+        $lotes = $lotes->paginate(30);
 
         return $lotes;
+    }
+
+    public function getLotes(Request $request){
+        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+            ->join('etapas','lotes.etapa_id','=','etapas.id')
+            ->join('modelos','lotes.modelo_id','=','modelos.id')
+            ->select('lotes.id','lotes.num_lote','lotes.fraccionamiento_id','lotes.etapa_id',
+                'lotes.manzana', 'modelos.nombre as modelo',
+                'etapas.num_etapa','fraccionamientos.nombre as proyecto')
+            ->whereIn('lotes.id',$request->id)
+            ->orderBy('lotes.num_lote')
+            ->get();
+
+        return ['lotes' => $lotes];
+    }
+
+    public function storeSolicitud(Request $request){
+        
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+
+        $lotes = $request->lotes;
+
+        try {
+            DB::beginTransaction();
+            $puente = new Credito_puente();
+            $puente->banco = $request->banco;
+            $puente->interes = $request->interes;
+            $puente->apertura = $request->apertura;
+            $puente->fraccionamiento = $request->fraccionamiento;
+            $puente->etapa_id = $request->etapa_id;
+            $puente->folio = $request->banco.'-'.$request->cantidad;
+            $puente->save();
+
+            foreach ($lotes as $index => $l) {
+                $lote = Lote::findOrFail($l->id);
+                $lote->puente_id = $puente->id;
+                $lote->credito_puente = $puente->folio;
+                $lote->save();
+            }
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+        }
     }
 }

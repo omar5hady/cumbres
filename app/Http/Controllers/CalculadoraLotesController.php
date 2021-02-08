@@ -660,4 +660,10 @@ class CalculadoraLotesController extends Controller
 
         return $cotizacion->id;
     }
+
+    public function getDatosPago(Request $request){
+        $pago = Pagos_lotes::select('id','dias','interes_monto','pagare_id')->where('pagare_id','=',$request->pagare_id)->get();
+
+        return ['datos_pago'=>$pago];
+    }
 }

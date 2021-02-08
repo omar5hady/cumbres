@@ -177,6 +177,7 @@ Vue.component('estimaciones', require('./components/Obra/Estimaciones.vue'));
 
 //CREDITOS PUENTE
 Vue.component('solic-puente', require('./components/CPuente/SolicitarCredito.vue'));
+Vue.component('creditos-puente', require('./components/CPuente/CreditoPuenteSeg.vue'));
 
 const app = new Vue({
     el: '#app',

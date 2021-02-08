@@ -38,6 +38,7 @@ class DepositoController extends Controller
         $query = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
             ->join('creditos','creditos.id','=','contratos.id')
             ->join('lotes','creditos.lote_id','=','lotes.id')
+            ->join('modelos','lotes.modelo_id','=','modelos.id')
             ->join('clientes','creditos.prospecto_id','=','clientes.id')
             ->join('personal','clientes.id','=','personal.id')
             ->leftjoin('expedientes','contratos.id','=','expedientes.id')
@@ -48,6 +49,7 @@ class DepositoController extends Controller
                     'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
                     'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
                     'personal.telefono','personal.email','creditos.num_dep_economicos',
+                    'modelos.nombre as modelo',
                     'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
                     'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                     'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
@@ -495,7 +497,9 @@ class DepositoController extends Controller
     public function indexDepositos(Request $request){
         if(!$request->ajax())return redirect('/');
         $depositos = Deposito::select('id', 'pago_id', 'cant_depo','interes_mor','interes_ord',
-                                'obs_mor','obs_ord','num_recibo','banco','concepto','fecha_pago')
+                                'obs_mor','obs_ord','num_recibo','banco','concepto','fecha_pago',
+                                'interes_pago', 'pago_capital','desc_interes'
+                                )
                             ->where('pago_id','=',$request->buscar)
                             ->get();
         
@@ -736,7 +740,12 @@ class DepositoController extends Controller
             $deposito->concepto = $request->concepto;
             $deposito->fecha_pago = $request->fecha_pago;
 
+            $deposito->interes_pago = $request->pago_interes;
+            $deposito->pago_capital = $request->pago_capital;
+            $deposito->desc_interes = $request->descuento;
+
             $pago = $request->cant_depo - $request->interes_mor - $request->interes_ord;
+            $descuento = $request->descuento;
 
             $pago_contrato = Pago_contrato::findOrFail($request->pago_id);
             $pago_contrato->restante =  $pago_contrato->restante - $pago;
@@ -767,7 +776,7 @@ class DepositoController extends Controller
             }
 
             $contrato = Contrato::findOrFail($pago_contrato->contrato_id);
-            $contrato->saldo = round($contrato->saldo - $pago,2);
+            $contrato->saldo = round($contrato->saldo - $pago - $descuento,2);
 
             $credit = Credito::findOrFail($pago_contrato->contrato_id);
 
@@ -955,6 +964,12 @@ class DepositoController extends Controller
             $deposito->concepto = $request->concepto;
             $deposito->fecha_pago = $request->fecha_pago;
 
+            $descAnt = $deposito->desc_interes;
+            $descuento = $request->descuento;
+
+            $deposito->interes_pago = $request->pago_interes;
+            $deposito->pago_capital = $request->pago_capital;
+            $deposito->desc_interes = $request->descuento;
            
             $pago_contrato->restante = $pago_contrato->restante + $diferencia;
             if($pago_contrato->restante == 0)
@@ -964,7 +979,7 @@ class DepositoController extends Controller
             }
 
             $contrato = Contrato::findOrFail($pago_contrato->contrato_id);
-            $contrato->saldo = round($contrato->saldo + $pagoAnt - $pago,2);
+            $contrato->saldo = round($contrato->saldo + $pagoAnt + $descAnt - $descuento - $pago,2);
             $contrato->save(); 
 
             $credit = Credito::findOrFail($pago_contrato->contrato_id);
@@ -979,7 +994,6 @@ class DepositoController extends Controller
                     $deposito->monto_terreno = $saldo;
                 else
                     $deposito->monto_terreno = $monto_terreno;
-
             }
 
             $pago_contrato->save();
@@ -1494,14 +1508,31 @@ class DepositoController extends Controller
                              ->where('contratos.id','=',$id)
                              ->get();
 
+        $desc_interes = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+                             ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+                             ->select('depositos.desc_interes','depositos.num_recibo','depositos.fecha_pago','depositos.banco')
+                             ->where('contratos.id','=',$id)
+                             ->where('depositos.desc_interes','>',0)
+                             ->get();
+
         for ($i = 0; $i < count($depositos); $i++) {
             $depositos[$i]->cant_depo = $depositos[$i]->cant_depo - $depositos[$i]->interes_mor;
             $depositos[$i]->cant_depo = number_format((float)$depositos[$i]->cant_depo, 2, '.', ',');
         }
 
+        for ($i = 0; $i < count($desc_interes); $i++) {
+            $desc_interes[$i]->desc_interes = number_format((float)$desc_interes[$i]->desc_interes, 2, '.', ',');
+        }
+
         $totalDepositos =  Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
         ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
         ->select(DB::raw("SUM(depositos.cant_depo) as sumDeposito"),DB::raw("SUM(depositos.interes_mor) as sumMor"))
+        ->where('contratos.id','=',$id)
+        ->get();
+
+        $totalDesc =  Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+        ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+        ->select(DB::raw("SUM(depositos.desc_interes) as sumDesc"))
         ->where('contratos.id','=',$id)
         ->get();
 
@@ -1535,9 +1566,11 @@ class DepositoController extends Controller
                                         ->where('creditos.id','=',$id)
                                         ->get();
 
+        $totalDesc[0]->sumDesc += $contratos[0]->descuento;
+
         
         $contratos[0]->sumDepositoCredito = $total_depositos_credito[0]->sumDepositoCredito;
-        $contratos[0]->totalAbono = $contratos[0]->sumDeposito + $contratos[0]->sumDepositoCredito + $contratos[0]->descuento;
+        $contratos[0]->totalAbono = $contratos[0]->sumDeposito + $contratos[0]->sumDepositoCredito + $totalDesc[0]->sumDesc;
         $contratos[0]->saldo = $contratos[0]->totalCargo - $contratos[0]->totalAbono;
 
         $contratoChange = Contrato::findOrFail($id);
@@ -1550,12 +1583,13 @@ class DepositoController extends Controller
         $contratos[0]->totalCargo = number_format((float)$contratos[0]->totalCargo, 2, '.', ',');
         $contratos[0]->saldo = number_format((float)$contratos[0]->saldo, 2, '.', ',');
         $contratos[0]->descuento = number_format((float)$contratos[0]->descuento, 2, '.', ',');
+        $contratos[0]->totalDesc = number_format((float)$totalDesc[0]->sumDesc, 2, '.', ',');
 
         if($contratos[0]->status== 0 || $contratos[0]->status == 2){
             $contratos[0]->precio_venta = ' 0.00';
         }
         
-        $pdf = \PDF::loadview('pdf.contratos.estadoDeCuenta', ['contratos' => $contratos, 'depositos' => $depositos, 'gastos_admin' => $gastos_admin, 'depositos_credito' => $depositos_credito, 'fecha'=> $tiempo]);
+        $pdf = \PDF::loadview('pdf.contratos.estadoDeCuenta', ['contratos' => $contratos, 'depositos' => $depositos, 'descuentos' => $desc_interes, 'gastos_admin' => $gastos_admin, 'depositos_credito' => $depositos_credito, 'fecha'=> $tiempo]);
         return $pdf->stream('EstadoDeCuenta.pdf');
     }
 

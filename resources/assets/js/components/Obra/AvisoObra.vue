@@ -264,7 +264,7 @@
                             </div>
                             <div class="form-group row">
                                 <div class="table-responsive col-md-12">
-                                    <table class="table table-bordered table-striped table-sm">
+                                    <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
                                                 <th>Opciones</th>
@@ -323,7 +323,7 @@
 
                                         <tbody v-else>
                                             <tr>
-                                                <td colspan="7">
+                                                <td colspan="9">
                                                     No hay lotes seleccionados
                                                 </td>
                                             </tr>
@@ -510,7 +510,7 @@
                             </div>
                             <div class="form-group row">
                                 <div class="table-responsive col-md-12">
-                                    <table class="table table-bordered table-striped table-sm">
+                                    <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
                                                 <th>Opciones</th>
@@ -569,7 +569,7 @@
 
                                         <tbody v-else>
                                             <tr>
-                                                <td colspan="7">
+                                                <td colspan="9">
                                                     No hay lotes seleccionados
                                                 </td>
                                             </tr>
@@ -680,7 +680,7 @@
 
                             <div class="form-group row">
                                 <div class="table-responsive col-md-12">
-                                    <table class="table table-bordered table-striped table-sm">
+                                    <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
                                                 <th>Descripcion</th>
@@ -718,7 +718,7 @@
 
                                         <tbody v-else>
                                             <tr>
-                                                <td colspan="7">
+                                                <td colspan="9">
                                                     No hay lotes seleccionados
                                                 </td>
                                             </tr>

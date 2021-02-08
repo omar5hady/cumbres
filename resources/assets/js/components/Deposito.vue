@@ -111,31 +111,31 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="pagare in arrayPagares" :key="pagare.id">
-                                        <td style="width:8%">
+                                        <td class="td2" style="width:8%">
                                             <button type="button" @click="verDepositos(pagare)" class="btn btn-default btn-sm" title="Ver depositos">
                                             <i class="icon-eye"></i>
                                             </button> &nbsp;
                                         </td>
-                                        <td v-on:dblclick="abrirPDF(pagare.folio)" title="Solicitud de compra venta">
+                                        <td class="td2" v-on:dblclick="abrirPDF(pagare.folio)" title="Solicitud de compra venta">
                                             <a href="#" v-text="pagare.folio" ></a>
                                         </td>
-                                        <td v-on:dblclick="abrirModal('datosCliente',pagare)" title="Datos del cliente">
+                                        <td class="td2" v-on:dblclick="abrirModal('datosCliente',pagare)" title="Datos del cliente">
                                             <a href="#" v-text="pagare.nombre + ' ' +pagare.apellidos"></a>
                                         </td>
                                         <template>
-                                             <td v-if="pagare.gestor == 'NULL'"> <b>Sin asignar</b></td>
-                                             <td v-else v-text="pagare.gestor"></td>
+                                             <td class="td2" v-if="pagare.gestor == 'NULL'"> <b>Sin asignar</b></td>
+                                             <td class="td2" v-else v-text="pagare.gestor"></td>
                                         </template>
-                                        <td v-text="pagare.fraccionamiento"></td>
-                                        <td v-text="pagare.etapa"></td>
-                                        <td v-text="pagare.manzana"></td>
-                                        <td v-text="pagare.num_lote"></td>
-                                        <td v-text="parseInt(pagare.num_pago)+1"></td>
-                                        <td v-if="pagare.restante < 0" v-text="'$'+formatNumber(0)"></td>
-                                        <td v-else v-text="'$'+formatNumber(pagare.restante)"></td>
-                                        <td v-text="'$'+formatNumber(pagare.monto_pago - pagare.restante)"></td>
-                                        <td v-text="this.moment(pagare.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
-                                        <td >
+                                        <td class="td2" v-text="pagare.fraccionamiento"></td>
+                                        <td class="td2" v-text="pagare.etapa"></td>
+                                        <td class="td2" v-text="pagare.manzana"></td>
+                                        <td class="td2" v-text="pagare.num_lote"></td>
+                                        <td class="td2" v-text="parseInt(pagare.num_pago)+1"></td>
+                                        <td class="td2" v-if="pagare.restante < 0" v-text="'$'+formatNumber(0)"></td>
+                                        <td class="td2" v-else v-text="'$'+formatNumber(pagare.restante)"></td>
+                                        <td class="td2" v-text="'$'+formatNumber(pagare.monto_pago - pagare.restante)"></td>
+                                        <td class="td2" v-text="this.moment(pagare.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <td class="td2" >
                                             <span v-if="pagare.diferencia > 0 && pagare.pagado < 2" class="badge badge-danger">Vencido</span>
                                             <span v-if="pagare.diferencia < 0 && pagare.pagado < 2" class="badge badge-warning"> Pendiente</span>
                                             <span v-if="pagare.pagado == 2" class="badge badge-success"> Pagado</span>
@@ -166,7 +166,7 @@
                             
                         </div>
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-sm">
+                            <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
                                         <th>Opciones</th>
@@ -176,11 +176,16 @@
                                         <th># Recibo</th>
                                         <th>Monto</th>
                                         <th>Fecha de deposito</th>
+                                        <template v-if="modelo == 'Terreno'">
+                                            <th>Pago a capital</th>
+                                            <th>Pago de interes</th>
+                                            <th>Descuento de interes</th>
+                                        </template>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="deposito in arrayDepositos" :key="deposito.id">
-                                        <td style="width:12%">   
+                                        <td class="td2" style="width:12%">   
                                         <a type="button" target="_blank" class="btn btn-danger btn-sm" title="Imprimir" v-bind:href="'deposito/reciboPDF/'+deposito.id"> <i class="fa fa-file-pdf-o"></i></a>
                                          &nbsp;
                                             <button type="button" @click="abrirModal('actualizar',deposito)" class="btn btn-warning btn-sm" title="Editar deposito">
@@ -190,12 +195,17 @@
                                             <i class="icon-trash"></i>
                                             </button> &nbsp;
                                         </td>
-                                        <td v-text="referencia"></td>
-                                        <td v-text="cliente"></td>
-                                        <td v-text="deposito.banco"></td>
-                                        <td v-text="deposito.num_recibo"></td>
-                                        <td v-text="'$'+formatNumber(deposito.cant_depo)"></td>
-                                        <td v-text="this.moment(deposito.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <td class="td2" v-text="referencia"></td>
+                                        <td class="td2" v-text="cliente"></td>
+                                        <td class="td2" v-text="deposito.banco"></td>
+                                        <td class="td2" v-text="deposito.num_recibo"></td>
+                                        <td class="td2" v-text="'$'+formatNumber(deposito.cant_depo)"></td>
+                                        <template v-if="modelo == 'Terreno'">
+                                            <td class="td2" v-text="'$'+formatNumber(depo.pago_capital)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(depo.interes_pago)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(depo.desc_interes)"></td>
+                                        </template>
+                                        <td class="td2" v-text="this.moment(deposito.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
                                     </tr>                               
                                 </tbody>
                             </table>
@@ -247,7 +257,7 @@
                             </div>
                         </div>
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-sm">
+                            <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
                                         <th># Ref</th>
@@ -260,20 +270,22 @@
                                         <th>Cuenta</th>
                                         <th># Recibo</th>
                                         <th>$ Monto</th>
+                                        
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="depo in arrayHistorial" :key="depo.depId">
-                                        <td v-text="depo.id"></td>
-                                        <td v-text="depo.nombre + ' ' +depo.apellidos"></td>
-                                        <td v-text="depo.fraccionamiento"></td>
-                                        <td v-text="depo.etapa"></td>
-                                        <td v-text="depo.manzana"></td>
-                                        <td v-text="depo.num_lote"></td>
-                                        <td v-text="this.moment(depo.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
-                                        <td v-text="depo.banco"></td>
-                                        <td v-text="depo.num_recibo"></td>
-                                        <td v-text="'$'+formatNumber(depo.cant_depo)"></td>
+                                        <td class="td2" v-text="depo.id"></td>
+                                        <td class="td2" v-text="depo.nombre + ' ' +depo.apellidos"></td>
+                                        <td class="td2" v-text="depo.fraccionamiento"></td>
+                                        <td class="td2" v-text="depo.etapa"></td>
+                                        <td class="td2" v-text="depo.manzana"></td>
+                                        <td class="td2" v-text="depo.num_lote"></td>
+                                        <td class="td2" v-text="this.moment(depo.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <td class="td2" v-text="depo.banco"></td>
+                                        <td class="td2" v-text="depo.num_recibo"></td>
+                                        <td class="td2" v-text="'$'+formatNumber(depo.cant_depo)"></td>
+                                        
                                     </tr>                               
                                 </tbody>
                             </table>
@@ -311,7 +323,7 @@
                         <div class="modal-body">
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input"># Ref</label>
-                                    <div class="col-md-9">
+                                    <div class="col-md-4">
                                         <input type="text" disabled v-model="referencia" maxlength="10" class="form-control" placeholder="Numero de referencia">
                                     </div>
                                 </div>
@@ -320,7 +332,7 @@
                                     <div class="col-md-3">
                                         <input type="text" disabled v-model="proyecto" maxlength="50" class="form-control">
                                     </div>
-                                    <label class="col-md-3 form-control-label" for="text-input">Etapa</label>
+                                    <label class="col-md-2 form-control-label" for="text-input">Etapa</label>
                                     <div class="col-md-3">
                                         <input type="text" v-model="etapa" disabled maxlength="50" class="form-control">
                                     </div>
@@ -330,7 +342,7 @@
                                     <div class="col-md-3">
                                         <input type="text" disabled v-model="manzana" maxlength="50" class="form-control">
                                     </div>
-                                    <label class="col-md-3 form-control-label" for="text-input"># Lote</label>
+                                    <label class="col-md-2 form-control-label" for="text-input"># Lote</label>
                                     <div class="col-md-3">
                                         <input type="text" v-model="lote" disabled maxlength="50" class="form-control">
                                     </div>
@@ -348,16 +360,38 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Fecha deposito</label>
                                     <div class="col-md-6">
-                                        <input type="date" v-model="fecha_deposito" class="form-control">
+                                        <input type="date" v-model="fecha_deposito" @change="calcularDescuento()" class="form-control">
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Cantidad a depositar</label>
+                                    <label class="col-md-3 form-control-label" for="text-input"><strong>Cantidad a depositar</strong></label>
                                     <div class="col-md-4">
-                                        <input type="text" pattern="\d*" v-on:keypress="isNumber($event)" v-model="cant_depo" maxlength="10" class="form-control">
+                                        <input type="text" pattern="\d*" @change="calcularDescuento()" v-on:keypress="isNumber($event)" v-model="cant_depo" maxlength="10" class="form-control">
                                     </div>
                                     <div class="col-md-4">
-                                        <p v-text="'$'+formatNumber(cant_depo)"></p>
+                                        <h6 v-text="'$'+formatNumber(cant_depo)"></h6>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" v-if="modelo == 'Terreno' && cant_depo > 0">
+                                    <label class="col-md-3 form-control-label" for="text-input">Pago a capital</label>
+                                    <div class="col-md-3">
+                                        <strong><p v-text="'$'+formatNumber(pago_capital)"></p></strong>
+                                    </div>
+                                    <label class="col-md-3 form-control-label" for="text-input">Pago a interés</label>
+                                    <div class="col-md-3">
+                                        <strong><p v-text="'$'+formatNumber(pago_interes)"></p></strong>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group row" v-if="modelo == 'Terreno' && int_terr > 0 && cant_depo > 0">
+                                    <label class="col-md-3 form-control-label" for="text-input">Descuento de intereses</label>
+                                    <div class="col-md-4">
+                                        <input type="text" pattern="\d*" v-on:keypress="isNumber($event)" v-model="descuento" maxlength="10" class="form-control">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <p v-text="'$'+formatNumber(descuento)"></p>
                                     </div>
                                 </div>
 
@@ -371,14 +405,14 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group row">
+                                <div class="form-group row" v-if="interes_mor > 0">
                                     <label class="col-md-3 form-control-label" for="text-input">Observación Interes Moratorio</label>
                                     <div class="col-md-9">
                                         <input type="text" v-model="obs_mor" class="form-control">
                                     </div>
                                 </div>
 
-                                 <div class="form-group row">
+                                 <div class="form-group row" v-if="fecha_deposito > fecha_limite">
                                     <label class="col-md-3 form-control-label" for="text-input">Interes Ordinario</label>
                                     <div class="col-md-4">
                                         <input type="text" pattern="\d*" v-on:keypress="isNumber($event)" v-model="interes_ord" maxlength="10" class="form-control">
@@ -388,7 +422,7 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group row">
+                                <div class="form-group row" v-if="interes_ord > 0">
                                     <label class="col-md-3 form-control-label" for="text-input">Observación Interes Ordinario</label>
                                     <div class="col-md-9">
                                         <input type="text" v-model="obs_ord" class="form-control">
@@ -756,6 +790,8 @@
                 desde:'',
                 hasta:'',
 
+                descuento:0,
+
                 //para los datos del cliente
                 nombre_cliente: '',
                 sexo_cliente: '',
@@ -813,6 +849,13 @@
                 b_fecha2 : '',
                 b_empresa:'',
                 empresas:[],
+
+                dias_int:0,
+                int_terr:0,
+                pago_capital:0,
+                pago_interes:0,
+                modelo:'',
+                dias_desc:0,
             }
         },
         computed:{
@@ -928,6 +971,43 @@
                     console.log(error);
                 });
             },
+            calcularDescuento(){
+                this.descuento = 0;
+                this.pago_capital = 0;
+                this.pago_interes = 0;
+                if(this.modelo == 'Terreno' && this.monto_pagare <= this.cant_depo)
+                {
+                    var a = moment(this.fecha_limite);
+                    var b = moment(this.fecha_deposito);
+                    var interes = this.int_terr / this.dias_int;
+                    this.dias_desc = a.diff(b, 'days');
+                    
+                    if(this.dias_desc > 0){
+                        this.descuento = this.dias_desc * interes;
+                        if(this.descuento > this.int_terr)
+                            this.descuento = this.int_terr;
+
+                    }
+                    
+                        
+                }
+                if(this.modelo == 'Terreno' && this.monto_pagare >= this.cant_depo)
+                {
+                        var capital = this.monto_pagare - this.int_terr;
+                        var porcent_cap = capital/this.monto_pagare;
+                        var porcent_int = this.int_terr/this.monto_pagare;
+                        let diff=0;
+
+                        this.pago_interes = this.cant_depo*porcent_int;
+                        if(this.pago_interes > this.int_terr){
+                            dif = this.pago_interes - this.int_terr;
+                            this.pago_interes = this.int_terr;
+                        }
+                        this.pago_capital = this.cant_depo*porcent_cap+diff;
+                    
+                        
+                }
+            },
             formatNumber(value) {
                 let val = (value/1).toFixed(2)
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
@@ -1042,7 +1122,11 @@
                     'banco':this.banco,
                     'concepto':this.concepto,
                     'fecha_pago':this.fecha_deposito,
-                    'restante':this.restanteTotal
+                    'restante':this.restanteTotal,
+
+                    'pago_capital':this.pago_capital,
+                    'pago_interes':this.pago_interes,
+                    'descuento':this.descuento,
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarDepositos(); //se enlistan nuevamente los registros
@@ -1082,6 +1166,10 @@
                     'concepto':this.concepto,
                     'fecha_pago':this.fecha_deposito,
                     'id':this.id,
+                    
+                    'pago_capital':this.pago_capital,
+                    'pago_interes':this.pago_interes,
+                    'descuento':this.descuento,
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarDepositos(); //se enlistan nuevamente los registros
@@ -1148,6 +1236,7 @@
                 this.interes_ord=0;
                 this.obs_ord='';
                 this.saldo=0;
+                this.descuento = 0;
                 this.num_recibo='';
                 this.banco='';
                 this.concepto='';
@@ -1155,10 +1244,29 @@
                 this.restante= data['restante'];
                 this.pago_id = data['pago'];
                 this.diferencia=data['diferencia'];
+                this.modelo = data['modelo'];
+
+                if(this.modelo == 'Terreno'){
+                    this.getDatosPago(this.pago_id);
+                }
 
                 this.listarDepositos();
 
                
+            },
+            getDatosPago(id){
+                let me = this;
+                var url = '/pagaresLotes/getDatosPago?pagare_id=' + id;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    var datos;
+                    datos = respuesta.datos_pago;
+                    me.int_terr = datos[0].interes_monto;
+                    me.dias_int = datos[0].dias;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
             },
             listarDepositos(){
                 let me = this;
@@ -1191,6 +1299,9 @@
                 this.num_recibo='';
                 this.banco='';
                 this.concepto='';
+                this.descuento = 0;
+                this.pago_interes = 0;
+                this.pago_capital = 0;
 
                 this.errorDeposito = 0;
                 this.errorMostrarMsjDeposito = [];
@@ -1292,6 +1403,9 @@
                         this.num_recibo=data['num_recibo'];
                         this.banco=data['banco'];
                         this.concepto=data['concepto'];
+                        this.descuento = data['desc_interes'];
+                        this.pago_capital = data['pago_capital'];
+                        this.pago_interes = data['interes_pago'];
                         
                         this.id=data['id'];
                         break;
@@ -1426,6 +1540,11 @@
     width: fit-content;
     max-width: 100%;
     box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+    }
+
+    .td2, .th2 {
+    border: solid rgb(200, 200, 200) 1px;
+    padding: .5rem;
     }
 
 </style>

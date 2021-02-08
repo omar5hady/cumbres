@@ -8,9 +8,9 @@
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card scroll-box">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i>Lotes
+                        <i class="fa fa-align-justify"></i>Lotes sin Crédito Puente&nbsp;
                         <!--   Boton   -->
-                        <button type="button" class="btn btn-success" @click="abrirModal('lote','asignar')" >
+                        <button type="button" class="btn btn-success" @click="abrirModal()" >
                             <i class="icon-pencil"></i>&nbsp;Solicitar Crédito Puente
                         </button>
                         
@@ -148,14 +148,71 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                         
+                            <div >
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Institución Bancaria</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control" v-model="banco">
+                                            <option value="">Seleccione</option>
+                                            <option v-for="banco in arrayBancos" :key="banco.nombre" :value="banco.nombre" v-text="banco.nombre"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Tasa de interés </label>
+                                    <div class="col-md-3">
+                                        <input class="form-control" type="number" v-model="tasa_interes">
+                                    </div>
+                                </div>
 
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Comisión por apertura </label>
+                                    <div class="col-md-3">
+                                        <input class="form-control" type="number" v-model="apertura">
+                                    </div>
+                                </div>
+                            </div>
 
+                            <div class="border">
+                                 <div class="col-md-12">
+                                    <h6> <center>Lotes seleccionados ({{cantidad}})</center> </h6>
+                                </div>
+                            </div>
+
+                            <div class="border">
+                                <div class="form-group row">
+                                    <div class="col-md-12">
+                                        <table class="table2 table-bordered table-striped table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Proyecto</th>
+                                                    <th>Etapa</th>
+                                                    <th>Manzana</th>
+                                                    <th>Modelo</th>
+                                                    <th># Lote</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(lote,index) in lotesSelec" :key="lote.id">
+                                                    <td class="td2">{{index+1}} </td>
+                                                    <td class="td2" v-text="lote.proyecto"></td>
+                                                    <td class="td2" v-text="lote.num_etapa"></td>
+                                                    <td class="td2" v-text="lote.manzana"></td>
+                                                    <td class="td2" v-text="lote.modelo"></td>
+                                                    <td class="td2" v-text="lote.num_lote"></td>
+                                                </tr>                       
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal2()">Cerrar</button>
-                            <button type="button"  class="btn btn-primary" @click="asignarModelos()">Actualizar</button>
+                            <button type="button"  class="btn btn-primary" @click="solicitarCredito()">Solicitar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
                         </div>
                     </div>
@@ -180,11 +237,10 @@
                 proceso:false,
                 allSelected: false,
                 lotes_ini : [],
-                id: 0,
                 b_modelo: '',
                 b_lote: '',
-                extra:0,
                 arrayLote : [],
+                lotesSelec: [],
                 modal2: 0,
                 tituloModal2: '',
                 contador: 0,
@@ -201,17 +257,23 @@
                 buscar3 : '',
                 buscar : '',
                 b_puente: '',
+
+                banco :'',
+                tasa_interes : 0,
+                apertura:0,
+                cantidad:0,
+                fraccionamiento_id:'',
+                etapa_id:'',
+
                 arrayFraccionamientos : [],
                 arrayEtapas : [],
                 arrayModelos : [],
                 arrayEmpresas : [],
                 arrayManzanas: [],
-                arrayPuentes: [],
+                arrayBancos:[],
                 empresas: [],
                 b_empresa:'',
-                b_empresa2:'',
-
-                fecha_termino_ventas: ''
+                b_empresa2:''
             }
         },
         computed:{
@@ -265,7 +327,7 @@
             select: function() {
                 this.allSelected = false;
             },
-            asignarModelos(){
+            solicitarCredito(){
                 let me = this;
                 //Con axios se llama el metodo update de DepartamentoController
 
@@ -273,38 +335,31 @@
                     title: 'Estas seguro?',
                     animation: false,
                     customClass: 'animated bounceInDown',
-                    text: "Etapa y modelo se asignaran a los lotes seleccionados",
+                    text: "Los lotes seran registrados en el crédito puente",
                     type: 'question',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
                     cancelButtonText: 'Cancelar',
                     
-                    confirmButtonText: 'Si, asignar!'
+                    confirmButtonText: 'Si, continuar!'
                     }).then((result) => {
 
                     if (result.value) {
                         var tamaño=me.lotes_ini.length;
-                        var i=1;
-                        var aviso =0;
                         me.lotes_ini.forEach(element => {
-                            if(i == tamaño)
-                        aviso = tamaño;
-                        axios.put('/lote/actualizar3',{
-                        
-                            'id': element,
-                            'modelo_id' : this.modelo_id,
-                            'etapa_id' : this.etapa_id,
-                            'aviso' : aviso
+                            axios.put('/lote/actualizar3',{
+                                'id': element,
+                                'modelo_id' : this.modelo_id,
+                                'etapa_id' : this.etapa_id,
+                                'aviso' : aviso
                             }); 
-                        i++;
                         });
-                    // me.listarLote(1,'','','','','','','lote');   
                         me.listarLote(me.pagination.current_page);
                         me.cerrarModal2();
                         Swal({
                             title: 'Hecho!',
-                            text: 'Los modelos se han asignado',
+                            text: 'Los Lotes se han registrado en el crédito',
                             type: 'success',
                             animation: false,
                             customClass: 'animated bounceInRight'
@@ -342,14 +397,30 @@
                 });
             },
 
-            selectPuente(id){
+            getLotes(){
                 let me = this;
 
-                me.arrayPuentes=[];
-                var url = '/selectCreditoPuente?fraccionamiento=' + id;
+                me.lotesSelec = [];
+                var url = '/cPuentes/getLotes';
+                axios.get(url, {params: {'id': this.lotes_ini}}).then(function (response) {
+                    var respuesta = response.data;
+                    me.lotesSelec = respuesta.lotes;
+                    me.cantidad = me.lotesSelec.length;
+                    me.fraccionamiento_id = me.lotesSelec[0].fraccionamiento_id;
+                    me.etapa_id = me.lotesSelec[0].etapa_id;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            selectBancos(){
+                let me = this;
+                me.arrayBancos=[];
+                var url = '/select_inst_financiamiento';
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                    me.arrayPuentes = respuesta.creditos;
+                    me.arrayBancos = respuesta.instituciones_financiamiento;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -366,7 +437,6 @@
 
             selectFraccionamientos(){
                 let me = this;
-                
                     me.buscar="";
                     me.buscar2="";
                     me.buscar3="";
@@ -374,8 +444,6 @@
                     me.b_empresa2="";
                     me.b_modelo='';
                     me.b_lote='';
-                
-                
                 me.arrayFraccionamientos=[];
                 var url = '/select_fraccionamiento';
                 axios.get(url).then(function (response) {
@@ -388,13 +456,9 @@
             },
             selectEtapa(buscar){
                 let me = this;
-               
-                
                     me.buscar2=""
                     me.buscar3=""
                     me.b_modelo='';
-                
-                
                 me.arrayEtapas=[];
                 var url = '/select_etapa_proyecto?buscar=' + buscar;
                 axios.get(url).then(function (response) {
@@ -429,13 +493,33 @@
                     return true;
                 }
             },
+            abrirModal(){
+                 if(this.lotes_ini.length<1){
+                    Swal({
+                    title: 'No se ha seleccionado ningun lote',
+                    animation: false,
+                    customClass: 'animated tada'
+                    })
+                    return;
+                }
+                this.modal2 = 1;
+                this.tituloModal2 = 'Solicitar Crédito Puente';
+                this.banco = '';
+                this.apertura = 0;
+                this.tasa_interes = 0;
+                this.selectBancos();
+                this.getLotes();
+            },
 
             cerrarModal2(){
                 this.modal2 = 0;
-                this.fraccionamiento_id=0;
                 this.tituloModal2 = '';
                 this.lotes_ini=[];
                 this.allSelected = false;
+                this.banco = '';
+                this.lotesSelec = [];
+                this.tasa_interes = 0;
+                this.apertura = 0;
             },
 
         },

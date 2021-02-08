@@ -237,21 +237,35 @@
                     <div colspan="8" class="table-cell"></div>    
                 </div>
 
-                @if($contratos[0]->descuento > 0)
+                @if($contratos[0]->totalDesc > 0)
                 <div class="table-row">
                     <div colspan="8" class="table-cell"><b>DESCUENTO</div>    
                 </div>
             
-                <div class="table-row">
-                    <div colspan="2" class="table-cell">DESCUENTO <br>
-                        Obs: {{$contratos[0]->obs_descuento}} 
+                @if($contratos[0]->descuento > 0)
+                    <div class="table-row">
+                        <div colspan="2" class="table-cell">DESCUENTO <br>
+                            Obs: {{$contratos[0]->obs_descuento}} 
+                        </div>
+                        <div class="table-cell">{{$contratos[0]->fecha_liquidacion}}</div>
+                        <div class="table-cell"></div>    
+                        <div colspan="2" class="table-cell"></div>
+                        <div class="table-cell">$ 0.00</div>  
+                        <div class="table-cell">$ {{$contratos[0]->descuento}}</div>
                     </div>
-                    <div class="table-cell">{{$contratos[0]->fecha_liquidacion}}</div>
-                    <div class="table-cell"></div>    
-                    <div colspan="2" class="table-cell"></div>
-                    <div class="table-cell">$ 0.00</div>  
-                    <div class="table-cell">$ {{$contratos[0]->descuento}}</div>
-                </div>
+                @endif
+
+                @for($i=0; $i < count($descuentos); $i++)
+                    <div class="table-row">
+                        <div class="table-cell">Descuento por pargo anticipado</div>
+                        <div class="table-cell"></div>
+                        <div class="table-cell">{{$descuentos[$i]->fecha_pago}}</div>
+                        <div class="table-cell">{{$descuentos[$i]->num_recibo}}</div>    
+                        <div colspan="2" class="table-cell"></div>
+                        <div class="table-cell">$ 0.00</div>  
+                        <div class="table-cell">$ {{$descuentos[$i]->desc_interes}}</div>
+                    </div>
+                @endfor
 
                 {{-- <div class="table-row">
                     <div colspan="8" class="table-cell">Obs: {{$contratos[0]->obs_descuento}} </div>
@@ -261,7 +275,7 @@
                     <div colspan="4" class="table-cell"></div>   
                     <div colspan="2" class="table-cell"><b>TOTAL(DESCUENTO)</div>
                     <div class="table-cell"></div>  
-                    <div class="table-cell"><b>$ {{$contratos[0]->descuento}}</div>  
+                    <div class="table-cell"><b>$ {{$contratos[0]->totalDesc}}</div>  
                 </div>
                 @endif
 

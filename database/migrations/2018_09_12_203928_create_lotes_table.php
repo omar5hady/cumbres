@@ -68,6 +68,8 @@ class CreateLotesTable extends Migration
             $table->double('excedente_terreno')->default(0);
             $table->double('sobreprecio')->default(0);
 
+            $table->integer('puente_id')->nullable();
+
             $table->foreign('fraccionamiento_id')->references('id')->on('fraccionamientos');
             $table->foreign('etapa_id')->references('id')->on('etapas'); 
             $table->foreign('modelo_id')->references('id')->on('modelos');

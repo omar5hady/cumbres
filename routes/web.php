@@ -611,6 +611,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/deposito/actualizar','DepositoController@update');
         Route::get('deposito/reciboPDF/{id}','DepositoController@reciboPDF');
         Route::delete('/deposito/eliminar','DepositoController@delete');
+
+        Route::get('/pagaresLotes/getDatosPago','CalculadoraLotesController@getDatosPago');
         
 
     //////////////////////////////// RUTAS MODULO SALDOS ////////////////////////////
@@ -912,6 +914,8 @@ Route::group(['middleware' => ['auth']],function(){
     
     /////////////////////////// RUTAS CREDITOS PUENTE ////////////////////////
         Route::get('/c_puente/indexSinCredito','CreditoPuenteController@indexSinCredito');
+        Route::get('/cPuentes/getLotes','CreditoPuenteController@getLotes');
+        Route::post('/cPuentes/storeSolicitud','CreditoPuenteController@storeSolicitud');
         
     //////////////////// RUTAS BONOS RECOMENDADOS ///////////////////////
         Route::get('/cat_bono/index','CatalogoBonoController@index');

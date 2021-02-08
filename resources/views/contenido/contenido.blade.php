@@ -501,6 +501,10 @@
         <template v-if="menu==255">
             <solic-puente></solic-puente>
         </template>
+        <template v-if="menu==256">
+            <creditos-puente></creditos-puente>
+        </template>
+
 
         
 

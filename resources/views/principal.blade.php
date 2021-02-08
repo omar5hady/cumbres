@@ -261,6 +261,9 @@
                                 <li @click="menu=255" class="nav-item">
                                     <a class="nav-link" href="#"><i class="fa fa-archive"></i> Solicitar Crédito</a>
                                 </li>
+                                <li @click="menu=256" class="nav-item">
+                                    <a class="nav-link" href="#"><i class="fa fa-archive"></i> Créditos Puente</a>
+                                </li>
                             </ul>
                         </li>
                     @endif
