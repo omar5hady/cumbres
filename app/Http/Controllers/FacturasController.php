@@ -21,6 +21,7 @@ class FacturasController extends Controller
             ->join('clientes', 'clientes.id', '=', 'creditos.prospecto_id')
             ->join('personal as c', 'c.id', '=', 'clientes.id')
             ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+            ->join('modelos', 'lotes.modelo_id', '=', 'modelos.id')
             ->join('pagos_contratos', 'contratos.id', '=', 'pagos_contratos.contrato_id')
             ->join('depositos', 'pagos_contratos.id', '=', 'depositos.pago_id')
             ->select(
@@ -37,11 +38,22 @@ class FacturasController extends Controller
                 'creditos.valor_terreno',
                 'creditos.porcentaje_terreno',
 
+                'modelos.nombre as modelo',
+
                 'depositos.pago_id',
 
                 'depositos.cant_depo',
                 'depositos.banco',
                 'depositos.concepto',
+
+                'depositos.interes_pago',
+                'depositos.pago_capital',
+                'depositos.desc_interes',
+
+                'depositos.factura_interes',
+                'depositos.folio_factura_interes',
+                'depositos.monto_interes',
+                'depositos.f_carga_factura_interes',
 
                 'depositos.factura',
                 'depositos.folio_factura',
@@ -82,7 +94,7 @@ class FacturasController extends Controller
                 
             }else{
                 if($request->criterio == 'nombre'){
-                    $facturas = $facturas->where(DB::raw('CONCAT(nombre," ",apellidos)'), 'like', "%$request->b_gen%");
+                    $facturas = $facturas->where(DB::raw('CONCAT(c.nombre," ",c.apellidos)'), 'like', "%$request->b_gen%");
                 }else{$facturas = $facturas->where("$request->criterio", 'like', "%$request->b_gen%");}
             }
             if($request->historial == 1){
@@ -165,6 +177,23 @@ class FacturasController extends Controller
             }
         }
 
+        if($request->upFolio2 != ""){
+            if($deposito->factura_interes != ""){
+                File::delete(public_path().'/files/facturas/depositos/interes/'.$deposito->factura_interes);
+            }
+
+            $name = uniqId().'.'.$request->upfil2->getClientOriginalExtension();
+            $moved = $request->upfil2->move(public_path('/files/facturas/depositos/interes/'), $name);
+
+            if($moved){
+                $deposito->factura_interes = $name;
+                $deposito->folio_factura_interes = $request->upFolio2;
+                $deposito->monto_interes = $request->upMonto2;
+                $deposito->f_carga_factura_interes = Carbon::now()->format('Y-m-d');
+                $deposito->save();
+            }
+        }
+
         if($request->upFolioTer != ""){
 
             if($deposito->factura_terreno != ""){
@@ -191,6 +220,11 @@ class FacturasController extends Controller
 
     public function descargaFacturaTer($name){
         $pathtoFile = public_path().'/files/facturas/terreno/'.$name;
+        return response()->download($pathtoFile);
+    }
+
+    public function descargaFacturaInt($name){
+        $pathtoFile = public_path().'/files/facturas/depositos/interes/'.$name;
         return response()->download($pathtoFile);
     }
     

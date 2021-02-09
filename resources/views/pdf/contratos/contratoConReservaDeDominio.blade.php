@@ -28,9 +28,20 @@ body{
 <body>
     <div>
         <p>
-        <strong>CONTRATO DE COMPRAVENTA</strong> CON RESERVA DE DOMINIO, QUE CELEBRAN POR UNA PARTE, LA SOCIEDAD MERCANTIL DENOMINADA <strong>GRUPO CONSTRUCTOR CUMBRES, S.A DE C.V.</strong>,
+        <strong>CONTRATO DE COMPRAVENTA</strong> CON RESERVA DE DOMINIO, QUE CELEBRAN POR UNA PARTE, LA SOCIEDAD MERCANTIL DENOMINADA <strong>
+        @if($contratosDom[0]->emp_constructora == 'Grupo Constructor Cumbres')
+            GRUPO CONSTRUCTOR CUMBRES
+        @else
+            CONCRETANIA
+        @endif
+        , S.A DE C.V.</strong>,
         A QUIEN EN LOS SUCESIVO Y PARA LOS EFECTOS DEL PRESENTE CONTRATO SE LE DENOMINARA <strong>EL VENDEDOR</strong> REPRESENTADO EN ESTE ACTO POR EL 
-        ING. ALEJANDRO F. PEREZ ESPINOSA O EL ING. DAVID CALVILLO MARTINEZ, Y POR SU PROPIO DERECHO, <strong>EL SR(A) {{mb_strtoupper($contratosDom[0]->nombre)}} {{mb_strtoupper($contratosDom[0]->apellidos)}} @if($contratosDom[0]->coacreditado == 1) Y {{mb_strtoupper($contratosDom[0]->nombre_coa)}} {{mb_strtoupper($contratosDom[0]->apellidos_coa)}} @endif</strong>
+        @if($contratosDom[0]->emp_constructora == 'Grupo Constructor Cumbres')
+            ING. ALEJANDRO F. PEREZ ESPINOSA O EL ING. DAVID CALVILLO MARTINEZ,
+        @else
+            EL ING. DAVID CALVILLO MARTINEZ,
+        @endif
+         Y POR SU PROPIO DERECHO, <strong>EL SR(A) {{mb_strtoupper($contratosDom[0]->nombre)}} {{mb_strtoupper($contratosDom[0]->apellidos)}} @if($contratosDom[0]->coacreditado == 1) Y {{mb_strtoupper($contratosDom[0]->nombre_coa)}} {{mb_strtoupper($contratosDom[0]->apellidos_coa)}} @endif</strong>
         LA QUIEN EN LO SUCESIVO Y PARA LOS EFECTOS DEL PRESENTE CONTRATO SE DENOMINARAN <strong>EL COMPRADOR</strong> AL TENOR DE LAS SIGUIENTES DECLARACIONES Y CLAUSULAS 
         </p>
 
@@ -47,8 +58,15 @@ body{
         </p>
 
         <p>
-        b) Que su representante, <strong>el ING. ALEJANDRO F. PEREZ ESPINOSA O EL ING. DAVID CALVILLO MARTINEZ</strong>, 
-           cuentan con las facultades necesarias para la celebración del presente contrato mismas que a la fecha no le han sido restringidas,
+        b) Que su representante, 
+            <strong>
+                @if($contratosDom[0]->emp_constructora == 'Grupo Constructor Cumbres')
+                    ING. ALEJANDRO F. PEREZ ESPINOSA O EL ING. DAVID CALVILLO MARTINEZ, cuentan
+                @else
+                    EL ING. DAVID CALVILLO MARTINEZ, cuenta 
+                @endif
+            </strong>
+           con las facultades necesarias para la celebración del presente contrato mismas que a la fecha no le han sido restringidas,
            ni revocadas de forma alguna.
         </p>
 
@@ -224,8 +242,17 @@ body{
 
         <p>
         <strong>DECIMA PRIMERA.-</strong> Las partes señalan como sus respectivos domicilios para recibir toda clase de notificaciones que deban hacérseles, 
-        aun las personales en caso de juicio, los siguientes: <strong>GRUPO CONSTRUCTOR CUMBRES, S.A DE C.V. 
-        MANUEL GUTIERREZ NAJERA 190 Colonia TEQUISQUIAPAM San Luis Potosí, San Luis Potosí. {{mb_strtoupper($contratosDom[0]->nombre)}} {{mb_strtoupper($contratosDom[0]->apellidos)}} @if($contratosDom[0]->coacreditado == 1) Y {{mb_strtoupper($contratosDom[0]->nombre_coa)}} {{mb_strtoupper($contratosDom[0]->apellidos_coa)}} @endif ,
+        aun las personales en caso de juicio, los siguientes: <strong>
+            @if($contratosDom[0]->emp_constructora == 'Grupo Constructor Cumbres')
+                GRUPO CONSTRUCTOR CUMBRES, S.A DE C.V. 
+                MANUEL GUTIERREZ NAJERA 190 Colonia TEQUISQUIAPAM San Luis Potosí, San Luis Potosí. 
+            @else
+                CONCRETANIA, S.A DE C.V. 
+                MANUEL GUTIERREZ NAJERA 180 Colonia TEQUISQUIAPAM San Luis Potosí, San Luis Potosí. 
+            @endif
+            
+        
+        {{mb_strtoupper($contratosDom[0]->nombre)}} {{mb_strtoupper($contratosDom[0]->apellidos)}} @if($contratosDom[0]->coacreditado == 1) Y {{mb_strtoupper($contratosDom[0]->nombre_coa)}} {{mb_strtoupper($contratosDom[0]->apellidos_coa)}} @endif ,
         {{mb_strtoupper($contratosDom[0]->direccion)}} Colonia {{mb_strtoupper($contratosDom[0]->colonia)}} {{mb_strtoupper($contratosDom[0]->ciudad)}}, {{mb_strtoupper($contratosDom[0]->estado)}}.</strong>
         </p>
 
@@ -257,7 +284,12 @@ body{
                 <div colspan="2" class="table-cell3">_________________________________</div>
             </div>
             <div class="table-row">
-                <div colspan="2" class="table-cell3">GRUPO CONSTRUCTOR CUMBRES<br>ING. ALEJANDRO F. PEREZ ESPINOSA<br>ING. DAVID CALVILLO MARTINEZ</div>
+                @if($contratosDom[0]->emp_constructora == 'Grupo Constructor Cumbres')
+                    <div colspan="2" class="table-cell3">GRUPO CONSTRUCTOR CUMBRES<br>ING. ALEJANDRO F. PEREZ ESPINOSA<br>ING. DAVID CALVILLO MARTINEZ</div>
+                @else
+                    <div colspan="2" class="table-cell3">CONCRETANIA<br>ING. DAVID CALVILLO MARTINEZ</div>
+                @endif
+                
                 <div style="width: 8%;" class="table-cell3"></div>
                 <div colspan="2" class="table-cell3">SR(A) {{mb_strtoupper($contratosDom[0]->nombre)}} {{mb_strtoupper($contratosDom[0]->apellidos)}}</div>
             </div>

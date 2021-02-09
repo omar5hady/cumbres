@@ -40,6 +40,12 @@ class CreateDepositosTable extends Migration
             $table->double('monto', 8,2)->nullable()->default(0);
             $table->date('f_carga_factura')->nullable();
 
+             //factura de interes deposito
+             $table->string('factura_interes')->nullable();
+             $table->string('folio_factura_interes',30)->nullable();
+             $table->double('monto_interes', 8,2)->nullable()->default(0);
+             $table->date('f_carga_factura_interes')->nullable();
+
             //factura de terreno
             $table->string('factura_terreno')->nullable();
             $table->string('folio_factura_terreno',30)->nullable();

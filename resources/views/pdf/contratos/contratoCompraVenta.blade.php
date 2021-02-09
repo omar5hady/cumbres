@@ -212,14 +212,14 @@ body {
                 <div class="table-row">
                     <div class="table-cell">SUPERFICIE DE TERRENO: 
                         <u>{{$contratos[0]->terreno}} M2 
-                            @if($contratos[0]->emp_constructora == "CONCRETANIA")
+                            @if($contratos[0]->emp_constructora == "CONCRETANIA"  && $contratos[0]->emp_terreno == "Grupo Constructor Cumbres" )
                                 ( {{$contratos[0]->porcentaje_terreno}}% )
                             @endif
                         </u>
                     </div>
                     <div class="table-cell" colspan="2">SUPERFICIE DE CONSTRUCCION: 
                         <u>{{$contratos[0]->construccion}} M2
-                            @if($contratos[0]->emp_constructora == "CONCRETANIA")
+                            @if($contratos[0]->emp_constructora == "CONCRETANIA" && $contratos[0]->emp_terreno == "Grupo Constructor Cumbres" )
                                 ( {{100-$contratos[0]->porcentaje_terreno}}% )
                             @endif
                         </u>

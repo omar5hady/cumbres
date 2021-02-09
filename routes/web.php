@@ -632,6 +632,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/facturas/depositos/get','FacturasController@listarFacturaDepositos');//by Rafael Rivera
         Route::post('/facturas/depositos/update','FacturasController@cargarFacturaDepositos');//by Rafael Rivera
         Route::get('/facturas/terreno/download/{name}','FacturasController@descargaFacturaTer');//by Rafael Rivera
+        Route::get('/facturas/depositos/interes/download/{name}','FacturasController@descargaFacturaInt');
         Route::get('/facturas/depositos/download/{name}','FacturasController@descargaFacturaD');//by Rafael Rivera
         //cobro de credito
         Route::get('/facturas/liq/credito/get','FacturasController@listarFacturaLiqCredito');//by Rafael Rivera

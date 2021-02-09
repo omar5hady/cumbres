@@ -70,10 +70,12 @@
                                 <table class="table-responsive table2 table-bordered table-striped table-sm">
                                     <thead>
                                         <tr>
-                                            <th class="text-center" colspan="12">Datos de deposito</th>
+                                            <th class="text-center" colspan="13">Datos de deposito</th>
                                             <th class="text-center" colspan="">Factura</th>
                                             <th class="text-center" colspan="3">Deposito</th>
+                                            <th class="text-center" colspan="3">Intereses</th>
                                             <th class="text-center" colspan="3">Lote</th>
+                                            
                                         </tr>
                                         <tr>
                                             <th>Folio</th>
@@ -83,6 +85,7 @@
                                             <th>Etapa</th>
                                             <th>Manzana</th>
                                             <th>Lote</th>
+                                            <th>Modelo</th>
                                             <th>Cuenta</th>
                                             <th>Monto</th>
                                             <th>Concepto</th>
@@ -90,6 +93,9 @@
                                             <th>Solicitud de contrato</th>
                                             <th v-if="b_empresa == 'CONCRETANIA'">Valor de terreno</th>
                                             <th>Factura</th>
+                                            <th>Folio Factura</th>
+                                            <th>Valor</th>
+                                            <th>F. de carga</th>
                                             <th>Folio Factura</th>
                                             <th>Valor</th>
                                             <th>F. de carga</th>
@@ -112,6 +118,7 @@
                                             <td v-text="deposito.etapa">Etapa</td>
                                             <td v-text="deposito.manzana">Etapa</td>
                                             <td v-text="deposito.num_lote">Lote</td>
+                                            <td v-text="deposito.modelo">Modelo</td>
                                             <td v-text="deposito.banco">Cuenta</td>
                                             <td v-text="'$'+deposito.cant_depo.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">Monto</td>
                                             <td v-text="deposito.concepto">Concepto</td>
@@ -132,12 +139,20 @@
                                                     </a>
                                                     <a v-if="deposito.factura" :href="'/facturas/depositos/download/'+deposito.factura" class="dropdown-item btn text-info">Descargar Factura de Deposito</a>
                                                     <a v-if="deposito.factura_terreno" :href="'/facturas/terreno/download/'+deposito.factura_terreno" class="dropdown-item btn text-info">Descargar Factura de Terreno</a>
+                                                    <a v-if="deposito.factura_interes" :href="'/facturas/depositos/interes/download/'+deposito.factura_interes" class="dropdown-item btn text-info">Descargar Factura de Interes</a>
                                                 </div>
                                             </td>
                                             <td v-text="deposito.folio_factura">folio</td>
                                             <td v-text="'$'+deposito.monto.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">monto</td>
                                             <td v-if="deposito.f_carga_factura" v-text="this.moment(deposito.f_carga_factura).locale('es').format('DD/MMM/YYYY')">F. de carga</td>
                                             <td v-else></td>
+                                            <template v-if="deposito.modelo == 'Terreno'">
+                                                <td v-text="deposito.folio_factura_interes">folio</td>
+                                                <td v-text="'$'+deposito.interes_pago.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">monto</td>
+                                                <td v-if="deposito.f_carga_factura_interes" v-text="this.moment(deposito.f_carga_factura_interes).locale('es').format('DD/MMM/YYYY')">F. de carga</td>
+                                                <td v-else></td>
+                                            </template>
+                                            <td v-else colspan="3"></td>
                                             <template v-if="deposito.emp_constructora != 'Grupo Constructor Cumbres'">
                                                 <td v-text="deposito.folio_factura_terreno">folio</td>
                                                 <td v-text="'$'+deposito.monto_terreno.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})">monto</td>
@@ -145,6 +160,7 @@
                                                 <td v-else></td>
                                             </template>
                                             <td v-else colspan="3"></td>
+                                            
                                         </tr>
                                     </tbody>
                                 </table>
@@ -727,6 +743,24 @@
                                     <input type="number" name="upMonto" id="upMonto" step="0.01" style="right: 10px;" class="form-control col-sm-8" required>
                                 </div>
 
+                                <template v-if="modelo == 'Terreno'">
+                                    <div class="row">
+                                        <label class="col-sm-4" for="">Factura de intereses</label>
+                                        <input type="file" name="upfil2" id="upfil2" style="right: 10px;" class="form-control col-sm-8" required>
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <label class="col-sm-4" for="">Folio Factura</label>
+                                        <input type="text" name="upFolio2" id="upFolio2" style="right: 10px;" class="form-control col-sm-8" required>
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <label class="col-sm-4" for="">Valor (monto)</label>
+                                        <input type="number" name="upMonto2" id="upMonto2" step="0.01" style="right: 10px;" class="form-control col-sm-8" required>
+                                    </div>
+
+                                </template>
+
                                 <template v-if="statusTerreno.emp_constructora == 'CONCRETANIA' && (statusTerreno.pendiente_terre != 0 || statusTerreno.factura_terreno) && tipoFactura != 'liqDeposito' && tipoFactura != 'contrato'">
                                     
                                     <hr>
@@ -825,6 +859,7 @@
                 historial:0,
                 statusTerreno:'',
                 montoTer:0,
+                modelo:'',
                 foliTer:'',
                 empresas:[],
                 arrayFraccionamientos:[],
@@ -881,6 +916,7 @@
                 this.tipoFactura = tipo;
                 this.generalId = datos.id;
                 this.statusTerreno = datos;
+                this.modelo = datos.modelo;
 
                 if(datos.monto_terreno){
                     this.montoTer = datos.monto_terreno;
@@ -902,10 +938,16 @@
                     document.getElementById('upMontoCon').value = datos.e_monto_concretania;
                 }else{
                     document.getElementById('upFolio').value = datos.folio_factura;
+                    document.getElementById('upFolio2').value = datos.folio_factura_interes;
+                    
                     
                     if(datos.monto == 0 && datos.cant_depo != ""){
-                        document.getElementById('upMonto').value = datos.cant_depo;
-                    }else document.getElementById('upMonto').value = datos.monto;
+                        document.getElementById('upMonto').value = (datos.cant_depo - datos.interes_pago).toFixed(2);
+                        document.getElementById('upMonto2').value = (datos.interes_pago).toFixed(2);
+                    }else{
+                        document.getElementById('upMonto').value = datos.monto;
+                        document.getElementById('upMonto2').value = datos.monto_interes;
+                    } 
                 }
             },
             subirFacturaC(e){
@@ -932,6 +974,12 @@
                             formData.append('upfilTer', e.target.upfilTer.files[0]);
                             formData.append('upFolioTer', e.target.upFolioTer.value);
                             formData.append('upMontoTer', e.target.upMontoTer.value);
+                        }
+
+                        if(this.modelo == "Terreno"){
+                            formData.append('upfil2', e.target.upfil2.files[0]);
+                            formData.append('upFolio2', e.target.upFolio2.value);
+                            formData.append('upMonto2', e.target.upMonto2.value);
                         }
 
                         axios.post('/facturas/depositos/update', formData).then(

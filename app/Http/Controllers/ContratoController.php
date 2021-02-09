@@ -1262,7 +1262,7 @@ class ContratoController extends Controller
             }
         }
 
-        if($contratosDom[0]->emp_constructora == 'Grupo Constructor Cumbres')
+        if($contratosDom[0]->emp_constructora == $contratosDom[0]->emp_terreno)
             $pdf = \PDF::loadview('pdf.contratos.contratoConReservaDeDominio', ['contratosDom' => $contratosDom, 'pagos' => $pagos]);
         else
             $pdf = \PDF::loadview('pdf.contratos.contratoContado', ['contratosDom' => $contratosDom, 'pagos' => $pagos]);
