@@ -916,7 +916,10 @@ Route::group(['middleware' => ['auth']],function(){
     /////////////////////////// RUTAS CREDITOS PUENTE ////////////////////////
         Route::get('/c_puente/indexSinCredito','CreditoPuenteController@indexSinCredito');
         Route::get('/cPuentes/getLotes','CreditoPuenteController@getLotes');
+        Route::get('/cPuentes/getModelosPuente','CreditoPuenteController@getModelosPuente');
         Route::post('/cPuentes/storeSolicitud','CreditoPuenteController@storeSolicitud');
+
+        Route::get('/cPuentes/indexCreditos','CreditoPuenteController@indexCreditos');
         
     //////////////////// RUTAS BONOS RECOMENDADOS ///////////////////////
         Route::get('/cat_bono/index','CatalogoBonoController@index');

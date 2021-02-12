@@ -4,13 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Lote;
+use App\Modelo;
 use App\Credito_puente;
+use App\Lote_puente;
+use App\Precio_puente;
 use DB;
 use Auth;
 
 class CreditoPuenteController extends Controller
 {
     public function indexSinCredito( Request $request){
+        if(!$request->ajax())return redirect('/');
 
         $lotes = $this->getSinCredito($request);
 
@@ -38,9 +42,15 @@ class CreditoPuenteController extends Controller
                     'lotes.numero', 'lotes.interior',
                     'm.nombre as modelo', 'e.num_etapa','f.nombre as proyecto'
                 )
-                ->where('lotes.credito_puente','=',NULL)
                 ->where('lotes.contrato','=',0);
                 //->where('lotes.habilitado','=',1);
+
+                if($request->puente == ''){
+                    $lotes = $lotes->where('lotes.credito_puente','=',NULL);
+                }
+                else{
+                    $lotes = $lotes->where('lotes.credito_puente','=',$request->puente);
+                }
 
                 if($request->proyecto != '')
                     $lotes = $lotes->where('lotes.fraccionamiento_id','=',$request->proyecto);
@@ -69,11 +79,12 @@ class CreditoPuenteController extends Controller
     }
 
     public function getLotes(Request $request){
+        if(!$request->ajax())return redirect('/');
         $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
             ->join('etapas','lotes.etapa_id','=','etapas.id')
             ->join('modelos','lotes.modelo_id','=','modelos.id')
             ->select('lotes.id','lotes.num_lote','lotes.fraccionamiento_id','lotes.etapa_id',
-                'lotes.manzana', 'modelos.nombre as modelo',
+                'lotes.manzana', 'modelos.nombre as modelo','lotes.modelo_id',
                 'etapas.num_etapa','fraccionamientos.nombre as proyecto')
             ->whereIn('lotes.id',$request->id)
             ->orderBy('lotes.num_lote')
@@ -82,11 +93,20 @@ class CreditoPuenteController extends Controller
         return ['lotes' => $lotes];
     }
 
+    public function getModelosPuente(Request $request){
+        if(!$request->ajax())return redirect('/');
+        $modelos = Modelo::select('id','nombre')->where('fraccionamiento_id','=',$request->id)
+                ->where('nombre','!=','Por Asignar')->orderBy('nombre','asc')->get();
+
+                return ['modelos'=>$modelos];
+    }
+
     public function storeSolicitud(Request $request){
         
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
         $lotes = $request->lotes;
+        $modelos = $request->modelos;
 
         try {
             DB::beginTransaction();
@@ -94,16 +114,33 @@ class CreditoPuenteController extends Controller
             $puente->banco = $request->banco;
             $puente->interes = $request->interes;
             $puente->apertura = $request->apertura;
+            $puente->total = $request->total;
             $puente->fraccionamiento = $request->fraccionamiento;
-            $puente->etapa_id = $request->etapa_id;
             $puente->folio = $request->banco.'-'.$request->cantidad;
             $puente->save();
 
+            $id = $puente->id;
+
+            foreach ($modelos as $index => $m) {
+                $precio = new Precio_puente();
+                $precio->solicitud_id = $id;
+                $precio->modelo_id = $m['id'];
+                $precio->precio = $m['precio'];
+                $precio->save();
+            }
+
             foreach ($lotes as $index => $l) {
-                $lote = Lote::findOrFail($l->id);
-                $lote->puente_id = $puente->id;
-                $lote->credito_puente = $puente->folio;
+                $lote = Lote::findOrFail($l['id']);
+                $lote->puente_id = $id;
+                $lote->credito_puente = 'EN PROCESO';
                 $lote->save();
+
+                $lote_puente = new Lote_puente();
+                $lote_puente->solicitud_id = $id;
+                $lote_puente->lote_id = $l['id'];
+                $lote_puente->modelo_id = $l['modelo_id'];
+                $lote_puente->precio_p = $l['precio'];
+                $lote_puente->save();
             }
 
             DB::commit();
@@ -111,4 +148,27 @@ class CreditoPuenteController extends Controller
             DB::rollBack();
         }
     }
+
+    public function indexCreditos(Request $request){
+        $creditos = Credito_puente::join('fraccionamientos','creditos_puente.fraccionamiento','=','fraccionamientos.id')
+                    ->select('creditos_puente.id','creditos_puente.banco','creditos_puente.folio','creditos_puente.interes',
+                                'creditos_puente.status','creditos_puente.total','creditos_puente.apertura',
+                                'fraccionamientos.nombre as proyecto','creditos_puente.fraccionamiento'    
+                            )
+                    ->orderBy('creditos_puente.id','desc')
+                    ->paginate(10);
+
+        return [
+            'pagination' => [
+                'total'         => $creditos->total(),
+                'current_page'  => $creditos->currentPage(),
+                'per_page'      => $creditos->perPage(),
+                'last_page'     => $creditos->lastPage(),
+                'from'          => $creditos->firstItem(),
+                'to'            => $creditos->lastItem(),
+            ],
+            'creditos' => $creditos
+        ];
+    }
+
 }

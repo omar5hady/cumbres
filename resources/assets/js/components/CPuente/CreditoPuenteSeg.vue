@@ -29,10 +29,7 @@
                             <div class="form-group row">
                                 <div class="col-md-8">
                                     <div class="input-group">
-                                        <select class="form-control" v-model="b_empresa" >
-                                            <option value="">Empresa constructora</option>
-                                            <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
-                                        </select>
+                                        
                                         <button type="submit" @click="listarAvisos(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     </div>
                                 </div>
@@ -43,30 +40,28 @@
                                         <tr>
                                             <th>Opciones</th>
                                             <th>Folio</th>
-                                            <th>Banco</th>
+                                            <th>Proyecto</th>
                                             <th>Tasa de interes</th>
                                             <th>Apertura</th>
                                             <th>Total</th>
-                                            <th>Fecha solicitud</th>
-                                            <th>Status</th>
+                                            <!-- <th>Fecha solicitud</th>
+                                            <th>Status</th> -->
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr v-on:dblclick="verAviso(creditosPuente.id)" v-for="creditosPuente in arrayCreditosPuente" :key="creditosPuente.id" title="Ver detalle">
                                             <td>
-                                                <button type="button" class="btn btn-warning btn-sm" @click="actualizarContrato(creditosPuente.id)">
+                                                <button type="button" class="btn btn-warning btn-sm" @click="actualizarCredito(creditosPuente)">
                                                     <i class="icon-pencil"></i>
                                                 </button>
                                             </td>
                                             <td>
-                                                <a href="#" v-text="creditosPuente.clave"></a>
+                                                <a href="#" v-text="creditosPuente.folio"></a>
                                             </td>
-                                            <td class="td2" v-text="creditosPuente.contratista"></td>
                                             <td class="td2" v-text="creditosPuente.proyecto"></td>
-                                            <td class="td2">{{formatNumber(creditosPuente.total_superficie)}} m&sup2;</td>
-                                            <td class="td2" v-text="'$'+formatNumber(creditosPuente.total_importe)"></td>
-                                            <td class="td2" v-text="creditosPuente.f_ini"></td>
-                                            <td class="td2" v-text="creditosPuente.f_fin"></td>
+                                            <td class="td2"> TIEE+{{formatNumber(creditosPuente.interes)}}</td>
+                                            <td class="td2"> {{formatNumber(creditosPuente.apertura)}}%</td>
+                                            <td class="td2"> ${{formatNumber(creditosPuente.total)}}</td>
                                         </tr>                               
                                     </tbody>
                                 </table>
@@ -92,13 +87,13 @@
                     <template v-else-if="listado == 3">
                         <div class="card-body"> 
                             <div class="form-group row border">
-                                <div class="col-md-3">
-                                    <label for=""># Folio </label>
-                                    <input type="text" class="form-control" v-model="clave" placeholder="CLV-00-00">
-                                </div> 
+                                
                                 <div class="col-md-5">
                                     <label for="">Banco </label>
-                                    <input type="text" class="form-control" v-model="f_ini">
+                                    <select class="form-control" v-model="banco">
+                                        <option value="">Seleccione</option>
+                                        <option v-for="banco in arrayBancos" :key="banco.nombre" :value="banco.nombre" v-text="banco.nombre"></option>
+                                    </select>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="">Fecha de solicitud</label>
@@ -184,6 +179,12 @@
                                                 <th>Manzana</th>
                                                 <th>M&sup2;</th>
                                                 <th>Precio</th>
+                                                <th></th>
+                                                <th>Modelo Ant</th>
+                                                <th>Precio ant</th>
+                                                <th></th>
+                                                <th>Modelo Ant</th>
+                                                <th>Precio ant</th>
                                             </tr>
                                         </thead>
                                         <tbody v-if="arrayCreditosPuenteLotes.length">
@@ -200,11 +201,11 @@
                                                 <td style="text-align: right;" v-text="detalle.construccion"></td>
                                             </tr>
                                   
-                                            <tr style="background-color: #CEECF5;">
+                                            <!-- <tr style="background-color: #CEECF5;">
                                                 <td align="right" colspan="4"></td>
                                                 <td align="right"> <strong>{{ total_construccion=totalConstruccion}} m&sup2;</strong> </td>
                                                 <td align="right"> <strong>{{ total_costo_directo=totalCostoDirecto | currency}}</strong> </td>
-                                            </tr>
+                                            </tr> -->
                                         </tbody>
 
                                         <tbody v-else>
@@ -360,34 +361,9 @@
             return{
                 proceso:false,
                 id:0,
-                aviso_id:0,
-                contratista_id:0,
-                etapa_id:0,
-                fraccionamiento_id : 0,
-                num_etapa : 0,
-                calle1:'',
-                calle2:'',
-                descripcion_larga:'',
-                descripcion_corta:'',
-                tipo:'Vivienda',
-                iva:0,
-                clave:'',
-                total_importe:0.0,
-                total_costo_directo:0.0,
-                total_costo_indirecto:0.0,
-                total_construccion:0.0,
-                anticipo:0,
-                costo_indirecto_porcentaje:0,
-                total_anticipo:0,
-                f_ini : new Date().toISOString().substr(0, 10),
-                f_fin : '',
                 arrayCreditosPuente : [],
                 arrayCreditosPuenteLotes : [],
-                arrayContratista : [],
-                modal : 0,
-                pdf:'',
                 listado:1,
-                tituloModal : '',
                 tipoAccion: 0,
                 errorcreditosPuente : 0,
                 errorMostrarMsjcreditosPuente : [],
@@ -403,25 +379,10 @@
                 criterio : 'ini_obras.clave', 
                 buscar : '',
                 arrayProyectos : [],
-                arrayFraccionamientos : [],
-                arrayLotes:[],
-                arrayEtapas: [],
-                arrayDatosLotes: [],
-                empresas:[],
                 lote_id:0,
-                lote:'',
-                b_empresa:'',
-                manzana:'',
-                construccion:'',
-                costo_directo:0,
-                costo_indirecto:0,
-                descripcion: '',
-                manzana: '',
-                modelo:'',
-                importe: 0.0,
-                contratista:'',
-                fraccionamiento:'',
-                empresa_constructora:'',
+
+                arrayBancos:[],
+                banco:'',
                 
             }
         },
@@ -452,41 +413,13 @@
                 }
                 return pagesArray;
             },
-            totalCostoDirecto: function(){
-                var resultado_costo_directo =0.0;
-                for(var i=0;i<this.arrayCreditosPuenteLotes.length;i++){
-                    resultado_costo_directo = parseFloat(resultado_costo_directo) + parseFloat(this.arrayCreditosPuenteLotes[i].costo_directo)
-                }
-                return Math.round(resultado_costo_directo*100)/100;
-            },
-            totalCostoIndirecto: function(){
-                var resultado_costo_indirecto =0.0;
-                for(var i=0;i<this.arrayCreditosPuenteLotes.length;i++){
-                    resultado_costo_indirecto = parseFloat(resultado_costo_indirecto) + parseFloat(this.arrayCreditosPuenteLotes[i].costo_indirecto) 
-                }
-                return Math.round(resultado_costo_indirecto*100)/100;
-            },
-            totalImporte: function(){
-                var resultado_importe_total =0.0;
-                for(var i=0;i<this.arrayCreditosPuenteLotes.length;i++){
-                    resultado_importe_total = parseFloat(resultado_importe_total) + parseFloat(this.arrayCreditosPuenteLotes[i].costo_directo) + parseFloat(this.arrayCreditosPuenteLotes[i].costo_indirecto)
-                }
-                return Math.round(resultado_importe_total*100)/100;
-            },
-            totalConstruccion: function(){
-                var resultado_construccion_total =0.0;
-                for(var i=0;i<this.arrayCreditosPuenteLotes.length;i++){
-                    resultado_construccion_total = parseFloat(resultado_construccion_total) + parseFloat(this.arrayCreditosPuenteLotes[i].construccion)
-                }
-                return Math.round(resultado_construccion_total*100)/100;
-            },
-            totalSuperficie: function(){
-                var resultado_construccion_total =0.0;
-                for(var i=0;i<this.arrayCreditosPuenteLotes.length;i++){
-                    resultado_construccion_total = parseFloat(resultado_construccion_total) + parseFloat(this.arrayCreditosPuenteLotes[i].superficie)
-                }
-                return Math.round(resultado_construccion_total*100)/100;
-            }
+            // totalCostoDirecto: function(){
+            //     var resultado_costo_directo =0.0;
+            //     for(var i=0;i<this.arrayCreditosPuenteLotes.length;i++){
+            //         resultado_costo_directo = parseFloat(resultado_costo_directo) + parseFloat(this.arrayCreditosPuenteLotes[i].costo_directo)
+            //     }
+            //     return Math.round(resultado_costo_directo*100)/100;
+            // },
         },
        
         methods : {
@@ -494,28 +427,30 @@
             /**Metodo para mostrar los registros */
             listarAvisos(page){
                 let me = this;
-                var url = '/iniobra?page=' + page;
+                var url = '/cPuentes/indexCreditos?page=' + page;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                    me.arrayCreditosPuente = respuesta.ini_obra.data;
+                    me.arrayCreditosPuente = respuesta.creditos.data;
                     me.pagination = respuesta.pagination;
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
             },
-            getEmpresa(){
+
+            selectBancos(){
                 let me = this;
-                me.empresas=[];
-                var url = '/lotes/empresa/select';
+                me.arrayBancos=[];
+                var url = '/select_inst_financiamiento';
                 axios.get(url).then(function (response) {
-                    var respuesta = response;
-                    me.empresas = respuesta.data.empresas;
+                    var respuesta = response.data;
+                    me.arrayBancos = respuesta.instituciones_financiamiento;
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
             },
+            
             selectFraccionamiento(search, loading){
                 let me = this;
                 loading(true)
@@ -542,216 +477,13 @@
                     console.log(error);
                 });
             },
-            getDatosFraccionamiento(val1){
-                let me = this;
-                me.loading = true;
-                me.fraccionamiento_id = val1.id;
-                me.selectManzanaLotes(me.fraccionamiento_id);
-            },
-            selectManzanaLotes(buscar){
-                let me = this;
-              
-                me.arrayEtapas=[];
-                var url = '/select_manzana_lotes?buscar='+buscar;
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayEtapas = respuesta.lotesManzana;
-                    
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
-            selectLotes(buscar , buscar2){
-                let me = this;
-              
-                me.arrayLotes=[];
-                var url = '/select_lotes_obra?buscar='+buscar + '&buscar2=' + buscar2;
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayLotes = respuesta.lotes;
-                    
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
-            selectDatosLotes(buscar){
-                let me = this;
-              
-                me.arrayDatosLotes = [];
-                var url = '/select_datos_lotes?buscar='+buscar;
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayDatosLotes = respuesta.lotesDatos;
-                    me.lote = me.arrayDatosLotes[0].num_lote;
-                    me.construccion = me.arrayDatosLotes[0].construccion;
-                    me.manzana = me.arrayDatosLotes[0].manzana;
-                    me.modelo=me.arrayDatosLotes[0].modelo;
-                    me.descripcion=me.arrayDatosLotes[0].modelo;
-                    me.empresa_constructora = me.arrayDatosLotes[0].emp_constructora;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
+            
             cambiarPagina(page){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarAvisos(page);
-            },
-            encuentra(id,emp_constructora){
-                var sw=0;
-                for(var i=0;i<this.arrayCreditosPuenteLotes.length;i++)
-                {
-                    if(this.arrayCreditosPuenteLotes[i].lote_id == id )
-                    {
-                        sw=true;
-                    }
-                    if(emp_constructora != '' )
-                    if(this.arrayCreditosPuenteLotes[i].emp_constructora != emp_constructora){
-                        sw=true;
-                    }
-                }
-                return sw;
-            },
-            registrarLote(){
-                let me = this;
-                if(me.descripcion == '' || me.costo_directo==0 || me.costo_indirecto==0){
-                }else{
-                    if(me.encuentra(me.lote_id)){
-                         swal({
-                        type: 'error',
-                        title: 'Error',
-                        text: 'Este lote ya se encuentra agregado',
-                        })
-                    }else{
-                    me.costo_indirecto = parseFloat(me.costo_directo) * parseFloat(me.costo_indirecto_porcentaje)/100;
-                    me.importe = parseFloat(me.costo_directo) + parseFloat(me.costo_indirecto);
-                   
-                    axios.post('/iniobra/lote/registrar',{
-                        'id': this.id,
-                        'lote': this.lote,
-                        'manzana' : this.manzana,
-                        'modelo' : this.modelo,
-                        'superficie' : this.construccion,
-                        'costo_directo' : this.costo_directo,
-                        'costo_indirecto' : this.costo_indirecto,
-                        'importe' : this.importe,
-                        'descripcion' : this.descripcion,
-                        'lote_id' : this.lote_id,
-                    }).then(function (response){
-                        //Obtener detalle
-                            me.arrayCreditosPuenteLotes=[];
-                            var urld = '/iniobra/obtenerDetalles?id=' + me.id;
-                            axios.get(urld).then(function (response) {
-                                var respuesta = response.data;
-                                me.arrayCreditosPuenteLotes = respuesta.detalles;
-                            })
-                            .catch(function (error) {
-                                console.log(error);
-                            });
-                      
-                    }).catch(function (error){
-                        console.log(error);
-                    });
-                    me.lote = '';
-                    me.lote_id =0;
-                    me.construccion = 0;
-                    me.manzana='';
-                    me.descripcion='';
-                    me.costo_directo = 0;
-                    me.costo_indirecto = 0;
-                    me.modelo='';
-                    }
-                }
-            },
-            eliminarLote(data =[]){
-                //this.lote_id=data['id'];
-                swal({
-                title: '¿Desea remover este lote?',
-                text: "Esta acción no se puede revertir!",
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                cancelButtonText: 'Cancelar',
-                confirmButtonText: 'Si, eliminar!'
-                }).then((result) => {
-                if (result.value) {
-                    let me = this;
-                axios.delete('/iniobra/lote/eliminar', 
-                        {params: {'id': data['id']}}).then(function (response){
-                        
-                         //Obtener detalle
-                            me.arrayCreditosPuenteLotes=[];
-                            var urld = '/iniobra/obtenerDetalles?id=' + me.id;
-                            axios.get(urld).then(function (response) {
-                                var respuesta = response.data;
-                                me.arrayCreditosPuenteLotes = respuesta.detalles;
-                            })
-                            .catch(function (error) {
-                                console.log(error);
-                            });
-                    }).catch(function (error){
-                        console.log(error);
-                    });
-                }
-                })
-            },
-             /**Metodo para actualizar  */
-            actualizarcreditosPuente(){
-                if(this.proceso==true){
-                    return;
-                }
-                if(this.validarAviso()) //Se verifica si hay un error (campo vacio)
-                {
-                    return;
-                }
-                
-                this.proceso=true;
-                let me = this;
-                me.total_anticipo=(me.anticipo/100)*me.total_importe;
-                //Con axios se llama el metodo store de FraccionaminetoController
-                axios.put('/iniobra/actualizar',{
-                    'id':this.id,
-                    'fraccionamiento_id': this.fraccionamiento_id,
-                    'contratista_id': this.contratista_id,
-                    'calle1': this.calle1,
-                    'calle2': this.calle2,
-                    'clave': this.clave,
-                    'f_ini': this.f_ini,
-                    'f_fin': this.f_fin,
-                    'total_importe' :this.total_importe,
-                    'total_costo_directo':this.total_costo_directo,
-                    'total_costo_indirecto':this.total_costo_indirecto,
-                    'anticipo':this.anticipo,
-                    'total_anticipo':this.total_anticipo,
-                    'data':this.arrayCreditosPuenteLotes,
-                    'costo_indirecto_porcentaje':this.costo_indirecto_porcentaje,
-                    'tipo':this.tipo,
-                    'iva':this.iva,
-                    'descripcion_larga':this.descripcion_larga,
-                    'descripcion_corta':this.descripcion_corta,
-                    'total_superficie':this.total_construccion
-                }).then(function (response){
-                    me.proceso=false;
-                    me.listado=1;
-                    me.limpiarDatos();
-                    me.listarAvisos(1); //se enlistan nuevamente los registros
-                    //Se muestra mensaje Success
-                    swal({
-                        position: 'top-end',
-                        type: 'success',
-                        title: 'Contrato actualizado correctamente',
-                        showConfirmButton: false,
-                        timer: 1500
-                        })
-                }).catch(function (error){
-                    console.log(error);
-                });
             },
             limpiarDatos(){
                 this.contratista_id=0;
@@ -836,12 +568,12 @@
                     console.log(error);
                 });
             },
-            actualizarContrato(id){
+            actualizarCredito(data){
                 let me= this;
                 this.listado=3;
                 //Obtener datos de cabecera
                 var arrayAvisoT=[];
-                var url = '/iniobra/obtenerCabecera?id=' + id;
+                var url = '/iniobra/obtenerCabecera?id=' + data['id'];
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayAvisoT = respuesta.ini_obra;
@@ -861,8 +593,7 @@
                     me.descripcion_corta=me.arrayAvisoT[0]['descripcion_corta'];
                     me.tipo=me.arrayAvisoT[0]['tipo'];
                     me.iva=me.arrayAvisoT[0]['iva'];
-                    me.selectManzanaLotes(me.fraccionamiento_id);
-                    me.id=id;
+                    me.id=data['id'];
                   
                 })
                 .catch(function (error) {
@@ -884,7 +615,7 @@
         mounted() {
             this.listarAvisos(1);
             this.selectProyectos();
-            this.getEmpresa();
+            this.selectBancos();
           
         }
     }

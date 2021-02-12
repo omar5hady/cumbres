@@ -17,9 +17,7 @@ class Credito_puente extends Model
         'total',
         'cobrado',
         'folio',
-        'terreno',
         'apertura',
-        'fraccionamiento',
-        'etapa_id'
+        'fraccionamiento'
     ];
 }

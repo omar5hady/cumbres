@@ -22,10 +22,8 @@ class CreateCreditosPuenteTable extends Migration
             $table->double('total')->default(0);
             $table->double('cobrado')->default(0);
             $table->string('folio');
-            $table->double('terreno')->default(0);
             $table->float('apertura')->default(0);
             $table->integer('fraccionamiento');
-            $table->integer('etapa_id');
             $table->timestamps();
         });
     }

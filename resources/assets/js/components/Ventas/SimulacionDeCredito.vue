@@ -3305,6 +3305,21 @@
                 this.tipo_credito=0;
                 this.inst_financiera='';
                 this.paquete='';
+                this.costoPaquete = 0;
+                this.descripcionPaquete = '';
+
+                this.proyecto='';
+                this.num_lote='';
+                this.modelo= '';
+                this.superficie= '';
+                this.precioBase= 0;
+                this.precioExcedente= 0;
+                this.precioVenta= 0;
+                this.precioObraExtra=0;
+                this.promocion= '';
+                this.descripcionPromo= '';
+                this.descuentoPromo= 0;
+                this.terreno_tam_excedente = '';
 
                 this.mascotas=0;
                 this.num_habitantes=0;

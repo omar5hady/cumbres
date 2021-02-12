@@ -44,6 +44,7 @@
                                 </div>
                             </div>
                         </div>
+                        
                         <div class="form-group row">
                             <div class="col-md-8">
                                 <div class="input-group">
@@ -60,6 +61,10 @@
                         </div>
                         <div class="form-group row">
                             <div class="col-md-6">
+                                <select class="form-control" v-model="b_puente"> 
+                                    <option value="">Credito Puente</option>
+                                    <option v-for="puente in arrayPuentes" :key="puente.credito_puente" :value="puente.credito_puente" v-text="puente.credito_puente"></option>
+                                </select>
                                 <div class="input-group">
                                     <button type="submit" @click="listarLote(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     
@@ -84,12 +89,13 @@
                                         <th>Numero</th>
                                         <th>Interior</th>
                                         <th>Terreno mts&sup2;</th>
+                                        <th>Credito puente</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="lote in arrayLote" :key="lote.id">
                                         <td class="td2">
-                                        <input type="checkbox"  @click="select" :id="lote.id" :value="lote.id" v-model="lotes_ini" >
+                                            <input v-if="lote.credito_puente == null" type="checkbox"  @click="select" :id="lote.id" :value="lote.id" v-model="lotes_ini" >
                                         </td>
 
                                         <td class="td2" v-text="lote.proyecto"></td>
@@ -108,6 +114,7 @@
                                         <td class="td2" v-text="lote.numero"></td>
                                         <td class="td2" v-text="lote.interior"></td>
                                         <td class="td2" v-text="lote.terreno"></td>
+                                        <td class="td2" v-text="lote.credito_puente"></td>
                                     </tr>                               
                                 </tbody>
                             </table> 
@@ -116,19 +123,19 @@
                             <!--Botones de paginacion -->
                             <ul class="pagination">
                                 <li class="page-item" v-if="pagination.last_page > 7 && pagination.current_page > 7">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(1,buscar,buscar2,buscar3,b_modelo, b_lote,b_habilitado,criterio)">Inicio</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(1)">Inicio</a>
                                 </li>
                                 <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,buscar2,buscar3,b_modelo, b_lote,b_habilitado,criterio)">Ant</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1)">Ant</a>
                                 </li>
                                 <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,buscar2,buscar3,b_modelo, b_lote,b_habilitado,criterio)" v-text="page"></a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page)" v-text="page"></a>
                                 </li>
                                 <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,buscar2,buscar3,b_modelo, b_lote,b_habilitado,criterio)">Sig</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1)">Sig</a>
                                 </li>
                                 <li class="page-item" v-if="pagination.last_page > 7 && pagination.current_page<pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.last_page,buscar,buscar2,buscar3,b_modelo, b_lote,b_habilitado,criterio)">Ultimo</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.last_page)">Ultimo</a>
                                 </li>
                             </ul>
                         </nav>
@@ -161,8 +168,8 @@
                             
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Tasa de interés </label>
-                                    <div class="col-md-3">
-                                        <input class="form-control" type="number" v-model="tasa_interes">
+                                    <div class="col-md-4">
+                                        TIEE + <input class="form-control" type="number" v-model="tasa_interes">
                                     </div>
                                 </div>
 
@@ -171,6 +178,23 @@
                                     <div class="col-md-3">
                                         <input class="form-control" type="number" v-model="apertura">
                                     </div>
+                                </div>
+                            </div>
+
+                            <div class="border">
+                                 <div class="col-md-12">
+                                    <h6> <center>Modelos del proyecto</center> </h6>
+                                </div>
+                                <br>
+                                <div class="form-group row">
+                                    <div class="col-md-3" v-for="modelo in arrayPreciosModelo" :key="modelo.id">
+                                        <label class="col-md form-control-label" for="text-input">{{modelo.nombre}} </label>
+                                        <div class="col-md">
+                                            <input class="form-control" type="number" v-model="modelo.precio" @change="setPrice(modelo.id,modelo.precio)">
+                                        </div>
+
+                                    </div>
+                                    
                                 </div>
                             </div>
 
@@ -192,6 +216,7 @@
                                                     <th>Manzana</th>
                                                     <th>Modelo</th>
                                                     <th># Lote</th>
+                                                    <th>Precio</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -202,6 +227,7 @@
                                                     <td class="td2" v-text="lote.manzana"></td>
                                                     <td class="td2" v-text="lote.modelo"></td>
                                                     <td class="td2" v-text="lote.num_lote"></td>
+                                                    <td class="td2" v-text="'$'+formatNumber(lote.precio)"></td>
                                                 </tr>                       
                                             </tbody>
                                         </table>
@@ -241,6 +267,7 @@
                 b_lote: '',
                 arrayLote : [],
                 lotesSelec: [],
+                arrayPuentes:[],
                 modal2: 0,
                 tituloModal2: '',
                 contador: 0,
@@ -264,6 +291,9 @@
                 cantidad:0,
                 fraccionamiento_id:'',
                 etapa_id:'',
+                proceso : false,
+
+                total_precio:0,
 
                 arrayFraccionamientos : [],
                 arrayEtapas : [],
@@ -271,6 +301,7 @@
                 arrayEmpresas : [],
                 arrayManzanas: [],
                 arrayBancos:[],
+                arrayPreciosModelo:[],
                 empresas: [],
                 b_empresa:'',
                 b_empresa2:''
@@ -327,7 +358,26 @@
             select: function() {
                 this.allSelected = false;
             },
+            selectPuente(id){
+                let me = this;
+
+                me.arrayPuentes=[];
+                var url = '/selectCreditoPuente?fraccionamiento=' + id;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayPuentes = respuesta.creditos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
             solicitarCredito(){
+                if(this.proceso==true) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
+                this.proceso=true;
+
                 let me = this;
                 //Con axios se llama el metodo update de DepartamentoController
 
@@ -335,7 +385,7 @@
                     title: 'Estas seguro?',
                     animation: false,
                     customClass: 'animated bounceInDown',
-                    text: "Los lotes seran registrados en el crédito puente",
+                    text: "Los lotes seran registrados en la solicitud del credito puente",
                     type: 'question',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -346,24 +396,32 @@
                     }).then((result) => {
 
                     if (result.value) {
-                        var tamaño=me.lotes_ini.length;
-                        me.lotes_ini.forEach(element => {
-                            axios.put('/lote/actualizar3',{
-                                'id': element,
-                                'modelo_id' : this.modelo_id,
-                                'etapa_id' : this.etapa_id,
-                                'aviso' : aviso
-                            }); 
+                        
+                        //Con axios se llama el metodo store de DepartamentoController
+                        axios.post('/cPuentes/storeSolicitud',{
+                            'modelos': me.arrayPreciosModelo,
+                            'lotes': me.lotesSelec,
+                            'banco': me.banco,
+                            'interes': me.tasa_interes,
+                            'apertura': me.apertura,
+                            'fraccionamiento': me.fraccionamiento_id,
+                            'cantidad': me.cantidad,
+                            'total': me.total_precio
+                        }).then(function (response){
+                            //console.log(response.data);
+                            me.proceso=false;
+                            me.cerrarModal2();
+                            //Se muestra mensaje Success
+                            swal({
+                                position: 'top-end',
+                                type: 'success',
+                                title: 'Solicitud creada correctamente',
+                                showConfirmButton: false,
+                                timer: 1500
+                                })
+                        }).catch(function (error){
+                            console.log(error);
                         });
-                        me.listarLote(me.pagination.current_page);
-                        me.cerrarModal2();
-                        Swal({
-                            title: 'Hecho!',
-                            text: 'Los Lotes se han registrado en el crédito',
-                            type: 'success',
-                            animation: false,
-                            customClass: 'animated bounceInRight'
-                        })
                     }})
             },
 
@@ -372,7 +430,7 @@
                 let me = this;
                 var url = '/c_puente/indexSinCredito?page=' + page + '&proyecto=' + me.buscar + '&etapa=' + me.buscar2 + 
                     '&manzana=' + me.buscar3 + '&lote=' + me.b_lote + '&modelo=' + me.b_modelo + 
-                    '&emp_constructora=' + me.b_empresa + '&emp_terreno=' + me.b_empresa2;
+                    '&emp_constructora=' + me.b_empresa + '&emp_terreno=' + me.b_empresa2 + '&puente=' + me.b_puente;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLote = respuesta.lotes.data;
@@ -405,9 +463,40 @@
                 axios.get(url, {params: {'id': this.lotes_ini}}).then(function (response) {
                     var respuesta = response.data;
                     me.lotesSelec = respuesta.lotes;
+                    me.lotesSelec.forEach(element=>{
+                        element.precio = 0;
+                    })
                     me.cantidad = me.lotesSelec.length;
                     me.fraccionamiento_id = me.lotesSelec[0].fraccionamiento_id;
-                    me.etapa_id = me.lotesSelec[0].etapa_id;
+
+                    me.getModelos(me.fraccionamiento_id);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            setPrice(id,precio){
+                let me = this;
+                me.total_precio = 0;
+                me.lotesSelec.forEach(element =>{
+                    if(element.modelo_id == id)
+                        element.precio = parseFloat(precio);
+                    me.total_precio += element.precio;
+                });
+            },
+
+            getModelos(id){
+                let me = this;
+
+                me.arrayPreciosModelo = [];
+                var url = '/cPuentes/getModelosPuente';
+                axios.get(url, {params: {'id': id}}).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayPreciosModelo = respuesta.modelos;
+                    me.arrayPreciosModelo.forEach(element=>{
+                        element.precio = 0;
+                    })
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -478,6 +567,7 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayModelos = respuesta.modelos;
+                    
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -492,6 +582,10 @@
                 } else {
                     return true;
                 }
+            },
+            formatNumber(value) {
+                let val = (value/1).toFixed(2)
+                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
             abrirModal(){
                  if(this.lotes_ini.length<1){
@@ -520,6 +614,11 @@
                 this.lotesSelec = [];
                 this.tasa_interes = 0;
                 this.apertura = 0;
+                this.cantidad = 0;
+                this.lotesSelec = [];
+                this.fraccionamiento_id = '';
+
+                this.listarLote(1)
             },
 
         },
