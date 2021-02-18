@@ -918,8 +918,15 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/cPuentes/getLotes','CreditoPuenteController@getLotes');
         Route::get('/cPuentes/getModelosPuente','CreditoPuenteController@getModelosPuente');
         Route::post('/cPuentes/storeSolicitud','CreditoPuenteController@storeSolicitud');
+        Route::post('/cPuentes/agregarLote','CreditoPuenteController@agregarLote');
+        Route::delete('/cPuentes/eliminarLote','CreditoPuenteController@eliminarLote');
+        Route::put('/cPuentes/actualizarPrecio','CreditoPuenteController@actualizarPrecio');
+        Route::put('/cPuentes/actualizarSolicitud','CreditoPuenteController@actualizarSolicitud');
 
         Route::get('/cPuentes/indexCreditos','CreditoPuenteController@indexCreditos');
+        Route::get('/cPuentes/selectLotes','CreditoPuenteController@selectLotes');
+        Route::get('/cPuentes/getPreciosModelo','CreditoPuenteController@getPreciosModelo');
+        Route::get('/cPuentes/getLotesPuente','CreditoPuenteController@getLotesPuente');
         
     //////////////////// RUTAS BONOS RECOMENDADOS ///////////////////////
         Route::get('/cat_bono/index','CatalogoBonoController@index');

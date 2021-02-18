@@ -28,6 +28,9 @@ use App\Credito;
 use App\Vendedor;
 use App\Expediente;
 use App\lotes_individuales;
+use App\Credito_puente;
+use App\Lote_puente;
+use App\Precio_puente;
 
 class LoteController extends Controller
 {
@@ -283,8 +286,11 @@ class LoteController extends Controller
 
             $licencia = Licencia::findOrFail($request->id);
             $licencia->cambios = 1;
-            if($nombreModelo[0]->nombre != "Por Asignar")
+            if($nombreModelo[0]->nombre != "Por Asignar"){
                 $licencia->modelo_ant = $nombreModelo[0]->nombre;
+
+                $this->actPuenteLote($request->id, $nombreModelo[0]->nombre, $request->modelo_id);
+            }
             $licencia->save();
         }
         $lote->empresa_id = 1;
@@ -346,6 +352,33 @@ class LoteController extends Controller
         $lote->habilitado = $request->habilitado;
 
         $lote->save();
+    }
+
+    private function actPuenteLote($lote, $modeloAnt, $modelo_id)
+    {
+
+        $lotePuente = Lote_puente::select('id')->where('lote_id','=',$lote)->get();
+
+        if(sizeof($lotePuente)){
+            $auxLotePuente = Lote_puente::findOrFail($lotePuente[0]->id);
+            $precio = 0;
+
+            $precioModelo = Precio_puente::select('precio')->where('solicitud_id','=',$auxLotePuente->solicitud_id)->where('modelo_id','=',$modelo_id)->get();
+            if(sizeof($precioModelo))
+                $precio = $precioModelo[0]->precio;
+            $auxLotePuente->modeloAnt2 = $auxLotePuente->modeloAnt1;
+            $auxLotePuente->precio2 = $auxLotePuente->precio1;
+            $auxLotePuente->modeloAnt1 = $modeloAnt;
+            $auxLotePuente->precio1 = $auxLotePuente->precio_p;
+            $auxLotePuente->modelo_id = $modelo_id;
+            $auxLotePuente->precio_p = $precio;
+            $auxLotePuente->save();
+
+            $creditoPuente = Credito_puente::findOrFail($auxLotePuente->solicitud_id);
+            $creditoPuente->total = $creditoPuente->total - $auxLotePuente->precio1 + $auxLotePuente->precio_p;
+            $creditoPuente->save();
+        }
+
     }
 
     public function asignarMod(Request $request) // EN MASA
@@ -650,7 +683,9 @@ class LoteController extends Controller
         $buscar1 = $request->buscar1;
         $manzana = Lote::select('lotes.manzana')->distinct()
                         ->where('lotes.fraccionamiento_id','=', $buscar)
-                        ->where('lotes.etapa_id','=', $buscar1)->get();
+                        ->where('lotes.etapa_id','=', $buscar1)
+                        ->orderBy('lotes.manzana','asc')
+                        ->get();
 
         return ['manzana' => $manzana];
 
@@ -665,7 +700,12 @@ class LoteController extends Controller
         $lote_manzana = Lote::select ('lotes.num_lote','lotes.id')
                              ->where('lotes.fraccionamiento_id','=', $buscar)
                              ->where('lotes.etapa_id','=', $buscar1)
-                             ->where('lotes.manzana','=', $buscar2)->get();
+                             ->where('lotes.manzana','=', $buscar2);
+
+            if($request->puente == 1)
+                $lote_manzana = $lote_manzana->where('lotes.credito_puente','=', NULL);
+
+        $lote_manzana = $lote_manzana->get();
 
         return ['lote_manzana' => $lote_manzana];
     }

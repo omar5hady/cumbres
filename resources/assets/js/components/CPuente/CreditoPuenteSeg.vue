@@ -23,6 +23,7 @@
                                             <option value="">Seleccione</option>
                                             <option v-for="proyecto in arrayProyectos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
                                         </select>
+                                        <input type="text" class="form-control" v-model="b_folio" @keyup.enter="listarAvisos(1)" placeholder="Folio">
                                     </div>
                                 </div>
                             </div>
@@ -49,9 +50,9 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-on:dblclick="verAviso(creditosPuente.id)" v-for="creditosPuente in arrayCreditosPuente" :key="creditosPuente.id" title="Ver detalle">
+                                        <tr v-on:dblclick="verDetalla(creditosPuente,2)" v-for="creditosPuente in arrayCreditosPuente" :key="creditosPuente.id" title="Ver detalle">
                                             <td>
-                                                <button type="button" class="btn btn-warning btn-sm" @click="actualizarCredito(creditosPuente)">
+                                                <button type="button" class="btn btn-warning btn-sm" @click="verDetalla(creditosPuente, 3)">
                                                     <i class="icon-pencil"></i>
                                                 </button>
                                             </td>
@@ -88,38 +89,68 @@
                         <div class="card-body"> 
                             <div class="form-group row border">
                                 
-                                <div class="col-md-5">
-                                    <label for="">Banco </label>
-                                    <select class="form-control" v-model="banco">
+                                <div class="col-md-3">
+                                    <label for="">Institución </label>
+                                    <select class="form-control" v-model="cabecera.banco">
                                         <option value="">Seleccione</option>
                                         <option v-for="banco in arrayBancos" :key="banco.nombre" :value="banco.nombre" v-text="banco.nombre"></option>
                                     </select>
                                 </div>
-                                <div class="col-md-4">
-                                    <label for="">Fecha de solicitud</label>
-                                    <input type="date" class="form-control" v-model="f_fin">
+                                <div class="col-md-2">
+                                    <label for="">Tasa de Interés (TIIE+) </label>
+                                    <input type="number" pattern="\d*" class="form-control" min="0" max="100" v-model="cabecera.interes" v-on:keypress="isNumber($event)">
                                 </div>
-                                <div class="col-md-3">
-                                    <label for="">Tasa de Interés </label>
-                                    <input type="number" pattern="\d*" class="form-control" min="0" max="100" v-model="anticipo" v-on:keypress="isNumber($event)">
-                                </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <label for="">Apertura </label>
-                                    <input type="number" class="form-control" min="0" max="100" v-model="costo_indirecto_porcentaje" v-on:keypress="isNumber($event)">
+                                    <input type="number" class="form-control" min="0" max="100" v-model="cabecera.apertura" v-on:keypress="isNumber($event)">
                                 </div>
-                                <div class="col-md-6"></div>
+                                <div class="col-md-3"></div>
 
-                                <div class="col-md-6">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="">Fraccionamiento </label>
-                                        <input type="text" class="form-control" readonly  v-model="fraccionamiento">
+                                        <select class="form-control" disabled v-model="cabecera.fraccionamiento" @click="selectEtapa(cabecera.fraccionamiento)">
+                                            <option value="">Seleccione</option>
+                                            <option v-for="proyecto in arrayProyectos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
+                                        </select>
                                     </div>
                                 </div>
 
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="">Etapa </label>
-                                        <input type="text" class="form-control" readonly  v-model="etapa">
+                                        <select class="form-control" v-model="etapa_id" @click="selectManzanas(cabecera.fraccionamiento,etapa_id)">
+                                            <option value="">Seleccione</option>
+                                            <option v-for="etapa in arrayEtapas" :key="etapa.id" :value="etapa.id" v-text="etapa.num_etapa"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="">Manzana </label>
+                                        <select class="form-control" v-model="manzana" @click="selectLotes(cabecera.fraccionamiento,etapa_id,manzana)">
+                                            <option value="">Seleccione</option>
+                                            <option v-for="manzanas in arrayManzanas" :key="manzanas.manzana" :value="manzanas.manzana" v-text="manzanas.manzana"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Lote</label> 
+                                        <div class="form-inline">
+                                            <select class="form-control" v-model="lote_id">
+                                                <option value="">Seleccione</option>
+                                                <option v-for="lotes in arrayLotes" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-1" v-if="lote_id != ''">
+                                    <div class="form-group">
+                                        <button @click="registrarLote()" class="btn btn-success form-control btnagregar"><i class="icon-plus"></i></button>
                                     </div>
                                 </div>
 
@@ -136,37 +167,22 @@
                             </div>
 
                             <div class="form-group row border">
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>Lote</label> 
-                                        <div class="form-inline">
-                                            <select class="form-control" v-model="lote_id" @click="selectDatosLotes(lote_id)">
-                                                <option value="0">Seleccione</option>
-                                                <option v-for="lotes in arrayLotes" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
-                                            </select>
+                                <div class="col-md-12">
+                                    <h5><strong><center>Modelos</center></strong></h5>
+                                </div>
+
+                                    <div class="col-md-3" v-for="modelo in arrayModelos" :key="modelo.id">
+                                        <div class="form-group">
+                                            <strong><label>{{modelo.modelo}}</label></strong>
+                                            <div class="form-inline">
+                                                <input class="form-control" type="text" pattern="\d*"
+                                                    @keyup.enter="actualizarModelo(modelo.id,$event.target.value)" :id="modelo.id" 
+                                                    :value="modelo.precio|currency" step="1"  v-on:keypress="isNumber($event)"
+                                                >
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Manzana</label>
-                                        <input type="text" class="form-control" v-model="manzana"  placeholder="Manzana">
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label>Modelo</label>
-                                        <input type="text" class="form-control" v-model="modelo" placeholder="Modelo">
-                                    </div>
-                                </div>
-                                
-
-                                <div class="col-md-1">
-                                    <div class="form-group">
-                                        <button @click="registrarLote()" class="btn btn-success form-control btnagregar"><i class="icon-plus"></i></button>
-                                    </div>
-                                </div>
-                                
+                                    
                             </div>
                             <div class="form-group row">
                                 <div class="table-responsive col-md-12">
@@ -175,9 +191,9 @@
                                             <tr>
                                                 <th></th>
                                                 <th>Lote</th>
-                                                <th>Modelo</th>
+                                                <th>Etapa</th>
                                                 <th>Manzana</th>
-                                                <th>M&sup2;</th>
+                                                <th>Modelo</th>
                                                 <th>Precio</th>
                                                 <th></th>
                                                 <th>Modelo Ant</th>
@@ -187,25 +203,31 @@
                                                 <th>Precio ant</th>
                                             </tr>
                                         </thead>
-                                        <tbody v-if="arrayCreditosPuenteLotes.length">
-                                            <tr v-for="detalle in arrayCreditosPuenteLotes" :key="detalle.id">
+                                        <tbody v-if="arrayLotesPuente.length">
+                                            <tr v-for="detalle in arrayLotesPuente" :key="detalle.id">
                                                 <td>
                                                     <button @click="eliminarLote(detalle)" type="button" class="btn btn-danger btn-sm">
                                                         <i class="icon-close"></i>
                                                     </button>
                                                 </td>
-                                                <td v-text="detalle.lote"></td>
-                                                <td v-text="detalle.descripcion"></td>
-                                                
+                                                <td v-text="detalle.num_lote"></td>
+                                                <td v-text="detalle.num_etapa"></td>
                                                 <td v-text="detalle.manzana"></td>
-                                                <td style="text-align: right;" v-text="detalle.construccion"></td>
+                                                <td v-text="detalle.modelo"></td>
+                                                <td v-text="'$ '+formatNumber(detalle.precio_p)"></td>
+                                                <td></td>
+                                                <td v-text="detalle.modeloAnt1"></td>
+                                                <td v-text="'$ '+formatNumber(detalle.precio1)"></td>
+                                                <td></td>
+                                                <td v-text="detalle.modeloAnt2"></td>
+                                                <td v-text="'$ '+formatNumber(detalle.precio2)"></td>
                                             </tr>
                                   
-                                            <!-- <tr style="background-color: #CEECF5;">
-                                                <td align="right" colspan="4"></td>
-                                                <td align="right"> <strong>{{ total_construccion=totalConstruccion}} m&sup2;</strong> </td>
-                                                <td align="right"> <strong>{{ total_costo_directo=totalCostoDirecto | currency}}</strong> </td>
-                                            </tr> -->
+                                            <tr style="background-color: #CEECF5;">
+                                                <td align="right" colspan="5"></td>
+                                                <td align="right"> <strong>{{ total_precio=totalPrecio | currency}}</strong> </td>
+                                                <td align="right" colspan="6"></td>
+                                            </tr>
                                         </tbody>
 
                                         <tbody v-else>
@@ -222,7 +244,7 @@
                             <div class="form-group row">
                                 <div class="col-md-12">
                                     <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
-                                    <button type="button" class="btn btn-primary" @click="actualizarcreditosPuente()"> Actualizar </button>
+                                    <button type="button" class="btn btn-primary" @click="actualizarCredito()"> Actualizar </button>
                                 </div>
                             </div>
                         </div>
@@ -232,92 +254,97 @@
                     <template v-else-if="listado == 2">
                         <div class="card-body"> 
                             <div class="form-group row border">
-                                <div class="col-md-10">
-                                    <div class="form-group">
-                                        <label style="color:#2271b3;" for=""><strong> Contratista </strong></label>
-                                        <p v-text="contratista"></p>
-                                    </div>
+                                <div class="col-md-3">
+                                    <label for="">Institución </label>
+                                    <p v-text="cabecera.banco"></p>
                                 </div>
                                 <div class="col-md-2">
-                                    <label style="color:#2271b3;" for=""><strong>Clave</strong> </label>
-                                    <p v-text="clave"></p>
-                                </div> 
-                                <div class="col-md-3">
-                                    <label style="color:#2271b3;" for=""><strong>Fecha de inicio</strong></label>
-                                    <p v-text="f_ini"></p>
+                                    <label for="">Tasa de Interés </label>
+                                    <p v-text="'TIIE+'+formatNumber(cabecera.interes)"></p>
                                 </div>
-                                <div class="col-md-3">
-                                    <label style="color:#2271b3;" for=""><strong>Fecha de termino </strong></label>
-                                    <p v-text="f_fin"></p>
-                                </div>
-                                <div class="col-md-3">
-                                    <label style="color:#2271b3;" for=""><strong>% Anticipo </strong></label>
-                                    <p v-text="anticipo+'%'"></p>
-                                </div>
-                                <div class="col-md-3">
-                                    <label style="color:#2271b3;" for=""><strong>% Costo Indirecto </strong></label>
-                                    <p v-text="costo_indirecto_porcentaje+'%'"></p>
-                                </div>
-
-                                <div class="col-md-8">
-                                    <div class="form-group">
-                                        <label style="color:#2271b3;" for=""><strong>Fraccionamiento </strong></label>
-                                        <p v-text="fraccionamiento"></p>
-                                    </div>
-                                </div>
-
                                 <div class="col-md-2">
+                                    <label for="">Apertura </label>
+                                    <p v-text="formatNumber(cabecera.apertura) + '%'"></p>
+                                </div>
+
+                                <div class="col-md-4">
                                     <div class="form-group">
-                                        <label style="color:#2271b3;"><strong>Total de Anticipo</strong></label>
-                                        <div class="form-inline">
-                                        <p v-text="'$'+formatNumber(total_anticipo)"></p>
-                                        </div>
+                                        <label for="">Fraccionamiento </label>
+                                        <select class="form-control" disabled v-model="cabecera.fraccionamiento" >
+                                            <option value="">Seleccione</option>
+                                            <option v-for="proyecto in arrayProyectos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
+                                        </select>
                                     </div>
                                 </div>
                                 
                             </div>
 
+                            <div class="form-group row border">
+                                <div class="col-md-12">
+                                    <h5><strong><center>Modelos</center></strong></h5>
+                                </div>
+                                <div class="col-md-3" v-for="modelo in arrayModelos" :key="modelo.id" v-if="modelo.precio > 0">
+                                    <div class="form-group">
+                                        <strong><label>{{modelo.modelo}}</label></strong>
+                                        <div class="form-inline">
+                                            <label>$ {{formatNumber(modelo.precio)}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="form-group row">
                                 <div class="table-responsive col-md-12">
-                                    <table class="table table-bordered table-striped table-sm">
+                                    <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
-                                                <th>Descripcion</th>
+                                                <th></th>
                                                 <th>Lote</th>
+                                                <th>Etapa</th>
                                                 <th>Manzana</th>
-                                                <th>M&sup2;</th>
-                                                <th>Costo Directo</th>
-                                                <th>Costo Indirecto</th>
-                                                <th>Obra extra</th>
-                                                <th>Importe</th>
+                                                <th>Modelo</th>
+                                                <th>Precio</th>
+                                                <th></th>
+                                                <th>Modelo Ant</th>
+                                                <th>Precio ant</th>
+                                                <th></th>
+                                                <th>Modelo Ant</th>
+                                                <th>Precio ant</th>
                                             </tr>
                                         </thead>
-                                        <tbody v-if="arrayCreditosPuenteLotes.length">
-                                            <tr v-for="detalle in arrayCreditosPuenteLotes" :key="detalle.id">
-                                                <td v-text="detalle.descripcion"></td>
-                                                <td v-text="detalle.lote"></td>
-                                                <td v-text="detalle.manzana"></td>
-                                                <td style="text-align: right;" v-text="detalle.construccion"></td>
-                                                <td style="text-align: right;" v-text="'$'+formatNumber(detalle.costo_directo)"></td>
-                                                <td style="text-align: right;" v-text="'$'+formatNumber(detalle.costo_indirecto)"></td>
-                                                <td style="text-align: right;" v-text="'$'+formatNumber(detalle.obra_extra)"></td>
-                                                <td align="right">
-                                                    {{'$'+formatNumber(parseFloat(detalle.costo_directo) + parseFloat(detalle.costo_indirecto))}}
-                                                  <!-- <input readonly v-model="detalle.importe" type="text" class="form-control">  -->
+                                        <tbody v-if="arrayLotesPuente.length">
+                                            <tr v-for="detalle in arrayLotesPuente" :key="detalle.id">
+                                                <td>
+                                                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">Docs</a>
+                                                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                        <a v-if="detalle.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ detalle.foto_predial">Predial</a>
+                                                        <a v-if="detalle.factibilidad" class="dropdown-item" v-bind:href="'/downloadFactibilidad/'+ detalle.factibilidad" onclick="window.open('/pdf/INTERAPAS.pdf','_blank')">Factibilidad</a>
+                                                        <a v-if="detalle.num_licencia" class="dropdown-item"  v-text="'Licencia: '+detalle.num_licencia" v-bind:href="'/downloadLicencias/'+detalle.foto_lic"></a>
+                                                    </div>
                                                 </td>
+                                                <td v-text="detalle.num_lote"></td>
+                                                <td v-text="detalle.num_etapa"></td>
+                                                <td v-text="detalle.manzana"></td>
+                                                <td v-text="detalle.modelo"></td>
+                                                <td v-text="'$ '+formatNumber(detalle.precio_p)"></td>
+                                                <td></td>
+                                                <td v-text="detalle.modeloAnt1"></td>
+                                                <td v-text="'$ '+formatNumber(detalle.precio1)"></td>
+                                                <td></td>
+                                                <td v-text="detalle.modeloAnt2"></td>
+                                                <td v-text="'$ '+formatNumber(detalle.precio2)"></td>
                                             </tr>
                                   
                                             <tr style="background-color: #CEECF5;">
-                                                <td align="right" colspan="4"> <strong>{{ formatNumber(total_construccion)}}</strong> </td>
-                                                <td align="right"> <strong>${{ formatNumber(total_costo_directo=totalCostoDirecto)}}</strong> </td>
-                                                <td align="right"> <strong>${{ formatNumber(total_costo_indirecto=totalCostoIndirecto)}}</strong> </td>
-                                                <td align="right" colspan="2"> <strong>${{ formatNumber(total_importe=totalImporte)}}</strong> </td>
+                                                <td align="right" colspan="5"></td>
+                                                <td align="right"> <strong>{{ total_precio=totalPrecio | currency}}</strong> </td>
+                                                <td align="right" colspan="6"></td>
                                             </tr>
                                         </tbody>
 
                                         <tbody v-else>
                                             <tr>
-                                                <td colspan="7">
+                                                <td colspan="6">
                                                     No hay lotes seleccionados
                                                 </td>
                                             </tr>
@@ -325,17 +352,10 @@
                                     </table>
                                 </div>
                             </div>
+                            
                             <div class="form-group row">
                                 <div class="col-md-1">
                                     <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
-                                </div>
-                                   <div class="col-md-9">
-                                    <a class="btn btn-success" v-bind:href="'/iniobra/relacion/excel/'+ id " >
-                                        <i></i>Exportar relacion en excel
-                                    </a>
-                                </div>
-                                <div class="col-md-2">
-                                    <button type="button" class="btn btn-primary" @click="modal = 2"><i class="fa fa-print"></i>&nbsp; Imprimir Contrato</button>
                                 </div>
                             </div>
                         </div>
@@ -375,14 +395,33 @@
                     'from' : 0,
                     'to' : 0,
                 },
+
+                cabecera : {
+                    'banco' : '',
+                    'interes' : 0,
+                    'fecha_solic' : '',
+                    'status' : 0,
+                    'total' : 0,
+                    'cobrado' : 0,
+                    'folio' : '',
+                    'apertura' : 0,
+                    'fraccionamiento' : '',
+                },
                 offset : 3,
                 criterio : 'ini_obras.clave', 
                 buscar : '',
+                b_folio:'',
                 arrayProyectos : [],
-                lote_id:0,
-
+                arrayEtapas : [],
+                arrayManzanas : [],
+                arrayLotes:[],
+                arrayLotesPuente:[],
+                arrayModelos:[],
+                lote_id:'',
                 arrayBancos:[],
-                banco:'',
+                etapa_id:'',
+                manzana:'',
+                total_precio:0,
                 
             }
         },
@@ -413,21 +452,20 @@
                 }
                 return pagesArray;
             },
-            // totalCostoDirecto: function(){
-            //     var resultado_costo_directo =0.0;
-            //     for(var i=0;i<this.arrayCreditosPuenteLotes.length;i++){
-            //         resultado_costo_directo = parseFloat(resultado_costo_directo) + parseFloat(this.arrayCreditosPuenteLotes[i].costo_directo)
-            //     }
-            //     return Math.round(resultado_costo_directo*100)/100;
-            // },
+            totalPrecio: function(){
+                var res =0.0;
+                for(var i=0;i<this.arrayLotesPuente.length;i++){
+                    res = parseFloat(res) + parseFloat(this.arrayLotesPuente[i].precio_p)
+                }
+                return res;
+            },
         },
        
         methods : {
-            
             /**Metodo para mostrar los registros */
             listarAvisos(page){
                 let me = this;
-                var url = '/cPuentes/indexCreditos?page=' + page;
+                var url = '/cPuentes/indexCreditos?page=' + page + '&fraccionamiento=' + me.buscar + '&folio=' + me.b_folio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayCreditosPuente = respuesta.creditos.data;
@@ -437,7 +475,6 @@
                     console.log(error);
                 });
             },
-
             selectBancos(){
                 let me = this;
                 me.arrayBancos=[];
@@ -445,21 +482,6 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayBancos = respuesta.instituciones_financiamiento;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
-            
-            selectFraccionamiento(search, loading){
-                let me = this;
-                loading(true)
-                var url = '/select_fraccionamiento2?filtro='+search;
-                axios.get(url).then(function (response) {
-                    let respuesta = response.data;
-                    q: search
-                    me.arrayFraccionamientos = respuesta.fraccionamientos;
-                    loading(false)
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -477,7 +499,72 @@
                     console.log(error);
                 });
             },
-            
+            selectLotes(fraccionamiento,etapa,manzana){
+                let me = this;
+                me.arrayLotes=[];
+                var url = `/cPuentes/selectLotes?proyecto=${fraccionamiento}&etapa=${etapa}&manzana=${manzana}&puente=`;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayLotes = respuesta.lotes.data;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            selectManzanas(fraccionamiento, etapa){
+                let me = this;
+                me.manzana ='';
+                me.arrayManzanas=[];
+                var url = `/select_manzanas_etapa?buscar=${fraccionamiento}&buscar1=${etapa}`;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayManzanas = respuesta.manzana;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            selectEtapa(buscar){
+                let me = this;
+                me.etapa_id = '';
+                me.lote_id = '';
+                me.manzana = '';
+                me.arrayEtapas=[];
+                me.arrayManzanas=[];
+                me.arrayLotes=[];
+                var url = '/select_etapa_proyecto?buscar=' + buscar;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayEtapas = respuesta.etapas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            getPreciosModelo(id){
+                let me = this;
+                me.arrayModelos=[];
+                var url = '/cPuentes/getPreciosModelo?id=' + id;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayModelos = respuesta.modelos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            getLotesPuente(id){
+                let me = this;
+                me.arrayLotesPuente=[];
+                var url = '/cPuentes/getLotesPuente?id=' + id;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayLotesPuente = respuesta.lotes;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
             cambiarPagina(page){
                 let me = this;
                 //Actualiza la pagina actual
@@ -486,31 +573,12 @@
                 me.listarAvisos(page);
             },
             limpiarDatos(){
-                this.contratista_id=0;
-                this.f_fin='';
-                this.clave='';
-                this.calle1 = '';
-                this.calle2 = '';
-                this.fraccionamiento_id=0;
-                this.anticipo=0;
-                this.total_anticipo=0;
-                this.total_importe=0;
-                this.total_costo_directo=0;
-                this.total_costo_indirecto=0;
-                this.manzana='';
-                this.lote='';
-                this.modelo='';
-                this.construccion=0;
-                this.descripcion='';
                 this.arrayCreditosPuenteLotes=[];
                 this.arrayLotes=[];
+                this.arrayEtapas=[];
+                this.arrayManzanas=[];
                 this.arrayDatosLotes=[];
                 this.arrayEtapas=[];
-                this.descripcion_larga='';
-                this.descripcion_corta='';
-                this.iva=0;
-                this.tipo='Vivienda';
-                this.total_construccion=0;
             },
             isNumber: function(evt) {
                 evt = (evt) ? evt : window.event;
@@ -531,84 +599,142 @@
             },
             ocultarDetalle(){
                 this.listado=1;
+                this.listarAvisos(1);
             },
-            verAviso(id){
+            verDetalla(data,vista){
                 let me= this;
-                this.listado=2;
-                //Obtener datos de cabecera
-                var arrayAvisoT=[];
-                var url = '/iniobra/obtenerCabecera?id=' + id;
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayAvisoT = respuesta.ini_obra;
-                    me.contratista= me.arrayAvisoT[0]['contratista'];
-                    me.clave= me.arrayAvisoT[0]['clave'];
-                    me.f_ini= me.arrayAvisoT[0]['f_ini'];
-                    me.f_fin= me.arrayAvisoT[0]['f_fin'];
-                    me.calle1 = me.arrayAvisoT[0]['calle1'];
-                    me.calle2 = me.arrayAvisoT[0]['calle2'];
-                    me.anticipo= me.arrayAvisoT[0]['anticipo'];
-                    me.fraccionamiento= me.arrayAvisoT[0]['proyecto'];
-                    me.total_anticipo = me.arrayAvisoT[0]['total_anticipo'];
-                    me.costo_indirecto_porcentaje=me.arrayAvisoT[0]['costo_indirecto_porcentaje'];
-                    me.total_construccion=me.arrayAvisoT[0]['total_superficie'];
-                    me.id=id;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-                //Obtener detalle
-                var arrayAvisoT=[];
-                var urld = '/iniobra/obtenerDetalles?id=' + id;
-                axios.get(urld).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayCreditosPuenteLotes = respuesta.detalles;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
-            actualizarCredito(data){
-                let me= this;
-                this.listado=3;
+                this.listado=vista;
                 //Obtener datos de cabecera
                 var arrayAvisoT=[];
                 var url = '/iniobra/obtenerCabecera?id=' + data['id'];
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayAvisoT = respuesta.ini_obra;
-                    me.contratista_id= me.arrayAvisoT[0]['contratista_id'];
-                    me.clave= me.arrayAvisoT[0]['clave'];
-                    me.calle1 = me.arrayAvisoT[0]['calle1'];
-                    me.calle2 = me.arrayAvisoT[0]['calle2'];
-                    me.f_ini= me.arrayAvisoT[0]['f_ini'];
-                    me.f_fin= me.arrayAvisoT[0]['f_fin'];
-                    me.anticipo= me.arrayAvisoT[0]['anticipo'];
-                    me.fraccionamiento_id= me.arrayAvisoT[0]['fraccionamiento_id'];
-                    me.fraccionamiento= me.arrayAvisoT[0]['proyecto'];
-                    me.total_anticipo = me.arrayAvisoT[0]['total_anticipo'];
-                    me.costo_indirecto_porcentaje=me.arrayAvisoT[0]['costo_indirecto_porcentaje'];
-                    me.contratista= me.arrayAvisoT[0]['contratista'];
-                    me.descripcion_larga=me.arrayAvisoT[0]['descripcion_larga'];
-                    me.descripcion_corta=me.arrayAvisoT[0]['descripcion_corta'];
-                    me.tipo=me.arrayAvisoT[0]['tipo'];
-                    me.iva=me.arrayAvisoT[0]['iva'];
                     me.id=data['id'];
+                    me.cabecera.banco = data['banco'];
+                    me.cabecera.interes = data['interes'];
+                    me.cabecera.apertura = data['apertura'];
+                    me.cabecera.fraccionamiento = data['fraccionamiento'];
+                    me.selectEtapa(me.cabecera.fraccionamiento);
+                    me.getPreciosModelo(me.id);
+                    me.getLotesPuente(me.id);
                   
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
-                //Obtener detalle
-                var arrayAvisoT=[];
-                var urld = '/iniobra/obtenerDetalles?id=' + id;
-                axios.get(urld).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayCreditosPuenteLotes = respuesta.detalles;
-                })
-                .catch(function (error) {
+            },
+            registrarLote(){
+                let me = this;
+                axios.post('/cPuentes/agregarLote',{
+                    'solicitud_id': this.id,
+                    'lote': this.lote_id,
+                   
+                }).then(function (response){
+                    //Obtener detalle
+                        swal({
+                            position: 'top-end',
+                            type: 'success',
+                            title: 'Lote agregado correctamente',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        me.getLotesPuente(me.id);
+                        me.arrayManzanas=[];
+                        me.arrayLotes=[];
+                        me.etapa_id='';
+                        me.lote_id='';
+                        me.manzana='';
+                    
+                }).catch(function (error){
                     console.log(error);
                 });
+            },
+            eliminarLote(data){
+                let me = this;
+                axios.delete('/cPuentes/eliminarLote',{params:{
+                    'lote': data.lote_id,
+                    'lp': data.id,
+                    'solicitud_id': me.id
+                   
+                }}).then(function (response){
+                    //Obtener detalle
+                        swal({
+                            position: 'top-end',
+                            type: 'success',
+                            title: 'Lote eliminado correctamente',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        me.getLotesPuente(me.id);
+                        me.arrayManzanas=[];
+                        me.arrayLotes=[];
+                        me.etapa_id='';
+                        me.lote_id='';
+                        me.manzana='';
+                    
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+            actualizarModelo(modelo_id,precio){
+                let me = this;
+
+                axios.put('/cPuentes/actualizarPrecio',{
+                    'precio': precio,
+                    'id': modelo_id,
+                   
+                }).then(function (response){
+                    //Obtener detalle
+                        swal({
+                            position: 'top-end',
+                            type: 'success',
+                            title: 'Precios actualizados correctamente',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        me.getLotesPuente(me.id);
+                        me.getPreciosModelo(me.id);
+                        me.arrayManzanas=[];
+                        me.arrayLotes=[];
+                        me.etapa_id='';
+                        me.lote_id='';
+                        me.manzana='';
+                    
+                }).catch(function (error){
+                    console.log(error);
+                });
+
+            },
+            actualizarCredito(){
+                let me = this;
+
+                axios.put('/cPuentes/actualizarSolicitud',{
+                    'id': this.id,
+                    'cabecera' : this.cabecera,
+                    'total': this.total_precio,
+                }).then(function (response){
+                    //Obtener detalle
+                        swal({
+                            position: 'top-end',
+                            type: 'success',
+                            title: 'Cambios guardados correctamente',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        me.getLotesPuente(me.id);
+                        me.getPreciosModelo(me.id);
+                        me.ocultarDetalle();
+                        me.arrayManzanas=[];
+                        me.arrayLotes=[];
+                        me.etapa_id='';
+                        me.lote_id='';
+                        me.manzana='';
+                    
+                }).catch(function (error){
+                    console.log(error);
+                });
+
             }
            
         },

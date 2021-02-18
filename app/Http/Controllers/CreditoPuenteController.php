@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -154,9 +153,15 @@ class CreditoPuenteController extends Controller
                     ->select('creditos_puente.id','creditos_puente.banco','creditos_puente.folio','creditos_puente.interes',
                                 'creditos_puente.status','creditos_puente.total','creditos_puente.apertura',
                                 'fraccionamientos.nombre as proyecto','creditos_puente.fraccionamiento'    
-                            )
-                    ->orderBy('creditos_puente.id','desc')
-                    ->paginate(10);
+                    );
+
+        if($request->fraccionamiento != '')
+            $creditos = $creditos->where('creditos_puente.fraccionamiento','=',$request->fraccionamiento);
+        
+        if($request->folio != '')
+            $creditos = $creditos->where('creditos_puente.folio','=',$request->folio);
+
+        $creditos = $creditos->orderBy('creditos_puente.id','desc')->paginate(10);
 
         return [
             'pagination' => [
@@ -169,6 +174,154 @@ class CreditoPuenteController extends Controller
             ],
             'creditos' => $creditos
         ];
+    }
+
+    public function selectLotes(Request $request){
+        $lotes = $this->getSinCredito($request);
+        return ['lotes' => $lotes];
+    }
+
+    public function getPreciosModelo(Request $request){
+        $modelos = Precio_puente::join('creditos_puente','precios_puente.solicitud_id','=','creditos_puente.id')
+                    ->join('modelos','precios_puente.modelo_id','=','modelos.id')
+                    ->select('precios_puente.id','precios_puente.precio','precios_puente.modelo_id','modelos.nombre as modelo')
+                    ->where('creditos_puente.id','=',$request->id)
+                    ->orderBy('precios_puente.precio','desc')
+                    ->orderBy('modelos.nombre','asc')
+                    ->get();
+
+        return['modelos'=>$modelos];
+    }
+
+    public function getLotesPuente(Request $request){
+        $lotes = Lote_puente::join('lotes','lotes_puente.lote_id','=','lotes.id')
+                    ->join('licencias','lotes.id','=','licencias.id')
+                    ->join('modelos','lotes_puente.modelo_id','=','modelos.id')
+                    ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                    ->join('etapas','lotes.etapa_id','=','etapas.id')
+                    ->select('lotes_puente.id','lotes_puente.modelo_id','lotes_puente.precio_p','lotes_puente.modeloAnt1',
+                            'lotes_puente.modeloAnt2','lotes_puente.precio1','lotes_puente.precio2', 'lotes.num_lote',
+                            'lotes.manzana','lotes_puente.lote_id',
+                            'modelos.nombre as modelo','fraccionamientos.nombre as proyecto','etapas.num_etapa',
+                            'etapas.factibilidad','licencias.foto_predial','licencias.foto_lic','licencias.num_licencia'
+                    )
+                    ->where('lotes_puente.solicitud_id','=',$request->id)
+                    ->orderBy('lotes.etapa_id','asc')
+                    ->orderBy('lotes.manzana','asc')
+                    ->orderBy('lotes.num_lote','asc')
+                    ->get();
+
+        return['lotes'=>$lotes];
+    }
+
+    public function agregarLote(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $l = $request->lote;
+        $id = $request->solicitud_id;
+
+        try {
+            DB::beginTransaction();
+            $datosLote = Lote::findOrFail($l);
+            $datosLote->puente_id = $id;
+            $datosLote->credito_puente = 'EN PROCESO';
+            
+
+            $precio = Precio_puente::select('precio')
+                        ->where('modelo_id','=',$datosLote->modelo_id)
+                        ->where('solicitud_id','=',$id)->first();
+
+            if($precio == null)
+                $precio = 0;
+
+            $lote_puente = new Lote_puente();
+            $lote_puente->solicitud_id = $id;
+            $lote_puente->lote_id = $l;
+            $lote_puente->modelo_id = $datosLote->modelo_id;
+            $lote_puente->precio_p = $precio->precio;
+            $lote_puente->save();
+
+            $totalPuente = Lote_puente::select('id')->where('solicitud_id','=',$id)->count();
+
+            $credito = Credito_puente::findOrFail($id);
+            $credito->total+=$precio->precio;
+            $credito->folio = $credito->banco.'-'.$totalPuente;
+            $credito->save();
+            $datosLote->save();
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+        }
+    }
+
+    public function eliminarLote(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $l = $request->lote;
+        $lp = $request->lp;
+        $id = $request->solicitud_id;
+
+        try {
+            DB::beginTransaction();
+            $datosLote = Lote::findOrFail($l);
+            $datosLote->puente_id = NULL;
+            $datosLote->credito_puente = NULL;
+            $datosLote->save();
+            
+            $lote_puente = Lote_puente::findOrFail($lp);
+            $totalPuente = Lote_puente::select('id')->where('solicitud_id','=',$id)->count();
+            $totalPuente = (int)$totalPuente-1;
+
+            $credito = Credito_puente::findOrFail($id);
+            $credito->total-=$lote_puente->precio_p;
+            $credito->folio = $credito->banco.'-'.$totalPuente;
+            $credito->save();
+
+            $lote_puente->delete();
+            
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+        }
+    }
+
+    public function actualizarPrecio(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        try {
+            DB::beginTransaction();
+            
+            $precio = Precio_puente::findOrFail($request->id);
+            $precio->precio = $request->precio;
+            $precio->save();
+
+            $lotes = Lote_puente::select('id')
+                        ->where('modelo_id','=',$precio->modelo_id)
+                        ->where('solicitud_id','=',$precio->solicitud_id)
+                        ->get();
+
+            if(sizeof($lotes))
+                foreach ($lotes as $index => $l) {
+                    $lote = Lote_puente::findOrFail($l->id);
+                    $lote->precio_p = $precio->precio;
+                    $lote->save();
+                }
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+        }
+
+    }
+
+    public function actualizarSolicitud(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $datos = $request->cabecera;
+        $credito = Credito_puente::findOrFail($request->id);
+        $credito->banco = $datos['banco'];
+        $credito->interes = $datos['interes'];
+        $credito->total = $request->total;
+        $credito->apertura = $datos['apertura'];
+        $credito->folio = $datos['banco'].'-'.$request->total;
+        $credito->save();
+        //$credito->save();
     }
 
 }
