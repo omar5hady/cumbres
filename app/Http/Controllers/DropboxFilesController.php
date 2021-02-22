@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use App\DropboxFiles;
 use Spatie\Dropbox\Client;
 use App\Solic_detalle;
+use App\Doc_puente;
 use Auth;
 
  
@@ -57,11 +58,24 @@ class DropboxFilesController extends Controller
             'size' => $response['size'],
             'public_url' => $response['url']
         ]);
-        
-        $solicitud = Solic_detalle::findOrFail($id);
-        $solicitud->nom_contrato = $name;
-        $solicitud->save();
 
+        switch($sub){
+            case 'solicitudDetalle':{
+                $solicitud = Solic_detalle::findOrFail($id);
+                $solicitud->nom_contrato = $name;
+                $solicitud->save();
+                break;
+            }
+            case 'planosPuente':{
+                $puente = new Doc_puente();
+                $puente->puente_id = $id;
+                $puente->descripcion = $request->descripcion;
+                $puente->archivo = $name;
+                $puente->clasificacion = $request->clasificacion;
+                $puente->save();
+                break;
+            }
+        }
         // Retornamos un redirección hacía atras
         //return back();
     }
@@ -84,9 +98,21 @@ class DropboxFilesController extends Controller
         $del = DropboxFiles::findOrFail($archivo[0]->id);
         $del->delete();
 
-        $solicitud = Solic_detalle::findOrFail($request->id);
-        $solicitud->nom_contrato = NULL;
-        $solicitud->save();
+        switch($request->sub){
+            case 'solicitudDetalle':{
+                $solicitud = Solic_detalle::findOrFail($request->id);
+                $solicitud->nom_contrato = NULL;
+                $solicitud->save();
+                break;
+            }
+            case 'planosPuente':{
+                $doc_puente = Doc_puente::findOrFail($request->id);
+                $doc_puente->delete();
+                $break;
+            }
+        }
+
+        
  
     }
 }

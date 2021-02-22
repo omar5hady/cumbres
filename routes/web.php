@@ -922,11 +922,14 @@ Route::group(['middleware' => ['auth']],function(){
         Route::delete('/cPuentes/eliminarLote','CreditoPuenteController@eliminarLote');
         Route::put('/cPuentes/actualizarPrecio','CreditoPuenteController@actualizarPrecio');
         Route::put('/cPuentes/actualizarSolicitud','CreditoPuenteController@actualizarSolicitud');
+        Route::post('/cPuentes/storeObs','CreditoPuenteController@storeObs');
 
         Route::get('/cPuentes/indexCreditos','CreditoPuenteController@indexCreditos');
         Route::get('/cPuentes/selectLotes','CreditoPuenteController@selectLotes');
         Route::get('/cPuentes/getPreciosModelo','CreditoPuenteController@getPreciosModelo');
         Route::get('/cPuentes/getLotesPuente','CreditoPuenteController@getLotesPuente');
+        Route::get('/cPuentes/getObs','CreditoPuenteController@getObs');
+        Route::get('/cPuentes/getPlanos','CreditoPuenteController@getPlanos');
         
     //////////////////// RUTAS BONOS RECOMENDADOS ///////////////////////
         Route::get('/cat_bono/index','CatalogoBonoController@index');

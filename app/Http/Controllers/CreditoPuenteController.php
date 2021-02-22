@@ -6,6 +6,8 @@ use App\Lote;
 use App\Modelo;
 use App\Credito_puente;
 use App\Lote_puente;
+use App\Obs_puente;
+use App\Doc_puente;
 use App\Precio_puente;
 use DB;
 use Auth;
@@ -322,6 +324,35 @@ class CreditoPuenteController extends Controller
         $credito->folio = $datos['banco'].'-'.$request->total;
         $credito->save();
         //$credito->save();
+    }
+
+    public function getObs(Request $request){
+        return ['obs' => Obs_puente::where('puente_id','=',$request->id)->orderBy('id','desc')->get()];
+        //return ['obs'=>$obs];
+    }
+
+    public function storeObs(Request $request){
+        $obs = new Obs_puente();
+        $obs->puente_id = $request->id;
+        $obs->observacion = $request->observacion;
+        $obs->usuario = Auth::user()->usuario;
+        $obs->save();
+    }
+
+    public function getPlanos(Request $request){
+        $edificacion = Doc_puente::select('id','descripcion','clasificacion','archivo','created_at')
+                    ->where('puente_id','=',$request->id)
+                    ->where('clasificacion','=',2)->get();
+
+        $urbanizacion = Doc_puente::select('id','descripcion','clasificacion','archivo','created_at')
+                    ->where('puente_id','=',$request->id)
+                    ->where('clasificacion','=',1)->get();
+        
+
+        return[
+            'urbanizacion' => $urbanizacion, 
+            'edificacion' => $edificacion
+        ];
     }
 
 }

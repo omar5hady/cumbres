@@ -766,7 +766,7 @@
 
     <footer class="app-footer">
         
-        <span><a href="http://www.casascumbres.mx/" target="_blank">Grupo Constructor Cumbres</a> &copy; 2020</span>
+        <span><a href="http://www.casascumbres.mx/" target="_blank">Grupo Constructor Cumbres</a> &copy; 2021</span>
         
         <span class="ml-auto">Desarrollado por <a href="http://www.casascumbres.mx/" target="_blank">Grupo Cumbres</a></span>
     </footer>
