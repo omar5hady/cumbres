@@ -52,6 +52,18 @@
                                 </div>
                             </div>
 
+                            <div class="col-md-8" v-if="b_motivo ==1">
+                                <div class="input-group">
+                                    <input type="text" readonly placeholder="Proyecto de interes:" class="form-control col-sm-4">
+                                    <select class="form-control" v-model="b_proyecto">
+                                        <option value="">Seleccione</option>
+                                        <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" 
+                                            :value="proyecto.id" v-text="proyecto.nombre">
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
                             <div class="col-md-8">
                                 <div class="input-group" v-if="b_motivo == 1">
                                     <select class="form-control"  v-model="b_asesor" >
@@ -71,6 +83,13 @@
                                     <button @click="listarLeads(1)" class="btn btn-primary">
                                         <i class="fa fa-search"></i> Buscar
                                     </button>
+                                    <a v-if="b_motivo == 1" class="btn btn-success" v-bind:href="'/campanias/excelLeads'+
+                                            '?buscar='+ b_cliente+'&campania='+ b_campania+
+                                            '&status='+ b_status+'&asesor='+ b_asesor+
+                                            '&motivo='+ b_motivo+'&fecha1='+ b_fecha1+
+                                            '&fecha2='+ b_fecha2+'&proyecto='+ b_proyecto">
+                                        <i class="fa fa-file-text"></i>&nbsp; Excel
+                                    </a>
                                     <button disabled class="btn btn-primary">
                                         {{'Total: '+arrayLeads.total}}
                                     </button>
@@ -1009,6 +1028,7 @@ export default {
             b_motivo:1,
             b_fecha1:'',
             b_fecha2:'',
+            b_proyecto:'',
             proceso : false,
 
             datos : [],
@@ -1073,7 +1093,6 @@ export default {
             errorMostrarMsjProspecto : [],
             errorProspecto : 0,
 
-           
         }
     },
     computed:{
@@ -1326,6 +1345,7 @@ export default {
             this.b_asesor='';
             this.b_fecha1='';
             this.b_fecha2='';
+            this.b_proyecto='';
 
             this.listarLeads(1);
         },
@@ -1384,6 +1404,7 @@ export default {
                 '&motivo='+this.b_motivo+
                 '&fecha1='+this.b_fecha1+
                 '&fecha2='+this.b_fecha2+
+                '&proyecto='+this.b_proyecto+
                 '&page='+page
                 
             ).then(

@@ -984,6 +984,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         //////////////////// RUTAS PARA LEADS ////////////////////////
         Route::get('/campanias/index','CampaniaController@indexCampanias');
+        Route::get('/campanias/excelLeads','DigitalLeadController@excelLeads');
         Route::put('/campanias/update', 'CampaniaController@update');
         Route::post('/campanias/store', 'CampaniaController@store');
         Route::delete('/campanias/delete', 'CampaniaController@delete');

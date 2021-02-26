@@ -13,51 +13,15 @@ use App\Notifications\NotifyAdmin;
 use App\Medio_publicitario;
 use Auth;
 use DB;
+use Excel;
 use Carbon\Carbon;
 
 class DigitalLeadController extends Controller
 {
     public function index(Request $request){
-        $buscar = $request->buscar;
-        $campania = $request->campania;
-        $status = $request->status;
-        $asesor = $request->asesor;
-        $fecha1 = $request->fecha1;
-        $fecha2 = $request->fecha2;
-        $leads = Digital_lead::leftJoin('campanias as c','digital_leads.campania_id','=','c.id')
-                        ->leftJoin('fraccionamientos as f','digital_leads.proyecto_interes','=','f.id')
-                        ->leftJoin('personal as p','digital_leads.vendedor_asign','=','p.id')
-                        ->select(
-                                DB::raw("CONCAT(p.nombre,' ',p.apellidos) AS vendedor"),
-                                'c.nombre_campania','c.medio_digital','f.nombre as proyecto','digital_leads.*')
-                        ->where('digital_leads.motivo','=',$request->motivo);
-                        if(Auth::user()->rol_id == 2){
-                            $leads = $leads->where('vendedor_asign','=',Auth::user()->id);
-                        }
+        $leads = $this->queryLeads($request);
 
-                        if($fecha1 != '' && $fecha2!=''){
-                            $leads = $leads->whereBetween('digital_leads.created_at',[$fecha1,$fecha2]);
-                        }
-
-                        if($buscar != ''){
-                            $leads = $leads->where(DB::raw("CONCAT(digital_leads.nombre,' ',digital_leads.apellidos)"), 'like', '%'. $buscar . '%');
-                        }
-
-                        if($status != ''){
-                            $leads = $leads->where('digital_leads.status','=',$status);
-                        }
-
-                        if($campania != ''){
-                            $leads = $leads->where('digital_leads.campania_id','=',$campania);
-                        }
-
-                        if($asesor != ''){
-                            $leads = $leads->where('digital_leads.vendedor_asign','=',$asesor);
-                        }
-
-                        $leads = $leads->orderBy('nombre','asc')
-                        ->orderBy('apellidos','asc')
-                        ->paginate(10);
+        $leads = $leads->paginate(10);
 
         if(sizeof($leads))
         foreach($leads as $index => $persona){
@@ -70,6 +34,71 @@ class DigitalLeadController extends Controller
         }
                         
         return $leads;
+    }
+
+    public function excelLeads(Request $request){
+
+        $leads = $this->queryLeads($request);
+
+        $leads = $leads->get();       
+
+        return Excel::create('Digital Leads', function($excel) use ($leads){
+            $excel->sheet('Digital Leads', function($sheet) use ($leads){
+                
+                $sheet->row(1, [
+                    'Nombre','Apellidos', 'Celular', 'Correo electronico',
+                    'Proyecto de interés','Prototipo de interés','Campaña publicitaria', 
+                    'Medio de contacto','Vendedor asignado','Fecha de alta'
+                ]);
+
+                $sheet->cells('A1:J1', function ($cells) {
+                    $cells->setBackground('#052154');
+                    $cells->setFontColor('#ffffff');
+                    // Set font family
+                    $cells->setFontFamily('Calibri');
+
+                    // Set font size
+                    $cells->setFontSize(13);
+
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+                $cont=1;
+
+                foreach($leads as $index => $lead) {
+                    $cont++;
+                    $campaña = 'Tráfico organico';
+                    $proyecto = '';
+                    if($lead->nombre_campania != NULL){
+                        $campaña = $lead->nombre_campania.'-'.$lead->medio_digital;
+                    }
+                    if($lead->proyecto_interes != 0){
+                        $proyecto = $lead->proyecto;
+                    }
+                    else{
+                        $proyecto = $lead->zona_interes;
+                    }
+
+                    $sheet->row($index+2, [
+                        $lead->nombre, 
+                        $lead->apellidos,
+                        $lead->celular,
+                        $lead->email,
+                        $proyecto,
+                        $lead->modelo_interes,
+                        $campaña,
+                        $lead->medio_contacto,
+                        $lead->vendedor,
+                        $lead->created_at
+                    ]);	
+                }
+                $num='A1:J' . $cont;
+                $sheet->setBorder($num, 'thin');
+            });
+            }
+        )->download('xls');
+
     }
 
     private function getProgress($lead){
@@ -105,6 +134,56 @@ class DigitalLeadController extends Controller
         $progress = ($progress/26) * 100;
         return $progress;
 
+    }
+
+    private function queryLeads($request){
+
+        $buscar = $request->buscar;
+        $campania = $request->campania;
+        $status = $request->status;
+        $asesor = $request->asesor;
+        $fecha1 = $request->fecha1;
+        $fecha2 = $request->fecha2;
+        $proyecto = $request->proyecto;
+        $leads = Digital_lead::leftJoin('campanias as c','digital_leads.campania_id','=','c.id')
+                        ->leftJoin('fraccionamientos as f','digital_leads.proyecto_interes','=','f.id')
+                        ->leftJoin('personal as p','digital_leads.vendedor_asign','=','p.id')
+                        ->select(
+                                DB::raw("CONCAT(p.nombre,' ',p.apellidos) AS vendedor"),
+                                'c.nombre_campania','c.medio_digital','f.nombre as proyecto','digital_leads.*')
+                        ->where('digital_leads.motivo','=',$request->motivo);
+                        if(Auth::user()->rol_id == 2){
+                            $leads = $leads->where('vendedor_asign','=',Auth::user()->id);
+                        }
+
+                        if($fecha1 != '' && $fecha2!=''){
+                            $leads = $leads->whereBetween('digital_leads.created_at',[$fecha1,$fecha2]);
+                        }
+
+                        if($buscar != ''){
+                            $leads = $leads->where(DB::raw("CONCAT(digital_leads.nombre,' ',digital_leads.apellidos)"), 'like', '%'. $buscar . '%');
+                        }
+
+                        if($status != ''){
+                            $leads = $leads->where('digital_leads.status','=',$status);
+                        }
+
+                        if($proyecto != ''){
+                            $leads = $leads->where('digital_leads.proyecto_interes','=',$proyecto);
+                        }
+
+                        if($campania != ''){
+                            $leads = $leads->where('digital_leads.campania_id','=',$campania);
+                        }
+
+                        if($asesor != ''){
+                            $leads = $leads->where('digital_leads.vendedor_asign','=',$asesor);
+                        }
+
+                        $leads = $leads->orderBy('nombre','asc')
+                        ->orderBy('apellidos','asc');
+
+            return $leads;
     }
     
     public function store(Request $request){
