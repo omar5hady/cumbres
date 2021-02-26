@@ -465,6 +465,8 @@ class ComisionesVentaController extends Controller
                             'contratos.fecha_exp',
                             'contratos.fecha',
                             'lotes.extra',
+                            'lotes.emp_constructora',
+                            'lotes.emp_terreno',
                             DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                             'lotes.extra_ext')
                             
@@ -1157,8 +1159,7 @@ class ComisionesVentaController extends Controller
                         ]);
                         $i++;
                         $cont=$i;
-                        foreach($arrayIndividualizadas as $index => $venta) {
-                            
+                        foreach($arrayIndividualizadas as $index => $venta) {      
                             $sheet->row($cont, [
                                 $venta->fecha,
                                 $venta->folio,
@@ -1172,7 +1173,7 @@ class ComisionesVentaController extends Controller
                                 $venta->avance_lote.'%',
                                 $venta->porcentaje_comision.'%',
                                 $venta->comision_pagar ,
-                                $venta->este_pago,
+                                $venta->por_pagar,
                                 0
                             ]);
                             $cont++;

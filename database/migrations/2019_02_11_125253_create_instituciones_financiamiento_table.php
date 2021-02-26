@@ -16,6 +16,7 @@ class CreateInstitucionesFinanciamientoTable extends Migration
         Schema::create('instituciones_financiamiento', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nombre',50);
+            $table->boolean('lic')->default(0);
             $table->timestamps();
         });
         DB::table('instituciones_financiamiento')->

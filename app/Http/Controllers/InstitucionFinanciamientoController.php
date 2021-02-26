@@ -42,6 +42,7 @@ class InstitucionFinanciamientoController extends Controller
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $InstitucionFinanciamiento = new InstitucionFinanciamiento();
         $InstitucionFinanciamiento->nombre = $request->nombre;
+        $InstitucionFinanciamiento->lic = $request->lic;
         $InstitucionFinanciamiento->save();
     }
 
@@ -52,6 +53,7 @@ class InstitucionFinanciamientoController extends Controller
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $InstitucionFinanciamiento = InstitucionFinanciamiento::findOrFail($request->id);
         $InstitucionFinanciamiento->nombre = $request->nombre;
+        $InstitucionFinanciamiento->lic = $request->lic;
         $InstitucionFinanciamiento->save();
     }
 

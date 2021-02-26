@@ -9,6 +9,8 @@ use App\Lote_puente;
 use App\Obs_puente;
 use App\Doc_puente;
 use App\Precio_puente;
+use App\Puente_checklist;
+use App\Cat_documento;
 use DB;
 use Auth;
 
@@ -109,6 +111,8 @@ class CreditoPuenteController extends Controller
         $lotes = $request->lotes;
         $modelos = $request->modelos;
 
+        $docs = Cat_documento::get();
+
         try {
             DB::beginTransaction();
             $puente = new Credito_puente();
@@ -144,6 +148,13 @@ class CreditoPuenteController extends Controller
                 $lote_puente->save();
             }
 
+            foreach($docs as $index => $d){
+                $doc = new Puente_checklist();
+                $doc->solicitud_id = $id;
+                $doc->documento_id =$d['id'];
+                $doc->save();
+            }
+
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
@@ -152,8 +163,10 @@ class CreditoPuenteController extends Controller
 
     public function indexCreditos(Request $request){
         $creditos = Credito_puente::join('fraccionamientos','creditos_puente.fraccionamiento','=','fraccionamientos.id')
+                    ->join('instituciones_financiamiento', 'creditos_puente.banco','=','instituciones_financiamiento.nombre')
                     ->select('creditos_puente.id','creditos_puente.banco','creditos_puente.folio','creditos_puente.interes',
                                 'creditos_puente.status','creditos_puente.total','creditos_puente.apertura',
+                                'instituciones_financiamiento.lic',
                                 'fraccionamientos.nombre as proyecto','creditos_puente.fraccionamiento'    
                     );
 
@@ -203,7 +216,7 @@ class CreditoPuenteController extends Controller
                     ->join('etapas','lotes.etapa_id','=','etapas.id')
                     ->select('lotes_puente.id','lotes_puente.modelo_id','lotes_puente.precio_p','lotes_puente.modeloAnt1',
                             'lotes_puente.modeloAnt2','lotes_puente.precio1','lotes_puente.precio2', 'lotes.num_lote',
-                            'lotes.manzana','lotes_puente.lote_id',
+                            'lotes.manzana','lotes_puente.lote_id','lotes.emp_constructora',
                             'modelos.nombre as modelo','fraccionamientos.nombre as proyecto','etapas.num_etapa',
                             'etapas.factibilidad','licencias.foto_predial','licencias.foto_lic','licencias.num_licencia'
                     )
@@ -214,6 +227,32 @@ class CreditoPuenteController extends Controller
                     ->get();
 
         return['lotes'=>$lotes];
+    }
+
+    public function getChecklist(Request $request){
+
+        $checklist = Puente_checklist::join('cat_documentos','puente_checklist.documento_id','=','cat_documentos.id')
+                                ->select('cat_documentos.documento','cat_documentos.categoria','puente_checklist.solicitud_id',
+                                    'puente_checklist.id','puente_checklist.documento_id', 'puente_checklist.id','puente_checklist.listo'
+                                )
+                                ->where('puente_checklist.solicitud_id','=',$request->id)
+                                ->orderBy('cat_documentos.categoria','asc')
+                                ->orderBy('puente_checklist.id','asc')
+                                ->get();
+        
+        $listos = Puente_checklist::where('puente_checklist.solicitud_id','=',$request->id)
+                                  ->where('puente_checklist.listo','=',1)->count();
+
+        return ['checklist' => $checklist, 
+            'listos' => $listos,
+            'total' => $checklist->count()
+        ];
+    }
+
+    public function cambiarChk(Request $request){
+        $chk = Puente_checklist::findOrFail($request->id);
+        $chk->listo = $request->valor;
+        $chk->save();
     }
 
     public function agregarLote(Request $request){
@@ -321,7 +360,7 @@ class CreditoPuenteController extends Controller
         $credito->interes = $datos['interes'];
         $credito->total = $request->total;
         $credito->apertura = $datos['apertura'];
-        $credito->folio = $datos['banco'].'-'.$request->total;
+        $credito->folio = $datos['banco'].'-'.$request->total.'-'.$request->id;
         $credito->save();
         //$credito->save();
     }
@@ -348,7 +387,6 @@ class CreditoPuenteController extends Controller
                     ->where('puente_id','=',$request->id)
                     ->where('clasificacion','=',1)->get();
         
-
         return[
             'urbanizacion' => $urbanizacion, 
             'edificacion' => $edificacion

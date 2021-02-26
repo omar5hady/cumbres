@@ -17,7 +17,6 @@
                             <div class="form-group row">
                                 <div class="col-md-8">
                                     <div class="input-group">
-                                        <!--Criterios para el listado de busqueda -->
                                         <select class="form-control" @keyup.enter="listarAvisos(1)" v-model="buscar" >
                                             <option value="">Seleccione</option>
                                             <option v-for="proyecto in arrayProyectos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
@@ -92,7 +91,12 @@
                     <template v-else-if="listado == 3">
                         <div class="card-body"> 
                             <div class="form-group row border">
-                                
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="">Empresa solicitante: </label>
+                                        <strong><p>{{emp_constructora}}</p></strong>
+                                    </div>
+                                </div>
                                 <div class="col-md-3">
                                     <label for="">Institución </label>
                                     <select class="form-control" v-model="cabecera.banco">
@@ -108,8 +112,6 @@
                                     <label for="">Apertura </label>
                                     <input type="number" class="form-control" min="0" max="100" v-model="cabecera.apertura" v-on:keypress="isNumber($event)">
                                 </div>
-                                <div class="col-md-3"></div>
-
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="">Fraccionamiento </label>
@@ -119,7 +121,6 @@
                                         </select>
                                     </div>
                                 </div>
-
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="">Etapa </label>
@@ -129,7 +130,6 @@
                                         </select>
                                     </div>
                                 </div>
-
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="">Manzana </label>
@@ -139,7 +139,6 @@
                                         </select>
                                     </div>
                                 </div>
-
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Lote</label> 
@@ -151,14 +150,11 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="col-md-1" v-if="lote_id != ''">
                                     <div class="form-group">
                                         <button @click="registrarLote()" class="btn btn-success form-control btnagregar"><i class="icon-plus"></i></button>
                                     </div>
                                 </div>
-
-                               
                                  <div class="col-md-12">
                                     <!-- Div para mostrar los errores que mande validerFraccionamiento -->
                                     <div v-show="errorcreditosPuente" class="form-group row div-error">
@@ -340,7 +336,6 @@
                                     <label for="">Apertura </label>
                                     <p v-text="formatNumber(cabecera.apertura) + '%'"></p>
                                 </div>
-
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="">Fraccionamiento </label>
@@ -350,8 +345,23 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <label for="">Empresa solicitante: </label>
+                                        <strong><label>{{emp_constructora}}</label></strong>
+                                    </div>
+                                </div>
+                                <div class="col-md-2"></div>
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <label for="">Tramite de licencia: </label>
+                                        <strong>
+                                            <label v-if="lic == 0" v-text="'Antes'"></label>
+                                            <label v-if="lic == 1" v-text="'Despues'"></label>
+                                        </strong>
+                                    </div>
+                                </div>
                             </div>
-
                             <div class="form-group row border">
                                 <div class="col-md-12">
                                     <h5><strong><center>Modelos</center></strong></h5>
@@ -365,7 +375,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="form-group row">
                                 <div class="table-responsive col-md-12">
                                     <table class="table2 table-bordered table-striped table-sm">
@@ -414,7 +423,6 @@
                                                 <td align="right" colspan="6"></td>
                                             </tr>
                                         </tbody>
-
                                         <tbody v-else>
                                             <tr>
                                                 <td colspan="6">
@@ -425,7 +433,6 @@
                                     </table>
                                 </div>
                             </div>
-
                             <div class="form-group row">
                                 <div class="card-header form-group col-md-5 border">
                                     <div class="row">
@@ -436,7 +443,6 @@
                                         </button>
                                     </div>
                                     <br>
-
                                     <div class="table-responsive col-md-12" v-if="arrayUrbanizacion.length">
                                         <table class="table2 table-striped table-sm">
                                             <thead>
@@ -444,7 +450,6 @@
                                                     <th></th>
                                                     <th>Archivo</th>
                                                     <th>Fecha de subida</th>
-                                                    
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -463,10 +468,8 @@
                                         </table>
                                     </div>
                                 </div>
-
-                                <div class="form-group col-md-2">
+                                <div class="card-header form-group col-md-2 ">   
                                 </div>
-
                                 <div class="card-header form-group col-md-5 border">
                                     <div class="row">
                                         <h5>Planos de edificación</h5> 
@@ -476,7 +479,6 @@
                                         </button>
                                     </div>
                                     <br>
-
                                     <div class="table-responsive col-md-12" v-if="arrayUrbanizacion.length">
                                         <table class="table2 table-striped table-sm">
                                             <thead>
@@ -504,7 +506,49 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
+                            <div class="form-group row border">
+                                <div class="col-md-12">
+                                    <br><center>
+                                        <h5 v-text="`Checklist (${chk_listos}/${chk_total})`"></h5>
+                                        <button v-if="verList == 0" type="button" title="Mostrar" 
+                                            class="btn btn-primary btn-sm rounded-circle" @click="verList=1">
+                                            <i class="icon-eye"></i>
+                                        </button>
+                                        <button v-if="verList == 1" type="button" title="Ocultar" 
+                                            class="btn btn-warning btn-sm rounded-circle" @click="verList=0">
+                                            <i class="icon-close"></i>
+                                        </button>
+                                    </center><br>
+                                </div>
+                                <div class="table-responsive col-md-12" v-if="verList == 1">
+                                    <table class="table2 table-bordered table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th></th>
+                                                <th>Documento</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody v-if="checklist.length">
+                                            <tr v-for="chk in checklist" :key="chk.id">
+                                                <td>
+                                                    <button type="button" title="No aplica" 
+                                                    class="btn btn-danger btn-sm rounded-circle" @click="noAplicaDocumento()">
+                                                        <i class="icon-close"></i>
+                                                    </button>
+                                                </td>
+                                                <td v-text="chk.categoria"></td>
+                                                <td><strong>{{chk.documento}}</strong></td>
+                                                <td><input type="checkbox" value="1" v-model="chk.listo" @change="cambiarChk(chk.id, chk.listo)">
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
                             <div class="form-group row">
                                 <div class="col-md-1">
                                     <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
@@ -644,7 +688,6 @@
                     'fraccionamiento' : '',
                 },
                 offset : 3,
-                criterio : 'ini_obras.clave', 
                 buscar : '',
                 b_folio:'',
                 arrayProyectos : [],
@@ -655,11 +698,16 @@
                 arrayModelos:[],
                 lote_id:'',
                 arrayBancos:[],
+                checklist:[],
+                chk_total:0,
+                chk_listos:0,
+                verList:0,
                 etapa_id:'',
                 manzana:'',
                 total_precio:0,
                 file:'',
                 descripcion:'',
+                lic:0,
 
                 modal:0,
                 tituloModal:'',
@@ -669,6 +717,7 @@
                 clasificacion : 1,
                 arrayUrbanizacion:[],
                 arrayEdificacion:[],
+                emp_constructora:''
             }
         },
         components:{
@@ -706,7 +755,6 @@
                 return res;
             },
         },
-       
         methods : {
             dropboxFile(e){
 
@@ -715,7 +763,6 @@
                 this.file = e.target.files[0];
 
             },
-
             dropboxSubmit(e) {
 
                 e.preventDefault();
@@ -826,6 +873,20 @@
                     console.log(error);
                 });
             },
+            getChecklist(id){
+                let me = this;
+                me.checklist=[];
+                var url = '/cPuentes/getChecklist?id=' + id;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.checklist = respuesta.checklist;
+                    me.chk_total = respuesta.total;
+                    me.chk_listos = respuesta.listos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
             selectBancos(){
                 let me = this;
                 me.arrayBancos=[];
@@ -907,10 +968,12 @@
             getLotesPuente(id){
                 let me = this;
                 me.arrayLotesPuente=[];
+                me.emp_constructora = '';
                 var url = '/cPuentes/getLotesPuente?id=' + id;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLotesPuente = respuesta.lotes;
+                    me.emp_constructora = me.arrayLotesPuente[0].emp_constructora;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -965,11 +1028,13 @@
                     me.cabecera.banco = data['banco'];
                     me.cabecera.interes = data['interes'];
                     me.cabecera.apertura = data['apertura'];
+                    me.lic = data['lic'];
                     me.cabecera.fraccionamiento = data['fraccionamiento'];
                     me.selectEtapa(me.cabecera.fraccionamiento);
                     me.getPreciosModelo(me.id);
                     me.getLotesPuente(me.id);
                     me.getPlanos(me.id);
+                    me.getChecklist(me.id);
                   
                 })
                 .catch(function (error) {
@@ -1060,12 +1125,17 @@
                    
                 }).then(function (response){
                     //Obtener detalle
-                        swal({
+                        const toast = Swal.mixin({
+                            toast: true,
                             position: 'top-end',
-                            type: 'success',
-                            title: 'Precios actualizados correctamente',
                             showConfirmButton: false,
-                            timer: 1500
+                            timer: 3000
+
+                            });
+
+                            toast({
+                            type: 'success',
+                            title: 'Cambios guardados'
                         })
                         me.getLotesPuente(me.id);
                         me.getPreciosModelo(me.id);
@@ -1110,6 +1180,31 @@
                 });
 
             },
+            cambiarChk(id,valor){
+                let me = this;
+
+                axios.put('/cPuentes/cambiarChk',{
+                    'id': id,
+                    'valor' : valor
+                }).then(function (response){
+                    //Obtener detalle
+                        me.getChecklist(me.id);
+                        const toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+
+                            });
+
+                            toast({
+                            type: 'success',
+                            title: 'Cambios guardados'
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
             abrirModal(opcion,id){
                 switch(opcion){
                     case 'obs':{
@@ -1139,6 +1234,7 @@
                         this.descripcion = '';
                         break;
                     }
+                   
                 }
             },
             cerrarModal(){

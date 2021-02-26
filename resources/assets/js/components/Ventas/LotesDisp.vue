@@ -354,7 +354,6 @@
                 arrayDatosApartado: [],
                 arrayEtapas: [],
                 arrayModelos: [],
-
                 modal : 0,
                 tituloModal : '',
                 tipoAccion: 0,
@@ -407,9 +406,7 @@
                 }
                 return pagesArray;
             }
-
         },
-
 
         methods : {
             /**Metodo para mostrar los registros */
@@ -470,10 +467,9 @@
                     console.log(error);
                 });
             },
-
             selectModelo(buscar){
                 let me = this;
-              
+                me.b_modelo = '';
                 me.arrayModelos=[];
                 var url = '/select_modelo_proyecto?buscar=' + buscar;
                 axios.get(url).then(function (response) {
@@ -484,7 +480,6 @@
                     console.log(error);
                 });
             },
-
             mostrarPromo(promo){
                  Swal({
                     title: promo,
@@ -492,7 +487,6 @@
                     customClass: 'animated tada'
                     })
             },
-
             selectVendedores(){
                 let me = this;
                 me.arrayVendedores=[];
@@ -504,8 +498,7 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-            },
-            
+            },     
             selectDatosApartado(lote_id){
                 let me = this;
                 me.arrayDatosApartado=[];
@@ -549,7 +542,6 @@
                 let val = (value/1).toFixed(2)
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
-
             isNumber: function(evt) {
                 evt = (evt) ? evt : window.event;
                 var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -571,7 +563,6 @@
 
                 return this.errorLote;
             },
-
             apartarLote(){
                  if(this.validarLote() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
@@ -604,7 +595,6 @@
                     console.log(error);
                 });
             },
-
             actualizarLote(){
                   if(this.validarLote() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
@@ -638,7 +628,6 @@
                     console.log(error);
                 });
             },
-
             desapartarLote(){
                 swal({
                 title: '¿Desea desapartar este lote?',
@@ -670,7 +659,6 @@
                 }
                 })
             },
-
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
@@ -691,7 +679,6 @@
                 this.modal2 = 0;
                 this.tituloModal2 = '';
             },
-
             cerrarModal3(){
                 this.modal3 = 0;
                 this.tituloModal3 = '';

@@ -30,6 +30,7 @@
                                 <tr>
                                     <th>Opciones</th>
                                     <th>Institución</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -43,6 +44,8 @@
                                         </button>                                       
                                     </td>
                                     <td v-text="institucion.nombre"></td>
+                                    <td v-if="lic == 0"> Licencia antes</td>
+                                    <td v-if="lic == 1"> Licencia despues</td>
                                 </tr>                                
                             </tbody>
                         </table>
@@ -82,12 +85,20 @@
                                         <input type="text" v-model="nombre" class="form-control" placeholder="Institucion de Financiamiento">
                                     </div>
                                 </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Licencia</label>
+                                    <div class="col-md-4">
+                                        <select class="form-control" v-model="lic">
+                                            <option value="0">Antes</option>
+                                            <option value="1">Despues</option>
+                                        </select>
+                                    </div>
+                                </div>
                              
                                 <div v-show="errorInstitucion" class="form-group row div-error">
                                     <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjInstitucion" :key="error" v-text="error">
-
-                                        </div>
+                                        <div v-for="error in errorMostrarMsjInstitucion" :key="error" v-text="error"></div>
                                     </div>
                                 </div>
                            <!-- </form>-->
@@ -131,7 +142,8 @@
                 },
                 offset : 3,
                 criterio : 'nombre',
-                buscar : ''
+                buscar : '',
+                lic:0,
             }
         },
         computed:{
@@ -194,7 +206,8 @@
                 let me = this;
                 //Con axios se llama el metodo store de DepartamentoController
                 axios.post('/institucion_financiamiento/registrar',{
-                    'nombre': this.nombre
+                    'nombre': this.nombre,
+                    'lic':this.lic
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
@@ -222,7 +235,8 @@
                 //Con axios se llama el metodo update de DepartamentoController
                 axios.put('/institucion_financiamiento/actualizar',{
                     'nombre': this.nombre,
-                    'id' : this.id
+                    'id' : this.id,
+                    'lic' : this.lic
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal();
@@ -301,6 +315,7 @@
                                 this.modal = 1;
                                 this.tituloModal = 'Registrar Institucion de Financiamiento';
                                 this.nombre ='';
+                                this.lic = 0;
                                 this.tipoAccion = 1;
                                 break;
                             }
@@ -313,6 +328,7 @@
                                 this.id=data['id'];
                                 this.nombre=data['nombre'];
                                 this.pagina_web = data['pagina_web'];
+                                this.lic = data['lic'];
                                 break;
                             }
                         }
