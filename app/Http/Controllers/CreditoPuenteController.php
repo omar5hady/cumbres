@@ -255,6 +255,11 @@ class CreditoPuenteController extends Controller
         $chk->save();
     }
 
+    public function deleteChk(Request $request){
+        $chk = Puente_checklist::findOrFail($request->id);
+        $chk->delete();
+    }
+
     public function agregarLote(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $l = $request->lote;
@@ -354,13 +359,15 @@ class CreditoPuenteController extends Controller
 
     public function actualizarSolicitud(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $totalPuente = Lote_puente::select('id')->where('solicitud_id','=',$request->id)->count();
+
         $datos = $request->cabecera;
         $credito = Credito_puente::findOrFail($request->id);
         $credito->banco = $datos['banco'];
         $credito->interes = $datos['interes'];
         $credito->total = $request->total;
         $credito->apertura = $datos['apertura'];
-        $credito->folio = $datos['banco'].'-'.$request->total.'-'.$request->id;
+        $credito->folio = $datos['banco'].'-'.$totalPuente.'-'.$request->id;
         $credito->save();
         //$credito->save();
     }
@@ -391,6 +398,27 @@ class CreditoPuenteController extends Controller
             'urbanizacion' => $urbanizacion, 
             'edificacion' => $edificacion
         ];
+    }
+
+    public function getChkSinSolic(Request $request){
+        $chkList = Puente_checklist::select('documento_id')->where('solicitud_id','=',$request->id)->get();
+        $listado = [];
+
+        foreach($chkList as $index => $c){
+            array_push($listado,$c->documento_id);
+        }
+
+        $chk = Cat_documento::select('id','documento','categoria')
+                ->whereNotIn('id',$listado)
+                ->get();
+        return ['chk' => $chk];
+    }
+
+    public function addDocChk(Request $request){
+        $chkList = new Puente_checklist();
+        $chkList->solicitud_id = $request->id;
+        $chkList->documento_id = $request->documento;
+        $chkList->save();
     }
 
 }

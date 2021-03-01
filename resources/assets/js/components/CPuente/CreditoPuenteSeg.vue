@@ -311,6 +311,41 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="form-group row border">
+                                <div class="col-md-12">
+                                    <br><center>
+                                        <h5 v-text="`Checklist (${chk_listos}/${chk_total})`"></h5>
+                                        <button v-if="verList == 0" type="button" title="Mostrar" 
+                                            class="btn btn-primary btn-sm rounded-circle" @click="verList=1">
+                                            <i class="icon-eye"></i>
+                                        </button>
+                                        <button v-if="verList == 1" type="button" title="Ocultar" 
+                                            class="btn btn-warning btn-sm rounded-circle" @click="verList=0">
+                                            <i class="icon-close"></i>
+                                        </button>
+                                    </center><br>
+                                </div>
+                                <div class="table-responsive col-md-12" v-if="verList == 1">
+                                    <table class="table2 table-bordered table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>Documento</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody v-if="checklist.length">
+                                            <tr v-for="chk in checklist" :key="chk.id">
+                                                <td v-text="chk.categoria"></td>
+                                                <td><strong>{{chk.documento}}</strong></td>
+                                                <td><input disabled type="checkbox" value="1" v-model="chk.listo" @change="cambiarChk(chk.id, chk.listo)">
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                             
                             <div class="form-group row">
                                 <div class="col-md-12">
@@ -519,6 +554,10 @@
                                             class="btn btn-warning btn-sm rounded-circle" @click="verList=0">
                                             <i class="icon-close"></i>
                                         </button>
+                                        <button v-if="verList == 1" type="button" title="Add" 
+                                            class="btn btn-success btn-sm rounded-circle" @click="abrirModal('checklist',id)">
+                                            <i class="icon-plus"></i>
+                                        </button>
                                     </center><br>
                                 </div>
                                 <div class="table-responsive col-md-12" v-if="verList == 1">
@@ -535,7 +574,7 @@
                                             <tr v-for="chk in checklist" :key="chk.id">
                                                 <td>
                                                     <button type="button" title="No aplica" 
-                                                    class="btn btn-danger btn-sm rounded-circle" @click="noAplicaDocumento()">
+                                                    class="btn btn-danger btn-sm rounded-circle" @click="deleteChk(chk.id)">
                                                         <i class="icon-close"></i>
                                                     </button>
                                                 </td>
@@ -548,7 +587,6 @@
                                     </table>
                                 </div>
                             </div>
-
                             <div class="form-group row">
                                 <div class="col-md-1">
                                     <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
@@ -634,10 +672,25 @@
                                     </form>
                                     
                                 </template>
+
+                                <template v-if="tipoAccion == 3">
+                                    
+                                        <div class="form-group row">
+                                            <label class="col-md-2 form-control-label" for="text-input">Documento</label>
+                                            <div class="col-md-6">
+                                                <select class="form-control" v-model="chk_new" >
+                                                    <option value="">Seleccione</option>
+                                                    <option v-for="chk in arrayChk" :key="chk.id" :value="chk.id" v-text="chk.documento+'-'+chk.categoria"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    
+                                </template>
                            </div>
                             <!-- Botones del modal -->
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                                <button v-if="tipoAccion == 3 && chk_new != ''" type="button" class="btn btn-primary" @click="addDocumento()">Añadir documento</button>
                             </div>
                         </div>
                         <!-- /.modal-content -->
@@ -699,6 +752,8 @@
                 lote_id:'',
                 arrayBancos:[],
                 checklist:[],
+                arrayChk:[],
+                chk_new:'',
                 chk_total:0,
                 chk_listos:0,
                 verList:0,
@@ -1089,6 +1144,28 @@
                     console.log(error);
                 });
             },
+            addDocumento(){
+                let me = this;
+                axios.post('/cPuentes/addDocChk',{
+                    'id': me.id,
+                    'documento': me.chk_new,
+                   
+                }).then(function (response){
+                    //Obtener detalle
+                        swal({
+                            position: 'top-end',
+                            type: 'success',
+                            title: 'Comentario guardado correctamente',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        me.getChecklist(me.id);
+                        me.cerrarModal();
+                    
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
             eliminarLote(data){
                 let me = this;
                 axios.delete('/cPuentes/eliminarLote',{params:{
@@ -1115,6 +1192,61 @@
                 }).catch(function (error){
                     console.log(error);
                 });
+            },
+            getSinChk(){
+                let me = this;
+                me.arrayChk = [];
+
+                 var url = '/cPuentes/getChkSinSolic';
+                axios.get(url,{params:{
+                        'id': me.id
+                }}).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayChk = respuesta.chk;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
+            },
+            deleteChk(id){
+                swal({
+                title: '¿Desea quitar este requisito de la solicitud?',
+                text: "",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, continuar!'
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+
+                //Con axios se llama el metodo update de LoteController
+                    axios.delete('/cPuentes/deleteChk',{
+                        params: {
+                        'id' : id,
+                        }
+                    }).then(function (response){
+                        //window.alert("Cambios guardados correctamente");
+                        me.getChecklist(me.id);
+                        const toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                            });
+                            toast({
+                            type: 'success',
+                            title: 'Requisito eliminado correctamente'
+                        })
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+                }
+                })
+
             },
             actualizarModelo(modelo_id,precio){
                 let me = this;
@@ -1234,6 +1366,13 @@
                         this.descripcion = '';
                         break;
                     }
+                    case 'checklist':{
+                        this.getSinChk();
+                        this.modal = 1;
+                        this.tituloModal = 'Checklist';
+                        this.tipoAccion = 3;
+                        break;
+                    }
                    
                 }
             },
@@ -1242,6 +1381,8 @@
                 this.tituloModal = '';
                 this.observacion = '';
                 this.listarAvisos(1);
+                this.chk_new = '';
+                this.arrayChk =[];
             }
         },
         mounted() {

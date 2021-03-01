@@ -153,6 +153,7 @@
                                         <th>Construcción mts&sup2;</th>
                                         <th>Fecha de solicitud</th>
                                         <th># Inicio</th>
+                                        <th>Fecha de termino</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -169,6 +170,7 @@
                                         <td v-text="lote.construccion"></td>
                                         <td v-text="lote.ehl_solicitado"></td>
                                         <td v-text="lote.num_inicio"></td>
+                                        <td v-text="lote.fecha_termino_ventas"></td>
                                     </tr>                               
                                 </tbody>
                             </table>
