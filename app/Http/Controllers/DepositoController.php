@@ -514,6 +514,7 @@ class DepositoController extends Controller
         $fecha2 = $request->fecha2;
         $banco = $request->banco;
         $monto = $request->monto;
+        $nombre = $request->nombre;
 
         $query = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
             ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
@@ -540,6 +541,9 @@ class DepositoController extends Controller
             $depositos = $depositos->where('depositos.banco','=',$banco);
         if($monto != '')
             $depositos = $depositos->where('depositos.cant_depo','=',$monto);
+
+        if($nombre != '')
+            $depositos = $depositos->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $nombre . '%');
 
         $depositos = $depositos->orderBy('depositos.fecha_pago','desc')->paginate(8);
 

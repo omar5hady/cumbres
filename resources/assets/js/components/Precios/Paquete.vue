@@ -112,8 +112,8 @@
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Nombre del Paquete</label>
-                                    <div class="col-md-4">
-                                        <input type="text" v-model="nombre" class="form-control" placeholder="Paquete">
+                                    <div class="col-md-6">
+                                        <textarea rows="4" cols="60" v-model="nombre" class="form-control" placeholder="Descripcion del paquete"></textarea>
                                     </div>
                                 </div>
 
@@ -160,7 +160,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Descripcion</label>
                                     <div class="col-md-6">
-                                        <textarea rows="5" cols="30" v-model="descripcion" class="form-control" placeholder="Descripcion del paquete"></textarea>
+                                        <textarea rows="4" cols="30" v-model="descripcion" class="form-control" placeholder="Descripcion del paquete"></textarea>
                                     </div>
                                 </div>
 

@@ -801,6 +801,7 @@ class InstSeleccionadasController extends Controller
         }
 
         $creditos = $creditos->where('contratos.status','!=',0)
+                            ->orderBy('expedientes.fecha_firma_esc','asc')
                             ->orderBy('inst_seleccionadas.cobrado','asc')
                             ->orderBy('inst_seleccionadas.monto_credito','desc')
                             ->paginate(10);

@@ -222,24 +222,10 @@ class PersonalController extends Controller
                 'fraccionamientos.nombre as proyecto'
             );
 
-        if($clasificacion != 5){
+        
             
             $cliente = $query->where('clientes.clasificacion', '=', $clasificacion);
            
-                if($desde != '' && $hasta != '')
-                    $cliente= $cliente->whereBetween('clientes.created_at', [$desde, $hasta]);
-                if($proyecto != '')
-                    $cliente= $cliente->whereBetween->where('clientes.proyecto_interes_id', '=', $proyecto);
-                if($publicidad != '')
-                    $cliente= $cliente->whereBetween->where('clientes.publicidad_id', '=', $publicidad);
-
-            $cliente = $cliente->orderBy('personal.nombre', 'asc')
-                ->orderBy('personal.apellidos', 'asc')
-                ->paginate(15);
-        }
-        else{
-            $cliente = $query->where('expedientes.fecha_firma_esc','!=',NULL);
-
                 if($desde != '' && $hasta != '')
                     $cliente= $cliente->whereBetween('clientes.created_at', [$desde, $hasta]);
                 if($proyecto != '')
@@ -247,8 +233,10 @@ class PersonalController extends Controller
                 if($publicidad != '')
                     $cliente= $cliente->where('clientes.publicidad_id', '=', $publicidad);
 
-            $cliente = $cliente->distinct()->paginate(15);
-        }
+            $cliente = $cliente->orderBy('personal.nombre', 'asc')
+                ->orderBy('personal.apellidos', 'asc')
+                ->paginate(15);
+        
            
         return [
             'pagination' => [

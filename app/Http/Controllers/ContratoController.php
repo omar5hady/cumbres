@@ -1861,6 +1861,15 @@ class ContratoController extends Controller
         $pago->fecha_pago = $request->fecha_pago;
         $pago->restante = $request->monto_pago;
         $pago->save();
+
+        $pagos = Pago_contrato::select('id')->where('contrato_id','=',$request->contrato_id)->orderBy('fecha_pago','asc')->get();
+
+        if(sizeOf($pagos))
+            foreach($pagos as $index => $p){
+                $pag = Pago_contrato::findOrFail($p->id);
+                $pag->num_pago = $index;
+                $pag->save();
+            }
     }
 
     public function actualizarPago(Request $request)

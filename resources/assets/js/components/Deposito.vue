@@ -243,6 +243,15 @@
                                 </div>
                             </div>
                         </div>
+                         <div class="form-group row">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <!--Criterios para el listado de busqueda -->
+                                    <input type="text" readonly placeholder="Cliente:" class="form-control col-sm-4">
+                                    <input type="text" v-model="b_nombre" @keyup.enter="listarHistorialDep(1)" class="form-control" >
+                                </div>
+                            </div>
+                        </div>
                         <div class="form-group row">
                             <div class="col-md-8">
                                 <div class="input-group">
@@ -847,6 +856,7 @@
                 b_deposito : '',
                 b_fecha1 : '',
                 b_fecha2 : '',
+                b_nombre :'',
                 b_empresa:'',
                 empresas:[],
 
@@ -925,7 +935,7 @@
                 let me = this;
                 me.deposito = 2;
                 var url = '/depositos/historial?page=' + page + '&fecha1=' + me.b_fecha1 + '&fecha2=' + me.b_fecha2 + 
-                    '&banco=' + me.banco + '&monto=' + me.b_deposito +'&b_empresa='+this.b_empresa;
+                    '&banco=' + me.banco + '&monto=' + me.b_deposito +'&b_empresa='+this.b_empresa + '&nombre=' + me.b_nombre;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayHistorial = respuesta.depositos.data;

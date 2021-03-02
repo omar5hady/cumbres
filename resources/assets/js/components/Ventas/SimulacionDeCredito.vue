@@ -2962,7 +2962,6 @@
                     console.log(error);
                 });
             }, 
-
                /**Metodo para actualizar  */
             registrarSimulacion(){
                 if(this.validarRegistro() || this.proceso==true) //Se verifica si hay un error (campo vacio)
@@ -3231,9 +3230,6 @@
                 this.silla_ruedas = data['silla_ruedas'];
                 this.num_vehiculos = data['num_vehiculos'];
                 this.fraccionamiento = data['fraccionamiento'];
-                 
-
-
                 this.listado=5;
             },
             limpiarDatos(){
@@ -3350,13 +3346,6 @@
                         })
                 }
                 else{
-                    var arrayDatosProspecto=[];
-                    /*var url = '/clientes/obtenerDatos?id=' + id;
-
-                    axios.get(url).then(function (response) {
-                        var respuesta = response.data;
-                        me.arrayDatosProspecto = respuesta.personas;*/
-
                         this.nombre= prospecto['nombre'];
                         this.apellidos= prospecto['apellidos'];
                         this.direccion=prospecto['direccion'];
@@ -3414,14 +3403,7 @@
                         this.id=prospecto['id'];
                         this.listado=3;
 
-                /* })
-                    .catch(function (error) {
-                        console.log(error);
-                    });*/
                 }
-                
-                
-               
 
             },
 

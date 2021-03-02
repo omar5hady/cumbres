@@ -305,7 +305,12 @@
                                     </thead>
                                     <tbody>
                                         <tr v-for="contrato in arrayContratos" :key="contrato.id" v-on:dblclick="verContrato(contrato)" v-bind:style="{ backgroundColor : !contrato.detenido ? '#FFFFFF' : '#D23939'}" title="Ver contrato">
-                                            <td class="td2" v-text="contrato.id"></td>
+                                            <td class="td2">
+                                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{contrato.id}}</a>
+                                                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                        <a class="dropdown-item" @click="abrirPDF(contrato.id)">Estado de cuenta</a>
+                                                    </div>
+                                            </td>
                                             <td class="td2">
                                                 <a href="#" v-text="contrato.nombre.toUpperCase() + ' ' + contrato.apellidos.toUpperCase() "></a>
                                             </td>
@@ -1798,51 +1803,55 @@
                                                 <button type="button" v-if="listado==4 && btn_actualizar==1" class="btn btn-success" @click="actualizarContrato()"> Actualizar </button>
                                             </div>
 
-                                            <template v-if="modelo != 'Terreno'">
-                                                <div style="text-align: right;" v-if="rolId!=2">
-                                                    <a class="btn btn-warning btn-sm" v-if="listado==4 && tipo_credito!='Crédito Directo' && btn_actualizar==0" target="_blank" v-bind:href="'/contrato/promesaCredito/pdf/'+id">Imprimir contrato</a>
-                                                    <a class="btn btn-warning btn-sm" v-if="listado==4 && tipo_credito=='Crédito Directo' && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/reservaDeDominio/pdf/'+id">Imprimir contrato</a>
-                                                    <a class="btn btn-primary btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+id">Solicitud de contrato de compra venta</a>
-                                                    <a class="btn btn-light btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/pagareContrato/pdf/'+id">Imprimir pagares</a>
-                                                    <a class="btn btn-dark btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/cartaServicios/pdf/'+id">Carta de servicios</a>
-                                                    <a class="btn btn-dark btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+id">Servicios de telecomunición</a>
-                                                    <a class="btn btn-danger btn-sm" v-if="listado==4 && btn_actualizar==0" v-bind:href="'/descargarReglamento/contrato/'+id">Reglamento de la etapa</a>
-                                                    <a class="btn btn-info btn-sm" v-if="listado==4 && btn_actualizar==0" @click="selectNombreArchivoModelo()">Modelo</a>
-                                                </div>
-                                                <div style="text-align: right;" v-if="rolId==2 && status == 1">
-                                                    <a class="btn btn-warning btn-sm" v-if="listado==4 && tipo_credito!='Crédito Directo' && btn_actualizar==0" target="_blank" v-bind:href="'/contrato/promesaCredito/pdf/'+id">Imprimir contrato</a>
-                                                    <a class="btn btn-warning btn-sm" v-if="listado==4 && tipo_credito=='Crédito Directo' && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/reservaDeDominio/pdf/'+id">Imprimir contrato</a>
-                                                    <a class="btn btn-primary btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+id">Solicitud de contrato de compra venta</a>
-                                                    <a class="btn btn-light btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/pagareContrato/pdf/'+id">Imprimir pagares</a>
-                                                    <a class="btn btn-dark btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/cartaServicios/pdf/'+id">Carta de servicios</a>
-                                                    <a class="btn btn-dark btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+id">Servicios de telecomunición</a>
-                                                    <a class="btn btn-danger btn-sm" v-if="listado==4 && btn_actualizar==0" v-bind:href="'/descargarReglamento/contrato/'+id">Reglamento de la etapa</a>
-                                                    <a class="btn btn-info btn-sm" v-if="listado==4 && btn_actualizar==0" @click="selectNombreArchivoModelo()">Modelo</a>
-                                                </div>
-                                            </template>
-
-                                            <template v-else>
-                                                <div style="text-align: right;" v-if="rolId!=2">
-                                                    <a class="btn btn-primary btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+id">Solicitud de contrato de compra venta</a>
-                                                    <a class="btn btn-warning btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/contrato/contratoLote/pdf/'+id">Imprimir contrato</a>
-                                                    <a class="btn btn-light btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/pagareContrato/pdf/'+id">Imprimir pagares</a>
-                                                    <a class="btn btn-info btn-sm" v-if="listado==4 && btn_actualizar==0" @click="selectNombreArchivoModelo()">Especificaciones</a>
-                                                    <a class="btn btn-dark btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/cartaServicios/pdf/'+id">Carta de servicios</a>
-                                                    <a class="btn btn-dark btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+id">Servicios de telecomunición</a>
-                                                    <a class="btn btn-danger btn-sm" v-if="listado==4 && btn_actualizar==0" v-bind:href="'/descargarReglamento/contrato/'+id">Reglamento de la etapa</a>
-                                                </div>
-                                                <div style="text-align: right;" v-if="rolId==2 && status == 1">
-                                                    <a class="btn btn-primary btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+id">Solicitud de contrato de compra venta</a>
-                                                    <a class="btn btn-warning btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/contrato/contratoLote/pdf/'+id">Imprimir contrato</a>
-                                                    <a class="btn btn-light btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/pagareContrato/pdf/'+id">Imprimir pagares</a>
-                                                    <a class="btn btn-info btn-sm" v-if="listado==4 && btn_actualizar==0" @click="selectNombreArchivoModelo()">Especificaciones</a>
-                                                    <a class="btn btn-dark btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/cartaServicios/pdf/'+id">Carta de servicios</a>
-                                                    <a class="btn btn-dark btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+id">Servicios de telecomunición</a>
-                                                    <a class="btn btn-danger btn-sm" v-if="listado==4 && btn_actualizar==0" v-bind:href="'/descargarReglamento/contrato/'+id">Reglamento de la etapa</a>
-                                                </div>
-                                            </template>
                                             
-                                          
+
+                                            <div class="col-md-12">
+                                                <template v-if="modelo != 'Terreno'">
+                                                    <div style="text-align: right;" v-if="rolId!=2">
+                                                        <a class="btn btn-warning btn-sm" v-if="listado==4 && tipo_credito!='Crédito Directo' && btn_actualizar==0" target="_blank" v-bind:href="'/contrato/promesaCredito/pdf/'+id">Imprimir contrato</a>
+                                                        <a class="btn btn-warning btn-sm" v-if="listado==4 && tipo_credito=='Crédito Directo' && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/reservaDeDominio/pdf/'+id">Imprimir contrato</a>
+                                                        <a class="btn btn-primary btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+id">Solicitud de contrato de compra venta</a>
+                                                        <a class="btn btn-scarlet btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/pagareContrato/pdf/'+id">Imprimir pagares</a>
+                                                        <a class="btn btn-dark btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/cartaServicios/pdf/'+id">Carta de servicios</a>
+                                                        <a class="btn btn-dark btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+id">Servicios de telecomunición</a>
+                                                        <a class="btn btn-danger btn-sm" v-if="listado==4 && btn_actualizar==0" v-bind:href="'/descargarReglamento/contrato/'+id">Reglamento de la etapa</a>
+                                                        <a class="btn btn-info btn-sm" v-if="listado==4 && btn_actualizar==0" @click="selectNombreArchivoModelo()">Modelo</a>
+                                                    </div>
+                                                    <div style="text-align: right;" v-if="rolId==2 && status == 1">
+                                                        <a class="btn btn-warning btn-sm" v-if="listado==4 && tipo_credito!='Crédito Directo' && btn_actualizar==0" target="_blank" v-bind:href="'/contrato/promesaCredito/pdf/'+id">Imprimir contrato</a>
+                                                        <a class="btn btn-warning btn-sm" v-if="listado==4 && tipo_credito=='Crédito Directo' && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/reservaDeDominio/pdf/'+id">Imprimir contrato</a>
+                                                        <a class="btn btn-primary btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+id">Solicitud de contrato de compra venta</a>
+                                                        <a class="btn btn-scarlet btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/pagareContrato/pdf/'+id">Imprimir pagares</a>
+                                                        <a class="btn btn-dark btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/cartaServicios/pdf/'+id">Carta de servicios</a>
+                                                        <a class="btn btn-dark btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+id">Servicios de telecomunición</a>
+                                                        <a class="btn btn-danger btn-sm" v-if="listado==4 && btn_actualizar==0" v-bind:href="'/descargarReglamento/contrato/'+id">Reglamento de la etapa</a>
+                                                        <a class="btn btn-info btn-sm" v-if="listado==4 && btn_actualizar==0" @click="selectNombreArchivoModelo()">Modelo</a>
+                                                    </div>
+                                                </template>
+
+                                                <template v-else>
+                                                    <div style="text-align: right;" v-if="rolId!=2">
+                                                        <a class="btn btn-primary btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+id">Solicitud de contrato de compra venta</a>
+                                                        <a class="btn btn-warning btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/contrato/contratoLote/pdf/'+id">Imprimir contrato</a>
+                                                        <a class="btn btn-scarlet btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/pagareContrato/pdf/'+id">Imprimir pagares</a>
+                                                        <a class="btn btn-info btn-sm" v-if="listado==4 && btn_actualizar==0" @click="selectNombreArchivoModelo()">Especificaciones</a>
+                                                        <a class="btn btn-dark btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/cartaServicios/pdf/'+id">Carta de servicios</a>
+                                                        <a class="btn btn-dark btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+id">Servicios de telecomunición</a>
+                                                        <a class="btn btn-danger btn-sm" v-if="listado==4 && btn_actualizar==0" v-bind:href="'/descargarReglamento/contrato/'+id">Reglamento de la etapa</a>
+                                                    </div>
+                                                    <div style="text-align: right;" v-if="rolId==2 && status == 1">
+                                                        <a class="btn btn-primary btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+id">Solicitud de contrato de compra venta</a>
+                                                        <a class="btn btn-warning btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/contrato/contratoLote/pdf/'+id">Imprimir contrato</a>
+                                                        <a class="btn btn-scarlet btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/pagareContrato/pdf/'+id">Imprimir pagares</a>
+                                                        <a class="btn btn-info btn-sm" v-if="listado==4 && btn_actualizar==0" @click="selectNombreArchivoModelo()">Especificaciones</a>
+                                                        <a class="btn btn-dark btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/cartaServicios/pdf/'+id">Carta de servicios</a>
+                                                        <a class="btn btn-dark btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+id">Servicios de telecomunición</a>
+                                                        <a class="btn btn-danger btn-sm" v-if="listado==4 && btn_actualizar==0" v-bind:href="'/descargarReglamento/contrato/'+id">Reglamento de la etapa</a>
+                                                    </div>
+                                                </template>
+                                            </div>
+
+                                            
                                         </div>
                                     </div>
                             </div>
@@ -2321,6 +2330,11 @@
                 .catch(function (error) {
                     console.log(error);
                 })
+            },
+
+            abrirPDF(id){
+                const win = window.open('/estadoCuenta/estadoPDF/'+id, '_blank');
+                win.focus();
             },
 
             entregarExp(id){

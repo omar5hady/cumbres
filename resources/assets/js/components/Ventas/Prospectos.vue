@@ -137,7 +137,7 @@
                                                     <i class="icon-check"></i>
                                                 </button>
                                             </template>
-                                                <button title="Editar" type="button" class="btn btn-warning btn-sm" @click="actualizarProspectoBTN(prospecto.id)">
+                                                <button title="Editar" type="button" class="btn btn-warning btn-sm" @click="actualizarProspectoBTN(prospecto)">
                                                     <i class="icon-pencil"></i>
                                                 </button>
                                                 <button v-if="rolId != 2" type="button" @click="abrirModalCambio(prospecto)" class="btn btn-primary btn-sm">
@@ -1317,6 +1317,12 @@
                 contador: 0,
                 b_publicidad:'',
 
+                direccion:'',
+                colonia:'',
+                cp:'',
+                estado:'',
+                ciudad:'',
+
                 nombre_coa:'',
                 parentesco_coa:'',
                 apellidos_coa:'',
@@ -2375,55 +2381,50 @@
                 }) 
             },
 
-            actualizarProspectoBTN(id){
+            actualizarProspectoBTN(data){
               
                 let me= this;
                 this.listado=3;
-                var arrayDatosProspecto=[];
-                var url = '/clientes/obtenerDatos?id=' + id;
+               
 
-                 axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayDatosProspecto = respuesta.personas;
+                
+                    me.arrayDatosProspecto = data;
 
-                    me.nombre= me.arrayDatosProspecto[0]['nombre'];
-                    me.apellidos= me.arrayDatosProspecto[0]['apellidos'];
-                    me.sexo= me.arrayDatosProspecto[0]['sexo'];
-                    me.telefono= me.arrayDatosProspecto[0]['telefono'];
-                    me.celular= me.arrayDatosProspecto[0]['celular'];
-                    me.email_inst= me.arrayDatosProspecto[0]['email_institucional'];
-                    me.email = me.arrayDatosProspecto[0]['email'];
-                    me.empresa=me.arrayDatosProspecto[0]['empresa'];
-                    me.precio_rango=me.arrayDatosProspecto[0]['precio_rango'];
-                    me.ingreso=me.arrayDatosProspecto[0]['ingreso'];
-                    me.fecha_nac=me.arrayDatosProspecto[0]['f_nacimiento'];
-                    me.lugar_nacimiento =me.arrayDatosProspecto[0]['lugar_nacimiento'];
-                    me.curp=me.arrayDatosProspecto[0]['curp'];
-                    me.rfc=me.arrayDatosProspecto[0]['rfc'];
-                    me.homoclave=me.arrayDatosProspecto[0]['homoclave'];
-                    me.nss=me.arrayDatosProspecto[0]['nss'];
-                    me.lugar_contacto=me.arrayDatosProspecto[0]['lugar_contacto'];
-                    me.clasificacion=me.arrayDatosProspecto[0]['clasificacion'];
-                    me.proyecto_interes_id=me.arrayDatosProspecto[0]['proyecto_interes_id'];
-                    me.publicidad_id=me.arrayDatosProspecto[0]['publicidad_id'];
-                    me.tipo_casa=me.arrayDatosProspecto[0]['tipo_casa'];
-                    me.e_civil=me.arrayDatosProspecto[0]['edo_civil'];
-                    me.parentesco_coa=me.arrayDatosProspecto[0]['parentesco_coa'];
-                    me.coacreditado=me.arrayDatosProspecto[0]['coacreditado'];
-                    me.conyugeNom = me.arrayDatosProspecto[0]['n_completo_coa'];
-                    me.nombre_coa = me.arrayDatosProspecto[0]['nombre_coa'];
-                    me.nombre_recomendado = me.arrayDatosProspecto[0]['nombre_recomendado'];
-                    me.apellidos_coa = me.arrayDatosProspecto[0]['apellidos_coa'];
-                    me.lugar_nacimiento_coa =me.arrayDatosProspecto[0]['lugar_nacimiento_coa'];
-                    me.proyecto = me.arrayDatosProspecto[0]['proyecto'];
+                    me.nombre= me.arrayDatosProspecto['nombre'];
+                    me.apellidos= me.arrayDatosProspecto['apellidos'];
+                    me.sexo= me.arrayDatosProspecto['sexo'];
+                    me.telefono= me.arrayDatosProspecto['telefono'];
+                    me.celular= me.arrayDatosProspecto['celular'];
+                    me.email_inst= me.arrayDatosProspecto['email_institucional'];
+                    me.email = me.arrayDatosProspecto['email'];
+                    me.empresa=me.arrayDatosProspecto['empresa'];
+                    me.precio_rango=me.arrayDatosProspecto['precio_rango'];
+                    me.ingreso=me.arrayDatosProspecto['ingreso'];
+                    me.fecha_nac=me.arrayDatosProspecto['f_nacimiento'];
+                    me.lugar_nacimiento =me.arrayDatosProspecto['lugar_nacimiento'];
+                    me.curp=me.arrayDatosProspecto['curp'];
+                    me.rfc=me.arrayDatosProspecto['rfc'];
+                    me.homoclave=me.arrayDatosProspecto['homoclave'];
+                    me.nss=me.arrayDatosProspecto['nss'];
+                    me.lugar_contacto=me.arrayDatosProspecto['lugar_contacto'];
+                    me.clasificacion=me.arrayDatosProspecto['clasificacion'];
+                    me.proyecto_interes_id=me.arrayDatosProspecto['proyecto_interes_id'];
+                    me.publicidad_id=me.arrayDatosProspecto['publicidad_id'];
+                    me.tipo_casa=me.arrayDatosProspecto['tipo_casa'];
+                    me.e_civil=me.arrayDatosProspecto['edo_civil'];
+                    me.parentesco_coa=me.arrayDatosProspecto['parentesco_coa'];
+                    me.coacreditado=me.arrayDatosProspecto['coacreditado'];
+                    me.conyugeNom = me.arrayDatosProspecto['n_completo_coa'];
+                    me.nombre_coa = me.arrayDatosProspecto['nombre_coa'];
+                    me.nombre_recomendado = me.arrayDatosProspecto['nombre_recomendado'];
+                    me.apellidos_coa = me.arrayDatosProspecto['apellidos_coa'];
+                    me.lugar_nacimiento_coa =me.arrayDatosProspecto['lugar_nacimiento_coa'];
+                    me.proyecto = me.arrayDatosProspecto['proyecto'];
 
                     
                     
-                    me.id=id;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
+                    me.id=data.id;
+               
                
 
             },
