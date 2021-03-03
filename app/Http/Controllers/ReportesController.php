@@ -1187,7 +1187,7 @@ class ReportesController extends Controller
                                 'creditos.descripcion_promocion','creditos.descripcion_paquete', 'lotes.firmado',
                                 'creditos.costo_descuento', 'creditos.descuento_terreno', 'creditos.costo_alarma',
                                 'creditos.costo_cuota_mant', 'creditos.costo_protecciones','contratos.id',
-                                'contratos.avance_lote',
+                                'contratos.avance_lote', 'contratos.motivo_cancel',
                                 'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta','contratos.status')
                         
                         ->where('contratos.status','=',3)
@@ -1226,7 +1226,7 @@ class ReportesController extends Controller
                                 'lotes.emp_constructora','creditos.valor_terreno', 'lotes.emp_terreno',
                                 'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta',
                                 'contratos.avance_lote',
-                                'creditos.descripcion_promocion','creditos.descripcion_paquete',
+                                'creditos.descripcion_promocion','creditos.descripcion_paquete','contratos.motivo_cancel',
                                 'contratos.fecha_status')
                         ->where('ins.elegido','=',1)
                         ->where('contratos.status','=',0)
@@ -3438,6 +3438,9 @@ class ReportesController extends Controller
         $fraccionamiento = $request->fraccionamiento;
         $etapa = $request->etapa;
         $diff_in_months = 0;
+
+        $fechaIni = $request->fecha1;
+        $fechaFin = $request->fecha2;
         
         $modelos = Modelo::select('nombre')
         ->where('nombre','!=','Por Asignar');
