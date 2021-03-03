@@ -1214,7 +1214,7 @@
 
                             <div class="form-group row">
                                 <div class="col-md-10">
-                                    <button type="button" class="btn btn-secondary" @click="cerrarRecepcion()"> Cerrar </button>
+                                    <button type="button" class="btn btn-secondary" @click="cerrarRevision()"> Cerrar </button>
                                 </div>
 
                                 <div class="col-md-2">

@@ -972,7 +972,7 @@
                     'from' : 0,
                     'to' : 0,
                 },
-                criterio2 : 'entregas.fecha_program', 
+                criterio2 : 'lotes.fraccionamiento_id', 
                 buscar2 : '',
                 b_etapa2: '',
                 b_manzana2: '',

@@ -1142,6 +1142,7 @@ class UserController extends Controller
         $user->cuenta = $request->cuenta;
         $user->proveedores = $request->proveedores;
         $user->digital_campain = $request->digital_campain;
+        $user->notaria =$request->notaria;
         //Desarrollo
         $user->fraccionamiento = $request->fraccionamiento;
         $user->etapas = $request->etapas;
@@ -1236,47 +1237,39 @@ class UserController extends Controller
                             ->where('foto_user','!=','default-image.gif')
                             ->where('id','=',$id)->get();
 
+        if($imgAnterior->isEmpty()==1){
+            $fileName = uniqid().'.'.$request->foto_user->getClientOriginalExtension();
+            $moved =  $request->foto_user->move(public_path('/img/avatars'), $fileName);
+                                                
+            if($moved){
+                if(!$request->ajax())return redirect('/');
+                $user = User::findOrFail($request->id);
+                $user->foto_user = $fileName;
+                $user->id = $id;
+                $user->save(); //Insert
+            }
+            return back();
+        
+            }else{
+                if ($request->foto_user != $imgAnterior[0]->foto_user){
+            
+                $pathAnterior = public_path().'/img/avatars/'.$imgAnterior[0]->foto_user;
+                File::delete($pathAnterior);  }   
 
-                if($imgAnterior->isEmpty()==1){
+                $fileName = uniqid().'.'.$request->foto_user->getClientOriginalExtension();
+                $moved =  $request->foto_user->move(public_path('/img/avatars'), $fileName);
 
-                            $fileName = uniqid().'.'.$request->foto_user->getClientOriginalExtension();
-                            $moved =  $request->foto_user->move(public_path('/img/avatars'), $fileName);
-
-                                                                
-                            if($moved){
-                                if(!$request->ajax())return redirect('/');
-                                $user = User::findOrFail($request->id);
-                                $user->foto_user = $fileName;
-                                $user->id = $id;
-                                $user->save(); //Insert
-                            }
-                            return back();
-                        
-                            
-                            }else{
-                                if ($request->foto_user != $imgAnterior[0]->foto_user){
-                            
-                                $pathAnterior = public_path().'/img/avatars/'.$imgAnterior[0]->foto_user;
-                                File::delete($pathAnterior);  }   
-                
-                                $fileName = uniqid().'.'.$request->foto_user->getClientOriginalExtension();
-                                $moved =  $request->foto_user->move(public_path('/img/avatars'), $fileName);
-                
-                                if($moved){
-                                    if(!$request->ajax())return redirect('/');
-                                    $user = User::findOrFail($request->id);
-                                    $user->foto_user = $fileName;
-                                    $user->id = $id;
-                                    
-                                    $user->save(); //Insert
-                                }
-                                return back();                  
-                            
-                        }
-
-                                    
+                if($moved){
+                    if(!$request->ajax())return redirect('/');
+                    $user = User::findOrFail($request->id);
+                    $user->foto_user = $fileName;
+                    $user->id = $id;
                     
-                            
+                    $user->save(); //Insert
+                }
+                return back();                  
+        }
+                       
     }
 
     public function updatePassword(Request $request){

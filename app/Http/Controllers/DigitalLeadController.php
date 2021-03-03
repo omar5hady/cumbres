@@ -21,7 +21,7 @@ class DigitalLeadController extends Controller
     public function index(Request $request){
         $leads = $this->queryLeads($request);
 
-        $leads = $leads->paginate(10);
+        $leads = $leads->paginate(20);
 
         if(sizeof($leads))
         foreach($leads as $index => $persona){

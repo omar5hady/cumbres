@@ -328,6 +328,10 @@
                                 <li class="page-item">
                                     <a class="page-link" href="#" @click="listarLeads(arrayLeads.last_page)">Ultimo</a>
                                 </li>
+                                <li></li>
+                                <li>
+                                    <input class="page-link" type="text" placeholder="Pagina a buscar" v-model="pagina" @keyup.enter="listarLeads(pagina)">
+                                </li>
                             </ul>
                         </nav>
                 </div>
@@ -1089,6 +1093,7 @@ export default {
             descripcion:'',
             direccion:'',
             status:'',
+            pagina : 0,
 
             errorMostrarMsjProspecto : [],
             errorProspecto : 0,
@@ -1408,7 +1413,9 @@ export default {
                 '&page='+page
                 
             ).then(
-                response => this.arrayLeads = response.data
+                response => this.arrayLeads = response.data,
+
+                this.pagina = ''
             ).catch(error => console.log(error));
         },
 
