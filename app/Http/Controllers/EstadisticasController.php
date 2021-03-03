@@ -513,7 +513,7 @@ class EstadisticasController extends Controller
                         if($proyecto != '')
                                 $mascotas = $mascotas->where('lotes.etapa_id',$etapa);
                         
-                        if($proyecto != '')
+                        if($fecha != '' && $fecha2 != '')
                                 $mascotas = $mascotas->whereBetween('contratos.fecha', [$fecha, $fecha2]);
 
                         $mascotas = $mascotas->get();

@@ -59,10 +59,10 @@
                                             <tr v-if="activo == 1">
                                                 <th colspan="8" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
                                                 <th colspan="1" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
-                                                <th colspan="10" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
+                                                <th colspan="11" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
                                             </tr>
                                             <tr v-else></tr>
-                                                <th colspan="19" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
+                                                <th colspan="20" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
                                             <tr @dblclick="cambiar()" >
                                                 <th>Fraccionamiento</th>
                                                 <th>Etapa</th>
@@ -179,7 +179,7 @@
                                     <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
-                                                <th colspan="13" class="text-center"> Cancelaciones en el periodo ({{cont2}}) </th>
+                                                <th colspan="14" class="text-center"> Cancelaciones en el periodo ({{cont2}}) </th>
                                             </tr>
                                             <tr>
                                                 <th>Fraccionamiento</th>
@@ -199,6 +199,9 @@
                                                         <th>Valor de terreno</th>
                                                         <th>Valor de construcción</th>
                                                     </tr>
+                                                </th>
+                                                <th class="text-center">
+                                                    Motivo de cancelación
                                                 </th>
                                             </tr>
                                         </thead>
@@ -220,13 +223,16 @@
                                                     <td class="td2" v-else v-text="'Promo: ' + cancelacion.descripcion_promocion + ' / Paquete:' + cancelacion.descripcion_paquete"></td>
                                                 </template>
                                                 <template v-if="cancelacion.emp_constructora != 'CONCRETANIA'">
-                                                    <td class="td2" v-text="'$'+formatNumber(cancelacion.precio_venta)"></td>
+                                                    <td colspan="3" class="td2" v-text="'$'+formatNumber(cancelacion.precio_venta)"></td>
                                                 </template>
                                                 <template v-else>
                                                     <td class="td2" v-text="'$'+formatNumber(cancelacion.precio_venta)"></td>
                                                     <td class="td2" v-text="'$'+formatNumber(cancelacion.valor_terreno)"></td>
                                                     <td class="td2" v-text="'$'+formatNumber(cancelacion.precio_venta - cancelacion.valor_terreno)"></td>
                                                 </template>
+                                                <td v-text="cancelacion.motivo_cancel">
+
+                                                </td>
                                             </tr>                             
                                         </tbody>
                                     </table>
