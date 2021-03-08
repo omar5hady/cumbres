@@ -1091,6 +1091,7 @@ class DepositoController extends Controller
                         'creditos.precio_venta',
                         'expedientes.valor_escrituras', 
                         'expedientes.descuento', 'expedientes.liquidado',
+                        'expedientes.fecha_firma_esc',
                         'contratos.enganche_total',
                         'contratos.saldo',
                         'i.monto_credito as credito_solic',

@@ -14,6 +14,7 @@
         "pusher/pusher-php-server": "^3.3",
         "spatie/data-transfer-object": "^1.13",
         "spatie/flysystem-dropbox": "^1.2",
+        "twilio/sdk": "^6.18",
         "villca/numeros-en-letras": "^1.2"
     },
     "require-dev": {

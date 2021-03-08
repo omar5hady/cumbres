@@ -13,6 +13,10 @@
                     <button type="button" @click="abrirModal('nuevo')" class="btn btn-success">
                         <i class="icon-people"></i>&nbsp;Nuevo
                     </button>
+
+                    <button v-if="rolId == 1" type="button" class="btn btn-dark" @click="sms()">
+                        PRUEBA SMS
+                    </button>
                     &nbsp;
                 </div>
                 
@@ -1551,6 +1555,25 @@ export default {
                 response => this.arrayObs = response.data
             ).catch(error => console.log(error));
         },
+
+        
+
+            sms(){
+                //Con axios se llama el metodo store de DepartamentoController
+                axios.post('/customsms').then(function (response){
+                    me.cerrarModal(); //al guardar el registro se cierra el modal
+                    
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Deposito agregado correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
 
         storeLead(){
             if(this.nombre == '' || this.medio_contacto == '' ||this.proceso==true) //Se verifica si hay un error (campo vacio)

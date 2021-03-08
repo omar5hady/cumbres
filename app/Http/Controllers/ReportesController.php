@@ -2525,7 +2525,7 @@ class ReportesController extends Controller
                 $deposito->institucion = $inst[0]->institucion;
                 $deposito->flag = 0;
                 $deposito->mes = 0;
-                if($deposito->totalCredito == $deposito->totalDep)
+                if($deposito->totalCredito <= $deposito->totalDep)
                     $deposito->flag = 1;
                 if(sizeOf($act)){
                     $deposito->mes = 1;
@@ -3130,7 +3130,8 @@ class ReportesController extends Controller
                             $lotes = $lotes->where('lotes.etapa_id','=',$request->etapa);
                         
                         
-        $lotes2 = $lotes->get();
+        $lotes2 = $lotes;
+        $lotes2 = $lotes2->get();
 
         $lotes = $lotes->orderBy('proyecto','asc')
                         ->orderBy('etapas.num_etapa','asc')
@@ -3269,19 +3270,20 @@ class ReportesController extends Controller
                         ->where('licencias.avance','>',1)
                         ->where('lotes.credito_puente','NOT LIKE','EN PROCESO%')
                         ->where('lotes.credito_puente','NOT LIKE','LIQUIDADO%');
-                        if($request->proyecto == '')
+                        if($request->proyecto != '')
                             $lotes = $lotes->where('lotes.fraccionamiento_id','=',$request->proyecto);
-                        if($request->etapa == '')
+                        if($request->etapa != '')
                             $lotes = $lotes->where('lotes.etapa_id','=',$request->etapa);
+                        
+                        
+        $lotes2 = $lotes;
+        $lotes2 = $lotes2->get();
 
         $lotes = $lotes->orderBy('proyecto','asc')
                         ->orderBy('etapas.num_etapa','asc')
                         ->orderBy('etapas.num_etapa','asc')->get();
-
+       
         if(sizeOf($lotes)){
-            $suma1=0;
-            $suma2=0;
-            $suma3=0;
             foreach($lotes as $index => $lote){
 
                 $lote->valor_venta = $lote->precio_base + $lote->excedente_terreno + $lote->sobreprecio +
@@ -3309,7 +3311,45 @@ class ReportesController extends Controller
                         DB::raw("SUM(restante) as sumRestante"))
                                 ->where('contrato_id','=',$contratos[0]->id)
                                 ->get();
-                                
+
+                    $lote->pagos = $pagos;
+                    $lote->cobrado = $pagos[0]->sumMontoPago - $pagos[0]->sumRestante;
+                    $lote->porCobrar =$lote->valor_venta - $lote->cobrado;
+                }
+            }
+        }
+
+        if(sizeOf($lotes2)){
+            $suma1=0;
+            $suma2=0;
+            $suma3=0;
+            foreach($lotes2 as $index => $lote){
+
+                $lote->valor_venta = $lote->precio_base + $lote->excedente_terreno + $lote->sobreprecio +
+                                        $lote->obra_extra - $lote->ajuste;
+                $lote->porCobrar = 0;
+                $lote->status = 0;
+                $lote->cobrado = 0;
+
+                $contratos = Contrato::join('creditos','creditos.id','=','contratos.id')
+                        ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                        ->select('creditos.precio_venta','contratos.id')
+                        ->where('contratos.status', '=', 3)
+                        ->where('i.elegido','=',1)
+                        ->where('creditos.lote_id','=',$lote->id)
+                        ->orWhere('contratos.status','=', 1)
+                        ->where('i.elegido','=',1)
+                        ->where('creditos.lote_id','=',$lote->id)
+                        ->get();
+
+                if(sizeOf($contratos) > 0){
+                    $lote->valor_venta = $contratos[0]->precio_venta;
+                    $lote->status = 1;
+                    $pagos = Pago_contrato::select(
+                        DB::raw("SUM(monto_pago) as sumMontoPago"), 
+                        DB::raw("SUM(restante) as sumRestante"))
+                                ->where('contrato_id','=',$contratos[0]->id)
+                                ->get();
                     $lote->pagos = $pagos;
                     $lote->cobrado = $pagos[0]->sumMontoPago - $pagos[0]->sumRestante;
                     $lote->porCobrar =$lote->valor_venta - $lote->cobrado;

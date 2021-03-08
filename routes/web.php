@@ -134,6 +134,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/medio_publicitario/actualizar','MedioPublicitarioController@update');
         Route::delete('/medio_publicitario/eliminar','MedioPublicitarioController@destroy');
 
+        Route::post('/customsms', 'TwilioSmsController@sendMessage');
+
     ///////////////////        RUTAS Inst. Financiamiento    //////////////////////////////////
         Route::get('/institucion_financiamiento','InstitucionFinanciamientoController@index');
         Route::post('/institucion_financiamiento/registrar','InstitucionFinanciamientoController@store');

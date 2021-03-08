@@ -510,7 +510,7 @@ class EstadisticasController extends Controller
                         ->where('contratos.status','=',3);
                         if($proyecto != '')
                                 $mascotas = $mascotas->where('lotes.fraccionamiento_id',$proyecto);
-                        if($proyecto != '')
+                        if($etapa != '')
                                 $mascotas = $mascotas->where('lotes.etapa_id',$etapa);
                         
                         if($fecha != '' && $fecha2 != '')
@@ -579,9 +579,6 @@ class EstadisticasController extends Controller
                 }
                 
         }
-        
-
- 
 
         return [
                 'lugarNacimiento'=>$lugarNacimiento,

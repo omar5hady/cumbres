@@ -409,6 +409,7 @@ class DigitalLeadController extends Controller
                 $cliente->ingreso = $request->ingresos;
                 $cliente->coacreditado = $request->coacreditado;
                 $cliente->tipo_casa = '';
+                $cliente->clasificacion = 4;
                 $cliente->save();
 
             }
@@ -433,6 +434,7 @@ class DigitalLeadController extends Controller
                 $cliente->empresa = $request->empresa;
                 $cliente->ingreso = $request->ingresos;
                 $cliente->coacreditado = $request->coacreditado;
+                $cliente->clasificacion = 4;
                 $cliente->save();
             }
             $lead = Digital_lead::findOrFail($request->id);
