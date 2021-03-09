@@ -29,6 +29,7 @@
                                         <option value="1">Ventas</option>
                                         <option value="2">Postventa</option>
                                         <option value="3">Rentas</option>
+                                        <option value="4">Dirección</option>
                                     </select>
                                 </div>
                             </div>
@@ -53,6 +54,17 @@
                                     <input type="text" readonly placeholder="Fecha de alta:" class="form-control col-sm-4">
                                     <input type="date" v-model="b_fecha1" @keyup.enter="listarLeads(1)" class="form-control col-sm-6">
                                     <input type="date" v-model="b_fecha2" @keyup.enter="listarLeads(1)" class="form-control col-sm-6">
+                                </div>
+                            </div>
+                            <div class="col-md-6" v-if="b_motivo ==4">
+                                <div class="input-group">
+                                    <input type="text" readonly placeholder="Prioridad:" class="form-control col-sm-4">
+                                    <select class="form-control"  v-model="b_prioridad" >
+                                        <option value="">Todos</option>
+                                        <option value="Baja">Baja</option>
+                                        <option value="Media">Media</option>
+                                        <option value="Alta">Alta</option>
+                                    </select>
                                 </div>
                             </div>
 
@@ -83,6 +95,7 @@
                                         <option value="3">Finalizado</option>
                                     </select>
                                 </div>
+                                
                                 <div class="input-group">
                                     <button @click="listarLeads(1)" class="btn btn-primary">
                                         <i class="fa fa-search"></i> Buscar
@@ -233,7 +246,7 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            <table v-else class="table2 table-bordered table-striped table-sm">
+                            <table v-else-if="b_motivo == 2" class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
                                         <th></th>
@@ -274,6 +287,64 @@
                                             <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+lead.email+ ';'"> <i class="fa fa-envelope-o fa-lg"></i> </a>
                                         </td><td class="td2" v-else ></td>
                                         <td v-text="lead.direccion"></td>  
+                                        <td v-text="lead.descripcion"></td>  
+                                        <td class="td2" v-if="lead.status == '1'"><span class="badge badge-warning">En Seguimiento</span></td>
+                                        <td class="td2" v-if="lead.status == '0'"><span class="badge badge-danger">Descartado</span></td>
+                                        <td class="td2" v-if="lead.status == '3'"><span class="badge badge-success">Finalizado</span></td>
+                                        <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <td class="td2"> 
+                                            <button title="Ver observaciones" type="button" class="btn btn-info pull-right" 
+                                            @click="abrirModal1(lead.id),listarObservacion(1,lead.id)">Ver todos</button> </td>
+                                        
+                                       
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table v-else-if="b_motivo == 4" class="table2 table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Nombre</th>
+                                        <th>Celular</th>
+                                        <th>Correo</th>
+                                        <th>Prioridad</th>
+                                        <th>Descripción del problema</th>
+                                        <th>Status</th>
+                                        <th>Fecha de alta</th>
+                                        <th>Observaciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="lead in arrayLeads.data" :key="lead.id">
+                                        <td class="td2" style="width:10%">
+                                            <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
+                                                <i class="icon-pencil"></i>
+                                            </button>  
+                                            <button v-if="lead.status == 1" title="Finalizar" type="button" @click="changeStatus(lead.id)" class="btn btn-success btn-sm">
+                                                <i class="icon-check"></i>
+                                            </button>      
+                                            <button v-if="userId == 25511 || rolId == 1" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
+                                                <i class="icon-close"></i>
+                                            </button>                           
+                                        </td>
+                                        <td v-if="lead.diferencia < 7" class="td2" v-text="lead.nombre + ' ' + lead.apellidos "></td>                                                    
+                                        <td v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15  " class="td2">
+                                            <span class="badge2 badge-warning">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
+                                        </td>    
+                                        <td v-else-if="lead.diferencia > 15" class="td2">
+                                            <span class="badge2 badge-danger">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
+                                        </td>
+                                        <td class="td2" v-if="lead.celular != null">
+                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>    
+                                        </td><td class="td2" v-else ></td>
+                                        <td class="td2" v-if="lead.email != null" >
+                                            <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+lead.email+ ';'"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                        </td><td class="td2" v-else ></td>
+                                        <td>
+                                            <span v-if="lead.prioridad == 'Baja'" class="badge badge-light">Baja</span>
+                                            <span v-if="lead.prioridad == 'Media'" class="badge badge-warning">Media</span>
+                                            <span v-if="lead.prioridad == 'Alta'" class="badge badge-danger">Alta</span>
+                                        </td>  
                                         <td v-text="lead.descripcion"></td>  
                                         <td class="td2" v-if="lead.status == '1'"><span class="badge badge-warning">En Seguimiento</span></td>
                                         <td class="td2" v-if="lead.status == '0'"><span class="badge badge-danger">Descartado</span></td>
@@ -364,6 +435,7 @@
                                         <option value="1">Ventas</option>
                                         <option value="2">Postventa</option>
                                         <option value="3">Rentas</option>
+                                        <option value="4">Dirección</option>
                                     </select>
                                 </div>
                                 
@@ -712,7 +784,7 @@
                             </div>
 
                             <!-- POSTVENTA -->
-                            <div v-if="motivo == 2" class="">
+                            <div v-if="motivo == 2 || motivo == 4" class="">
 
                                 <template v-if="paso == 1"> <!-- Datos del lead -->
                                     <div class="form-group row line-separator"></div>
@@ -768,7 +840,26 @@
                                         <div class="col-md-6">
                                             <input type="text" v-model="direccion" class="form-control" placeholder="Direccion">
                                         </div>
-                                        
+                                    </div>
+
+                                    <div class="form-group row" v-if="tipoAccion == 1">
+                                        <label class="col-md-2 form-control-label" for="text-input">Prioridad: </label>
+                                        <div class="col-md-6">
+                                            <select class="form-control" v-model="prioridad">
+                                                <option value="Baja">Baja</option>
+                                                <option value="Media">Media</option>
+                                                <option value="Alta">Alta</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row" v-if="tipoAccion == 2">
+                                        <label class="col-md-2 form-control-label" for="text-input">Prioridad: </label>
+                                        <div class="col-md-6">
+                                            <span v-if="prioridad == 'Baja'" class="badge badge-light">Baja</span>
+                                            <span v-if="prioridad == 'Media'" class="badge badge-warning">Media</span>
+                                            <span v-if="prioridad == 'Alta'" class="badge badge-danger">Alta</span>
+                                        </div>
                                     </div>
 
                                     <div class="form-group row">
@@ -915,9 +1006,12 @@
                         </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">
-                            <button type="button" 
-                                v-if="(tipoAccion == 2 && motivo == 1 && vendedor_asign == userId && prospecto == 0 && rfc != '' && status !=0) || rolId == 1 && prospecto == 0 && status !=0"
-                            class="btn btn-dark" @click="sendProspecto()">Enviar a prospectos</button>
+                            <template v-if="motivo == 1">
+                                <button type="button" 
+                                v-if="(tipoAccion == 2 && vendedor_asign == userId && prospecto == 0 && rfc != '' && status !=0) || rolId == 1 && prospecto == 0 && status !=0"
+                                class="btn btn-dark" @click="sendProspecto()">Enviar a prospectos</button>
+                            </template>
+                            
 
                             <button type="button" 
                                 v-if="(tipoAccion == 2 && motivo == 1 && status != 3 && status !=0)"
@@ -1037,6 +1131,7 @@ export default {
             b_fecha1:'',
             b_fecha2:'',
             b_proyecto:'',
+            b_prioridad:'',
             proceso : false,
 
             datos : [],
@@ -1092,6 +1187,7 @@ export default {
             enganche:0,
             vendedor : '',
             prospecto:0,
+            prioridad:'Baja',
 
             motivo:0,
             descripcion:'',
@@ -1355,6 +1451,7 @@ export default {
             this.b_fecha1='';
             this.b_fecha2='';
             this.b_proyecto='';
+            this.b_prioridad='';
 
             this.listarLeads(1);
         },
@@ -1414,6 +1511,7 @@ export default {
                 '&fecha1='+this.b_fecha1+
                 '&fecha2='+this.b_fecha2+
                 '&proyecto='+this.b_proyecto+
+                '&prioridad='+this.b_prioridad+
                 '&page='+page
                 
             ).then(
@@ -1607,6 +1705,7 @@ export default {
                 'email' : this.email,
                 'zona_interes' : this.zona_interes,
                 'vendedor_asign' : this.vendedor_asign,
+                'prioridad' : this.prioridad,
 
                 /////////////// PASO 2 ////////////////
                 'rfc' : this.rfc,
@@ -1682,6 +1781,7 @@ export default {
                 'email' : this.email,
                 'zona_interes' : this.zona_interes,
                 'vendedor_asign' : this.vendedor_asign,
+                'prioridad' : this.prioridad,
 
                 /////////////// PASO 2 ////////////////
                 'rfc' : this.rfc,
@@ -1800,6 +1900,7 @@ export default {
                     this.email = data['email'];
                     this.vendedor_asign = data['vendedor_asign'];
                     this.vendedor = data['vendedor'];
+                    this.prioridad = data['prioridad'];
 
                     /////////////// PASO 2 ////////////////
                     this.rfc = data['rfc'];
@@ -1857,8 +1958,9 @@ export default {
                     this.rango1 = '';
                     this.rango2 = '';
                     this.email = '';
-                    this.vendedor_asign = 0
+                    this.vendedor_asign = 0;
                     this.vendedor = '';
+                    this.prioridad = 'Baja';
 
                     /////////////// PASO 2 ////////////////
                     this.rfc = '';

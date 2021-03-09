@@ -145,6 +145,7 @@ class DigitalLeadController extends Controller
         $fecha1 = $request->fecha1;
         $fecha2 = $request->fecha2;
         $proyecto = $request->proyecto;
+        $prioridad = $request->prioridad;
         $leads = Digital_lead::leftJoin('campanias as c','digital_leads.campania_id','=','c.id')
                         ->leftJoin('fraccionamientos as f','digital_leads.proyecto_interes','=','f.id')
                         ->leftJoin('personal as p','digital_leads.vendedor_asign','=','p.id')
@@ -180,6 +181,9 @@ class DigitalLeadController extends Controller
                             $leads = $leads->where('digital_leads.vendedor_asign','=',$asesor);
                         }
 
+                        if($prioridad != '')
+                            $leads = $leads->where('digital_leads.prioridad','=',$prioridad);
+
                         $leads = $leads->orderBy('nombre','asc')
                         ->orderBy('apellidos','asc');
 
@@ -205,6 +209,8 @@ class DigitalLeadController extends Controller
         $lead->zona_interes = $request->zona_interes;
 
         $lead->motivo = $request->motivo;
+        if($lead->motivo == 4)
+            $lead->prioridad = $request->prioridad;
         $lead->descripcion = $request->descripcion;
         $lead->direccion = $request->direccion;
 
@@ -274,6 +280,14 @@ class DigitalLeadController extends Controller
             $obs = new Obs_lead();
             $obs->lead_id = $lead->id;
             $obs->comentario = 'Lead busca información sobre renta de casa, para mayor infomración revisar el modulo de Digital Leads';
+            $obs->usuario = Auth::user()->usuario;
+            $obs->save();
+        }
+
+        if($lead->motivo == 4){
+            $obs = new Obs_lead();
+            $obs->lead_id = $lead->id;
+            $obs->comentario = 'Cliente de atención especial, para mas información visita el modulo Digital Leads';
             $obs->usuario = Auth::user()->usuario;
             $obs->save();
         }
@@ -582,6 +596,12 @@ class DigitalLeadController extends Controller
 
             elseif(Auth::user()->id == 25816 ){
                 $reminders = $reminders->where('motivo','=', 3);
+                $reminders = $reminders->get();
+
+                return $reminders;
+            }
+            elseif(Auth::user()->id == 10 || Auth::user()->rol_id == 1){
+                $reminders = $reminders->where('motivo','=', 4);
                 $reminders = $reminders->get();
 
                 return $reminders;

@@ -56,6 +56,8 @@ class CreateDigitalLeadsTable extends Migration
             $table->string('zona_interes',100)->nullable();
             $table->date('fecha_update')->nullable();
 
+            $table->string('prioridad',10)->nullable();
+
 
             $table->boolean('motivo')->default(1); // 1 Ventas, 2 Postventa, 3 Rentas
             $table->string('descripcion',191)->nullable();
