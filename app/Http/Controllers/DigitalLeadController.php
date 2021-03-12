@@ -146,6 +146,7 @@ class DigitalLeadController extends Controller
         $fecha2 = $request->fecha2;
         $proyecto = $request->proyecto;
         $prioridad = $request->prioridad;
+        $modelo = $request->modelo;
         $leads = Digital_lead::leftJoin('campanias as c','digital_leads.campania_id','=','c.id')
                         ->leftJoin('fraccionamientos as f','digital_leads.proyecto_interes','=','f.id')
                         ->leftJoin('personal as p','digital_leads.vendedor_asign','=','p.id')
@@ -167,6 +168,10 @@ class DigitalLeadController extends Controller
 
                         if($status != ''){
                             $leads = $leads->where('digital_leads.status','=',$status);
+                        }
+
+                        if($modelo != ''){
+                            $leads = $leads->where('digital_leads.modelo_interes', 'like', '%'. $modelo . '%');
                         }
 
                         if($proyecto != ''){

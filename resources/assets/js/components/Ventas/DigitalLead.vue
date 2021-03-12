@@ -36,6 +36,7 @@
                             <div class="col-md-8">
                                 <div class="input-group">
                                     <input type="text" v-model="b_cliente" @keyup.enter="listarLeads(1)" placeholder="Nombre" class="form-control col-sm-6">
+                                    <input type="text" v-if="b_motivo == 3" v-model="b_modelo" @keyup.enter="listarLeads(1)" placeholder="Modelo" class="form-control col-sm-6">
                                     <select v-if="b_motivo != 1" class="form-control col-sm-4" v-model="b_status">
                                         <option value="">Todos</option>
                                         <option value="1">Pendientes</option>
@@ -1132,6 +1133,7 @@ export default {
             b_fecha2:'',
             b_proyecto:'',
             b_prioridad:'',
+            b_modelo:'',
             proceso : false,
 
             datos : [],
@@ -1452,6 +1454,7 @@ export default {
             this.b_fecha2='';
             this.b_proyecto='';
             this.b_prioridad='';
+            this.b_modelo ='';
 
             this.listarLeads(1);
         },
@@ -1512,6 +1515,7 @@ export default {
                 '&fecha2='+this.b_fecha2+
                 '&proyecto='+this.b_proyecto+
                 '&prioridad='+this.b_prioridad+
+                '&modelo='+this.b_modelo+
                 '&page='+page
                 
             ).then(

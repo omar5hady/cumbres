@@ -201,8 +201,6 @@ class ExpedienteController extends Controller
         $observacion->observacion = $request->observacion;
         $observacion->usuario = Auth::user()->usuario;
         $observacion->save();
-
-
     }
 
     public function exportExcel(Request $request){
