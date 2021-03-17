@@ -19,6 +19,7 @@ Route::group(['middleware' => ['guest']],function(){
     Route::post('/login','Auth\LoginController@login')->name('login');
 
     Route::get('/encuesta1','Form\EncuestaController@showEncuesta1');
+    Route::post('/encuesta1/pruebaExcel','Form\EncuestaController@pruebaExcel');
 });
 
 

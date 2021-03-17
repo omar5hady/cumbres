@@ -25,5 +25,22 @@ class TwilioSmsController extends Controller
         {
             echo "Error: " . $e->getMessage();
         }
+
+
+        // $sid = getenv("TWILIO_ACCOUNT_SID");
+        // $token = getenv("TWILIO_AUTH_TOKEN");
+        // $twilio = new Client($sid, $token);
+
+        // $message = $twilio->messages
+        //                 ->create("whatsapp:".$recipients, // to
+        //                         [
+        //                             "from" => "whatsapp:+14155238886",
+        //                             "body" => "Prueba Whatsapp desde SiiCumbres!"
+        //                         ]
+        //                 );
+
+        // print($message->sid);
+
+
     }
 }

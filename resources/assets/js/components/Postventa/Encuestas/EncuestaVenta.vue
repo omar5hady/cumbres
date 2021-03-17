@@ -44,6 +44,17 @@
                                 </center>    
                             </form>
                         </div>
+
+                        <div class="form-group mb-12">
+                           <form method="post" @submit="formSubmit"  enctype="multipart/form-data">
+
+                                <!-- {{ csrf_field() }} -->
+                                Selecciona archivo excel xls/csv: <input type="file" v-on:change="onImageChange" class="form-control">
+                                <input  type="submit" value="Cargar" class="btn btn-primary btn-lg" style="margin-top: 3%">
+                            </form>
+                        </div>
+
+
                         <div class="row animated fadeInLeft ">
                             <div class="col-6">
                                 <button type="submit" class="btn btn-dark px-4">Acceder</button>
@@ -223,6 +234,7 @@
         data(){
             return{
                 resp1:0,
+                file:'',
                
             }
         },
@@ -230,6 +242,46 @@
             
         },
         methods : {
+
+            onImageChange(e){
+
+                console.log(e.target.files[0]);
+
+                this.file = e.target.files[0];
+
+                if(this.file==''){
+                    return;
+                }
+
+            },
+           
+            formSubmit(e) {
+
+                
+
+                e.preventDefault();
+               
+                let formData = new FormData();
+                formData.append('file', this.file);
+                axios.post('/encuesta1/pruebaExcel',formData)
+                .then(function (response) {
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo cargado correctamente',
+                        showConfirmButton: false,
+                        timer: 2500
+                        })
+
+                })
+
+                .catch(function (error) {
+
+                  console.log(error);
+
+                });
+
+            },
             
         },
         mounted() {

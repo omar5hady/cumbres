@@ -1663,7 +1663,7 @@ export default {
             sms(){
                 //Con axios se llama el metodo store de DepartamentoController
                 axios.post('/customsms').then(function (response){
-                    me.cerrarModal(); //al guardar el registro se cierra el modal
+                    
                     
                     swal({
                         position: 'top-end',
