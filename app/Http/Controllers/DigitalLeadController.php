@@ -14,6 +14,7 @@ use App\Medio_publicitario;
 use Auth;
 use DB;
 use Excel;
+use App\Expediente;
 use Carbon\Carbon;
 
 class DigitalLeadController extends Controller
@@ -213,6 +214,12 @@ class DigitalLeadController extends Controller
         $lead->email = $request->email;
         $lead->zona_interes = $request->zona_interes;
 
+        $lead->nombre_rec = $request->nombre_rec;
+        $lead->apellidos_rec = $request->apellidos_rec;
+        $lead->email_rec = $request->email_rec;
+        $lead->celular_rec = $request->celular_rec;
+        $lead->telefono_rec = $request->telefono_rec;
+
         $lead->motivo = $request->motivo;
         if($lead->motivo == 4)
             $lead->prioridad = $request->prioridad;
@@ -296,6 +303,14 @@ class DigitalLeadController extends Controller
             $obs->usuario = Auth::user()->usuario;
             $obs->save();
         }
+
+        if($lead->motivo == 5){
+            $obs = new Obs_lead();
+            $obs->lead_id = $lead->id;
+            $obs->comentario = 'Cliente registrado como Aliado Cumbres';
+            $obs->usuario = Auth::user()->usuario;
+            $obs->save();
+        }
     }
     
     public function delete(Request $request){
@@ -322,6 +337,12 @@ class DigitalLeadController extends Controller
         $lead->email = $request->email;
         $lead->zona_interes = $request->zona_interes;
         $lead->fecha_update = $fecha;
+
+        $lead->nombre_rec = $request->nombre_rec;
+        $lead->apellidos_rec = $request->apellidos_rec;
+        $lead->email_rec = $request->email_rec;
+        $lead->celular_rec = $request->celular_rec;
+        $lead->telefono_rec = $request->telefono_rec;
 
         $lead->motivo = $request->motivo;
         $lead->descripcion = $request->descripcion;
@@ -619,6 +640,26 @@ class DigitalLeadController extends Controller
         $lead = Digital_lead::findOrFail($request->id);
         $lead->status = $request->status;
         $lead->save();
+
+        if($request->status == 0){
+
+            $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
+                $fecha = Carbon::now();
+                $arreglo = [
+                        'notificacion' => [
+                        'usuario' => $imagenUsuario[0]->usuario,
+                        'foto' => $imagenUsuario[0]->foto_user,
+                        'fecha' => $fecha,
+                        'msj' => 'El lead '.$lead->nombre.' '.$lead->apellidos.' ha sido descartado',
+                        'titulo' => 'Lead Descartado'
+                    ]
+                ];
+
+                $usuarios = User::select('id')->where('rol_id','=',8)->where('digital_lead','=',1)->get();
+                foreach ($usuarios as $usuario) 
+                    User::findOrFail($usuario->id)->notify(new NotifyAdmin($arreglo));
+
+        }
     }
 
     public function leadEnterado(Request $request){
@@ -627,5 +668,23 @@ class DigitalLeadController extends Controller
         $obs->visto = $fecha;
         $obs->save();
 
+    }
+
+    public function getCliente(Request $request){
+        $cliente = Expediente::join('contratos as cont','expedientes.id','=','cont.id')
+                ->join('creditos as cr','cont.id','=','cr.id')
+                ->join('clientes as c','cr.prospecto_id','=','c.id')
+                ->join('lotes as l','cr.lote_id','=','l.id')
+                ->join('personal as p','c.id','=','p.id')
+                ->select(
+                    'p.nombre','p.apellidos',
+                    DB::raw("CONCAT(p.rfc,p.homoclave) AS rfc_hom"),
+                    'l.calle','l.numero','l.interior','l.manzana','p.id',
+                    'p.celular','p.telefono','p.email'
+                )
+                ->where(DB::raw("CONCAT(p.rfc,'',p.homoclave)"), '=', $request->rfc)
+                ->get();
+
+        return ['cliente'=>$cliente];
     }
 }

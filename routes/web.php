@@ -996,6 +996,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/campanias/store', 'CampaniaController@store');
         Route::delete('/campanias/delete', 'CampaniaController@delete');
 
+        Route::get('/leads/getCliente','DigitalLeadController@getCliente');
+
         Route::get('/leads/index','DigitalLeadController@index');
         Route::delete('/leads/delete','DigitalLeadController@delete');
         Route::get('/leads/getObs','DigitalLeadController@getObs');

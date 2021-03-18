@@ -58,6 +58,11 @@ class CreateDigitalLeadsTable extends Migration
 
             $table->string('prioridad',10)->nullable();
 
+            $table->string('nombre_rec',50)->nullable();
+            $table->string('apellidos_rec',80)->nullable();
+            $table->string('email_rec')->nullable();
+            $table->string('celular_rec',10)->nullable();
+            $table->string('telefono_rec',10)->nullable();
 
             $table->boolean('motivo')->default(1); // 1 Ventas, 2 Postventa, 3 Rentas
             $table->string('descripcion',191)->nullable();

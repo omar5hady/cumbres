@@ -27,6 +27,7 @@
 
                                     <select @click="changeMotivo()" v-if="rolId != 2 && rolId != 12" class="form-control col-sm-5" v-model="b_motivo">
                                         <option value="1">Ventas</option>
+                                        <option value="5">Recomendados</option>
                                         <option value="2">Postventa</option>
                                         <option value="3">Rentas</option>
                                         <option value="4">Dirección</option>
@@ -359,6 +360,53 @@
                                     </tr>
                                 </tbody>
                             </table>
+                            <table v-else-if="b_motivo == 5" class="table2 table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Nombre</th>
+                                        <th>Celular</th>
+                                        <th>Correo</th>
+                                        <th>Dirección</th>
+                                        <th>Descripción</th>
+                                        <th>Fecha de alta</th>
+                                        <th>Observaciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="lead in arrayLeads.data" :key="lead.id">
+                                        <td class="td2" style="width:10%">
+                                            <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
+                                                <i class="icon-pencil"></i>
+                                            </button>       
+                                            <button title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
+                                                <i class="icon-close"></i>
+                                            </button>                           
+                                        </td>
+                                        <td v-if="lead.diferencia < 7" class="td2" v-text="lead.nombre + ' ' + lead.apellidos "></td>                                                    
+                                        <td v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15  " class="td2">
+                                            <span class="badge2 badge-warning">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
+                                        </td>    
+                                        <td v-else-if="lead.diferencia > 15" class="td2">
+                                            <span class="badge2 badge-danger">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
+                                        </td>
+                                        <td class="td2" v-if="lead.celular != null">
+                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>    
+                                        </td><td class="td2" v-else ></td>
+                                        <td class="td2" v-if="lead.email != null" >
+                                            <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+lead.email+ ';'"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                        </td><td class="td2" v-else ></td>
+                                        <td v-text="lead.direccion"></td>  
+                                        <td v-text="lead.descripcion"></td>  
+                                        <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <td class="td2"> 
+                                            <button title="Ver observaciones" type="button" class="btn btn-info pull-right" 
+                                            @click="abrirModal1(lead.id),listarObservacion(1,lead.id)">Ver todos</button> </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            
                         </div>
                         <nav>
                             <ul class="pagination">
@@ -434,6 +482,7 @@
                                     <select class="form-control" :disabled="tipoAccion == 2" v-model="motivo">
                                         <option value="0">Seleccione</option>
                                         <option value="1">Ventas</option>
+                                        <option value="5">Recomendados</option>
                                         <option value="2">Postventa</option>
                                         <option value="3">Rentas</option>
                                         <option value="4">Dirección</option>
@@ -992,15 +1041,132 @@
 
                             </div>
 
+                            <!-- POSTVENTA -->
+                            <div v-if="motivo == 5" class="">
+
+                                <template v-if="paso == 1"> <!-- Datos del lead -->
+                                    <div class="form-group row line-separator"></div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input"><strong>RFC:</strong><span style="color:red;" v-show="nombre==''">(*)</span></label>
+                                        <div class="col-md-4">
+                                            <input type="text" v-model="rfc" class="form-control" placeholder="RFC">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" @click="getDatosCliente(rfc)" class="btn btn-primary btn-sm">
+                                                <i class="fa fa-search"></i>
+                                            </button> 
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input"><strong>Nombre:</strong><span style="color:red;" v-show="nombre==''">(*)</span></label>
+                                        <div class="col-md-4">
+                                            <input type="text" v-model="nombre" class="form-control" placeholder="Nombre">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input type="text" v-model="apellidos" class="form-control" placeholder="Apellidos">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Medio de contacto</label>
+                                        <div class="col-md-4">
+                                            <input type="text" name="city" list="cityname" class="form-control" v-model="medio_contacto" placeholder="Medio de publicidad">
+                                            <datalist id="cityname">
+                                                <option value="">Seleccione</option>
+                                                <option value="Facebook">Facebook</option>
+                                                <option value="Instagram">Instagram</option>
+                                                <option value="Pagina web">Pagina web</option>
+                                                <option value="Llamada Telefonica">Llamada Telefónica</option>
+                                                <option value="Correo Electrónico">Correo Electrónico</option>
+                                            </datalist>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Correo electrónico: </label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="email" class="form-control" placeholder="Email">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        
+                                        <label class="col-md-2 form-control-label" for="text-input">Celular: </label>
+                                        <div class="col-md-3">
+                                            <input type="text" v-model="celular" class="form-control" placeholder="Celular" maxlength="10">
+                                        </div>
+
+                                        <label class="col-md-2 form-control-label" for="text-input">Teléfono: </label>
+                                        <div class="col-md-3">
+                                            <input type="text" v-model="telefono" class="form-control" placeholder="Teléfono" maxlength="10">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Dirección: </label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="direccion" class="form-control" placeholder="Direccion">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row line-separator"></div>
+
+                                    <center><h6>Recomendado</h6></center>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input"><strong>Nombre:</strong><span style="color:red;" v-show="nombre==''">(*)</span></label>
+                                        <div class="col-md-4">
+                                            <input type="text" v-model="nombre_rec" class="form-control" placeholder="Nombre">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input type="text" v-model="apellidos_rec" class="form-control" placeholder="Apellidos">
+                                        </div>
+                                    </div>
+
+                                     <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Correo electrónico: </label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="email_rec" class="form-control" placeholder="Email">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        
+                                        <label class="col-md-2 form-control-label" for="text-input">Celular: </label>
+                                        <div class="col-md-3">
+                                            <input type="text" v-model="celular_rec" class="form-control" placeholder="Celular" maxlength="10">
+                                        </div>
+
+                                        <label class="col-md-2 form-control-label" for="text-input">Teléfono: </label>
+                                        <div class="col-md-3">
+                                            <input type="text" v-model="telefono_rec" class="form-control" placeholder="Teléfono" maxlength="10">
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="form-group row">
+                                        <strong>
+                                            <label class="col-md-12 form-control-label" for="text-input">Descripción</label>
+                                        </strong>
+
+                                        <div class="col-md-12">
+                                            <textarea v-model="descripcion" class="form-control" rows="3"></textarea>
+                                        </div>
+                                    </div>
+
+                                </template>
+                            </div>
+
                             <!-- Div para mostrar los errores que mande validerFraccionamiento -->
                                     <div v-show="errorProspecto" class="form-group row div-error">
                                         <div class="text-center text-error">
                                             <div v-for="error in errorMostrarMsjProspecto" :key="error" v-text="error">
                                             </div>
                                         </div>
-                                    </div>
-
-                                
+                                    </div>                                
                             <!-- fin del form solicitud de avaluo -->
 
 
@@ -1013,7 +1179,6 @@
                                 class="btn btn-dark" @click="sendProspecto()">Enviar a prospectos</button>
                             </template>
                             
-
                             <button type="button" 
                                 v-if="(tipoAccion == 2 && motivo == 1 && status != 3 && status !=0)"
                                 class="btn btn-danger" @click="descartar()">Descartar
@@ -1191,6 +1356,12 @@ export default {
             prospecto:0,
             prioridad:'Baja',
 
+            nombre_rec:'',
+            apellidos_rec:'',
+            email_rec:'',
+            celular_rec:'',
+            telefono_rec:'',
+
             motivo:0,
             descripcion:'',
             direccion:'',
@@ -1313,33 +1484,33 @@ export default {
         },
 
         eliminar(id){
-                swal({
-                title: '¿Desea eliminar?',
-                text: "Esta acción no se puede revertir!",
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                cancelButtonText: 'Cancelar',
-                confirmButtonText: 'Si, eliminar!'
-                }).then((result) => {
-                if (result.value) {
-                    let me = this;
+            swal({
+            title: '¿Desea eliminar?',
+            text: "Esta acción no se puede revertir!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: 'Cancelar',
+            confirmButtonText: 'Si, eliminar!'
+            }).then((result) => {
+            if (result.value) {
+                let me = this;
 
-                axios.delete('/leads/delete', 
-                        {params: {'id': id}}).then(function (response){
-                        swal(
-                        'Borrado!',
-                        'Lead borrado correctamente.',
-                        'success'
-                        )
-                        me.listarLeads(1);
-                    }).catch(function (error){
-                        console.log(error);
-                    });
-                }
-                })
-            },
+            axios.delete('/leads/delete', 
+                    {params: {'id': id}}).then(function (response){
+                    swal(
+                    'Borrado!',
+                    'Lead borrado correctamente.',
+                    'success'
+                    )
+                    me.listarLeads(1);
+                }).catch(function (error){
+                    console.log(error);
+                });
+            }
+            })
+        },
 
         changeStatus(id){
             Swal.fire({
@@ -1489,6 +1660,29 @@ export default {
 
 
         },
+
+        getDatosCliente(rfc){
+            var url = '/leads/getCliente?rfc=' + rfc;
+            let me = this;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                var datos = respuesta.cliente[0];
+                me.nombre = datos.nombre;
+                me.apellidos = datos.apellidos;
+                if(datos.interior != null)
+                    me.direccion = datos.calle+' No.'+datos.numero+'-'+datos.interior+' Manzana: '+datos.manzana;
+                else
+                    me.direccion = datos.calle+' No.'+datos.numero+' Manzana: '+datos.manzana;
+                me.celular = datos.celular;
+                me.email = datos.email;
+                me.telefono = datos.telefono;
+                })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+
+        },
         selectAsesores(){
                 let me = this;
                 me.arrayAsesores=[];
@@ -1524,7 +1718,6 @@ export default {
                 this.pagina = ''
             ).catch(error => console.log(error));
         },
-
         selectEmpresa(buscar){
             let me = this;
 
@@ -1563,7 +1756,6 @@ export default {
                 console.log(error);
             });
         },
-
         selectCreditos(){
             let me = this;
             me.arrayCreditos=[];
@@ -1576,7 +1768,6 @@ export default {
                 console.log(error);
             });
         },
-        
         selectCampania(buscar){
             let me = this;
 
@@ -1657,9 +1848,6 @@ export default {
                 response => this.arrayObs = response.data
             ).catch(error => console.log(error));
         },
-
-        
-
             sms(){
                 //Con axios se llama el metodo store de DepartamentoController
                 axios.post('/customsms').then(function (response){
@@ -1710,6 +1898,12 @@ export default {
                 'zona_interes' : this.zona_interes,
                 'vendedor_asign' : this.vendedor_asign,
                 'prioridad' : this.prioridad,
+
+                'nombre_rec': this.nombre_rec,
+                'apellidos_rec': this.apellidos_rec,
+                'email_rec': this.email_rec,
+                'celular_rec': this.celular_rec,
+                'telefono_rec': this.telefono_rec,
 
                 /////////////// PASO 2 ////////////////
                 'rfc' : this.rfc,
@@ -1786,6 +1980,12 @@ export default {
                 'zona_interes' : this.zona_interes,
                 'vendedor_asign' : this.vendedor_asign,
                 'prioridad' : this.prioridad,
+
+                'nombre_rec': this.nombre_rec,
+                'apellidos_rec': this.apellidos_rec,
+                'email_rec': this.email_rec,
+                'celular_rec': this.celular_rec,
+                'telefono_rec': this.telefono_rec,
 
                 /////////////// PASO 2 ////////////////
                 'rfc' : this.rfc,
@@ -1906,6 +2106,12 @@ export default {
                     this.vendedor = data['vendedor'];
                     this.prioridad = data['prioridad'];
 
+                    this.nombre_rec = data['nombre_rec'];
+                    this.apellidos_rec = data['apellidos_rec'];
+                    this.email_rec = data['email_rec'];
+                    this.celular_rec = data['celular_rec'];
+                    this.telefono_rec = data['telefono_rec'];
+
                     /////////////// PASO 2 ////////////////
                     this.rfc = data['rfc'];
                     this.nss = data['nss'];
@@ -1965,6 +2171,12 @@ export default {
                     this.vendedor_asign = 0;
                     this.vendedor = '';
                     this.prioridad = 'Baja';
+
+                    this.nombre_rec = '';
+                    this.apellidos_rec = '';
+                    this.email_rec = '';
+                    this.celular_rec = '';
+                    this.telefono_rec = '';
 
                     /////////////// PASO 2 ////////////////
                     this.rfc = '';
