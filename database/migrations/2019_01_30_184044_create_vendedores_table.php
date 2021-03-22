@@ -31,6 +31,9 @@ class CreateVendedoresTable extends Migration
 
             $table->boolean('isr')->default(0);
             $table->boolean('retencion')->default(0);
+
+            $table->integer('cont_leads')->default(0);
+
             $table->timestamps();
         });
     }

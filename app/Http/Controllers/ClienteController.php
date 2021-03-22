@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Cliente;
 use App\Personal;
 use App\Credito;
+use App\Vendedor;
 use Auth;
 use App\Cliente_observacion;
 use Illuminate\Support\Facades\DB;
@@ -1942,6 +1943,7 @@ class ClienteController extends Controller
             ->whereNotIn('users.id',[28020,28230,55])
             ->where('users.usuario','!=','descartado')
             ->where('users.usuario','!=','oficina')
+            ->orderBy('vendedores.cont_leads','asc')
             ->orderBy('vendedor','asc')->get();
         }
             
@@ -1965,6 +1967,7 @@ class ClienteController extends Controller
                     ->whereIn('users.id',$as)
                     ->where('users.usuario','!=','descartado')
                     ->where('users.usuario','!=','oficina')
+                    ->orderBy('vendedores.cont_leads','asc')
                     ->orderBy('vendedor','asc')->get();
 
             }
@@ -1980,6 +1983,7 @@ class ClienteController extends Controller
                     ->whereNotIn('users.id',[28020,28230,55])
                     ->where('users.usuario','!=','descartado')
                     ->where('users.usuario','!=','oficina')
+                    ->orderBy('vendedores.cont_leads','asc')
                     ->orderBy('vendedor','asc')->get();
 
             }
@@ -2026,9 +2030,8 @@ class ClienteController extends Controller
 
         if(sizeof($ids))
         
-            $value = random_int ( 0 , (sizeOf($ids)-1) );
-        
-        
+            //$value = random_int ( 0 , (sizeOf($ids)-1) );
+            $value = 0;
 
 
         return [

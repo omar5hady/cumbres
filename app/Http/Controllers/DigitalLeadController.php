@@ -8,6 +8,7 @@ use App\Obs_lead;
 use App\Personal;
 use App\User;
 use App\Cliente;
+use App\Vendedor;
 use App\Http\Controllers\ClienteController;
 use App\Notifications\NotifyAdmin;
 use App\Medio_publicitario;
@@ -586,6 +587,12 @@ class DigitalLeadController extends Controller
             
             $lead->status = 2;
             $lead->save();
+
+            
+            $vendedor = Vendedor::findOrFail($vendedor_asign['vendedor_elegido']);
+            $vendedor->cont_leads++;
+            $vendedor->save();
+        
 
             $obs = new Obs_lead();
             $obs->lead_id = $lead->id;
