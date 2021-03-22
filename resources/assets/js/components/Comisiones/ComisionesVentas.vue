@@ -236,6 +236,7 @@
                                         <table class="table table-bordered table-striped table-sm">
                                             <thead>
                                                 <tr>
+                                                    <th></th>
                                                     <th>Fecha</th>
                                                     <th>Folio</th>
                                                     <th>Proyecto</th>
@@ -254,7 +255,9 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr v-for="venta in arrayVentas" :key="venta.id">
+                                                <tr v-for="venta in arrayVentas" :key="venta.id" v-bind:style="{ color : venta.emp_constructora != venta.emp_terreno ? '#2C36C2' : '#000000'}">
+                                                    <td v-if="venta.emp_constructora != venta.emp_terreno">Alianza</td>
+                                                    <td v-else></td>
                                                     <td class="td2" v-text="venta.fecha"></td>
                                                     <td>
                                                         <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.id"></span>
@@ -305,7 +308,7 @@
                                                     
                                                 </tr>  
                                                 <tr>
-                                                    <td align="right" colspan="11"><strong>Total: </strong></td>
+                                                    <td align="right" colspan="12"><strong>Total: </strong></td>
                                                     <td> ${{formatNumber(total_comision = totalComision)}} </td>
                                                     <td><strong> ${{formatNumber(total_pagado = totalPagado)}} </strong></td>
                                                     <!-- <td v-if="modif == 0"> ${{formatNumber(total_porPagar =total_comision - total_pagado)}} </td> -->
@@ -324,6 +327,7 @@
                                         <table class="table table-bordered table-striped table-sm">
                                             <thead>
                                                 <tr>
+                                                    <th></th>
                                                     <th>Fecha</th>
                                                     <th>Folio</th>
                                                     <th>Proyecto</th>
@@ -346,7 +350,9 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr v-for="venta in arrayVentas" :key="venta.id">
+                                                <tr v-for="venta in arrayVentas" :key="venta.id" v-bind:style="{ color : venta.emp_constructora != venta.emp_terreno ? '#2C36C2' : '#000000'}">
+                                                    <td v-if="venta.emp_constructora != venta.emp_terreno">Alianza</td>
+                                                    <td v-else></td>
                                                     <td class="td2" v-text="venta.fecha"></td>
                                                     <td v-text="venta.id"></td>
                                                     <td class="td2" v-text="venta.proyecto"></td>
@@ -1009,6 +1015,7 @@
                                         <table class="table table-bordered table-striped table-sm">
                                             <thead>
                                                 <tr>
+                                                    <th></th>
                                                     <th>Fecha</th>
                                                     <th>Folio</th>
                                                     <th>Proyecto</th>
@@ -1027,7 +1034,9 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr v-for="venta in arrayVentas" :key="venta.id">
+                                                <tr v-for="venta in arrayVentas" :key="venta.id" v-bind:style="{ color : venta.emp_constructora != venta.emp_terreno ? '#2C36C2' : '#000000'}">
+                                                    <td v-if="venta.emp_constructora != venta.emp_terreno">Alianza</td>
+                                                    <td v-else></td>
                                                     <td class="td2" v-text="venta.fecha"></td>
                                                     <td>
                                                         <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.folio"></span>
@@ -1082,6 +1091,7 @@
                                         <table class="table table-bordered table-striped table-sm">
                                             <thead>
                                                 <tr>
+                                                    <th></th>
                                                     <th>Fecha</th>
                                                     <th>Folio</th>
                                                     <th>Proyecto</th>
@@ -1104,7 +1114,9 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr v-for="venta in arrayVentas" :key="venta.id">
+                                                <tr v-for="venta in arrayVentas" :key="venta.id" v-bind:style="{ color : venta.emp_constructora != venta.emp_terreno ? '#2C36C2' : '#000000'}">
+                                                    <td v-if="venta.emp_constructora != venta.emp_terreno">Alianza</td>
+                                                    <td v-else></td>
                                                     <td class="td2" v-text="venta.fecha"></td>
                                                     <td v-text="venta.id"></td>
                                                     <td class="td2" v-text="venta.proyecto"></td>

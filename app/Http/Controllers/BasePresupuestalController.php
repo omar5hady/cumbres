@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Base_presupuestal;
 use App\Modelo;
+use File;
+use Excel;
 
 class BasePresupuestalController extends Controller
 {
@@ -18,15 +20,15 @@ class BasePresupuestalController extends Controller
         if($request->hasFile('file')){
             $extension = File::extension($request->file->getClientOriginalName());
             if ($extension == "xlsx" || $extension == "xls" || $extension == "csv") {
-    
-                
 
                 $path = $request->file->getRealPath();
                 $data = Excel::load($path, function($reader) {
                     $reader->ignoreEmpty();
                 })->get();
+
+                //return $request->fraccionamiento;
     
-                return $data;
+                $this->createBase($data,$request->fraccionamiento);
     
             }else {
                 Session::flash('error', 'File is a '.$extension.' file.!! Please upload a valid xls/csv file..!!');
@@ -36,10 +38,15 @@ class BasePresupuestalController extends Controller
 
     }
 
-    private function create($data,$fraccionamiento){
+    private function createBase($data,$fraccionamiento){
 
         foreach($data as $index => $pagina){
-            $modelo = Modelo::select('id')->where('fraccionamiento_id','=',$fraccionamiento)->where('nombre','=',$pagina->getTitle())->get();
+
+            $namePagina = $pagina->getTitle();
+            echo($namePagina);
+
+            $modelo = Modelo::select('id','fraccionamiento_id','nombre')->where('fraccionamiento_id','=',$fraccionamiento)->where('nombre','like','%'.$namePagina.'%')->get();
+            echo($modelo);
             if(sizeof($modelo)){
                 $modelo_id = $modelo[0]->id;
                 $baseAnt = Base_presupuestal::select('id')->where('modelo_id','=',$modelo_id)->get();
@@ -83,8 +90,24 @@ class BasePresupuestalController extends Controller
                             $newBase->c_edificacion2 = $pagina[64]['d'];
                             $newBase->precio_venta_const = $pagina[65]['d'];
                             $newBase->c_adquisicion_brena = $pagina[66]['d'];
+
+                    $newBase->save();
+
             }
         }
+
+    }
+
+    public function getBaseActiva(Request $request){
+
+        $bases = Base_presupuestal::join('modelos','bases_presupuestales.modelo_id','=','modelos.id')
+                ->select('modelos.nombre','bases_presupuestales.*')
+                ->where('modelos.fraccionamiento_id','=',$request->fraccionamiento)
+                ->where('bases_presupuestales.activo','=',1)
+                ->orderBy('modelos.nombre','asc')
+                ->get();
+
+        return ['bases'=>$bases];
 
     }
 }

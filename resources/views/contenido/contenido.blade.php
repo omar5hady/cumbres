@@ -504,6 +504,9 @@
         <template v-if="menu==256">
             <creditos-puente></creditos-puente>
         </template>
+        <template v-if="menu==257">
+            <base-presupuestal></base-presupuestal>
+        </template>
 
 
         

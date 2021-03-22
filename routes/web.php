@@ -1011,6 +1011,11 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/comments/reminderCommentarioLead/', 'DigitalLeadController@reminderCommentarioLead');
         Route::put('/comments/leadEnterado', 'DigitalLeadController@leadEnterado');
 
+        //////////////////// RUTAS BASE PRESUPUESTAL ///////////////////
+
+        Route::post('/basePresupuestal/storeBases', 'BasePresupuestalController@storeBases');
+        Route::get('/basePresupuestal/getBaseActiva', 'BasePresupuestalController@getBaseActiva');
+
 
     });
 

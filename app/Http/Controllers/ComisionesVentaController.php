@@ -793,6 +793,8 @@ class ComisionesVentaController extends Controller
                             'contratos.fecha_exp',
                             'contratos.fecha',
                             'lotes.extra',
+                            'lotes.emp_constructora',
+                            'lotes.emp_terreno',
                             DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                             'lotes.extra_ext')
                         ->where('inst_seleccionadas.elegido', '=', '1')

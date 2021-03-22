@@ -256,9 +256,6 @@
             },
            
             formSubmit(e) {
-
-                
-
                 e.preventDefault();
                
                 let formData = new FormData();

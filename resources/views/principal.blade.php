@@ -258,6 +258,9 @@
                         <li class="nav-item nav-dropdown">
                             <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-plug"></i> Créditos Puente</a>
                             <ul class="nav-dropdown-items">
+                                <li @click="menu=257" class="nav-item">
+                                    <a class="nav-link" href="#"><i class="fa fa-archive"></i> Base presupuestal</a>
+                                </li>
                                 <li @click="menu=255" class="nav-item">
                                     <a class="nav-link" href="#"><i class="fa fa-archive"></i> Solicitar Crédito</a>
                                 </li>
