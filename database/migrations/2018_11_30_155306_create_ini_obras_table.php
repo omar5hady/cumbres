@@ -42,6 +42,8 @@ class CreateIniObrasTable extends Migration
             $table->string('documento')->nullable();
             $table->string('registro_obra')->nullable();
 
+            $table->string('direccion_proy')->nullable();
+
             $table->timestamps();
 
             $table->foreign('fraccionamiento_id')->references('id')->on('fraccionamientos');

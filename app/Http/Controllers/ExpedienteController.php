@@ -261,7 +261,8 @@ class ExpedienteController extends Controller
                             WHERE pagos_contratos.tipo_pagare = 0
                             and pagos_contratos.contrato_id = contratos.id
                             and pagos_contratos.pagado != 3) as totRest")
-        );
+        )
+        ->where('i.elegido', '=', 1);
 
         $contratos = $query;
 

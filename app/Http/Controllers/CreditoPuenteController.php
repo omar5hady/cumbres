@@ -421,4 +421,61 @@ class CreditoPuenteController extends Controller
         $chkList->save();
     }
 
+    public function getModelosBase(Request $request){
+
+        $t_adquisicion_terreno =$t_estudios_lic =$t_proyectos_disen = $t_edificacion = $t_urbanizacion_infra = 
+        $t_promocion_publi = $t_gastos_venta = $t_gastos_admin = $t_gastos_notariales = 
+        $t_gastos_fin_com = $t_int_cpuente_com = $t_cont = $t_venta = 0;
+
+        $modelos = Modelo::join('lotes_puente as lp','modelos.id','=','lp.modelo_id')
+                    ->join('bases_presupuestales as bp','modelos.id','=','bp.modelo_id')
+                    ->select('modelos.nombre','bp.*','modelos.id')
+                    ->where('solicitud_id','=',$request->id)
+                    ->distinct()->get();
+                    
+        if(sizeof($modelos))
+        foreach ($modelos as $index => $m) {
+            $lotes = Lote_puente::select('id','precio_p')->where('modelo_id','=',$m->id)
+                        ->where('solicitud_id','=',$request->id);
+            
+            $lotes2 = $lotes;
+
+            $lotes2 = $lotes2->get();
+            $m->precio_puente = $lotes2[0]->precio_p;
+            $t_cont += $m->cont = $lotes->count();
+
+            $m->inc = round($m->precio_puente/$m->valor_venta,2);
+            $t_venta += ($m->precio_puente * $m->cont);
+
+            $t_adquisicion_terreno += $m->adquisicion_terreno = round($m->cont * ($m->int_pago_terreno + $m->valor_terreno + $m->escritura_gcc + $m->adicional_terreno) * $m->inc,2);
+            $t_estudios_lic += $m->estudios_lic = round($m->cont * ($m->permisos * $m->inc) * 0.7,2);
+            $t_proyectos_disen += $m->proyectos_disen = round($m->cont * ($m->permisos * $m->inc) * 0.3,2);
+            $t_edificacion += $m->edificacion = round($m->cont * ($m->presupuesto_edif + $m->laboratorio + $m->partida_inflacionaria) * $m->inc,2);
+            $t_urbanizacion_infra += $m->urbanizacion_infra = round($m->cont * ($m->presupuesto_urb + $m->equipamiento + $m->fianzas) * $m->inc,2);
+            $t_promocion_publi += $m->promocion_publi = round($m->cont * ($m->gastos_comerc * $m->inc),2);
+            $t_gastos_venta += $m->gastos_venta = round($m->cont * ($m->comicion_venta * $m->inc),2);
+            $t_gastos_admin += $m->gastos_admin = round($m->cont * ($m->gastos_ind_op * $m->inc),2);
+            $t_gastos_notariales += $m->gastos_notariales = round($m->cont * ($m->gastos_esc * $m->inc),2);
+            $t_gastos_fin_com += $m->gastos_fin_com = round($m->cont * ($m->comision_int * $m->inc),2);
+            $t_int_cpuente_com += $m->int_cpuente_com = round($m->cont * ($m->insc_conjunto + $m->int_nafin + $m->int_cpuente) * $m->inc,2);
+        }
+        
+        return ['modelos'=>$modelos,
+                't_adquisicion_terreno' => $t_adquisicion_terreno,
+                't_estudios_lic' => $t_estudios_lic,
+                't_proyectos_disen' => $t_proyectos_disen,
+                't_edificacion' => $t_edificacion,
+                't_urbanizacion_infra' => $t_urbanizacion_infra,
+                't_promocion_publi' => $t_promocion_publi,
+                't_gastos_venta' => $t_gastos_venta,
+                't_gastos_admin' => $t_gastos_admin,
+                't_gastos_notariales' => $t_gastos_notariales,
+                't_gastos_fin_com' => $t_gastos_fin_com,
+                't_int_cpuente_com' => $t_int_cpuente_com,
+                't_cont' => $t_cont,
+                't_venta' => $t_venta
+            ];
+
+    }
+
 }

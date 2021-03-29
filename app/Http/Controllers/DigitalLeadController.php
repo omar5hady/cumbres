@@ -158,6 +158,10 @@ class DigitalLeadController extends Controller
                         ->where('digital_leads.motivo','=',$request->motivo);
                         if(Auth::user()->rol_id == 2){
                             $leads = $leads->where('vendedor_asign','=',Auth::user()->id);
+                                if($status == ''){
+                                    $leads = $leads->where('digital_leads.status','!=',0);
+                                }
+                            
                         }
 
                         if($fecha1 != '' && $fecha2!=''){

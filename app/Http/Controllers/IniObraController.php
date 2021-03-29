@@ -36,6 +36,7 @@ class IniObraController extends Controller
             ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
             'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto', 'ini_obras.documento','ini_obras.total_importe',
             'ini_obras.total_superficie','ini_obras.emp_constructora', 'ini_obras.calle1', 'ini_obras.calle2', 'ini_obras.registro_obra',
+            'ini_obras.direccion_proy',
             'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto');
         
         if($request->empresa != ''){
@@ -181,7 +182,7 @@ class IniObraController extends Controller
             'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto','ini_obras.total_importe',
             'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto','ini_obras.anticipo',
             'ini_obras.total_anticipo','ini_obras.costo_indirecto_porcentaje','ini_obras.fraccionamiento_id',
-            'ini_obras.contratista_id','ini_obras.descripcion_corta','ini_obras.descripcion_larga',
+            'ini_obras.contratista_id','ini_obras.descripcion_corta','ini_obras.descripcion_larga', 'ini_obras.direccion_proy',
             'ini_obras.iva','ini_obras.tipo','ini_obras.total_superficie')
         ->where('ini_obras.id','=',$id)
         ->orderBy('ini_obras.id', 'desc')->take(1)->get();
@@ -231,6 +232,7 @@ class IniObraController extends Controller
             $ini_obra->iva = $request->iva;
             $ini_obra->total_superficie = $request->total_superficie;
             $ini_obra->emp_constructora = $request->emp_constructora;
+            $ini_obra->direccion_proy = $request->direccion_proy;
             $ini_obra->save();
  
             $lotes = $request->data;//Array de detalles
@@ -378,6 +380,7 @@ class IniObraController extends Controller
             $ini_obra->tipo = $request->tipo;
             $ini_obra->iva = $request->iva;
             $ini_obra->total_superficie = $request->total_superficie;
+            $ini_obra->direccion_proy = $request->direccion_proy;
             $ini_obra->save();
 
             $lotes = $request->data;//Array de detalles
@@ -481,7 +484,7 @@ class IniObraController extends Controller
             'contratistas.representante as representante','fraccionamientos.nombre as proyecto',
             'fraccionamientos.calle as calleFracc','fraccionamientos.colonia as coloniaFracc', 'fraccionamientos.delegacion',
             'fraccionamientos.estado as estadoFracc','ini_obras.anticipo', 'fraccionamientos.ciudad as ciudadFracc',
-            'ini_obras.emp_constructora',
+            'ini_obras.emp_constructora', 'ini_obras.direccion_proy',
             'ini_obras.total_anticipo','ini_obras.costo_indirecto_porcentaje','ini_obras.fraccionamiento_id',
             'ini_obras.contratista_id','ini_obras.descripcion_corta','ini_obras.descripcion_larga','ini_obras.iva','ini_obras.tipo')
         ->where('ini_obras.id','=',$id)

@@ -939,6 +939,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/cPuentes/getPlanos','CreditoPuenteController@getPlanos');
         Route::get('/cPuentes/getChecklist','CreditoPuenteController@getChecklist');
         Route::get('/cPuentes/getChkSinSolic','CreditoPuenteController@getChkSinSolic');
+
+        Route::get('/cPuentes/getModelosBase','CreditoPuenteController@getModelosBase');
         
     //////////////////// RUTAS BONOS RECOMENDADOS ///////////////////////
         Route::get('/cat_bono/index','CatalogoBonoController@index');

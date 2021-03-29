@@ -177,21 +177,25 @@
                                             :options="arrayFraccionamientos"
                                             placeholder="Buscar proyecto..."
                                             :onChange="getDatosFraccionamiento"
-                                            
                                         >
                                         </v-select>
                                     </div>
                                 </div>
 
-                                <div class="col-md-4">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Dirección del proyecto:</label>
+                                        <input class="form-control"  type="text" v-model="direccion_proy">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Manzana</label>
-                                        <div class="form-inline">
                                         <select class="form-control" v-model="manzana" @click="selectLotes(manzana,fraccionamiento_id)">
                                             <option value="">Seleccione</option>
                                             <option v-for="manzana in arrayManzanaLotes" :key="manzana.id" :value="manzana.manzana" v-text="manzana.manzana"></option>
                                         </select>
-                                        </div>
                                     </div>
                                 </div>
 
@@ -431,6 +435,13 @@
                                     </div>
                                 </div>
 
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Dirección del proyecto:</label>
+                                        <input class="form-control"  type="text" v-model="direccion_proy">
+                                    </div>
+                                </div>
+
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Manzana</label>
@@ -633,13 +644,13 @@
                     <template v-else-if="listado == 2">
                         <div class="card-body"> 
                             <div class="form-group row border">
-                                <div class="col-md-10">
+                                <div class="col-md-9">
                                     <div class="form-group">
                                         <label style="color:#2271b3;" for=""><strong> Contratista </strong></label>
                                         <p v-text="contratista"></p>
                                     </div>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-3">
                                     <label style="color:#2271b3;" for=""><strong>Clave</strong> </label>
                                     <p v-text="clave"></p>
                                 </div> 
@@ -660,10 +671,17 @@
                                     <p v-text="costo_indirecto_porcentaje+'%'"></p>
                                 </div>
 
-                                <div class="col-md-8">
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <label style="color:#2271b3;" for=""><strong>Fraccionamiento </strong></label>
                                         <p v-text="fraccionamiento"></p>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label style="color:#2271b3;" for=""><strong>Dirección del proyecto:</strong></label>
+                                        <p v-text="direccion_proy"></p>
                                     </div>
                                 </div>
 
@@ -950,6 +968,7 @@
                 fraccionamiento:'',
                 empresa_constructora:'',
                 apoderado:'ING. DAVID CALVILLO MARTINEZ',
+                direccion_proy:''
                 
             }
         },
@@ -1379,7 +1398,8 @@
                     'iva':this.iva,
                     'descripcion_larga':this.descripcion_larga,
                     'descripcion_corta':this.descripcion_corta,
-                    'total_superficie':this.total_construccion
+                    'total_superficie':this.total_construccion,
+                    'direccion_proy':this.direccion_proy
                 }).then(function (response){
                     me.proceso=false;
                     me.listado=1;
@@ -1431,7 +1451,8 @@
                     'iva':this.iva,
                     'descripcion_larga':this.descripcion_larga,
                     'descripcion_corta':this.descripcion_corta,
-                    'total_superficie':this.total_construccion
+                    'total_superficie':this.total_construccion,
+                    'direccion_proy':this.direccion_proy
                 }).then(function (response){
                     me.proceso=false;
                     me.listado=1;
@@ -1481,6 +1502,7 @@
                 this.iva=0;
                 this.tipo='Vivienda';
                 this.total_construccion=0;
+                this.direccion_proy = '';
             },
             eliminarContrato(data =[]){
                 this.id=data['id'];
@@ -1566,6 +1588,7 @@
                     me.costo_indirecto_porcentaje=me.arrayAvisoT[0]['costo_indirecto_porcentaje'];
                     me.total_construccion=me.arrayAvisoT[0]['total_superficie'];
                     me.id=id;
+                    me.direccion_proy = me.arrayAvisoT[0]['direccion_proy'];
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -1635,6 +1658,7 @@
                     me.iva=me.arrayAvisoT[0]['iva'];
                     me.selectManzanaLotes(me.fraccionamiento_id);
                     me.id=id;
+                    me.direccion_proy = arrayAvisoT[0]['direccion_proy'];
                   
                 })
                 .catch(function (error) {
