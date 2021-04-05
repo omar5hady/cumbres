@@ -10,7 +10,7 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Reporte de Ventas y Cancelaciones &nbsp;&nbsp;
                         <!--   Boton Nuevo    -->
-                        <a class="btn btn-success" v-bind:href="'/reprotes/reporteVentasExcel?fecha=' + fecha + '&fecha2=' + fecha2 + '&empresa=' + emp_constructora">
+                        <a class="btn btn-success" v-bind:href="'/reprotes/reporteVentasExcel?fecha=' + fecha + '&fecha2=' + fecha2 + '&empresa=' + emp_constructora  + '&publicidad=' + b_publicidad">
                             <i class="fa fa-file-text"></i>&nbsp; Excel
                         </a>
                         <!-- <a :href="'/etapa/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel </a> -->
@@ -41,6 +41,22 @@
                                 </div>
 
                                 <div class="form-group row">
+                                    <div class="col-md-8" v-if="fecha != ''">
+                                        <div class="input-group">
+                                            <!--Criterios para el listado de busqueda -->
+                                            <label class="form-control col-md-4" disabled>
+                                                Medio publicitario:
+                                            </label>
+
+                                            <select class="form-control" v-model="b_publicidad" >
+                                                <option value="">Publicidad</option>
+                                                <option v-for="publicidad in arrayMediosPublicidad" :key="publicidad.id" :value="publicidad.id" v-text="publicidad.nombre"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
                                     <div class="col-md-8">
                                         <div class="input-group">
                                             <select class="form-control col-md-4" v-model="emp_constructora">
@@ -58,11 +74,11 @@
                                         <thead>
                                             <tr v-if="activo == 1">
                                                 <th colspan="8" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
-                                                <th colspan="1" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
+                                                <th colspan="2" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
                                                 <th colspan="11" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
                                             </tr>
                                             <tr v-else></tr>
-                                                <th colspan="20" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
+                                                <th colspan="21" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
                                             <tr @dblclick="cambiar()" >
                                                 <th>Fraccionamiento</th>
                                                 <th>Etapa</th>
@@ -73,6 +89,7 @@
                                                 <th>Fecha de venta</th>
                                                 <th>Crédito</th>
                                                 <th>Institución</th>
+                                                <th>Medio de publicidad</th>
                                                 <th v-if="activo == 1">Promocion/paquete</th>
                                                 <th colspan="3" class="text-center">
                                                     Valor de escrituración
@@ -104,6 +121,7 @@
                                                 <td class="td2" v-text="lote.fecha"></td>
                                                 <td class="td2" v-text="lote.tipo_credito"></td>
                                                 <td class="td2" v-text="lote.institucion"></td>
+                                                <td class="td2" v-text="lote.publicidad"></td>
                                                 <template v-if="activo == 1">
                                                     <td class="td2" v-if="lote.descripcion_promocion == null && lote.descripcion_paquete == null" v-text="''"></td>
                                                     <td class="td2" v-else-if="lote.descripcion_promocion != null && lote.descripcion_paquete == null" v-text="'Promo: '+lote.descripcion_promocion"></td>
@@ -163,6 +181,22 @@
                                 </div>
 
                                 <div class="form-group row">
+                                    <div class="col-md-8" v-if="fecha != ''">
+                                        <div class="input-group">
+                                            <!--Criterios para el listado de busqueda -->
+                                            <label class="form-control col-md-4" disabled>
+                                                Medio publicitario:
+                                            </label>
+
+                                            <select class="form-control" v-model="b_publicidad" >
+                                                <option value="">Publicidad</option>
+                                                <option v-for="publicidad in arrayMediosPublicidad" :key="publicidad.id" :value="publicidad.id" v-text="publicidad.nombre"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
                                     <div class="col-md-8">
                                         <div class="input-group">
                                             <select class="form-control col-md-4" v-model="emp_constructora">
@@ -179,7 +213,7 @@
                                     <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
-                                                <th colspan="14" class="text-center"> Cancelaciones en el periodo ({{cont2}}) </th>
+                                                <th colspan="15" class="text-center"> Cancelaciones en el periodo ({{cont2}}) </th>
                                             </tr>
                                             <tr>
                                                 <th>Fraccionamiento</th>
@@ -191,6 +225,7 @@
                                                 <th>Fecha de venta</th>
                                                 <th>Crédito</th>
                                                 <th>Institución</th>
+                                                <th>Medio de publicidad</th>
                                                 <th>Promoción / Paquete</th>
                                                 <th colspan="3" class="text-center">
                                                     Valor de escrituración
@@ -216,6 +251,7 @@
                                                 <td class="td2" v-text="cancelacion.fecha"></td>
                                                 <td class="td2" v-text="cancelacion.tipo_credito"></td>
                                                 <td class="td2" v-text="cancelacion.institucion"></td>
+                                                <td class="td2" v-text="cancelacion.publicidad"></td>
                                                 <template>
                                                     <td class="td2" v-if="cancelacion.descripcion_promocion == null && cancelacion.descripcion_paquete == null || cancelacion.descripcion_promocion == '' && cancelacion.descripcion_paquete == ''" v-text="''"></td>
                                                     <td class="td2" v-else-if="cancelacion.descripcion_promocion != null && cancelacion.descripcion_paquete == null" v-text="'Promo: '+cancelacion.descripcion_promocion"></td>
@@ -257,6 +293,8 @@
                
                 arrayLotes : [],
                 arrayCancelaciones : [],
+                arrayMediosPublicidad : [],
+                b_publicidad : '',
                 fecha:'',
                 fecha2:'',
                 cont1:0,
@@ -271,7 +309,7 @@
             /**Metodo para mostrar los registros */
             listarReporte(){
                 let me = this;
-                var url = '/reprotes/reporteVentas?fecha=' + me.fecha + '&fecha2=' + me.fecha2 + '&empresa=' + me.emp_constructora;
+                var url = '/reprotes/reporteVentas?fecha=' + me.fecha + '&fecha2=' + me.fecha2 + '&empresa=' + me.emp_constructora + '&publicidad=' + me.b_publicidad;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLotes = respuesta.ventas;
@@ -329,6 +367,18 @@
                     title: 'Cambios guardados'
                     })
                 }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            selectMedioPublicidad(){
+                let me = this;
+                var url = '/select_medio_publicidad';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayMediosPublicidad = respuesta.medios_publicitarios;
+                })
+                .catch(function (error) {
                     console.log(error);
                 });
             },
@@ -429,6 +479,7 @@
         
         },
         mounted() {
+            this.selectMedioPublicidad();
         }
     }
 </script>

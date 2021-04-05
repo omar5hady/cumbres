@@ -488,29 +488,34 @@
                                         <table class="table2 table-striped table-sm">
                                             <thead>
                                                 <tr>
-                                                    <th></th>
+                                                    
                                                     <th>Archivo</th>
-                                                    <th>Fecha de subida</th>
+                                                    <th>Fecha de entrega</th>
+                                                    <th>Notas</th>
+                                                    <th>Fecha de confirmación</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <tr v-for="urbanizacion in arrayUrbanizacion" :key="urbanizacion.id">
-                                                    <td>
-                                                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false"></a>
-                                                        <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
-                                                            <a class="dropdown-item" v-bind:href="'/files/'+'planosPuente/'+ urbanizacion.archivo + '/download'" >Descargar plano</a>
-                                                            <a class="dropdown-item" @click="eliminarArchivo(urbanizacion.archivo, urbanizacion.id)" >Eliminar archivo</a>
-                                                        </div>
-                                                    </td>
+                                                    
                                                     <td v-text="urbanizacion.descripcion"></td>
-                                                    <td v-text="urbanizacion.created_at"></td>
+                                                    <td v-text="urbanizacion.fecha_entrega"></td>
+                                                    <td v-text="urbanizacion.notas"></td>
+                                                    <td v-if="urbanizacion.fecha_confirm == null">
+                                                        <button type="button" class="btn btn-success">Confirmar entrega</button>
+                                                    </td>
+                                                    <td v-else>
+                                                        Confirmado por: {{urbanizacion.user_confirm}} ( {{urbanizacion.fecha_confirm}} )
+                                                    </td>
                                                 </tr>
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
+
                                 <div class="card-header form-group col-md-2 ">   
                                 </div>
+
                                 <div class="card-header form-group col-md-5 border">
                                     <div class="row">
                                         <h5>Planos de edificación</h5> 
@@ -524,23 +529,26 @@
                                         <table class="table2 table-striped table-sm">
                                             <thead>
                                                 <tr>
-                                                    <th></th>
+                                                    
                                                     <th>Archivo</th>
-                                                    <th>Fecha de subida</th>
+                                                    <th>Fecha de entrega</th>
+                                                    <th>Notas</th>
+                                                    <th>Fecha de confirmación</th>
                                                     
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <tr v-for="edificacion in arrayEdificacion" :key="edificacion.id">
-                                                    <td>
-                                                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false"></a>
-                                                        <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
-                                                            <a class="dropdown-item" v-bind:href="'/files/'+'planosPuente/'+ edificacion.archivo + '/download'" >Descargar plano</a>
-                                                            <a class="dropdown-item" @click="eliminarArchivo(edificacion.archivo, edificacion.id)" >Eliminar archivo</a>
-                                                        </div>
-                                                    </td>
+                                                    
                                                     <td v-text="edificacion.descripcion"></td>
-                                                    <td v-text="edificacion.created_at"></td>
+                                                    <td v-text="edificacion.fecha_entrega"></td>
+                                                    <td v-text="edificacion.notas"></td>
+                                                    <td v-if="edificacion.fecha_confirm == null">
+                                                        <button type="button" class="btn btn-success">Confirmar entrega</button>
+                                                    </td>
+                                                    <td v-else>
+                                                        Confirmado por: {{edificacion.user_confirm}} ( {{edificacion.fecha_confirm}} )
+                                                    </td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -918,7 +926,7 @@
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
 
-            <!--Inicio del modal observaciones-->
+            <!--Inicio del modal-->
                 <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" 
                     role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                     <div class="modal-dialog modal-primary modal-lg" role="document">
@@ -930,88 +938,113 @@
                                 </button>
                             </div>
 
-                            <div class="modal-body">
-                                <template v-if="tipoAccion == 1">
+                                <div class="modal-body">
+                                    <template v-if="tipoAccion == 1">
+                                        
+                                            <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="text-input">Nueva observación</label>
+                                                <div class="col-md-6">
+                                                    <input type="text" v-model="observacion" class="form-control">
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <button v-if="observacion != ''" class="btn btn-primary" @click="storeObs()">Guardar</button>
+                                                </div>
+                                            </div>
+
+                                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                                                <table class="table table-bordered table-striped table-sm">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Usuario</th>
+                                                            <th>Observacion</th>
+                                                            <th>Fecha</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="observacion in arrayObs" :key="observacion.id">
+                                                            <td v-text="observacion.usuario" ></td>
+                                                            <td v-text="observacion.observacion" ></td>
+                                                            <td v-text="observacion.created_at"></td>
+                                                        </tr>                               
+                                                    </tbody>
+                                                </table>
+                                                
+                                            </form>
+                                        
+                                        
+                                    </template>
                                     
-                                        <div class="form-group row">
-                                            <label class="col-md-2 form-control-label" for="text-input">Nueva observación</label>
-                                            <div class="col-md-6">
-                                                <input type="text" v-model="observacion" class="form-control">
+                                    <!-- <template v-if="tipoAccion == 2">
+
+                                        <form @submit="dropboxSubmit" method="POST" enctype="multipart/form-data">
+
+                                            <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="text-input">Descripción</label>
+                                                <div class="col-md-6">
+                                                    <input type="text" v-model="descripcion" class="form-control" required>
+                                                </div>
                                             </div>
 
-                                            <div class="col-md-3">
-                                                <button v-if="observacion != ''" class="btn btn-primary" @click="storeObs()">Guardar</button>
+                                            <div class="form-group row">
+                                                <div class="col-md-6">
+                                                    <input type="file" v-on:change="dropboxFile" name="file" >    
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-                                            <table class="table table-bordered table-striped table-sm">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Usuario</th>
-                                                        <th>Observacion</th>
-                                                        <th>Fecha</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr v-for="observacion in arrayObs" :key="observacion.id">
-                                                        <td v-text="observacion.usuario" ></td>
-                                                        <td v-text="observacion.observacion" ></td>
-                                                        <td v-text="observacion.created_at"></td>
-                                                    </tr>                               
-                                                </tbody>
-                                            </table>
-                                            
+                                            <div class="form-group row">
+                                                <div class="col-md-6">
+                                                    <button class="btn btn-primary" type="submit">Guardar archivo</button>
+                                                </div>
+                                            </div>
                                         </form>
-                                    
-                                    
-                                </template>
-                                
-                                <template v-if="tipoAccion == 2">
+                                        
+                                    </template> -->
 
-                                    <form @submit="dropboxSubmit" method="POST" enctype="multipart/form-data">
+                                    <template v-if="tipoAccion == 2">
 
-                                        <div class="form-group row">
-                                            <label class="col-md-2 form-control-label" for="text-input">Descripción</label>
-                                            <div class="col-md-6">
-                                                <input type="text" v-model="descripcion" class="form-control">
+                                            <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="text-input">Descripción</label>
+                                                <div class="col-md-6">
+                                                    <input type="text" v-model="descripcion" class="form-control" required placeholder="Nob">
+                                                </div>
                                             </div>
-                                        </div>
-
-                                        <div class="form-group row">
-                                            <div class="col-md-6">
-                                                <input type="file" v-on:change="dropboxFile" name="file" required>    
+                                            <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="text-input">Fecha de entrega</label>
+                                                <div class="col-md-6">
+                                                    <input type="date" v-model="fecha_entrega" class="form-control" required>
+                                                </div>
                                             </div>
-                                        </div>
-
-                                        <div class="form-group row">
-                                            <div class="col-md-6">
-                                                <button class="btn btn-primary" type="submit">Guardar archivo</button>
+                                            <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="text-input">Notas</label>
+                                                <div class="col-md-6">
+                                                    <textarea class="form-control" v-model="notas" cols="30" rows="4"></textarea>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </form>
-                                    
-                                </template>
+                                        
+                                    </template>
 
-                                <template v-if="tipoAccion == 3">
-                                    
-                                        <div class="form-group row">
-                                            <label class="col-md-2 form-control-label" for="text-input">Documento</label>
-                                            <div class="col-md-6">
-                                                <select class="form-control" v-model="chk_new" >
-                                                    <option value="">Seleccione</option>
-                                                    <option v-for="chk in arrayChk" :key="chk.id" :value="chk.id" v-text="chk.documento+'-'+chk.categoria"></option>
-                                                </select>
+                                    <template v-if="tipoAccion == 3">
+                                        
+                                            <div class="form-group row">
+                                                <label class="col-md-2 form-control-label" for="text-input">Documento</label>
+                                                <div class="col-md-6">
+                                                    <select class="form-control" v-model="chk_new" >
+                                                        <option value="">Seleccione</option>
+                                                        <option v-for="chk in arrayChk" :key="chk.id" :value="chk.id" v-text="chk.documento+'-'+chk.categoria"></option>
+                                                    </select>
+                                                </div>
                                             </div>
-                                        </div>
-                                    
-                                </template>
-                           </div>
-                            <!-- Botones del modal -->
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                                <button v-if="tipoAccion == 3 && chk_new != ''" type="button" class="btn btn-primary" @click="addDocumento()">Añadir documento</button>
-                            </div>
+                                        
+                                    </template>
+                                </div>
+                                <!-- Botones del modal -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                                    <button v-if="tipoAccion == 2" class="btn btn-primary" type="button" @click="guardarDoc()">Guardar</button>
+                                    <button v-if="tipoAccion == 3 && chk_new != ''" type="button" class="btn btn-primary" @click="addDocumento()">Añadir documento</button>
+                                </div>
+                            
                         </div>
                         <!-- /.modal-content -->
                     </div>
@@ -1110,6 +1143,8 @@
                 emp_constructora:'',
                 bases:0,
                 detalle:0,
+                fecha_entrega:'',
+                notas:''
             }
         },
         components:{
@@ -1148,84 +1183,84 @@
             },
         },
         methods : {
-            dropboxFile(e){
+            // dropboxFile(e){
 
-                console.log(e.target);
+            //     console.log(e.target);
 
-                this.file = e.target.files[0];
+            //     this.file = e.target.files[0];
 
-            },
-            dropboxSubmit(e) {
+            // },
+            // dropboxSubmit(e) {
 
-                e.preventDefault();
+            //     e.preventDefault();
 
-                let formData = new FormData();
-                let me = this;
+            //     let formData = new FormData();
+            //     let me = this;
            
-                formData.append('file', me.file);
-                formData.append('descripcion', me.descripcion);
-                formData.append('clasificacion', me.clasificacion);
-                axios.post('/dropbox/files/'+me.id+'/planosPuente', formData)
-                .then(function (response) {
+            //     formData.append('file', me.file);
+            //     formData.append('descripcion', me.descripcion);
+            //     formData.append('clasificacion', me.clasificacion);
+            //     axios.post('/dropbox/files/'+me.id+'/planosPuente', formData)
+            //     .then(function (response) {
                    
-                    swal({
-                        position: 'top-end',
-                        type: 'success',
-                        title: 'Archivo subido correctamente',
-                        showConfirmButton: false,
-                        timer: 2000
-                        })
-                    me.getPlanos(me.id);
+            //         swal({
+            //             position: 'top-end',
+            //             type: 'success',
+            //             title: 'Archivo subido correctamente',
+            //             showConfirmButton: false,
+            //             timer: 2000
+            //             })
+            //         me.getPlanos(me.id);
                     
-                })
+            //     })
 
-                .catch(function (error) {
-                    console.log(error);
+            //     .catch(function (error) {
+            //         console.log(error);
 
-                });
+            //     });
 
-            },
-            eliminarArchivo(archivo,id){
-                swal({
-                title: '¿Desea eliminar este archivo?',
-                text: "El archivo se borrara completamente",
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                cancelButtonText: 'Cancelar',
-                confirmButtonText: 'Si, borrar!'
-                }).then((result) => {
-                if (result.value) {
-                    let me = this;
+            // },
+            // eliminarArchivo(archivo,id){
+            //     swal({
+            //     title: '¿Desea eliminar este archivo?',
+            //     text: "El archivo se borrara completamente",
+            //     type: 'warning',
+            //     showCancelButton: true,
+            //     confirmButtonColor: '#3085d6',
+            //     cancelButtonColor: '#d33',
+            //     cancelButtonText: 'Cancelar',
+            //     confirmButtonText: 'Si, borrar!'
+            //     }).then((result) => {
+            //     if (result.value) {
+            //         let me = this;
 
-                //Con axios se llama el metodo update de LoteController
-                    axios.delete('/files/delete',{
-                        params: {
-                        'file' : archivo,
-                        'id' : id,
-                        'sub' : 'planosPuente'
-                        }
-                    }).then(function (response){
-                        //window.alert("Cambios guardados correctamente");
-                        me.getPlanos(me.id);
-                        const toast = Swal.mixin({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000
-                            });
-                            toast({
-                            type: 'success',
-                            title: 'Archivo borrado correctamente'
-                        })
-                    }).catch(function (error){
-                        console.log(error);
-                    });
-                }
-                })
+            //     //Con axios se llama el metodo update de LoteController
+            //         axios.delete('/files/delete',{
+            //             params: {
+            //             'file' : archivo,
+            //             'id' : id,
+            //             'sub' : 'planosPuente'
+            //             }
+            //         }).then(function (response){
+            //             //window.alert("Cambios guardados correctamente");
+            //             me.getPlanos(me.id);
+            //             const toast = Swal.mixin({
+            //                 toast: true,
+            //                 position: 'top-end',
+            //                 showConfirmButton: false,
+            //                 timer: 3000
+            //                 });
+            //                 toast({
+            //                 type: 'success',
+            //                 title: 'Archivo borrado correctamente'
+            //             })
+            //         }).catch(function (error){
+            //             console.log(error);
+            //         });
+            //     }
+            //     })
 
-            },
+            // },
             /**Metodo para mostrar los registros */
             listarAvisos(page){
                 let me = this;
@@ -1238,6 +1273,33 @@
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+
+            guardarDoc(){
+                let me = this;
+
+                axios.post('/cPuentes/saveDoc',{
+                    'descripcion' : me.descripcion,
+                    'clasificacion' : me.clasificacion,
+                    'notas' : me.notas,
+                    'fecha_entrega' : me.fecha_entrega,
+                    'id' : me.id,
+                }).then(function (response){
+                     swal({
+                            position: 'top-end',
+                            type: 'success',
+                            title: 'Lote agregado correctamente',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    me.getPlanos(me.id);
+                    
+                }).catch(function (error){
+                    console.log(error);
+                });
+
+
+
             },
             getObs(id){
                 let me = this;
@@ -1721,6 +1783,8 @@
                         this.file = '';
                         this.tipoAccion = 2;
                         this.descripcion = '';
+                        this.notas ='';
+                        this.fecha_entrega='';
                         break;
                     }
                     case 'edificacion':{
@@ -1730,6 +1794,8 @@
                         this.file = '';
                         this.tipoAccion = 2;
                         this.descripcion = '';
+                        this.notas ='';
+                        this.fecha_entrega='';
                         break;
                     }
                     case 'checklist':{

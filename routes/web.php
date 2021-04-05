@@ -930,6 +930,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::delete('/cPuentes/deleteChk','CreditoPuenteController@deleteChk');
         Route::post('/cPuentes/storeObs','CreditoPuenteController@storeObs');
         Route::post('/cPuentes/addDocChk','CreditoPuenteController@addDocChk');
+        Route::post('/cPuentes/saveDoc','CreditoPuenteController@saveDoc');
 
         Route::get('/cPuentes/indexCreditos','CreditoPuenteController@indexCreditos');
         Route::get('/cPuentes/selectLotes','CreditoPuenteController@selectLotes');

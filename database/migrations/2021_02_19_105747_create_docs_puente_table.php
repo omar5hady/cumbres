@@ -17,8 +17,13 @@ class CreateDocsPuenteTable extends Migration
             $table->increments('id');
             $table->integer('puente_id');
             $table->string('descripcion');
-            $table->string('archivo');
+            $table->string('archivo')->nullable();
             $table->integer('clasificacion');
+            $table->date('fecha_entrega')->nullable();
+            $table->text('notas')->nullable();
+            $table->string('user_alta')->nullable();
+            $table->string('user_confirm')->nullable();
+            $table->date('fecha_confirm')->nullable();
             $table->timestamps();
         });
     }

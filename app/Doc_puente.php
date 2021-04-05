@@ -11,6 +11,11 @@ class Doc_puente extends Model
     protected $fillable = [ 'puente_id',
                             'descripcion',
                             'archivo',
-                            'clasificacion'
+                            'clasificacion',
+                            'fecha_entrega',
+                            'notas',
+                            'user_alta',
+                            'user_confirm',
+                            'fecha_confirm'
                         ];
 }

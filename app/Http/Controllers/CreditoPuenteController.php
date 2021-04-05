@@ -386,11 +386,11 @@ class CreditoPuenteController extends Controller
     }
 
     public function getPlanos(Request $request){
-        $edificacion = Doc_puente::select('id','descripcion','clasificacion','archivo','created_at')
+        $edificacion = Doc_puente::select('id','descripcion','clasificacion','archivo','created_at','fecha_entrega','notas','user_alta','user_confirm','fecha_confirm')
                     ->where('puente_id','=',$request->id)
                     ->where('clasificacion','=',2)->get();
 
-        $urbanizacion = Doc_puente::select('id','descripcion','clasificacion','archivo','created_at')
+        $urbanizacion = Doc_puente::select('id','descripcion','clasificacion','archivo','created_at','fecha_entrega','notas','user_alta','user_confirm','fecha_confirm')
                     ->where('puente_id','=',$request->id)
                     ->where('clasificacion','=',1)->get();
         
@@ -476,6 +476,17 @@ class CreditoPuenteController extends Controller
                 't_venta' => $t_venta
             ];
 
+    }
+
+    public function saveDoc(Request $request){
+        $puente = new Doc_puente();
+        $puente->puente_id = $request->id;
+        $puente->descripcion = $request->descripcion;
+        $puente->clasificacion = $request->clasificacion;
+        $puente->notas = $request->notas;
+        $puente->fecha_entrega = $request->fecha_entrega;
+        $puente->user_alta = Auth::user()->usuario;
+        $puente->save();
     }
 
 }

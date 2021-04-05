@@ -1175,9 +1175,11 @@ class ReportesController extends Controller
     public function reporteVentas(Request $request){
 
         $empresa = $request->empresa;
+        $publicidad = $request->publicidad;
 
         $ventas = Contrato::join('creditos','contratos.id','=','creditos.id')
                         ->join('inst_seleccionadas as ins', 'creditos.id', '=', 'ins.credito_id')
+                        ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                         ->join('lotes','creditos.lote_id','=','lotes.id')
                         ->join('personal as p','creditos.prospecto_id','=','p.id')
                         ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
@@ -1187,6 +1189,7 @@ class ReportesController extends Controller
                                 'creditos.descripcion_promocion','creditos.descripcion_paquete', 'lotes.firmado',
                                 'creditos.costo_descuento', 'creditos.descuento_terreno', 'creditos.costo_alarma',
                                 'creditos.costo_cuota_mant', 'creditos.costo_protecciones','contratos.id',
+                                'medios_publicitarios.nombre as publicidad','contratos.publicidad_id',
                                 'contratos.avance_lote', 'contratos.motivo_cancel',
                                 'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta','contratos.status')
                         
@@ -1197,12 +1200,18 @@ class ReportesController extends Controller
                         if($empresa != '')
                             $ventas = $ventas->where('lotes.emp_constructora','=', $empresa);
 
+                        if($publicidad != '')
+                            $ventas = $ventas->where('contratos.publicidad_id','=', $publicidad);
+
                         $ventas = $ventas->orWhere('contratos.status','=',1)
                         ->where('ins.elegido','=',1)
                         ->whereBetween('contratos.fecha', [$request->fecha, $request->fecha2]);
 
                         if($empresa != '')
                             $ventas = $ventas->where('lotes.emp_constructora','=', $empresa);
+
+                        if($publicidad != '')
+                            $ventas = $ventas->where('contratos.publicidad_id','=', $publicidad);
 
 
                         $ventas = $ventas->orWhere('contratos.status','=',0)
@@ -1212,12 +1221,16 @@ class ReportesController extends Controller
                         if($empresa != '')
                             $ventas = $ventas->where('lotes.emp_constructora','=', $empresa);
 
+                        if($publicidad != '')
+                            $ventas = $ventas->where('contratos.publicidad_id','=', $publicidad);
+
                         $ventas = $ventas->orderBy('contratos.status','desc')
                         ->orderBy('contratos.fecha','asc')
                         ->get();
 
         $cancelaciones = Contrato::join('creditos','contratos.id','=','creditos.id')
                         ->join('inst_seleccionadas as ins', 'creditos.id', '=', 'ins.credito_id')
+                        ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                         ->join('lotes','creditos.lote_id','=','lotes.id')
                         ->join('personal as p','creditos.prospecto_id','=','p.id')
                         ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
@@ -1226,6 +1239,7 @@ class ReportesController extends Controller
                                 'lotes.emp_constructora','creditos.valor_terreno', 'lotes.emp_terreno',
                                 'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta',
                                 'contratos.avance_lote',
+                                'medios_publicitarios.nombre as publicidad', 'contratos.publicidad_id',
                                 'creditos.descripcion_promocion','creditos.descripcion_paquete','contratos.motivo_cancel',
                                 'contratos.fecha_status')
                         ->where('ins.elegido','=',1)
@@ -1234,6 +1248,9 @@ class ReportesController extends Controller
 
                         if($empresa != '')
                             $cancelaciones = $cancelaciones->where('lotes.emp_constructora','=', $empresa);
+
+                        if($publicidad != '')
+                            $cancelaciones = $cancelaciones->where('contratos.publicidad_id','=', $publicidad);
 
                         $cancelaciones = $cancelaciones->orderBy('contratos.fecha_status','asc')
                         ->get();
@@ -1252,9 +1269,11 @@ class ReportesController extends Controller
     public function reporteVentasExcel(Request $request){
 
         $empresa = $request->empresa;
+        $publicidad = $request->publicidad;
 
         $ventas = Contrato::join('creditos','contratos.id','=','creditos.id')
                         ->join('inst_seleccionadas as ins', 'creditos.id', '=', 'ins.credito_id')
+                        ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                         ->join('lotes','creditos.lote_id','=','lotes.id')
                         ->join('personal as p','creditos.prospecto_id','=','p.id')
                         ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
@@ -1264,7 +1283,8 @@ class ReportesController extends Controller
                                 'creditos.descripcion_promocion','creditos.descripcion_paquete', 'lotes.firmado',
                                 'creditos.costo_descuento', 'creditos.descuento_terreno', 'creditos.costo_alarma',
                                 'creditos.costo_cuota_mant', 'creditos.costo_protecciones','contratos.id',
-                                'contratos.avance_lote',
+                                'contratos.avance_lote', 'contratos.publicidad_id',
+                                'medios_publicitarios.nombre as publicidad',
                                 'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta','contratos.status')
                         
                         ->where('contratos.status','=',3)
@@ -1274,12 +1294,18 @@ class ReportesController extends Controller
                         if($empresa != '')
                             $ventas = $ventas->where('lotes.emp_constructora','=', $empresa);
 
+                        if($publicidad != '')
+                            $ventas = $ventas->where('contratos.publicidad_id','=', $publicidad);
+
                         $ventas = $ventas->orWhere('contratos.status','=',1)
                         ->where('ins.elegido','=',1)
                         ->whereBetween('contratos.fecha', [$request->fecha, $request->fecha2]);
 
                         if($empresa != '')
                             $ventas = $ventas->where('lotes.emp_constructora','=', $empresa);
+
+                        if($publicidad != '')
+                            $ventas = $ventas->where('contratos.publicidad_id','=', $publicidad);
 
 
                         $ventas = $ventas->orWhere('contratos.status','=',0)
@@ -1289,12 +1315,16 @@ class ReportesController extends Controller
                         if($empresa != '')
                             $ventas = $ventas->where('lotes.emp_constructora','=', $empresa);
 
+                        if($publicidad != '')
+                            $ventas = $ventas->where('contratos.publicidad_id','=', $publicidad);
+
                         $ventas = $ventas->orderBy('contratos.status','desc')
                         ->orderBy('contratos.fecha','asc')
                         ->get();
 
         $cancelaciones = Contrato::join('creditos','contratos.id','=','creditos.id')
                         ->join('inst_seleccionadas as ins', 'creditos.id', '=', 'ins.credito_id')
+                        ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                         ->join('lotes','creditos.lote_id','=','lotes.id')
                         ->join('personal as p','creditos.prospecto_id','=','p.id')
                         ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
@@ -1302,7 +1332,8 @@ class ReportesController extends Controller
                         ->select('lotes.manzana','lotes.num_lote','f.nombre as proyecto','et.num_etapa','p.nombre', 'p.apellidos',
                                 'lotes.emp_constructora','creditos.valor_terreno', 'lotes.emp_terreno',
                                 'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta',
-                                'contratos.avance_lote',
+                                'contratos.avance_lote', 'contratos.publicidad_id',
+                                'medios_publicitarios.nombre as publicidad',
                                 'creditos.descripcion_promocion','creditos.descripcion_paquete',
                                 'contratos.fecha_status')
                         ->where('ins.elegido','=',1)
@@ -1311,6 +1342,9 @@ class ReportesController extends Controller
 
                         if($empresa != '')
                             $cancelaciones = $cancelaciones->where('lotes.emp_constructora','=', $empresa);
+
+                        if($publicidad != '')
+                            $cancelaciones = $cancelaciones->where('contratos.publicidad_id','=', $publicidad);
 
                         $cancelaciones = $cancelaciones->orderBy('contratos.fecha_status','asc')
                         ->get();
@@ -1328,8 +1362,8 @@ class ReportesController extends Controller
         return Excel::create('Reporte de ventas y cancelaciones', function($excel) use ($ventas,$cancelaciones,$periodo,$empresa){
             $excel->sheet('Ventas', function($sheet) use ($ventas,$periodo, $empresa){
 
-                $sheet->mergeCells('A1:K1');
-                $sheet->mergeCells('A2:K2');
+                $sheet->mergeCells('A1:L1');
+                $sheet->mergeCells('A2:L2');
                 $sheet->mergeCells('C4:G4');
 
                 $sheet->cell('A1', function($cell) {
@@ -1377,7 +1411,7 @@ class ReportesController extends Controller
                 });
 
                 $sheet->setColumnFormat(array(
-                    'K' => '$#,##0.00',
+                    
                     'L' => '$#,##0.00',
                     'M' => '$#,##0.00',
                     'N' => '$#,##0.00',
@@ -1385,6 +1419,7 @@ class ReportesController extends Controller
                     'P' => '$#,##0.00',
                     'Q' => '$#,##0.00',
                     'R' => '$#,##0.00',
+                    'S' => '$#,##0.00',
                 ));
 
                 if($empresa == 'CONCRETANIA'){
@@ -1399,6 +1434,7 @@ class ReportesController extends Controller
                         'Fecha de venta',
                         'Crédito',
                         'Institución',
+                        'Medio Publicitario',
                         'Promoción / Paquete',
                         'Valor de escrituración',
                         'Valor de terreno',
@@ -1459,6 +1495,7 @@ class ReportesController extends Controller
                             $lote->fecha,
                             $lote->tipo_credito,
                             $lote->institucion,
+                            $lote->publicidad,
                             $paquete,
                             $lote->precio_venta,
                             $lote->valor_terreno,
@@ -1487,6 +1524,7 @@ class ReportesController extends Controller
                         'Fecha de venta',
                         'Crédito',
                         'Institución',
+                        'Medio Publicitario',
                         'Promoción / Paquete',
                         'Valor de escrituración',
                         
@@ -1546,6 +1584,7 @@ class ReportesController extends Controller
                             $lote->fecha,
                             $lote->tipo_credito,
                             $lote->institucion,
+                            $lote->publicidad,
                             $paquete,
                             $lote->precio_venta,
                             $lote->costo_descuento,
@@ -1557,7 +1596,7 @@ class ReportesController extends Controller
                         ]);	
                     }
                 
-                    $num='A8:S' . $cont;
+                    $num='A8:T' . $cont;
                     $sheet->setBorder($num, 'thin');
                 }
 
@@ -1568,8 +1607,8 @@ class ReportesController extends Controller
 
             $excel->sheet('Cancelaciones', function($sheet) use ($cancelaciones,$periodo, $empresa){
 
-                $sheet->mergeCells('A1:L1');
-                $sheet->mergeCells('A2:L2');
+                $sheet->mergeCells('A1:M1');
+                $sheet->mergeCells('A2:M2');
                 $sheet->mergeCells('C4:G4');
 
                 $sheet->cell('A1', function($cell) {
@@ -1617,9 +1656,10 @@ class ReportesController extends Controller
                 });
 
                 $sheet->setColumnFormat(array(
-                    'L' => '$#,##0.00',
+                    
                     'M' => '$#,##0.00',
                     'N' => '$#,##0.00',
+                    'O' => '$#,##0.00',
                 ));
 
                 if($empresa == 'CONCRETANIA'){
@@ -1635,6 +1675,7 @@ class ReportesController extends Controller
                         'Fecha de venta',
                         'Crédito',
                         'Institución',
+                        'Medio Publicitario',
                         'Promoción / Paquete',
                         'Valor de escrituración',
                         'Valor de terreno',
@@ -1683,6 +1724,7 @@ class ReportesController extends Controller
                             $lote->fecha,
                             $lote->tipo_credito,
                             $lote->institucion,
+                            $lote->publicidad,
                             $paquete,
                             $lote->precio_venta,
                             $lote->valor_terreno,
@@ -1706,6 +1748,7 @@ class ReportesController extends Controller
                         'Fecha de venta',
                         'Crédito',
                         'Institución',
+                        'Medio Publicitario',
                         'Promoción / Paquete',
                         'Valor de escrituración',
                         
@@ -1753,13 +1796,14 @@ class ReportesController extends Controller
                             $lote->fecha,
                             $lote->tipo_credito,
                             $lote->institucion,
+                            $lote->publicidad,
                             $paquete,
                             $lote->precio_venta,
                            
                         ]);	
                     }
                 
-                    $num='A8:N' . $cont;
+                    $num='A8:O' . $cont;
                     $sheet->setBorder($num, 'thin');
                 }
 
