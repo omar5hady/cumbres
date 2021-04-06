@@ -316,6 +316,14 @@ class DigitalLeadController extends Controller
             $obs->usuario = Auth::user()->usuario;
             $obs->save();
         }
+
+        if($lead->motivo == 6){
+            $obs = new Obs_lead();
+            $obs->lead_id = $lead->id;
+            $obs->comentario = 'Lead ofreciendo terreno para venta, para mayor informacion revisar el modulo de Digital Leads';
+            $obs->usuario = Auth::user()->usuario;
+            $obs->save();
+        }
     }
     
     public function delete(Request $request){
@@ -639,6 +647,13 @@ class DigitalLeadController extends Controller
             }
             elseif(Auth::user()->id == 10 || Auth::user()->rol_id == 1){
                 $reminders = $reminders->where('motivo','=', 4);
+                $reminders = $reminders->get();
+
+                return $reminders;
+            }
+
+            elseif(Auth::user()->id == 3){
+                $reminders = $reminders->where('motivo','=', 6);
                 $reminders = $reminders->get();
 
                 return $reminders;

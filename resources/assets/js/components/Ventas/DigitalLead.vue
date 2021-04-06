@@ -10,7 +10,7 @@
                 <div class="card-header">
                     <i class="fa fa-align-justify"></i> Digital Leads
                     &nbsp;
-                    <button type="button" @click="abrirModal('nuevo')" class="btn btn-success">
+                    <button v-if="rolId != 2 && rolId != 12 && rolId != 3" type="button" @click="abrirModal('nuevo')" class="btn btn-success">
                         <i class="icon-people"></i>&nbsp;Nuevo
                     </button>
 
@@ -25,12 +25,13 @@
                             <div class="col-md-5">
                                 <div class="input-group">
 
-                                    <select @click="changeMotivo()" v-if="rolId != 2 && rolId != 12" class="form-control col-sm-5" v-model="b_motivo">
+                                    <select @click="changeMotivo()" v-if="rolId != 2 && rolId != 12 && rolId != 3" class="form-control col-sm-5" v-model="b_motivo">
                                         <option value="1">Ventas</option>
                                         <option value="5">Recomendados</option>
                                         <option value="2">Postventa</option>
                                         <option value="3">Rentas</option>
                                         <option value="4">Dirección</option>
+                                        <option value="6">Terrenos</option>
                                     </select>
                                 </div>
                             </div>
@@ -406,6 +407,60 @@
                                 </tbody>
                             </table>
 
+                            <table v-else-if="b_motivo == 6" class="table2 table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Nombre</th>
+                                        <th>Celular</th>
+                                        <th>Correo</th>
+                                        <th>Dirección del terreno</th>
+                                        <th>Costo m&sup2;</th>
+                                        <th>Medidas</th>
+                                        <th>Fecha de alta</th>
+                                        <th>Notas</th>
+                                        <th>Observaciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="lead in arrayLeads.data" :key="lead.id">
+                                        <td class="td2" style="width:10%">
+                                            <button title="Editar" type="button" @click="abrirModal('actualizar',lead)" class="btn btn-warning btn-sm">
+                                                <i class="icon-pencil"></i>
+                                            </button>  
+                                            <button v-if="lead.status == 1" title="Finalizar" type="button" @click="changeStatus(lead.id)" class="btn btn-success btn-sm">
+                                                <i class="icon-check"></i>
+                                            </button>      
+                                            <button v-if="userId == 25511 || rolId == 1" title="Eliminar" type="button" @click="eliminar(lead.id)" class="btn btn-danger btn-sm">
+                                                <i class="icon-close"></i>
+                                            </button>                           
+                                        </td>
+                                        <td v-if="lead.diferencia < 7" class="td2" v-text="lead.nombre + ' ' + lead.apellidos "></td>                                                    
+                                        <td v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15  " class="td2">
+                                            <span class="badge2 badge-warning">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
+                                        </td>    
+                                        <td v-else-if="lead.diferencia > 15" class="td2">
+                                            <span class="badge2 badge-danger">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
+                                        </td>
+                                        <td class="td2" v-if="lead.celular != null">
+                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>    
+                                        </td><td class="td2" v-else ></td>
+                                        <td class="td2" v-if="lead.email != null" >
+                                            <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+lead.email+ ';'"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                        </td><td class="td2" v-else ></td>
+                                        <td v-text="lead.direccion"></td>  
+                                        <td>${{formatNumber(lead.rango1)}}</td>  
+                                        <td>{{formatNumber(lead.rango2)}}m&sup2;</td>  
+                                        
+                                        <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <td v-text="lead.descripcion"></td> 
+                                        <td class="td2"> 
+                                            <button title="Ver observaciones" type="button" class="btn btn-info pull-right" 
+                                            @click="abrirModal1(lead.id),listarObservacion(1,lead.id)">Ver todos</button> </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
                             
                         </div>
                         <nav>
@@ -486,6 +541,7 @@
                                         <option value="2">Postventa</option>
                                         <option value="3">Rentas</option>
                                         <option value="4">Dirección</option>
+                                        <option value="6">Terrenos</option>
                                     </select>
                                 </div>
                                 
@@ -1041,7 +1097,7 @@
 
                             </div>
 
-                            <!-- POSTVENTA -->
+                            <!-- RECOMENDADOS -->
                             <div v-if="motivo == 5" class="">
 
                                 <template v-if="paso == 1"> <!-- Datos del lead -->
@@ -1158,6 +1214,105 @@
                                     </div>
 
                                 </template>
+                            </div>
+
+                            <!--  RENTAS  -->
+                            <div v-if="motivo == 6" class="">
+                                <div class="form-group row line-separator"></div>
+
+                                <template v-if="paso == 1"> <!-- Datos del lead -->
+
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input"><strong>Nombre:</strong><span style="color:red;" v-show="nombre==''">(*)</span></label>
+                                        <div class="col-md-4">
+                                            <input type="text" v-model="nombre" class="form-control" placeholder="Nombre">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input type="text" v-model="apellidos" class="form-control" placeholder="Apellidos">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Correo electrónico: </label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="email" class="form-control" placeholder="Email">
+                                        </div>
+                                        
+                                    </div>
+
+                                    <div class="form-group row">
+                                        
+                                        <label class="col-md-2 form-control-label" for="text-input">Celular: </label>
+                                        <div class="col-md-3">
+                                            <input type="text" v-model="celular" class="form-control" placeholder="Celular" maxlength="10">
+                                        </div>
+
+                                        <label class="col-md-2 form-control-label" for="text-input">Teléfono: </label>
+                                        <div class="col-md-3">
+                                            <input type="text" v-model="telefono" class="form-control" placeholder="Teléfono" maxlength="10">
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                    <div class="form-group row">
+
+                                        <label class="col-md-2 form-control-label" for="text-input">Medio de contacto</label>
+                                        <div class="col-md-4">
+                                            <input type="text" name="city" list="cityname" class="form-control" v-model="medio_contacto" placeholder="Medio de publicidad">
+                                            <datalist id="cityname">
+                                                <option value="">Seleccione</option>
+                                                <option value="Facebook">Facebook</option>
+                                                <option value="Instagram">Instagram</option>
+                                                <option value="Pagina web">Pagina web</option>
+                                                <option value="Llamada Telefonica">Llamada Telefónica</option>
+                                                <option value="Correo Electrónico">Correo Electrónico</option>
+                                                
+                                            </datalist>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input"><strong>Ubicación del terreno</strong></label>
+                                        <div class="col-md-8">
+                                            <input type="text" v-model="direccion" class="form-control" placeholder="Dirección">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        
+                                        <label class="col-md-3 form-control-label" for="text-input">Medida en m&sup2;: </label>
+                                        <div class="col-md-5">
+                                            <input class="form-control" type="number" v-model="rango2">
+                                            <p><strong>{{ formatNumber(rango2)}}m&sup2;</strong></p>
+                                            
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        
+                                        <label class="col-md-3 form-control-label" for="text-input">Precio por m&sup2;: </label>
+                                        <div class="col-md-5">
+                                            <input class="form-control" type="number" v-model="rango1">
+                                            <p><strong>${{ formatNumber(rango1)}}</strong></p>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group row">
+                                        <strong>
+                                            <label class="col-md-12 form-control-label" for="text-input">Notas</label>
+                                        </strong>
+
+                                        <div class="col-md-12">
+                                            <textarea v-model="descripcion" class="form-control" rows="3"></textarea>
+                                        </div>
+                                    </div>
+
+
+                                    
+                                </template>
+
+
                             </div>
 
                             <!-- Div para mostrar los errores que mande validerFraccionamiento -->
@@ -1699,6 +1854,10 @@ export default {
         listarLeads (page){
             if(this.rolId == 12)
                 this.b_motivo = 2;
+
+            if(this.rolId == 3)
+                this.b_motivo = 6;
+            
             axios.get('/leads/index'+
                 '?buscar='+this.b_cliente+
                 '&campania='+this.b_campania+
@@ -2220,9 +2379,9 @@ export default {
         },
 
         formatNumber(value) {
-                let val = (value/1).toFixed(2)
-                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-            },
+            let val = (value/1).toFixed(2)
+            return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        },
 
     
         back(){
