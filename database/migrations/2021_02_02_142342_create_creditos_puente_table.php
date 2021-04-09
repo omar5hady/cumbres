@@ -24,6 +24,8 @@ class CreateCreditosPuenteTable extends Migration
             $table->string('folio');
             $table->float('apertura')->default(0);
             $table->integer('fraccionamiento');
+
+            $table->date('fecha_integracion')->nullable();
             $table->timestamps();
         });
     }

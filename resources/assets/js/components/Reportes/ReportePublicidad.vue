@@ -63,7 +63,7 @@
 
                     <div class="card-body">
                         <div class="form-group row">
-                            <div class="col-md-6" >
+                            <div class="col-md-4" >
                                 <div class="text-value-sm text-primary"><h5 style="font-weight: bold;">Ventas (Total {{totalVentas}}) {{porcVentas.toFixed(2) + '%'}}</h5></div>
                                 <div class="card text-dark bg-light" v-for="venta in arrayDatosVentas" :key="venta.id">
                                     <div class="card-body">
@@ -76,14 +76,28 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-6" >
-                                <div class="text-value-sm text-dark"><h5 style="font-weight: bold;">Prospectos (Total {{totalProspectos}})</h5></div>
+                            <div class="col-md-4" >
+                                <div class="text-value-sm text-primary"><h5 style="font-weight: bold;">Prospectos Nuevos (Total {{totalProspectos}})</h5></div>
                                 <div class="card text-light bg-dark" v-for="prospecto in arrayDatosProspectos" :key="prospecto.id">
                                     <div class="card-body text-light">
                                         <div class="h5 text-muted2 text-left mb-2">{{prospecto.publicidad}}</div>
                                         <div class="text-muted text-uppercase font-weight-bold">{{prospecto.cant}}</div>
-                                        <div class="progress progress-light progress-xs my-2">
+                                        <div class="progress progress-dark progress-xs my-2">
                                             <div class="progress-bar" role="progressbar" v-bind:style="{ width: (prospecto.cant/totalProspectos)*100 + '%' }" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-4" >
+                                <div class="text-value-sm text-dark"><h5 style="font-weight: bold;">Prospectos atendiendo (Total {{totalTodos}})</h5></div>
+                                <div class="card text-dark bg-dark" v-for="prospecto in arrayTodosPros" :key="prospecto.id">
+                                    <div class="card-body text-dark">
+                                        <div class="h5 text-muted2 text-left mb-2">{{prospecto.publicidad}}</div>
+                                        <div class="text-muted text-uppercase font-weight-bold">{{prospecto.cant}}</div>
+                                        <div class="progress progress-dark progress-xs my-2">
+                                            <div class="progress-bar" role="progressbar" v-bind:style="{ width: (prospecto.cant/totalTodos)*100 + '%' }" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -110,11 +124,13 @@
                arrayDatosProspectos:[],
                arrayFraccionamientos:[],
                arrayDatosVentas:[],
+               arrayTodosPros:[],
                arrayAllEtapas:[],
                arrayAsesores:[],
                totalVentas:0,
                porcVentas:0,
                totalProspectos:0,
+               totalTodos:0,
                filtros:1,
                desde:'',
                hasta:'',
@@ -177,6 +193,8 @@
                 let me = this;
                 me.arrayDatosProspectos=[];
                 me.arrayDatosVentas=[];
+                me.arrayTodosPros=[];
+                me.totalTodos=0;
                 me.totalVentas=0;
                 me.totalProspectos=0;
                 var url = '/estadisticas/publicidad';
@@ -191,6 +209,7 @@
                     var respuesta = response.data;
                     me.arrayDatosProspectos = respuesta.publicidadProspectos;
                     me.arrayDatosVentas = respuesta.publicidadVentas;
+                    me.arrayTodosPros = respuesta.publicidadAll;
 
                     me.arrayDatosProspectos.forEach(element => {
                         me.totalProspectos += element.cant;
@@ -200,10 +219,15 @@
                         me.totalVentas += element.cant;
                     });
 
+                    me.arrayTodosPros.forEach(element => {
+                        me.totalTodos += element.cant;
+                    });
+
                     me.porcVentas = (me.totalVentas/me.totalProspectos)*100;
 
                     me.arrayDatosProspectos.sort((b, a) => a.cant - b.cant);
                     me.arrayDatosVentas.sort((b, a) => a.cant - b.cant);
+                    me.arrayTodosPros.sort((b, a) => a.cant - b.cant);
                 })
                 .catch(function (error) {
                     console.log(error);

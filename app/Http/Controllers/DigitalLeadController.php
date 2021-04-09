@@ -9,6 +9,7 @@ use App\Personal;
 use App\User;
 use App\Cliente;
 use App\Vendedor;
+use App\Campania;
 use App\Http\Controllers\ClienteController;
 use App\Notifications\NotifyAdmin;
 use App\Medio_publicitario;
@@ -712,5 +713,86 @@ class DigitalLeadController extends Controller
                 ->get();
 
         return ['cliente'=>$cliente];
+    }
+
+    public function reporteLeads(Request $request){
+        $fecha1 = $request->fecha1;
+        $fecha2 = $request->fecha2;
+        $proyecto = $request->proyecto;
+
+        $campanias = Campania::select('nombre_campania','medio_digital','fecha_ini','fecha_fin','id')
+        ->get();
+
+        $cont_org = 0;
+        $asesor_org = 0;
+        
+        foreach ($campanias as $campania) {
+            //$campania->conteo =0;
+            $campania->conteo = Digital_lead::select('campania_id')
+                    ->where('campania_id','=',$campania->id)->where('motivo','=',1);
+                    if($fecha1 != '')
+                        $campania->conteo = $campania->conteo->whereBetween('created_at', [$fecha1, $fecha2]);
+
+                    if($proyecto != '')
+                        $campania->conteo = $campania->conteo->where('proyecto_interes', '=',$proyecto);
+
+            $campania->conteo = $campania->conteo->count();
+
+            $campania->asesor = Digital_lead::select('campania_id')->where('campania_id','=',$campania->id)
+                    ->where('motivo','=',1)->where('vendedor_asign','!=',NULL);
+                    if($fecha1 != '')
+                        $campania->asesor = $campania->asesor->whereBetween('created_at', [$fecha1, $fecha2]);
+
+                    if($proyecto != '')
+                        $campania->asesor = $campania->asesor->where('proyecto_interes', '=',$proyecto);
+            $campania->asesor = $campania->asesor ->count();
+        }
+
+        $cont_org = Digital_lead::select('campania_id')
+                        ->where('campania_id','=',NULL)
+                        ->where('motivo','=',1);
+                        if($fecha1 != '')
+                            $cont_org = $cont_org->whereBetween('created_at', [$fecha1, $fecha2]);
+
+                        if($proyecto != '') 
+                            $cont_org = $cont_org->where('proyecto_interes', '=',$proyecto);
+                $cont_org = $cont_org->count();
+
+        $asesor_org = Digital_lead::select('campania_id')
+                        ->where('campania_id','=',NULL)
+                        ->where('vendedor_asign','!=',NULL);
+                        if($fecha1 != '')
+                            $asesor_org = $asesor_org->whereBetween('created_at', [$fecha1, $fecha2]);
+
+                        if($proyecto != '') 
+                            $asesor_org = $asesor_org->where('proyecto_interes', '=',$proyecto);
+                $asesor_org = $asesor_org->where('motivo','=',1)->count();
+
+        $asesores = Digital_lead::join('personal','digital_leads.vendedor_asign','=','personal.id')
+                                ->select('personal.id','personal.nombre','personal.apellidos')
+                                ->where('vendedor_asign','!=',NULL)
+                                ->where('motivo','=',1)
+                                ->groupBy('personal.id')
+                                ->get();
+
+        foreach ($asesores as $asesor) {    
+            $asesor->conteo = Digital_lead::select('vendedor_asign')
+                            ->where('vendedor_asign','=',$asesor->id)->where('motivo','=',1);
+                            if($fecha1 != '')
+                                $asesor->conteo = $asesor->conteo->whereBetween('created_at', [$fecha1, $fecha2]);
+
+                            if($proyecto != '')     
+                                $asesor->conteo = $asesor->conteo->where('proyecto_interes', '=',$proyecto);
+                $asesor->conteo = $asesor->conteo->count();
+        }
+
+        return [
+            'campanias' => $campanias,
+            'camp_org' => $cont_org,
+            'asesor_org' => $asesor_org,
+            'asesores' => $asesores
+        ];
+
+
     }
 }

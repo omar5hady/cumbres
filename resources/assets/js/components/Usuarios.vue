@@ -393,6 +393,9 @@
                                                     <li class="nav-item">
                                                         <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_escrituras" type="checkbox" value="1"/> Reporte de escrituras</a>
                                                     </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_leads" type="checkbox" value="1"/> Reporte Digital Leads</a>
+                                                    </li>
                                                     
                                                 </ul>
                                     </div>
@@ -928,6 +931,7 @@
                     rep_acumulado:0,
                     rep_ingresos:0,
                     rep_escrituras:0,
+                    rep_leads:0,
 
                 pagination : {
                     'total' : 0,         
@@ -1154,6 +1158,7 @@
                 this.rep_acumulado = 0;
                 this.rep_ingresos = 0;
                 this.rep_escrituras = 0;
+                this.rep_leads = 0;
             },
 
             selectPersonas(){
@@ -1298,6 +1303,7 @@
                     me.rep_acumulado = usuarios[0].rep_acumulado;
                     me.rep_ingresos = usuarios[0].rep_ingresos;
                     me.rep_escrituras = usuarios[0].rep_escrituras;
+                    me.rep_leads = usuarios[0].rep_leads;
 
                     me.rol_id = usuarios[0].rol_id;
 
@@ -1608,7 +1614,8 @@
                     'rep_detalles_post':this.rep_detalles_post,
                     'rep_acumulado' : this.rep_acumulado,
                     'rep_ingresos' : this.rep_ingresos,
-                    'rep_escrituras' : this.rep_escrituras
+                    'rep_escrituras' : this.rep_escrituras,
+                    'rep_leads' : this.rep_leads
 
                 }).then(function (response){
                     me.listarPersonal(1,'','nombre');

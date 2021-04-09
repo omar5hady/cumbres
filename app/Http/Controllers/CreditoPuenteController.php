@@ -12,6 +12,8 @@ use App\Precio_puente;
 use App\Puente_checklist;
 use App\Cat_documento;
 use DB;
+
+use Carbon\Carbon;
 use Auth;
 
 class CreditoPuenteController extends Controller
@@ -431,6 +433,7 @@ class CreditoPuenteController extends Controller
                     ->join('bases_presupuestales as bp','modelos.id','=','bp.modelo_id')
                     ->select('modelos.nombre','bp.*','modelos.id')
                     ->where('solicitud_id','=',$request->id)
+                    ->where('bp.activo','=',1)
                     ->distinct()->get();
                     
         if(sizeof($modelos))
@@ -487,6 +490,15 @@ class CreditoPuenteController extends Controller
         $puente->fecha_entrega = $request->fecha_entrega;
         $puente->user_alta = Auth::user()->usuario;
         $puente->save();
+    }
+
+    public function ingresarExpTecnico(Request $request){
+
+        $credito = Credito_puente::findOrFail($request->id);
+        $credito->status = 1;
+        $credito->fecha_integracion = Carbon::now();
+        $credito->save();
+
     }
 
 }

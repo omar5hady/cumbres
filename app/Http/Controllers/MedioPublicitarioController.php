@@ -87,6 +87,7 @@ class MedioPublicitarioController extends Controller
         /////////// Arreglo medios publicitarios //////////////
         $publicidadVentas = Medio_publicitario::select('id','nombre as publicidad')->orderBy('publicidad','asc')->get();
         $publicidadProspectos = Medio_publicitario::select('id','nombre as publicidad')->orderBy('publicidad','asc')->get();
+        $publicidadProspecAll = Medio_publicitario::select('id','nombre as publicidad')->orderBy('publicidad','asc')->get();
 
         ///Filtros             
             ////////// Arreglo de ID de clientes con contrato firmado //////////////
@@ -126,18 +127,59 @@ class MedioPublicitarioController extends Controller
                         }
 
                         $prospectos = $prospectos->orderBy('id','asc')->distinct()->get();
-        
-        
 
+            // $all = Cliente::select('id')->where('vendedor_id','!=',104)
+            //             ->where('clasificacion','!=',7)
+            //             ->where('clasificacion','!=',5);
+            //             if($proyecto != '')
+            //                 $all = $all->where('proyecto_interes_id','=',$proyecto);
+            //             if($asesor != '')
+            //                 $all = $all->where('vendedor_id','=',$asesor);
+            
+            //     $all = $all->orderBy('id','asc')->distinct()->get();
+
+
+        // Llenado publicidad all
+        foreach ($publicidadProspecAll as $ep => $publiAll) {
+            $publiAll->cant = 0;
+
+            // if(sizeof($all))
+            //         foreach ($all as $et => $cliente) {
+                        $res = Cliente::join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
+                                        ->join('clientes_observaciones as cb','clientes.id','=','cb.cliente_id')
+                                        ->select('clientes.id')
+                                        ->where('clientes.publicidad_id','=',$publiAll->id)
+                                        ->where('vendedor_id','!=',104)
+                                        ->where('clasificacion','!=',7)
+                                        ->where('clasificacion','!=',5);
+                                        if($proyecto != '')
+                                            $res = $res->where('clientes.proyecto_interes_id','=',$proyecto);
+                                        if($asesor != '')
+                                            $res = $res->where('clientes.vendedor_id','=',$asesor);
+                                        if($desde != '' && $hasta != ''){
+                                            $res = $res->whereBetween('cb.created_at', [$desde, $hasta]);
+                                        }
+                                        else{
+                                            $res = $res->whereBetween('cb.created_at', ['2000-02-01', $hoy]);
+                                        }
+                                        $res = $res->distinct()->count('clientes.id');
+                        
+                        //if(sizeof($res)){
+                            $publiAll->cant = $res;
+                        //}
+                    // }
+        }
+        
+        
         ////////// Llenado por publicidad para ventas
 
             foreach ($publicidadVentas as $ep => $publiV) {
                 $publiV->cant = 0;
                 if(sizeof($clientesID_contrato))
                     foreach ($clientesID_contrato as $et => $cliente) {
-                        $res = Cliente::join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                                ->select('clientes.id','clientes.publicidad_id')->where('clientes.id','=',$cliente->id)
-                                ->where('clientes.publicidad_id','=',$publiV->id)->get();
+                        $res = Contrato::join('creditos','contratos.id','=','creditos.id')
+                                ->select('creditos.prospecto_id','contratos.publicidad_id')->where('creditos.prospecto_id','=',$cliente->id)
+                                ->where('contratos.publicidad_id','=',$publiV->id)->get();
                         
                         if(sizeof($res)){
                             $publiV->cant ++;
@@ -158,17 +200,17 @@ class MedioPublicitarioController extends Controller
                         if(sizeof($res)){
                             $publiC->cant ++;
                         }
-                        if(sizeof($clientesID_contrato))
-                            foreach ($clientesID_contrato as $er => $venta) {
-                                if($venta->id == $cliente->id){
-                                    $resp = Cliente::join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
-                                        ->select('clientes.id','clientes.publicidad_id')->where('clientes.id','=',$venta->id)
-                                        ->where('clientes.publicidad_id','=',$publiC->id)->get();
-                                    if(sizeof($resp)){
-                                        $publiC->cant --;
-                                    }
-                                }
-                            }  
+                        // if(sizeof($clientesID_contrato))
+                        //     foreach ($clientesID_contrato as $er => $venta) {
+                        //         if($venta->id == $cliente->id){
+                        //             $resp = Cliente::join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
+                        //                 ->select('clientes.id','clientes.publicidad_id')->where('clientes.id','=',$venta->id)
+                        //                 ->where('clientes.publicidad_id','=',$publiC->id)->get();
+                        //             if(sizeof($resp)){
+                        //                 $publiC->cant --;
+                        //             }
+                        //         }
+                        //     }  
                     }
                 /// Le resto la publicidad q se obtuvo de las ventas para solo dejar prospectos
                 //$publi->cant = $publi->cant - $publicidadVentas[$ep]->cant;
@@ -177,6 +219,7 @@ class MedioPublicitarioController extends Controller
         return[
             'publicidadVentas' => $publicidadVentas,
             'publicidadProspectos' => $publicidadProspectos,
+            'publicidadAll' => $publicidadProspecAll,
             'clientesVenta'=>$clientesID_contrato,
             'prospectos'=>$prospectos
         ];

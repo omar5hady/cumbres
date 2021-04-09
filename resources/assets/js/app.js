@@ -146,6 +146,7 @@ Vue.component('recursos-propios', require('./components/Reportes/ReporteRecursos
 Vue.component('repcredito-puente', require('./components/Reportes/ReporteCasasPuente.vue'));
 Vue.component('reporte-modelos', require('./components/Reportes/ReporteModelos.vue'));
 Vue.component('reporte-detalles', require('./components/Reportes/ResumenDetalles.vue'));
+Vue.component('reporte-leads', require('./components/Reportes/ReporteLeads.vue'));
 
 
 Vue.component('avaluos', require('./components/Avaluos.vue'));

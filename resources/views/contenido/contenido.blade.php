@@ -508,6 +508,10 @@
             <base-presupuestal></base-presupuestal>
         </template>
 
+        <template v-if="menu==258">
+            <reporte-leads></reporte-leads>
+        </template>
+
 
         
 

@@ -679,6 +679,8 @@ Route::group(['middleware' => ['auth']],function(){
 
             Route::get('/reportes/revicionprevia','ReportesController@revicionPreviaRep');
 
+            Route::get('/reportes/digitalLeads','DigitalLeadController@reporteLeads');
+
 
     ///////////////////        RUTAS NOTARIA     //////////////////////////////////
         Route::get('/notaria','NotariaController@index');

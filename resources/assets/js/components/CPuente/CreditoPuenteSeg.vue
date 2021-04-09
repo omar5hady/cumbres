@@ -488,7 +488,6 @@
                                         <table class="table2 table-striped table-sm">
                                             <thead>
                                                 <tr>
-                                                    
                                                     <th>Archivo</th>
                                                     <th>Fecha de entrega</th>
                                                     <th>Notas</th>
@@ -502,7 +501,7 @@
                                                     <td v-text="urbanizacion.fecha_entrega"></td>
                                                     <td v-text="urbanizacion.notas"></td>
                                                     <td v-if="urbanizacion.fecha_confirm == null">
-                                                        <button type="button" class="btn btn-success">Confirmar entrega</button>
+                                                        <button type="button" class="btn btn-dark">Confirmar entrega</button>
                                                     </td>
                                                     <td v-else>
                                                         Confirmado por: {{urbanizacion.user_confirm}} ( {{urbanizacion.fecha_confirm}} )
@@ -544,7 +543,7 @@
                                                     <td v-text="edificacion.fecha_entrega"></td>
                                                     <td v-text="edificacion.notas"></td>
                                                     <td v-if="edificacion.fecha_confirm == null">
-                                                        <button type="button" class="btn btn-success">Confirmar entrega</button>
+                                                        <button type="button" class="btn btn-dark">Confirmar entrega</button>
                                                     </td>
                                                     <td v-else>
                                                         Confirmado por: {{edificacion.user_confirm}} ( {{edificacion.fecha_confirm}} )
@@ -604,6 +603,9 @@
                             <div class="form-group row">
                                 <div class="col-md-1">
                                     <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
+                                </div>
+                                <div class="col-md-1" v-if="chk_listos == chk_total">
+                                    <button type="button" class="btn btn-success" @click="enviarExp()"> Integrar expediente </button>
                                 </div>
                             </div>
                         </div>

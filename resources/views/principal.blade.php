@@ -697,6 +697,11 @@
                                         <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de Detalles</a>
                                     </li>
                                 @endif
+                                @if(Auth::user()->rep_leads == 1)
+                                    <li @click="menu=258" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte Digital Leads</a>
+                                    </li>
+                                @endif
                             </ul>
                         </li>
                     @endif
