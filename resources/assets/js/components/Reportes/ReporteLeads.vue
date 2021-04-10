@@ -9,7 +9,8 @@
                 <div class="card scroll-box">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Reporte Digital Leads  &nbsp;&nbsp;
-                        <a v-if="b_fecha1 != '' && b_fecha2 != ''" :href="'/reprotes/excelIngresos?fecha1=' + b_fecha1 + '&fecha2=' + b_fecha2 + '&empresa=' + emp_constructora"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel </a>
+                        <a :href="'/reportes/digitalLeads?fecha1=' +b_fecha1 + '&fecha2=' + b_fecha2 + 
+                                '&proyecto=' + b_proyecto + '&excel=1'"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel </a>
                        
                     </div>
                     <div class="card-body">
@@ -47,38 +48,52 @@
 
                         <div class="form-group row">
                             <!-- Listado por ingresos -->
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="table-responsive">
                                     <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
-                                                <th colspan="3" class="text-center">REPORTE POR CAMPAÑA</th>
+                                                <th colspan="6" class="text-center">REPORTE POR CAMPAÑA</th>
                                             </tr>
                                             <tr>
                                                 <th> Campaña</th>
+                                                <th> Fecha de campaña</th>
                                                 <th> # Leads</th>
+                                                <th> Descartados sin canalizar</th>
                                                 <th> Canalizados a asesor</th>
+                                                <th> Descartados por asesor</th>
+                                                
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td>Tráfico organico</td>
+                                                <td colspan="2">Tráfico organico</td>
                                                 <td v-text="camp_org"></td>
+                                                <td v-text="cont_desc"></td>
                                                 <td v-text="asesor_org"></td>
+                                                <td v-text="desc_ase"></td>
                                             </tr>  
                                             <tr v-if="leads.conteo > 0" v-for="leads in arrayLeads" :key="leads.id">
                                                 <td class="td2" v-text="leads.nombre_campania+' ('+leads.medio_digital+')'"></td>
+                                                <td class="td2" 
+                                                        v-text="this.moment(leads.fecha_ini).locale('es').format('DD/MMM/YYYY')
+                                                        +' al '+this.moment(leads.fecha_fin).locale('es').format('DD/MMM/YYYY')">
+                                                </td>
                                                 <td class="td2" v-text="leads.conteo"></td>
+                                                <td class="td2" v-text="leads.descartado"></td>
                                                 <td class="td2" v-text="leads.asesor"></td>
+                                                <td class="td2" v-text="leads.descAsesor"></td>
                                             </tr>     
                                                                   
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
+               
+                        </div>
 
-                            <div class="col-md-1"></div>
-
+                        <div class="form-group row">
+                            <!-- Listado por ingresos -->
                                 
                             <div class="col-md-5">
                                 <div class="table-responsive">
@@ -90,12 +105,40 @@
                                             <tr>
                                                 <th> Asesor</th>
                                                 <th> # Leads asignados</th>
+                                                <th> Descartados</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr v-for="asesor in arrayAsesores" :key="asesor.id">
                                                 <td class="td2" v-text="asesor.nombre+' '+asesor.apellidos"></td>
                                                 <td class="td2" v-text="asesor.conteo"></td>
+                                                <td class="td2" v-text="asesor.descartados"></td>
+                                            </tr>     
+                                                                  
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                            </div>
+
+                            <div class="col-md-5">
+                                <div class="table-responsive">
+                                    <table class="table2 table-danger table-bordered table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="3" class="text-center">SEGUIMIENTO DE PROSPECTOS</th>
+                                            </tr>
+                                            <tr>
+                                                <th> Asesor</th>
+                                                <th> Prospectos sin seguimiento</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-if="asesor.dif > 0" v-for="asesor in arrayVendedores" :key="asesor.id">
+                                                <td class="td2" v-text="asesor.vendedor"></td>
+                                                <td class="td2" v-text="asesor.dif"></td>
                                             </tr>     
                                                                   
                                         </tbody>
@@ -132,8 +175,11 @@
                 arrayLeads : [],
                 arrayFraccionamientos : [],
                 arrayAsesores : [],
+                arrayVendedores : [],
                 camp_org:0,
                 asesor_org:0,
+                cont_desc:0,
+                desc_ase:0,
                 b_fecha1:'',
                 b_fecha2:'',
                 b_proyecto:'',
@@ -148,17 +194,21 @@
                 let me = this;
                 me.arrayLeads = [];
                 var url = '/reportes/digitalLeads?fecha1=' + me.b_fecha1 + '&fecha2=' + me.b_fecha2 + 
-                    '&proyecto=' + me.b_proyecto;
+                    '&proyecto=' + me.b_proyecto + '&excel=0';
 
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLeads = respuesta.campanias;
                     me.asesor_org = respuesta.asesor_org;
+                    me.arrayVendedores = respuesta.vendedores;
                     me.camp_org = respuesta.camp_org;
                     me.arrayAsesores = respuesta.asesores;
+                    me.desc_ase = respuesta.desc_ase,
+                    me.cont_desc = respuesta.cont_desc,
 
                     me.arrayLeads.sort((b, a) => a.conteo - b.conteo);
                     me.arrayAsesores.sort((b, a) => a.conteo - b.conteo);
+                    me.arrayVendedores.sort((b, a) => a.dif - b.dif);
 
                 })
                 .catch(function (error) {

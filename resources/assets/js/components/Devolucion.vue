@@ -97,7 +97,7 @@
                                         <td class="td2" v-text="contratos.manzana"></td>
                                         <td class="td2" v-text="contratos.num_lote"></td>
                                         <td class="td2" v-text="'$'+formatNumber(contratos.sumaPagares - contratos.sumaRestante)"></td>
-                                        <td class="td2" v-text="'$'+formatNumber(contratos.sumaPagares - contratos.sumaRestante -  contratos.sumGastos)"></td>
+                                        <td class="td2" v-text="'$'+formatNumber(contratos.descuento + contratos.sumaPagares - contratos.sumaRestante -  contratos.sumGastos)"></td>
                                         <td class="td2" v-text="this.moment(contratos.fecha_status).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2">
                                             <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
@@ -314,13 +314,28 @@
                                 </div>
 
                                 <div v-if="arrayGastos.length && tipoAccion==1">
-                                        <div class="form-group row"  v-for="gasto in arrayGastos" :key="gasto.id">
-                                            <label class="col-md-3 form-control-label" for="text-input" v-text="gasto.concepto"></label>
-                                            <div class="col-md-3">
-                                                <h6>${{ formatNumber(gasto.costo)}}</h6>
-                                            </div>
+                                    <div class="form-group row"  v-for="gasto in arrayGastos" :key="gasto.id">
+                                        <label class="col-md-3 form-control-label" for="text-input" v-text="gasto.concepto"></label>
+                                        <div class="col-md-3">
+                                            <h6>${{ formatNumber(gasto.costo)}}</h6>
                                         </div>
                                     </div>
+                                </div>
+
+                                <div class="form-group row" v-if="arrayGastos.length && tipoAccion==1">
+                                    <div class="col-md-12">
+                                        <h6><strong> Descuento </strong></h6>
+                                    </div>
+                                </div>
+
+                                <div v-if="descuento>0 && tipoAccion == 1">
+                                    <div class="form-group row" v-if="descuento>0">
+                                        <label class="col-md-3 form-control-label" for="text-input" v-text="obs_descuento"></label>
+                                        <div class="col-md-3">
+                                            <h6>${{ formatNumber(descuento)}}</h6>
+                                        </div>
+                                    </div>
+                                </div>
 
                                 
                                 <div class="form-group row" >
@@ -328,7 +343,7 @@
                                         <h5 align="center"><strong> Total a devolver </strong></h5>
                                     </div>
                                     <div class="col-md-12" v-if="tipoAccion==1">
-                                        <h5 align="center"><strong> ${{ formatNumber(devolver = depositos - totalGastos)}} </strong></h5>
+                                        <h5 align="center"><strong> ${{ formatNumber(devolver =descuento + depositos - totalGastos)}} </strong></h5>
                                     </div>
 
                                     <div class="col-md-12" v-if="tipoAccion==2">
@@ -371,7 +386,7 @@
                                     <div class="col-md-6">
                                         <select :disabled="tipoAccion==2" class="form-control" v-model="banco">
                                             <option value="">Seleccione</option>
-                                            <option v-for="banco in arrayBancos" :key="banco.num_cuenta" :value="banco.num_cuenta + '-' + banco.banco" v-text="banco.num_cuenta + '-' + banco.banco"></option>
+                                            <option v-for="banco in arrayBancos" :key="banco.num_cuenta + '-' + banco.banco" :value="banco.num_cuenta + '-' + banco.banco" v-text="banco.num_cuenta + '-' + banco.banco"></option>
                                         </select>
                                     </div>
                                 </div>
@@ -511,6 +526,8 @@
                 totalGastos:0,
                 devolver : 0,
                 cant_dev : 0,
+                obs_descuento : '',
+                descuento : 0,
                 
                 tituloModal : '',
            
@@ -900,6 +917,8 @@
                         this.cheque ='';
                         this.observaciones = '';
                         this.cant_dev = 0;
+                        this.descuento = data['descuento'];
+                        this.obs_descuento = data['obs_descuento'];
 
                         this.listarGastos();
                         this.selectCuenta();

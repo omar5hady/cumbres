@@ -24,6 +24,7 @@ class DevolucionController extends Controller
         $criterio = $request->criterio;
 
         $query = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+            ->leftJoin('expedientes','contratos.id','=','expedientes.id')
             ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
             ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
@@ -39,6 +40,9 @@ class DevolucionController extends Controller
                 'creditos.precio_venta',
                 'creditos.fraccionamiento as proyecto',
                 'creditos.lote_id',
+
+                'expedientes.descuento',
+                'expedientes.obs_descuento',
 
                 'personal.nombre',
                 'personal.apellidos',
@@ -65,6 +69,7 @@ class DevolucionController extends Controller
                 'contratos.enganche_total',
                 'contratos.avance_lote',
                 'contratos.observacion',
+                'contratos.saldo',
 
                 DB::raw("(SELECT SUM(devoluciones.devolver) FROM devoluciones
                             WHERE devoluciones.contrato_id = contratos.id

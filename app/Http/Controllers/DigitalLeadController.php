@@ -11,6 +11,7 @@ use App\Cliente;
 use App\Vendedor;
 use App\Campania;
 use App\Http\Controllers\ClienteController;
+use App\Cliente_observacion;
 use App\Notifications\NotifyAdmin;
 use App\Medio_publicitario;
 use Auth;
@@ -727,72 +728,321 @@ class DigitalLeadController extends Controller
         $asesor_org = 0;
         
         foreach ($campanias as $campania) {
-            //$campania->conteo =0;
-            $campania->conteo = Digital_lead::select('campania_id')
-                    ->where('campania_id','=',$campania->id)->where('motivo','=',1);
-                    if($fecha1 != '')
-                        $campania->conteo = $campania->conteo->whereBetween('created_at', [$fecha1, $fecha2]);
 
-                    if($proyecto != '')
-                        $campania->conteo = $campania->conteo->where('proyecto_interes', '=',$proyecto);
+            //TOTAL LEADS POR CAMPAÑA
+                $campania->conteo = Digital_lead::select('campania_id')
+                        ->where('campania_id','=',$campania->id)->where('motivo','=',1);
+                        if($fecha1 != '')
+                            $campania->conteo = $campania->conteo->whereBetween('created_at', [$fecha1, $fecha2]);
 
-            $campania->conteo = $campania->conteo->count();
+                        if($proyecto != '')
+                            $campania->conteo = $campania->conteo->where('proyecto_interes', '=',$proyecto);
 
-            $campania->asesor = Digital_lead::select('campania_id')->where('campania_id','=',$campania->id)
-                    ->where('motivo','=',1)->where('vendedor_asign','!=',NULL);
-                    if($fecha1 != '')
-                        $campania->asesor = $campania->asesor->whereBetween('created_at', [$fecha1, $fecha2]);
+                $campania->conteo = $campania->conteo->count();
 
-                    if($proyecto != '')
-                        $campania->asesor = $campania->asesor->where('proyecto_interes', '=',$proyecto);
-            $campania->asesor = $campania->asesor ->count();
+            //LEADS ASIGNADOS A ASESOR
+                $campania->asesor = Digital_lead::select('campania_id')
+                        ->where('campania_id','=',$campania->id)->where('motivo','=',1);
+                        
+                $campania->asesor = $campania->asesor->where('vendedor_asign','!=',NULL);
+                        if($fecha1 != '')
+                            $campania->asesor = $campania->asesor->whereBetween('created_at', [$fecha1, $fecha2]);
+                        if($proyecto != '')
+                            $campania->asesor = $campania->asesor->where('proyecto_interes', '=',$proyecto);
+                $campania->asesor = $campania->asesor->count();
+
+            // LEADS DESCARTADOS SIN ASIGNAR
+                $campania->descartado = Digital_lead::select('campania_id')
+                        ->where('campania_id','=',$campania->id)->where('motivo','=',1);
+                $campania->descartado = $campania->descartado->where('status','=',0)->where('vendedor_asign','=',NULL);
+                        if($fecha1 != '')
+                            $campania->descartado = $campania->descartado->whereBetween('created_at', [$fecha1, $fecha2]);
+                        if($proyecto != '')
+                            $campania->descartado = $campania->descartado->where('proyecto_interes', '=',$proyecto);
+                $campania->descartado = $campania->descartado->count();
+
+            // LEADS DESCARTADOS POR ASESOR
+                $campania->descAsesor = Digital_lead::select('campania_id')
+                        ->where('campania_id','=',$campania->id)->where('motivo','=',1);
+                $campania->descAsesor = $campania->descAsesor->where('status','=',0)->where('vendedor_asign','!=',NULL);
+                        if($fecha1 != '')
+                            $campania->descAsesor = $campania->descAsesor->whereBetween('created_at', [$fecha1, $fecha2]);
+                        if($proyecto != '')
+                            $campania->descAsesor = $campania->descAsesor->where('proyecto_interes', '=',$proyecto);
+                $campania->descAsesor = $campania->descAsesor->count();
         }
 
-        $cont_org = Digital_lead::select('campania_id')
-                        ->where('campania_id','=',NULL)
-                        ->where('motivo','=',1);
-                        if($fecha1 != '')
-                            $cont_org = $cont_org->whereBetween('created_at', [$fecha1, $fecha2]);
-
-                        if($proyecto != '') 
-                            $cont_org = $cont_org->where('proyecto_interes', '=',$proyecto);
-                $cont_org = $cont_org->count();
-
-        $asesor_org = Digital_lead::select('campania_id')
-                        ->where('campania_id','=',NULL)
-                        ->where('vendedor_asign','!=',NULL);
-                        if($fecha1 != '')
-                            $asesor_org = $asesor_org->whereBetween('created_at', [$fecha1, $fecha2]);
-
-                        if($proyecto != '') 
-                            $asesor_org = $asesor_org->where('proyecto_interes', '=',$proyecto);
-                $asesor_org = $asesor_org->where('motivo','=',1)->count();
-
-        $asesores = Digital_lead::join('personal','digital_leads.vendedor_asign','=','personal.id')
-                                ->select('personal.id','personal.nombre','personal.apellidos')
-                                ->where('vendedor_asign','!=',NULL)
-                                ->where('motivo','=',1)
-                                ->groupBy('personal.id')
-                                ->get();
-
-        foreach ($asesores as $asesor) {    
-            $asesor->conteo = Digital_lead::select('vendedor_asign')
-                            ->where('vendedor_asign','=',$asesor->id)->where('motivo','=',1);
+        /// CONTEOS PARA TRAFICO ORGANICO
+            $cont_org = Digital_lead::select('campania_id')
+                            ->where('campania_id','=',NULL)
+                            ->where('motivo','=',1);
                             if($fecha1 != '')
-                                $asesor->conteo = $asesor->conteo->whereBetween('created_at', [$fecha1, $fecha2]);
+                                $cont_org = $cont_org->whereBetween('created_at', [$fecha1, $fecha2]);
 
-                            if($proyecto != '')     
-                                $asesor->conteo = $asesor->conteo->where('proyecto_interes', '=',$proyecto);
-                $asesor->conteo = $asesor->conteo->count();
+                            if($proyecto != '') 
+                                $cont_org = $cont_org->where('proyecto_interes', '=',$proyecto);
+                    $cont_org = $cont_org->count();
+
+            $cont_desc = Digital_lead::select('campania_id')
+                            ->where('campania_id','=',NULL)
+                            ->where('motivo','=',1)
+                            ->where('status','=',0)
+                            ->where('vendedor_asign','=',NULL);
+                            if($fecha1 != '')
+                                $cont_desc = $cont_desc->whereBetween('created_at', [$fecha1, $fecha2]);
+
+                            if($proyecto != '') 
+                                $cont_desc = $cont_desc->where('proyecto_interes', '=',$proyecto);
+                    $cont_desc = $cont_desc->count();
+
+            $desc_ase = Digital_lead::select('campania_id')
+                            ->where('campania_id','=',NULL)
+                            ->where('motivo','=',1)
+                            ->where('status','=',0)
+                            ->where('vendedor_asign','!=',NULL);
+                            if($fecha1 != '')
+                                $desc_ase = $desc_ase->whereBetween('created_at', [$fecha1, $fecha2]);
+
+                            if($proyecto != '') 
+                                $desc_ase = $desc_ase->where('proyecto_interes', '=',$proyecto);
+                    $desc_ase = $desc_ase->count();
+
+            $asesor_org = Digital_lead::select('campania_id')
+                            ->where('campania_id','=',NULL)
+                            ->where('vendedor_asign','!=',NULL);
+                            if($fecha1 != '')
+                                $asesor_org = $asesor_org->whereBetween('created_at', [$fecha1, $fecha2]);
+
+                            if($proyecto != '') 
+                                $asesor_org = $asesor_org->where('proyecto_interes', '=',$proyecto);
+                    $asesor_org = $asesor_org->where('motivo','=',1)->count();
+
+        /// REPORTE POR ASESOR
+            $asesores = Digital_lead::join('personal','digital_leads.vendedor_asign','=','personal.id')
+                                    ->select('personal.id','personal.nombre','personal.apellidos')
+                                    ->where('vendedor_asign','!=',NULL)
+                                    ->where('motivo','=',1)
+                                    ->groupBy('personal.id')
+                                    ->get();
+
+            foreach ($asesores as $asesor) {    
+                $asesor->conteo = Digital_lead::select('vendedor_asign')
+                                ->where('vendedor_asign','=',$asesor->id)->where('motivo','=',1);
+                                if($fecha1 != '')
+                                    $asesor->conteo = $asesor->conteo->whereBetween('created_at', [$fecha1, $fecha2]);
+
+                                if($proyecto != '')     
+                                    $asesor->conteo = $asesor->conteo->where('proyecto_interes', '=',$proyecto);
+                    $asesor->conteo = $asesor->conteo->count();
+
+                $asesor->descartados = Digital_lead::select('vendedor_asign')
+                                ->where('vendedor_asign','=',$asesor->id)->where('motivo','=',1)
+                                ->where('status','=',0);
+                                if($fecha1 != '')
+                                    $asesor->descartados = $asesor->descartados->whereBetween('created_at', [$fecha1, $fecha2]);
+
+                                if($proyecto != '')     
+                                    $asesor->descartados = $asesor->descartados->where('proyecto_interes', '=',$proyecto);
+                    $asesor->descartados = $asesor->descartados->count();
+
+                $asesor->sinAtender = 0;
+            }
+
+            $vendedores = User::join('personal','users.id','=','personal.id')
+                ->join('vendedores','personal.id','vendedores.id')
+                ->select('personal.id',
+                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS vendedor"))
+                ->where('vendedores.tipo','=',0)
+                ->where('users.condicion','=',1)
+                ->where('users.usuario','!=','descartado')
+                ->where('users.usuario','!=','oficina')
+                ->orderBy('vendedores.cont_leads','asc')
+                ->orderBy('vendedor','asc')->get();
+
+                foreach ($vendedores as $index => $vendedor) {
+
+                    $vendedor->total = 0;
+                    $vendedor->bd = 0;
+                    $vendedor->dif = 0;
+        
+                    $clientes = Cliente::select('id')->where('vendedor_id','=',$vendedor->id)
+                    ->where('clasificacion','!=',5)
+                    ->where('clasificacion','!=',6)
+                    ->where('clasificacion','!=',7)
+                    ->where('clasificacion','!=',1)
+                    ->get();
+                    $vendedor->total = $clientes->count();
+                    $vendedor->bd = 0;
+        
+                    foreach ($clientes as $index => $c) {
+                        $obs = Cliente_observacion::where('created_at','>=',Carbon::now()->subDays(8))
+                        ->where('cliente_id','=',$c->id)
+                        ->count();
+        
+                        if($obs > 0){
+                            $vendedor->bd ++;
+                        }
+        
+                        $vendedor->dif = $vendedor->total - $vendedor->bd;
+                    }
+                }
+
+
+
+        
+        if($request->excel == 0)
+            return [
+                'campanias' => $campanias,
+                'camp_org' => $cont_org,
+                'asesor_org' => $asesor_org,
+                'asesores' => $asesores,
+                'desc_ase' => $desc_ase,
+                'cont_desc' => $cont_desc,
+
+                'vendedores' => $vendedores,
+            ];
+        else{
+
+            return Excel::create('Reporte Digital Leads', function($excel) use ($campanias, $cont_org, $asesor_org,
+                                                                $desc_ase, $cont_desc, $vendedores, $asesores){
+                $excel->sheet('Reporte por campaña', function($sheet) use ($campanias,  $cont_org, $asesor_org, $desc_ase, $cont_desc){
+                    
+                    $sheet->row(1, [
+                        'Campaña','Fecha de Campaña', '# Leads', 'Descartado sin canalizar',
+                        'Canalizados a asesor', 'Descartado por asesor'
+                    ]);
+    
+                    $sheet->cells('A1:F1', function ($cells) {
+                        $cells->setBackground('#052154');
+                        $cells->setFontColor('#ffffff');
+                        // Set font family
+                        $cells->setFontFamily('Calibri');
+    
+                        // Set font size
+                        $cells->setFontSize(13);
+    
+                        // Set font weight to bold
+                        $cells->setFontWeight('bold');
+                        $cells->setAlignment('center');
+                    });
+                    $cont=2;
+                    $sheet->row(2, [
+                        'Tráfico Organico', 
+                        '',
+                        $cont_org,
+                        $cont_desc,
+                        $asesor_org,
+                        $desc_ase,
+                    ]);
+    
+                    foreach($campanias as $index => $lead) {
+                        $cont++;
+
+                        $fecha = new Carbon($lead->fecha_ini);
+                        $lead->fecha_ini = $fecha->formatLocalized('%d de %B de %Y');
+                        $fecha2 = new Carbon($lead->fecha_fin);
+                        $lead->fecha_fin = $fecha2->formatLocalized('%d de %B de %Y');
+    
+                        $sheet->row($index+3, [
+                            $lead->nombre_campania.' ('.$lead->medio_digital.')', 
+                            $lead->fecha_ini.' al '.$lead->fecha_fin,
+                            $lead->conteo,
+                            $lead->descartado,
+                            $lead->asesor,
+                            $lead->descAsesor
+                        ]);	
+                    }
+                    $num='A1:F' . $cont;
+                    $sheet->setBorder($num, 'thin');
+                });
+
+                $excel->sheet('Asesor', function($sheet) use ($vendedores, $asesores){
+
+                    $sheet->mergeCells('A1:C1');
+                    
+                    $sheet->row(1, [
+                        'Reporte por asesor'
+                    ]);
+                    $sheet->row(2, [
+                        'Asesor', '#Leads asignados', 'Descartados'
+                    ]);
+    
+                    $sheet->cells('A1:C2', function ($cells) {
+                        $cells->setBackground('#052154');
+                        $cells->setFontColor('#ffffff');
+                        // Set font family
+                        $cells->setFontFamily('Calibri');
+    
+                        // Set font size
+                        $cells->setFontSize(13);
+    
+                        // Set font weight to bold
+                        $cells->setFontWeight('bold');
+                        $cells->setAlignment('center');
+                    });
+                    $cont=2;
+    
+                    foreach($asesores as $index => $asesor) {
+                        $cont++;
+
+                        $sheet->row($index+3, [
+                            $asesor->nombre.' '.$asesor->apellidos,
+                            $asesor->conteo,
+                            $asesor->descartados
+                        ]);	
+                    }
+                    $num='A1:B' . $cont;
+                    $sheet->setBorder($num, 'thin');
+                    
+                    $cont+=2;
+
+                    $sheet->mergeCells('A'.$cont.':B'.$cont);
+                    
+                    $sheet->row($cont, [
+                        'Seguimiento de prospectos'
+                    ]);
+                    $sheet->row($cont+1, [
+                        'Asesor', 'Prospectos sin seguimiento'
+                    ]);
+                    $row = $cont+1;
+    
+                    $sheet->cells('A'.$cont.':B'.$row, function ($cells) {
+                        $cells->setBackground('#052154');
+                        $cells->setFontColor('#ffffff');
+                        // Set font family
+                        $cells->setFontFamily('Calibri');
+    
+                        // Set font size
+                        $cells->setFontSize(13);
+    
+                        // Set font weight to bold
+                        $cells->setFontWeight('bold');
+                        $cells->setAlignment('center');
+                    });
+
+                    $cont+=2;
+                    $row = $cont;
+    
+                    foreach($vendedores as $index => $asesor) {
+                        $cont++;
+
+                        $sheet->row($index+$row, [
+                            $asesor->vendedor,
+                            $asesor->dif,
+                        ]);	
+                    }
+                    $num='A1:B' . $cont;
+                    $sheet->setBorder($num, 'thin');
+                });
+            }
+            )->download('xls');
+
         }
 
-        return [
-            'campanias' => $campanias,
-            'camp_org' => $cont_org,
-            'asesor_org' => $asesor_org,
-            'asesores' => $asesores
-        ];
 
+    }
+
+    public function excelReporte(Request $request){
 
     }
 }
