@@ -130,7 +130,7 @@ b) Que conoce perfectamente la ubicación, superficie, medidas y colindancias, a
 
     <p>
     d) Que cuenta con los recursos económicos suficientes para adquirir la propiedad de <strong>LA VIVIENDA</strong>, una vez que haya sido designada 
-    beneficiaria de un crédito hipotecario otorgado por <strong>{{mb_strtoupper($contratoPromesa[0]->institucion)}} @if($contratoPromesa[0]->infonavit > 0) e INFONAVIT @elseif($contratoPromesa[0]->fovisste > 0) y FOVISSTE @endif </strong>, 
+    beneficiaria de un crédito hipotecario otorgado por <strong>{{mb_strtoupper($contratoPromesa[0]->institucion)}} @if($contratoPromesa[0]->infonavit > 0 && $contratoPromesa[0]->fovisste == 0) e INFONAVIT @elseif($contratoPromesa[0]->fovisste > 0) y FOVISSTE @endif </strong>, 
     mismo que en lo sucesivo y para los efectos del presente contrato será denominado como <strong>Hipotecario</strong>.  Para tal efecto, manifiesta bajo protesta de decir verdad, que cuenta con historial crediticio 
     satisfactorio y que por sus actividades e ingresos, resulta viable, financieramente, que se le otorgue un crédito por parte de 
     institución bancaria, que cubra en su totalidad el precio estipulado en este contrato.

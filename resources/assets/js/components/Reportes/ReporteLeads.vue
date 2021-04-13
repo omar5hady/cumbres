@@ -125,20 +125,24 @@
 
                             <div class="col-md-5">
                                 <div class="table-responsive">
-                                    <table class="table2 table-danger table-bordered table-striped table-sm">
+                                    <table class="table2 table-light table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
                                                 <th colspan="3" class="text-center">SEGUIMIENTO DE PROSPECTOS</th>
                                             </tr>
                                             <tr>
                                                 <th> Asesor</th>
-                                                <th> Prospectos sin seguimiento</th>
+                                                <th> Prospectos en verde</th>
+                                                <th> Prospectos amarillo</th>
+                                                <th> Prospectos rojo</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr v-if="asesor.dif > 0" v-for="asesor in arrayVendedores" :key="asesor.id">
+                                            <tr v-for="asesor in arrayVendedores" :key="asesor.id">
                                                 <td class="td2" v-text="asesor.vendedor"></td>
-                                                <td class="td2" v-text="asesor.dif"></td>
+                                                <td class="td2 table-success" v-text="asesor.reg"></td>
+                                                <td class="td2 table-warning" v-text="asesor.dif7"></td>
+                                                <td class="td2 table-danger" v-text="asesor.dif15"></td>
                                             </tr>     
                                                                   
                                         </tbody>
@@ -208,7 +212,7 @@
 
                     me.arrayLeads.sort((b, a) => a.conteo - b.conteo);
                     me.arrayAsesores.sort((b, a) => a.conteo - b.conteo);
-                    me.arrayVendedores.sort((b, a) => a.dif - b.dif);
+                    me.arrayVendedores.sort((b, a) => a.dif15 - b.dif15);
 
                 })
                 .catch(function (error) {

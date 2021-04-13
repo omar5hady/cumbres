@@ -869,8 +869,12 @@ class DigitalLeadController extends Controller
                 foreach ($vendedores as $index => $vendedor) {
 
                     $vendedor->total = 0;
-                    $vendedor->bd = 0;
+                    $vendedor->reg = 0;
+                    $vendedor->bd7 = 0;
+                    $vendedor->bd15 = 0;
                     $vendedor->dif = 0;
+                    $vendedor->dif7 = 0;
+                    $vendedor->dif15 = 0;
         
                     $clientes = Cliente::select('id')->where('vendedor_id','=',$vendedor->id)
                     ->where('clasificacion','!=',5)
@@ -882,15 +886,27 @@ class DigitalLeadController extends Controller
                     $vendedor->bd = 0;
         
                     foreach ($clientes as $index => $c) {
-                        $obs = Cliente_observacion::where('created_at','>=',Carbon::now()->subDays(8))
+                        $obs = Cliente_observacion::where('created_at','>=',Carbon::now()->subDays(7)) //Clientes con seguimiento
+                                                    //->where('created_at','<',Carbon::now()->subDays(16))
+                        ->where('cliente_id','=',$c->id)
+                        ->count();
+
+                        $obs2 = Cliente_observacion::where('created_at','>=',Carbon::now()->subDays(15))
                         ->where('cliente_id','=',$c->id)
                         ->count();
         
                         if($obs > 0){
-                            $vendedor->bd ++;
+                            $vendedor->reg ++;
                         }
-        
-                        $vendedor->dif = $vendedor->total - $vendedor->bd;
+
+                        if($obs2 > 0){
+                            $vendedor->bd7 ++;
+                        }
+
+                                
+                        $vendedor->bd;
+                        $vendedor->dif7 =  $vendedor->bd7 - $vendedor->reg;
+                        $vendedor->dif15 = $vendedor->total - $vendedor->bd7 - $vendedor->bd;;
                     }
                 }
 
@@ -1003,17 +1019,17 @@ class DigitalLeadController extends Controller
                     
                     $cont+=2;
 
-                    $sheet->mergeCells('A'.$cont.':B'.$cont);
+                    $sheet->mergeCells('A'.$cont.':D'.$cont);
                     
                     $sheet->row($cont, [
                         'Seguimiento de prospectos'
                     ]);
                     $sheet->row($cont+1, [
-                        'Asesor', 'Prospectos sin seguimiento'
+                        'Asesor', 'Prospectos en verde', 'Prospectos en amarillo', 'Prospectos en rojo'
                     ]);
                     $row = $cont+1;
     
-                    $sheet->cells('A'.$cont.':B'.$row, function ($cells) {
+                    $sheet->cells('A'.$cont.':D'.$row, function ($cells) {
                         $cells->setBackground('#052154');
                         $cells->setFontColor('#ffffff');
                         // Set font family
@@ -1035,10 +1051,13 @@ class DigitalLeadController extends Controller
 
                         $sheet->row($index+$row, [
                             $asesor->vendedor,
-                            $asesor->dif,
+                            $asesor->reg,
+                            $asesor->dif7
+                            $asesor->dif15,
+
                         ]);	
                     }
-                    $num='A1:B' . $cont;
+                    $num='A1:D' . $cont;
                     $sheet->setBorder($num, 'thin');
                 });
             }

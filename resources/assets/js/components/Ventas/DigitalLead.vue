@@ -159,7 +159,7 @@
                                                 <div class="progress-bar bg-success" role="progressbar" v-bind:style="{ width: lead.progress + '%' }" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
                                             </div>
                                         </td>
-                                        <td v-if="lead.diferencia < 7" class="td2" v-text="lead.nombre + ' ' + lead.apellidos "></td>                                                    
+                                        <td v-if="lead.diferencia < 7 || lead.status == 0 || lead.status == 3" class="td2" v-text="lead.nombre + ' ' + lead.apellidos"></td>                                                    
                                         <td v-else-if="lead.diferencia >= 7 && lead.diferencia <= 15  " class="td2">
                                             <span class="badge2 badge-warning">{{ lead.nombre.toUpperCase()+' '+lead.apellidos}}</span>
                                         </td>    
@@ -1339,10 +1339,10 @@
                                 class="btn btn-danger" @click="descartar()">Descartar
                             </button>
 
-                            <button type="button" 
+                            <!-- <button type="button" 
                                 v-if="(tipoAccion == 2 && motivo == 1 && status !=0 && status !=3)"
                                 class="btn btn-success" @click="finalizar()">Finalizar
-                            </button>
+                            </button> -->
 
                             <div></div>
 

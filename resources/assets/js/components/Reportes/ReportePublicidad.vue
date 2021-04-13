@@ -104,7 +104,7 @@
                             </div>
 
                             <div class="col-md-3" >
-                                <div class="text-value-sm text-dark"><h6 style="font-weight: bold;">Atendidos Descartados (Total {{totalTodos}})</h6></div>
+                                <div class="text-value-sm text-dark"><h6 style="font-weight: bold;">Atendidos Descartados (Total {{totalDesc}})</h6></div>
                                 <div class="card text-dark bg-dark" v-for="prospecto in arrayTodosDesc" :key="prospecto.id">
                                     <div class="card-body text-dark">
                                         <div class="h6 text-muted2 text-left mb-2">{{prospecto.publicidad}}</div>
