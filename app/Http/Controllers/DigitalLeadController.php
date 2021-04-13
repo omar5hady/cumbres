@@ -517,7 +517,11 @@ class DigitalLeadController extends Controller
         $obs->lead_id = $request->lead_id;
         $obs->comentario = $request->comentario;
         $obs->usuario = Auth::user()->usuario;
-        $obs->visto = $fecha;
+        if($request->fecha_aviso == '')
+            $obs->visto = $fecha;
+        else{
+            $obs->fecha_aviso = $request->fecha_aviso;
+        }
         $obs->save();
 
         $lead = Digital_lead::findOrFail($request->lead_id);
@@ -626,40 +630,43 @@ class DigitalLeadController extends Controller
         $reminders = Digital_lead::join('obs_leads', 'digital_leads.id','=','obs_leads.lead_id')
             ->select('obs_leads.id','nombre','apellidos','celular','email','comentario','motivo')
             ->where('obs_leads.visto','=', NULL);
+        
+        $reminders_fecha;
             
             if(Auth::user()->rol_id == 2 || Auth::user()->rol_id == 1){
-                $reminders = $reminders->where('digital_leads.vendedor_asign','=', Auth::user()->id);
+                $reminders = $reminders->where('digital_leads.vendedor_asign','=', Auth::user()->id)
+                                ->where('obs_leads.fecha_aviso','=',NULL);
                 $reminders = $reminders->get();
 
-                return $reminders;
+                $reminders_fecha = Digital_lead::join('obs_leads', 'digital_leads.id','=','obs_leads.lead_id')
+                    ->select('obs_leads.id','nombre','apellidos','celular','email','comentario','motivo','obs_leads.fecha_aviso')
+                    ->where('obs_leads.visto','=', NULL)
+                    ->where('obs_leads.fecha_aviso','=', Carbon::now()->format('Y-m-d'))->get();
+    
             }
 
             elseif(Auth::user()->rol_id == 12 ){
                 $reminders = $reminders->where('motivo','=', 2);
                 $reminders = $reminders->get();
-
-                return $reminders;
             }
 
             elseif(Auth::user()->id == 25816 ){
                 $reminders = $reminders->where('motivo','=', 3);
                 $reminders = $reminders->get();
-
-                return $reminders;
             }
             elseif(Auth::user()->id == 10 || Auth::user()->rol_id == 1){
                 $reminders = $reminders->where('motivo','=', 4);
                 $reminders = $reminders->get();
-
-                return $reminders;
             }
 
             elseif(Auth::user()->id == 3){
                 $reminders = $reminders->where('motivo','=', 6);
                 $reminders = $reminders->get();
-
-                return $reminders;
             }
+
+            return ['reminders'=>$reminders,
+                    'reminders_fecha' => $reminders_fecha
+                ];
        
     }
 

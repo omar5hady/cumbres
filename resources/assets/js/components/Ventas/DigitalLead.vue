@@ -186,7 +186,7 @@
                                         <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2"> 
                                             <button title="Ver observaciones" type="button" class="btn btn-info pull-right" 
-                                            @click="abrirModal1(lead.id),listarObservacion(1,lead.id)">Ver todos</button> </td>
+                                            @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button> </td>
                                         
                                        
                                     </tr>
@@ -243,7 +243,7 @@
                                         <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2"> 
                                             <button title="Ver observaciones" type="button" class="btn btn-info pull-right" 
-                                            @click="abrirModal1(lead.id),listarObservacion(1,lead.id)">Ver todos</button> </td>
+                                            @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button> </td>
                                         
                                        
                                     </tr>
@@ -297,7 +297,7 @@
                                         <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2"> 
                                             <button title="Ver observaciones" type="button" class="btn btn-info pull-right" 
-                                            @click="abrirModal1(lead.id),listarObservacion(1,lead.id)">Ver todos</button> </td>
+                                            @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button> </td>
                                         
                                        
                                     </tr>
@@ -355,7 +355,7 @@
                                         <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2"> 
                                             <button title="Ver observaciones" type="button" class="btn btn-info pull-right" 
-                                            @click="abrirModal1(lead.id),listarObservacion(1,lead.id)">Ver todos</button> </td>
+                                            @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button> </td>
                                         
                                        
                                     </tr>
@@ -402,7 +402,7 @@
                                         <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2"> 
                                             <button title="Ver observaciones" type="button" class="btn btn-info pull-right" 
-                                            @click="abrirModal1(lead.id),listarObservacion(1,lead.id)">Ver todos</button> </td>
+                                            @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button> </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -456,7 +456,7 @@
                                         <td v-text="lead.descripcion"></td> 
                                         <td class="td2"> 
                                             <button title="Ver observaciones" type="button" class="btn btn-info pull-right" 
-                                            @click="abrirModal1(lead.id),listarObservacion(1,lead.id)">Ver todos</button> </td>
+                                            @click="abrirModal1(lead.id,lead.motivo),listarObservacion(1,lead.id)">Ver todos</button> </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -1375,6 +1375,9 @@
                                     <div class="col-md-6">
                                          <textarea rows="3" cols="30" v-model="comentario" class="form-control" placeholder="Observacion"></textarea>
                                     </div>
+                                    <div class="col-md-3">
+                                         <input type="date" class="form-control" v-model="fecha_aviso" placeholder="Fecha de notificación">
+                                    </div>
                                     <div class="col-md-2">
                                         <button type="button"  class="btn btn-primary" @click="storeObs()">Guardar</button>
                                     </div>
@@ -1522,6 +1525,7 @@ export default {
             direccion:'',
             status:'',
             pagina : 0,
+            fecha_aviso : '',
 
             errorMostrarMsjProspecto : [],
             errorProspecto : 0,
@@ -2196,6 +2200,7 @@ export default {
 
                 'lead_id' : this.id,
                 'comentario' : this.comentario,
+                'fecha_aviso' : this.fecha_aviso
                 
             }).then(function (response){
                 me.proceso=false;
@@ -2219,11 +2224,13 @@ export default {
             });
         },
 
-        abrirModal1(id){
+        abrirModal1(id,motivo){
             this.modal = 2;
             this.id = id; 
             this.comentario = '';
             this.tituloModal='Observaciones';
+            this.motivo = motivo;
+            this.fecha_aviso = '';
         },
         
         abrirModal(accion,data =[]){

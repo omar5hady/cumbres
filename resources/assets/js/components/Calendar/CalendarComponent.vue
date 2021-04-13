@@ -11,7 +11,7 @@
               <div class="col-md-4">
                 <div class="form-group">
                   <label for="event_name">TIpo de evento</label>
-                  <select class="form-control" @click="changeColor()" v-model="newEvent.event_name" >
+                  <select class="form-control" @click="changeColor(), newEvent.proyecto_id = 0" v-model="newEvent.event_name" >
                       <option value="Vacaciones">Vacaciones</option>
                       <option value="Descanso">Descanso</option>
                       <option value="Guardia">Guardia</option>
@@ -292,6 +292,7 @@ export default {
       Object.keys(this.newEvent).forEach(key => {
         return (this.newEvent[key] = "");
       });
+      this.newEvent.proyecto_id = 0;
     }
   },
   watch: {

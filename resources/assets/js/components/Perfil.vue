@@ -31,6 +31,28 @@
             </div>
             
         </div>
+
+        <div class="row">
+            <div class="col-xl-12 col-lg-12 col-md-4">
+                <div v-for="rem in arrayRemindersLeadFecha" :key="rem.id" class="col-sm-12 alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>¡No lo olvides! : </strong> {{rem.comentario}} 
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <br>
+                    Nombre de cliente: {{rem.nombre+" "+rem.apellidos}}<br>
+                    Email <a :href="'mailto:'+rem.email" v-text="rem.email"></a>
+                    Tel <a :href="'tel:+'+rem.celular" v-text="rem.celular"></a>
+                    <br>
+                    <div class="px-3 py-2 text-right">
+                        <button type="button" class="btn btn-dark rounded" @click="enterado(rem.id)">
+                            <span aria-hidden="true">Enterado</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
         <div class="row">
             <div v-for="rem in arrayReminders" :key="rem.id" class="col-sm-12 alert alert-warning alert-dismissible fade show" role="alert">
                 <strong>¡No lo olvides! : </strong> {{rem.comentario}} 
@@ -392,7 +414,8 @@ export default {
       arrayCumple:[],
       url: null,
       arrayReminders:[],
-      arrayRemindersLead:[]
+      arrayRemindersLead:[],
+      arrayRemindersLeadFecha:[]
     };
   },
 
@@ -512,12 +535,25 @@ export default {
         ).catch(error => console.log(error));
     },
     getReminderLeads(){
-        axios.get('/comments/reminderCommentarioLead/').then(
-            response => {
-                console.log(response);
-                this.arrayRemindersLead = response.data;
-            }
-        ).catch(error => console.log(error));
+        let me = this;
+
+        var url = '/comments/reminderCommentarioLead/';
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayRemindersLead = respuesta.reminders;
+                me.arrayRemindersLeadFecha = respuesta.reminders_fecha;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        // axios.get('/comments/reminderCommentarioLead/').then(
+        //     response => {
+        //         console.log(response);
+        //         var respuesta = response.data;
+        //         me.arrayRemindersLead = respuesta.reminders.data;
+        //         me.arrayRemindersLeadFecha = respuesta.reminders_fecha.data;
+        //     }
+        // ).catch(error => console.log(error));
     }
   },
   mounted() {

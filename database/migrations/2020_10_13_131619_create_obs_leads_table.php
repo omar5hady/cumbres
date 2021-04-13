@@ -19,6 +19,7 @@ class CreateObsLeadsTable extends Migration
             $table->unsignedInteger('lead_id');
             $table->text('comentario');
             $table->string('usuario',50);
+            $table->date('fecha_aviso')->nullable();
 
             $table->date('visto')->nullable();
 
