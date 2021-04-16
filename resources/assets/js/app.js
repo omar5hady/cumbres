@@ -180,6 +180,7 @@ Vue.component('estimaciones', require('./components/Obra/Estimaciones.vue'));
 Vue.component('solic-puente', require('./components/CPuente/SolicitarCredito.vue'));
 Vue.component('creditos-puente', require('./components/CPuente/CreditoPuenteSeg.vue'));
 Vue.component('base-presupuestal', require('./components/CPuente/BasePresupuestal.vue'));
+Vue.component('puente-cuenta', require('./components/CPuente/CreditoPuenteCuenta.vue'));
 
 
 //ENCUESTAS

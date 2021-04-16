@@ -95,7 +95,7 @@
                                         <option value="1">En Seguimiento</option>
                                         <option value="0">Descartado</option>
                                         <option value="2">Potencial</option>
-                                        <option value="3">Finalizado</option>
+                                        <option value="3">Enviado a prospectos</option>
                                     </select>
                                 </div>
                                 
@@ -181,7 +181,7 @@
                                         <td class="td2" v-if="lead.status == '1'"><span class="badge badge-warning">En Seguimiento</span></td>
                                         <td class="td2" v-if="lead.status == '0'"><span class="badge badge-danger">Descartado</span></td>
                                         <td class="td2" v-if="lead.status == '2'"><span class="badge badge-success">Potencial</span></td>
-                                        <td class="td2" v-if="lead.status == '3'"><span class="badge badge-success">Finalizado</span></td>
+                                        <td class="td2" v-if="lead.status == '3'"><span class="badge badge-success">Enviado a prospectos</span></td>
                                         <td class="td2" v-text="lead.vendedor"></td>
                                         <td class="td2" v-text="this.moment(lead.created_at).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2"> 
@@ -1375,6 +1375,10 @@
                                     <div class="col-md-6">
                                          <textarea rows="3" cols="30" v-model="comentario" class="form-control" placeholder="Observacion"></textarea>
                                     </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Fecha para recordatorio</label>
                                     <div class="col-md-3">
                                          <input type="date" class="form-control" v-model="fecha_aviso" placeholder="Fecha de notificación">
                                     </div>

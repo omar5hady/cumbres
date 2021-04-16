@@ -934,6 +934,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/cPuentes/addDocChk','CreditoPuenteController@addDocChk');
         Route::post('/cPuentes/saveDoc','CreditoPuenteController@saveDoc');
 
+        Route::put('/cPuentes/ingresarExpTecnico','CreditoPuenteController@ingresarExpTecnico');
+        Route::put('/cPuentes/resBanco','CreditoPuenteController@resBanco');
+
         Route::get('/cPuentes/indexCreditos','CreditoPuenteController@indexCreditos');
         Route::get('/cPuentes/selectLotes','CreditoPuenteController@selectLotes');
         Route::get('/cPuentes/getPreciosModelo','CreditoPuenteController@getPreciosModelo');

@@ -25,7 +25,9 @@ class CreateCreditosPuenteTable extends Migration
             $table->float('apertura')->default(0);
             $table->integer('fraccionamiento');
 
-            $table->date('fecha_integracion')->nullable();
+            $table->date('fecha_integracion')->nullable(); 
+            $table->date('fecha_banco')->nullable(); 
+            $table->string('motivo_rechazo')->nullable();
             $table->timestamps();
         });
     }

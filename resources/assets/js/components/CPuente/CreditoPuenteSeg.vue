@@ -43,6 +43,7 @@
                                             <th>Tasa de interes</th>
                                             <th>Apertura</th>
                                             <th>Total</th>
+                                            <th>Status</th>
                                             <th></th>
                                             <!-- <th>Fecha solicitud</th>
                                             <th>Status</th> -->
@@ -62,6 +63,18 @@
                                             <td class="td2"> TIEE+{{formatNumber(creditosPuente.interes)}}</td>
                                             <td class="td2"> {{formatNumber(creditosPuente.apertura)}}%</td>
                                             <td class="td2"> ${{formatNumber(creditosPuente.total)}}</td>
+                                            <td class="td2" v-if="creditosPuente.status == 0">
+                                                <span class="badge badge-info">Pendiente</span>
+                                            </td>
+                                            <td class="td2" v-if="creditosPuente.status == 1">
+                                                <span class="badge badge-warning">Expediente integrado: {{creditosPuente.fecha_integracion}}</span> 
+                                            </td>
+                                            <td class="td2" v-if="creditosPuente.status == 2">
+                                                <span class="badge badge-danger">Rechazado</span> 
+                                            </td>
+                                            <td class="td2" v-if="creditosPuente.status == 3">
+                                                <span class="badge badge-success">Aprobado</span> 
+                                            </td>
                                             <td class="td2">
                                                 <button type="button" @click="abrirModal('obs',creditosPuente.id)" class="btn btn-dark btn-sm" title="Observaciones">
                                                     <i class="fa fa-book">&nbsp;Observaciones</i>
@@ -99,18 +112,18 @@
                                 </div>
                                 <div class="col-md-3">
                                     <label for="">Institución </label>
-                                    <select class="form-control" v-model="cabecera.banco">
+                                    <select :disabled="cabecera.status > 0" class="form-control" v-model="cabecera.banco">
                                         <option value="">Seleccione</option>
                                         <option v-for="banco in arrayBancos" :key="banco.nombre" :value="banco.nombre" v-text="banco.nombre"></option>
                                     </select>
                                 </div>
                                 <div class="col-md-2">
                                     <label for="">Tasa de Interés (TIIE+) </label>
-                                    <input type="number" pattern="\d*" class="form-control" min="0" max="100" v-model="cabecera.interes" v-on:keypress="isNumber($event)">
+                                    <input :disabled="cabecera.status > 0" type="number" pattern="\d*" class="form-control" min="0" max="100" v-model="cabecera.interes" v-on:keypress="isNumber($event)">
                                 </div>
                                 <div class="col-md-2">
                                     <label for="">Apertura </label>
-                                    <input type="number" class="form-control" min="0" max="100" v-model="cabecera.apertura" v-on:keypress="isNumber($event)">
+                                    <input :disabled="cabecera.status > 0" type="number" class="form-control" min="0" max="100" v-model="cabecera.apertura" v-on:keypress="isNumber($event)">
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
@@ -122,7 +135,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-3">
-                                    <div class="form-group">
+                                    <div v-if="cabecera.status == 0" class="form-group">
                                         <label for="">Etapa </label>
                                         <select class="form-control" v-model="etapa_id" @click="selectManzanas(cabecera.fraccionamiento,etapa_id)">
                                             <option value="">Seleccione</option>
@@ -131,7 +144,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-3">
-                                    <div class="form-group">
+                                    <div v-if="cabecera.status == 0" class="form-group">
                                         <label for="">Manzana </label>
                                         <select class="form-control" v-model="manzana" @click="selectLotes(cabecera.fraccionamiento,etapa_id,manzana)">
                                             <option value="">Seleccione</option>
@@ -140,7 +153,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-2">
-                                    <div class="form-group">
+                                    <div v-if="cabecera.status == 0" class="form-group">
                                         <label>Lote</label> 
                                         <div class="form-inline">
                                             <select class="form-control" v-model="lote_id">
@@ -166,23 +179,22 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row border">
+                            <div class="form-group row border" v-if="cabecera.status == 0">
                                 <div class="col-md-12">
                                     <h5><strong><center>Modelos</center></strong></h5>
                                 </div>
 
-                                    <div class="col-md-3" v-for="modelo in arrayModelos" :key="modelo.id">
-                                        <div class="form-group">
-                                            <strong><label>{{modelo.modelo}}</label></strong>
-                                            <div class="form-inline">
-                                                <input class="form-control" type="text" pattern="\d*"
-                                                    @keyup.enter="actualizarModelo(modelo.id,$event.target.value)" :id="modelo.id" 
-                                                    :value="modelo.precio|currency" step="1"  v-on:keypress="isNumber($event)"
-                                                >
-                                            </div>
+                                <div class="col-md-3" v-for="modelo in arrayModelos" :key="modelo.id">
+                                    <div class="form-group">
+                                        <strong><label>{{modelo.modelo}}</label></strong>
+                                        <div class="form-inline">
+                                            <input :disabled="cabecera.status > 0" class="form-control" type="text" pattern="\d*"
+                                                @keyup.enter="actualizarModelo(modelo.id,$event.target.value)" :id="modelo.id" 
+                                                :value="modelo.precio|currency" step="1"  v-on:keypress="isNumber($event)"
+                                            >
                                         </div>
                                     </div>
-                                    
+                                </div> 
                             </div>
                             <div class="form-group row">
                                 <div class="table-responsive col-md-12">
@@ -350,7 +362,7 @@
                             <div class="form-group row">
                                 <div class="col-md-12">
                                     <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
-                                    <button type="button" class="btn btn-primary" @click="actualizarCredito()"> Actualizar </button>
+                                    <button v-if="cabecera.status == 0" type="button" class="btn btn-primary" @click="actualizarCredito()"> Actualizar </button>
                                 </div>
                             </div>
                         </div>
@@ -401,7 +413,7 @@
                                 <div class="col-md-12">
                                     <h5><strong><center>Modelos</center></strong></h5>
                                 </div>
-                                <div class="col-md-3" v-for="modelo in arrayModelos" :key="modelo.id">
+                                <div class="col-md-3" v-for="modelo in arrayModelos" :key="modelo.id" v-if="cabecera.status == 0">
                                     <div class="form-group" v-if="modelo.precio > 0">
                                         <strong><label>{{modelo.modelo}}</label></strong>
                                         <div class="form-inline">
@@ -411,10 +423,10 @@
                                 </div>
 
                                 <div class="form-group row">
-                                <div class="col-md-1">
-                                    <button type="button" class="btn btn-dark" @click="bases=1,getBases()"> Base presupuestal </button>
+                                    <div class="col-md-1">
+                                        <button type="button" class="btn btn-dark" @click="bases=1,getBases()"> Base presupuestal </button>
+                                    </div>
                                 </div>
-                            </div>
                             </div>
                             <div class="form-group row">
                                 <div class="table-responsive col-md-12">
@@ -479,7 +491,7 @@
                                     <div class="row">
                                         <h5>Planos de urbanización</h5> 
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <button type="button" title="Nuevo documento" class="btn btn-success btn-sm" @click="abrirModal('urbanizacion', id), clasificacion = 1">
+                                        <button v-if="cabecera.status == 0" type="button" title="Nuevo documento" class="btn btn-success btn-sm" @click="abrirModal('urbanizacion', id), clasificacion = 1">
                                             <i class="icon-plus"></i>
                                         </button>
                                     </div>
@@ -519,7 +531,7 @@
                                     <div class="row">
                                         <h5>Planos de edificación</h5> 
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <button type="button" title="Nuevo documento" class="btn btn-success btn-sm" @click="abrirModal('edificacion', id), clasificacion = 2">
+                                        <button v-if="cabecera.status == 0" type="button" title="Nuevo documento" class="btn btn-success btn-sm" @click="abrirModal('edificacion', id), clasificacion = 2">
                                             <i class="icon-plus"></i>
                                         </button>
                                     </div>
@@ -567,7 +579,7 @@
                                             class="btn btn-warning btn-sm rounded-circle" @click="verList=0">
                                             <i class="icon-close"></i>
                                         </button>
-                                        <button v-if="verList == 1" type="button" title="Add" 
+                                        <button v-if="verList == 1 && cabecera.status == 0" type="button" title="Add" 
                                             class="btn btn-success btn-sm rounded-circle" @click="abrirModal('checklist',id)">
                                             <i class="icon-plus"></i>
                                         </button>
@@ -586,14 +598,14 @@
                                         <tbody v-if="checklist.length">
                                             <tr v-for="chk in checklist" :key="chk.id">
                                                 <td>
-                                                    <button type="button" title="No aplica" 
+                                                    <button v-if="cabecera.status == 0" type="button" title="No aplica" 
                                                     class="btn btn-danger btn-sm rounded-circle" @click="deleteChk(chk.id)">
                                                         <i class="icon-close"></i>
                                                     </button>
                                                 </td>
                                                 <td v-text="chk.categoria"></td>
                                                 <td><strong>{{chk.documento}}</strong></td>
-                                                <td><input type="checkbox" value="1" v-model="chk.listo" @change="cambiarChk(chk.id, chk.listo)">
+                                                <td><input :disabled="cabecera.status > 0" type="checkbox" value="1" v-model="chk.listo" @change="cambiarChk(chk.id, chk.listo)">
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -604,8 +616,16 @@
                                 <div class="col-md-1">
                                     <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
                                 </div>
-                                <div class="col-md-1" v-if="chk_listos == chk_total">
+                                <div class="col-md-1" v-if="chk_listos == chk_total && cabecera.status == 0">
                                     <button type="button" class="btn btn-success" @click="enviarExp()"> Integrar expediente </button>
+                                </div>
+
+                                <div class="col-md-1" v-if="chk_listos == chk_total && cabecera.status == 1">
+                                    <button type="button" class="btn btn-success" @click="resBanco(1)"> Aprobar </button>
+                                </div>
+
+                                <div class="col-md-1" v-if="chk_listos == chk_total && cabecera.status == 1">
+                                    <button type="button" class="btn btn-danger" @click="resBanco(0)"> Rechazar </button>
                                 </div>
                             </div>
                         </div>
@@ -1329,6 +1349,90 @@
                     console.log(error);
                 });
             },
+
+            resBanco(resultado){
+
+                Swal({
+                    title: 'Estas seguro?',
+                    animation: false,
+                    customClass: 'animated bounceInDown',
+                    text: "Esta acción no se puede cambiar",
+                    type: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Cancelar',
+                    
+                    confirmButtonText: 'Si, continuar!'
+                    }).then((result) => {
+
+                        if (result.value) {
+
+                            let me = this;
+
+                            if(resultado == 0)
+                                (async function getFruit () {
+                                    const {value: comentario} = await Swal({
+                                    title: 'Observación',
+                                    input: 'textarea',
+                                    inputPlaceholder: 'Motivo de rechazo...',
+                                    showCancelButton: true,
+                                    inputValidator: (value) => {
+                                        return new Promise((resolve) => {
+                                        if (value != '') {
+                                            resolve()
+                                        } else {
+                                            resolve('Es necesario escribir una observación :)')
+                                        }
+                                        })
+                                    }
+                                    })
+                                    if (comentario) {
+                                        axios.put('/cPuentes/resBanco',{
+                                            'id' : me.id,
+                                            'resultado': resultado,
+                                            'comentario': comentario
+                                            
+                                        }).then(function (response){
+                                            me.ocultarDetalle();
+                                            swal({
+                                                position: 'top-end',
+                                                type: 'success',
+                                                title: 'Cambios guardados correctamente',
+                                                showConfirmButton: false,
+                                                timer: 1500
+                                                })
+                                        }).catch(function (error){
+                                            console.log(error);
+                                        });
+                                    }
+                                })()
+
+                            else{
+
+                                axios.put('/cPuentes/resBanco',{
+                                            'id' : me.id,
+                                            'resultado': resultado,
+                                            
+                                        }).then(function (response){
+                                            me.ocultarDetalle();
+                                            swal({
+                                                position: 'top-end',
+                                                type: 'success',
+                                                title: 'Crédito aprobado correctamente',
+                                                showConfirmButton: false,
+                                                timer: 1500
+                                                })
+                                        }).catch(function (error){
+                                            console.log(error);
+                                        });
+
+                            }
+
+                    }})
+
+            },
+
             getChecklist(id){
                 let me = this;
                 me.checklist=[];
@@ -1503,28 +1607,20 @@
                 let me= this;
                 this.listado=vista;
                 //Obtener datos de cabecera
-                var arrayAvisoT=[];
-                var url = '/iniobra/obtenerCabecera?id=' + data['id'];
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayAvisoT = respuesta.ini_obra;
-                    me.id=data['id'];
-                    me.cabecera.banco = data['banco'];
-                    me.cabecera.interes = data['interes'];
-                    me.cabecera.apertura = data['apertura'];
-                    me.lic = data['lic'];
-                    me.cabecera.fraccionamiento = data['fraccionamiento'];
-                    me.selectEtapa(me.cabecera.fraccionamiento);
-                    me.getPreciosModelo(me.id);
-                    me.getLotesPuente(me.id);
-                    me.getPlanos(me.id);
-                    me.getChecklist(me.id);
-                    //me.getBases();
-                  
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
+                me.id=data['id'];
+                me.cabecera.banco = data['banco'];
+                me.cabecera.interes = data['interes'];
+                me.cabecera.apertura = data['apertura'];
+                me.cabecera.status = data['status'];
+                me.lic = data['lic'];
+                me.cabecera.fraccionamiento = data['fraccionamiento'];
+                me.selectEtapa(me.cabecera.fraccionamiento);
+                me.getPreciosModelo(me.id);
+                me.getLotesPuente(me.id);
+                me.getPlanos(me.id);
+                me.getChecklist(me.id);
+                //me.getBases();
+               
             },
             registrarLote(){
                 let me = this;
@@ -1573,6 +1669,52 @@
                 }).catch(function (error){
                     console.log(error);
                 });
+            },
+            enviarExp(){
+
+                 Swal({
+                    title: 'Estas seguro?',
+                    animation: false,
+                    customClass: 'animated bounceInDown',
+                    text: "El expediente sera entregado al banco para su aprobación",
+                    type: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Cancelar',
+                    
+                    confirmButtonText: 'Si, continuar!'
+                    }).then((result) => {
+
+                        if (result.value) {
+
+                            let me = this;
+                            axios.put('/cPuentes/ingresarExpTecnico',{
+                                'id': this.id
+                            }).then(function (response){
+                                //Obtener detalle
+                                    const toast = Swal.mixin({
+                                        toast: true,
+                                        position: 'top-end',
+                                        showConfirmButton: false,
+                                        timer: 3000
+
+                                        });
+
+                                        toast({
+                                        type: 'success',
+                                        title: 'Expediente integrado correctamente'
+                                    })
+                                    me.getObs(me.id);
+                                    me.ocultarDetalle();
+                                    me.observacion = '';
+                                
+                            }).catch(function (error){
+                                console.log(error);
+                            });
+
+                    }})
+
             },
             addDocumento(){
                 let me = this;

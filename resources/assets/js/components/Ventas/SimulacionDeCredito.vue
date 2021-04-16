@@ -3547,9 +3547,9 @@
             this.selectFraccionamientos();
             this.selectEtapa(this.proyecto_interes_id);
             this.selectManzana(this.etapa);
-            this.datosPaquetes(this.paquete_id);
-            this.selectLotes(this.manzana, this.etapa, this.proyecto_interes_id);
-            this.mostrarDatosLote(this.lote);
+            //this.datosPaquetes(this.paquete_id);
+            //this.selectLotes(this.manzana, this.etapa, this.proyecto_interes_id);
+            //this.mostrarDatosLote(this.lote);
             this.selectLugarContacto();
             this.selectCreditos();
             this.selectInstitucion(this.tipo_credito);

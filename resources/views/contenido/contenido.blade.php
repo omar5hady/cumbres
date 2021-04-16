@@ -511,6 +511,9 @@
         <template v-if="menu==258">
             <reporte-leads></reporte-leads>
         </template>
+        <template v-if="menu==259">
+            <puente-cuenta></puente-cuenta>
+        </template>
 
 
         

@@ -163,7 +163,7 @@
                             </ul>
                         </li>
                     @endif
-                <!-- Modulo para proveedor ---->
+        <!-- Modulo para proveedor ---->
                     @if(Auth::user()->rol_id == 10 || Auth::user()->rol_id == 1)
                         <li class="nav-item nav-dropdown">
                             <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-plug"></i> Proveedores</a>
@@ -177,7 +177,7 @@
                         </li>
                     @endif
 
-
+        <!-- Modulo Desarrollo  ---->
                     @if(Auth::user()->desarrollo == 1)
                         <li class="nav-item nav-dropdown">
                             <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-home"></i> Desarrollo</a>
@@ -253,7 +253,7 @@
                             </li>
                     @endif
 
-                    <!-- Modulo para contratista ---->
+        <!-- Modulo Créditos Puente ---->
                     @if(Auth::user()->rol_id == 1)
                         <li class="nav-item nav-dropdown">
                             <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-plug"></i> Créditos Puente</a>
@@ -267,10 +267,13 @@
                                 <li @click="menu=256" class="nav-item">
                                     <a class="nav-link" href="#"><i class="fa fa-archive"></i> Créditos Puente</a>
                                 </li>
+                                <li @click="menu=259" class="nav-item">
+                                    <a class="nav-link" href="#"><i class="fa fa-archive"></i> Estado de Cuenta</a>
+                                </li>
                             </ul>
                         </li>
                     @endif
-                
+        <!-- Modulo Precios -->
                     @if(Auth::user()->precios == 1)
                         <li class="nav-item nav-dropdown">
                             <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-money"></i> Precios </a>
@@ -317,6 +320,8 @@
                             </ul>
                         </li>
                     @endif
+
+        <!-- Modulos para Obra -->
                     @if(Auth::user()->obra == 1)
                         <li class="nav-item nav-dropdown">
                             <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-plug"></i> Obra</a>
@@ -376,6 +381,8 @@
                             </ul>
                         </li>
                     @endif
+
+        <!-- Modulo para Ventas-->
                     @if(Auth::user()->ventas == 1)
                         <li class="nav-item nav-dropdown">
                             <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-basket"></i> Ventas</a>
@@ -486,7 +493,6 @@
                             </ul>
                         </li>
                     @endif
-        <!----------     FIN SALDOS      --->
 
         <!----------      GESTORIA      --->
                     @if(Auth::user()->gestoria == 1)
@@ -522,7 +528,7 @@
                             </ul>
                         </li>
                     @endif
-        <!----------     FIN GESTORIA      --->
+
 
         <!----------      Postventa      --->
             @if(Auth::user()->postventa == 1)
@@ -559,7 +565,7 @@
                 </li>
             @endif
 
-        <!----------     FIN Postventa      --->
+
 
         <!-- Modulo pagos internos --->
             @if(Auth::user()->rol_id != 2 && Auth::user()->rol_id != 10 && Auth::user()->rol_id != 13)
@@ -579,163 +585,165 @@
             @endif
             
         <!-- Fin pago internos -->
-
-                    @if(Auth::user()->acceso == 1)
-                        <li class="nav-item nav-dropdown">
-                            <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-people"></i> Acceso</a>
-                            <ul class="nav-dropdown-items">
-                                @if(Auth::user()->usuarios == 1)
-                                    <li @click="menu=72" class="nav-item">
-                                        <a class="nav-link" href="#"><i class="icon-user"></i> Usuarios</a>
-                                    </li>
-                                @endif
-                                @if(Auth::user()->roles == 1)
-                                    <li @click="menu=71" class="nav-item">
-                                        <a class="nav-link" href="#"><i class="icon-user-following"></i> Roles</a>
-                                    </li>
-                                @endif
-                            </ul>
-                        </li>
-                    @endif
-                    @if(Auth::user()->comisiones == 1)
-                        <li class="nav-item nav-dropdown">
-                            <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-pie-chart"></i> Comisiones</a>
-                            <ul class="nav-dropdown-items">
-                                @if(Auth::user()->exp_comision == 1)
-                                    <li @click="menu=226" class="nav-item" >
-                                        <a class="nav-link" href="#"><i class="icon-layers"></i> Expediente</a>
-                                    </li>
-                                @endif
-                                @if(Auth::user()->gen_comision == 1)
-                                    <li @click="menu=227" class="nav-item">
-                                        <a class="nav-link" href="#"><i class="icon-calculator"></i> Comisiones</a>
-                                    </li>
-                                @endif
-                                @if(Auth::user()->bono_com == 1)
-                                    <li @click="menu=229" class="nav-item">
-                                        <a class="nav-link" href="#"><i class="icon-calculator"></i> Bonos</a>
-                                    </li>
-                                @endif
-                            </ul>
-                        </li>
-                    @endif
-                    @if(Auth::user()->reportes == 1)
-                        <li class="nav-item nav-dropdown">
-                            <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-pie-chart"></i> Reportes</a>
-                            <ul class="nav-dropdown-items">
-                                @if(Auth::user()->mejora == 1)
-                                    <li @click="menu=90" class="nav-item">
-                                        <a class="nav-link" href="#"><i class="icon-chart"></i> Estadisticas Mejora</a>
-                                    </li>
-                                @endif
-                                @if(Auth::user()->rep_proy == 1)
-                                    <li @click="menu=91" class="nav-item">
-                                        <a class="nav-link" href="#"><i class="icon-chart"></i> Resumen por proyecto</a>
-                                    </li>
-                                @endif
-                                @if(Auth::user()->rep_publi == 1)
-                                    <li @click="menu=225" class="nav-item">
-                                        <a class="nav-link" href="#"><i class="icon-chart"></i> Estadisticas Publicidad</a>
-                                    </li>
-                                @endif
-                                @if(Auth::user()->inventario == 1)
-                                    <li @click="menu=232" class="nav-item">
-                                        <a class="nav-link" href="#"><i class="icon-chart"></i> Inventario Contable</a>
-                                    </li>
-                                @endif
-                                @if(Auth::user()->rep_asesores == 1 || Auth::user()->rol_id == 6 || Auth::user()->id == 26545 || Auth::user()->id == 26310)
-                                    <li @click="menu=233" class="nav-item">
-                                        <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de asesores</a>
-                                    </li>
-                                @endif
-                                @if(Auth::user()->rep_ini_term_ventas == 1 || Auth::user()->rol_id == 6 || Auth::user()->id == 26545 || Auth::user()->id == 26310)
-                                    <li @click="menu=238" class="nav-item">
-                                        <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de inicio, termino, ventas y cobranza</a>
-                                    </li>
-                                @endif
-                                @if(Auth::user()->rol_id == 1 || Auth::user()->rep_venta_canc == 1)
-                                    <li @click="menu=239" class="nav-item">
-                                        <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de ventas y cancelaciones</a>
-                                    </li>
-                                @endif
-                                @if(Auth::user()->rep_recursos_propios	 == 1 || Auth::user()->rol_id == 6 || Auth::user()->id == 26545 || Auth::user()->id == 26310 ) 
-                                    <li @click="menu=243" class="nav-item">
-                                        <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de recursos propios</a>
-                                    </li>
-                                @endif
-                                @if(Auth::user()->rep_recursos_propios	 == 1 || Auth::user()->rol_id == 6 || Auth::user()->id == 26545 || Auth::user()->id == 26310 ) 
-                                <li @click="menu=244" class="nav-item">
-                                    <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de casas con crédito puente</a>
+        <!-- Modulo Accesos ---->
+                @if(Auth::user()->acceso == 1)
+                    <li class="nav-item nav-dropdown">
+                        <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-people"></i> Acceso</a>
+                        <ul class="nav-dropdown-items">
+                            @if(Auth::user()->usuarios == 1)
+                                <li @click="menu=72" class="nav-item">
+                                    <a class="nav-link" href="#"><i class="icon-user"></i> Usuarios</a>
                                 </li>
-                                @endif
-                                @if(Auth::user()->rep_vent_modelos == 1)
-                                    
-                                    <li @click="menu=245" class="nav-item">
-                                        <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte por modelo</a>
-                                    </li>
-                                @endif
-                                @if(Auth::user()->rep_acumulado == 1)
-                                    <li @click="menu=240" class="nav-item">
-                                        <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de expedientes</a>
-                                    </li>
-                                @endif
-                                @if(Auth::user()->rep_ingresos == 1)
-                                    <li @click="menu=251" class="nav-item">
-                                        <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de ingresos de Créditos</a>
-                                    </li>
-                                    <li @click="menu=253" class="nav-item">
-                                        <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de ingresos de Enganches</a>
-                                    </li>
-                                @endif
-                                @if(Auth::user()->rep_escrituras == 1)
-                                    <li @click="menu=252" class="nav-item">
-                                        <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de escrituras</a>
-                                    </li>
-                                @endif
-                                @if(Auth::user()->rep_detalles_post == 1)
-                                    <li @click="menu=246" class="nav-item">
-                                        <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de Detalles</a>
-                                    </li>
-                                @endif
-                                @if(Auth::user()->rep_leads == 1)
-                                    <li @click="menu=258" class="nav-item">
-                                        <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte Digital Leads</a>
-                                    </li>
-                                @endif
-                            </ul>
-                        </li>
-                    @endif
-                    
-                    @if(Auth::user()->opc_cotizador == 1 || Auth::user()->calc_lotes ==1 || Auth::user()->edit_cotizacion ==1)
-                        <li class="nav-item nav-dropdown">
-                            <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-book-open"></i> Cotizador de lotes</a>
-                            <ul class="nav-dropdown-items">
-                                @if(Auth::user()->calc_lotes == 1)
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="#" @click="menu=1003"><i class="icon-book-open"></i> Calculadora</a>
-                                    </li>
-                                @endif
-                                @if(Auth::user()->edit_cotizacion == 1)
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="#" @click="menu=1005"><i class="icon-book-open"></i> Editar cotización</a>
-                                    </li>
-                                @endif
-                                @if(Auth::user()->opc_cotizador == 1)
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="#" @click="menu=1004"><i class="icon-book-open"></i> Opciones</a>
-                                    </li>
-                                @endif
-                            </ul>
-                        </li>
-                    @endif
+                            @endif
+                            @if(Auth::user()->roles == 1)
+                                <li @click="menu=71" class="nav-item">
+                                    <a class="nav-link" href="#"><i class="icon-user-following"></i> Roles</a>
+                                </li>
+                            @endif
+                        </ul>
+                    </li>
+                @endif
+        <!-- Modulo Comisiones ---->   
+                @if(Auth::user()->comisiones == 1)
+                    <li class="nav-item nav-dropdown">
+                        <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-pie-chart"></i> Comisiones</a>
+                        <ul class="nav-dropdown-items">
+                            @if(Auth::user()->exp_comision == 1)
+                                <li @click="menu=226" class="nav-item" >
+                                    <a class="nav-link" href="#"><i class="icon-layers"></i> Expediente</a>
+                                </li>
+                            @endif
+                            @if(Auth::user()->gen_comision == 1)
+                                <li @click="menu=227" class="nav-item">
+                                    <a class="nav-link" href="#"><i class="icon-calculator"></i> Comisiones</a>
+                                </li>
+                            @endif
+                            @if(Auth::user()->bono_com == 1)
+                                <li @click="menu=229" class="nav-item">
+                                    <a class="nav-link" href="#"><i class="icon-calculator"></i> Bonos</a>
+                                </li>
+                            @endif
+                        </ul>
+                    </li>
+                @endif
+        <!-- Modulo Reportes ---->
+                @if(Auth::user()->reportes == 1)
+                    <li class="nav-item nav-dropdown">
+                        <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-pie-chart"></i> Reportes</a>
+                        <ul class="nav-dropdown-items">
+                            @if(Auth::user()->mejora == 1)
+                                <li @click="menu=90" class="nav-item">
+                                    <a class="nav-link" href="#"><i class="icon-chart"></i> Estadisticas Mejora</a>
+                                </li>
+                            @endif
+                            @if(Auth::user()->rep_proy == 1)
+                                <li @click="menu=91" class="nav-item">
+                                    <a class="nav-link" href="#"><i class="icon-chart"></i> Resumen por proyecto</a>
+                                </li>
+                            @endif
+                            @if(Auth::user()->rep_publi == 1)
+                                <li @click="menu=225" class="nav-item">
+                                    <a class="nav-link" href="#"><i class="icon-chart"></i> Estadisticas Publicidad</a>
+                                </li>
+                            @endif
+                            @if(Auth::user()->inventario == 1)
+                                <li @click="menu=232" class="nav-item">
+                                    <a class="nav-link" href="#"><i class="icon-chart"></i> Inventario Contable</a>
+                                </li>
+                            @endif
+                            @if(Auth::user()->rep_asesores == 1 || Auth::user()->rol_id == 6 || Auth::user()->id == 26545 || Auth::user()->id == 26310)
+                                <li @click="menu=233" class="nav-item">
+                                    <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de asesores</a>
+                                </li>
+                            @endif
+                            @if(Auth::user()->rep_ini_term_ventas == 1 || Auth::user()->rol_id == 6 || Auth::user()->id == 26545 || Auth::user()->id == 26310)
+                                <li @click="menu=238" class="nav-item">
+                                    <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de inicio, termino, ventas y cobranza</a>
+                                </li>
+                            @endif
+                            @if(Auth::user()->rol_id == 1 || Auth::user()->rep_venta_canc == 1)
+                                <li @click="menu=239" class="nav-item">
+                                    <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de ventas y cancelaciones</a>
+                                </li>
+                            @endif
+                            @if(Auth::user()->rep_recursos_propios	 == 1 || Auth::user()->rol_id == 6 || Auth::user()->id == 26545 || Auth::user()->id == 26310 ) 
+                                <li @click="menu=243" class="nav-item">
+                                    <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de recursos propios</a>
+                                </li>
+                            @endif
+                            @if(Auth::user()->rep_recursos_propios	 == 1 || Auth::user()->rol_id == 6 || Auth::user()->id == 26545 || Auth::user()->id == 26310 ) 
+                            <li @click="menu=244" class="nav-item">
+                                <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de casas con crédito puente</a>
+                            </li>
+                            @endif
+                            @if(Auth::user()->rep_vent_modelos == 1)
+                                
+                                <li @click="menu=245" class="nav-item">
+                                    <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte por modelo</a>
+                                </li>
+                            @endif
+                            @if(Auth::user()->rep_acumulado == 1)
+                                <li @click="menu=240" class="nav-item">
+                                    <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de expedientes</a>
+                                </li>
+                            @endif
+                            @if(Auth::user()->rep_ingresos == 1)
+                                <li @click="menu=251" class="nav-item">
+                                    <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de ingresos de Créditos</a>
+                                </li>
+                                <li @click="menu=253" class="nav-item">
+                                    <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de ingresos de Enganches</a>
+                                </li>
+                            @endif
+                            @if(Auth::user()->rep_escrituras == 1)
+                                <li @click="menu=252" class="nav-item">
+                                    <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de escrituras</a>
+                                </li>
+                            @endif
+                            @if(Auth::user()->rep_detalles_post == 1)
+                                <li @click="menu=246" class="nav-item">
+                                    <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte de Detalles</a>
+                                </li>
+                            @endif
+                            @if(Auth::user()->rep_leads == 1)
+                                <li @click="menu=258" class="nav-item">
+                                    <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte Digital Leads</a>
+                                </li>
+                            @endif
+                        </ul>
+                    </li>
+                @endif
+        <!-- Modulo Cotizador de lotes ---->
+                @if(Auth::user()->opc_cotizador == 1 || Auth::user()->calc_lotes ==1 || Auth::user()->edit_cotizacion ==1)
+                    <li class="nav-item nav-dropdown">
+                        <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-book-open"></i> Cotizador de lotes</a>
+                        <ul class="nav-dropdown-items">
+                            @if(Auth::user()->calc_lotes == 1)
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#" @click="menu=1003"><i class="icon-book-open"></i> Calculadora</a>
+                                </li>
+                            @endif
+                            @if(Auth::user()->edit_cotizacion == 1)
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#" @click="menu=1005"><i class="icon-book-open"></i> Editar cotización</a>
+                                </li>
+                            @endif
+                            @if(Auth::user()->opc_cotizador == 1)
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#" @click="menu=1004"><i class="icon-book-open"></i> Opciones</a>
+                                </li>
+                            @endif
+                        </ul>
+                    </li>
+                @endif
 
-                    <!-- Manual para el administrador -->
+        <!-- Manual para el administrador -->
                 @if(Auth::user()->rol_id == 1)
                     <li @click="menu=31" class="nav-item">
                         <a class="nav-link" onclick="window.open('/pdf/manualUsuarioAdm.pdf','_blank')"><i class="icon-book-open"></i> Manual de usuario <span class="badge badge-danger">PDF</span></a>
                     </li>
                 @endif
-                <!-- Manual para los asesores -->
+        <!-- Manual para los asesores -->
                 @if(Auth::user()->rol_id == 2)
                     <li @click="menu=31" class="nav-item">
                         <a class="nav-link" onclick="window.open('/pdf/manualUsuarioAsesor.pdf','_blank')"><i class="icon-book-open"></i> Manual de usuario <span class="badge badge-danger">PDF</span></a>

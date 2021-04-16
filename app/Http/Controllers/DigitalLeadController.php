@@ -631,18 +631,16 @@ class DigitalLeadController extends Controller
             ->select('obs_leads.id','nombre','apellidos','celular','email','comentario','motivo')
             ->where('obs_leads.visto','=', NULL);
         
-        $reminders_fecha;
+        $reminders_fecha=Digital_lead::join('obs_leads', 'digital_leads.id','=','obs_leads.lead_id')
+        ->select('obs_leads.id','nombre','apellidos','celular','email','comentario','motivo','obs_leads.fecha_aviso');
             
-            if(Auth::user()->rol_id == 2 || Auth::user()->rol_id == 1){
+            if(Auth::user()->rol_id == 2 ){
                 $reminders = $reminders->where('digital_leads.vendedor_asign','=', Auth::user()->id)
                                 ->where('obs_leads.fecha_aviso','=',NULL);
                 $reminders = $reminders->get();
-
-                $reminders_fecha = Digital_lead::join('obs_leads', 'digital_leads.id','=','obs_leads.lead_id')
-                    ->select('obs_leads.id','nombre','apellidos','celular','email','comentario','motivo','obs_leads.fecha_aviso')
+                $reminders_fecha = $reminders_fecha->where('digital_leads.vendedor_asign','=', Auth::user()->id)
                     ->where('obs_leads.visto','=', NULL)
                     ->where('obs_leads.fecha_aviso','=', Carbon::now()->format('Y-m-d'))->get();
-    
             }
 
             elseif(Auth::user()->rol_id == 12 ){
@@ -1052,7 +1050,7 @@ class DigitalLeadController extends Controller
                         $sheet->row($index+$row, [
                             $asesor->vendedor,
                             $asesor->reg,
-                            $asesor->dif7
+                            $asesor->dif7,
                             $asesor->dif15,
 
                         ]);	

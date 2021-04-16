@@ -168,7 +168,7 @@ class CreditoPuenteController extends Controller
                     ->join('instituciones_financiamiento', 'creditos_puente.banco','=','instituciones_financiamiento.nombre')
                     ->select('creditos_puente.id','creditos_puente.banco','creditos_puente.folio','creditos_puente.interes',
                                 'creditos_puente.status','creditos_puente.total','creditos_puente.apertura',
-                                'instituciones_financiamiento.lic',
+                                'instituciones_financiamiento.lic', 'creditos_puente.fecha_integracion',
                                 'fraccionamientos.nombre as proyecto','creditos_puente.fraccionamiento'    
                     );
 
@@ -178,7 +178,8 @@ class CreditoPuenteController extends Controller
         if($request->folio != '')
             $creditos = $creditos->where('creditos_puente.folio','=',$request->folio);
 
-        $creditos = $creditos->orderBy('creditos_puente.id','desc')->paginate(10);
+        $creditos = $creditos->orderBy('creditos_puente.status','asc')
+                                ->orderBy('creditos_puente.id','desc')->paginate(10);
 
         return [
             'pagination' => [
@@ -497,6 +498,43 @@ class CreditoPuenteController extends Controller
         $credito = Credito_puente::findOrFail($request->id);
         $credito->status = 1;
         $credito->fecha_integracion = Carbon::now();
+        $credito->save();
+
+        $obs = new Obs_puente();
+        $obs->puente_id = $request->id;
+        $obs->observacion = 'Expediente integrado.';
+        $obs->usuario = Auth::user()->usuario;
+        $obs->save();
+
+    }
+
+    public function resBanco(Request $request){
+
+        $credito = Credito_puente::findOrFail($request->id);
+        $obs = new Obs_puente();
+        $obs->puente_id = $request->id;
+        $obs->usuario = Auth::user()->usuario;
+
+        if($request->resultado == 0){
+
+            $credito->status = 2;
+            $credito->fecha_banco = Carbon::now();
+            $credito->motivo_rechazo = $request->comentario;
+
+            $obs->observacion = 'Solicitud rechazada por el banco.';
+
+        }
+        else{
+
+            $credito->status = 3;
+            $credito->fecha_banco = Carbon::now();
+            $credito->motivo_rechazo = $request->comentario;
+
+            $obs->observacion = 'Solicitud aprobada por el banco.';
+
+        }
+            
+        $obs->save();
         $credito->save();
 
     }
