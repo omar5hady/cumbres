@@ -68,6 +68,9 @@ class CreateClientesTable extends Migration
             $table->integer('penultimo_vendedor')->nullable();
             $table->integer('contador')->default(0);
 
+            $table->integer('vendedor_aux')->nullable();
+            $table->boolean('reasignar')->default(0);
+
             $table->timestamps();
 
             $table->foreign('id')->references('id')->on('personal')->onDelete('cascade');

@@ -55,7 +55,13 @@ body {
             <p style="margin-bottom: 0em;  margin-top: 0em;"><strong>${{strtoupper($pagos[$i]->montoPagoLetra)}}</strong></p>
             <p style="margin-bottom: 0em;  margin-top: 0em;">VALOR RECIBIDO A MI (NUESTRA) ENTERA SATISFACCION. ESTE PAGARE FORMA PARTE DE UNA SERIE NUMERADA DEL <strong>1</strong> AL <strong>{{count($pagos)}}</strong> Y TODOS ESTAN SUJETOS A LA CONDICION DE QUE, AL NO PAGARSE CUALQUIERA
                 DE ELLOS A SU VENCIMIENTO, SERAN EXIGIBLES TODOS LOS QUE LE SIGAN EN NUMERO, ADEMAS DE LOS YA VENCIDOS, DESDE LA FECHA DE VENCIMIENTO DE ESTE DOCUMENTO HASTA EL DIA DE SU LIQUIDACION,
-                CAUSARA INTERESES MORATORIOS AL TIPO DE <strong>5%</strong> MENSUAL, PAGADERO EN ESTA CIUDAD JUNTAMENTE CON EL PRINCIPAL.</p>
+                CAUSARA INTERESES MORATORIOS AL TIPO DE 
+                @if($cliente[0]->modelo == 'Terreno')
+                    <strong>3%</strong> 
+                @else
+                    <strong>5%</strong> 
+                @endif
+                MENSUAL, PAGADERO EN ESTA CIUDAD JUNTAMENTE CON EL PRINCIPAL.</p>
 
             </div>
             <br>

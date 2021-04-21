@@ -127,9 +127,13 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/clientes/actualizar','ClienteController@update');
         Route::put('/clientes/actualizar2','ClienteController@updateProspecto');
         Route::get('/clientes/observacion','ClienteController@listarObservacion');
+        Route::get('/clientes/clientesPorReasignar','ClienteController@clientesPorReasignar');
         Route::put('/clientes/desactivar','ClienteController@desactivar');
         Route::put('/clientes/activar','ClienteController@activar');
+        Route::put('/clientes/reasignarProspecto','ClienteController@reasignarProspecto'); // Opcion para que el asesor solicite la reasignacion.
+        Route::put('/clientes/setVendedorAux','ClienteController@setVendedorAux'); //Opcion para reasiganar el prospecto e indicar al vendedor auxiliar
         Route::get('/prospectos/excel','ClienteController@exportExcelClientesAsesor');
+        Route::get('/prospectos/getAsesores','ClienteController@getAsesores');
         Route::get('/prospectos/excel/gerente','ClienteController@exportExcelClientesGerente');
     ///////////////////        RUTAS Medios Publicitarios    //////////////////////////////////
         Route::get('/medio_publicitario','MedioPublicitarioController@index');
@@ -1085,6 +1089,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/select_rfcs','PersonalController@selectRFC');
         Route::get('/select_notarias','NotariaController@select_notarias');
         Route::get('/select_gestores','PersonalController@select_gestores');
+        Route::get('/selectGerentesVentas','UserController@selectGerentesVentas');
 
         Route::get('/select_lotes_entregados','LoteController@select_lotes_entregados');
         Route::get('/select_etapas_entregados','LoteController@select_etapas_entregados');
@@ -1098,6 +1103,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/clientes/getDatosVentas','PersonalController@getDatosCliente');
 
         Route::get('/campanias/campaniaActiva','CampaniaController@campaniaActiva');
+
     
     
 });

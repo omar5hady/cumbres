@@ -409,6 +409,12 @@
                                     </li>
                                 @endif 
 
+                                @if(Auth::user()->rol_id == 1)
+                                    <li @click="menu=260" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-group"></i> Por reasignar</a>
+                                    </li>
+                                @endif
+
                                 @if(Auth::user()->simulacion_credito == 1)
                                     <li @click="menu=61" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-calculator"></i> Simulacion de credito</a>

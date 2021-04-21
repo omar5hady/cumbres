@@ -95,6 +95,7 @@ Vue.component('crear-contrato', require('./components/Ventas/Contrato.vue'));
 Vue.component('docs', require('./components/Ventas/docs.vue'));
 Vue.component('obra-equipamiento', require('./components/Obra/ObraEquipamientos.vue'));
 Vue.component('obra-entrega', require('./components/Obra/EntregaPendiente.vue'));
+Vue.component('prospectos-reasignados', require('./components/Ventas/ProspectosReasignar.vue'));
 
 //Componentes Acceso
 Vue.component('rol', require('./components/Rol.vue'));

@@ -13,6 +13,10 @@
                         <button type="button" @click="mostrarDetalle()" class="btn btn-secondary" v-if="listado==1">
                             <i class="icon-people"></i>&nbsp;Agregar
                         </button>
+
+                        <button v-if="rolId == 2 && reasignar == 0 && listado == 3" type="button" @click="reasignToAsesor()" class="btn btn-primary btn-sm" title="Pedir reasignar">
+                            <i class="fa fa-exchange"></i>
+                        </button>
                         <!---->
                     </div>
                     <!-- Div Card Body para listar -->
@@ -59,12 +63,7 @@
                                             <option value="6">Cancelado</option>                               
                                             <option value="7">Coacreditado</option>  
                                         </select>
-                                        <button type="submit" @click="listarProspectos(1,buscar,buscar2,buscar3,b_clasificacion,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     </div>
-                                    
-                                        <a v-if="rolId == 2" :href="'/prospectos/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + '&b_publicidad=' + b_publicidad + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
-                                        <a v-if="rolId != 2" :href="'/prospectos/excel/gerente?buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + '&b_publicidad=' + b_publicidad + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
-                                        <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Clientes en total: '+ contador"> </span>
                                 </div>
                                 <div class="col-md-8" v-else>
                                     <div class="input-group">
@@ -98,10 +97,25 @@
                                             <option value="7">Coacreditado</option>  
                                         </select>
                                     </div>
-                                    <button type="submit" @click="listarProspectos(1,buscar,buscar2,buscar3,b_clasificacion,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                </div>
+
+                                <div class="col-md-8" v-if="rolId == 2">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" disabled value="Prospectos reasignados:" placeholder="Prospectos reasignados">
+                                        <select class="form-control" v-model="b_aux" >
+                                            <option value="">No</option>
+                                            <option value="1">Si</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-8" >
+                                    <div class="input-group">
+                                        <button type="submit" @click="listarProspectos(1,buscar,buscar2,buscar3,b_clasificacion,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                         <a v-if="rolId == 2" :href="'/prospectos/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + '&b_publicidad=' + b_publicidad + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
                                         <a v-if="rolId != 2" :href="'/prospectos/excel/gerente?buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + '&b_publicidad=' + b_publicidad + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
                                         <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Clientes en total: '+ contador"> </span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="table-responsive">
@@ -137,7 +151,7 @@
                                                     <i class="icon-check"></i>
                                                 </button>
                                             </template>
-                                                <button title="Editar" type="button" class="btn btn-warning btn-sm" @click="actualizarProspectoBTN(prospecto)">
+                                                <button  title="Editar" type="button" class="btn btn-warning btn-sm" @click="actualizarProspectoBTN(prospecto)">
                                                     <i class="icon-pencil"></i>
                                                 </button>
                                                 <button v-if="rolId != 2" type="button" @click="abrirModalCambio(prospecto)" class="btn btn-primary btn-sm">
@@ -572,7 +586,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                     <label for="">Nombre <span style="color:red;" v-show="nombre==''">(*)</span> </label>
-                                    <input type="text" class="form-control" v-model="nombre" placeholder="Nombre" onchange="this.value = this.value.trim()" onkeyup="this.value = this.value.replace('  ', ' ')">
+                                    <input :disabled="edit == 1" type="text" class="form-control" v-model="nombre" placeholder="Nombre" onchange="this.value = this.value.trim()" onkeyup="this.value = this.value.replace('  ', ' ')">
                                     </div>
                                 </div> 
 
@@ -580,14 +594,14 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                     <label for="">Apellidos <span style="color:red;" v-show="apellidos==''">(*)</span></label>
-                                    <input type="text" class="form-control" v-model="apellidos" placeholder="Apellidos" onchange="this.value = this.value.trim()" onkeyup="this.value = this.value.replace('  ', ' ')">
+                                    <input :disabled="edit == 1" type="text" class="form-control" v-model="apellidos" placeholder="Apellidos" onchange="this.value = this.value.trim()" onkeyup="this.value = this.value.replace('  ', ' ')">
                                 </div>
                                 </div>
 
                                 <div class="col-md-4">
                                     <div class="form-group">
                                     <label for="">Sexo <span style="color:red;" v-show="sexo==''">(*)</span></label>
-                                    <select class="form-control" v-model="sexo" >
+                                    <select :disabled="edit == 1" class="form-control" v-model="sexo" >
                                             <option value="">Seleccione</option>
                                             <option value="F">Femenino</option>
                                             <option value="M">Masculino</option>
@@ -598,28 +612,28 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                     <label for="">Telefono </label>
-                                    <input type="text" maxlength="10" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="telefono" placeholder="Telefono">
+                                    <input :disabled="edit == 1" type="text" maxlength="10" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="telefono" placeholder="Telefono">
                                 </div>
                                 </div>
 
                                 <div class="col-md-4">
                                      <div class="form-group">
                                     <label for="">Celular <span style="color:red;" v-show="celular==''">(*)</span></label>
-                                    <input type="text" pattern="\d*" maxlength="10" class="form-control" v-on:keypress="isNumber($event)" v-model="celular" placeholder="Celular">
+                                    <input :disabled="edit == 1" type="text" pattern="\d*" maxlength="10" class="form-control" v-on:keypress="isNumber($event)" v-model="celular" placeholder="Celular">
                                 </div>
                                  </div>
 
                                  <div class="col-md-4">
                                      <div class="form-group">
                                     <label for="">Email personal <span style="color:red;" v-show="email==''">(*)</span></label>
-                                    <input type="text" class="form-control" v-model="email" placeholder="E-mail">
+                                    <input :disabled="edit == 1" type="text" class="form-control" v-model="email" placeholder="E-mail">
                                 </div>
                                  </div>
 
                                    <div class="col-md-8">
                                     <div class="form-group">
                                     <label for="">Empresa <span style="color:red;" v-show="empresa==0">(*)</span></label>
-                                        <v-select 
+                                        <v-select :disabled="edit == 1"
                                             :on-search="selectEmpresaVueselect"
                                             label="nombre"
                                             :options="arrayEmpresa"
@@ -635,7 +649,7 @@
                                 <div class="col-md-4">
                                      <div class="form-group">
                                     <label for="">Email institucional </label>
-                                    <input type="text" class="form-control" v-model="email_inst" placeholder="E-mail">
+                                    <input :disabled="edit == 1" type="text" class="form-control" v-model="email_inst" placeholder="E-mail">
                                 </div>
                                  </div>
 
@@ -646,7 +660,7 @@
                                     <div class="input-group-addon">
                                         $
                                     </div>
-                                    <input type="text" pattern="\d*" maxlength="20" class="form-control" v-on:keypress="isNumber($event)" v-model="ingreso" placeholder="ingreso">
+                                    <input :disabled="edit == 1" type="text" pattern="\d*" maxlength="20" class="form-control" v-on:keypress="isNumber($event)" v-model="ingreso" placeholder="ingreso">
                                     </div>
                                 </div>
                                  </div>
@@ -655,15 +669,15 @@
                                   <div class="col-md-2">
                                     <div class="form-group">
                                     <label for="">Fecha de nacimiento <span style="color:red;" v-show="fecha_nac==''">(*)</span></label>
-                                    <input type="date" class="form-control"  v-model="fecha_nac" >
+                                    <input :disabled="edit == 1" type="date" class="form-control"  v-model="fecha_nac" >
                                 </div>
                                 </div>
 
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="">Lugar de nacimiento <span style="color:red;" v-show="lugar_nacimiento==''">(*)</span></label>
-                                        <input type="text" name="city" list="cityname" class="form-control" v-model="lugar_nacimiento">
-                                        <datalist id="cityname">
+                                        <input :disabled="edit == 1" type="text" name="city" list="cityname" class="form-control" v-model="lugar_nacimiento">
+                                        <datalist :disabled="edit == 1" id="cityname">
                                             <option value="">Seleccione</option>
                                             <option v-for="estados in arrayEstados" :key="estados.estado" :value="estados.estado" v-text="estados.estado"></option>    
                                         </datalist>
@@ -676,7 +690,7 @@
                                  <div class="col-md-3">
                                      <div class="form-group">
                                     <label for="">CURP</label>
-                                    <input type="text" maxlength="18" style="text-transform:uppercase" class="form-control"  v-model="curp" placeholder="CURP">
+                                    <input :disabled="edit == 1" type="text" maxlength="18" style="text-transform:uppercase" class="form-control"  v-model="curp" placeholder="CURP">
                                 </div>
                                  </div>
 
@@ -690,7 +704,7 @@
                                 <div align="left" class="col-md-1">
                                    <div class="form-group">
                                     <label for="">Homoclave</label>
-                                         <input type="text" maxlength="3" style="text-transform:uppercase" class="form-control"  v-model="homoclave" placeholder="AA0">
+                                         <input :disabled="edit == 1" type="text" maxlength="3" style="text-transform:uppercase" class="form-control"  v-model="homoclave" placeholder="AA0">
                                    </div>
                                 </div>
 
@@ -698,7 +712,7 @@
                                 <div class="col-md-3">
                                      <div class="form-group">
                                     <label for="">NSS <span style="color:red;" v-show="nss==''">(*)</span></label>
-                                    <input type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="nss" placeholder="NSS">
+                                    <input :disabled="edit == 1" type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="nss" placeholder="NSS">
                                 </div>
                                 </div>
 
@@ -709,7 +723,7 @@
                               <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="">Lugar de contacto </label>
-                                          <select class="form-control" v-model="lugar_contacto" >
+                                          <select :disabled="edit == 1" class="form-control" v-model="lugar_contacto" >
                                             <option value="0">Seleccione</option>
                                             <option value="Asesor externo">Asesor externo</option>
                                             <option value="Oficina central">Oficina central</option>
@@ -723,7 +737,7 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                     <label for="">Clasificacion</label>
-                                    <select class="form-control" v-model="clasificacion" >
+                                    <select :disabled="edit == 1" class="form-control" v-model="clasificacion" >
                                             <option value="1">No viable</option>
                                             <option value="2">Tipo A</option>
                                             <option value="3">Tipo B</option>
@@ -737,7 +751,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="">Proyecto en el que esta interesado <span style="color:red;" v-show="proyecto_interes_id==0">(*)</span></label>
-                                        <v-select 
+                                        <v-select :disabled="edit == 1"
                                             :on-search="selectFraccionamientoVueselect"
                                             label="nombre"
                                             :options="arrayFraccionamientos"
@@ -752,7 +766,7 @@
                                 <div class="col-md-3">
                                      <div class="form-group">
                                   <label for="">Precio de interes para vivienda</label>
-                                    <select class="form-control" v-model="precio_rango" >
+                                    <select :disabled="edit == 1" class="form-control" v-model="precio_rango" >
                                             <option value="0">Seleccione</option>
                                             <option value="1">$600,000.00 - $800,000.00</option>
                                             <option value="2">$800,000.00 - $1,000,000.00</option>   
@@ -780,7 +794,7 @@
                                 <div class="col-md-3" v-else>
                                     <div class="form-group">
                                         <label for="">Medio donde se entero de nosotros <span style="color:red;" v-show="publicidad_id==0">(*)</span></label>
-                                        <select class="form-control" v-model="publicidad_id" >
+                                        <select :disabled="edit == 1" class="form-control" v-model="publicidad_id" >
                                                 <option value="0">Seleccione</option>
                                                 <option v-for="medios in arrayMediosPublicidad" :key="medios.id" :value="medios.id" v-text="medios.nombre"></option>    
                                         </select>
@@ -798,7 +812,7 @@
                                 <div class="col-md-4" v-if="publicidad_id == 1">
                                     <div class="form-group">
                                         <label for="">Nombre de la persona que te recomendo </label>
-                                        <input type="text" class="form-control" v-model="nombre_recomendado" placeholder="Nombre">
+                                        <input :disabled="edit == 1" type="text" class="form-control" v-model="nombre_recomendado" placeholder="Nombre">
                                     </div>
                                 </div>
 
@@ -810,7 +824,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                     <label for="">Vive en casa <span style="color:red;" v-show="tipo_casa==0">(*)</span></label>
-                                        <select class="form-control" v-model="tipo_casa" >
+                                        <select :disabled="edit == 1" class="form-control" v-model="tipo_casa" >
                                             <option value="0">Seleccione</option>  
                                             <option value="De familiares">De familiares</option>
                                             <option value="Prestada">Prestada</option>
@@ -823,7 +837,7 @@
                                 <div class="col-md-3">
                                   <div class="form-group">
                                   <label for="">Estado civil <span style="color:red;" v-show="e_civil==0">(*)</span></label>
-                                    <select class="form-control" v-model="e_civil" >
+                                    <select :disabled="edit == 1" class="form-control" v-model="e_civil" >
                                         <option value="0">Seleccione</option> 
                                         <option value="1">Casado - separacion de bienes</option> 
                                         <option value="2">Casado - sociedad conyugal</option> 
@@ -840,20 +854,20 @@
                                     <div class="bmd-form-group checkbox">
                                     <label for=""> Conyuge o coacreditado </label>
                                     <br>
-                                   <input id="checkcoa" type="checkbox" v-model="coacreditado">
+                                   <input :disabled="edit == 1" id="checkcoa" type="checkbox" v-model="coacreditado">
                                 </div>
                                 </div>
 
                                 <div class="col-md-1"  v-if="coacreditado==true">
                                     <div class="form-group">
-                                        <button @click="abrirModal('coacreditado','registrar')" style="margin-top:1.5rem;" class="btn btn-success form-control btnagregar" title="Agregar nuevo coacreditado"><i class="icon-plus"></i></button>
+                                        <button :disabled="edit == 1" @click="abrirModal('coacreditado','registrar')" style="margin-top:1.5rem;" class="btn btn-success form-control btnagregar" title="Agregar nuevo coacreditado"><i class="icon-plus"></i></button>
                                     </div>
                                 </div>
 
                                 <div class="col-md-3" v-if="coacreditado==true">
                                     <div class="form-group">
                                         <label for="">Buscar coacreditado... </label>
-                                        <v-select 
+                                        <v-select :disabled="edit == 1"
                                             :on-search="selectCoacreditadoVueselect"
                                             label="n_completo"
                                             :options="arrayCoacreditados"
@@ -861,31 +875,31 @@
                                             :onChange="getDatosCoacreditado"
                                         >
                                         </v-select>
-                                        <input type="text" v-if="conyugeNom != null" class="form-control" readonly v-model="conyugeNom">
+                                        <input :disabled="edit == 1" type="text" v-if="conyugeNom != null" class="form-control" readonly v-model="conyugeNom">
                                     </div>
                                 </div>
 
                                 <div class="col-md-3" v-if="coacreditado==true">
                                      <div class="form-group">
                                     <label for="">Parentesco </label>
-                                    <input type="text" class="form-control" v-model="parentesco_coa" placeholder="Parentesco">
+                                    <input :disabled="edit == 1" type="text" class="form-control" v-model="parentesco_coa" placeholder="Parentesco">
                                 </div>
                                 </div>
 
                                 <div class="col-md-10">
                                     <div class="form-group">
                                         <label for="">Observaciones <span style="color:red;" v-show="observacion==''">(*)</span></label>
-                                        <textarea rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observaciones"></textarea>
+                                        <textarea :disabled="edit == 1" rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observaciones"></textarea>
                                     </div>
                                     <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo', nombre, apellidos),listarObservacion(1,id)">Ver todos</button>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group">
-                                        <button v-if="makeReminder == 1" @click="makeReminder = 0" class="btn-sm btn btn-primary">
+                                        <button :disabled="edit == 1" v-if="makeReminder == 1" @click="makeReminder = 0" class="btn-sm btn btn-primary">
                                             Crear recordatorio
                                             <i class="fa fa-toggle-on" style="font-size:24px"></i>
                                         </button>
-                                        <button v-else @click="makeReminder = 1" class="btn-sm btn btn-primary">
+                                        <button :disabled="edit == 1" v-else @click="makeReminder = 1" class="btn-sm btn btn-primary">
                                             Crear recordatorio
                                             <i class="fa fa-toggle-off" style="font-size:24px"></i>
                                         </button>
@@ -908,7 +922,7 @@
                             <div class="form-group">
                                 <div class="col-md-12">
                                     <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
-                                    <button type="button" class="btn btn-primary" @click="actualizarProspecto()"> Actualizar </button>
+                                    <button :disabled="edit == 1" type="button" class="btn btn-primary" @click="actualizarProspecto()"> Actualizar </button>
                                 </div>
                             </div>
 
@@ -1374,6 +1388,7 @@
                 buscar2: '',
                 buscar3:'2',
                 b_clasificacion: '2',
+                b_aux:'',
                 arrayCoacreditados : [],
                 arrayProspectos: [],
                 arrayFraccionamientos : [],
@@ -1385,6 +1400,9 @@
                 fraccionamiento:'',
                 makeRemember:'',
                 makeReminder:0,
+                usuario : '',
+                edit:0,
+                reasignar:0,
             }
         },
         components:{
@@ -1424,12 +1442,15 @@
             /**Metodo para mostrar los registros */
             listarProspectos(page, buscar, buscar2, buscar3, b_clasificacion, criterio){
                 let me = this;
-                var url = '/clientes?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + '&b_publicidad=' + me.b_publicidad + '&criterio=' + criterio;
+                var url = '/clientes?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + 
+                    '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + 
+                    '&b_publicidad=' + me.b_publicidad + '&criterio=' + criterio + '&b_aux=' + me.b_aux;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayProspectos = respuesta.personas.data;
                     me.pagination = respuesta.pagination;
                     me.contador = respuesta.contadorClientes;
+                    me.usuario = respuesta.user;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -2183,6 +2204,49 @@
                 }
                 }) 
             },
+
+            reasignToAsesor(){
+                swal({
+                title: 'Esta seguro de solicitar la reasignacion del prospecto?',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar!',
+                cancelButtonText: 'Cancelar',
+                confirmButtonClass: 'btn btn-success',
+                cancelButtonClass: 'btn btn-danger',
+                buttonsStyling: false,
+                reverseButtons: true
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+
+                    axios.put('/clientes/reasignarProspecto',{
+                        'id': me.id
+                    }).then(function (response) {
+                    me.listado=1;
+                    me.limpiarDatos();
+                    me.listarProspectos(1,me.buscar,me.buscar2,me.buscar3,me.b_clasificacion,me.criterio);
+                        swal(
+                        'Hecho!',
+                        'La solicitud ha llegado al gerente del fraccionamiento.',
+                        'success'
+                        )
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                    
+                    
+                } else if (
+                    // Read more about handling dismissals
+                    result.dismiss === swal.DismissReason.cancel
+                ) {
+                    
+                }
+                }) 
+
+            },
             
             validarProspecto(){
                 this.errorProspecto=0;
@@ -2385,10 +2449,9 @@
               
                 let me= this;
                 this.listado=3;
-               
 
-                
                     me.arrayDatosProspecto = data;
+                    me.edit = 0;
 
                     me.nombre= me.arrayDatosProspecto['nombre'];
                     me.apellidos= me.arrayDatosProspecto['apellidos'];
@@ -2420,6 +2483,11 @@
                     me.apellidos_coa = me.arrayDatosProspecto['apellidos_coa'];
                     me.lugar_nacimiento_coa =me.arrayDatosProspecto['lugar_nacimiento_coa'];
                     me.proyecto = me.arrayDatosProspecto['proyecto'];
+                    me.reasignar = me.arrayDatosProspecto['reasignar'];
+
+                    if(data['vendedor_aux'] == me.usuario)
+                        me.edit = 1;
+                    
 
                     
                     

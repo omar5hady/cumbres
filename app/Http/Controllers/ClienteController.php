@@ -32,27 +32,33 @@ class ClienteController extends Controller
         $buscar2 = $request->buscar2;
         $buscar3 = $request->buscar3;
         $publicidad = $request->b_publicidad;
+        $b_aux = $request->b_aux;
 
         $queryVendedor = Cliente::join('personal','clientes.id','=','personal.id')
             ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
             ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
             ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave',
-            'personal.f_nacimiento','personal.direccion','personal.telefono','personal.departamento_id',
-            'personal.colonia','personal.ext','personal.cp', 
-            'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
-            'personal.email','personal.empresa_id', 
-            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
-            'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto', 'clientes.estado','clientes.ciudad',
-            'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss', 'clientes.nombre_recomendado',
-            'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
-            'clientes.created_at','clientes.precio_rango','clientes.ingreso','clientes.created_at', 'clientes.lugar_nacimiento',
-            
-            'clientes.sexo_coa', 'clientes.tipo_casa_coa','clientes.email_institucional_coa','clientes.empresa_coa',
-            'clientes.edo_civil_coa','clientes.nss_coa','clientes.curp_coa','clientes.nombre_coa','clientes.apellidos_coa',
-            'clientes.f_nacimiento_coa', 'clientes.rfc_coa','clientes.homoclave_coa','clientes.direccion_coa','clientes.colonia_coa',
-            'clientes.cp_coa','clientes.telefono_coa','clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa',
-            DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS n_completo_coa"),
-            'medios_publicitarios.nombre as publicidad','fraccionamientos.nombre as proyecto');
+                'personal.f_nacimiento','personal.direccion','personal.telefono','personal.departamento_id',
+                'personal.colonia','personal.ext','personal.cp', 
+                'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
+                'personal.email','personal.empresa_id', 
+                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
+                'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto', 
+                'clientes.estado','clientes.ciudad','clientes.proyecto_interes_id',
+                'clientes.publicidad_id','clientes.edo_civil','clientes.nss', 'clientes.nombre_recomendado',
+                'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado',
+                'clientes.clasificacion','clientes.created_at','clientes.precio_rango','clientes.ingreso',
+                'clientes.created_at', 'clientes.lugar_nacimiento','clientes.vendedor_aux','clientes.reasignar',
+                
+                'clientes.sexo_coa', 'clientes.tipo_casa_coa','clientes.email_institucional_coa',
+                'clientes.empresa_coa','clientes.edo_civil_coa','clientes.nss_coa','clientes.curp_coa',
+                'clientes.nombre_coa','clientes.apellidos_coa','clientes.f_nacimiento_coa', 
+                'clientes.rfc_coa','clientes.homoclave_coa','clientes.direccion_coa','clientes.colonia_coa',
+                'clientes.cp_coa','clientes.telefono_coa','clientes.ext_coa','clientes.celular_coa',
+                'clientes.email_coa','clientes.parentesco_coa',
+                DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS n_completo_coa"),
+                'medios_publicitarios.nombre as publicidad','fraccionamientos.nombre as proyecto'
+            );
 
         $queryGen = Cliente::join('personal','clientes.id','=','personal.id')
             ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
@@ -68,7 +74,7 @@ class ClienteController extends Controller
             DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS v_completo"),
             'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto', 'clientes.estado','clientes.ciudad',
             'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss', 'clientes.nombre_recomendado',
-            'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
+            'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion', 'clientes.reasignar',
             'clientes.created_at','clientes.precio_rango','clientes.ingreso','clientes.created_at','clientes.lugar_nacimiento',
             
             'clientes.sexo_coa', 'clientes.tipo_casa_coa','clientes.email_institucional_coa','clientes.empresa_coa',
@@ -79,66 +85,60 @@ class ClienteController extends Controller
             'medios_publicitarios.nombre as publicidad','fraccionamientos.nombre as proyecto');
         
         if( Auth::user()->rol_id == 2){
-            if($buscarC != ''){
+            
                 if ($buscar==''){
-                    $personas = $queryVendedor
-                    ->where('vendedor_id','=',Auth::user()->id)
-                    ->where('clientes.clasificacion', '=', $buscarC);
+                    $personas = $queryVendedor;
+                    if($b_aux == '')
+                        $personas = $personas->where('vendedor_id','=',Auth::user()->id);
+                    else
+                        $personas = $personas->where('clientes.vendedor_aux','=',Auth::user()->id);
+                    if($buscarC != '')
+                        $personas = $personas->where('clientes.clasificacion', '=', $buscarC);
                 }
                 else{
-    
                     if($criterio == 'personal.nombre'){
-                        $personas = $queryVendedor  
-                        ->where('vendedor_id','=',Auth::user()->id)     
-                        ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('clientes.clasificacion', '=', $buscarC)
-                        ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
-                        ->where('vendedor_id','=',Auth::user()->id)
-                        ->where('clientes.clasificacion', '=', $buscarC)
-                        ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
-                        ->where('vendedor_id','=',Auth::user()->id)
-                        ->where('clientes.clasificacion', '=', $buscarC);
-                    }
-    
-                    else{
-                        $personas = $queryVendedor
-                        ->where('vendedor_id','=',Auth::user()->id)     
-                        ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('clientes.clasificacion', '=', $buscarC);
-                    }
-                }
-            }
-            ////
-            else{
-                if ($buscar==''){
-                    $personas = $queryVendedor
-                    ->where('vendedor_id','=',Auth::user()->id)
-                    ->where('clientes.clasificacion', '!=', 7);
-                }
-                else{
-    
-                    if($criterio == 'personal.nombre'){
-                        $personas = $queryVendedor
-                        ->where('vendedor_id','=',Auth::user()->id)     
-                        ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('clientes.clasificacion', '!=', 7)
-                        ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
-                        ->where('vendedor_id','=',Auth::user()->id)
-                        ->where('clientes.clasificacion', '!=', 7)
-                        ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
-                        ->where('vendedor_id','=',Auth::user()->id)
-                        ->where('clientes.clasificacion', '!=', 7);
-                    }
-    
-                    else{
-                        $personas = $queryVendedor
-                        ->where('vendedor_id','=',Auth::user()->id)     
-                        ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('clientes.clasificacion', '!=', 7);
-                    }
-                }
+                        $personas = $queryVendedor->where($criterio, 'like', '%'. $buscar . '%');
+                        if($b_aux == '')
+                            $personas = $personas->where('vendedor_id','=',Auth::user()->id);
+                        else
+                            $personas = $personas->where('clientes.vendedor_aux','=',Auth::user()->id);
 
-            }
+                        if($buscarC != '')
+                            $personas = $personas->where('clientes.clasificacion', '=', $buscarC);
+                        
+                        $personas = $personas->orWhere('personal.apellidos', 'like', '%'. $buscar . '%');
+
+                        if($b_aux == '')
+                            $personas = $personas->where('vendedor_id','=',Auth::user()->id);
+                        else
+                            $personas = $personas->where('clientes.vendedor_aux','=',Auth::user()->id);
+
+                        if($buscarC != '')
+                            $personas = $personas->where('clientes.clasificacion', '=', $buscarC);
+
+                        $personas = $personas->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
+                        if($buscarC != '')
+                            $personas = $personas->where('clientes.clasificacion', '=', $buscarC);
+
+                        if($b_aux == '')
+                            $personas = $personas->where('vendedor_id','=',Auth::user()->id);
+                        else
+                            $personas = $personas->where('clientes.vendedor_aux','=',Auth::user()->id);
+                        
+                    }
+                    else{
+                        $personas = $queryVendedor
+                        ->where($criterio, 'like', '%'. $buscar . '%');
+                        if($buscarC != '')
+                            $personas = $personas->where('clientes.clasificacion', '=', $buscarC);
+                        if($b_aux == '')
+                            $personas = $personas->where('vendedor_id','=',Auth::user()->id);
+                        else
+                            $personas = $personas->where('clientes.vendedor_aux','=',Auth::user()->id);   
+                        
+                    }
+                }
+            
             
         }
         else{
@@ -326,7 +326,7 @@ class ClienteController extends Controller
                 'from'         => $personas->firstItem(),
                 'to'           => $personas->lastItem(),
             ],
-            'personas' => $personas, 'contadorClientes' => $personas->total()
+            'personas' => $personas, 'contadorClientes' => $personas->total(), 'user'=> Auth::user()->id
         ];
     }
  
@@ -2041,6 +2041,118 @@ class ClienteController extends Controller
         ];
        
 
+    }
+
+    public function reasignarProspecto(Request $request){
+        $cliente = Cliente::findOrFail($request->id);
+        $cliente->reasignar = 1;
+        $cliente->save();
+
+        $observacion = new Cliente_observacion();
+        $observacion->cliente_id = $cliente->id;
+        $observacion->comentario = 'Se solicita la reasignacion del prospecto';
+        $observacion->usuario = Auth::user()->usuario;
+        $observacion->save();
+    }
+
+    public function clientesPorReasignar(Request $request){
+
+        $nombre = $request->nombre;
+        $desde = $request->desde;
+        $hasta = $request->hasta;
+        $proyecto = $request->proyecto;
+        $clasificacion = $request->clasificacion;
+
+
+        $clientes = Cliente::join('personal','clientes.id','=','personal.id')
+                        ->join('personal as asesor','clientes.vendedor_id','=','asesor.id')
+                        ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
+                        ->select(
+                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS cliente"),
+                            DB::raw("CONCAT(asesor.nombre,' ',asesor.apellidos) AS vendedor"),
+                            'personal.id','personal.rfc','personal.celular','personal.email',
+                            'fraccionamientos.nombre as proyecto','clientes.clasificacion','clientes.created_at',
+                            'clientes.proyecto_interes_id'
+                        )
+                        ->where('clientes.reasignar','=',1);
+                        if(Auth::user()->rol_id != 1)
+                            $clientes = $clientes->where('fraccionamientos.gerente_id','=',Auth::user()->id);
+
+                        if($nombre != '')
+                            $clientes = $clientes->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $nombre . '%');
+                        
+                        if($proyecto != '')
+                            $clientes = $clientes->where( 'clientes.proyecto_interes_id','=',$proyecto);
+                        
+                        if($clasificacion != '')
+                            $clientes = $clientes->where( 'clientes.clasificacion','=',$clasificacion);
+
+
+                        $clientes = $clientes->orderBy('personal.nombre','asc')
+                        ->orderBy('personal.apellidos','asc')
+                        ->paginate();
+
+        return [
+            'pagination' => [
+                'total'         => $clientes->total(),
+                'current_page'  => $clientes->currentPage(),
+                'per_page'      => $clientes->perPage(),
+                'last_page'     => $clientes->lastPage(),
+                'from'          => $clientes->firstItem(),
+                'to'            => $clientes->lastItem(),
+            ],
+            'clientes' => $clientes];
+    }
+
+    public function getAsesores(Request $request){
+        $asesores = User::join('personal','users.id','=','personal.id')
+            ->join('vendedores','personal.id','=','vendedores.id')
+            ->join('asign_proyectos','vendedores.id','=','asign_proyectos.asesor_id')
+            ->select(
+                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS asesor"),
+                'personal.id'
+            )
+            ->where('users.condicion','=',1)
+            ->where('vendedores.tipo','=',0)
+            ->where('asign_proyectos.proyecto_id','=',$request->proyecto);
+            if(Auth::user()->rol_id != 1)
+                $asesores = $asesores->where('vendedores.supervisor_id','=',Auth::user()->id);
+            $asesores = $asesores->orderBy('personal.nombre', 'asc')
+                ->orderBy('personal.apellidos', 'asc')
+                ->get();
+        
+        return ['asesores' => $asesores];
+    }
+
+    public function setVendedorAux(Request $request){
+        $cliente = Cliente::findOrFail($request->id);
+        $cliente->vendedor_aux = $cliente->vendedor_id;
+        $cliente->vendedor_id = $request->vendedor;
+        $cliente->reasignar = 0;
+        $cliente->save();
+
+        $persona = Personal::select('nombre','apellidos')->where('id','=',$request->id)->first();
+
+        $observacion = new Cliente_observacion();
+        $observacion->cliente_id = $cliente->id;
+        $observacion->comentario = 'Se aprueba la reasignacion del prospecto';
+        $observacion->usuario = Auth::user()->usuario;
+        $observacion->save();
+
+        $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=',Auth::user()->id)->get();
+                $fecha = Carbon::now();
+                $msj = "Se le ha asignado a ".$persona->nombre.' '.$persona->apellidos.' a su BD de Prospectos';
+                $notificacion = [
+                    'notificacion' => [
+                        'usuario' => $imagenUsuario[0]->usuario,
+                        'foto' => $imagenUsuario[0]->foto_user,
+                        'fecha' => $fecha,
+                        'msj' => $msj,
+                        'titulo' => 'Nuevo Prospecto'
+                    ]
+                ];
+                
+                User::findOrFail($request->vendedor)->notify(new NotifyAdmin($notificacion));
     }
 
     

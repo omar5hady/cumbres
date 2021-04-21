@@ -22,12 +22,12 @@
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-5" v-model="criterio" @click="limpiarBusqueda()">
-                                      <option value="nombre">Fraccionamiento</option>
-                                      <option value="tipo_proyecto">Tipo de Proyecto</option>
+                                      <option value="fraccionamientos.nombre">Fraccionamiento</option>
+                                      <option value="fraccionamientos.tipo_proyecto">Tipo de Proyecto</option>
                                     </select>
                                     
                                     
-                                    <select class="form-control col-md-5" v-if="criterio=='tipo_proyecto'" v-model="buscar" @keyup.enter="listarFraccionamiento(1,buscar,criterio)" >
+                                    <select class="form-control col-md-5" v-if="criterio=='fraccionamientos.tipo_proyecto'" v-model="buscar" @keyup.enter="listarFraccionamiento(1,buscar,criterio)" >
                                         <option value="1">Lotificación</option>
                                         <option value="2">Departamento</option>
                                         <option value="3">Terreno</option>
@@ -38,7 +38,7 @@
                             </div>
                         </div>
                         <div class="table-responsive"> 
-                            <table class="table table-bordered table-striped table-sm">
+                            <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
                                         <th>Opciones</th>
@@ -49,11 +49,12 @@
                                         <th>Estado</th>
                                         <th>Delegacion</th>
                                         <th v-if="rolId != 3">Fecha de inicio de ventas</th>
+                                        <th v-if="rolId != 3">Gerente</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="fraccionamiento in arrayFraccionamiento" :key="fraccionamiento.id">
-                                        <td>
+                                        <td class="td2">
                                             <button type="button" @click="abrirModal('fraccionamiento','actualizar',fraccionamiento)" class="btn btn-warning btn-sm">
                                             <i class="icon-pencil"></i>
                                             </button>
@@ -70,15 +71,16 @@
                                             <i class="fa fa-file-archive-o fa-lg"></i>
                                             </a>
                                         </td>
-                                        <td v-text="fraccionamiento.nombre"></td>
-                                        <td v-if="fraccionamiento.tipo_proyecto==1" v-text="'Lotificación'"></td>
-                                        <td v-if="fraccionamiento.tipo_proyecto==2" v-text="'Departamento'"></td>
-                                        <td v-if="fraccionamiento.tipo_proyecto==3" v-text="'Terreno'"></td>
-                                        <td v-text="fraccionamiento.calle + ' No. ' + fraccionamiento.numero"></td>
-                                        <td v-text="fraccionamiento.colonia"></td>
-                                        <td v-text="fraccionamiento.estado"></td>
-                                        <td v-text="fraccionamiento.delegacion"></td>
-                                        <td v-if="rolId != 3" v-text="fraccionamiento.fecha_ini_venta"></td>
+                                        <td class="td2" v-text="fraccionamiento.nombre"></td>
+                                        <td class="td2" v-if="fraccionamiento.tipo_proyecto==1" v-text="'Lotificación'"></td>
+                                        <td class="td2" v-if="fraccionamiento.tipo_proyecto==2" v-text="'Departamento'"></td>
+                                        <td class="td2" v-if="fraccionamiento.tipo_proyecto==3" v-text="'Terreno'"></td>
+                                        <td class="td2" v-text="fraccionamiento.calle + ' No. ' + fraccionamiento.numero"></td>
+                                        <td class="td2" v-text="fraccionamiento.colonia"></td>
+                                        <td class="td2" v-text="fraccionamiento.estado"></td>
+                                        <td class="td2" v-text="fraccionamiento.delegacion"></td>
+                                        <td class="td2" v-if="rolId != 3" v-text="fraccionamiento.fecha_ini_venta"></td>
+                                        <td class="td2" v-if="rolId != 3" v-text="fraccionamiento.gerente"></td>
                                     </tr>                               
                                 </tbody>
                             </table>
@@ -211,6 +213,16 @@
                                         <input type="date" v-model="fecha_ini_venta" class="form-control" placeholder="Fecha de terminacion">
                                     </div>
                                 </div>
+                                <div class="form-group row" v-if="rolId != 3 && tipoAccion == 2" >
+                                    <label class="col-md-3 form-control-label" for="text-input">Gerente del proyecto</label>
+                                    <!--Criterios para el listado de busqueda -->
+                                    <div class="col-md-5">
+                                        <select class="form-control" v-model="gerente_id">
+                                            <option value="">Seleccione</option>
+                                            <option v-for="gerente in arrayGerentes" :key="gerente.id" :value="gerente.id" v-text="gerente.nombre + ' ' + gerente.apellidos"></option>
+                                        </select>
+                                    </div>
+                                </div>
                                 <!-- Div para mostrar los errores que mande validerFraccionamiento -->
                                 <div v-show="errorFraccionamiento" class="form-group row div-error">
                                     <div class="text-center text-error">
@@ -311,10 +323,12 @@
                 archivo_planos: '',
                 archivo_escrituras: '',
                 arrayFraccionamiento : [],
+                arrayGerentes : [],
                 modal : 0,
                 modal4: 0,
                 tituloModal : '',
                 tituloModal4: '',
+                gerente_id : '',
                 tipoAccion: 0,
                 errorFraccionamiento : 0,
                 errorMostrarMsjFraccionamiento : [],
@@ -327,7 +341,7 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'nombre', 
+                criterio : 'fraccionamientos.nombre', 
                 buscar : '',
                 arrayCiudades : []
             }
@@ -451,6 +465,18 @@
                     console.log(error);
                 });
             },
+            selectGerentesVentas(){
+                let me = this;
+                me.arrayGerentes=[];
+                var url = '/selectGerentesVentas';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayGerentes = respuesta.personas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
             selectCiudades(buscar){
                 let me = this;
                 me.arrayCiudades=[];
@@ -529,6 +555,7 @@
                     'cp' : this.cp,
                     'id' : this.id,
                     'numero' : this.numero,
+                    'gerente_id' : this.gerente_id,
                     'fecha_ini_venta' : this.fecha_ini_venta
                 }).then(function (response){
                     
@@ -662,6 +689,7 @@
                                 this.ciudad=data['ciudad'];
                                 this.delegacion=data['delegacion'];
                                 this.cp=data['cp'];
+                                this.gerente_id=data['gerente_id'];
                                 this.numero = data['numero'];
                                 this.selectCiudades(this.estado);
                                 break;
@@ -685,6 +713,7 @@
         },
         mounted() {
             this.listarFraccionamiento(1,this.buscar,this.criterio);
+            this.selectGerentesVentas();
         }
     }
 </script>
@@ -698,6 +727,7 @@
         opacity: 1 !important;
         position: fixed !important;
         background-color: #3c29297a !important;
+        overflow-y: auto;
     }
     .div-error{
         display:flex;
@@ -706,5 +736,19 @@
     .text-error{
         color: red !important;
         font-weight: bold;
+    }
+    .table2 {
+        margin: auto;
+        border-collapse: collapse;
+        overflow-x: auto;
+        display: block;
+        width: fit-content;
+        max-width: 100%;
+        box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+    }
+
+    .td2, .th2 {
+        border: solid rgb(200, 200, 200) 1px;
+        padding: .5rem;
     }
 </style>

@@ -27,12 +27,16 @@ class FraccionamientoController extends Controller
         $criterio = $request->criterio;
         
         if($buscar==''){
-            $fraccionamientos = Fraccionamiento::where('id','!=','1')->orderBy('id','desc')->paginate(8);
+            $fraccionamientos = Fraccionamiento::leftJoin('personal','fraccionamientos.gerente_id','=','personal.id')
+                    ->select('fraccionamientos.*',DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) as gerente"))
+                    ->where('fraccionamientos.id','!=','1')->orderBy('fraccionamientos.id','desc')->paginate(8);
         }
         else{
-            $fraccionamientos = Fraccionamiento::where($criterio, 'like', '%'. $buscar . '%')
-                                                ->where('id','!=','1')
-                                                ->orderBy('id','desc')->paginate(8);
+            $fraccionamientos = Fraccionamiento::leftJoin('personal','fraccionamientos.gerente_id','=','personal.id')
+                    ->select('fraccionamientos.*',DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) as gerente"))
+                    ->where($criterio, 'like', '%'. $buscar . '%')
+                    ->where('fraccionamientos.id','!=','1')
+                    ->orderBy('fraccionamientos.id','desc')->paginate(8);
         }
 
         return [
@@ -201,6 +205,9 @@ class FraccionamientoController extends Controller
         $fraccionamiento->delegacion = $request->delegacion;
         $fraccionamiento->cp = $request->cp;
         $fraccionamiento->fecha_ini_venta = $request->fecha_ini_venta;
+        if($request->gerente_id != ''){
+            $fraccionamiento->gerente_id = $request->gerente_id;
+        }
         $fraccionamiento->save();
 
         $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=', $usuario_id)->get();

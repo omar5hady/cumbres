@@ -1446,5 +1446,19 @@ class UserController extends Controller
         $asign->delete();
     }
 
+    public function selectGerentesVentas(Request $request)
+    {
+        if (!$request->ajax()) return redirect('/');
+            $personas = User::join('personal','users.id','=','personal.id')
+            ->select('personal.id','personal.nombre','personal.apellidos')
+            ->where('users.rol_id','=',4)
+            ->where('users.condicion','=',1)
+            ->orderBy('personal.nombre', 'asc')
+            ->orderBy('personal.apellidos', 'asc')
+            ->get();
+    
+        return ['personas' => $personas];
+    }
+
     
 }

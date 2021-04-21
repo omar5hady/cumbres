@@ -10,7 +10,7 @@ class Fraccionamiento extends Model
     protected $primaryKey = 'id'; //Referenciar la llave primaria
     protected $fillable = ['nombre','tipo_proyecto','calle','colonia','estado','ciudad','fecha_ini_venta',
                             'archivo_planos','archivo_escrituras','delegacion','cp','email_administracion',
-                            'logo_fracc', 'numero'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
+                            'logo_fracc', 'numero', 'gerente_id'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
 
     public function etapa(){
         return $this->hasMany('App\Etapa');
