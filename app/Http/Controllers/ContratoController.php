@@ -739,6 +739,13 @@ class ContratoController extends Controller
 
             $cliente = Cliente::findOrFail($credito->prospecto_id);
             $contrato->publicidad_id = $cliente->publicidad_id;
+
+            $vendedor_aux = Cliente::join('personal','clientes.vendedor_aux','=','personal.id')
+                        ->select('personal.nombre','personal.apellidos')
+                        ->where('clientes.id','=',$credito->prospecto_id)->first();
+
+            if($vendedor_aux)
+                $contrato->$vendedor_aux = $vendedor_aux->nombre.' '.$vendedor_aux->apellidos;
             
             $vendedor = Vendedor::findOrFail($credito->vendedor_id);
             $contrato->saldo = $request->precio_venta;
@@ -910,6 +917,7 @@ class ContratoController extends Controller
                 'v.apellidos as vendedor_apellidos',
 
                 'contratos.infonavit',
+                'contratos.vendedor_aux',
                 'contratos.fovisste',
                 'contratos.comision_apertura',
                 'clientes.lugar_nacimiento',

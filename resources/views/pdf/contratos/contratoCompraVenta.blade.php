@@ -331,6 +331,13 @@ body {
                    
                     <div colspan="2" class="table-cell">COMPRADOR: {{mb_strtoupper($contratos[0]->apellidos)}} {{mb_strtoupper($contratos[0]->nombre)}}____________________</div>
                 </div>
+                @if($contratos[0]->vendedor_aux != NULL)
+                    <div class="table-row">
+                        <div colspan="3" class="table-cell">ASESOR AUXILIAR: {{mb_strtoupper($contratos[0]->vendedor_aux)}} {{mb_strtoupper($contratos[0]->vendedor_apellidos)}} ______________________</div>
+                    
+                        <div colspan="2" class="table-cell"></div>
+                    </div>
+                @endif
                 <div class="table-row">
                     <div colspan="5" class="table-cell">NOTA: ESTE DOCUMENTO PIERDE SU EFECTO SI EN EL LAPSO DE 5 DIAS NATURALES NO ES LIQUIDADO EL PAGO #1.</div>
                 </div>    

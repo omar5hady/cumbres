@@ -2120,8 +2120,12 @@ class ClienteController extends Controller
             $asesores = $asesores->orderBy('personal.nombre', 'asc')
                 ->orderBy('personal.apellidos', 'asc')
                 ->get();
+
+                $vendedor_aux = Cliente::join('personal','clientes.vendedor_aux','=','personal.id')
+                ->select('personal.nombre','personal.apellidos')
+                ->where('clientes.id','=',22160)->first();
         
-        return ['asesores' => $asesores];
+        return ['asesores' => $asesores, 'aux'=>$vendedor_aux];
     }
 
     public function setVendedorAux(Request $request){
