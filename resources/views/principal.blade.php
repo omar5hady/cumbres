@@ -409,7 +409,7 @@
                                     </li>
                                 @endif 
 
-                                @if(Auth::user()->rol_id == 1)
+                                @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 4 || Auth::user()->rol_id == 6)
                                     <li @click="menu=260" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-group"></i> Por reasignar</a>
                                     </li>

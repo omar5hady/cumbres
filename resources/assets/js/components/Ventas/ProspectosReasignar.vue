@@ -349,6 +349,7 @@
             changeProspecto(id){
 
                 let me = this;
+                var cont = 0;
                 
                 Swal.fire({
                     title: 'Reasignar asesor',
@@ -361,20 +362,27 @@
                     inputValidator: (value) => {
                         return new Promise((resolve) => {
                             //console.log(value);
-                            axios.put('/clientes/setVendedorAux',{
-                                'id': id,
-                                'vendedor' : value
-                            }).then(function (response) {
-                            me.listarProspectos(1);
-                                swal(
-                                'Hecho!',
-                                'Prospecto reasignado con exito.',
-                                'success'
-                                )
-                            }).catch(function (error) {
-                                console.log(error);
-                            });
-                            resolve();
+                            
+                                if(cont == 0){
+                                    cont++;
+                                    axios.put('/clientes/setVendedorAux',{
+                                        'id': id,
+                                        'vendedor' : value
+                                    }).then(function (response) {
+                                    me.listarProspectos(1);
+                                        swal(
+                                        'Hecho!',
+                                        'Prospecto reasignado con exito.',
+                                        'success'
+                                        )
+                                    }).catch(function (error) {
+                                        console.log(error);
+                                    });
+                                
+                                cont = 0;   
+                                resolve();
+                            }
+                                
                         })
                     }
                     })

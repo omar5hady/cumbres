@@ -7,6 +7,7 @@ use App\Cliente;
 use App\Personal;
 use App\Credito;
 use App\Vendedor;
+use App\Fraccionamiento;
 use Auth;
 use App\Cliente_observacion;
 use Illuminate\Support\Facades\DB;
@@ -65,6 +66,7 @@ class ClienteController extends Controller
             ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
             ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
             ->join('personal as v', 'vendedores.id', '=', 'v.id' )
+            ->leftJoin('personal as vAux', 'clientes.vendedor_aux', '=', 'vAux.id' )
             ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave',
             'personal.f_nacimiento','personal.direccion','personal.telefono','personal.departamento_id',
             'personal.colonia','personal.ext','personal.cp',
@@ -72,12 +74,13 @@ class ClienteController extends Controller
             'personal.email','personal.empresa_id', 
             DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
             DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS v_completo"),
+            DB::raw("CONCAT(vAux.nombre,' ',vAux.apellidos) AS vAux_completo"),
             'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto', 'clientes.estado','clientes.ciudad',
             'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss', 'clientes.nombre_recomendado',
             'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion', 'clientes.reasignar',
             'clientes.created_at','clientes.precio_rango','clientes.ingreso','clientes.created_at','clientes.lugar_nacimiento',
             
-            'clientes.sexo_coa', 'clientes.tipo_casa_coa','clientes.email_institucional_coa','clientes.empresa_coa',
+            'clientes.sexo_coa', 'clientes.tipo_casa_coa','clientes.email_institucional_coa','clientes.empresa_coa','clientes.vendedor_aux',
             'clientes.edo_civil_coa','clientes.nss_coa','clientes.curp_coa','clientes.nombre_coa','clientes.apellidos_coa',
             'clientes.f_nacimiento_coa', 'clientes.rfc_coa','clientes.homoclave_coa','clientes.direccion_coa','clientes.colonia_coa',
             'clientes.cp_coa','clientes.telefono_coa','clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa',
@@ -151,13 +154,7 @@ class ClienteController extends Controller
                 else{
     
                     if($criterio == 'personal.nombre'){
-                        $personas = $queryGen
-                        //->where('vendedor_id','=',Auth::user()->id)     
-                        ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('clientes.clasificacion', '=', $buscarC)
-                        ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
-                        ->where('clientes.clasificacion', '=', $buscarC)
-                        ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
+                        $personas = $queryGen->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
                         ->where('clientes.clasificacion', '=', $buscarC);
                     }
                     elseif($criterio == 'clientes.vendedor_id'){
@@ -166,6 +163,7 @@ class ClienteController extends Controller
                             //->where('vendedor_id','=',Auth::user()->id)     
                             ->where($criterio, '=',$buscar)
                             ->where('clientes.clasificacion', '=', $buscarC);
+                            
                         }else{
                             $personas = $queryGen
                             //->where('vendedor_id','=',Auth::user()->id)     
@@ -216,9 +214,9 @@ class ClienteController extends Controller
     
                     else{
                         $personas = $queryGen
-                        //->where('vendedor_id','=',Auth::user()->id)     
-                        ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('clientes.clasificacion', '=', $buscarC);
+                            //->where('vendedor_id','=',Auth::user()->id)     
+                            ->where($criterio, 'like', '%'. $buscar . '%')
+                            ->where('clientes.clasificacion', '=', $buscarC);
                     }
                 }
 
@@ -232,12 +230,7 @@ class ClienteController extends Controller
                 else{
     
                     if($criterio == 'personal.nombre'){
-                        $personas = $queryGen
-                        //->where('vendedor_id','=',Auth::user()->id)     
-                        ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('clientes.clasificacion', '!=', 7)
-                        ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
-                        ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
+                        $personas = $queryGen->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
                         ->where('clientes.clasificacion', '!=', 7);
                     }
                     elseif($criterio == 'clientes.vendedor_id'){
@@ -298,6 +291,9 @@ class ClienteController extends Controller
                 }
             }
         }
+
+        if($b_aux != '')
+            $personas = $personas->where('clientes.vendedor_aux','!=',NULL);
 
         $personas = $personas->orderBy('personal.nombre', 'asc')
                         ->orderBy('personal.apellidos', 'asc')
@@ -2048,11 +2044,32 @@ class ClienteController extends Controller
         $cliente->reasignar = 1;
         $cliente->save();
 
+        $gerente = Fraccionamiento::select('gerente_id','nombre')->where('id','=',$cliente->proyecto_interes_id)->first();
+
         $observacion = new Cliente_observacion();
         $observacion->cliente_id = $cliente->id;
-        $observacion->comentario = 'Se solicita la reasignacion del prospecto';
+        $observacion->comentario = 'Se solicita la reasignacion del prospecto al fraccionamiento '.$gerente->nombre;
         $observacion->usuario = Auth::user()->usuario;
         $observacion->save();
+
+        $persona = Personal::select('nombre','apellidos')->where('id','=',$request->id)->first();
+
+        $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=',Auth::user()->id)->get();
+        $fecha = Carbon::now();
+        $msj = "Se solicita la reasignacion del prospecto ".$persona->nombre.' '.$persona->apellidos;
+        $notificacion = [
+            'notificacion' => [
+                'usuario' => $imagenUsuario[0]->usuario,
+                'foto' => $imagenUsuario[0]->foto_user,
+                'fecha' => $fecha,
+                'msj' => $msj,
+                'titulo' => 'Reasignar Prospecto'
+            ]
+        ];
+    
+        User::findOrFail($gerente->gerente_id)->notify(new NotifyAdmin($notificacion));
+
+
     }
 
     public function clientesPorReasignar(Request $request){
@@ -2075,7 +2092,7 @@ class ClienteController extends Controller
                             'clientes.proyecto_interes_id'
                         )
                         ->where('clientes.reasignar','=',1);
-                        if(Auth::user()->rol_id != 1)
+                        if(Auth::user()->rol_id == 4 )
                             $clientes = $clientes->where('fraccionamientos.gerente_id','=',Auth::user()->id);
 
                         if($nombre != '')
@@ -2115,8 +2132,8 @@ class ClienteController extends Controller
             ->where('users.condicion','=',1)
             ->where('vendedores.tipo','=',0)
             ->where('asign_proyectos.proyecto_id','=',$request->proyecto);
-            if(Auth::user()->rol_id != 1)
-                $asesores = $asesores->where('vendedores.supervisor_id','=',Auth::user()->id);
+            // if(Auth::user()->rol_id != 1)
+            //     $asesores = $asesores->where('vendedores.supervisor_id','=',Auth::user()->id);
             $asesores = $asesores->orderBy('personal.nombre', 'asc')
                 ->orderBy('personal.apellidos', 'asc')
                 ->get();
@@ -2129,34 +2146,40 @@ class ClienteController extends Controller
     }
 
     public function setVendedorAux(Request $request){
-        $cliente = Cliente::findOrFail($request->id);
-        $cliente->vendedor_aux = $cliente->vendedor_id;
-        $cliente->vendedor_id = $request->vendedor;
-        $cliente->reasignar = 0;
-        $cliente->save();
+        if( $request->vendedor != ''){
 
-        $persona = Personal::select('nombre','apellidos')->where('id','=',$request->id)->first();
+            $cliente = Cliente::findOrFail($request->id);
+            $cliente->vendedor_aux = $cliente->vendedor_id;
+            $cliente->vendedor_id = $request->vendedor;
+            $cliente->reasignar = 0;
+            $cliente->save();
 
-        $observacion = new Cliente_observacion();
-        $observacion->cliente_id = $cliente->id;
-        $observacion->comentario = 'Se aprueba la reasignacion del prospecto';
-        $observacion->usuario = Auth::user()->usuario;
-        $observacion->save();
+            $persona = Personal::select('nombre','apellidos')->where('id','=',$request->id)->first();
+            $vendedor = Personal::select('nombre','apellidos')->where('id','=',$request->vendedor)->first();
 
-        $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=',Auth::user()->id)->get();
-                $fecha = Carbon::now();
-                $msj = "Se le ha asignado a ".$persona->nombre.' '.$persona->apellidos.' a su BD de Prospectos';
-                $notificacion = [
-                    'notificacion' => [
-                        'usuario' => $imagenUsuario[0]->usuario,
-                        'foto' => $imagenUsuario[0]->foto_user,
-                        'fecha' => $fecha,
-                        'msj' => $msj,
-                        'titulo' => 'Nuevo Prospecto'
-                    ]
-                ];
+            $observacion = new Cliente_observacion();
+            $observacion->cliente_id = $cliente->id;
+            $observacion->comentario = 'Se aprueba la reasignacion del prospecto al vendedor: '.$vendedor->nombre.' '.$vendedor->apellidos;
+            $observacion->usuario = Auth::user()->usuario;
+            $observacion->save();
+
+            $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=',Auth::user()->id)->get();
+                    $fecha = Carbon::now();
+                    $msj = "Se le ha asignado a ".$persona->nombre.' '.$persona->apellidos.' a su BD de Prospectos';
+                    $notificacion = [
+                        'notificacion' => [
+                            'usuario' => $imagenUsuario[0]->usuario,
+                            'foto' => $imagenUsuario[0]->foto_user,
+                            'fecha' => $fecha,
+                            'msj' => $msj,
+                            'titulo' => 'Nuevo Prospecto'
+                        ]
+                    ];
                 
                 User::findOrFail($request->vendedor)->notify(new NotifyAdmin($notificacion));
+
+        }
+        
     }
 
     

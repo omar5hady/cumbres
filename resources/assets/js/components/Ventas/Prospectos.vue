@@ -99,7 +99,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-8" v-if="rolId == 2">
+                                <div class="col-md-8">
                                     <div class="input-group">
                                         <input type="text" class="form-control" disabled value="Prospectos reasignados:" placeholder="Prospectos reasignados">
                                         <select class="form-control" v-model="b_aux" >
@@ -134,6 +134,7 @@
                                             <th>Fecha de alta</th>
                                             <th>Observaciones</th>
                                             <th v-if="rolId != 2">Vendedor</th>
+                                            <th v-if="rolId != 2 && b_aux == 1">Vendedor Auxiliar</th>
                                             <th v-if="rolId != 2">Publicidad</th>
                                         </tr>
                                     </thead>
@@ -192,6 +193,7 @@
                                             <td class="td2" v-text="this.moment(prospecto.created_at).locale('es').format('DD/MMM/YYYY')"></td>
                                             <td class="td2"> <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo', prospecto.nombre, prospecto.apellidos),listarObservacion(1,prospecto.id)">Ver todos</button> </td>
                                             <td class="td2" v-if="rolId != 2" v-text="prospecto.v_completo"></td>
+                                            <td class="td2" v-if="rolId != 2" v-text="prospecto.vAux_completo"></td>
                                             <td class="td2" v-if="rolId != 2" v-text="prospecto.publicidad"></td>
                                         </tr>                               
                                     </tbody>
