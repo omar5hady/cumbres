@@ -16,7 +16,7 @@
                     <div class="card-body">
                         <ul class="nav nav2 nav-tabs" id="myTab1" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active show" id="ingresos-tab" data-toggle="tab" href="#ingresos" role="tab" aria-controls="ingresos" v-text="'Ingresos'"></a>
+                                <a class="nav-link active show" id="ingresos-tab" data-toggle="tab" href="#ingresos" role="tab" aria-controls="ingresos" v-text="'Fecha de alta'"></a>
                             </li>
                         </ul>
 

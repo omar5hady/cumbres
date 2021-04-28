@@ -2549,6 +2549,7 @@ class ReportesController extends Controller
                         ->join('etapas as et','lotes.etapa_id','=','et.id')
                         ->select('dep_creditos.fecha_deposito')
                         ->where('ins.credito_id','=',$deposito->id)
+                        ->where('dep_creditos.banco','!=','0000000-Grupo Cumbres')
                         ->whereYear('dep_creditos.fecha_deposito',$anio)
                         ->whereMonth('dep_creditos.fecha_deposito',$mes);
                         

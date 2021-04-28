@@ -2138,11 +2138,38 @@ class ClienteController extends Controller
                 ->orderBy('personal.apellidos', 'asc')
                 ->get();
 
-                $vendedor_aux = Cliente::join('personal','clientes.vendedor_aux','=','personal.id')
-                ->select('personal.nombre','personal.apellidos')
-                ->where('clientes.id','=',22160)->first();
-        
-        return ['asesores' => $asesores, 'aux'=>$vendedor_aux];
+
+            foreach ($asesores as $index => $vendedor) {
+
+                $vendedor->total = 0;
+                $vendedor->bd = 0;
+                $vendedor->dif = 0;
+    
+                $clientes = Cliente::select('id')->where('vendedor_id','=',$vendedor->id)
+                ->where('clasificacion','!=',5)
+                ->where('clasificacion','!=',6)
+                ->where('clasificacion','!=',7)
+                ->where('clasificacion','!=',1)
+                ->get();
+                $vendedor->total = $clientes->count();
+                $vendedor->bd = 0;
+    
+                foreach ($clientes as $index => $c) {
+                    $obs = Cliente_observacion::where('created_at','>=',Carbon::now()->subDays(16))
+                    ->where('cliente_id','=',$c->id)
+                    ->count();
+    
+                    if($obs > 0){
+                        $vendedor->bd ++;
+                    }
+    
+                    $vendedor->dif = $vendedor->total - $vendedor->bd;
+                }
+    
+    
+            }   
+
+        return ['asesores' => $asesores];
     }
 
     public function setVendedorAux(Request $request){

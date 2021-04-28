@@ -264,7 +264,8 @@
                         me.asesores = {};
                         $.map(me.arrayAsesores,
                             function(o) {
-                                me.asesores[o.id] = o.asesor;
+                                if(o.dif < 3)
+                                    me.asesores[o.id] = o.asesor;
                             });
 
                         me.changeProspecto(id);
