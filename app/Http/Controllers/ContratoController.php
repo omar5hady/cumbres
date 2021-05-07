@@ -1052,7 +1052,17 @@ class ContratoController extends Controller
                 $totalDePagos = count($pago);
                 $pago[0]->numPagos= $totalDePagos;
 
+                $totalP1 = 0;
+                $totalP2 = 0;
+                $totalP3 = 0;
+                $totalP4 = 0;
+
                 foreach ($pago as $index => $p) {
+                    $totalP1+= $p->cantidad;
+                    $totalP2+= $p->descuento;
+                    $totalP3+= $p->interes_monto;
+                    $totalP4+= $p->total_a_pagar;
+                    
                     $p->cantidad = number_format((float)$p->cantidad, 2, '.', ',');
                     $p->descuento = number_format((float)$p->descuento, 2, '.', ',');
                     $p->interes_monto = number_format((float)$p->interes_monto, 2, '.', ',');
@@ -1061,9 +1071,22 @@ class ContratoController extends Controller
                     
                     $fecha_pago = new Carbon($p->fecha);
                     $p->fecha = $fecha_pago->formatLocalized('%d/%m/%Y');
+
+                    
                 }
+
+                $totalP1 = number_format((float)$totalP1, 2, '.', ',');
+                $totalP2 = number_format((float)$totalP2, 2, '.', ',');
+                $totalP3 = number_format((float)$totalP3, 2, '.', ',');
+                $totalP4 = number_format((float)$totalP4, 2, '.', ',');
             }
-            $pdf = \PDF::loadview('pdf.contratos.contratoCompraVentaTerreno', ['contratos' => $contratos, 'pago' => $pago]);
+            $pdf = \PDF::loadview('pdf.contratos.contratoCompraVentaTerreno', ['contratos' => $contratos, 'pago' => $pago, 
+                        'totalP1' => $totalP1,
+                        'totalP2' => $totalP2,
+                        'totalP3' => $totalP3,
+                        'totalP4' => $totalP4,
+                        
+            ]);
         }
         return $pdf->stream('ContratoCompraVenta.pdf');
     }
@@ -1179,7 +1202,6 @@ class ContratoController extends Controller
             )
             ->where('inst_seleccionadas.elegido', '=', '1')
             ->where('contratos.id', '=', $id)
-            ->where('inst_seleccionadas.tipo_credito', '=', 'Crédito Directo')
             ->get();
 
         $contratosDom[0]->valor_construccion = $contratosDom[0]->enganche_total - $contratosDom[0]->valor_terreno;

@@ -415,6 +415,18 @@
                 <td>${{$pago->saldo }}</td>
             </tr>
             @endforeach
+            
+        </tbody>
+        <tbody>
+            <tr>
+                <th colspan="2"></th>
+                <th>${{$totalP1 }}</th>
+                <th colspan="3"></th>
+                <th>${{$totalP2 }}</th>
+                <th>${{$totalP3 }}</th>
+                <th>${{$totalP4 }}</th>
+                <th></th>
+            </tr>
         </tbody>
     </table>
 

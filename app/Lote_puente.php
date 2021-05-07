@@ -13,6 +13,7 @@ class Lote_puente extends Model
         'lote_id',
         'modelo_id',
         'precio_p',
+        'precio_c',
         'modeloAnt1',
         'precio1',
         'modeloAnt2',

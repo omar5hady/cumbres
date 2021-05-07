@@ -1809,7 +1809,7 @@
                                                 <template v-if="modelo != 'Terreno'">
                                                     <div style="text-align: right;" v-if="rolId!=2">
                                                         <a class="btn btn-warning btn-sm" v-if="listado==4 && tipo_credito!='Crédito Directo' && btn_actualizar==0" target="_blank" v-bind:href="'/contrato/promesaCredito/pdf/'+id">Imprimir contrato</a>
-                                                        <a class="btn btn-warning btn-sm" v-if="listado==4 && tipo_credito=='Crédito Directo' && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/reservaDeDominio/pdf/'+id">Imprimir contrato</a>
+                                                        <a class="btn btn-warning btn-sm" v-if="listado==4 && tipo_credito=='Crédito Directo' && btn_actualizar==0 || listado==4 && tipo_credito=='Apartado' && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/reservaDeDominio/pdf/'+id">Imprimir contrato</a>
                                                         <a class="btn btn-primary btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+id">Solicitud de contrato de compra venta</a>
                                                         <a class="btn btn-scarlet btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/pagareContrato/pdf/'+id">Imprimir pagares</a>
                                                         <a class="btn btn-dark btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/cartaServicios/pdf/'+id">Carta de servicios</a>
@@ -1819,7 +1819,7 @@
                                                     </div>
                                                     <div style="text-align: right;" v-if="rolId==2 && status == 1">
                                                         <a class="btn btn-warning btn-sm" v-if="listado==4 && tipo_credito!='Crédito Directo' && btn_actualizar==0" target="_blank" v-bind:href="'/contrato/promesaCredito/pdf/'+id">Imprimir contrato</a>
-                                                        <a class="btn btn-warning btn-sm" v-if="listado==4 && tipo_credito=='Crédito Directo' && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/reservaDeDominio/pdf/'+id">Imprimir contrato</a>
+                                                        <a class="btn btn-warning btn-sm" v-if="listado==4 && tipo_credito=='Crédito Directo' && btn_actualizar==0 || listado==4 && tipo_credito=='Apartado' && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/reservaDeDominio/pdf/'+id">Imprimir contrato</a>
                                                         <a class="btn btn-primary btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+id">Solicitud de contrato de compra venta</a>
                                                         <a class="btn btn-scarlet btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/pagareContrato/pdf/'+id">Imprimir pagares</a>
                                                         <a class="btn btn-dark btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/cartaServicios/pdf/'+id">Carta de servicios</a>

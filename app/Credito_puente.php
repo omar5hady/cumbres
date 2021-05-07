@@ -18,6 +18,9 @@ class Credito_puente extends Model
         'cobrado',
         'folio',
         'apertura',
-        'fraccionamiento'
+        'fraccionamiento',
+
+        'credito_otorgado',
+        'num_cuenta'
     ];
 }

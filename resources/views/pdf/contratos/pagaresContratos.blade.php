@@ -34,7 +34,7 @@ body {
 <div style="text-align: justify; margin:60px">
         <div style="text-align: right; margin-bottom: 0em;  margin-top: 0em;">
             @if($cliente[0]->emp_constructora == 'CONCRETANIA' && $cliente[0]->emp_terreno == 'CONCRETANIA')
-                <p style="margin-bottom: 0em;  margin-top: 0em;"> <strong> PAGARE NO. </strong> {{$pagos[$i]->num_pago }}/{{count($pagos)}}</p>
+                <p style="margin-bottom: 0em;  margin-top: 0em;"> <strong> PAGARE NO. </strong> {{$pagos[$i]->num_pago +1 }}/{{count($pagos)}}</p>
             @else
                 <p style="margin-bottom: 0em;  margin-top: 0em;"> <strong> PAGARE NO. </strong> {{$pagos[$i]->num_pago + 1}}/{{count($pagos)}}</p>
             @endif

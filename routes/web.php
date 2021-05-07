@@ -940,6 +940,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::put('/cPuentes/ingresarExpTecnico','CreditoPuenteController@ingresarExpTecnico');
         Route::put('/cPuentes/resBanco','CreditoPuenteController@resBanco');
+        Route::put('/cPuentes/numCuenta','CreditoPuenteController@numCuenta');
 
         Route::get('/cPuentes/indexCreditos','CreditoPuenteController@indexCreditos');
         Route::get('/cPuentes/selectLotes','CreditoPuenteController@selectLotes');
@@ -951,6 +952,10 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/cPuentes/getChkSinSolic','CreditoPuenteController@getChkSinSolic');
 
         Route::get('/cPuentes/getModelosBase','CreditoPuenteController@getModelosBase');
+        Route::get('/cPuentes/getEdoCuenta','CreditoPuenteController@getEdoCuenta');
+
+        Route::get('/cPuentes/tiie','CreditoPuenteController@tiie');
+        Route::get('/cPuentes/calcularInteres','CreditoPuenteController@calcularInteres');
         
     //////////////////// RUTAS BONOS RECOMENDADOS ///////////////////////
         Route::get('/cat_bono/index','CatalogoBonoController@index');

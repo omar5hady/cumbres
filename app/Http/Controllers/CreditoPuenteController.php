@@ -11,9 +11,10 @@ use App\Doc_puente;
 use App\Precio_puente;
 use App\Puente_checklist;
 use App\Cat_documento;
-use DB;
+use App\Pago_puente;
 
 use Carbon\Carbon;
+use DB;
 use Auth;
 
 class CreditoPuenteController extends Controller
@@ -168,6 +169,7 @@ class CreditoPuenteController extends Controller
                     ->join('instituciones_financiamiento', 'creditos_puente.banco','=','instituciones_financiamiento.nombre')
                     ->select('creditos_puente.id','creditos_puente.banco','creditos_puente.folio','creditos_puente.interes',
                                 'creditos_puente.status','creditos_puente.total','creditos_puente.apertura',
+                                'creditos_puente.num_cuenta', 'creditos_puente.credito_otorgado',
                                 'instituciones_financiamiento.lic', 'creditos_puente.fecha_integracion',
                                 'fraccionamientos.nombre as proyecto','creditos_puente.fraccionamiento'    
                     );
@@ -178,8 +180,15 @@ class CreditoPuenteController extends Controller
         if($request->folio != '')
             $creditos = $creditos->where('creditos_puente.folio','=',$request->folio);
 
+        if($request->status != '')
+            $creditos = $creditos->where('creditos_puente.status','=',$request->status);
+
         $creditos = $creditos->orderBy('creditos_puente.status','asc')
                                 ->orderBy('creditos_puente.id','desc')->paginate(10);
+
+        foreach ($creditos as $key => $credito) {
+            $credito->lotes = Lote_puente::where('solicitud_id','=',$credito->id)->count();
+        }
 
         return [
             'pagination' => [
@@ -529,6 +538,22 @@ class CreditoPuenteController extends Controller
             $credito->status = 3;
             $credito->fecha_banco = Carbon::now();
             $credito->motivo_rechazo = $request->comentario;
+            $credito->credito_otorgado = $credito->total*.65;
+
+            $lotes = Lote::select('id')->where('puente_id','=',$request->id)->get();
+            $lotesPuente = Lote_puente::select('id')->where('solicitud_id','=',$request->id)->get();
+
+            foreach ($lotes as $index => $lote) {
+                $l = Lote::findOrFail($lote->id);
+                $l->credito_puente = $credito->folio;
+                $l->save();
+            }
+
+            foreach ($lotesPuente as $index => $lote) {
+                $l = Lote_puente::findOrFail($lote->id);
+                $l->precio_c = $l->precio_P * .65;
+                $l->save();
+            }
 
             $obs->observacion = 'Solicitud aprobada por el banco.';
 
@@ -536,6 +561,88 @@ class CreditoPuenteController extends Controller
             
         $obs->save();
         $credito->save();
+
+    }
+
+    public function numCuenta(Request $request){
+        $numCuenta = $request->numCuenta;
+        $id = $request->id;
+
+        $credito = Credito_puente::findOrFail($id);
+        $credito->num_cuenta = $numCuenta;
+        $credito->save();
+    }
+
+    public function getEdoCuenta(Request $request){
+        $pagos = Pago_puente::where('credito_puente_id','=',$request->id)
+                    ->orderBy('fecha','asc')
+                    ->get();
+
+        $saldo = 0;
+
+        $ultimoAbono = Pago_puente::select('fecha')->where('abono','!=',0)->orderBy('fecha','desc')->first();
+        $ultimoCargo = Pago_puente::select('fecha')->where('cargo','!=',0)->orderBy('fecha','desc')->first();
+       
+        if($ultimoAbono){
+            $fecha = $ultimoAbono->fecha;
+        }elseif($ultimoCargo){
+            $fecha = $ultimoCargo->fecha;
+        }
+        else{
+            $fecha = Carbon::now();
+            $fecha = $fecha->formatLocalized('%Y-%m-%d');
+        }
+
+        foreach ($pagos as $index => $pago) {
+            $pago->saldo = 0;
+            if($index == 0){
+                $saldo = $pago->saldo = $pago->cargo - $pago->abono;
+            }
+            else{
+                $saldo = $pago->saldo = $pagos[$index-1]->saldo + $pago->cargo - $pago->abono;
+            }
+            
+        }
+
+        
+
+
+        return ['pagos'=>$pagos, 'ultimoAbono'=>$fecha, 'saldo'=>$saldo];
+    }
+
+    public function tiie(Request $request){
+        return [$this->getTiie($request->fecha)];
+    }
+
+    public function getTiie($fecha){
+
+        //$fecha = Carbon::now();
+        $fechaCarbon = new Carbon($fecha);
+        $fechaCarbon = $fechaCarbon->formatLocalized('%Y-%m-%d');
+        $token = getenv("BANCO_TOKEN");
+        $query = 'https://www.banxico.org.mx/SieAPIRest/service/v1/series/SF43783/datos/'.$fechaCarbon.'/'.$fechaCarbon.'?token='.$token;
+
+       
+        $datos = json_decode(file_get_contents($query), true);
+
+        return $datos['bmx']['series'][0]['datos'];
+        
+    }
+
+    public function calcularInteres(Request $request){
+        $fechaIni = Carbon::parse($request->fechaIni);
+        $fechaFin = Carbon::parse($request->fechaFin);
+
+        $tiie = round(($request->tiie+$request->interes),5);
+        $tiie = round(($tiie/100),5);
+        $saldo = $request->saldo;
+
+        $diasTransc = $fechaFin->diffInDays($fechaIni);
+
+        $intereses = ($saldo*$tiie)/360;
+        $intereses = round(($intereses * $diasTransc),2);
+
+        return ['interes'=>$intereses,'tiie'=>$tiie, 'dias'=>$diasTransc];
 
     }
 

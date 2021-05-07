@@ -18,7 +18,7 @@
                                 <div class="col-md-8">
                                     <div class="input-group">
                                         <select class="form-control" @keyup.enter="listarAvisos(1)" v-model="buscar" >
-                                            <option value="">Seleccione</option>
+                                            <option value="">Fraccionamiento</option>
                                             <option v-for="proyecto in arrayProyectos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
                                         </select>
                                         <input type="text" class="form-control" v-model="b_folio" @keyup.enter="listarAvisos(1)" placeholder="Folio">
@@ -26,9 +26,15 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <div class="col-md-8">
+                                <div class="col-md-5">
                                     <div class="input-group">
-                                        
+                                        <select class="form-control" @keyup.enter="listarAvisos(1)" v-model="b_status" >
+                                            <option value="0">Creado</option>
+                                            <option value="1">Expediente integrado</option>
+                                            <option value="2">Rechazado</option>
+                                            <option value="3">Aprobado</option>
+                                            <option value="4">Liquidado</option>
+                                        </select>
                                         <button type="submit" @click="listarAvisos(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     </div>
                                 </div>
@@ -413,14 +419,17 @@
                                 <div class="col-md-12">
                                     <h5><strong><center>Modelos</center></strong></h5>
                                 </div>
-                                <div class="col-md-3" v-for="modelo in arrayModelos" :key="modelo.id" v-if="cabecera.status == 0">
-                                    <div class="form-group" v-if="modelo.precio > 0">
-                                        <strong><label>{{modelo.modelo}}</label></strong>
-                                        <div class="form-inline">
-                                            <label>$ {{formatNumber(modelo.precio)}}</label>
+                                <template v-if="cabecera.status == 0">
+                                    <div class="col-md-3" v-for="modelo in arrayModelos" :key="modelo.id">
+                                        <div class="form-group" v-if="modelo.precio > 0">
+                                            <strong><label>{{modelo.modelo}}</label></strong>
+                                            <div class="form-inline">
+                                                <label>$ {{formatNumber(modelo.precio)}}</label>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                </template>
+                                
 
                                 <div class="form-group row">
                                     <div class="col-md-1">
@@ -1118,6 +1127,7 @@
                 offset : 3,
                 buscar : '',
                 b_folio:'',
+                b_status:'',
                 arrayProyectos : [],
                 arrayEtapas : [],
                 arrayManzanas : [],
@@ -1286,7 +1296,7 @@
             /**Metodo para mostrar los registros */
             listarAvisos(page){
                 let me = this;
-                var url = '/cPuentes/indexCreditos?page=' + page + '&fraccionamiento=' + me.buscar + '&folio=' + me.b_folio;
+                var url = '/cPuentes/indexCreditos?page=' + page + '&fraccionamiento=' + me.buscar + '&folio=' + me.b_folio + '&status=' + me.b_status;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayCreditosPuente = respuesta.creditos.data;

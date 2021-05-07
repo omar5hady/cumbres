@@ -19,6 +19,9 @@ class CreateLotesPuenteTable extends Migration
             $table->integer('lote_id');
             $table->integer('modelo_id');
             $table->double('precio_p',10,2);
+
+            $table->double('precio_c',10,2)->default(0);
+
             $table->string('modeloAnt1')->default('N/A');
             $table->double('precio1',10,2)->default(0.00);
             $table->string('modeloAnt2')->default('N/A');
