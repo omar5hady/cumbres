@@ -26,6 +26,11 @@ class CreateLotesPuenteTable extends Migration
             $table->double('precio1',10,2)->default(0.00);
             $table->string('modeloAnt2')->default('N/A');
             $table->double('precio2',10,2)->default(0.00);
+
+            $table->double('saldo',10,2)->default(0);
+            $table->double('abonado',10,2)->default(0);
+            $table->double('cobrado',10,2)->default(0);
+            $table->boolean('liberado')->default(0);
             $table->timestamps();
         });
     }

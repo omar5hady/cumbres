@@ -1076,6 +1076,7 @@ class DepositoController extends Controller
         $criterio = $request->criterio;
         $b_status = $request->b_status;
         $credito = $request->credito;
+        $b_direccion = $request->b_direccion;
 
         $query = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
             ->leftJoin('creditos','contratos.id','=','creditos.id')
@@ -1107,6 +1108,7 @@ class DepositoController extends Controller
                         'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
                         'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
                         'contratos.ext_empresa','contratos.colonia_empresa',
+                        'lotes.calle','lotes.numero',
 
                         DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
                             WHERE pagos_contratos.contrato_id = contratos.id AND 
@@ -1137,6 +1139,9 @@ class DepositoController extends Controller
         if($b_status != '')
             $query = $query
                 ->where('contratos.status','=',$b_status);
+
+        if($b_direccion != '')
+            $query = $query->where(DB::raw("CONCAT(lotes.calle,' ',lotes.numero)"), 'like', '%'. $b_direccion . '%');
                 
 
 
@@ -1228,6 +1233,7 @@ class DepositoController extends Controller
         $criterio = $request->criterio;
         $b_status = $request->b_status;
         $credito = $request->credito;
+        $b_direccion = $request->b_direccion;
 
         $query = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
             ->leftJoin('creditos','contratos.id','=','creditos.id')
@@ -1257,6 +1263,7 @@ class DepositoController extends Controller
                     'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
                     'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
                     'contratos.ext_empresa','contratos.colonia_empresa',
+                    'lotes.calle','lotes.numero',
 
                     DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
                         WHERE pagos_contratos.contrato_id = contratos.id AND 
@@ -1287,6 +1294,9 @@ class DepositoController extends Controller
         if($b_status != '')
             $query = $query
                 ->where('contratos.status','=',$b_status);
+
+        if($b_direccion != '')
+            $query = $query->where(DB::raw("CONCAT(lotes.calle,' ',lotes.numero)"), 'like', '%'. $b_direccion . '%');
                 
         switch($criterio){
             case 'c.nombre':{

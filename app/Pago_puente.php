@@ -12,6 +12,10 @@ class Pago_puente extends Model
         'credito_puente_id', 'fecha',
         'concepto', 'abono', 'cargo',
         'comisiones', 'honorarios',
-        'deposito_id', 'porc_interes'
+        'deposito_id', 'porc_interes',
+        'fecha_interes', 'monto_interes',
+
+        'tipo','saldo'
+
     ];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
 }

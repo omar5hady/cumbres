@@ -232,7 +232,7 @@ class CalculadoraLotesController extends Controller
                 'cotizacion_lotes.id', 'cotizacion_lotes.cliente_id', 'cotizacion_lotes.lotes_id',
                 'cotizacion_lotes.valor_venta', 'cotizacion_lotes.valor_descuento',
                 'cotizacion_lotes.created_at', 'cotizacion_lotes.updated_at', 'cotizacion_lotes.fecha',
-                'cotizacion_lotes.mensualidades',
+                'cotizacion_lotes.mensualidades','cotizacion_lotes.interes',
 
                 'personal.apellidos', 'personal.nombre', 
                 
@@ -317,6 +317,7 @@ class CalculadoraLotesController extends Controller
                 'cotizacion_lotes.valor_venta', 'cotizacion_lotes.valor_descuento',
                 'cotizacion_lotes.created_at', 'cotizacion_lotes.fecha',
                 'cotizacion_lotes.mensualidades', 'cotizacion_lotes.estatus',
+                'cotizacion_lotes.interes',
 
                 'contratos.id as folio', 'contratos.status as contratoStatus',
 

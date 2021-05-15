@@ -91,19 +91,9 @@ body{
                 <td>Valor de Venta: ${{$cotizacion->valor_venta}}</td>
                 <td>Mensualidades: {{round($cotizacion->mensualidades)}}</td>
                 <td>
-                    @if($cotizacion->mensualidades <= 1)
-                        0% de Interes de tasa anual
-                    @elseif($cotizacion->mensualidades == 6)
-                        0% de Interes de tasa anual
-                    @elseif($cotizacion->mensualidades == 12)
-                        12% de Interes de tasa anual
-                    @elseif($cotizacion->mensualidades == 24)
-                        16% de Interes de tasa anual
-                    @elseif($cotizacion->mensualidades == 36)
-                        18% de Interes de tasa anual
-                    @elseif($cotizacion->mensualidades == 48)
-                        20% de Interes de tasa anual
-                    @endif
+                   
+                        {{$cotizacion->interes}}% de Interes de tasa anual
+                    
                 </td>
             </tr>
         </tbody>

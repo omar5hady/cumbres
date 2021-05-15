@@ -17,6 +17,11 @@ class Lote_puente extends Model
         'modeloAnt1',
         'precio1',
         'modeloAnt2',
-        'precio2'
+        'precio2',
+
+        'saldo',
+        'abonado',
+        'cobrado',
+        'liberado'
     ];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
 }

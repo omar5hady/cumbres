@@ -17,6 +17,7 @@ class CreatePagosPuentesTable extends Migration
             $table->increments('id');
             $table->integer('credito_puente_id');
             $table->date('fecha');
+            $table->boolean('tipo')->default(0);
             $table->string('concepto');
             $table->double('abono')->default(0);
             $table->double('cargo')->default(0);
@@ -24,6 +25,12 @@ class CreatePagosPuentesTable extends Migration
             $table->double('honorarios')->default(0);
             $table->integer('deposito_id')->nullable();
             $table->float('porc_interes')->default(0);
+            $table->date('fecha_interes')->nullable();
+            $table->date('monto_interes')->default(0);
+
+            $table->double('saldo')->default(0);
+            // $table->integer('mes')->default(0);
+            // $table->double('anio')->default(0);
             $table->timestamps();
         });
     }

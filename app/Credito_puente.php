@@ -19,6 +19,7 @@ class Credito_puente extends Model
         'folio',
         'apertura',
         'fraccionamiento',
+        'fecha_sig_int',
 
         'credito_otorgado',
         'num_cuenta'

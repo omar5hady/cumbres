@@ -77,7 +77,15 @@
                         </div>
 
                         <div class="form-group row">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <input type="text" v-model="b_direccion" class="form-control" placeholder="Direccion oficial">
+                                </div>    
+                            </div>
 
+                        </div>
+
+                        <div class="form-group row">
                             <div class="col-md-6">
                                 <div class="input-group">
                                     <select class="form-control col-md-4" v-model="b_status">
@@ -439,6 +447,7 @@
                 edocivil_cliente: '',
                 depeconomicos_cliente: 0,
                 contador:0,
+                b_direccion:'',
 
                 modal: 0,
                 tituloModal: '',
@@ -502,7 +511,7 @@
                 let me = this;
                 var url = '/estadoCuenta/index?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&b_manzana=' + b_manzana + 
                     '&b_lote=' + b_lote + '&b_status=' + me.b_status + '&criterio=' + criterio + '&credito=' + this.b_credito
-                    +'&b_empresa='+this.b_empresa;
+                    + '&b_direccion=' + this.b_direccion+'&b_empresa='+this.b_empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayContratos = respuesta.contratos.data;
