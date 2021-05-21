@@ -268,7 +268,7 @@
                                     <a class="nav-link" href="#"><i class="fa fa-archive"></i> Créditos Puente</a>
                                 </li>
                                 <li @click="menu=259" class="nav-item">
-                                    <a class="nav-link" href="#"><i class="fa fa-archive"></i> Estado de Cuenta</a>
+                                    <a class="nav-link" href="#"><i class="fa fa-archive"></i> Estado de Cuenta - BANCREA</a>
                                 </li>
                             </ul>
                         </li>

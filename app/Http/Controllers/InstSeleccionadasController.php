@@ -14,6 +14,8 @@ use App\Credito;
 use App\Dev_credito;
 use Auth;
 use App\Pago_contrato;
+use App\Lote_puente;
+use App\Pago_puente;
 use App\Expediente;
 use App\User;
 use App\Notifications\NotifyAdmin;
@@ -37,15 +39,18 @@ class InstSeleccionadasController extends Controller
             ->join('contratos','contratos.id','=','creditos.id')
             ->join('lotes','lotes.id','=','creditos.lote_id')
             ->join('personal','personal.id','=','creditos.prospecto_id')
+            ->leftJoin('lotes_puente','lotes.id','=','lotes_puente.lote_id')
             ->select('contratos.id as folio', 'lotes.credito_puente',
                     'creditos.fraccionamiento as proyecto',
                     'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
                     'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
                     'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                    'lotes.puente_id',
                     'lotes.fecha_termino_ventas', 'lotes.emp_constructora', 'lotes.emp_terreno',
+                    'lotes_puente.saldo as saldoPuente','lotes_puente.abonado as abonadoPuente',
+                    'lotes_puente.cobrado as cobradoPuente', 'lotes_puente.liberado', 'lotes_puente.precio_c',
                     'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
             ->where('lotes.firmado','=',$request->firmado);
-
         
             if($buscar == '' && $criterio != 'personal.nombre'){
                 $creditos = $query;
@@ -185,13 +190,10 @@ class InstSeleccionadasController extends Controller
     
                 }
             }
-        
-       
 
         $creditos = $creditos->orderBy('inst_seleccionadas.cobrado','asc')
                             ->orderBy('inst_seleccionadas.monto_credito','desc')
                             ->paginate(10);  
-
 
         if(sizeof($creditos)){
             foreach($creditos as $et=>$contrato){
@@ -256,8 +258,7 @@ class InstSeleccionadasController extends Controller
                 'dep_creditos.cant_depo', 'dep_creditos.banco', 'dep_creditos.fecha_deposito',
                 'lotes.credito_puente'
             );
-
-        
+  
         if($fecha1 != '' && $fecha2 != ''){
             if($banco == ''){
                 $depositos = $query
@@ -277,14 +278,11 @@ class InstSeleccionadasController extends Controller
                 $depositos = $query
                         ->where('dep_creditos.banco','=',$banco);
             }
-            
         }
 
         if($request->bMonto != "") $depositos = $depositos->where('dep_creditos.cant_depo','=',$request->bMonto);
-
         $depositos = $depositos->orderBy('dep_creditos.fecha_deposito','desc')->paginate(10);
         
-
         return [
             'pagination' => [
                 'total'         => $depositos->total(),
@@ -435,6 +433,19 @@ class InstSeleccionadasController extends Controller
             $credito->save();
 
             $deposito->save();
+
+            /// Aqui se verifica si el deposito va a dirigido a un credito Puente
+            if( $request->puente_id != '' && str_contains($request->banco, 'CREDITO PUENTE') ){
+                $pagoPuente = new Pago_puente();
+                $pagoPuente->credito_puente_id = $request->puente_id;
+                $pagoPuente->concepto = 'Pago Hipoteca M.'.$credit->manzana. ' L.'.$credit->num_lote;
+                $pagoPuente->fecha = $request->fecha_deposito;
+                $pagoPuente->abono = $request->cant_depo;
+                $pagoPuente->tipo = 1;
+                $pagoPuente->deposito_id = $deposito->id;
+                $pagoPuente->pendiente = 1;
+                $pagoPuente->save();
+            }
 
             $toAlert = [24706];
             $msj = 'Se ha realizado un nuevo abono a crédito';
@@ -764,9 +775,9 @@ class InstSeleccionadasController extends Controller
                     'inst_seleccionadas.id as inst_sel_id', 'contratos.saldo',
                     'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
                     'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
-        )
-        ->where('contratos.saldo','<',0)
-        ->where('inst_seleccionadas.elegido', '=', 1);
+            )
+            ->where('contratos.saldo','<',0)
+            ->where('inst_seleccionadas.elegido', '=', 1);
         
             switch($criterio){
                 case 'creditos.id':{

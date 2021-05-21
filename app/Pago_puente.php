@@ -14,8 +14,7 @@ class Pago_puente extends Model
         'comisiones', 'honorarios',
         'deposito_id', 'porc_interes',
         'fecha_interes', 'monto_interes',
-
-        'tipo','saldo'
+        'pendiente','tipo','saldo'
 
     ];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
 }

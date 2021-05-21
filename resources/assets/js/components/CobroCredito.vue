@@ -336,12 +336,28 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Saldo Pendiente</label>
-                                    <div class="col-md-4">
+                                <div class="form-group row line-separator"></div>
+
+                                <div class="form-group row" v-if="puente_id == ''">
+                                    <div class="col-md-3"></div>
+                                    <h6 class="col-md-3 form-control-label" for="text-input">Saldo Pendiente</h6>
+                                    <div class="col-md-3">
                                         <h6 v-text="'$'+formatNumber(saldo)"></h6>
                                     </div>
                                 </div>
+
+                                <div class="form-group row" v-else>
+                                    <h6 class="col-md-3 form-control-label" for="text-input">Saldo Pendiente</h6>
+                                    <div class="col-md-3">
+                                        <h6 v-text="'$'+formatNumber(saldo)"></h6>
+                                    </div>
+                                    <h6 class="col-md-3 form-control-label" for="text-input">Saldo Crédito Puente</h6>
+                                    <div class="col-md-3">
+                                        <h6 v-text="'$'+formatNumber(saldoPuente)"></h6>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row line-separator"></div>
                                 
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Fecha deposito</label>
@@ -481,6 +497,14 @@
                 disabled:0,
                 empresas:[],
                 b_empresa:'',
+
+                //Var para Credito puente
+                saldoPuente : 0,
+                abonadoPuente : 0,
+                precio_c : 0,
+                cobradoPuente : 0,
+                puente_id : '',
+
 
                 cliente:'',
                 proyecto:'',
@@ -759,6 +783,7 @@
                     'cant_depo':this.cant_depo,
                     'banco':this.banco,
                     'fecha_deposito':this.fecha_deposito,
+                    'puente_id':this.puente_id,
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal                    
@@ -901,6 +926,22 @@
                 this.saldo=data['monto_credito'] - data['cobrado'];
                 this.banco='';
                 this.inst_sel_id = data['inst_sel_id'];
+
+                if(data['puente_id'] != null){
+                    this.saldoPuente = data['saldoPuente'];
+                    this.abonadoPuente = data['abonadoPuente'];
+                    this.precio_c = data['precio_c'];
+                    this.cobradoPuente = data['cobradoPuente'];
+                    this.puente_id = data['puente_id'];
+                }
+                else{
+                    this.saldoPuente = 0;
+                    this.abonadoPuente = 0;
+                    this.precio_c = 0;
+                    this.cobradoPuente = 0;
+                    this.puente_id = '';
+                }
+                
 
                 this.listarDepositos();
 
@@ -1052,6 +1093,11 @@
         background-color: #3c29297a !important;
          overflow-y: auto;
         
+    }
+    .line-separator{
+        height:1px;
+        background:#717171;
+        border-bottom:1px solid #c2cfd6;
     }
     .table2 {
     margin: auto;

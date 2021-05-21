@@ -1296,6 +1296,7 @@
                                                     <th>Manzana</th>
                                                     <th>Lote</th>
                                                     <th>Cliente</th>
+                                                    <th>Fecha de venta</th>
                                                     <th>Fecha de cancelación</th>
                                                     <th>$ Anticipo</th>
                                                     <th>Bono</th>
@@ -1309,6 +1310,7 @@
                                                     <td class="td2" v-text="anticipo.manzana"></td>
                                                     <td v-text="anticipo.num_lote"></td>
                                                     <td class="td2" v-text="anticipo.nombre_cliente"></td>
+                                                    <td v-text="anticipo.fecha"></td>
                                                     <td v-text="anticipo.fecha_status"></td>
                                                     <td v-text="'$'+formatNumber(anticipo.este_pago)"></td>
                                                     <td v-text="'$'+formatNumber(anticipo.bono)"></td>

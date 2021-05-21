@@ -218,6 +218,9 @@ class CreditoPuenteController extends Controller
         if ($request->status != '')
             $creditos = $creditos->where('creditos_puente.status', '=', $request->status);
 
+        if($request->banco != '')
+            $creditos = $creditos->where('creditos_puente.banco', '=', $request->banco);
+
         $creditos = $creditos->orderBy('creditos_puente.status', 'asc')
             ->orderBy('creditos_puente.id', 'desc')->paginate(10);
 
@@ -632,6 +635,7 @@ class CreditoPuenteController extends Controller
             foreach ($lotesPuente as $index => $lote) {
                 $l = Lote_puente::findOrFail($lote->id);
                 $l->precio_c = $l->precio_P * .65;
+                $l->saldo = $l->precio_P * .65;
                 $l->save();
             }
 
@@ -655,8 +659,14 @@ class CreditoPuenteController extends Controller
     public function getEdoCuenta(Request $request)
     {
         $pagos = Pago_puente::where('credito_puente_id', '=', $request->id)
+            ->where('pendiente','=',0)
             ->orderBy('fecha', 'asc')
             ->get();
+
+        $depCreditos = Pago_puente::where('credito_puente_id', '=', $request->id)
+        ->where('pendiente','=',1)
+        ->orderBy('fecha', 'asc')
+        ->get();
 
         $saldo = 0;
 
@@ -681,10 +691,9 @@ class CreditoPuenteController extends Controller
             }
         }
 
-
-
-
-        return ['pagos' => $pagos, 'ultimoAbono' => $fecha, 'saldo' => $saldo];
+        return ['pagos' => $pagos, 'ultimoAbono' => $fecha, 
+                'saldo' => $saldo, 'depCreditos' => $depCreditos
+            ];
     }
 
     public function tiie(Request $request)
@@ -694,13 +703,11 @@ class CreditoPuenteController extends Controller
 
     public function getTiie($fecha)
     {
-
         //$fecha = Carbon::now();
         $fechaCarbon = new Carbon($fecha);
         $fechaCarbon = $fechaCarbon->formatLocalized('%Y-%m-%d');
         $token = getenv("BANCO_TOKEN");
         $query = 'https://www.banxico.org.mx/SieAPIRest/service/v1/series/SF43783/datos/' . $fechaCarbon . '/' . $fechaCarbon . '?token=' . $token;
-
 
         $datos = json_decode(file_get_contents($query), true);
 
@@ -724,6 +731,7 @@ class CreditoPuenteController extends Controller
         return ['interes' => $intereses, 'tiie' => $tiie, 'dias' => $diasTransc];
     }
 
+    /// Calcular intereses correspondientes a un abono en crédito BANCREA /////////
     public function calcularInteresPagos(Request $request){
         $cargos = Pago_puente::select('id','fecha_interes','saldo','porc_interes')
                 ->where('tipo', '=', 0)
@@ -745,7 +753,78 @@ class CreditoPuenteController extends Controller
 
         return ['interes'=>$interes];
     }
+    /// Calcular intereses en crédito BANCREA ////////
+    public function getInteresePeriodo(Request $request){
+        $cargos = Pago_puente::select('id','concepto','fecha_interes','saldo','porc_interes as tasa')
+                ->where('tipo', '=', 0)
+                ->where('saldo','>',0)
+                ->where('credito_puente_id', '=', $request->id)
+                ->get();
 
+        $fechaFin = Carbon::parse($request->fecha_sig_int);
+        $intereses = 0;
+
+        foreach ($cargos as $key => $cargo) {
+            $fechaIni = Carbon::parse($cargo->fecha_interes);
+            $cargo->interes = 0;
+        
+            $tiie = round(($cargo->tasa / 100), 5);
+            $cargo->diasTransc = $fechaFin->diffInDays($fechaIni);
+            $cargo->interes = ($cargo->saldo * $tiie) / 360;
+            $cargo->interes = round(($cargo->interes * $cargo->diasTransc), 2);
+
+            $intereses += $cargo->interes;
+        }
+
+        return ['interes'=>$intereses, 'cargos'=>$cargos];
+    }
+    /// Función para registrar el pago de intereses en crédito BANCREA ////////
+    public function storeIntereses(Request $request)
+    {
+        if (!$request->ajax() || Auth::user()->rol_id == 11) return redirect('/');
+        $cargos = $request->datos;
+
+        try {
+            DB::beginTransaction();
+            // SE REGISTRA EL MOVIMIENTO EN LA BASE DE PAGOS
+            $pago = new Pago_puente();
+            $pago->credito_puente_id = $request->id;
+            $pago->fecha = $request->fecha;
+            $pago->concepto = $request->concepto;
+            $pago->tipo = $request->tipo;
+            $pago->saldo = 0;
+            $pago->porc_interes = $request->interes + $request->tiie;
+            $pago->fecha_interes = $request->fecha;
+            $pago->monto_interes = $request->cantidad;
+            $pago->save();
+
+            //ACCIONES AL CREDITO BANCARIO GENERAL
+            $credito = Credito_puente::findOrFail($request->id);
+            $fecha = new Carbon($request->fecha);
+            $fecha = $fecha->addMonths(1);
+            $band = true;
+            while ($band == true) {
+                if ($fecha->isWeekend())
+                    $fecha = $fecha->addDays(1);
+                else
+                    $band = false;
+            }
+            $credito->fecha_sig_int = $fecha->format('Y-m-j');
+            $credito->save();
+
+            foreach ($cargos as $key => $cargo) {
+                $pago = Pago_puente::findOrFail($cargo['id']);
+                $pago->fecha_interes = $request->fecha;
+                $pago->porc_interes = $pago->porc_interes;
+                $pago->save();
+            }
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+        }
+    }
+    /// Función para guardar cargos en crédito BANCREA ////////
     public function storeCargo(Request $request)
     {
         if (!$request->ajax() || Auth::user()->rol_id == 11) return redirect('/');
@@ -773,6 +852,7 @@ class CreditoPuenteController extends Controller
 
             //VERIFICO SI ES EL PRIMER CARGO
             $conteo =  Pago_puente::select('id')
+                ->where('tipo','=',0)
                 ->where('credito_puente_id', '=', $request->id)
                 ->count();
 
@@ -805,7 +885,7 @@ class CreditoPuenteController extends Controller
             DB::rollBack();
         }
     }
-
+    /// Función para guardar abonos en crédito BANCREA ////////
     public function storeAbono(Request $request)
     {
         // SE REGISTRA EL MOVIMIENTO EN LA BASE DE PAGOS
