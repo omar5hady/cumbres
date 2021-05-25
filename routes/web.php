@@ -960,6 +960,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/cPuentes/storeCargo','CreditoPuenteController@storeCargo');
         Route::post('/cPuentes/storeAbono','CreditoPuenteController@storeAbono');
         Route::post('/cPuentes/storeIntereses','CreditoPuenteController@storeIntereses');
+        Route::put('/cPuentes/storePago','CreditoPuenteController@storePago');
         Route::get('/cPuentes/interesCargos','CreditoPuenteController@calcularInteresPagos');
         Route::get('/cPuentes/getInteresePeriodo','CreditoPuenteController@getInteresePeriodo');
         

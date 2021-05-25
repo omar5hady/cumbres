@@ -92,7 +92,7 @@ class CreditoPuenteController extends Controller
         if ($request->emp_constructora != '')
             $lotes = $lotes->where('lotes.emp_constructora', '=', $request->emp_constructora);
 
-        $lotes = $lotes->paginate(30);
+        $lotes = $lotes->paginate(40);
 
         return $lotes;
     }
@@ -282,6 +282,11 @@ class CreditoPuenteController extends Controller
                 'lotes_puente.modeloAnt2',
                 'lotes_puente.precio1',
                 'lotes_puente.precio2',
+                'lotes_puente.precio_c',
+                'lotes_puente.saldo',
+                'lotes_puente.abonado',
+                'lotes_puente.cobrado',
+                'lotes_puente.liberado',
                 'lotes.num_lote',
                 'lotes.manzana',
                 'lotes_puente.lote_id',
@@ -663,9 +668,14 @@ class CreditoPuenteController extends Controller
             ->orderBy('fecha', 'asc')
             ->get();
 
-        $depCreditos = Pago_puente::where('credito_puente_id', '=', $request->id)
-        ->where('pendiente','=',1)
-        ->orderBy('fecha', 'asc')
+        $depCreditos = Pago_puente::join('dep_creditos','pagos_puentes.deposito_id','=','dep_creditos.id')
+        ->join('inst_seleccionadas','dep_creditos.inst_sel_id','=','inst_seleccionadas.id')
+        ->join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
+        ->join('lotes_puente','creditos.lote_id','=','lotes_puente.lote_id')
+        ->select('pagos_puentes.*','lotes_puente.id as lotePuenteId')
+        ->where('pagos_puentes.credito_puente_id', '=', $request->id)
+        ->where('pagos_puentes.pendiente','=',1)
+        ->orderBy('pagos_puentes.fecha', 'asc')
         ->get();
 
         $saldo = 0;
@@ -909,6 +919,16 @@ class CreditoPuenteController extends Controller
         ->orderBy('fecha','asc')
         ->get();
 
+        if($request->pagoLote == 1){
+            $lote = Lote_puente::findOrFail($request->lotePuenteId);
+            $lote->saldo -= $pago->abono;
+            $lote->abonado += $pago->abono;
+            if($lote->saldo == 0){
+                $lote->liberado = 1;
+            }
+            $lote->save();
+        }
+
         // Se le abona el monto a los cargos pendientes
         foreach ($cargos as $key => $c) {
             //if($auxPago == 0) break;
@@ -923,6 +943,58 @@ class CreditoPuenteController extends Controller
                 $cargo->saldo = 0;
             }
             $cargo->save();
+        }
+    }
+
+    /// Función para guardar abonos en crédito BANCREA ////////
+    public function storePago(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            // SE REGISTRA EL MOVIMIENTO EN LA BASE DE PAGOS
+            $pago = Pago_puente::findOrFail($request->pagoId);
+            $pago->credito_puente_id = $request->id;
+            $pago->fecha = $request->fecha;
+            $pago->monto_interes = $request->interes;
+            $pago->pendiente = 0;
+            $pago->save();
+
+            $auxPago = $pago->abono;
+
+            // OBTENGO TODOS LOS CARGOS CON SALDO PENDIENTE AL MOMENTO
+            $cargos = Pago_puente::select('id','saldo')
+            ->where('saldo', '>', '0')
+            ->where('credito_puente_id', '=', $request->id)
+            ->where('fecha','<=',$request->fecha)
+            ->orderBy('fecha','asc')
+            ->get();
+
+            $lote = Lote_puente::findOrFail($request->lotePuenteId);
+            $lote->saldo -= $pago->abono;
+            $lote->abonado += $pago->abono;
+            if($lote->saldo == 0){
+                $lote->liberado = 1;
+            }
+            $lote->save();
+
+            // Se le abona el monto a los cargos pendientes
+            foreach ($cargos as $key => $c) {
+                //if($auxPago == 0) break;
+                $cargo = Pago_puente::findOrFail($c->id);
+                $cargo->fecha_interes = $request->fecha;
+                if($cargo->saldo > $auxPago){
+                    $cargo->saldo -= $auxPago;
+                    $auxPago = 0;
+                }
+                else{
+                    $auxPago -= $cargo->saldo;
+                    $cargo->saldo = 0;
+                }
+                $cargo->save();
+            }
+        DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
         }
     }
 }
