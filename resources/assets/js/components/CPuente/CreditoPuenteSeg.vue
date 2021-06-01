@@ -195,8 +195,25 @@
                                         <strong><label>{{modelo.modelo}}</label></strong>
                                         <div class="form-inline">
                                             <input :disabled="cabecera.status > 0" class="form-control" type="text" pattern="\d*"
-                                                @keyup.enter="actualizarModelo(modelo.id,$event.target.value)" :id="modelo.id" 
+                                                @keyup.enter="actualizarModelo(modelo.id,$event.target.value,'precio')" :id="modelo.id" 
                                                 :value="modelo.precio|currency" step="1"  v-on:keypress="isNumber($event)"
+                                            >
+                                        </div>
+                                    </div>
+                                </div> 
+                            </div>
+                             <div class="form-group row border" v-if="cabecera.status == 3">
+                                <div class="col-md-12">
+                                    <h5><strong><center>Costo de liberacion</center></strong></h5>
+                                </div>
+
+                                <div class="col-md-3" v-for="modelo in arrayModelos" :key="modelo.id">
+                                    <div class="form-group" v-if="modelo.precio > 0">
+                                        <strong><label>{{modelo.modelo}}</label></strong>
+                                        <div class="form-inline"  >
+                                            <input class="form-control" type="text" pattern="\d*"
+                                                @keyup.enter="actualizarModelo(modelo.id,$event.target.value,'liberacion')" :id="modelo.id" 
+                                                :value="modelo.precio_c|currency" step="1"  v-on:keypress="isNumber($event)"
                                             >
                                         </div>
                                     </div>
@@ -1419,24 +1436,42 @@
                                 })()
 
                             else{
-
-                                axios.put('/cPuentes/resBanco',{
+                                (async function getFruit () {
+                                    const {value: monto_aprob} = await Swal({
+                                    title: 'Crédito Otorgado',
+                                    input: 'text',
+                                    inputPlaceholder: 'Escribe el monto de crédito aprobado',
+                                    showCancelButton: true,
+                                    inputValidator: (value) => {
+                                        return new Promise((resolve) => {
+                                        if (value != '') {
+                                            resolve()
+                                        } else {
+                                            resolve('Es necesario escribir el monto)')
+                                        }
+                                        })
+                                    }
+                                    })
+                                    if (monto_aprob) {
+                                        axios.put('/cPuentes/resBanco',{
                                             'id' : me.id,
                                             'resultado': resultado,
+                                            'monto_aprob': monto_aprob
                                             
                                         }).then(function (response){
                                             me.ocultarDetalle();
                                             swal({
                                                 position: 'top-end',
                                                 type: 'success',
-                                                title: 'Crédito aprobado correctamente',
+                                                title: 'Cambios guardados correctamente',
                                                 showConfirmButton: false,
                                                 timer: 1500
                                                 })
                                         }).catch(function (error){
                                             console.log(error);
                                         });
-
+                                    }
+                                })()
                             }
 
                     }})
@@ -1830,12 +1865,13 @@
                 })
 
             },
-            actualizarModelo(modelo_id,precio){
+            actualizarModelo(modelo_id,precio,tipo){
                 let me = this;
 
                 axios.put('/cPuentes/actualizarPrecio',{
                     'precio': precio,
                     'id': modelo_id,
+                    'tipo':tipo
                    
                 }).then(function (response){
                     //Obtener detalle

@@ -73,16 +73,17 @@
                                     <table v-if="cont1 != 0" class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr v-if="activo == 1">
-                                                <th colspan="8" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
+                                                <th colspan="9" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
                                                 <th colspan="2" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
                                                 <th colspan="11" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
                                             </tr>
                                             <tr v-else></tr>
-                                                <th colspan="21" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
+                                                <th colspan="22" class="text-center"> Ventas en el periodo ({{cont1}}) </th>
                                             <tr @dblclick="cambiar()" >
                                                 <th>Fraccionamiento</th>
                                                 <th>Etapa</th>
                                                 <th>Manzana</th>
+                                                <th>Modelo</th>
                                                 <th>Lote</th>
                                                 <th>% Avance</th>
                                                 <th>Cliente</th>
@@ -115,6 +116,7 @@
                                                 <td class="td2" v-text="lote.proyecto"></td>
                                                 <td class="td2" v-text="lote.num_etapa"></td>
                                                 <td class="td2" v-text="lote.manzana"></td>
+                                                <td class="td2" v-text="lote.modelo"></td>
                                                 <td class="td2" v-text="lote.num_lote"></td>
                                                 <td class="td2" v-text="lote.avance_lote + ' %'"></td>
                                                 <td class="td2" v-text="lote.nombre.toUpperCase() + ' ' + lote.apellidos.toUpperCase()"></td>
@@ -213,12 +215,13 @@
                                     <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
-                                                <th colspan="15" class="text-center"> Cancelaciones en el periodo ({{cont2}}) </th>
+                                                <th colspan="16" class="text-center"> Cancelaciones en el periodo ({{cont2}}) </th>
                                             </tr>
                                             <tr>
                                                 <th>Fraccionamiento</th>
                                                 <th>Etapa</th>
                                                 <th>Manzana</th>
+                                                <th>Modelo</th>
                                                 <th>Lote</th>
                                                 <th>Cliente</th>
                                                 <th>Fecha de cancelación</th>
@@ -245,6 +248,7 @@
                                                 <td class="td2" v-text="cancelacion.proyecto"></td>
                                                 <td class="td2" v-text="cancelacion.num_etapa"></td>
                                                 <td class="td2" v-text="cancelacion.manzana"></td>
+                                                <td class="td2" v-text="cancelacion.modelo"></td>
                                                 <td class="td2" v-text="cancelacion.num_lote"></td>
                                                 <td class="td2" v-text="cancelacion.nombre.toUpperCase() + ' ' + cancelacion.apellidos.toUpperCase()"></td>
                                                 <td class="td2" v-text="cancelacion.fecha_status"></td>

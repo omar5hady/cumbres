@@ -258,7 +258,7 @@ class CreditoPuenteController extends Controller
     {
         $modelos = Precio_puente::join('creditos_puente', 'precios_puente.solicitud_id', '=', 'creditos_puente.id')
             ->join('modelos', 'precios_puente.modelo_id', '=', 'modelos.id')
-            ->select('precios_puente.id', 'precios_puente.precio', 'precios_puente.modelo_id', 'modelos.nombre as modelo')
+            ->select('precios_puente.id', 'precios_puente.precio', 'precios_puente.modelo_id', 'modelos.nombre as modelo','precios_puente.precio_c')
             ->where('creditos_puente.id', '=', $request->id)
             ->orderBy('precios_puente.precio', 'desc')
             ->orderBy('modelos.nombre', 'asc')
@@ -425,23 +425,37 @@ class CreditoPuenteController extends Controller
         if (!$request->ajax() || Auth::user()->rol_id == 11) return redirect('/');
         try {
             DB::beginTransaction();
-
             $precio = Precio_puente::findOrFail($request->id);
-            $precio->precio = $request->precio;
-            $precio->save();
 
             $lotes = Lote_puente::select('id')
                 ->where('modelo_id', '=', $precio->modelo_id)
                 ->where('solicitud_id', '=', $precio->solicitud_id)
                 ->get();
 
-            if (sizeof($lotes))
-                foreach ($lotes as $index => $l) {
-                    $lote = Lote_puente::findOrFail($l->id);
-                    $lote->precio_p = $precio->precio;
-                    $lote->save();
-                }
+            if($request->tipo == 'precio'){
+                $precio->precio = $request->precio;
+                $precio->save();
 
+                if (sizeof($lotes))
+                    foreach ($lotes as $index => $l) {
+                        $lote = Lote_puente::findOrFail($l->id);
+                        $lote->precio_p = $precio->precio;
+                        $lote->save();
+                    }
+            }
+            else{
+                $precio->precio_c = $request->precio;
+                $precio->save();
+
+                if (sizeof($lotes))
+                    foreach ($lotes as $index => $l) {
+                        $lote = Lote_puente::findOrFail($l->id);
+                        $lote->precio_c = $precio->precio_c;
+                        $lote->saldo = $precio->precio_c - $lote->abonado;
+                        $lote->save();
+                    }
+
+            }
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
@@ -626,7 +640,7 @@ class CreditoPuenteController extends Controller
             $credito->status = 3;
             $credito->fecha_banco = Carbon::now();
             $credito->motivo_rechazo = $request->comentario;
-            $credito->credito_otorgado = $credito->total * .65;
+            $credito->credito_otorgado = $request->monto_aprob;
 
             $lotes = Lote::select('id')->where('puente_id', '=', $request->id)->get();
             $lotesPuente = Lote_puente::select('id')->where('solicitud_id', '=', $request->id)->get();

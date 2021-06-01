@@ -18,6 +18,7 @@ class CreatePreciosPuenteTable extends Migration
             $table->integer('solicitud_id');
             $table->integer('modelo_id'); 
             $table->double('precio')->default(0);
+            $table->double('precio_c')->default(0);
             $table->timestamps();
         });
     }

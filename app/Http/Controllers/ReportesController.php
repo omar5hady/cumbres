@@ -1181,11 +1181,13 @@ class ReportesController extends Controller
                         ->join('inst_seleccionadas as ins', 'creditos.id', '=', 'ins.credito_id')
                         ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                         ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('modelos','lotes.modelo_id','=','modelos.id')
                         ->join('personal as p','creditos.prospecto_id','=','p.id')
                         ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
                         ->join('etapas as et','lotes.etapa_id','=','et.id')
                         ->select('lotes.manzana','lotes.num_lote','f.nombre as proyecto','et.num_etapa','p.nombre', 'p.apellidos',
                                 'lotes.emp_constructora','creditos.valor_terreno', 'lotes.emp_terreno',
+                                'modelos.nombre as modelo',
                                 'creditos.descripcion_promocion','creditos.descripcion_paquete', 'lotes.firmado',
                                 'creditos.costo_descuento', 'creditos.descuento_terreno', 'creditos.costo_alarma',
                                 'creditos.costo_cuota_mant', 'creditos.costo_protecciones','contratos.id',
@@ -1232,13 +1234,14 @@ class ReportesController extends Controller
                         ->join('inst_seleccionadas as ins', 'creditos.id', '=', 'ins.credito_id')
                         ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                         ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('modelos','lotes.modelo_id','=','modelos.id')
                         ->join('personal as p','creditos.prospecto_id','=','p.id')
                         ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
                         ->join('etapas as et','lotes.etapa_id','=','et.id')
                         ->select('lotes.manzana','lotes.num_lote','f.nombre as proyecto','et.num_etapa','p.nombre', 'p.apellidos',
                                 'lotes.emp_constructora','creditos.valor_terreno', 'lotes.emp_terreno',
                                 'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta',
-                                'contratos.avance_lote',
+                                'contratos.avance_lote', 'modelos.nombre as modelo',
                                 'medios_publicitarios.nombre as publicidad', 'contratos.publicidad_id',
                                 'creditos.descripcion_promocion','creditos.descripcion_paquete','contratos.motivo_cancel',
                                 'contratos.fecha_status')
@@ -1275,6 +1278,7 @@ class ReportesController extends Controller
                         ->join('inst_seleccionadas as ins', 'creditos.id', '=', 'ins.credito_id')
                         ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                         ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('modelos','lotes.modelo_id','=','modelos.id')
                         ->join('personal as p','creditos.prospecto_id','=','p.id')
                         ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
                         ->join('etapas as et','lotes.etapa_id','=','et.id')
@@ -1283,7 +1287,7 @@ class ReportesController extends Controller
                                 'creditos.descripcion_promocion','creditos.descripcion_paquete', 'lotes.firmado',
                                 'creditos.costo_descuento', 'creditos.descuento_terreno', 'creditos.costo_alarma',
                                 'creditos.costo_cuota_mant', 'creditos.costo_protecciones','contratos.id',
-                                'contratos.avance_lote', 'contratos.publicidad_id',
+                                'contratos.avance_lote', 'contratos.publicidad_id', 'modelos.nombre as modelo',
                                 'medios_publicitarios.nombre as publicidad',
                                 'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta','contratos.status')
                         
@@ -1326,6 +1330,7 @@ class ReportesController extends Controller
                         ->join('inst_seleccionadas as ins', 'creditos.id', '=', 'ins.credito_id')
                         ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
                         ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('modelos','lotes.modelo_id','=','modelos.id')
                         ->join('personal as p','creditos.prospecto_id','=','p.id')
                         ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
                         ->join('etapas as et','lotes.etapa_id','=','et.id')
@@ -1333,7 +1338,7 @@ class ReportesController extends Controller
                                 'lotes.emp_constructora','creditos.valor_terreno', 'lotes.emp_terreno',
                                 'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta',
                                 'contratos.avance_lote', 'contratos.publicidad_id',
-                                'medios_publicitarios.nombre as publicidad',
+                                'medios_publicitarios.nombre as publicidad', 'modelos.nombre as modelo',
                                 'creditos.descripcion_promocion','creditos.descripcion_paquete',
                                 'contratos.fecha_status')
                         ->where('ins.elegido','=',1)
@@ -1362,8 +1367,8 @@ class ReportesController extends Controller
         return Excel::create('Reporte de ventas y cancelaciones', function($excel) use ($ventas,$cancelaciones,$periodo,$empresa){
             $excel->sheet('Ventas', function($sheet) use ($ventas,$periodo, $empresa){
 
-                $sheet->mergeCells('A1:L1');
-                $sheet->mergeCells('A2:L2');
+                $sheet->mergeCells('A1:M1');
+                $sheet->mergeCells('A2:M2');
                 $sheet->mergeCells('C4:G4');
 
                 $sheet->cell('A1', function($cell) {
@@ -1412,7 +1417,6 @@ class ReportesController extends Controller
 
                 $sheet->setColumnFormat(array(
                     
-                    'L' => '$#,##0.00',
                     'M' => '$#,##0.00',
                     'N' => '$#,##0.00',
                     'O' => '$#,##0.00',
@@ -1420,6 +1424,7 @@ class ReportesController extends Controller
                     'Q' => '$#,##0.00',
                     'R' => '$#,##0.00',
                     'S' => '$#,##0.00',
+                    'T' => '$#,##0.00',
                 ));
 
                 if($empresa == 'CONCRETANIA'){
@@ -1429,6 +1434,7 @@ class ReportesController extends Controller
                         'Fraccionamiento',
                         'Etapa',
                         'Manzana',
+                        'Modelo',
                         'Lote',
                         'Cliente',
                         'Fecha de venta',
@@ -1447,7 +1453,7 @@ class ReportesController extends Controller
                     ]);
                     
     
-                    $sheet->cells('A8:T8', function ($cells) {
+                    $sheet->cells('A8:U8', function ($cells) {
                         // Set font family
                         $cells->setFontFamily('Calibri');
     
@@ -1490,6 +1496,7 @@ class ReportesController extends Controller
                             $lote->proyecto, 
                             $lote->num_etapa,
                             $lote->manzana,
+                            $lote->modelo,
                             $lote->num_lote,
                             $lote->nombre.' '.$lote->apellidos,
                             $lote->fecha,
@@ -1509,7 +1516,7 @@ class ReportesController extends Controller
                         ]);	
                     }
                 
-                    $num='A8:S' . $cont;
+                    $num='A8:T' . $cont;
                     $sheet->setBorder($num, 'thin');
 
                 }
@@ -1519,6 +1526,7 @@ class ReportesController extends Controller
                         'Fraccionamiento',
                         'Etapa',
                         'Manzana',
+                        'Modelo',
                         'Lote',
                         'Cliente',
                         'Fecha de venta',
@@ -1536,7 +1544,7 @@ class ReportesController extends Controller
                     ]);
                     
     
-                    $sheet->cells('A8:T8', function ($cells) {
+                    $sheet->cells('A8:U8', function ($cells) {
                         // Set font family
                         $cells->setFontFamily('Calibri');
     
@@ -1579,6 +1587,7 @@ class ReportesController extends Controller
                             $lote->proyecto, 
                             $lote->num_etapa,
                             $lote->manzana,
+                            $lote->modelo,
                             $lote->num_lote,
                             $lote->nombre.' '.$lote->apellidos,
                             $lote->fecha,
@@ -1596,7 +1605,7 @@ class ReportesController extends Controller
                         ]);	
                     }
                 
-                    $num='A8:T' . $cont;
+                    $num='A8:U' . $cont;
                     $sheet->setBorder($num, 'thin');
                 }
 
@@ -1607,8 +1616,8 @@ class ReportesController extends Controller
 
             $excel->sheet('Cancelaciones', function($sheet) use ($cancelaciones,$periodo, $empresa){
 
-                $sheet->mergeCells('A1:M1');
-                $sheet->mergeCells('A2:M2');
+                $sheet->mergeCells('A1:N1');
+                $sheet->mergeCells('A2:N2');
                 $sheet->mergeCells('C4:G4');
 
                 $sheet->cell('A1', function($cell) {
@@ -1657,7 +1666,7 @@ class ReportesController extends Controller
 
                 $sheet->setColumnFormat(array(
                     
-                    'M' => '$#,##0.00',
+                    'P' => '$#,##0.00',
                     'N' => '$#,##0.00',
                     'O' => '$#,##0.00',
                 ));
@@ -1669,6 +1678,7 @@ class ReportesController extends Controller
                         'Fraccionamiento',
                         'Etapa',
                         'Manzana',
+                        'Modelo',
                         'Lote',
                         'Cliente',
                         'Fecha de cancelación',
@@ -1683,7 +1693,7 @@ class ReportesController extends Controller
                     ]);
                     
     
-                    $sheet->cells('A8:L8', function ($cells) {
+                    $sheet->cells('A8:M8', function ($cells) {
                         // Set font family
                         $cells->setFontFamily('Calibri');
     
@@ -1718,6 +1728,7 @@ class ReportesController extends Controller
                             $lote->proyecto, 
                             $lote->num_etapa,
                             $lote->manzana,
+                            $lote->modelo,
                             $lote->num_lote,
                             $lote->nombre.' '.$lote->apellidos,
                             $lote->fecha_status,
@@ -1732,7 +1743,7 @@ class ReportesController extends Controller
                         ]);	
                     }
                 
-                    $num='A8:N' . $cont;
+                    $num='A8:O' . $cont;
                     $sheet->setBorder($num, 'thin');
 
                 }
@@ -1742,6 +1753,7 @@ class ReportesController extends Controller
                         'Fraccionamiento',
                         'Etapa',
                         'Manzana',
+                        'Modelo',
                         'Lote',
                         'Cliente',
                         'Fecha de cancelación',
@@ -1755,7 +1767,7 @@ class ReportesController extends Controller
                     ]);
                     
     
-                    $sheet->cells('A8:L8', function ($cells) {
+                    $sheet->cells('A8:M8', function ($cells) {
                         // Set font family
                         $cells->setFontFamily('Calibri');
     
@@ -1790,6 +1802,7 @@ class ReportesController extends Controller
                             $lote->proyecto, 
                             $lote->num_etapa,
                             $lote->manzana,
+                            $lote->modelo,
                             $lote->num_lote,
                             $lote->nombre.' '.$lote->apellidos,
                             $lote->fecha_status,
@@ -1803,7 +1816,7 @@ class ReportesController extends Controller
                         ]);	
                     }
                 
-                    $num='A8:O' . $cont;
+                    $num='A8:P' . $cont;
                     $sheet->setBorder($num, 'thin');
                 }
 

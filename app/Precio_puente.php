@@ -11,6 +11,6 @@ class Precio_puente extends Model
     protected $fillable = [
         'solicitud_id',
         'modelo_id',
-        'precio'
+        'precio', 'precio_c'
     ];//asi
 }
