@@ -10,7 +10,7 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Reporte de Ventas y Cancelaciones &nbsp;&nbsp;
                         <!--   Boton Nuevo    -->
-                        <a class="btn btn-success" v-bind:href="'/reprotes/reporteVentasExcel?fecha=' + fecha + '&fecha2=' + fecha2 + '&empresa=' + emp_constructora  + '&publicidad=' + b_publicidad">
+                        <a class="btn btn-success" v-bind:href="'/reprotes/reporteVentasExcel?fecha=' + fecha + '&fecha2=' + fecha2 + '&empresa=' + emp_constructora + '&empresa2=' + emp_terreno +  + '&publicidad=' + b_publicidad">
                             <i class="fa fa-file-text"></i>&nbsp; Excel
                         </a>
                         <!-- <a :href="'/etapa/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel </a> -->
@@ -61,6 +61,11 @@
                                         <div class="input-group">
                                             <select class="form-control col-md-4" v-model="emp_constructora">
                                                 <option value="">Empresa constructora</option>
+                                                <option value="Grupo Constructor Cumbres">Grupo Constructor Cumbres</option>
+                                                <option value="CONCRETANIA">CONCRETANIA</option>
+                                            </select>
+                                            <select class="form-control col-md-4" v-model="emp_terreno">
+                                                <option value="">Empresa terreno</option>
                                                 <option value="Grupo Constructor Cumbres">Grupo Constructor Cumbres</option>
                                                 <option value="CONCRETANIA">CONCRETANIA</option>
                                             </select>
@@ -206,6 +211,11 @@
                                                 <option value="Grupo Constructor Cumbres">Grupo Constructor Cumbres</option>
                                                 <option value="CONCRETANIA">CONCRETANIA</option>
                                             </select>
+                                            <select class="form-control col-md-4" v-model="emp_terreno">
+                                                <option value="">Empresa terreno</option>
+                                                <option value="Grupo Constructor Cumbres">Grupo Constructor Cumbres</option>
+                                                <option value="CONCRETANIA">CONCRETANIA</option>
+                                            </select>
                                             <button type="submit" @click="listarReporte()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                         </div>
                                     </div>
@@ -304,7 +314,8 @@
                 cont1:0,
                 cont2:0,
                 activo:1,
-                emp_constructora:''
+                emp_constructora:'',
+                emp_terreno:''
             }
         },
         computed:{
@@ -313,7 +324,7 @@
             /**Metodo para mostrar los registros */
             listarReporte(){
                 let me = this;
-                var url = '/reprotes/reporteVentas?fecha=' + me.fecha + '&fecha2=' + me.fecha2 + '&empresa=' + me.emp_constructora + '&publicidad=' + me.b_publicidad;
+                var url = '/reprotes/reporteVentas?fecha=' + me.fecha + '&fecha2=' + me.fecha2 + '&empresa=' + me.emp_constructora + '&empresa2=' + me.emp_terreno + '&publicidad=' + me.b_publicidad;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLotes = respuesta.ventas;

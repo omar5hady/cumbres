@@ -324,8 +324,14 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-8">
-                                <button type="submit" @click="listarEntregas(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                           
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <div class="input-group">
+                                    <button type="submit" @click="listarEntregas(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>&nbsp;&nbsp;
+                                    <strong><label class="text-muted" v-text="'Total: '+total_entregas"></label></strong>
+                                </div>
                             </div>
                         </div>
                             
@@ -992,7 +998,7 @@
 
                 errorEntrega : 0,
                 errorMostrarMsjEntrega : [],
-               
+                total_entregas : 0
             }
         },
         computed:{
@@ -1076,6 +1082,7 @@
                     var respuesta = response.data;
                     me.arrayEntregas = respuesta.contratos.data;
                     me.pagination = respuesta.pagination;
+                    me.total_entregas = respuesta.contratos.total;
                     
                 })
                 .catch(function (error) {

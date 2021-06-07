@@ -45,6 +45,10 @@
                         
 
                         <div class="row">
+                            <div class="input-group" v-if="arrayBases.length > 0">
+                                <div class="text-muted text-uppercase font-weight-bold" v-text="' Fecha de ultima captura: '+arrayBases[0].created_at"></div>
+                                <br>
+                            </div>
                             <div v-for="base in arrayBases" :key="base.id" class="col-xl-4 col-lg-5 col-md-4">
                                 <div class="card">
                                     <div class="card-body p-3 d-flex align-items-center">

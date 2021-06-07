@@ -95,7 +95,7 @@ class MedioPublicitarioController extends Controller
             $clientesID_contrato = Contrato::join('creditos','contratos.id','=','creditos.id')
                         ->join('lotes','creditos.lote_id','=','lotes.id')
                         ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->select('clientes.id')->where('contratos.status','=',3);
+                        ->select('clientes.id','contratos.id as contrato')->where('contratos.status','=',3);
 
                         if($proyecto != '')
                             $clientesID_contrato = $clientesID_contrato->where('lotes.fraccionamiento_id','=',$proyecto);
@@ -104,14 +104,14 @@ class MedioPublicitarioController extends Controller
                         if($asesor != '')
                             $clientesID_contrato = $clientesID_contrato->where('creditos.vendedor_id','=',$asesor);
                         if($desde != '' && $hasta != ''){
-                            $clientesID_contrato = $clientesID_contrato->whereBetween('contratos.fecha', [$desde, $hasta]);
+                            $clientesID_contrato = $clientesID_contrato->whereBetween('contratos.fecha', [$desde.' 00:00:00', $hasta.' 23:59:59']);
                         }
                         else{
                             $clientesID_contrato = $clientesID_contrato->whereBetween('clientes.created_at', ['2000-02-01', $hoy]);
                         }
                         
                         
-                        $clientesID_contrato = $clientesID_contrato->orderBy('clientes.id','asc')->get();
+                        $clientesID_contrato = $clientesID_contrato->orderBy('clientes.id','asc')->distinct()->get();
 
             ////////// Arreglo de ID de todos los prospectos (con y sin contrato) //////////////
             $prospectos = Cliente::select('id')->where('clasificacion','!=',7)
@@ -210,7 +210,9 @@ class MedioPublicitarioController extends Controller
                     foreach ($clientesID_contrato as $et => $cliente) {
                         $res = Contrato::join('creditos','contratos.id','=','creditos.id')
                                 ->select('creditos.prospecto_id','contratos.publicidad_id')->where('creditos.prospecto_id','=',$cliente->id)
-                                ->where('contratos.publicidad_id','=',$publiV->id)->get();
+                                ->where('contratos.publicidad_id','=',$publiV->id)
+                                ->where('contratos.id','=',$cliente->contrato)
+                                ->get();
                         
                         if(sizeof($res)){
                             $publiV->cant ++;

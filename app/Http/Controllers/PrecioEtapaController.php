@@ -74,11 +74,14 @@ class PrecioEtapaController extends Controller
         
         //if($lotes)
             foreach($lotes as $lote){
-                $modelo = Modelo::select('terreno')->where('id','=',$lote->modelo_id)->get();
+                $modelo = Modelo::select('terreno','nombre')->where('id','=',$lote->modelo_id)->get();
                 $loteExc = Lote::findOrFail($lote->id);
                 $terrenoExcedente = ($loteExc->terreno - $modelo[0]->terreno);
-                if($terrenoExcedente > 0)
+                if($terrenoExcedente > 0 && $modelo[0]->nombre != 'Terreno')
                     $loteExc->excedente_terreno = $terrenoExcedente * $request->precio_excedente;
+                else{
+                    $loteExc->excedente_terreno = 0;
+                }
                 $loteExc->save();
             }
         

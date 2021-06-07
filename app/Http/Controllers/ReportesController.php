@@ -1175,6 +1175,7 @@ class ReportesController extends Controller
     public function reporteVentas(Request $request){
 
         $empresa = $request->empresa;
+        $empresa2 = $request->empresa2;
         $publicidad = $request->publicidad;
 
         $ventas = Contrato::join('creditos','contratos.id','=','creditos.id')
@@ -1201,6 +1202,9 @@ class ReportesController extends Controller
                         
                         if($empresa != '')
                             $ventas = $ventas->where('lotes.emp_constructora','=', $empresa);
+
+                        if($empresa2 != '')
+                            $ventas = $ventas->where('lotes.emp_terreno','=', $empresa2);
 
                         if($publicidad != '')
                             $ventas = $ventas->where('contratos.publicidad_id','=', $publicidad);
@@ -1252,6 +1256,9 @@ class ReportesController extends Controller
                         if($empresa != '')
                             $cancelaciones = $cancelaciones->where('lotes.emp_constructora','=', $empresa);
 
+                        if($empresa2 != '')
+                            $cancelaciones = $cancelaciones->where('lotes.emp_terreno','=', $empresa2);
+
                         if($publicidad != '')
                             $cancelaciones = $cancelaciones->where('contratos.publicidad_id','=', $publicidad);
 
@@ -1272,6 +1279,7 @@ class ReportesController extends Controller
     public function reporteVentasExcel(Request $request){
 
         $empresa = $request->empresa;
+        $empresa2= $request->empresa2;
         $publicidad = $request->publicidad;
 
         $ventas = Contrato::join('creditos','contratos.id','=','creditos.id')
@@ -1297,6 +1305,9 @@ class ReportesController extends Controller
                         
                         if($empresa != '')
                             $ventas = $ventas->where('lotes.emp_constructora','=', $empresa);
+
+                        if($empresa2 != '')
+                            $ventas = $ventas->where('lotes.emp_terreno','=', $empresa2);
 
                         if($publicidad != '')
                             $ventas = $ventas->where('contratos.publicidad_id','=', $publicidad);
@@ -1347,6 +1358,9 @@ class ReportesController extends Controller
 
                         if($empresa != '')
                             $cancelaciones = $cancelaciones->where('lotes.emp_constructora','=', $empresa);
+
+                        if($empresa2 != '')
+                            $cancelaciones = $cancelaciones->where('lotes.emp_terreno','=', $empresa2);
 
                         if($publicidad != '')
                             $cancelaciones = $cancelaciones->where('contratos.publicidad_id','=', $publicidad);

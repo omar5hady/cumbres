@@ -182,7 +182,7 @@
                                                 <button v-if="vistaLotes==0" @click="getLotesPuente(datosPuente.id),vistaLotes = 1" class="btn btn-success rounded">
                                                     <i class="icon-home"></i>&nbsp;Abono a Lote
                                                 </button>
-                                                <button v-else @click="getEdoCuenta(datosPuente.id)" class="btn btn-default rounded">
+                                                <button v-else-if="vistaLotes==1" @click="getEdoCuenta(datosPuente.id)" class="btn btn-default rounded">
                                                     <i class="fa fa-reply"></i>&nbsp;Ver Edo. Cuenta
                                                 </button>
                                             </div>
@@ -195,7 +195,7 @@
                                             </div>
                                             <!-- Botones para pagar intereses o registrar abono/cargo -->
                                             <div class="card-body p-4 d-flex align-items-center">
-                                                <button v-if="vista == 1 && datosPuente.diasInt < 0" @click="abrirModal('movimiento',datosPuente.id)" class="btn btn-success rounded">
+                                                <button v-if="vista == 1 && datosPuente.diasInt < 0 || arrayPagos.length == 0" @click="abrirModal('movimiento',datosPuente.id)" class="btn btn-success rounded">
                                                     <i class="icon-plus"></i>&nbsp;Nuevo movimiento
                                                 </button>
                                                 <button v-if="vista == 1 && datosPuente.diasInt >= 0" @click="abrirModal('intereses',datosPuente.id)" class="btn btn-success rounded">
@@ -222,21 +222,21 @@
                                                             <th>Abono</th>
                                                             <th>Saldo</th>
                                                             <th>Interes</th>
-                                                            <th>Sin IVA Comisiones</th>
-                                                            <th>Sin IVA Honorarios</th>
+                                                            <!-- <th>Sin IVA Comisiones</th>
+                                                            <th>Sin IVA Honorarios</th> -->
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         <!--Comisiones Bancarias--->
                                                             <tr v-for="pago in arrayPagos" :key="pago.id">
-                                                                <td v-text="pago.fecha"></td>
-                                                                <td v-text="pago.concepto"></td>
-                                                                <td v-text="'$'+formatNumber(pago.cargo)"></td>
-                                                                <td v-text="'$'+formatNumber(pago.abono)"></td>
-                                                                <td v-text="'$'+formatNumber(pago.saldo)"></td>
-                                                                <td v-text="'$'+formatNumber(pago.monto_interes)"></td>
-                                                                <td v-text="'$'+formatNumber(pago.comisiones)"></td>
-                                                                <td v-text="'$'+formatNumber(pago.honorarios)"></td>
+                                                                <td class="td2" v-text="pago.fecha"></td>
+                                                                <td class="td2" v-text="pago.concepto"></td>
+                                                                <td class="td2" v-text="'$'+formatNumber(pago.cargo)"></td>
+                                                                <td class="td2" v-text="'$'+formatNumber(pago.abono)"></td>
+                                                                <td class="td2" v-text="'$'+formatNumber(pago.saldo)"></td>
+                                                                <td class="td2" v-text="'$'+formatNumber(pago.monto_interes)"></td>
+                                                                <!-- <td class="td2" v-text="'$'+formatNumber(pago.comisiones)"></td>
+                                                                <td class="td2" v-text="'$'+formatNumber(pago.honorarios)"></td> -->
                                                             </tr>
                                                     </tbody>
                                                 </table>
@@ -255,16 +255,16 @@
                                                     <tbody>
                                                         <!--Comisiones Bancarias--->
                                                             <tr v-for="lote in arrayLotes" :key="lote.id">
-                                                                <td style="width:5%">
-                                                                    <button v-if="lote.liberado == 0" title="Seleccionar" type="button" @click="selectLote(lote)" class="btn btn-warning btn-sm">
+                                                                <td class="td2" style="width:5%">
+                                                                    <button v-if="lote.liberado == 0 && datosPuente.diasInt < 0" title="Seleccionar" type="button" @click="selectLote(lote)" class="btn btn-warning btn-sm">
                                                                         <i class="icon-pencil"></i>
                                                                     </button>
                                                                 </td>
-                                                                <td v-text="lote.num_lote"></td>
-                                                                <td v-text="lote.num_etapa"></td>
-                                                                <td v-text="lote.manzana"></td>
-                                                                <td v-text="lote.modelo"></td>
-                                                                <td v-text="'$'+formatNumber(lote.saldo)"></td>
+                                                                <td class="td2" v-text="lote.num_lote"></td>
+                                                                <td class="td2" v-text="lote.num_etapa"></td>
+                                                                <td class="td2" v-text="lote.manzana"></td>
+                                                                <td class="td2" v-text="lote.modelo"></td>
+                                                                <td class="td2" v-text="'$'+formatNumber(lote.saldo)"></td>
                                                                
                                                             </tr>
                                                     </tbody>
@@ -393,7 +393,7 @@
                                         <div class="form-group row" v-if="tipo != ''">
                                             <label class="col-md-2 form-control-label" for="text-input">Monto</label>
                                             <div class="col-md-4">
-                                                <input v-if="tipo == 1" type="number" v-model="cantidad" class="form-control">
+                                                <input v-if="tipo == 1" @change="calcularInteres()" type="number" v-model="cantidad" class="form-control">
                                                 <input v-else type="number" v-model="cantidad" class="form-control">
                                             </div>
                                             <label class="col-md-3 form-control-label" for="text-input">${{formatNumber(cantidad)}}</label>
@@ -431,19 +431,19 @@
                                                     </thead>
                                                     <tbody>
                                                         <tr v-for="cargo in arrayCargos" :key="cargo.id">
-                                                            <td v-text="cargo.concepto"></td>
-                                                            <td v-text="'$'+formatNumber(cargo.saldo)"></td>
-                                                            <td v-text="formatNumber(cargo.tasa)+'%'"></td>
-                                                            <td v-text="'$'+formatNumber(cargo.interes)"></td>
+                                                            <td class="td2" v-text="cargo.concepto"></td>
+                                                            <td class="td2" v-text="'$'+formatNumber(cargo.saldo)"></td>
+                                                            <td class="td2" v-text="formatNumber(cargo.tasa)+'%'"></td>
+                                                            <td class="td2" v-text="'$'+formatNumber(cargo.interes)"></td>
                                                         </tr> 
                                                         <tr>
-                                                            <td colspan="4"></td>
+                                                            <td class="td2" colspan="4"></td>
                                                         </tr>                    
                                                         <tr>
-                                                            <td colspan="3">
+                                                            <td class="td2" colspan="3">
                                                                 <strong>Total</strong>
                                                             </td>
-                                                            <td v-text="'$'+formatNumber(cantidad)"></td>
+                                                            <td class="td2" v-text="'$'+formatNumber(cantidad)"></td>
                                                         </tr>  
                                                     </tbody>
                                                 </table>
@@ -500,14 +500,14 @@
                                                         </thead>
                                                         <tbody>
                                                             <tr v-for="anticipo in arrayPagosPendientes" :key="anticipo.id">
-                                                                <td>
+                                                                <td class="td2">
                                                                     <button title="Seleccionar" type="button" @click="addDatos(anticipo), edit = 1" class="btn btn-warning btn-sm">
                                                                         <i class="icon-pencil"></i>
                                                                     </button>
                                                                 </td>
                                                                 <td class="td2" v-text="anticipo.concepto"></td>
                                                                 <td class="td2" v-text="anticipo.fecha"></td>
-                                                                <td v-text="'$'+formatNumber(anticipo.abono)"></td>
+                                                                <td class="td2" v-text="'$'+formatNumber(anticipo.abono)"></td>
                                                             </tr>                     
                                                         </tbody>
                                                     </table>
@@ -565,7 +565,7 @@
                                         <div class="form-group row">
                                             <label class="col-md-2 form-control-label" for="text-input">Fecha</label>
                                             <div class="col-md-4">
-                                                <input type="date" v-model="fecha" @change="getTiie(fecha), calcularInteres()" class="form-control">
+                                                <input type="date" v-model="fecha" @change="getTiie(fecha)" class="form-control">
                                             </div>
                                             <label v-if="tiie != 0" class="col-md-2 form-control-label" for="text-input">TIIE a 28 dias:</label>
                                             <div v-if="tiie != 0" class="col-md-4">
@@ -597,7 +597,7 @@
                                         <div class="form-group row">
                                             <label class="col-md-2 form-control-label" for="text-input">Monto</label>
                                             <div class="col-md-4">
-                                                <input type="number" @change="verificarSaldo()" v-model="cantidad" class="form-control">
+                                                <input type="number" @change="verificarSaldo(),calcularInteres()" v-model="cantidad" class="form-control">
                                             </div>
                                             <label class="col-md-3 form-control-label" for="text-input">${{formatNumber(cantidad)}}</label>
                                         </div>
@@ -829,7 +829,8 @@
             calcularInteres(){
                 let me = this;
                 me.interes = 0;
-                var url = '/cPuentes/interesCargos?id='+me.datosPuente.id+'&fecha='+me.fecha;
+                me.total = 0;
+                var url = '/cPuentes/interesCargos?id='+me.datosPuente.id+'&fecha='+me.fecha+'&pago='+me.cantidad;
                 if(me.tipo == 1)
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;

@@ -148,7 +148,7 @@ class CreditoPuenteController extends Controller
             $puente->apertura = $request->apertura;
             $puente->total = $request->total;
             $puente->fraccionamiento = $request->fraccionamiento;
-            $puente->folio = $request->banco . '-' . $request->cantidad;
+            $puente->folio = $request->banco . '-' . $request->cantidad. '-'.$puente->id;
             $puente->save();
 
             $id = $puente->id;
@@ -764,15 +764,22 @@ class CreditoPuenteController extends Controller
                 ->get();
 
         $interes = 0;
+        $abono = $request->pago;
 
         foreach ($cargos as $key => $cargo) {
-            $fechaIni = Carbon::parse($cargo->fecha_interes);
-            $fechaFin = Carbon::parse($request->fecha);
+            if($abono > 0){
+                $fechaIni = Carbon::parse($cargo->fecha_interes);
+                $fechaFin = Carbon::parse($request->fecha);
 
-            $tiie = round(($cargo->porc_interes / 100), 5);
-            $cargo->diasTransc = $fechaFin->diffInDays($fechaIni);
-            $intereses = ($cargo->saldo * $tiie) / 360;
-            $interes += round(($intereses * $cargo->diasTransc), 2);
+                $tiie = round(($cargo->porc_interes / 100), 5);
+                $cargo->diasTransc = $fechaFin->diffInDays($fechaIni);
+                $intereses = ($cargo->saldo * $tiie) / 360;
+                $interes += round(($intereses * $cargo->diasTransc), 2);
+
+                $abono = $abono - $cargo->saldo;
+
+            }
+            
         }
 
         return ['interes'=>$interes];
@@ -792,7 +799,7 @@ class CreditoPuenteController extends Controller
             $fechaIni = Carbon::parse($cargo->fecha_interes);
             $cargo->interes = 0;
         
-            $tiie = round(($cargo->tasa / 100), 5);
+            $tiie = round(($cargo->tasa / 100), 6);
             $cargo->diasTransc = $fechaFin->diffInDays($fechaIni);
             $cargo->interes = ($cargo->saldo * $tiie) / 360;
             $cargo->interes = round(($cargo->interes * $cargo->diasTransc), 2);
@@ -822,9 +829,23 @@ class CreditoPuenteController extends Controller
             $pago->monto_interes = $request->cantidad;
             $pago->save();
 
+            $new_porcInt = $pago->porc_interes;
+
+            $fecha = new Carbon($request->fecha);
+
+            $primerCargo = Pago_puente::select('fecha')->where('credito_puente_id','=',$request->id)
+            ->where('tipo','=',0)
+            ->orderBy('fecha','asc')->first();
+            $fecha_inicial = new Carbon($primerCargo->fecha);
+            $dia_ini = $fecha_inicial->day;
+            $dia_fin = $fecha->day;
+            $diff = $dia_fin - $dia_ini;            
+
+            if($diff != 0)
+                $fecha = $fecha->subDays($diff);
             //ACCIONES AL CREDITO BANCARIO GENERAL
             $credito = Credito_puente::findOrFail($request->id);
-            $fecha = new Carbon($request->fecha);
+            
             $fecha = $fecha->addMonths(1);
             $band = true;
             while ($band == true) {
@@ -839,7 +860,7 @@ class CreditoPuenteController extends Controller
             foreach ($cargos as $key => $cargo) {
                 $pago = Pago_puente::findOrFail($cargo['id']);
                 $pago->fecha_interes = $request->fecha;
-                $pago->porc_interes = $pago->porc_interes;
+                $pago->porc_interes = $new_porcInt;
                 $pago->save();
             }
 
@@ -861,6 +882,7 @@ class CreditoPuenteController extends Controller
             $pago->fecha = $request->fecha;
             $pago->concepto = $request->concepto;
             $pago->cargo = $request->monto;
+            $pago->fecha_interes = $request->fecha;
             $pago->tipo = $request->tipo;
             $pago->saldo = $request->monto;
             $pago->porc_interes = $request->interes + $request->tiie;
@@ -945,18 +967,21 @@ class CreditoPuenteController extends Controller
 
         // Se le abona el monto a los cargos pendientes
         foreach ($cargos as $key => $c) {
-            //if($auxPago == 0) break;
-            $cargo = Pago_puente::findOrFail($c->id);
-            $cargo->fecha_interes = $request->fecha;
-            if($cargo->saldo > $auxPago){
-                $cargo->saldo -= $auxPago;
-                $auxPago = 0;
+            if($auxPago > 0){
+                $cargo = Pago_puente::findOrFail($c->id);
+                $cargo->fecha_interes = $request->fecha;
+                if($cargo->saldo > $auxPago){
+                    $cargo->saldo -= $auxPago;
+                    $auxPago = 0;
+                }
+                else{
+                    $auxPago -= $cargo->saldo;
+                    $cargo->saldo = 0;
+                }
+                $cargo->save();
+
             }
-            else{
-                $auxPago -= $cargo->saldo;
-                $cargo->saldo = 0;
-            }
-            $cargo->save();
+            
         }
     }
 
