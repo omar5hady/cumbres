@@ -10,7 +10,7 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Reporte de Ventas y Cancelaciones &nbsp;&nbsp;
                         <!--   Boton Nuevo    -->
-                        <a class="btn btn-success" v-bind:href="'/reprotes/reporteVentasExcel?fecha=' + fecha + '&fecha2=' + fecha2 + '&empresa=' + emp_constructora + '&empresa2=' + emp_terreno +  + '&publicidad=' + b_publicidad">
+                        <a class="btn btn-success" v-bind:href="'/reprotes/reporteVentasExcel?fecha=' + fecha + '&fecha2=' + fecha2 + '&empresa=' + emp_constructora + '&empresa2=' + emp_terreno  + '&publicidad=' + b_publicidad">
                             <i class="fa fa-file-text"></i>&nbsp; Excel
                         </a>
                         <!-- <a :href="'/etapa/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel </a> -->

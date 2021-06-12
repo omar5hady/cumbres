@@ -154,6 +154,7 @@ class CalculadoraLotesController extends Controller
                         
         $lotes = $query->where('modelos.nombre', '=', 'Terreno')
             ->where('etapas.id', '=', $request->etapaId)
+            ->where('lotes.manzana','like','%'.$request->manzana.'%')
             
             ->where('lotes.habilitado','=',1)
             ->where('lotes.contrato','=',0)
@@ -164,9 +165,9 @@ class CalculadoraLotesController extends Controller
             //->where('lotes.regimen_condom', '=', 0)
 
         //Buscar manzana
-        if($request->manzana != ''){
-            $lotes = $lotes->where('lotes.manzana','like', "%$request->manzana%");
-        }
+        // if($request->manzana != ''){
+        //     $lotes = $lotes->where('lotes.manzana','like', '%'.$request->manzana.'%');
+        // }
 
         $lotes = $lotes->orderBy('fraccionamientos.nombre','DESC')
             ->orderBy('etapas.num_etapa','ASC')
@@ -239,6 +240,7 @@ class CalculadoraLotesController extends Controller
                 'clientes.id as cliente_personal_id',
 
                 'lotes.num_lote',
+                'lotes.manzana',
                 'lotes.terreno as terreno_m2',
                 'etapas.num_etapa',
                 'fraccionamientos.nombre as fraccionamiento',
@@ -323,6 +325,7 @@ class CalculadoraLotesController extends Controller
 
                 'etapas.num_etapa',
                 'lotes.num_lote',
+                'lotes.manzana',
                 'fraccionamientos.nombre as fraccionamiento'
             );
 
@@ -340,6 +343,10 @@ class CalculadoraLotesController extends Controller
         //etapa
         if($request->r_etapa != '')
             $personas = $queryGen->where('etapas.id', '=', $request->r_etapa);
+        
+        //manzana
+        if($request->r_manzana != '')
+            $personas = $queryGen->where('lotes.manzana', 'like', '%'.$request->r_manzana.'%');
         //lote
         if($request->b_lote != '')
             $personas = $queryGen->where('lotes.id', '=', $request->b_lote);
@@ -566,6 +573,7 @@ class CalculadoraLotesController extends Controller
                 'clientes.id as cliente_personal_id',
 
                 'lotes.num_lote',
+                'lotes.manzana',
                 'lotes.terreno as terreno_m2',
                 'etapas.num_etapa',
                 'fraccionamientos.nombre as fraccionamiento'

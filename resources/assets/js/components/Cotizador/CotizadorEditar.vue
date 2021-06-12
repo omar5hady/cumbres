@@ -27,10 +27,12 @@
                                 <option value="">Proyecto</option>
                                 <option v-for="proj in arrayFraccionamientos" :key="proj.id" :value="proj.id" v-text="proj.nombre">proyecto 1</option>
                             </select>
-                            <select v-on:change="buscaLotes(r_etapa)" class="form-control col-md-2" v-model="r_etapa" @keyup.enter="getCotizacion()">
+                            <select v-on:change="buscaLotes(r_etapa,r_manzana)" class="form-control col-md-2" v-model="r_etapa" @keyup.enter="getCotizacion()">
                                 <option value="">Etapa</option>
                                 <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                             </select>
+
+                            <input type="text" v-model="r_manzana" v-on:change="buscaLotes(r_etapa,r_manzana)" @keyup.enter="getCotizacion()" placeholder="Manzana" class="form-control col-sm-3">
 
                             <select class="form-control col-sm-2" v-model="b_lote" @keyup.enter="getCotizacion()">
                                 <option value="">Lote</option>
@@ -64,6 +66,7 @@
                                         <th>Cliente</th>
                                         <th>Proyecto</th>
                                         <th>Etapa</th>
+                                        <th>Manzana</th>
                                         <th>Lote</th>
                                         <th>Valor de Venta</th>
                                         <th>Mensualidades</th>
@@ -90,6 +93,7 @@
                                         </td>
                                         <td v-text="cot.fraccionamiento"></td>
                                         <td v-text="cot.num_etapa"></td>
+                                        <td v-text="cot.manzana"></td>
                                         <td v-text="cot.num_lote"></td>
                                         <td v-text="'$'+cot.valor_venta.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})"></td>
                                         <td v-text="cot.mensualidades"></td>
@@ -163,13 +167,15 @@
                         <div class="row">
                             <input type="date" v-model="r_fecha" v-on:change="actualizar()" class="form-control col-sm-2 text-info">
                             
-                            <input readonly type="text" v-model="e_cliente" class="form-control col-sm-4">
+                            <input readonly type="text" v-model="e_cliente" class="form-control col-sm-3">
 
                             <input readonly type="text" v-model="r_proyecto" class="form-control col-sm-2">
                             
                             <input readonly type="text" v-model="r_etapa" class="form-control col-sm-2">
 
-                            <input readonly type="text" v-model="r_lote" class="form-control col-sm-2">
+                            <input readonly type="text" v-model="r_manzana" class="form-control col-sm-2">
+
+                            <input readonly type="text" v-model="r_lote" class="form-control col-sm-1">
                             
                             <div v-text="r_sup_terreno+' m²'" class="text-info form-control col-sm-2" title="Superficie de Terreno"></div>
                             <div v-text="'Costo m² $ '+r_valor_m2.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2})" class="text-info form-control col-sm-2" title="Costo m²"></div>
@@ -652,6 +658,8 @@ export default {
             r_apellidos:'',
             r_proyecto:'',
             r_etapa:'',
+            r_etapa:'',
+            r_manzana:'',
             r_lote:'',
             r_sup_terreno:0,
             r_valor_m2:0,
@@ -1175,8 +1183,8 @@ export default {
         actualizar(){
             this.arrayMensualidad.forEach(m => this.calculaPrecio(m));
         },
-        buscaLotes(etapa){
-            axios.get('/get/lotes/lotes?etapaId='+etapa).then(
+        buscaLotes(etapa,manzana){
+            axios.get('/get/lotes/lotes?etapaId='+etapa+'&manzana='+manzana).then(
                 response => this.arrayLotes = response.data
             ).catch(error => console.log(error));
         },
@@ -1200,6 +1208,7 @@ export default {
                 '&b_cliente='+this.b_cliente+
                 '&r_proyecto='+this.r_proyecto+
                 '&r_etapa='+this.r_etapa+
+                '&r_manzana='+this.r_manzana+
                 '&b_lote='+this.b_lote+
                 '&b_mensualidad='+this.b_mensualidad
             ).then(
@@ -1376,6 +1385,7 @@ export default {
                     this.e_cliente = cot.nombre+' '+cot.apellidos;
                     this.r_proyecto = cot.fraccionamiento;
                     this.r_etapa = cot.num_etapa;
+                    this.r_manzana = cot.manzana;
                     this.r_lote = cot.num_lote;
                     this.r_sup_terreno = cot.terreno_m2;
                     this.r_valor_m2 = cot.valor_venta/cot.terreno_m2;
@@ -1394,6 +1404,7 @@ export default {
             this.r_fecha = '';
             this.r_proyecto = '';
             this.r_etapa = '';
+            this.r_manzana = '';
             this.r_lote = '';
             this.r_sup_terreno = 0;
             this.r_valor_m2 = 0;

@@ -73,22 +73,23 @@ body{
     <table class="myTable" style="margin-left:95px; margin-top:0px; width:95%;">
         <thead>
             <tr>
-                <th class="text-right" colspan="3">Fecha de emisión: {{$cotizacion->fecha}}</th>
+                <th class="text-right" colspan="4">Fecha de emisión: {{$cotizacion->fecha}}</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>Cliente: {{mb_strtoupper($cotizacion->apellidos)}} {{mb_strtoupper($cotizacion->nombre)}}</td>
+                <td colspan="2">Cliente: {{mb_strtoupper($cotizacion->apellidos)}} {{mb_strtoupper($cotizacion->nombre)}}</td>
                 <td>Proyecto: {{mb_strtoupper($cotizacion->fraccionamiento)}}</td>
                 <td>Etapa: {{mb_strtoupper($cotizacion->num_etapa)}}</td>
             </tr>
             <tr>
+                <td>Manzana: {{mb_strtoupper($cotizacion->manzana)}}</td>
                 <td>Lote: {{mb_strtoupper($cotizacion->num_lote)}}</td>
                 <td>m²: {{round($cotizacion->terreno_m2,2)}}</td>
                 <td>Costo * m²: ${{$cotizacion->m2}}</td>
             </tr>
             <tr>
-                <td>Valor de Venta: ${{$cotizacion->valor_venta}}</td>
+                <td colspan="2">Valor de Venta: ${{$cotizacion->valor_venta}}</td>
                 <td>Mensualidades: {{round($cotizacion->mensualidades)}}</td>
                 <td>
                    

@@ -513,7 +513,8 @@ class FacturasController extends Controller
                 'dep_creditos.monto_terreno',
                 'dep_creditos.f_carga_factura_terreno',
                 'lotes.emp_constructora'
-        );
+        )
+        ->where('dep_creditos.banco','!=','0000000-Grupo Cumbres');
 
         if($request->buscar != '' || $request->b_gen != ''){
             if($request->criterio == "lotes.fraccionamiento_id"){

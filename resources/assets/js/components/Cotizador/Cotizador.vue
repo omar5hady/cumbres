@@ -420,7 +420,10 @@ export default {
                 );
                 let fechaFinalPago = index.fecha;
 
-                lastFechaPago.setMonth(lastFechaPago.getMonth()+parseInt(this.r_mensualidad));
+                if(this.r_mensualidad != 1)
+                    lastFechaPago.setMonth(lastFechaPago.getMonth()+parseInt(this.r_mensualidad));
+                else
+                    lastFechaPago.setMonth(lastFechaPago.getMonth()+parseInt(12));
 
                 if(lastFechaPago < firstFechaPago){
                     let dia = (lastFechaPago.getDate()<10)?('0'+lastFechaPago.getDate()):('0'+lastFechaPago.getDate());
