@@ -289,7 +289,8 @@ export default {
                 //y pagos restantes
                 if(this.r_mensualidad == 48){
                     //this.valor_enganche = 30000;//parseFloat(fullPrice*0.3);
-                    this.valor_minMens = (fullPrice-(fullPrice*0.3))/this.r_mensualidad;
+                    this.valor_enganche = parseFloat(fullPrice*0.3);
+                    //this.valor_minMens = (fullPrice-(fullPrice*0.3))/this.r_mensualidad;
                     this.valor_minMens = (((fullPrice-this.valor_enganche)*this.interesMensual)/(1-(Math.pow(1+this.interesMensual,-this.r_mensualidad)))).toFixed(2);
                     
 

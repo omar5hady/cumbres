@@ -367,4 +367,18 @@ class RuvController extends Controller
     
             )->download('xls');
     }
+
+    public function selectRuv(Request $request){
+        $ruvs = Lote::select('paq_ruv')
+                    ->where('paq_ruv','!=',NULL);
+            if($request->proyecto != '')
+                $ruvs = $ruvs->where('fraccionamiento_id','=',$request->proyecto);
+            if($request->etapa != '')
+                $ruvs = $ruvs->where('etapa_id','=',$request->etapa);
+        $ruvs = $ruvs->orderBy('paq_ruv','asc')
+            ->distinct()
+            ->get();
+
+        return ['ruvs'=>$ruvs];
+    }
 }

@@ -2015,7 +2015,7 @@ class ClienteController extends Controller
                 $vendedor->dif = $vendedor->total - $vendedor->bd;
             }
 
-            if($vendedor->dif < 5){
+            if($vendedor->dif < 10){
                 array_push($ids,$vendedor->id);
                 
             }

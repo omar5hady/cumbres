@@ -28,6 +28,7 @@ class LicenciasController extends Controller
         $criterio = $request->criterio;
         $b_puente = $request->b_puente;
         $b_num_inicio = $request->b_num_inicio;
+        $b_ruv = $request->b_ruv;
 
         $query = Lote::join('fraccionamientos', 'lotes.fraccionamiento_id', '=', 'fraccionamientos.id')
                 ->join('licencias', 'lotes.id', '=', 'licencias.id')
@@ -64,6 +65,7 @@ class LicenciasController extends Controller
                     'lotes.credito_puente',
                     'lotes.siembra',
                     'lotes.num_inicio',
+                    'lotes.paq_ruv',
                     DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS arquitecto"),
                     DB::raw("CONCAT(p.nombre,' ',p.apellidos) AS perito"),
                     'licencias.f_planos',
@@ -128,6 +130,13 @@ class LicenciasController extends Controller
         if($request->b_empresa2 != ''){
             $licencias= $licencias->where('lotes.emp_terreno','=',$request->b_empresa2);
         }
+
+        if($request->b_etapa != ''){
+            $licencias= $licencias->where('lotes.etapa_id','=',$request->b_etapa);
+        }
+
+        if($b_ruv != '')
+            $licencias = $licencias->where('lotes.paq_ruv', '=', $b_ruv);
 
         $licencias = $licencias->orderBy('licencias.cambios', 'DESC')
                                 ->orderBy('fraccionamientos.nombre', 'DESC')
@@ -1123,6 +1132,13 @@ class LicenciasController extends Controller
         if($request->b_empresa2 != ''){
             $licencias= $licencias->where('lotes.emp_terreno','=',$request->b_empresa2);
         }
+
+        if($request->b_etapa != ''){
+            $licencias= $licencias->where('lotes.etapa_id','=',$request->b_etapa);
+        }
+
+        if($request->b_ruv != '')
+            $licencias = $licencias->where('lotes.paq_ruv', '=', $request->b_ruv);
 
         $licencias = $licencias->orderBy('licencias.cambios', 'DESC')
                                 ->orderBy('fraccionamientos.nombre', 'DESC')

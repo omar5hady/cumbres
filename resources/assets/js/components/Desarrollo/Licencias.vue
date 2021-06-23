@@ -27,10 +27,10 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
-                            <div class="col-md-8">
+                            <div class="col-md-10">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
+                                    <select class="form-control col-md-3" v-model="criterio" @click="selectFraccionamientos()">
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
                                         <option value="modelos.nombre">Modelo</option>
                                         <option value="arquitecto">Arquitecto</option>
@@ -41,11 +41,11 @@
                                         <option value="licencias.perito_dro">DRO</option>
                                     </select>
 
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @click="selectPuente(buscar),selectEtapas(buscar)" >
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @click="selectPuente(buscar),selectEtapas(buscar),selectRuv()" >
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa" >
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa" @click="selectRuv()" >
                                         <option value="">Etapa</option>
                                         <option v-for="etapa in arrayAllEtapas" :key="etapa.id" :value="etapa.id" v-text="etapa.num_etapa"></option>
                                     </select>
@@ -103,9 +103,25 @@
 
                                     <input v-if="criterio=='lotes.fraccionamiento_id'" type="text"  v-model="b_num_inicio" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control" placeholder="# Inicio">
 
-                                    <button type="submit" @click="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                    <a v-if="rolId != '5'" class="btn btn-success" v-bind:href="'/licencias/excel?buscar=' + buscar + '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + '&b_modelo='+ b_modelo + '&b_arquitecto='+ b_arquitecto + '&criterio=' + criterio + '&buscar2=' + buscar2 + '&b_puente=' + b_puente + 
-                                                                    '&b_num_inicio=' + b_num_inicio + '&b_empresa=' + b_empresa + '&b_empresa2=' + b_empresa2 + '&b_etapa=' + b_etapa" >
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <!--Criterios para el listado de busqueda -->
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_ruv" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)"> 
+                                        <option value="">Paquete Ruv</option>
+                                        <option v-for="ruv in arrayRuv" :key="ruv.paq_ruv" :value="ruv.paq_ruv" v-text="ruv.paq_ruv"></option>
+                                    </select>
+
+                                    <button type="submit" @click="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" 
+                                        class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <a v-if="rolId != '5'" class="btn btn-success" v-bind:href="'/licencias/excel?buscar=' + buscar + '&b_manzana=' + b_manzana + 
+                                            '&b_lote='+ b_lote + '&b_modelo='+ b_modelo + '&b_arquitecto='+ b_arquitecto + '&criterio=' + criterio + 
+                                            '&buscar2=' + buscar2 + '&b_puente=' + b_puente + '&b_num_inicio=' + b_num_inicio + '&b_empresa=' + b_empresa + 
+                                            '&b_empresa2=' + b_empresa2 + '&b_etapa=' + b_etapa + '&b_ruv=' + b_ruv" >
                                         <i class="icon-pencil"></i>&nbsp;Excel
                                     </a>
                                 </div>
@@ -134,7 +150,8 @@
                                         <th>Modelo</th>
                                         <th>Arquitecto</th>
                                         <th>% Avance</th>
-                                        <th v-if="rolId != '5'">No.</th>
+                                        <th v-if="rolId != '5'">No. Inicio</th>
+                                        <th v-if="rolId != '5'">RUV</th>
                                         <th v-if="rolId != '5'">Fecha</th>
                                         <th v-if="rolId != '5'">Siembra de obra</th>
                                         <th v-if="rolId != '5'">Planos licencia</th>
@@ -193,6 +210,10 @@
                                         <template v-if="rolId != '5'">
                                              <td class="td2" v-if="!licencias.siembra" v-text="''"></td>
                                              <td class="td2" v-else v-text="licencias.num_inicio"></td>
+                                        </template>
+                                        <!--RUV-->
+                                        <template v-if="rolId != '5'">
+                                             <td class="td2" v-text="licencias.paq_ruv"></td>
                                         </template>
                                         <template v-if="rolId != '5'">
                                              <td class="td2" v-if="!licencias.siembra" v-text="''"></td>
@@ -790,6 +811,7 @@
                 arrayFraccionamientos:[],
                 arrayObservacion:[],
                 arrayPuentes: [],
+                arrayRuv: [],
                 modal : 0,
                 modal2 : 0,
                 modal3 : 0,
@@ -825,6 +847,7 @@
                 b_empresa:'',
                 b_empresa2:'',
                 b_etapa:'',
+                b_ruv:'',
                 arrayAllEtapas:[]
             }
         },
@@ -966,9 +989,10 @@
             /**Metodo para mostrar los registros */
             listarLicencias(page, buscar,b_manzana,b_lote,b_modelo,b_arquitecto, criterio,buscar2){
                 let me = this;
-                var url = '/licencias?page=' + page + '&buscar=' + buscar + '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + '&b_modelo='+ b_modelo + '&b_arquitecto='+ b_arquitecto + '&criterio=' + criterio + '&buscar2=' + buscar2 
+                var url = '/licencias?page=' + page + '&buscar=' + buscar + '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + 
+                            '&b_modelo='+ b_modelo + '&b_arquitecto='+ b_arquitecto + '&criterio=' + criterio + '&buscar2=' + buscar2 
                             + '&b_puente=' + me.b_puente + '&b_num_inicio=' + me.b_num_inicio + '&b_empresa=' + me.b_empresa + '&b_empresa2=' + me.b_empresa2
-                            + '&b_etapa=' + me.b_etapa;
+                            + '&b_etapa=' + me.b_etapa + '&b_ruv=' + me.b_ruv;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLicencias = respuesta.licencias.data;
@@ -1038,6 +1062,20 @@
                     console.log(error);
                 });
             },
+            selectRuv(){
+                let me = this;
+
+                me.arrayRuv=[];
+                me.b_ruv = '';
+                var url = '/ruvs/selectRuv?proyecto=' + me.buscar + '&etapa=' + me.b_etapa;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayRuv = respuesta.ruvs;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
             selectUltimoComentario(lote){
                 let me = this;
                 var url = '/observacion/select_ultima?buscar=' + lote;
@@ -1062,6 +1100,7 @@
                 me.b_lote="";
                 me.b_modelo="";
                 me.buscar2="";
+                me.b_ruv = '';
                 me.arrayFraccionamientos=[];
                 var url = '/select_fraccionamiento';
                 axios.get(url).then(function (response) {
@@ -1489,6 +1528,7 @@
             this.listarLicencias(1,this.buscar,this.b_manzana,this.b_lote,this.b_modelo,this.b_arquitecto,this.criterio,this.buscar2);
             this.selectFraccionamientos();
             this.getEmpresa();
+            this.selectRuv();
         }
     }
 </script>
