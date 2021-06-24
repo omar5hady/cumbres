@@ -1392,7 +1392,7 @@
                                     <div class="form-group row">
                                         <label class="col-md-2 form-control-label" for="text-input">Pagado</label>
                                         <div class="col-md-3">
-                                            <h6 v-text="'$'+formatNumber(pagado=totalEnganghe-totalRestante+totalIntOrd)"></h6>
+                                            <h6 v-text="'$'+formatNumber(pagado=pagos)"></h6>
                                         </div>
 
                                         <label v-if="avaluo" class="col-md-2 form-control-label" for="text-input">Resultado avaluo</label>
@@ -2280,6 +2280,7 @@
                 contadorLiquidacion : 0,
                 contadorProgramacion : 0,
                 contadorEnviados: 0,
+                pagos:0,
 
                 pagination : {
                     'total' : 0,         
@@ -2325,7 +2326,7 @@
             totalLiquidar: function(){
                 var neto_credito =0;
                     neto_credito = parseFloat(this.valor_venta) - parseFloat(this.descuento) + parseFloat(this.totalGastos) - parseFloat(this.monto_credito) - 
-                    parseFloat(this.infonavit) - parseFloat(this.fovissste) - parseFloat(this.pagado); 
+                    parseFloat(this.infonavit) - parseFloat(this.fovissste) - parseFloat(this.pagos); 
                 return neto_credito;
             },
 
@@ -3141,6 +3142,7 @@
                     me.arrayPagares = respuesta.pagares;
                     me.totalEnganghe = respuesta.calculos[0].enganche;
                     me.totalRestante = respuesta.calculos[0].total_restante;
+                    me.pagos = respuesta.depositos.pagado;
                 })
                 .catch(function (error) {
                     console.log(error);

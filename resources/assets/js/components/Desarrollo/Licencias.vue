@@ -322,6 +322,7 @@
                                             <option value="0">Seleccione</option>
                                             <option value="15044">Ing. Alejandro F. Perez Espinosa</option>
                                             <option value="23679">Raúl Palos López</option>
+                                            <option value="29836">Juan Antonio De La Torre</option>
                                         </select>
                                     </div>
                                 </div>
@@ -401,6 +402,7 @@
                                             <option value="0">Seleccione</option>
                                             <option value="15044">Ing. Alejandro F. Perez Espinosa</option>
                                             <option value="23679">Raúl Palos López</option>
+                                            <option value="29836">Juan Antonio De La Torre</option>
                                         </select>
                                     </div>
                                 </div>

@@ -61,8 +61,8 @@ class CreditoPuenteController extends Controller
                 'm.nombre as modelo',
                 'e.num_etapa',
                 'f.nombre as proyecto'
-            )
-            ->where('lotes.contrato', '=', 0);
+            );
+            //->where('lotes.contrato', '=', 0);
         //->where('lotes.habilitado','=',1);
 
         if ($request->puente == '') {

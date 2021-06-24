@@ -1043,7 +1043,13 @@ class ExpedienteController extends Controller
                     ->where('contrato_id','=',$folio)
                     ->get();
 
+        $depositos = Pago_contrato::join('depositos','pagos_contratos.id','=','depositos.pago_id')
+                                    ->select(DB::raw("SUM(depositos.cant_depo) as pagado"))
+                                    ->where('pagos_contratos.contrato_id','=',$folio)
+                                    ->first();
+
         return ['pagares' => $pagares,
+                'depositos' => $depositos,
                 'calculos' => $calculos];
     }
 
@@ -1662,13 +1668,13 @@ class ExpedienteController extends Controller
         $liquidacion[0]->precio_base = $liquidacion[0]->precio_base - $liquidacion[0]->descuento_promocion;
         $liquidacion[0]->precio_base = $liquidacion[0]->precio_base;
 
-        $depositos = Pago_contrato::select('monto_pago','restante')->where('contrato_id','=',$id)->get();
-        $suma= 0;
-        for($i = 0; $i < count($depositos); $i++){
-             $resta = $depositos[$i]->monto_pago - $depositos[$i]->restante;
-             $suma = $suma + $resta;
-             $liquidacion[0]->sumaDepositos = $suma;
-        }
+        // $depositos = Pago_contrato::select('monto_pago','restante')->where('contrato_id','=',$id)->get();
+        // $suma= 0;
+        // for($i = 0; $i < count($depositos); $i++){
+        //      $resta = $depositos[$i]->monto_pago - $depositos[$i]->restante;
+        //      $suma = $suma + $resta;
+        //      $liquidacion[0]->sumaDepositos = $suma;
+        // }
 
         $sumGastos = 0;
         $gastos=Gasto_admin::select('concepto','costo','id')
@@ -1681,6 +1687,14 @@ class ExpedienteController extends Controller
         }
 
        $pagares = Pago_contrato::select('fecha_pago','restante','num_pago')->where('pagado','<',2)->where('contrato_id','=',$id)->get();
+       
+       $depositos_pagado = Pago_contrato::join('depositos','pagos_contratos.id','=','depositos.pago_id')
+       ->select(DB::raw("SUM(depositos.cant_depo) as pagado"))
+       ->where('pagos_contratos.contrato_id','=',$id)
+       ->first();
+
+       $liquidacion[0]->sumaDepositos = $depositos_pagado->pagado;
+
        setlocale(LC_TIME, 'es_MX.utf8');
 
        for($i = 0; $i < count($pagares); $i++){
