@@ -195,14 +195,20 @@
                                             </div>
                                             <!-- Botones para pagar intereses o registrar abono/cargo -->
                                             <div class="card-body p-4 d-flex align-items-center">
-                                                <button v-if="vista == 1 && datosPuente.diasInt < 0 || arrayPagos.length == 0" @click="abrirModal('movimiento',datosPuente.id)" class="btn btn-success rounded">
+                                                <!-- <button v-if="vista == 1 && datosPuente.diasInt < 0 || arrayPagos.length == 0" @click="abrirModal('movimiento',datosPuente.id)" class="btn btn-success rounded">
+                                                    <i class="icon-plus"></i>&nbsp;Nuevo movimiento
+                                                </button> -->
+                                                <button v-if="vista == 1 || arrayPagos.length == 0" @click="abrirModal('movimiento',datosPuente.id)" class="btn btn-success rounded">
                                                     <i class="icon-plus"></i>&nbsp;Nuevo movimiento
                                                 </button>
                                                 <button v-if="vista == 1 && datosPuente.diasInt >= 0" @click="abrirModal('intereses',datosPuente.id)" class="btn btn-success rounded">
                                                     <i class="fa fa-calendar-plus-o"></i>&nbsp;Pago de intereses
                                                 </button>
                                                 &nbsp;&nbsp;
-                                                <button v-if="vista == 1 && datosPuente.diasInt < 0 && arrayPagosPendientes.length" @click="abrirModal('pendientes',datosPuente.id)" class="btn btn-warning rounded">
+                                                <!-- <button v-if="vista == 1 && datosPuente.diasInt < 0 && arrayPagosPendientes.length" @click="abrirModal('pendientes',datosPuente.id)" class="btn btn-warning rounded">
+                                                    <i class=" fa fa-bank"></i>&nbsp;Hipotecas pendientes
+                                                </button> -->
+                                                <button v-if="vista == 1 && arrayPagosPendientes.length" @click="abrirModal('pendientes',datosPuente.id)" class="btn btn-warning rounded">
                                                     <i class=" fa fa-bank"></i>&nbsp;Hipotecas pendientes
                                                 </button>
                                             </div>
@@ -256,7 +262,10 @@
                                                         <!--Comisiones Bancarias--->
                                                             <tr v-for="lote in arrayLotes" :key="lote.id">
                                                                 <td class="td2" style="width:5%">
-                                                                    <button v-if="lote.liberado == 0 && datosPuente.diasInt < 0" title="Seleccionar" type="button" @click="selectLote(lote)" class="btn btn-warning btn-sm">
+                                                                    <!-- <button v-if="lote.liberado == 0 && datosPuente.diasInt < 0" title="Seleccionar" type="button" @click="selectLote(lote)" class="btn btn-warning btn-sm">
+                                                                        <i class="icon-pencil"></i>
+                                                                    </button> -->
+                                                                    <button v-if="lote.liberado == 0" title="Seleccionar" type="button" @click="selectLote(lote)" class="btn btn-warning btn-sm">
                                                                         <i class="icon-pencil"></i>
                                                                     </button>
                                                                 </td>

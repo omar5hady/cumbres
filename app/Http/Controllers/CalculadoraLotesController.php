@@ -459,6 +459,11 @@ class CalculadoraLotesController extends Controller
                 $credito->precio_venta = $cotizacion->valor_venta - $cotizacion->valor_descuento;
                 $credito->plazo = $cotizacion->mensualidades;
                 $credito->credito_solic = $credito->precio_venta;
+                if($cotizacion->valor_descuento > 0){
+                    $credito->promocion = 'Descuento de $'.$cotizacion->valor_descuento;
+                    $credito->descripcion_promocion = 'Descuento de $'.$cotizacion->valor_descuento;
+                    $credito->descuento_promocion = $cotizacion->valor_descuento;
+                }
                 $credito->status = 2;
                 $credito->lote_id = $cotizacion->lotes_id;
                 $credito->contrato = 1;

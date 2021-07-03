@@ -1042,6 +1042,11 @@ class ContratoController extends Controller
             $contratos[0]->m2 = number_format((float)$cotizacion->m2, 2, '.', ',');
             $contratos[0]->interes = $cotizacion->interes;
             $contratos[0]->mensualidades = $cotizacion->mensualidades;
+            $contratos[0]->valor_venta = $cotizacion->valor_venta - $cotizacion->valor_descuento;
+
+            $contratos[0]->valor_base = number_format((float)$cotizacion->valor_venta, 2, '.', ',');
+            $contratos[0]->valor_venta = number_format((float)$contratos[0]->valor_venta, 2, '.', ',');
+            $contratos[0]->valor_descuento = number_format((float)$cotizacion->valor_descuento, 2, '.', ',');
             
             $pago = Pagos_lotes::where('cotizacion_lotes_id', '=', $cotizacion->id)
                 ->orderBy('folio')

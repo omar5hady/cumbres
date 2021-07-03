@@ -20,7 +20,11 @@ body {
 .table-cell4 { display: table-cell;  font-size: 9pt; text-align:right; }
 .table { display: table; width: 90%; border-collapse: collapse; table-layout: fixed; }
 
-
+@page{
+    margin: 35px;
+    margin-right: 40px;
+    margin-left: 40px;
+}
 
 </style>
 <body>
@@ -28,7 +32,7 @@ body {
     <div style="clear:both;">
         
         <div style="float: left; margin-top: 5px; margin-left: 20px;">
-            @if($solicitud[0]->emp_constructora == 'CONCRETANIA' && $solicitud[0]->emp_terreno == 'CONCRETANIA')
+            @if($solicitud[0]->emp_terreno == 'CONCRETANIA')
                 <IMG SRC="img/contratos/logoContratoC1.png" width="130" height="130" >
             @else
                 <IMG SRC="img/contratos/logoContrato.jpg" width="130" height="130" >
@@ -45,7 +49,7 @@ body {
                 <div colspan="8" class="table-cell1"><br></div>
             </div>
 
-            @if($solicitud[0]->emp_constructora == 'CONCRETANIA' && $solicitud[0]->emp_terreno == 'CONCRETANIA')
+            @if($solicitud[0]->emp_terreno == 'CONCRETANIA')
                 <div class="table-row">
                     <div  class="table-cell1"></div>
                     <div colspan="7" class="table-cell2"> <b>CONCRETANIA, S.A. DE C.V.</div>
@@ -57,7 +61,7 @@ body {
                 </div>
             @endif
 
-        @if($solicitud[0]->emp_constructora == 'CONCRETANIA' && $solicitud[0]->emp_terreno == 'CONCRETANIA')
+        @if($solicitud[0]->emp_terreno == 'CONCRETANIA')
             <div class="table-row">
                 <div class="table-cell2"></div>
                     <div colspan="8" class="table-cell2"> <b>Manuel Gutiérrez Najera No. 180  </div>  
@@ -101,7 +105,17 @@ body {
 
         </div>
 
-    <div class="table" style="text-align:left; margin-top: 30px; margin-left: 20px;">
+        <div class="table" style="text-align:left; margin-top: 10px; margin-left: 20px;">
+            <div class="table-row">
+                <div colspan="4" class="table-cell3"> CONSTRUCTORA: {{$solicitud[0]->emp_constructora}} </div>  
+            </div>
+            
+        </div>
+
+    <div class="table" style="text-align:left; margin-top: 20px; margin-left: 20px;">
+        <div class="table-row">
+            <div colspan="4" class="table-cell3"></div>
+        </div>
     
         <div class="table-row">
             <div colspan="4" class="table-cell3"> TIPO DE CREDITO:<b> {{mb_strtoupper($solicitud[0]->tipo_credito)}} ({{mb_strtoupper($solicitud[0]->institucion)}}) </div>  
@@ -193,7 +207,7 @@ body {
         <div style="clear:both;">
             
                 <div style="float: left; margin-top: 5px; margin-left: 20px;">
-                    @if($solicitud[0]->emp_constructora == 'CONCRETANIA' && $solicitud[0]->emp_terreno == 'CONCRETANIA')
+                    @if($solicitud[0]->emp_terreno == 'CONCRETANIA')
                         <IMG SRC="img/contratos/logoContratoC1.png" width="130" height="130" >
                     @else
                         <IMG SRC="img/contratos/logoContrato.jpg" width="130" height="130" >
@@ -212,7 +226,7 @@ body {
     
           <div class="table-row">
                 <div  class="table-cell1"></div>
-                @if($solicitud[0]->emp_constructora == 'CONCRETANIA' && $solicitud[0]->emp_terreno == 'CONCRETANIA')
+                @if($solicitud[0]->emp_terreno == 'CONCRETANIA')
                     <div colspan="7" class="table-cell2"> <b>CONCRETANIA, S.A. DE C.V.</div>
                 @else
                     <div colspan="7" class="table-cell2"> <b>GRUPO CONSTRUCTOR CUMBRES, S.A. DE C.V.</div>
@@ -221,7 +235,7 @@ body {
     
         <div class="table-row">
             <div class="table-cell2"></div>
-                @if($solicitud[0]->emp_constructora == 'CONCRETANIA' && $solicitud[0]->emp_terreno == 'CONCRETANIA')
+                @if($solicitud[0]->emp_terreno == 'CONCRETANIA')
                     <div colspan="8" class="table-cell2"> <b>Manuel Gutiérrez Najera No. 180 </div>  
                 @else
                     <div colspan="8" class="table-cell2"> <b>Manuel Gutiérrez Najera No. 190 esquina  </div>  
@@ -230,7 +244,7 @@ body {
     
     <div class="table-row">
             <div class="table-cell2"></div>
-                @if($solicitud[0]->emp_constructora == 'CONCRETANIA' && $solicitud[0]->emp_terreno == 'CONCRETANIA')
+                @if($solicitud[0]->emp_terreno == 'CONCRETANIA')
                     <div colspan="8" class="table-cell2"> <b>Col. Tequisquiapan </div>  
                 @else 
                     <div colspan="8" class="table-cell2"> <b>con Nicolas Zapata Col. Tequisquiapan </div>  
@@ -257,8 +271,15 @@ body {
             </div>
     
         </div>
+
+        <div class="table" style="text-align:left; margin-top: 10px; margin-left: 20px;">
+            <div class="table-row">
+                <div colspan="4" class="table-cell3"> CONSTRUCTORA: {{$solicitud[0]->emp_constructora}} </div>  
+            </div>
+            
+        </div>
     
-        <div class="table" style="text-align:left; margin-top: 30px; margin-left: 20px;">
+        <div class="table" style="text-align:left; margin-top: 20px; margin-left: 20px;">
         
             <div class="table-row">
                 <div colspan="4" class="table-cell3"> TIPO DE CREDITO:<b> {{mb_strtoupper($solicitud[0]->tipo_credito)}} ({{mb_strtoupper($solicitud[0]->institucion)}}) </div>  

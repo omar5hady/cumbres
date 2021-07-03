@@ -201,9 +201,9 @@
                                         <td class="td2" v-text="deposito.num_recibo"></td>
                                         <td class="td2" v-text="'$'+formatNumber(deposito.cant_depo)"></td>
                                         <template v-if="modelo == 'Terreno'">
-                                            <td class="td2" v-text="'$'+formatNumber(depo.pago_capital)"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(depo.interes_pago)"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(depo.desc_interes)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(deposito.pago_capital)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(deposito.interes_pago)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(deposito.desc_interes)"></td>
                                         </template>
                                         <td class="td2" v-text="this.moment(deposito.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
                                     </tr>                               

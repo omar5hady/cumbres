@@ -889,7 +889,7 @@ class DigitalLeadController extends Controller
                         ->where('cliente_id','=',$c->id)
                         ->count();
 
-                        $obs2 = Cliente_observacion::where('created_at','>=',Carbon::now()->subDays(15))
+                        $obs2 = Cliente_observacion::where('created_at','>=',Carbon::now()->subDays(16))
                         ->where('cliente_id','=',$c->id)
                         ->count();
         
@@ -904,7 +904,7 @@ class DigitalLeadController extends Controller
                                 
                         $vendedor->bd;
                         $vendedor->dif7 =  $vendedor->bd7 - $vendedor->reg;
-                        $vendedor->dif15 = $vendedor->total - $vendedor->bd7 - $vendedor->bd;;
+                        $vendedor->dif15 = $vendedor->total - $vendedor->bd7 - $vendedor->bd;
                     }
                 }
 

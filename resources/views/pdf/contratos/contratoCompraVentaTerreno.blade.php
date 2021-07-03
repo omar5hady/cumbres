@@ -254,7 +254,11 @@
                     
                 </div>     
                 <div class="table-row">
-                    <div colspan="3" class="table-cell">PROMOCION: {{mb_strtoupper($contratos[0]->promocion)}} </div>
+                    <div colspan="3" class="table-cell">PROMOCION:
+                        @if($contratos[0]->valor_descuento != '')
+                            Descuento de ${{$contratos[0]->valor_descuento}}
+                        @endif
+                    </div>
                 </div>   
                              
         </div>
@@ -365,7 +369,7 @@
                 <td>Costo * m²: ${{$contratos[0]->m2}}</td>
             </tr>
             <tr>
-                <td>Valor de Venta: ${{$contratos[0]->total_pagar}}</td>
+                <td>Valor de Venta: ${{$contratos[0]->valor_base}}</td>
                 <td>Número de pagos: {{round($pago[0]->numPagos)}}</td>
                 <td></td>
             </tr>
@@ -377,7 +381,7 @@
         <thead>
             <tr>
                 <th style="background-color: #163253;" class="text-right">
-                        Total a Pagar: ${{$contratos[0]->total_pagar}}
+                        Valor de venta: ${{$contratos[0]->valor_base}} - Descuento: ${{$contratos[0]->valor_descuento}} Total a Pagar: ${{$contratos[0]->valor_venta}} 
                 </th>
             </tr>
         </thead>
