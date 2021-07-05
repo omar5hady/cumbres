@@ -1872,7 +1872,7 @@ class ClienteController extends Controller
                         'personal.f_nacimiento','clientes.clasificacion','v.nombre as vendedor','v.apellidos as vendedor_ap')
             ->whereMonth('personal.f_nacimiento',$now->month)
             ->whereDay('personal.f_nacimiento',$now->day);
-            if(Auth::user()->rol_id != 1 && Auth::user()->rol_id != 4 && Auth::user()->rol_id != 6)
+            if(Auth::user()->rol_id != 4 && Auth::user()->rol_id != 6)
                 $people = $people->where('clientes.vendedor_id','=',Auth::user()->id);
             $people = $people->orderBy('personal.nombre','asc')
             ->get();

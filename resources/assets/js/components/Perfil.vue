@@ -10,6 +10,26 @@
     </ol>
     
     <div class="container-fluid">
+
+        <!-- Avisos generales -->
+        <div class="row">
+            <div class="col-xl-12 col-lg-12 col-md-4">
+                <div v-for="rem in arrayAvisosGral" :key="rem.id" class="col-sm-12 alert alert-primary alert-dismissible fade show" role="alert">
+                    <strong>¡Atención! : </strong> {{rem.mensaje}} 
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                   
+                    <div class="px-3 py-2 text-right">
+                        <button type="button" class="btn btn-light rounded" @click="setEnterado(rem.id)">
+                            <span aria-hidden="true">Enterado</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
         <div class="row">
             <div class="col-xl-12 col-lg-12 col-md-4">
                 <div v-for="rem in arrayRemindersLead" :key="rem.id" class="col-sm-12 alert alert-dark alert-dismissible fade show" role="alert">
@@ -415,7 +435,8 @@ export default {
       url: null,
       arrayReminders:[],
       arrayRemindersLead:[],
-      arrayRemindersLeadFecha:[]
+      arrayRemindersLeadFecha:[],
+      arrayAvisosGral:[]
     };
   },
 
@@ -440,6 +461,20 @@ export default {
     enterado(id){
         axios
         .put("/comments/leadEnterado", {
+          'id': id,
+        })
+        .then(function(response) {
+          location.reload();
+        })
+
+        .catch(function(error) {
+          currentObj.output = error;
+        });
+    },
+
+    setEnterado(id){
+        axios
+        .put("/notificacion/setEnterado", {
           'id': id,
         })
         .then(function(response) {
@@ -534,6 +569,16 @@ export default {
             }
         ).catch(error => console.log(error));
     },
+
+    getAvisosGral(){
+        axios.get('/notificacion/gral/').then(
+            response => {
+                console.log(response);
+                this.arrayAvisosGral = response.data;
+            }
+        ).catch(error => console.log(error));
+    },
+
     getReminderLeads(){
         let me = this;
 
@@ -561,6 +606,7 @@ export default {
     this.getBirthdayPeople();
     this.getReminder();
     this.getReminderLeads();
+    this.getAvisosGral();
   }
 };
 </script>

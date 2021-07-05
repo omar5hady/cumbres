@@ -8,8 +8,11 @@ use App\Partida;
 use App\Licencia;
 use App\Lote;
 use DB;
+use App\User;
 use Excel;
 use Auth;
+
+use App\Http\Controllers\NotificacionesAvisosController;
 
 class AvanceController extends Controller
 {
@@ -233,6 +236,23 @@ class AvanceController extends Controller
         if($suma[0]->porcentajeTotal > 100)
             $suma[0]->porcentajeTotal = 100;
         $licencia->avance = $suma[0]->porcentajeTotal;
+
+        if($licencia->avance >= 90 && $licencia->avance <= 95 && $licencia->num_acta == NULL){
+            $lote = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                        ->select('num_lote','manzana','fraccionamientos.nombre')
+                        ->where('lotes.id','=',$licencia->id)
+                        ->first();
+
+            $msj = 'El Lote #'.$lote->num_lote.' manzana '.$lote->manzana.' del fraccionamiento '.$lote->nombre.' alcanzo el 90% de avance';
+            $aviso = new NotificacionesAvisosController();
+            $user_proyectos = User::select('id')
+                                ->whereIn('usuario',['rocio.gim','alemunoz','shady'])
+                                ->get();
+            foreach ($user_proyectos as $index => $user) {
+                $aviso->store($user->id,$msj);
+            }
+        }
+
         $licencia->save();
     }
 

@@ -988,11 +988,14 @@ Route::group(['middleware' => ['auth']],function(){
          Route::put('/detalles/updateFechaConcluido','SolicDetallesController@updateFechaConcluido');
 
         /////////////////////// RUTAS DROPBOX /////////////////////////
-         
-       
         Route::post('/dropbox/files/{id}/{sub}', 'DropboxFilesController@store');
         Route::delete('/files/delete', 'DropboxFilesController@destroy');
         Route::get('/files/{carpeta}/{file}/download', 'DropboxFilesController@download');
+
+        ///////////////////// RUTAS MENSAJES NOTIFICACION GENERAL /////////////////////
+        Route::get('/notificacion/gral', 'NotificacionesAvisosController@getAvisos');
+        Route::put('/notificacion/setEnterado','NotificacionesAvisosController@setEnterado');
+        
 
 
         /////////////////////// RUTAS BONOS VENTAS /////////////////////
