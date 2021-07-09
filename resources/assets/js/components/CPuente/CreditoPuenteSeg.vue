@@ -56,13 +56,13 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-on:dblclick="verDetalla(creditosPuente,2)" v-for="creditosPuente in arrayCreditosPuente" :key="creditosPuente.id" title="Ver detalle">
+                                        <tr v-for="creditosPuente in arrayCreditosPuente" :key="creditosPuente.id" title="Ver detalle">
                                             <td>
-                                                <button type="button" class="btn btn-warning btn-sm" @click="verDetalla(creditosPuente, 3)">
+                                                <button v-if="creditosPuente.base_p == 1" type="button" class="btn btn-warning btn-sm" @click="verDetalla(creditosPuente, 3)">
                                                     <i class="icon-pencil"></i>
                                                 </button>
                                             </td>
-                                            <td>
+                                            <td v-on:dblclick="verDetalla(creditosPuente,2)">
                                                 <a href="#" v-text="creditosPuente.folio"></a>
                                             </td>
                                             <td class="td2" v-text="creditosPuente.proyecto"></td>
@@ -432,7 +432,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group row border">
+                            <div class="form-group row border" v-if="cabecera.base_p == 1">
                                 <div class="col-md-12">
                                     <h5><strong><center>Modelos</center></strong></h5>
                                 </div>
@@ -448,7 +448,7 @@
                                 </template>
                                 
 
-                                <div class="form-group row">
+                                <div class="form-group row" v-if="cabecera.base_p == 1">
                                     <div class="col-md-1">
                                         <button type="button" class="btn btn-dark" @click="bases=1,getBases()"> Base presupuestal </button>
                                     </div>
@@ -512,7 +512,7 @@
                                     </table>
                                 </div>
                             </div>
-                            <div class="form-group row">
+                            <div class="form-group row" v-if="cabecera.base_p == 1">
                                 <div class="card-header form-group col-md-5 border">
                                     <div class="row">
                                         <h5>Planos de urbanización</h5> 
@@ -553,7 +553,7 @@
                                 <div class="card-header form-group col-md-2 ">   
                                 </div>
 
-                                <div class="card-header form-group col-md-5 border">
+                                <div class="card-header form-group col-md-5 border" v-if="cabecera.base_p == 1">
                                     <div class="row">
                                         <h5>Planos de edificación</h5> 
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -593,7 +593,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row border">
+                            <div class="form-group row border" v-if="cabecera.base_p == 1">
                                 <div class="col-md-12">
                                     <br><center>
                                         <h5 v-text="`Checklist (${chk_listos}/${chk_total})`"></h5>
@@ -1140,6 +1140,7 @@
                     'folio' : '',
                     'apertura' : 0,
                     'fraccionamiento' : '',
+                    'base_p' : 0,
                 },
                 offset : 3,
                 buscar : '',
@@ -1657,6 +1658,7 @@
                 me.cabecera.interes = data['interes'];
                 me.cabecera.apertura = data['apertura'];
                 me.cabecera.status = data['status'];
+                me.cabecera.base_p = data['base_p'];
                 me.lic = data['lic'];
                 me.cabecera.fraccionamiento = data['fraccionamiento'];
                 me.selectEtapa(me.cabecera.fraccionamiento);

@@ -16,6 +16,7 @@ use App\Licencia;
 use App\Partida;
 use App\Avance;
 use App\Promocion;
+use App\Contrato;
 use Session;
 use Excel;
 use File;
@@ -1422,6 +1423,25 @@ class LoteController extends Controller
         $lotes = $this->getPreciosBase($buscar,$b_etapa,$b_manzana,$b_lote,$modelo,$criterio);
             $lotes = $lotes->paginate(8);
 
+        if(sizeof($lotes)){
+            foreach ($lotes as $index => $lote) {
+                $contrato = Contrato    ::  join('creditos','contratos.id','=','creditos.id')
+                                            ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                                            ->join('expedientes','contratos.id','=','expedientes.id')
+                                            ->select('contratos.id')
+                                            ->where('creditos.lote_id','=',$lote->id)
+                                            ->where('inst_seleccionadas.elegido','=',1)
+                                            ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
+                                            ->where('contratos.status','=',3)
+                                            ->where('expedientes.liquidado','=',1)
+                                            ->get();
+                
+                if(sizeof($contrato))
+                    $lote->firmado = 1;
+            }
+            
+        }
+
 
         return [
             'pagination' => [
@@ -1451,12 +1471,12 @@ class LoteController extends Controller
                 $excel->sheet('lotes', function($sheet) use ($lotes){
                     
                     $sheet->row(1, [
-                        'Proyecto', 'Etapa', 'Manzana', 'Lote', 'Modelo', 'Avance',
+                        'Proyecto', 'Etapa', 'Manzana', 'Lote', 'Modelo', 'Avance', 'Status',
                         'Precio base', 'Ajuste'
                     ]);
     
     
-                    $sheet->cells('A1:H1', function ($cells) {
+                    $sheet->cells('A1:I1', function ($cells) {
                         $cells->setBackground('#052154');
                         $cells->setFontColor('#ffffff');
                         // Set font family
@@ -1472,7 +1492,7 @@ class LoteController extends Controller
 
                     $sheet->setColumnFormat(array(
                         'H' => '$#,##0.00',
-                        'G' => '$#,##0.00',
+                        'I' => '$#,##0.00',
                     ));
     
                     
@@ -1480,7 +1500,13 @@ class LoteController extends Controller
     
                     foreach($lotes as $index => $lote) {
                         $cont++;
-    
+
+                        if($lote->contrato == 0)
+                            $lote->status = 'Disponible';
+                        elseif($lote->contrato == 1 && $lote->firmado == 0)
+                            $lote->status = 'Vendida';
+                        else
+                            $lote->status = 'Individualizada';
                         
                         $sheet->row($index+2, [
                             $lote->proyecto, 
@@ -1489,11 +1515,12 @@ class LoteController extends Controller
                             $lote->num_lote,
                             $lote->modelo, 
                             $lote->avance.'%',
+                            $lote->status,
                             $lote->precio_base,
                             $lote->ajuste,
                         ]);	
                     }
-                    $num='A1:H' . $cont;
+                    $num='A1:I' . $cont;
                     $sheet->setBorder($num, 'thin');
                 });
             }
@@ -1506,8 +1533,11 @@ class LoteController extends Controller
             ->join('etapas','lotes.etapa_id','=','etapas.id')
             ->join('modelos','lotes.modelo_id','=','modelos.id')
             ->join('licencias','lotes.id','=','licencias.id')
-            ->select('lotes.id','lotes.num_lote','lotes.sublote','lotes.precio_base','lotes.manzana','licencias.avance',
-            'lotes.ajuste','fraccionamientos.nombre as proyecto','etapas.num_etapa','modelos.nombre as modelo');
+            ->select('lotes.id','lotes.num_lote','lotes.sublote','lotes.precio_base',
+                        'lotes.manzana','licencias.avance',
+                        'lotes.contrato',
+                        'lotes.ajuste','fraccionamientos.nombre as proyecto',
+                        'etapas.num_etapa','modelos.nombre as modelo');
 
             if($buscar != '')
                 $lotes = $lotes->where($criterio, 'like', '%'. $buscar . '%');

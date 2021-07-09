@@ -12,6 +12,7 @@ class Base_presupuestal extends Model
        'modelo_id',
        'activo',
        'valor_venta',
+       'credito_id',
         //// COMISIONES BANCARIAS :
             'insc_conjunto',
             'int_nafin',

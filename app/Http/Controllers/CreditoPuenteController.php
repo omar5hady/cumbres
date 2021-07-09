@@ -13,6 +13,7 @@ use App\Precio_puente;
 use App\Puente_checklist;
 use App\Cat_documento;
 use App\Pago_puente;
+use App\Base_presupuestal;
 
 use Carbon\Carbon;
 use DB;
@@ -151,6 +152,9 @@ class CreditoPuenteController extends Controller
             $puente->folio = $request->banco . '-' . $request->cantidad. '-'.$puente->id;
             $puente->save();
 
+            $puente->folio = $request->banco . '-' . $request->cantidad. '-'.$puente->id;
+            $puente->save();
+
             $id = $puente->id;
 
             foreach ($modelos as $index => $m) {
@@ -233,6 +237,16 @@ class CreditoPuenteController extends Controller
 
                 $credito->diasInt = $fechaFin->diffInDays($fecha,false);
             }
+
+            //Se busca la base presupuestal para ese crédito
+            $base = Base_presupuestal::select('id')->where('credito_id','=',$credito->id)->get();
+            if(sizeof($base))
+                $credito->base_p = 1;
+            else
+                $credito->base_p = 0;
+
+
+
         }
 
         return [
@@ -536,16 +550,21 @@ class CreditoPuenteController extends Controller
     public function getModelosBase(Request $request)
     {
 
+        $base = Base_presupuestal::select('id')->where('credito_id','=',$request->id)->get();
+
         $t_adquisicion_terreno = $t_estudios_lic = $t_proyectos_disen = $t_edificacion = $t_urbanizacion_infra =
             $t_promocion_publi = $t_gastos_venta = $t_gastos_admin = $t_gastos_notariales =
             $t_gastos_fin_com = $t_int_cpuente_com = $t_cont = $t_venta = 0;
 
-        $modelos = Modelo::join('lotes_puente as lp', 'modelos.id', '=', 'lp.modelo_id')
-            ->join('bases_presupuestales as bp', 'modelos.id', '=', 'bp.modelo_id')
-            ->select('modelos.nombre', 'bp.*', 'modelos.id')
-            ->where('solicitud_id', '=', $request->id)
-            ->where('bp.activo', '=', 1)
-            ->distinct()->get();
+            $modelos = Modelo::join('lotes_puente as lp', 'modelos.id', '=', 'lp.modelo_id')
+                ->join('bases_presupuestales as bp', 'modelos.id', '=', 'bp.modelo_id')
+                ->select('modelos.nombre', 'bp.*', 'modelos.id')
+                ->where('solicitud_id', '=', $request->id);
+                if(sizeof($base))
+                    $modelos = $modelos->where('bp.credito_id', '=', $request->id);
+                else
+                    $modelos = $modelos->where('bp.activo', '=', 1);
+                $modelos = $modelos->distinct()->get();
 
         if (sizeof($modelos))
             foreach ($modelos as $index => $m) {
@@ -1035,5 +1054,15 @@ class CreditoPuenteController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
         }
+    }
+
+    public function selectCreditosPuente(Request $request){
+        $creditos = Credito_puente::select('id','folio','fecha_integracion')
+                    ->where('fecha_integracion','=',NULL);
+                    if($request->fraccionamiento != '')
+                        $creditos = $creditos->where('fraccionamiento','=',$request->fraccionamiento);
+                    $creditos = $creditos->get();
+
+        return $creditos;
     }
 }

@@ -16,11 +16,22 @@
                             <div class="col-md-7">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control" v-model="b_proyecto" >
+                                    <select required class="form-control" v-model="b_proyecto" @change="selectCreditosPuente()">
                                         <option value="">Fraccionamiento</option>
                                         <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
                                     </select>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <input type="date" v-model="fecha" class="form-control col-md-3">
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-7">
+                                <div class="input-group">
+                                    
                                     <button type="submit" @click="getBaseActiva()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     <button v-if="nuevo == 0 && b_proyecto != ''" @click="nuevo=1" class="btn btn-success"><i class="icon-plus"></i> Nueva Base</button>
                                 </div>
                                 
@@ -30,6 +41,17 @@
                         <div class="card">
                             <div class="form-group row" v-if="nuevo == 1">
 
+                                
+                                    
+                                <div class="col-md-4">
+                                    <br>
+                                    <select v-model="credito" class="form-control">
+                                        <option value="">Seleccione Crédito Puente (Opcional)</option>
+                                        <option v-for="credito in arrayCreditos" :key="credito.id" :value="credito.id" v-text="credito.folio"></option>
+                                    </select>
+                                </div>
+                                
+
                                 <div class="col-md-6">
                                     <form method="post" @submit="formSubmit"  enctype="multipart/form-data">
                                         <!-- {{ csrf_field() }} -->
@@ -37,18 +59,34 @@
                                         <input type="submit" value="Cargar" class="btn btn-primary btn">
                                         <button v-if="nuevo == 1 && b_proyecto != ''" @click="nuevo=0" class="btn btn-danger"><i class="icon-close"></i> Cancelar</button>
                                     </form>
-                                    
                                 </div>
                             </div>
 
                         </div>
                         
 
-                        <div class="row">
-                            <div class="input-group" v-if="arrayBases.length > 0">
-                                <div class="text-muted text-uppercase font-weight-bold" v-text="' Fecha de ultima captura: '+arrayBases[0].created_at"></div>
-                                <br>
+                        <div class="form-group row">
+                            <div class="col-xl-6 col-lg-5 col-md-6">
+                                <div class="input-group" v-if="arrayBases.length > 0">
+                                    <div class="text-muted text-uppercase font-weight-bold" v-text="' Fecha de captura: '+arrayBases[0].created_at"></div>
+                                </div>
                             </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-xl-6 col-lg-5 col-md-6">
+                                <div class="input-group" v-if="arrayBases.length > 0">
+                                    <div v-if="arrayBases[0].folio != null" 
+                                        class="text-muted text-uppercase font-weight-bold" 
+                                        v-text="'Credito puente asignado: '+arrayBases[0].folio">
+                                    </div>
+
+                                    <br>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            
                             <div v-for="base in arrayBases" :key="base.id" class="col-xl-4 col-lg-5 col-md-4">
                                 <div class="card">
                                     <div class="card-body p-3 d-flex align-items-center">
@@ -180,6 +218,8 @@
                                 </div>
                             </div>
                         </div>
+
+                        
  
                         <nav>
                             
@@ -210,9 +250,12 @@
             return{
                 arrayFraccionamientos:[],
                 arrayBases:[],
+                arrayCreditos:[],
                 b_proyecto:'',
                 file:'',
                 nuevo:0,
+                fecha:'',
+                credito:''
             }
         },
         computed:{
@@ -251,6 +294,7 @@
                 let formData = new FormData();
                 formData.append('file', this.file);
                 formData.append('fraccionamiento', this.b_proyecto);
+                formData.append('credito', this.credito);
                 axios.post('/basePresupuestal/storeBases',formData)
                 .then(function (response) {
                     swal({
@@ -260,6 +304,7 @@
                         showConfirmButton: false,
                         timer: 2500
                         })
+                        this.credito = '';
 
                 })
 
@@ -284,10 +329,23 @@
                 });
             },
 
+            selectCreditosPuente(){
+                let me = this;
+                me.arrayCreditos=[];
+                var url = '/cPuentes/selectCreditosPuente?fraccionamiento='+me.b_proyecto;
+                axios.get(url).then(function (response) {
+                    me.arrayCreditos = response.data;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
             getBaseActiva(){
                 let me = this;
                 me.arrayBases=[];
-                var url = '/basePresupuestal/getBaseActiva?fraccionamiento='+this.b_proyecto;
+                me.credito = '';
+                var url = '/basePresupuestal/getBaseActiva?fraccionamiento='+this.b_proyecto+'&fecha='+this.fecha;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayBases = respuesta.bases;
@@ -299,7 +357,8 @@
         
         },
         mounted() {   
-            this.selectFraccionamientos();       
+            this.selectFraccionamientos();   
+            this.selectCreditosPuente();    
         }
     }
 </script>

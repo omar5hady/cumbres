@@ -107,7 +107,11 @@
         <div class="table" style="margin-top: 0.2em;">
             <div class="table-row">
                 <div colspan="2" class="table-cell"><b> Tipo de Credito: </div>
+                @if($contratos[0]->emp_constructora == 'CONCRETANIA' && $contratos[0]->emp_terreno == 'CONCRETANIA' && $contratos[0]->institucion == 'Grupo Cumbres')
+                    <div colspan="4" class="table-cell">CONCRETANIA-{{mb_strtoupper($contratos[0]->tipo_credito)}}</div>
+                @else
                 <div colspan="4" class="table-cell">{{mb_strtoupper($contratos[0]->institucion)}}-{{mb_strtoupper($contratos[0]->tipo_credito)}}</div>
+                @endif
             </div>
             <br>
                 <div class="table-row">

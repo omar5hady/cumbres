@@ -64,6 +64,7 @@
                                         <th># Lote</th>
                                         <th>Modelo</th>
                                         <th>Avance</th>
+                                        <th>Status</th>
                                         <th>Precio Base</th>
                                         <th>Ajuste</th>
                                     </tr>
@@ -81,6 +82,17 @@
                                             <span class="badge badge-success" v-text="lote.modelo"></span>
                                         </td>
                                        <td class="td2" v-text="lote.avance+'%'"></td>
+                                       <template>
+                                            <td v-if="lote.contrato == 0" class="td2">
+                                                <span class="badge badge-success"> Disponible </span>
+                                            </td>
+                                            <td v-else-if="lote.contrato == 1 && lote.firmado == 0" class="td2">
+                                                <span class="badge badge-warning"> Vendida </span>
+                                            </td>
+                                            <td v-else class="td2">
+                                                <span class="badge badge-danger"> Individualizada </span>
+                                            </td>
+                                        </template>
                                         <td class="td2" v-text="'$'+formatNumber(lote.precio_base)"></td>
 
                                         <td style="width:50%">

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Contrato;
 use App\Devolucion;
 use App\Gasto_admin;
+use App\Pago_contrato;
 use DB;
 use App\Credito;
 use Excel;
@@ -127,6 +128,27 @@ class DevolucionController extends Controller
             ->where('contratos.status', '=', '0')
             ->where('contratos.devolucion', '!=', '2')
             ->orderBy('fecha_status', 'asc')->paginate(50);
+
+
+            if(sizeof($contratos)){
+
+                foreach ($contratos as $index => $contrato) {
+
+                    $contrato->totalDep = 0;
+    
+                    $depositos_pagado = Pago_contrato::join('depositos','pagos_contratos.id','=','depositos.pago_id')
+                    ->select(DB::raw("SUM(depositos.cant_depo) as pagado"))
+                    ->where('pagos_contratos.contrato_id','=',$contrato->id)
+                    ->first();
+
+                    if($depositos_pagado->pagado != NULL){
+                        $contrato->sumaPagares = $depositos_pagado->pagado;
+                        $contrato->sumaRestante = 0;
+                    }
+                    
+                }
+                
+            }
         
         return [
             'pagination' => [

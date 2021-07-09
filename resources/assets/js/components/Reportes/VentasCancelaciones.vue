@@ -225,7 +225,9 @@
                                     <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
-                                                <th colspan="16" class="text-center"> Cancelaciones en el periodo ({{cont2}}) </th>
+                                                <th colspan="5" class="text-center"> Cancelaciones en el periodo ({{cont2}}) </th>
+                                                <th colspan="6" class="text-center"> Cancelaciones en el periodo ({{cont2}}) </th>
+                                                <th colspan="5" class="text-center"> Cancelaciones en el periodo ({{cont2}}) </th>
                                             </tr>
                                             <tr>
                                                 <th>Fraccionamiento</th>

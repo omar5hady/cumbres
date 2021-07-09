@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Lote;
 use App\Modelo;
 use App\Etapa;
+use App\Contrato;
 use App\Licencia;
 use DB;
 use Carbon\Carbon;
@@ -365,6 +366,35 @@ class LicenciasController extends Controller
                         ->orderBy('etapas.num_etapa', 'ASC')
                         ->orderBy('lotes.manzana', 'ASC')
                         ->orderBy('lotes.num_lote', 'ASC')->paginate(12);
+
+        foreach ($lotes as $index => $lote) {
+            $lote->avaluo_solic = '';
+            $contrato = Contrato    ::  join('creditos','contratos.id','=','creditos.id')
+                                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                                        ->join('expedientes','contratos.id','=','expedientes.id')
+                                        ->select('contratos.id')
+                                        ->where('creditos.lote_id','=',$lote->id)
+                                        ->where('inst_seleccionadas.elegido','=',1)
+                                        ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
+                                        ->where('contratos.status','=',3)
+                                        ->where('expedientes.liquidado','=',1)
+                                        ->get();
+
+            $avaluo = Contrato  ::  join('creditos','contratos.id','=','creditos.id')
+                                        ->join('avaluos','contratos.id','=','avaluos.contrato_id')
+                                        ->select('contratos.id','avaluos.fecha_solicitud')
+                                        ->where('creditos.lote_id','=',$lote->id)
+                                        ->where('contratos.status','=',3)
+                                        ->where('avaluos.fecha_solicitud','!=', NULL)
+                                        ->get();
+
+            
+            if(sizeof($contrato))
+                $lote->firmado = 1;
+
+            if(sizeof($avaluo))
+                $lote->avaluo_solic = $avaluo[0]->fecha_solicitud;
+        }
     
 
         return [

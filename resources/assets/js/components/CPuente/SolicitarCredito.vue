@@ -187,12 +187,11 @@
                                 </div>
                                 <br>
                                 <div class="form-group row">
-                                    <div class="col-md-3" v-for="modelo in arrayPreciosModelo" :key="modelo.id">
+                                    <div class="col-md-3" v-for="modelo in arrayPreciosModelo" :key="modelo.id" v-if="modelo.ver > 0">
                                         <label class="col-md form-control-label" for="text-input">{{modelo.nombre}} </label>
                                         <div class="col-md">
                                             <input class="form-control" type="number" v-model="modelo.precio" @change="setPrice(modelo.id,modelo.precio)">
                                         </div>
-
                                     </div>
                                     
                                 </div>
@@ -496,6 +495,13 @@
                     me.arrayPreciosModelo = respuesta.modelos;
                     me.arrayPreciosModelo.forEach(element=>{
                         element.precio = 0;
+                        element.ver = 0;
+                        me.lotesSelec.forEach(e=>{
+                        if(e.modelo == element.nombre){
+                            element.ver ++;
+                        }
+                        
+                    })
                     })
                 })
                 .catch(function (error) {

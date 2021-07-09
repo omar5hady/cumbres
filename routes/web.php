@@ -963,6 +963,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/cPuentes/storePago','CreditoPuenteController@storePago');
         Route::get('/cPuentes/interesCargos','CreditoPuenteController@calcularInteresPagos');
         Route::get('/cPuentes/getInteresePeriodo','CreditoPuenteController@getInteresePeriodo');
+
+        Route::get('/cPuentes/selectCreditosPuente','CreditoPuenteController@selectCreditosPuente');
         
     //////////////////// RUTAS BONOS RECOMENDADOS ///////////////////////
         Route::get('/cat_bono/index','CatalogoBonoController@index');

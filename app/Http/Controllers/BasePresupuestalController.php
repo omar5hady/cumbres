@@ -28,7 +28,7 @@ class BasePresupuestalController extends Controller
 
                 //return $request->fraccionamiento;
     
-                $this->createBase($data,$request->fraccionamiento);
+                $this->createBase($data,$request->fraccionamiento,$request->credito);
     
             }else {
                 Session::flash('error', 'File is a '.$extension.' file.!! Please upload a valid xls/csv file..!!');
@@ -38,7 +38,7 @@ class BasePresupuestalController extends Controller
 
     }
 
-    private function createBase($data,$fraccionamiento){
+    private function createBase($data,$fraccionamiento,$credito){
 
         foreach($data as $index => $pagina){
 
@@ -59,6 +59,8 @@ class BasePresupuestalController extends Controller
 
                 $newBase = new Base_presupuestal();
                     $newBase->modelo_id = $modelo_id;
+                    if($credito != '')
+                        $newBase->credito_id = $credito;
                     $newBase->activo = 1;
                     $newBase->valor_venta = $pagina[12]['d'];
                         //// COMISIONES BANCARIAS :
@@ -101,10 +103,16 @@ class BasePresupuestalController extends Controller
     public function getBaseActiva(Request $request){
 
         $bases = Base_presupuestal::join('modelos','bases_presupuestales.modelo_id','=','modelos.id')
-                ->select('modelos.nombre','bases_presupuestales.*')
-                ->where('modelos.fraccionamiento_id','=',$request->fraccionamiento)
-                ->where('bases_presupuestales.activo','=',1)
-                ->orderBy('modelos.nombre','asc')
+        ->leftJoin('creditos_puente','bases_presupuestales.credito_id','=','creditos_puente.id')
+                ->select('modelos.nombre','bases_presupuestales.*','creditos_puente.folio')
+                ->where('modelos.fraccionamiento_id','=',$request->fraccionamiento);
+
+                if($request->fecha == '')
+                    $bases = $bases->where('bases_presupuestales.activo','=',1);
+                else{
+                    $bases = $bases->whereBetween('bases_presupuestales.created_at', [$request->fecha.' 00:00:00', $request->fecha.' 23:59:59']);
+                }
+                $bases = $bases->orderBy('modelos.nombre','asc')
                 ->get();
 
         return ['bases'=>$bases];

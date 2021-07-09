@@ -18,6 +18,9 @@ class CreateBasesPresupuestalesTable extends Migration
             $table->integer('modelo_id');
             $table->boolean('activo')->default(1);
             $table->double('valor_venta');
+
+            $table->integer('credito_id')->nullable();
+            
             //// COMISIONES BANCARIAS :
                 $table->double('insc_conjunto')->default(0);
                 $table->double('int_nafin')->default(0);
@@ -47,7 +50,6 @@ class CreateBasesPresupuestalesTable extends Migration
                 $table->double('c_edificacion2')->default(0);
                 $table->double('precio_venta_const')->default(0);
                 $table->double('c_adquisicion_brena')->default(0);
-            
 
             $table->timestamps();
         });

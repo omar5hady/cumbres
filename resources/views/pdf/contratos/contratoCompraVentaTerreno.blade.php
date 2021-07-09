@@ -272,7 +272,7 @@
                     <div class="table-cell2">CONCRETANIA: </div>
                     <div class="table-cell2">${{$contratos[0]->credito_solic}}</div> 
                     <div class="table-cell2">PRECIO DE LA PROPIEDAD: </div>
-                    <div class="table-cell2">${{$contratos[0]->precio_base}}</div>
+                    <div class="table-cell2">${{$contratos[0]->valor_venta}}</div>
                 </div>
                 
                 <div class="table-row">
