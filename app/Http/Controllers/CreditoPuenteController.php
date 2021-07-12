@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Lote;
+use App\Fraccionamiento;
 use App\Modelo;
 use App\Credito_puente;
 use App\Lote_puente;
@@ -14,10 +15,14 @@ use App\Puente_checklist;
 use App\Cat_documento;
 use App\Pago_puente;
 use App\Base_presupuestal;
+use App\User;
 
 use Carbon\Carbon;
 use DB;
 use Auth;
+
+use App\Notifications\NotifyAdmin;
+use App\Http\Controllers\NotificacionesAvisosController;
 
 class CreditoPuenteController extends Controller
 {
@@ -186,10 +191,103 @@ class CreditoPuenteController extends Controller
                 $doc->save();
             }
 
+            $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
+                        $msj = 'Se ha solicitado un nuevo Credito Puente, folio: '. $puente->folio;
+
+                        $fecha = Carbon::now();
+                        $notif = [
+                            'notificacion' => [
+                                'usuario' => $imagenUsuario[0]->usuario,
+                                'foto' => $imagenUsuario[0]->foto_user,
+                                'fecha' => $fecha,
+                                'msj' => $msj,
+                                'titulo' => 'Solic. Crédito Puente'
+                            ]
+                        ];
+
+                        
+                        $aviso = new NotificacionesAvisosController();
+                        $user_proyectos = User::select('id')
+                                            ->whereIn('usuario',['alemunoz','shady',
+                                                                    'cp.martin',
+                                                                    // 'javis.mdz',
+                                                                    // 'fede.mon',
+                                                                    'ing_david'
+                                                                ])
+                                            ->get();
+
+                        $arquitecto = Fraccionamiento::select('arquitecto_id')->where('id','=',$puente->fraccionamiento)->get();
+                        if(sizeOf($arquitecto)){
+                            $aviso->store($arquitecto[0]->arquitecto_id,$msj);
+                            User::findOrFail($arquitecto[0]->arquitecto_id)->notify(new NotifyAdmin($notif));
+                        }
+                        
+                        foreach ($user_proyectos as $index => $user) {
+                            $aviso->store($user->id,$msj);
+                            User::findOrFail($user->id)->notify(new NotifyAdmin($notif));
+                        }
+
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
         }
+    }
+
+    public function cancelarCredito(Request $request)
+    {
+        if (!$request->ajax() || Auth::user()->rol_id == 11) return redirect('/');
+
+        try {
+            DB::beginTransaction();
+            $puente = Credito_puente::findOrFail($request->id);
+            $puente->status = 5;
+            $puente->interes = 
+            $puente->save();
+
+            $lotes = Lote::select('id')->where('puente_id','=',$request->id)->get();
+
+            foreach ($lotes as $index => $l) {
+                $lote = Lote::findOrFail($l->id);
+                $lote->puente_id = NULL;
+                $lote->credito_puente = NULL;
+                $lote->save();
+            }
+
+            $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
+                        $msj = 'Se ha cancelado el Credito Puente, folio: '. $puente->folio;
+
+                        $fecha = Carbon::now();
+                        $notif = [
+                            'notificacion' => [
+                                'usuario' => $imagenUsuario[0]->usuario,
+                                'foto' => $imagenUsuario[0]->foto_user,
+                                'fecha' => $fecha,
+                                'msj' => $msj,
+                                'titulo' => 'CANCELADO'
+                            ]
+                        ];
+
+                        
+                        $aviso = new NotificacionesAvisosController();
+                        $user_proyectos = User::select('id')
+                                            ->whereIn('usuario',['alemunoz','shady',
+                                                                    'cp.martin','javis.mdz',
+                                                                    'fede.mon','ing_david',
+                                                                    'eli_hdz','bd_raul',
+                                                                    'Herlindo'
+                                                                ])
+                                            ->get();
+                        foreach ($user_proyectos as $index => $user) {
+                            $aviso->store($user->id,$msj);
+                            User::findOrFail($user->id)->notify(new NotifyAdmin($notif));
+                        }
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+        }
+
+
     }
 
     public function indexCreditos(Request $request)
@@ -210,11 +308,15 @@ class CreditoPuenteController extends Controller
                 'creditos_puente.fecha_integracion',
                 'fraccionamientos.nombre as proyecto',
                 'creditos_puente.fraccionamiento',
-                'creditos_puente.fecha_sig_int'
+                'creditos_puente.fecha_sig_int',
+                'fraccionamientos.arquitecto_id'
             );
 
         if ($request->fraccionamiento != '')
             $creditos = $creditos->where('creditos_puente.fraccionamiento', '=', $request->fraccionamiento);
+
+        if(Auth::user()->rol_id == 3)
+            $creditos = $creditos->where('fraccionamientos.arquitecto_id', '=', Auth::user()->id);
 
         if ($request->folio != '')
             $creditos = $creditos->where('creditos_puente.folio', '=', $request->folio);
@@ -303,6 +405,7 @@ class CreditoPuenteController extends Controller
                 'lotes_puente.liberado',
                 'lotes.num_lote',
                 'lotes.manzana',
+                'lotes.etapa_servicios',
                 'lotes_puente.lote_id',
                 'lotes.emp_constructora',
                 'modelos.nombre as modelo',
@@ -624,6 +727,14 @@ class CreditoPuenteController extends Controller
         $puente->save();
     }
 
+    public function confirmarEntregaDoc(Request $request){
+        if (!$request->ajax() || Auth::user()->rol_id == 11) return redirect('/');
+        $puente = Doc_puente::findOrFail($request->id);
+        $puente->user_confirm = Auth::user()->usuario;
+        $puente->fecha_confirm = new Carbon();
+        $puente->save();
+    }
+
     public function ingresarExpTecnico(Request $request)
     {
         if (!$request->ajax() || Auth::user()->rol_id == 11) return redirect('/');
@@ -652,6 +763,15 @@ class CreditoPuenteController extends Controller
             $credito->status = 2;
             $credito->fecha_banco = Carbon::now();
             $credito->motivo_rechazo = $request->comentario;
+
+            $lotes = Lote::select('id')->where('puente_id','=',$request->id)->get();
+
+            foreach ($lotes as $index => $l) {
+                $lote = Lote::findOrFail($l->id);
+                $lote->puente_id = NULL;
+                $lote->credito_puente = NULL;
+                $lote->save();
+            }
 
             $obs->observacion = 'Solicitud rechazada por el banco.';
         } else {

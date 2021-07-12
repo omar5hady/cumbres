@@ -50,6 +50,7 @@
                                         <th>Delegacion</th>
                                         <th v-if="rolId != 3">Fecha de inicio de ventas</th>
                                         <th v-if="rolId != 3">Gerente</th>
+                                        <th>Arquitecto</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -81,6 +82,7 @@
                                         <td class="td2" v-text="fraccionamiento.delegacion"></td>
                                         <td class="td2" v-if="rolId != 3" v-text="fraccionamiento.fecha_ini_venta"></td>
                                         <td class="td2" v-if="rolId != 3" v-text="fraccionamiento.gerente"></td>
+                                        <td class="td2" v-text="fraccionamiento.arquitecto"></td>
                                     </tr>                               
                                 </tbody>
                             </table>
@@ -223,6 +225,16 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="form-group row" v-if="rolId != 3 && tipoAccion == 2" >
+                                    <label class="col-md-3 form-control-label" for="text-input">Arquitecto del proyecto</label>
+                                    <!--Criterios para el listado de busqueda -->
+                                    <div class="col-md-5">
+                                        <select class="form-control" v-model="arquitecto_id">
+                                            <option value="">Seleccione</option>
+                                            <option v-for="arquitectos in arrayArquitectos" :key="arquitectos.id" :value="arquitectos.id" v-text="'Arq. ' + arquitectos.name"></option>
+                                        </select>
+                                    </div>
+                                </div>
                                 <!-- Div para mostrar los errores que mande validerFraccionamiento -->
                                 <div v-show="errorFraccionamiento" class="form-group row div-error">
                                     <div class="text-center text-error">
@@ -324,11 +336,13 @@
                 archivo_escrituras: '',
                 arrayFraccionamiento : [],
                 arrayGerentes : [],
+                arrayArquitectos :[],
                 modal : 0,
                 modal4: 0,
                 tituloModal : '',
                 tituloModal4: '',
                 gerente_id : '',
+                arquitecto_id :'',
                 tipoAccion: 0,
                 errorFraccionamiento : 0,
                 errorMostrarMsjFraccionamiento : [],
@@ -477,6 +491,18 @@
                     console.log(error);
                 });
             },
+            selectArquitectos(){
+                let me = this;
+                me.arrayArquitectos=[];
+                var url = '/select_personal?departamento_id=3';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayArquitectos = respuesta.personal;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
             selectCiudades(buscar){
                 let me = this;
                 me.arrayCiudades=[];
@@ -556,6 +582,7 @@
                     'id' : this.id,
                     'numero' : this.numero,
                     'gerente_id' : this.gerente_id,
+                    'arquitecto_id' : this.arquitecto_id,
                     'fecha_ini_venta' : this.fecha_ini_venta
                 }).then(function (response){
                     
@@ -690,6 +717,9 @@
                                 this.delegacion=data['delegacion'];
                                 this.cp=data['cp'];
                                 this.gerente_id=data['gerente_id'];
+                                this.arquitecto_id=data['arquitecto_id'];
+                                if(this.arquitecto_id == null)
+                                    this.arquitecto_id = '';
                                 this.numero = data['numero'];
                                 this.selectCiudades(this.estado);
                                 break;
@@ -714,6 +744,7 @@
         mounted() {
             this.listarFraccionamiento(1,this.buscar,this.criterio);
             this.selectGerentesVentas();
+            this.selectArquitectos();
         }
     }
 </script>
@@ -750,5 +781,19 @@
     .td2, .th2 {
         border: solid rgb(200, 200, 200) 1px;
         padding: .5rem;
+    }
+
+    .td2 {
+        white-space: nowrap;
+        border-bottom: none;
+        color: rgb(20, 20, 20);
+    }
+
+    .td2:first-of-type, th:first-of-type {
+       border-left: none;
+    }
+
+    .td2:last-of-type, th:last-of-type {
+       border-right: none;
     }
 </style>

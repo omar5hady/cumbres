@@ -928,6 +928,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/cPuentes/getLotes','CreditoPuenteController@getLotes');
         Route::get('/cPuentes/getModelosPuente','CreditoPuenteController@getModelosPuente');
         Route::post('/cPuentes/storeSolicitud','CreditoPuenteController@storeSolicitud');
+        Route::put('/cPuentes/cancelarCredito','CreditoPuenteController@cancelarCredito');
         Route::post('/cPuentes/agregarLote','CreditoPuenteController@agregarLote');
         Route::delete('/cPuentes/eliminarLote','CreditoPuenteController@eliminarLote');
         Route::put('/cPuentes/actualizarPrecio','CreditoPuenteController@actualizarPrecio');
@@ -937,6 +938,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/cPuentes/storeObs','CreditoPuenteController@storeObs');
         Route::post('/cPuentes/addDocChk','CreditoPuenteController@addDocChk');
         Route::post('/cPuentes/saveDoc','CreditoPuenteController@saveDoc');
+        Route::put('/cPuentes/confirmarEntrega/documento','CreditoPuenteController@confirmarEntregaDoc');
 
         Route::put('/cPuentes/ingresarExpTecnico','CreditoPuenteController@ingresarExpTecnico');
         Route::put('/cPuentes/resBanco','CreditoPuenteController@resBanco');

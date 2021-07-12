@@ -13,8 +13,8 @@
 
         <!-- Avisos generales -->
         <div class="row">
-            <div class="col-xl-12 col-lg-12 col-md-4">
-                <div v-for="rem in arrayAvisosGral" :key="rem.id" class="col-sm-6 alert alert-primary alert-dismissible fade show" role="alert">
+            <div class="col-xl-6 col-lg-6 col-md-4" v-for="rem in arrayAvisosGral" :key="rem.id">
+                <div class="col-sm-12 alert alert-primary alert-dismissible fade show" role="alert">
                     <strong>¡Atención! : </strong> {{rem.mensaje}} 
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>

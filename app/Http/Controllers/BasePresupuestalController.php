@@ -5,8 +5,16 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Base_presupuestal;
 use App\Modelo;
+use App\User;
+use App\Credito_puente;
 use File;
 use Excel;
+use DB;
+use Auth;
+
+use Carbon\Carbon;
+use App\Notifications\NotifyAdmin;
+use App\Http\Controllers\NotificacionesAvisosController;
 
 class BasePresupuestalController extends Controller
 {
@@ -95,13 +103,42 @@ class BasePresupuestalController extends Controller
 
                     $newBase->save();
 
+                    if($newBase->credito_id > 0){
+                        $credito_puente = Credito_puente::findOrFail($credito);
+
+                        $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
+                        $msj = 'Se ha cargado la base presupuestal para el Credito puente: '.$credito_puente->folio;
+
+                        $fecha = Carbon::now();
+                        $notif = [
+                            'notificacion' => [
+                                'usuario' => $imagenUsuario[0]->usuario,
+                                'foto' => $imagenUsuario[0]->foto_user,
+                                'fecha' => $fecha,
+                                'msj' => $msj,
+                                'titulo' => 'Base presupuestal'
+                            ]
+                        ];
+
+                        
+                        $aviso = new NotificacionesAvisosController();
+                        $user_proyectos = User::select('id')
+                                            ->whereIn('usuario',['eli_hdz','alemunoz','shady',
+                                                                    'cp.martin','javis.mdz',
+                                                                    'fede.mon', 'bd_raul', 'Herlindo'
+                                                                ])
+                                            ->get();
+                        foreach ($user_proyectos as $index => $user) {
+                            $aviso->store($user->id,$msj);
+                            User::findOrFail($user->id)->notify(new NotifyAdmin($notif));
+                        }
+                    }
             }
         }
 
     }
 
     public function getBaseActiva(Request $request){
-
         $bases = Base_presupuestal::join('modelos','bases_presupuestales.modelo_id','=','modelos.id')
         ->leftJoin('creditos_puente','bases_presupuestales.credito_id','=','creditos_puente.id')
                 ->select('modelos.nombre','bases_presupuestales.*','creditos_puente.folio')

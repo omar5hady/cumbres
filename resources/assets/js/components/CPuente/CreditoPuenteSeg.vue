@@ -34,6 +34,7 @@
                                             <option value="2">Rechazado</option>
                                             <option value="3">Aprobado</option>
                                             <option value="4">Liquidado</option>
+                                            <option value="5">Cancelados</option>
                                         </select>
                                         <button type="submit" @click="listarAvisos(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     </div>
@@ -77,6 +78,9 @@
                                             </td>
                                             <td class="td2" v-if="creditosPuente.status == 2">
                                                 <span class="badge badge-danger">Rechazado</span> 
+                                            </td>
+                                            <td class="td2" v-if="creditosPuente.status == 5">
+                                                <span class="badge badge-danger">Cancelado</span> 
                                             </td>
                                             <td class="td2" v-if="creditosPuente.status == 3">
                                                 <span class="badge badge-success">Aprobado</span> 
@@ -226,6 +230,7 @@
                                             <tr>
                                                 <th></th>
                                                 <th>Lote</th>
+                                                <th>Etapa de servicio</th>
                                                 <th>Etapa</th>
                                                 <th>Manzana</th>
                                                 <th>Modelo</th>
@@ -241,11 +246,12 @@
                                         <tbody v-if="arrayLotesPuente.length">
                                             <tr v-for="detalle in arrayLotesPuente" :key="detalle.id">
                                                 <td>
-                                                    <button @click="eliminarLote(detalle)" type="button" class="btn btn-danger btn-sm">
+                                                    <button v-if="cabecera.status < 2" @click="eliminarLote(detalle)" type="button" class="btn btn-danger btn-sm">
                                                         <i class="icon-close"></i>
                                                     </button>
                                                 </td>
                                                 <td v-text="detalle.num_lote"></td>
+                                                <td v-text="detalle.etapa_servicios"></td>
                                                 <td v-text="detalle.num_etapa"></td>
                                                 <td v-text="detalle.manzana"></td>
                                                 <td v-text="detalle.modelo"></td>
@@ -347,7 +353,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row border">
+                            <div class="form-group row border" v-if="cabecera.status != 5">
                                 <div class="col-md-12">
                                     <br><center>
                                         <h5 v-text="`Checklist (${chk_listos}/${chk_total})`"></h5>
@@ -383,9 +389,14 @@
                             </div>
                             
                             <div class="form-group row">
-                                <div class="col-md-12">
+                                <div class="col-md-10">
                                     <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
                                     <button v-if="cabecera.status == 0" type="button" class="btn btn-primary" @click="actualizarCredito()"> Actualizar </button>
+                                </div>
+                                <div class="col-md-2">
+                                    
+                                    <button v-if="cabecera.status == 0" type="button" class="btn btn-danger" @click="cancelarCredito()"> Cancelar </button>
                                 </div>
                             </div>
                         </div>
@@ -432,7 +443,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group row border" v-if="cabecera.base_p == 1">
+                            <div class="form-group row border" v-if="cabecera.base_p == 1 && cabecera.status != 5">
                                 <div class="col-md-12">
                                     <h5><strong><center>Modelos</center></strong></h5>
                                 </div>
@@ -461,6 +472,7 @@
                                             <tr>
                                                 <th></th>
                                                 <th>Lote</th>
+                                                <th>Etapa de servicio</th>
                                                 <th>Etapa</th>
                                                 <th>Manzana</th>
                                                 <th>Modelo</th>
@@ -484,6 +496,7 @@
                                                     </div>
                                                 </td>
                                                 <td v-text="detalle.num_lote"></td>
+                                                <td v-text="detalle.etapa_servicios"></td>
                                                 <td v-text="detalle.num_etapa"></td>
                                                 <td v-text="detalle.manzana"></td>
                                                 <td v-text="detalle.modelo"></td>
@@ -539,7 +552,7 @@
                                                     <td v-text="urbanizacion.fecha_entrega"></td>
                                                     <td v-text="urbanizacion.notas"></td>
                                                     <td v-if="urbanizacion.fecha_confirm == null">
-                                                        <button type="button" class="btn btn-dark">Confirmar entrega</button>
+                                                        <button type="button" class="btn btn-dark" @click="confirmarEntrega(urbanizacion.id)">Confirmar entrega</button>
                                                     </td>
                                                     <td v-else>
                                                         Confirmado por: {{urbanizacion.user_confirm}} ( {{urbanizacion.fecha_confirm}} )
@@ -581,7 +594,7 @@
                                                     <td v-text="edificacion.fecha_entrega"></td>
                                                     <td v-text="edificacion.notas"></td>
                                                     <td v-if="edificacion.fecha_confirm == null">
-                                                        <button type="button" class="btn btn-dark">Confirmar entrega</button>
+                                                        <button type="button" class="btn btn-dark" @click="confirmarEntrega(edificacion.id)">Confirmar entrega</button>
                                                     </td>
                                                     <td v-else>
                                                         Confirmado por: {{edificacion.user_confirm}} ( {{edificacion.fecha_confirm}} )
@@ -1325,6 +1338,29 @@
                 });
             },
 
+            confirmarEntrega(id){
+                let me = this;
+
+                axios.put('/cPuentes/confirmarEntrega/documento',{
+                    'id' : id
+                }).then(function (response){
+                     const toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                            });
+                            toast({
+                            type: 'success',
+                            title: 'Entrega de plano confirmada'
+                        })
+                    me.getPlanos(me.id);
+                    
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
             guardarDoc(){
                 let me = this;
 
@@ -1347,8 +1383,6 @@
                 }).catch(function (error){
                     console.log(error);
                 });
-
-
 
             },
             getObs(id){
@@ -1932,6 +1966,36 @@
                 });
 
             },
+
+            cancelarCredito(){
+                let me = this;
+
+                axios.put('/cPuentes/cancelarCredito',{
+                    'id': this.id
+                }).then(function (response){
+                    //Obtener detalle
+                        swal({
+                            position: 'top-end',
+                            type: 'success',
+                            title: 'El credito puente ha sido cancelado',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        me.getLotesPuente(me.id);
+                        me.getPreciosModelo(me.id);
+                        me.ocultarDetalle();
+                        me.arrayManzanas=[];
+                        me.arrayLotes=[];
+                        me.etapa_id='';
+                        me.lote_id='';
+                        me.manzana='';
+                    
+                }).catch(function (error){
+                    console.log(error);
+                });
+
+            },
+
             cambiarChk(id,valor){
                 let me = this;
 

@@ -1535,7 +1535,7 @@ class LoteController extends Controller
             ->join('licencias','lotes.id','=','licencias.id')
             ->select('lotes.id','lotes.num_lote','lotes.sublote','lotes.precio_base',
                         'lotes.manzana','licencias.avance',
-                        'lotes.contrato',
+                        'lotes.contrato','lotes.firmado',
                         'lotes.ajuste','fraccionamientos.nombre as proyecto',
                         'etapas.num_etapa','modelos.nombre as modelo');
 

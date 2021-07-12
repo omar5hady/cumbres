@@ -28,12 +28,20 @@ class FraccionamientoController extends Controller
         
         if($buscar==''){
             $fraccionamientos = Fraccionamiento::leftJoin('personal','fraccionamientos.gerente_id','=','personal.id')
-                    ->select('fraccionamientos.*',DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) as gerente"))
+                                            ->leftJoin('personal as p','fraccionamientos.arquitecto_id','=','p.id')
+                    ->select('fraccionamientos.*',
+                                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) as gerente"),
+                                DB::raw("CONCAT(p.nombre,' ',p.apellidos) as arquitecto")
+                            )
                     ->where('fraccionamientos.id','!=','1')->orderBy('fraccionamientos.id','desc')->paginate(8);
         }
         else{
             $fraccionamientos = Fraccionamiento::leftJoin('personal','fraccionamientos.gerente_id','=','personal.id')
-                    ->select('fraccionamientos.*',DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) as gerente"))
+                                            ->leftJoin('personal as p','fraccionamientos.arquitecto_id','=','p.id')
+                    ->select('fraccionamientos.*',
+                                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) as gerente"),
+                                DB::raw("CONCAT(p.nombre,' ',p.apellidos) as arquitecto")
+                            )
                     ->where($criterio, 'like', '%'. $buscar . '%')
                     ->where('fraccionamientos.id','!=','1')
                     ->orderBy('fraccionamientos.id','desc')->paginate(8);
@@ -207,6 +215,9 @@ class FraccionamientoController extends Controller
         $fraccionamiento->fecha_ini_venta = $request->fecha_ini_venta;
         if($request->gerente_id != ''){
             $fraccionamiento->gerente_id = $request->gerente_id;
+        }
+        if($request->arquitecto_id != ''){
+            $fraccionamiento->arquitecto_id = $request->arquitecto_id;
         }
         $fraccionamiento->save();
 
