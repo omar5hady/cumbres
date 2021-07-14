@@ -228,6 +228,7 @@
                                                             <th>Abono</th>
                                                             <th>Saldo</th>
                                                             <th>Interes</th>
+                                                            <th colspan="2">Comprobantes</th>
                                                             <!-- <th>Sin IVA Comisiones</th>
                                                             <th>Sin IVA Honorarios</th> -->
                                                         </tr>
@@ -243,6 +244,40 @@
                                                                 <td class="td2" v-text="'$'+formatNumber(pago.monto_interes)"></td>
                                                                 <!-- <td class="td2" v-text="'$'+formatNumber(pago.comisiones)"></td>
                                                                 <td class="td2" v-text="'$'+formatNumber(pago.honorarios)"></td> -->
+                                                                <td v-if="pago.doc_pago == null">
+                                                                    <button title="Subir comprobante de pago" type="button" 
+                                                                        @click="abrirModal('archivo_pago',pago.id)" class="btn btn-default btn-sm">
+                                                                        <i class="icon-cloud-upload"></i>
+                                                                    </button>
+                                                                </td>
+                                                                <td v-else>
+                                                                    <a title="Descargar comprobante de pago" class="btn btn-success btn-sm" 
+                                                                        v-bind:href="'/cPuentes/pagos/1/'+pago.doc_pago">
+                                                                        <i class="icon-cloud-download"></i>
+                                                                    </a>
+                                                                    &nbsp;&nbsp;
+                                                                    <button title="Subir comprobante de pago" type="button" 
+                                                                        @click="abrirModal('archivo_pago',pago.id)" class="btn btn-default btn-sm">
+                                                                        <i class="icon-cloud-upload"></i>
+                                                                    </button>
+                                                                </td>
+                                                                <td v-if="pago.doc_interes == null">
+                                                                    <button title="Subir comprobante de pago" type="button" 
+                                                                        @click="abrirModal('archivo_interes',pago.id)" class="btn btn-default btn-sm">
+                                                                        <i class="icon-cloud-upload"></i>
+                                                                    </button>
+                                                                </td>
+                                                                <td v-else>
+                                                                    <a title="Descargar comprobante de pago de interes" class="btn btn-primary btn-sm" 
+                                                                        v-bind:href="'/cPuentes/pagos/2/'+pago.doc_interes">
+                                                                        <i class="icon-cloud-download"></i>
+                                                                    </a>
+                                                                    &nbsp;&nbsp;
+                                                                    <button title="Subir comprobante de pago de interes" type="button" 
+                                                                        @click="abrirModal('archivo_interes',pago.id)" class="btn btn-default btn-sm">
+                                                                        <i class="icon-cloud-upload"></i>
+                                                                    </button>
+                                                                </td>
                                                             </tr>
                                                     </tbody>
                                                 </table>
@@ -337,6 +372,44 @@
                                             </form>
                                     </template>
 
+                                </div>
+                                <!-- Botones del modal -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" @click="cerrarModal(0)">Cerrar</button>
+                                </div>
+                            
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+            <!--Fin del modal-->
+
+            <!--Inicio del modal Comprobantes de pagos-->
+                <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 3}" 
+                    role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog modal-primary modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" v-text="tituloModal"></h4>
+                                <button type="button" class="close" @click="cerrarModal(0)" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+
+                                <div class="modal-body">
+                                    <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
+                                        <div class="form-group row">
+                                            <label class="col-md-2 form-control-label" for="text-input"></label>
+                                            <div class="col-md-6">
+                                                <input type="file" class="form-control" v-on:change="onImageChange">
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <button type="submit" class="btn btn-success">Guardar comprobante</button>
+                                            </div>                                               
+                                        </div>
+                                    </form>
                                 </div>
                                 <!-- Botones del modal -->
                                 <div class="modal-footer">
@@ -666,7 +739,7 @@
 <script>
     export default {
         props:{
-            rolId:{type: String}
+            userName:{type: String}
         },
         data(){
             return{
@@ -741,7 +814,9 @@
                 total:0,
                 fecha_sig_int:'',
                 lote_id:'',
-                lotePuenteId:''
+                lotePuenteId:'',
+                pago_id:'',
+                archivo:''
             }
         },
         components:{
@@ -778,6 +853,44 @@
             },
         },
         methods : {
+
+            //funciones para carga de los planos del fraccionamiento 
+
+            onImageChange(e){
+                console.log(e.target.files[0]);
+                this.archivo = e.target.files[0];
+            },
+
+            formSubmit(e) {
+                e.preventDefault();
+                let currentObj = this;
+            
+                let formData = new FormData();
+                formData.append('archivo', this.archivo);
+                formData.append('id', this.pago_id);
+                formData.append('tipo', this.tipoAccion);
+                let me = this;
+                axios.post('/cPuentes/pagos/formSubmit', formData)
+                .then(function (response) {
+                    currentObj.success = response.data.success;
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo guardado correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+                    
+                    me.cerrarModal(1);
+                    me.getEdoCuenta(me.datosPuente.id);
+
+                }).catch(function (error) {
+                    currentObj.output = error;
+
+                });
+
+            },
+
             /**Metodo para mostrar los registros */
             listarAvisos(page){
                 let me = this;
@@ -1072,6 +1185,22 @@
                         this.cantidad = 0;
                         this.fecha = '';
                         this.interes = 0;
+                        break;
+                    }
+                    case 'archivo_pago':{
+                        this.modal = 3;
+                        this.tipoAccion = 1;
+                        this.tituloModal = 'Subir comprobante de pago'
+                        this.archivo == '';
+                        this.pago_id = id;
+                        break;
+                    }
+                    case 'archivo_interes':{
+                        this.modal = 3;
+                        this.tipoAccion = 2;
+                        this.tituloModal = 'Subir comprobante de pago de interes'
+                        this.archivo == '';
+                        this.pago_id = id;
                         break;
                     }
                 }

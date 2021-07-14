@@ -257,6 +257,9 @@
 <script>
  import _ from 'lodash'
     export default {
+        props:{
+            userName:{type: String}
+        },
         data(){
             return{
                 proceso:false,

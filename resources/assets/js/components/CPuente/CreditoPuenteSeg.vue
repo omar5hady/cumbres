@@ -122,7 +122,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <label for="">Institución </label>
-                                    <select :disabled="cabecera.status > 0" class="form-control" v-model="cabecera.banco">
+                                    <select :disabled="cabecera.status > 0 || (userName != 'Herlindo' && userName != 'shady')" class="form-control" v-model="cabecera.banco">
                                         <option value="">Seleccione</option>
                                         <option v-for="banco in arrayBancos" :key="banco.nombre" :value="banco.nombre" v-text="banco.nombre"></option>
                                     </select>
@@ -631,7 +631,12 @@
                                                 <th></th>
                                                 <th></th>
                                                 <th>Documento</th>
-                                                <th></th>
+                                                <th>
+                                                    <button v-if="cabecera.status == 0  && chk_listos != chk_total" type="button" title="Finalizar todos" 
+                                                        class="btn btn-primary btn-sm rounded-circle" @click="finalizarChk(checklist)">
+                                                        <i class="icon-check"></i>
+                                                    </button>
+                                                </th>
                                             </tr>
                                         </thead>
                                         <tbody v-if="checklist.length">
@@ -1123,7 +1128,7 @@
     import vSelect from 'vue-select';
     export default {
         props:{
-            rolId:{type: String}
+            userName:{type: String}
         },
         data(){
             return{
@@ -1359,6 +1364,14 @@
                 }).catch(function (error){
                     console.log(error);
                 });
+            },
+
+            finalizarChk(cheklist){
+                let me = this;
+                cheklist.forEach(element=>{
+                        if(element.listo == 0)
+                            me.cambiarChk(element.id, 1);
+                    })
             },
 
             guardarDoc(){

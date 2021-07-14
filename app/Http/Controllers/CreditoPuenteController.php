@@ -20,6 +20,7 @@ use App\User;
 use Carbon\Carbon;
 use DB;
 use Auth;
+use File;
 
 use App\Notifications\NotifyAdmin;
 use App\Http\Controllers\NotificacionesAvisosController;
@@ -1185,4 +1186,48 @@ class CreditoPuenteController extends Controller
 
         return $creditos;
     }
+
+    ///////////////////// COMPROBANTES DE PAGOS
+    public function formSubmit(Request $request)
+     {
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $pago = Pago_puente::findOrFail($request->id);
+ 
+        //$fileName = time().$request->archivo->getClientOriginalName().'.'.$request->archivo->getClientOriginalExtension();
+        $fileName = time().$request->archivo->getClientOriginalName();
+         
+        if($request->tipo == 1){
+            $pathAnterior = public_path() . '/files/comprobantes/pagos/' . $pago->doc_pago;
+            File::delete($pathAnterior);
+
+            $moved =  $request->archivo->move(public_path('/files/comprobantes/pagos'), $fileName);
+ 
+            if($moved){
+               $pago->doc_pago = $fileName;
+               $pago->save(); //Insert
+           }
+        }
+        if($request->tipo == 2){
+            $pathAnterior = public_path() . '/files/comprobantes/interes/' . $pago->doc_interes;
+            File::delete($pathAnterior);
+
+            $moved =  $request->archivo->move(public_path('/files/comprobantes/interes'), $fileName);
+ 
+            if($moved){
+               $pago->doc_interes = $fileName;
+               $pago->save(); //Insert
+           }
+        }
+         
+         
+         return response()->json(['success'=>'You have successfully upload file.']);
+     }
+ 
+     public function downloadFile($tipo,$fileName){
+        if($tipo == 1)
+            $pathtoFile = public_path().'/files/comprobantes/pagos/'.$fileName;
+        else
+            $pathtoFile = public_path().'/files/comprobantes/interes/'.$fileName;
+        return response()->download($pathtoFile);
+     }
 }

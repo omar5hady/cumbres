@@ -126,6 +126,13 @@ class CreateUsersTable extends Migration
            $table->boolean('calc_lotes')->default(0);
            $table->boolean('edit_cotizacion')->default(0);
            $table->boolean('opc_cotizador')->default(0);
+
+           //CREDITOS PUENTE
+           $table->boolean('bases')->default(0);
+           $table->boolean('solic_credito_puente')->default(0);
+           $table->boolean('seg_cp')->default(0);
+           $table->boolean('edo_cta_bancrea')->default(0);
+
         
 
             //Acceso

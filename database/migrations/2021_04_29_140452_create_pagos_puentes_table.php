@@ -31,6 +31,9 @@ class CreatePagosPuentesTable extends Migration
             $table->double('saldo')->default(0);
             // $table->integer('mes')->default(0);
             // $table->double('anio')->default(0);
+
+            $table->string('doc_pago')->nullable();
+            $table->string('doc_interes')->nullable();
             $table->timestamps();
         });
     }

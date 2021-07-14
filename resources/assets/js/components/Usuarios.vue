@@ -402,19 +402,41 @@
                                 </div> <!-- listado para privilegios del menu Cotizador de lotes -->
                                 <div class="col-md-4">
                                     <div class="form-group row border">
-                                            <a class="nav-link nav-dropdown-toggle"><i class="icon-people"></i> Modulo Cotizador de lotes</a>
-                                                <ul class="nav-dropdown-items">
-                                                    <li class="nav-item">
-                                                        <a class="nav-link"><i class="icon-book-open"></i> <input v-model="calc_lotes" type="checkbox" value="1"/> Calculadora de lotes</a>
-                                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link"><i class="icon-book-open"></i> <input v-model="edit_cotizacion" type="checkbox" value="1"/> Editar cotización</a>
-                                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link"><i class="icon-book-open"></i> <input v-model="opc_cotizador" type="checkbox" value="1"/> Opciones de cotizador</a>
-                                                    </li>
-                                                    
-                                                </ul>
+                                        <a class="nav-link nav-dropdown-toggle"><i class="icon-people"></i> Modulo Cotizador de lotes</a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"><i class="icon-book-open"></i> <input v-model="calc_lotes" type="checkbox" value="1"/> Calculadora de lotes</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"><i class="icon-book-open"></i> <input v-model="edit_cotizacion" type="checkbox" value="1"/> Editar cotización</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"><i class="icon-book-open"></i> <input v-model="opc_cotizador" type="checkbox" value="1"/> Opciones de cotizador</a>
+                                                </li>
+                                                
+                                            </ul>
+                                    </div>
+                                </div> 
+
+                                <!--Creditos Puente -->
+                                <div class="col-md-4">
+                                    <div class="form-group row border">
+                                        <a class="nav-link nav-dropdown-toggle"><i class="fa fa-bank"></i> Modulo Creditos Puente</a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"><i class="icon-book-open"></i> <input v-model="bases" type="checkbox" value="1"/> Base presupuestal</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"><i class="icon-book-open"></i> <input v-model="solic_credito_puente" type="checkbox" value="1"/> Solicitar Crédito</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"><i class="icon-book-open"></i> <input v-model="seg_cp" type="checkbox" value="1"/> Créditos Puente</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"><i class="icon-book-open"></i> <input v-model="edo_cta_bancrea" type="checkbox" value="1"/> Estado de Cuenta - BANCREA</a>
+                                                </li>
+                                                
+                                            </ul>
                                     </div>
                                 </div> 
 
@@ -917,6 +939,12 @@
                     edit_cotizacion:0,
                     opc_cotizador:0,
 
+                    //Creditos Puente
+                    bases:0,
+                    solic_credito_puente:0,
+                    seg_cp:0,
+                    edo_cta_bancrea:0,
+
                     //Reportes
                     mejora:0,
                     rep_proy:0,
@@ -1138,6 +1166,12 @@
                 this.facturas=0;
                 this.ingresos_concretania=0;
             },
+            limpiarCreditosPuente(){
+                this.bases = 0;
+                this.solic_credito_puente = 0;
+                this.seg_cp = 0;
+                this.edo_cta_bancrea = 0;
+            },
             limpiarAcceso(){
                  //Acceso
                 this.usuarios=0;
@@ -1304,6 +1338,12 @@
                     me.rep_ingresos = usuarios[0].rep_ingresos;
                     me.rep_escrituras = usuarios[0].rep_escrituras;
                     me.rep_leads = usuarios[0].rep_leads;
+
+                    //Creditos Puente
+                    me.bases = usuarios[0].bases;
+                    me.solic_credito_puente = usuarios[0].solic_credito_puente;
+                    me.seg_cp = usuarios[0].seg_cp;
+                    me.edo_cta_bancrea = usuarios[0].edo_cta_bancrea;
 
                     me.rol_id = usuarios[0].rol_id;
 
@@ -1575,6 +1615,11 @@
                     'calc_lotes':this.calc_lotes,
                     'edit_cotizacion':this.edit_cotizacion,
                     'opc_cotizador':this.opc_cotizador,
+                        //Creditos Puente
+                    'bases':this.bases,
+                    'solic_credito_puente':this.solic_credito_puente,
+                    'seg_cp':this.seg_cp,
+                    'edo_cta_bancrea':this.edo_cta_bancrea,
                         //Saldo
                     'edo_cuenta':this.edo_cuenta,
                     'depositos':this.depositos,
@@ -1888,6 +1933,12 @@
                 me.docs=0;
                 me.equipamientos = 0;
                 me.digital_lead = 0;
+
+                    //Creditos Puente
+                me.bases=0;
+                me.solic_credito_puente=0;
+                me.seg_cp=0;
+                me.edo_cta_bancrea=0;
 
                     //Acceso
                 me.usuarios=0;

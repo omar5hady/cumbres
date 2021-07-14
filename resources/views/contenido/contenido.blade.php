@@ -499,10 +499,10 @@
         </template>
 
         <template v-if="menu==255">
-            <solic-puente></solic-puente>
+            <solic-puente user-name="{{Auth::user()->usuario}}"></solic-puente>
         </template>
         <template v-if="menu==256">
-            <creditos-puente></creditos-puente>
+            <creditos-puente user-name="{{Auth::user()->usuario}}"></creditos-puente>
         </template>
         <template v-if="menu==257">
             <base-presupuestal></base-presupuestal>
@@ -512,7 +512,7 @@
             <reporte-leads></reporte-leads>
         </template>
         <template v-if="menu==259">
-            <puente-cuenta></puente-cuenta>
+            <puente-cuenta user-name="{{Auth::user()->usuario}}"></puente-cuenta>
         </template>
         <template v-if="menu==260">
             <prospectos-reasignados></prospectos-reasignados>

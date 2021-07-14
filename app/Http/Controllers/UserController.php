@@ -1094,6 +1094,9 @@ class UserController extends Controller
                                 'users.entregas', 'users.solic_detalles',
                                 //Cotizador de lotes
                                 'calc_lotes','edit_cotizacion','opc_cotizador',
+                                //Creditos Puente
+                                'bases','solic_credito_puente',
+                                'seg_cp','edo_cta_bancrea',
                                 //Comisiones
                                 'users.exp_comision','users.gen_comision','users.bono_com',
                                 //Acceso
@@ -1178,6 +1181,11 @@ class UserController extends Controller
         $user->calc_lotes = $request->calc_lotes;
         $user->edit_cotizacion = $request->edit_cotizacion;
         $user->opc_cotizador = $request->opc_cotizador;
+        //Creditos Puente
+        $user->bases = $request->bases;
+        $user->solic_credito_puente = $request->solic_credito_puente;
+        $user->seg_cp = $request->seg_cp;
+        $user->edo_cta_bancrea = $request->edo_cta_bancrea;
         //Ventas
         $user->lotes_disp = $request->lotes_disp;
         $user->mis_prospectos = $request->mis_prospectos;

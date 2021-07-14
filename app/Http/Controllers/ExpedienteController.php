@@ -1048,6 +1048,10 @@ class ExpedienteController extends Controller
                                     ->where('pagos_contratos.contrato_id','=',$folio)
                                     ->first();
 
+        if($depositos->pagado == NULL)
+            $depositos->pagado = 0;
+
+
         return ['pagares' => $pagares,
                 'depositos' => $depositos,
                 'calculos' => $calculos];

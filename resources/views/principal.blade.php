@@ -254,22 +254,30 @@
                     @endif
 
         <!-- Modulo Créditos Puente ---->
-                    @if(Auth::user()->rol_id == 1)
+                    @if(Auth::user()->bases == 1 ||Auth::user()->solic_credito_puente == 1 || Auth::user()->seg_cp == 1 || Auth::user()->edo_cta_bancrea == 1)
                         <li class="nav-item nav-dropdown">
                             <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-plug"></i> Créditos Puente</a>
                             <ul class="nav-dropdown-items">
-                                <li @click="menu=257" class="nav-item">
-                                    <a class="nav-link" href="#"><i class="fa fa-archive"></i> Base presupuestal</a>
-                                </li>
-                                <li @click="menu=255" class="nav-item">
-                                    <a class="nav-link" href="#"><i class="fa fa-archive"></i> Solicitar Crédito</a>
-                                </li>
-                                <li @click="menu=256" class="nav-item">
-                                    <a class="nav-link" href="#"><i class="fa fa-archive"></i> Créditos Puente</a>
-                                </li>
-                                <li @click="menu=259" class="nav-item">
-                                    <a class="nav-link" href="#"><i class="fa fa-archive"></i> Estado de Cuenta - BANCREA</a>
-                                </li>
+                                @if(Auth::user()->bases == 1)
+                                    <li @click="menu=257" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-archive"></i> Base presupuestal</a>
+                                    </li>
+                                @endif
+                                @if(Auth::user()->solic_credito_puente == 1)
+                                    <li @click="menu=255" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-archive"></i> Solicitar Crédito</a>
+                                    </li>
+                                @endif
+                                @if(Auth::user()->seg_cp == 1)
+                                    <li @click="menu=256" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-archive"></i> Créditos Puente</a>
+                                    </li>
+                                @endif
+                                @if(Auth::user()->edo_cta_bancrea == 1)
+                                    <li @click="menu=259" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-archive"></i> Estado de Cuenta - BANCREA</a>
+                                    </li>
+                                @endif
                             </ul>
                         </li>
                     @endif

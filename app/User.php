@@ -134,6 +134,12 @@ class User extends Authenticatable
         'calc_lotes',
         'edit_cotizacion',
         'opc_cotizador',
+
+        //CREDITOS PUENTE
+        'bases',
+        'solic_credito_puente',
+        'seg_cp',
+        'edo_cta_bancrea',
         
         //Pagos Internos
         'seg_pago'

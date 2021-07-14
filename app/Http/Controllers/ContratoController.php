@@ -686,6 +686,27 @@ class ContratoController extends Controller
         $lote = Lote::findOrFail($request->lote_id);
         $lote->contrato = 1;
 
+        //////
+                    //Guardar el costo del lote
+                $etapa = Lote::join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
+                    ->select('etapas.id', 'lotes.terreno')
+                ->where('lotes.id', '=', $credito->lote_id)->get();
+
+                $precioT = Precios_terreno::where('etapa_id', '=', $etapa[0]->id)
+                    ->where('estatus', '=', 1)
+                ->first();
+
+                if($precioT){
+                    $credito->valor_terreno = ($precioT->precio_m2* $etapa[0]->terreno) + $precioT->total_gastos;
+                  //  $credito->valor_terreno = $credito->valor_terreno * 1.10;
+                    $credito->porcentaje_terreno = ((($credito->valor_terreno)*100)/$credito->precio_venta);
+                }
+            //Guardar el costo del lote
+
+            $credito->save();
+
+        /////
+
         $lote->save();
         $credito->save();
         $personal->save();

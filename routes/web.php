@@ -940,6 +940,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/cPuentes/saveDoc','CreditoPuenteController@saveDoc');
         Route::put('/cPuentes/confirmarEntrega/documento','CreditoPuenteController@confirmarEntregaDoc');
 
+        Route::post('/cPuentes/pagos/formSubmit','CreditoPuenteController@formSubmit');
+        Route::get('/cPuentes/pagos/{tipo}/{fileName}' , 'CreditoPuenteController@downloadFile');
+
         Route::put('/cPuentes/ingresarExpTecnico','CreditoPuenteController@ingresarExpTecnico');
         Route::put('/cPuentes/resBanco','CreditoPuenteController@resBanco');
         Route::put('/cPuentes/numCuenta','CreditoPuenteController@numCuenta');
