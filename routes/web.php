@@ -939,6 +939,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/cPuentes/addDocChk','CreditoPuenteController@addDocChk');
         Route::post('/cPuentes/saveDoc','CreditoPuenteController@saveDoc');
         Route::put('/cPuentes/confirmarEntrega/documento','CreditoPuenteController@confirmarEntregaDoc');
+        Route::put('/cPuentes/actualizarFolio','CreditoPuenteController@actualizarFolio');
 
         Route::post('/cPuentes/pagos/formSubmit','CreditoPuenteController@formSubmit');
         Route::get('/cPuentes/pagos/{tipo}/{fileName}' , 'CreditoPuenteController@downloadFile');

@@ -1189,7 +1189,7 @@ class CreditoPuenteController extends Controller
 
     ///////////////////// COMPROBANTES DE PAGOS
     public function formSubmit(Request $request)
-     {
+    {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $pago = Pago_puente::findOrFail($request->id);
  
@@ -1221,7 +1221,7 @@ class CreditoPuenteController extends Controller
          
          
          return response()->json(['success'=>'You have successfully upload file.']);
-     }
+    }
  
      public function downloadFile($tipo,$fileName){
         if($tipo == 1)
@@ -1229,5 +1229,19 @@ class CreditoPuenteController extends Controller
         else
             $pathtoFile = public_path().'/files/comprobantes/interes/'.$fileName;
         return response()->download($pathtoFile);
-     }
+    }
+
+    public function actualizarFolio(Request $request){
+        $credito = Credito_puente::findOrFail($request->id);
+        $lotes = Lote::select('id')->where('puente_id', '=', $request->id)->get();
+
+        $credito->folio = $request->folio;
+        $credito->save();
+
+        foreach ($lotes as $index => $lote) {
+            $l = Lote::findOrFail($lote->id);
+            $l->credito_puente = $credito->folio;
+            $l->save();
+        }
+    }
 }

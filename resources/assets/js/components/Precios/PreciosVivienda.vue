@@ -66,7 +66,7 @@
                                         <th>Avance</th>
                                         <th>Status</th>
                                         <th>Precio Base</th>
-                                        <th>Ajuste</th>
+                                        <th class="td2" style="width:50%">Ajuste de precio $</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -95,7 +95,7 @@
                                         </template>
                                         <td class="td2" v-text="'$'+formatNumber(lote.precio_base)"></td>
 
-                                        <td style="width:50%">
+                                        <td style="width:90%">
                                         <input type="text" pattern="\d*" @keyup.enter="actualizarAjuste(lote.id,$event.target.value)" :id="lote.id" :value="lote.ajuste|currency" step="1"  v-on:keypress="isNumber($event)" class="form-control" >     
                                         </td>
                                     </tr>

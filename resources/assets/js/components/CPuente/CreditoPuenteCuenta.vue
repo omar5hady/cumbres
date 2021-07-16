@@ -62,7 +62,8 @@
                                             </td>
                                             <td class="td2" v-text="creditosPuente.proyecto"></td>
                                             <td class="td2" v-if="creditosPuente.num_cuenta == null">
-                                                <button type="button" @click="numCuenta(creditosPuente.id)" class="btn btn-primary btn-sm" title="Num Cuenta">
+                                                <button v-if="userName == 'dora.m' || userName == 'cp.martin' || userName == 'shady'"
+                                                 type="button" @click="numCuenta(creditosPuente.id)" class="btn btn-primary btn-sm" title="Num Cuenta">
                                                     <i class="fa fa-credit-card-alt">&nbsp;No. De cuenta</i>
                                                 </button>
                                             </td>
@@ -124,6 +125,10 @@
                                             <div class="card-body p-3 d-flex align-items-center">
                                                 <div>
                                                     <div class="text-uppercase font-weight-bold" 
+                                                        v-text="'Folio: '">
+                                                    </div>
+                                                    
+                                                    <div class="text-uppercase font-weight-bold" 
                                                         v-text="'Institucion de crédito: '">
                                                     </div>
                                                     <div class="text-uppercase font-weight-bold" 
@@ -136,6 +141,15 @@
                                             </div>
                                             <div class="card-body p-3 d-flex align-items-center">
                                                 <div>
+                                                    <div v-if="userName == 'dora.m' || userName == 'cp.martin' || userName == 'shady'" class="input-group">
+                                                        <input class="form-control" type="text" v-model="datosPuente.folio">
+                                                        <button type="button" @click="actualizarFolio(datosPuente.id, datosPuente.folio)" class="btn btn-success btn-sm" title="Guardar folio">
+                                                            <i class="fa fa-check"></i>
+                                                        </button>
+                                                    </div>
+                                                    <div v-else class="text-uppercase" 
+                                                        v-text="datosPuente.folio">
+                                                    </div>
                                                     <div class="text-uppercase" 
                                                         v-text="datosPuente.banco">
                                                     </div>
@@ -1279,6 +1293,30 @@
                 this.lote_id = datos.lote_id;
                 this.lotePuenteId = datos.lotePuenteId;
                 this.calcularInteres();
+            },
+            actualizarFolio(id,folio){
+                let me = this;
+
+                axios.put('/cPuentes/actualizarFolio',{
+                    'id' : id,
+                    'folio' : folio
+                }).then(function (response){
+                     const toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                            });
+                            toast({
+                            type: 'success',
+                            title: 'folio actualizado correctamente'
+                        })
+                    me.cerrarModal(1);
+                    me.getEdoCuenta(id);
+                    
+                }).catch(function (error){
+                    console.log(error);
+                });
             },
             registrarPago(){
                 let me = this;
