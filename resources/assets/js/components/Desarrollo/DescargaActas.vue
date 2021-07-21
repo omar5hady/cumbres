@@ -24,12 +24,20 @@
                                         <option value="licencias.fecha_acta">Actas de termino</option>
                                     </select>
 
-                                    <select class="form-control"  @click="selectEtapas(b_proyecto)" v-model="b_proyecto" >
+                                    <select class="form-control"  @change="selectEtapas(b_proyecto)" v-model="b_proyecto" >
                                         <option value="">Fraccionamiento</option>
                                         <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
                                     </select>
 
-                                    <select class="form-control" v-model="b_etapa" @click="selectManzanas(b_proyecto,b_etapa)">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-8">
+                                <div class="input-group">
+
+                                    <select class="form-control" v-model="b_etapa" @change="selectManzanas(b_proyecto,b_etapa)">
                                         <option value="">Etapa</option>
                                         <option v-for="etapa in arrayEtapas" :key="etapa.id" :value="etapa.id" v-text="etapa.num_etapa"></option>
                                     </select>
@@ -39,7 +47,7 @@
                         <div class="form-group row">
                             <div class="col-md-8">
                                 <div class="input-group">
-                                    <select class="form-control" @click="selectLotesManzana(b_proyecto,b_etapa,b_manzana)" @keyup.enter="listarDescargas(1)" v-model="b_manzana" >
+                                    <select class="form-control" @change="selectLotesManzana(b_proyecto,b_etapa,b_manzana)" @keyup.enter="listarDescargas(1)" v-model="b_manzana" >
                                         <option value="">Manzana</option>
                                         <option v-for="manzana in arrayManzanas" :key="manzana.manzana" :value="manzana.manzana" v-text="manzana.manzana"></option>
                                     </select>
@@ -52,14 +60,23 @@
                         </div>
 
                         <div class="form-group row">
-                            <div class="col-md-8">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    
+                                    <input type="date" v-model="b_fecha1" @keyup.enter="listarHistorialDep(1)" class="form-control" >
+                                    <input type="date" v-model="b_fecha2" @keyup.enter="listarHistorialDep(1)" class="form-control" >
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-6">
                                 <div class="input-group">
                                     <select class="form-control" v-model="b_empresa" >
                                         <option value="">Empresa constructora</option>
                                         <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
                                     </select>
-                                    <input type="date" v-model="b_fecha1" @keyup.enter="listarHistorialDep(1)" class="form-control" >
-                                    <input type="date" v-model="b_fecha2" @keyup.enter="listarHistorialDep(1)" class="form-control" >
+                                   
                                 </div>
                             </div>
                         </div>

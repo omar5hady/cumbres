@@ -33,37 +33,41 @@
                             <div class="col-md-10">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-3" v-model="criterio" @click="selectFraccionamientos()">
+                                    <select class="form-control col-md-3" v-model="criterio" @change="selectFraccionamientos()">
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
                                         <option value="modelos.nombre">Modelo</option>
                                         <option value="lotes.calle">Calle</option>
                                         <option value="lotes.fecha_termino_ventas">Fecha termino</option>
                                     </select>
                                     
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @click="selectEtapa(buscar), selectModelo(buscar)">
+                                    <select class="form-control" v-model="buscar" @change="selectEtapa(buscar), selectModelo(buscar)">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
+                                    
+                                </div>
 
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar2" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)"> 
+                                <div class="input-group">
+
+                                    <select class="form-control" v-model="buscar2" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)"> 
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
-                                    
-                                </div>
-                                <div class="input-group">
-                                    <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_modelo" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)">
+
+                                    <select class="form-control" v-model="b_modelo" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)">
                                         <option value="">Modelo</option>
                                         <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.id" v-text="modelos.nombre"></option>
                                     </select>
+                                    
+                                </div>
 
-                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar3" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Manzana a buscar">
+                                <div class="input-group">                                    
+
+                                    <input type="text" v-model="buscar3" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Manzana a buscar">
+                                    <input type="text" v-model="b_lote" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Lote a buscar">
                                     
                                 </div>
                                 <div class="input-group">
-                                    <!--Criterios para el listado de busqueda -->
-                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Lote a buscar">
                                     <select class="form-control" v-if="rolId!='2'" v-model="b_apartado" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)">
                                         <option value="">Todos</option>
                                         <option value=0>Sin apartar</option>
@@ -86,16 +90,17 @@
                             <div class="col-md-8">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-4" v-model="criterio" @click="selectFraccionamientos()">
+                                    <select class="form-control col-md-4" v-model="criterio" @change="selectFraccionamientos()">
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
                                         <option value="modelos.nombre">Modelo</option>
                                         <option value="lotes.calle">Calle</option>
                                         <option value="lotes.fecha_termino_ventas">Fecha termino</option>
                                     </select>
                                     
-                                    <input type="text" v-if="criterio=='modelos.nombre'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Texto a buscar">
-                                    <input type="text" v-if="criterio=='lotes.calle'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Texto a buscar">
-                                    <input type="date" v-if="criterio=='lotes.fecha_termino_ventas'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Texto a buscar">                                    
+                                    <input type="text"  v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Texto a buscar">
+                                    
+                                </div>
+                                <div class="input-group">
                                     <select class="form-control" v-if="rolId!='2'" v-model="b_apartado" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)">
                                         <option value="">Todos</option>
                                         <option value=0>Sin apartar</option>
@@ -152,8 +157,6 @@
                                                 </button>
                                                 <span class="badge2 badge-light"> Cliente: {{lote.c_nombre}} {{lote.c_apellidos}}/Vendedor: {{lote.v_nombre}}/ {{lote.fecha_apartado}}</span>
                                             </template>
-                                            
-                                            
                                         </td>
                                         
                                         <td  style="width:20%" v-text="lote.proyecto"></td>
@@ -231,7 +234,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Vendedor</label>
                                     <div class="col-md-6">
-                                       <select v-model="vendedor_id"  class="form-control"  @click="selectClientes(vendedor_id)" >
+                                       <select v-model="vendedor_id"  class="form-control"  @change="selectClientes(vendedor_id)" >
                                             <option value="0">Seleccione</option>
                                             <option v-for="vendedores in arrayVendedores" :key="vendedores.id" :value="vendedores.id" v-text="vendedores.n_completo"></option>
                                         </select>

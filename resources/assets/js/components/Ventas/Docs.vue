@@ -12,20 +12,22 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
-                            <div class="col-md-6">
+                            <div class="col-md-10">
                                 <div class="input-group">
-                                    <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-5" v-model="criterio">
-                                      <option value="fraccionamientos.id">Proyecto</option>
-                                    </select>
-                                    <select class="form-control" v-if="criterio=='fraccionamientos.id'" v-model="b_fraccionamiento" @click="selectEtapa(b_fraccionamiento), selectModelo(b_fraccionamiento)">
-                                        <option value="">Seleccione</option>
+                                    <select class="form-control" v-if="criterio=='fraccionamientos.id'" v-model="b_fraccionamiento" @change="selectEtapa(b_fraccionamiento), selectModelo(b_fraccionamiento)">
+                                        <option value="">Proyecto</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
                                     <select class="form-control" v-if="criterio=='fraccionamientos.id'" v-model="b_etapa"> 
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-8">
+                                <div class="input-group">
                                     <select class="form-control" v-if="criterio=='fraccionamientos.id'" v-model="b_modelo">
                                         <option value="">Modelo</option>
                                         <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.id" v-text="modelos.nombre"></option>

@@ -18,21 +18,24 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
-                            <div class="col-md-6">
+                            <div class="col-md-10">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-5" v-model="criterio" @click="limpiarBusqueda()">
+                                    <select class="form-control col-md-4" v-model="criterio" @click="limpiarBusqueda()">
                                       <option value="fraccionamientos.nombre">Fraccionamiento</option>
                                       <option value="fraccionamientos.tipo_proyecto">Tipo de Proyecto</option>
                                     </select>
                                     
                                     
-                                    <select class="form-control col-md-5" v-if="criterio=='fraccionamientos.tipo_proyecto'" v-model="buscar" @keyup.enter="listarFraccionamiento(1,buscar,criterio)" >
+                                    <select class="form-control col-md-6" v-if="criterio=='fraccionamientos.tipo_proyecto'" v-model="buscar" @keyup.enter="listarFraccionamiento(1,buscar,criterio)" >
                                         <option value="1">Lotificación</option>
                                         <option value="2">Departamento</option>
                                         <option value="3">Terreno</option>
                                     </select>
                                     <input type="text" v-else v-model="buscar" @keyup.enter="listarFraccionamiento(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    
+                                </div>
+                                <div class="input-group">
                                     <button type="submit" @click="listarFraccionamiento(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
@@ -154,7 +157,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Estado</label>
                                     <div class="col-md-9">
-                                        <select class="form-control" v-model="estado" @click="selectCiudades(estado)">
+                                        <select class="form-control" v-model="estado" @change="selectCiudades(estado)">
                                             <option value="San Luis Potosí">San Luis Potosí</option>
                                             <option value="Baja California">Baja California</option>
                                             <option value="Baja California Sur">Baja California Sur</option>

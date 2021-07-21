@@ -15,6 +15,7 @@ class Digital_lead extends Model
         'nombre',
         'apellidos',
         'email',
+        'clv_lada',
         'celular',
         'telefono',
         'proyecto_interes',

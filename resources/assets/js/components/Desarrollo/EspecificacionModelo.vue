@@ -9,8 +9,9 @@
                 <div class="card scroll-box">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i>Especificaciones de Modelo
+                        &nbsp;&nbsp;
                         <!--   Boton   -->
-                        <button type="button" class="btn btn-success" @click="abrirModal('asignar')" >
+                        <button type="button" class="btn btn-success btn-sm" @click="abrirModal('asignar')" >
                             <i class="icon-pencil"></i>&nbsp;Asignar especificaciones
                         </button>
                         
@@ -31,18 +32,19 @@
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-md-10">
                                 <div class="input-group">
                                     <select class="form-control" v-model="b_modelo" @keyup.enter="listarLote(1)">
                                             <option value="">Modelo</option>
                                             <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.id" v-text="modelos.nombre"></option>
-                                        </select>
+                                        </select>                       
+                                    
+                                </div>
+                                <div class="input-group">
                                     <input type="text" v-model="buscar3" @keyup.enter="listarLote(1)" class="form-control" placeholder="Manzana a buscar">
                                     <input type="text" v-model="b_lote" @keyup.enter="listarLote(1)" class="form-control" placeholder="Lote a buscar">
-                                                                        
+                                </div>
+                                
+                                <div class="input-group">
                                     <button type="submit" @click="listarLote(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>

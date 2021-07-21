@@ -87,7 +87,7 @@ class DigitalLeadController extends Controller
                     $sheet->row($index+2, [
                         $lead->nombre, 
                         $lead->apellidos,
-                        $lead->celular,
+                        '+'.$lead->clv_lada.$lead->celular,
                         $lead->email,
                         $proyecto,
                         $lead->modelo_interes,
@@ -210,6 +210,7 @@ class DigitalLeadController extends Controller
         $lead->nombre = $request->nombre;
         $lead->apellidos = $request->apellidos;
         $lead->telefono = $request->telefono;
+        $lead->clv_lada = $request->clv_lada;
         $lead->celular = $request->celular;
         $lead->campania_id = $request->campania_id;
         $lead->medio_contacto = $request->medio_contacto;
@@ -341,6 +342,7 @@ class DigitalLeadController extends Controller
         $lead->nombre = $request->nombre;
         $lead->apellidos = $request->apellidos;
         $lead->telefono = $request->telefono;
+        $lead->clv_lada = $request->clv_lada;
         $lead->celular = $request->celular;
         $lead->campania_id = $request->campania_id;
         $lead->medio_contacto = $request->medio_contacto;
@@ -443,6 +445,7 @@ class DigitalLeadController extends Controller
                 $persona->nombre = $request->nombre;
                 $persona->apellidos = $request->apellidos;
                 $persona->telefono = $request->telefono;
+                $persona->clv_lada = $request->clv_lada;
                 $persona->celular = $request->celular;
                 $persona->email = $request->email;
                 $persona->rfc = $request->rfc;
@@ -473,6 +476,7 @@ class DigitalLeadController extends Controller
                 $persona->nombre = $request->nombre;
                 $persona->apellidos = $request->apellidos;
                 $persona->telefono = $request->telefono;
+                $persona->clv_lada = $request->clv_lada;
                 $persona->celular = $request->celular;
                 $persona->email = $request->email;
                 $persona->rfc = $request->rfc;

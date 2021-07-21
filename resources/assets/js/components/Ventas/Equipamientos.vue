@@ -23,8 +23,7 @@
                 <!-------------------  Div para Contratos que tienen paquete o promoción  --------------------->
                     <div class="card-body" v-if="historial == 0">
                         <div class="form-group row">
-
-                            <div class="col-md-10">
+                            <div class="col-md-5">
                                 <div class="input-group">
                                     <select class="form-control" v-model="b_empresa" >
                                         <option value="">Empresa constructora</option>
@@ -36,33 +35,40 @@
                             <div class="col-md-10">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
+                                    <select class="form-control col-md-3" v-model="criterio" @change="selectFraccionamientos()">
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
                                         <option value="c.nombre">Cliente</option>
                                         <option value="contratos.id"># Folio</option>
                                     </select>
-
-                                    
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @click="selectEtapa(buscar)">
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @change="selectEtapa(buscar)">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
+                                    <input v-else type="text"  v-model="buscar" @keyup.enter="listarContratos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
+                                </div>
+                            </div>
 
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa"> 
+                            <div class="col-md-10" v-if="criterio=='lotes.fraccionamiento_id'">
+                                <div class="input-group">
+
+                                    <select class="form-control" v-model="b_etapa"> 
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
 
-                                    
-                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
-                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
+                                    <input type="text" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
+                                </div>
+                            </div>
 
-                                    <input v-else type="text"  v-model="buscar" @keyup.enter="listarContratos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
+                            <div class="col-md-10">
+                                <div class="input-group">
+                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control col-md-3" placeholder="Lote a buscar">
                                     <button type="submit" @click="listarContratos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                   
                                 </div>
                             </div>
                         </div>
+
+                        
                         <div class="table-responsive">
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
@@ -157,7 +163,7 @@
                 <!-------------------  Div historial equipamientos  --------------------->
                     <div class="card-body" v-if="historial == 1">
                         <div class="form-group row">
-                            <div class="col-md-10">
+                            <div class="col-md-6">
                                 <div class="input-group">
                                     <select class="form-control" v-model="b_empresa" >
                                         <option value="">Empresa constructora</option>
@@ -169,7 +175,7 @@
                             <div class="col-md-10">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-5" v-model="criterio2" @click="selectFraccionamientos()">
+                                    <select class="form-control col-md-3" v-model="criterio2" @change="selectFraccionamientos()">
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
                                         <option value="c.nombre">Cliente</option>
                                         <option value="contratos.id"># Folio</option>
@@ -177,11 +183,17 @@
                                     </select>
 
                                     
-                                    <select class="form-control" v-if="criterio2=='lotes.fraccionamiento_id'" v-model="buscar2" @click="selectEtapa(buscar2)">
+                                    <select class="form-control" v-if="criterio2=='lotes.fraccionamiento_id'" v-model="buscar2" @change="selectEtapa(buscar2)">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamiento in arrayFraccionamientos2" :key="fraccionamiento.nombre" :value="fraccionamiento.id" v-text="fraccionamiento.nombre"></option>
                                     </select>
 
+                                    <input v-else type="text"  v-model="buscar2" @keyup.enter="listarHistorial(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Texto a buscar">
+                                </div>
+                            </div>
+                            <div class="col-md-10">
+                                <div class="input-group">
+                                    
                                     <select class="form-control" v-if="criterio2=='lotes.fraccionamiento_id'" v-model="b_etapa2"> 
                                         <option value="">Etapa</option>
                                         <option v-for="etapa in arrayEtapas2" :key="etapa.num_etapa" :value="etapa.id" v-text="etapa.num_etapa"></option>
@@ -190,8 +202,6 @@
                                     
                                     <input type="text" v-if="criterio2=='lotes.fraccionamiento_id'" v-model="b_manzana2" class="form-control" placeholder="Manzana a buscar">
                                     <input type="text" v-if="criterio2=='lotes.fraccionamiento_id'" v-model="b_lote2" class="form-control" placeholder="Lote a buscar">
-
-                                    <input v-else type="text"  v-model="buscar2" @keyup.enter="listarHistorial(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Texto a buscar">
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -430,7 +440,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Proveedor</label>
                                     <div class="col-md-6">
-                                        <select class="form-control" v-model="proveedor" @click="selectEquipamiento(proveedor)">
+                                        <select class="form-control" v-model="proveedor" @change="selectEquipamiento(proveedor)">
                                             <option value="">Seleccione</option>
                                             <option v-for="proveedor in arrayProveedores" :key="proveedor.id" :value="proveedor.id" v-text="proveedor.proveedor"></option>
                                         </select>

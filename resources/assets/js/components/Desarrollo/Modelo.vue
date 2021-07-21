@@ -17,22 +17,23 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
-                            <div class="col-md-6">
+                            <div class="col-md-10">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-5" v-model="criterio" @click="limpiarBusqueda()">
+                                    <select class="form-control col-md-4" v-model="criterio" @click="limpiarBusqueda()">
                                       <option value="modelos.nombre">Modelos</option>
                                       <option value="tipo">Tipo de Proyecto</option>
                                       <option value="fraccionamientos.nombre">Proyecto</option>
                                     </select>
                                     
-                                    <input type="text" v-if="criterio=='modelos.nombre'" v-model="buscar" @keyup.enter="listarModelo(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <input type="text" v-if="criterio=='fraccionamientos.nombre'" v-model="buscar" @keyup.enter="listarModelo(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <select class="form-control col-md-5" v-if="criterio=='tipo'" v-model="buscar" @keyup.enter="listarModelo(1,buscar,criterio)" >
+                                    <select class="form-control" v-if="criterio=='tipo'" v-model="buscar" @keyup.enter="listarModelo(1,buscar,criterio)" >
                                         <option value="1">Lotificación</option>
                                         <option value="2">Departamento</option>
                                         <option value="3">Terreno</option>
                                     </select>
+                                    <input type="text" v-else v-model="buscar" @keyup.enter="listarModelo(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
+                                </div>
+                                <div class="input-group">
                                     <button type="submit" @click="listarModelo(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
@@ -124,7 +125,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Tipo</label>
                                     <div class="col-md-3">
-                                        <select class="form-control" v-model="tipo" @click="selectFraccionamientos(tipo)">
+                                        <select class="form-control" v-model="tipo" @change="selectFraccionamientos(tipo)">
                                             <option value="0">Seleccione</option>
                                             <option value="1">Fraccionamiento</option>
                                             <option value="2">Departamento</option>

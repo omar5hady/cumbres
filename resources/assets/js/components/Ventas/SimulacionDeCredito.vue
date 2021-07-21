@@ -73,7 +73,7 @@
                                 <div class="col-md-8">
                                     <div class="input-group">
                                         <!--Criterios para el listado de busqueda -->
-                                        <select class="form-control col-md-4" v-model="criterio" @click="limpiarBusqueda()">
+                                        <select class="form-control col-md-3" v-model="criterio" @click="limpiarBusqueda()">
                                             <option value="personal.nombre">Nombre</option>
                                             <option value="personal.rfc">RFC</option>
                                             <option value="clientes.curp">CURP</option>
@@ -81,6 +81,9 @@
                                             <option value="fraccionamientos.nombre">Proyecto</option>
                                         </select>
                                         <input  type="text" v-model="buscar" @keyup.enter="listarProspectos(1,buscar,criterio)" class="form-control">
+                                        
+                                    </div>
+                                    <div class="input-group">
                                         <button type="submit" @click="listarProspectos(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                         <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
                                     </div>
@@ -155,7 +158,6 @@
      <!-- Div Card Body para registrar simulacion -->
                     <template v-else-if="listado == 3">
                         <div class="card-body"> 
-
                             <!-- Acordeon -->
                             <div id="accordion" role="tablist">
                                 <div class="card mb-0">
@@ -259,7 +261,7 @@
                                             <div class="col-md-3">
                                                     <div class="form-group">
                                                 <label for="">Estado <span style="color:red;" v-show="estado==''">(*)</span></label>
-                                                    <select class="form-control" v-model="estado" @click="selectCiudades(estado,0)" >
+                                                    <select class="form-control" v-model="estado" @change="selectCiudades(estado,0)" >
                                                         <option value="">Seleccione</option>
                                                         <option v-for="estados in arrayEstados" :key="estados.estado" :value="estados.estado" v-text="estados.estado"></option>    
                                                 </select>
@@ -721,7 +723,7 @@
                                                     
                                                     <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <select class="form-control" v-model="proyecto_interes_id" @click="selectEtapa(proyecto_interes_id)">
+                                                            <select class="form-control" v-model="proyecto_interes_id" @change="selectEtapa(proyecto_interes_id)">
                                                                     <option value=0> Seleccione </option>
                                                                     <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                                             </select>
@@ -738,7 +740,7 @@
                                                     
                                                 <div class="col-md-2">
                                                         <div class="form-group">
-                                                            <select class="form-control" v-model="etapa" @click="selectManzana(etapa)">
+                                                            <select class="form-control" v-model="etapa" @change="selectManzana(etapa)">
                                                                     <option value=''> Seleccione </option>
                                                                     <option v-for="etapas in arrayEtapas" :key="etapas.etapa" :value="etapas.etapa" v-text="etapas.etapa"></option>
                                                             </select>
@@ -752,7 +754,6 @@
                                                     
                                                     <div class="col-md-2">
                                                         <div class="form-group">
-                                                            <option value=''> Seleccione </option>
                                                             <label for="">Manzana<span style="color:red;" v-show="manzana==''">(*)</span></label>
                                                         </div>
                                                     </div>
@@ -760,7 +761,7 @@
                                                     
                                                     <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <select class="form-control" v-model="manzana" @click="selectLotes(manzana, etapa, proyecto_interes_id)">
+                                                            <select class="form-control" v-model="manzana" @change="selectLotes(manzana, etapa, proyecto_interes_id)">
                                                                     <option v-for="manzanas in arrayManzanas" :key="manzanas.manzana" :value="manzanas.manzana" v-text="manzanas.manzana"></option>
                                                             </select>
                                                         </div>
@@ -775,7 +776,7 @@
                                                     
                                                     <div class="col-md-2">
                                                         <div class="form-group">
-                                                            <select class="form-control" v-model="lote" @click="mostrarDatosLote(lote)">
+                                                            <select class="form-control" v-model="lote" @change="mostrarDatosLote(lote)">
                                                                     <option value=''> Seleccione </option>
                                                                     <option v-for="lotes in arrayLotes" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
                                                             </select>
@@ -871,7 +872,7 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label for="">Paquete</label>
-                                                            <select class="form-control" v-model="paquete_id" @click="datosPaquetes(paquete_id)">
+                                                            <select class="form-control" v-model="paquete_id" @change="datosPaquetes(paquete_id)">
                                                                     <option value="0">Seleccione</option>
                                                                     <option v-for="paquetes in arrayPaquetes" :key="paquetes.id" :value="paquetes.id" v-text="paquetes.nombre"></option>
                                                             </select>
@@ -918,7 +919,7 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                         <label for="">Tipo de credito <span style="color:red;" v-show="tipo_credito==0">(*)</span></label>
-                                                        <select class="form-control" v-model="tipo_credito" @click="selectInstitucion(tipo_credito)" >
+                                                        <select class="form-control" v-model="tipo_credito" @change="selectInstitucion(tipo_credito)" >
                                                             <option value="0">Seleccione</option>
                                                             <option v-for="creditos in arrayCreditos" :key="creditos.nombre" :value="creditos.nombre" v-text="creditos.nombre"></option>   
                                                         </select>
@@ -985,7 +986,7 @@
                                                         <h6> ¿Tiene mascotas? </h6>
                                                     </div>
                                                     <div class="col-md-2">
-                                                        <select class="form-control" v-model="mascotas" @click="LimpiarMascotas()">
+                                                        <select class="form-control" v-model="mascotas" @change="LimpiarMascotas()">
                                                                 <option value="0">No</option>
                                                                 <option value="1">Si</option>
                                                         </select>
@@ -1053,7 +1054,7 @@
                                                         <label for=""> ¿Alguna de las personas que habitaran la casa cuenta con alguna discapacidad? </label>
                                                     </div>
                                                     <div class="col-md-2">
-                                                        <select class="form-control" v-model="discapacidad" @click="LimpiarSillaRuedas()">
+                                                        <select class="form-control" v-model="discapacidad" @change="LimpiarSillaRuedas()">
                                                                 <option value="0">No</option>
                                                                 <option value="1">Si</option>
                                                         </select>
@@ -2054,7 +2055,7 @@
                                 <div class="form-group row" v-if="rolId == '1' || rolId == '4' || rolId == '6' || rolId == '8'">
                                     <label class="col-md-3 form-control-label" for="text-input">Tipo de Credito</label>
                                     <div class="col-md-6">
-                                        <select class="form-control" v-model="tipo_credito2" @click="selectInstitucion(tipo_credito2)" >
+                                        <select class="form-control" v-model="tipo_credito2" @change="selectInstitucion(tipo_credito2)" >
                                             <option value="0">Seleccione</option>
                                             <option v-for="creditos in arrayCreditos" :key="creditos.nombre" :value="creditos.nombre" v-text="creditos.nombre"></option>   
                                         </select>

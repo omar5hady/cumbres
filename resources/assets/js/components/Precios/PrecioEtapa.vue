@@ -19,7 +19,6 @@
                         <div class="form-group row">
                             <div class="col-md-9">
                                 <div class="input-group">
-
                                     <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id)" >
                                         <option value="0">Seleccione proyecto</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
@@ -30,14 +29,16 @@
                                             <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
                                     
+                                   
+                                </div>
+
+                                <div class="input-group">
                                     <input type="text"  class="form-control" disabled placeholder='Precio mt2 excedente:'>
                                     <input type="number" v-model="precio_excedente"  class="form-control" placeholder="Precio excedente">
                                     <button type="button" v-if="rolId != 9"  class="btn btn-primary" @click="actualizarPrecioEtapa(),listarPrecioModelo(1,id)">Guardar</button>
                                 </div>
 
-                                <div class="input-group">
-                                   
-                                </div>
+                                
                             </div>
                         </div>
                         <div class="table-responsive">
@@ -104,7 +105,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
                                     <div class="col-md-6">
-                                       <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id), selectModelos(fraccionamiento_id)" >
+                                       <select class="form-control" v-model="fraccionamiento_id" @change="selectEtapa(fraccionamiento_id), selectModelos(fraccionamiento_id)" >
                                             <option value="0">Seleccione</option>
                                             <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                         </select>
@@ -114,7 +115,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Etapa</label>
                                     <div class="col-md-6">
-                                       <select class="form-control" v-model="etapa_id" @click="selectPrecioEtapa(fraccionamiento_id,etapa_id)" >
+                                       <select class="form-control" v-model="etapa_id" @change="selectPrecioEtapa(fraccionamiento_id,etapa_id)" >
                                             <option value="0">Seleccione</option>
                                             <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                         </select>

@@ -28,6 +28,12 @@
                                             <option value="inst_seleccionadas.institucion">Institucion</option>
                                         </select>
                                         <input type="text" v-model="buscar" @keyup.enter="listarHistorialCreditos(1,buscar,buscar2,criterio)" class="form-control">
+                                        
+                                    </div>
+                                </div>
+
+                                <div class="col-md-8">
+                                       <div class="input-group">
                                         <select class="form-control col-md-4" v-model="buscar2">
                                             <option value="1">Pendientes</option>
                                             <option value="0">Rechazados</option>
@@ -164,7 +170,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Tipo de credito</label>
                                     <div class="col-md-6">
-                                        <select class="form-control" v-model="tipo_credito" @click="selectInstitucion(tipo_credito)" >
+                                        <select class="form-control" v-model="tipo_credito" @change="selectInstitucion(tipo_credito)" >
                                             <option value="0">Seleccione</option>
                                             <option v-for="creditos in arrayCreditos" :key="creditos.nombre" :value="creditos.nombre" v-text="creditos.nombre"></option>   
                                         </select>

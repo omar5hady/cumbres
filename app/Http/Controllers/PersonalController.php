@@ -426,4 +426,36 @@ class PersonalController extends Controller
         return['clientes'=>$datos];
     }
 
+    public function getClavesLadas(Request $request){
+        //if(!$request->ajax())return redirect('/');
+        $claves = array(
+                    array('clave' => 54, 'pais' => 'Argentina' ),
+                    array('clave' => 49, 'pais' => 'Alemania' ),
+                    array('clave' => 591, 'pais' => 'Bolivia' ),
+                    array('clave' => 55, 'pais' => 'Brasil' ),
+                    array('clave' => 57, 'pais' => 'Colombia' ),
+                    array('clave' => 593, 'pais' => 'Ecuador' ),
+                    array('clave' => 595, 'pais' => 'Paraguay' ),
+                    array('clave' => 51, 'pais' => 'Perú' ),
+                    array('clave' => 598, 'pais' => 'Uruguay' ),
+                    array('clave' => 58, 'pais' => 'Venezuela' ),
+                    array('clave' => 1, 'pais' => 'Canadá' ),
+                    array('clave' => 34, 'pais' => 'España' ),
+                    array('clave' => 1, 'pais' => 'Estados Unidos' ),
+                    array('clave' => 52, 'pais' => 'México' ),
+                    array('clave' => 506, 'pais' => 'Costa Rica' ),
+                    array('clave' => 53, 'pais' => 'Cuba' ),
+                    array('clave' => 502, 'pais' => 'Guatemala' ),
+                    array('clave' => 504, 'pais' => 'Honduras' ),
+                    array('clave' => 876, 'pais' => 'Jamaica' ),
+                    array('clave' => 505, 'pais' => 'Nicaragua' ),
+                    array('clave' => 507, 'pais' => 'Panamá' ),
+                    array('clave' => 1787, 'pais' => 'Puerto Rico' ),
+                    array('clave' => 809, 'pais' => 'República Dominicana' )
+                );
+
+        return ['claves'=>$claves];
+    }
+
+
 }

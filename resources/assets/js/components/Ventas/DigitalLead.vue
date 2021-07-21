@@ -25,7 +25,7 @@
                             <div class="col-md-5">
                                 <div class="input-group">
 
-                                    <select @click="changeMotivo()" v-if="rolId != 2 && rolId != 12 && rolId != 3" class="form-control col-sm-5" v-model="b_motivo">
+                                    <select @change="changeMotivo()" v-if="rolId != 2 && rolId != 12 && rolId != 3" class="form-control col-sm-5" v-model="b_motivo">
                                         <option value="1">Ventas</option>
                                         <option value="5">Recomendados</option>
                                         <option value="2">Postventa</option>
@@ -339,7 +339,7 @@
                                             <span class="badge2 badge-danger">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
                                         </td>
                                         <td class="td2" v-if="lead.celular != null">
-                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>    
+                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>    
                                         </td><td class="td2" v-else ></td>
                                         <td class="td2" v-if="lead.email != null" >
                                             <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+lead.email+ ';'"> <i class="fa fa-envelope-o fa-lg"></i> </a>
@@ -725,16 +725,25 @@
                                         <div class="col-md-6">
                                             <input type="text" v-model="email" class="form-control" placeholder="Email">
                                         </div>
-                                        
                                     </div>
 
                                     <div class="form-group row">
-                                        
                                         <label class="col-md-2 form-control-label" for="text-input">Celular: </label>
+                                        <div class="col-md-3">
+                                            <select  v-model="clv_lada"  class="form-control" >
+                                                <option value="">Clave lada</option>
+                                                <option v-for="clave in arrayClaves" :key="clave.clave+clave.pais" :value="clave.clave" v-text="clave.pais+' +'+clave.clave"></option>
+                                            </select>
+                                        </div>
                                         <div class="col-md-3">
                                             <input type="text" v-model="celular" class="form-control" placeholder="Celular" maxlength="10">
                                         </div>
 
+                                       
+                                    </div>
+
+                                    <div class="form-group row">
+                                        
                                         <label class="col-md-2 form-control-label" for="text-input">Teléfono: </label>
                                         <div class="col-md-3">
                                             <input type="text" v-model="telefono" class="form-control" placeholder="Teléfono" maxlength="10">
@@ -829,7 +838,7 @@
                                     <div class="form-group row">
                                         <label class="col-md-2 form-control-label" for="text-input">Tipo de Crédito</label>
                                         <div class="col-md-4">
-                                        <select  v-model="tipo_credito"  class="form-control" >
+                                            <select  v-model="tipo_credito"  class="form-control" >
                                                 <option value="">Seleccione</option>
                                                 <option v-for="creditos in arrayCreditos" :key="creditos.nombre" :value="creditos.nombre" v-text="creditos.nombre"></option>
                                             </select>
@@ -1439,9 +1448,6 @@
 
                                 </template>
 
-
-
-
                             </div>
 
                             <!-- Div para mostrar los errores que mande validerFraccionamiento -->
@@ -1464,7 +1470,7 @@
                             </template>
                             
                             <button type="button" 
-                                v-if="(tipoAccion == 2 && motivo == 1 && status != 3 && status !=0)"
+                                v-if="(tipoAccion == 2 && motivo == 1 && status !=0)"
                                 class="btn btn-danger" @click="descartar()">Descartar
                             </button>
 
@@ -1604,6 +1610,7 @@ export default {
             arrayCreditos:[],
             arrayObs:[],
             arrayAsesores:[], 
+            arrayClaves:[],
             
             medio_contacto: '',
             medio_publicidad: '',
@@ -1612,6 +1619,7 @@ export default {
             apellidos: '',
             email: '',
             celular: '',
+            clv_lada:52,
             telefono: '',
             proyecto_interes: '',
             modelo_interes: '',
@@ -1976,18 +1984,31 @@ export default {
 
         },
         selectAsesores(){
-                let me = this;
-                me.arrayAsesores=[];
-                var url = '/select/asesores?tipo=0';
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayAsesores = respuesta.personas;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-              
-            },  
+            let me = this;
+            me.arrayAsesores=[];
+            var url = '/select/asesores?tipo=0';
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayAsesores = respuesta.personas;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+            
+        }, 
+        getClavesLadas(){
+            let me = this;
+            me.arrayClaves=[];
+            var url = '/getClavesLadas';
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayClaves = respuesta.claves;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+            
+        },   
         listarLeads (page){
             if(this.rolId == 12)
                 this.b_motivo = 2;
@@ -2182,6 +2203,7 @@ export default {
                 'nombre' : this.nombre,
                 'apellidos' : this.apellidos,
                 'telefono' : this.telefono,
+                'clv_lada' : this.clv_lada,
                 'celular' : this.celular,
                 'campania_id' : this.campania_id,
                 'medio_contacto' : this.medio_contacto,
@@ -2265,6 +2287,7 @@ export default {
                 'apellidos' : this.apellidos,
                 'telefono' : this.telefono,
                 'celular' : this.celular,
+                'clv_lada' : this.clv_lada,
                 'campania_id' : this.campania_id,
                 'medio_contacto' : this.medio_contacto,
                 'proyecto_interes' : this.proyecto_interes,
@@ -2391,6 +2414,7 @@ export default {
                     this.nombre = data['nombre'];
                     this.apellidos = data['apellidos'];
                     this.telefono = data['telefono'];
+                    this.clv_lada = data['clv_lada'];
                     this.celular = data['celular'];
                     this.campania_id = data['campania_id'];
                     this.medio_contacto = data['medio_contacto'];
@@ -2533,6 +2557,7 @@ export default {
         this.selectCampania(1);
         this.selectFraccionamientos();
         this.selectAsesores();
+        this.getClavesLadas();
     }
 };
 </script>

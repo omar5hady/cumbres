@@ -18,19 +18,16 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
-                            <div class="col-md-8">
+                            <div class="col-md-10">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-4" v-model="criterio" @click="limpiarBusqueda()">
+                                    <select class="form-control col-md-4" v-model="criterio" @change="limpiarBusqueda()">
                                         <option value="fraccionamientos.nombre">Fraccionamiento</option>
-                                        <option value="f_ini">Fecha de inicio</option>
-                                        <option value="f_fin">Fecha de termino</option>
+                                        <option value="num_etapa">Etapa</option>
                                     </select>
-                                    <input type="date" v-if="criterio=='f_ini'" v-model="buscar" @keyup.enter="listarEtapa(1,buscar,buscar2,criterio)" class="form-control col-md-6" placeholder="fecha inicio" >
-                                    <input type="date" v-if="criterio=='f_ini'" v-model="buscar2"  @keyup.enter="listarEtapa(1,buscar,buscar2,criterio)" class="form-control col-md-6" placeholder="fecha fin" >
-                                    <input type="date" v-if="criterio=='f_fin'" v-model="buscar" @keyup.enter="listarEtapa(1,buscar,buscar2,criterio)" class="form-control" placeholder="fecha inicio" >
-                                    <input type="date" v-if="criterio=='f_fin'" v-model="buscar2"  @keyup.enter="listarEtapa(1,buscar,buscar2,criterio)" class="form-control" placeholder="fecha fin" >
-                                    <input type="text" v-if="criterio=='fraccionamientos.nombre'"  v-model="buscar" @keyup.enter="listarEtapa(1,buscar,buscar2,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <input type="text" v-model="buscar" @keyup.enter="listarEtapa(1,buscar,buscar2,criterio)" class="form-control" placeholder="Texto a buscar">
+                                </div>
+                                <div class="input-group">
                                     <button type="submit" @click="listarEtapa(1,buscar,buscar2,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
@@ -46,7 +43,6 @@
                                         <th>Fecha de termino</th>
                                         <th>Encargado</th>
                                         <th v-if="rolId!=3">Fecha de inicio de ventas</th>
-                                        
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -102,7 +98,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Fraccionamientos</label>
                                     <div class="col-md-6">
-                                       <select class="form-control" @click="selectContador(fraccionamiento_id)" v-model="fraccionamiento_id">
+                                       <select class="form-control" @change="selectContador(fraccionamiento_id)" v-model="fraccionamiento_id">
                                             <option value="0">Seleccione</option>
                                             <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                         </select>

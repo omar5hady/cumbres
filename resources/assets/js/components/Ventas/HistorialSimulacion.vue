@@ -19,35 +19,52 @@
                      <template>
                         <div class="card-body"> 
                             <div class="form-group row">
-                                <div class="col-md-8">
+                                <div class="col-md-10">
                                        <div class="input-group">
                                         <!--Criterios para el listado de busqueda -->
-                                        <select class="form-control col-md-4" v-model="criterio" @click="limpiarBusqueda()">
+                                        <select class="form-control col-md-4" v-model="criterio" @change="limpiarBusqueda()">
                                             <option value="creditos.id"># Folio</option>
                                             <option value="personal.nombre">Cliente</option>
                                             <option value="v.nombre">Vendedor</option>
                                             <option value="creditos.fraccionamiento">Proyecto</option>
                                             <option value="inst_seleccionadas.tipo_credito">Tipo de credito</option>
                                         </select>
-                                        <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" v-model="buscar" @click="selectEtapas(buscar)" >
+                                        <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" v-model="buscar" @change="selectEtapas(buscar)" >
                                             <option value="">Seleccione</option>
                                             <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.nombre" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                         </select>
-                                        <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" v-model="b_etapa" >
+                                        <input  v-else type="text" v-model="buscar" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio,criterio2)" class="form-control" placeholder="Texto a buscar">
+                                    </div>
+                                   
+                                </div>
+                                <div class="col-md-10" v-if="criterio=='creditos.fraccionamiento'">
+                                       <div class="input-group">
+                                        <select class="form-control"  v-model="b_etapa" >
                                             <option value="">Etapa</option>
                                             <option v-for="etapa in arrayAllEtapas" :key="etapa.id" :value="etapa.num_etapa" v-text="etapa.num_etapa"></option>
                                         </select>
                                         <input v-if="criterio=='creditos.fraccionamiento'" type="text"  v-model="b_manzana" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio,criterio2)" class="form-control" placeholder="Manzana">
-                                        <input v-if="criterio=='creditos.fraccionamiento'" type="text"  v-model="b_lote" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio,criterio2)" class="form-control" placeholder="# Lote">
-                                        <input  v-else type="text" v-model="buscar" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio,criterio2)" class="form-control" placeholder="Texto a buscar">
+                                    </div>
+                                   
+                                </div>
+                                <div class="col-md-6">
+                                       <div class="input-group">
+                                        <input v-if="criterio=='creditos.fraccionamiento'" type="text"  v-model="b_lote" 
+                                        @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio,criterio2)" class="form-control" placeholder="# Lote">
                                         <select class="form-control" v-model="criterio2" >
                                             <option value="">Seleccione</option>
                                             <option value="creditos.status">Pendientes</option>
                                         </select>
+                                        
+                                    </div>
+                                </div>
+
+                                <div class="col-md-10">
+                                       <div class="input-group">
+                                        
                                         <button type="submit" @click="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio,criterio2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                         <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
                                     </div>
-                                   
                                 </div>
                             </div>
                             <div class="table-responsive">

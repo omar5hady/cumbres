@@ -187,10 +187,10 @@
                                 </div>
 
                                  <div class="form-group row" v-if="tipoAccion == 2">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de carga</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">Empresa Verificadora</label>
                                     <div class="col-md-5">
                                        <select class="form-control" v-model="empresa">
-                                            <option value="">Seleccione Proyecto</option>
+                                            <option value="">Seleccione Empresa</option>
                                             <option v-for="empresa in arrayEmpresas" :key="empresa.id" :value="empresa.id" v-text="empresa.empresa"></option>
                                         </select>
                                     </div>

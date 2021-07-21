@@ -1127,6 +1127,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::get('/campanias/campaniaActiva','CampaniaController@campaniaActiva');
         Route::get('/ruvs/selectRuv','RuvController@selectRuv');
+        Route::get('/getClavesLadas','PersonalController@getClavesLadas');
 
     
     

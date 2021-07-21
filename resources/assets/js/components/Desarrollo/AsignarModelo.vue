@@ -21,38 +21,44 @@
                             <div class="col-md-10">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
+                                    <select class="form-control col-md-4" v-model="criterio" @change="selectFraccionamientos()">
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
                                         <option value="modelos.nombre">Modelo</option>
-                                        <option value="lotes.calle">Calle</option>
                                         <option value="lotes.credito_puente">Credito Puente</option>
                                     </select>
 
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @click="selectEtapa(buscar), selectModelo(buscar), selectPuente(buscar)" >
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @change="selectEtapa(buscar), selectModelo(buscar), selectPuente(buscar)" >
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
 
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar2" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,b_habilitado,criterio)"> 
+                                    <input type="text" v-else v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,b_habilitado,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" v-if="criterio=='lotes.fraccionamiento_id'">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    
+                                    <select class="form-control"  v-model="buscar2" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,b_habilitado,criterio)"> 
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
                                     
-                                    <input type="text" v-if="criterio=='modelos.nombre'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,b_habilitado,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <input type="text" v-if="criterio=='lotes.calle'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,b_habilitado,criterio)" class="form-control" placeholder="Texto a buscar">
-                                                                        
-                                    <input type="text" v-if="criterio=='lotes.credito_puente'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,b_habilitado,criterio)" class="form-control" placeholder="Texto a buscar">
                                 </div>
                             </div>
                         </div>
+
                         <div class="form-group row" v-if="criterio=='lotes.fraccionamiento_id'">
                             <div class="col-md-8">
                                 <div class="input-group">
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_modelo" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,b_habilitado,criterio)">
+                                    <select class="form-control" v-model="b_modelo" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,b_habilitado,criterio)">
                                         <option value="">Modelo</option>
                                         <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.id" v-text="modelos.nombre"></option>
                                     </select>
-                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar3" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,b_habilitado,criterio)" class="form-control" placeholder="Manzana a buscar">
+                                    <input type="text" v-model="buscar3" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,b_habilitado,criterio)" class="form-control" placeholder="Manzana a buscar">
                                    
                                 </div>
                             </div>
@@ -61,8 +67,8 @@
                             <div class="col-md-8">
                                 <div class="input-group">
                                    
-                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,b_habilitado,criterio)" class="form-control" placeholder="Lote a buscar">
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_puente" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,b_habilitado,criterio)"> 
+                                    <input type="text" v-model="b_lote" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,b_habilitado,criterio)" class="form-control" placeholder="Lote a buscar">
+                                    <select class="form-control" v-model="b_puente" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,b_habilitado,criterio)"> 
                                         <option value="">Credito Puente</option>
                                         <option v-for="puente in arrayPuentes" :key="puente.credito_puente" :value="puente.credito_puente" v-text="puente.credito_puente"></option>
                                     </select>
@@ -91,6 +97,13 @@
                                         <option value="0">Deshabilitado</option>
                                         <option value="">Todos</option>
                                     </select>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <div class="input-group">
                                     <button type="submit" @click="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,b_habilitado,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     <a class="btn btn-success" v-bind:href="'/asignar_modelo/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3  + '&bmodelo=' + b_modelo + '&blote=' + b_lote + '&b_habilitado='+ b_habilitado+'&criterio=' + criterio + '&b_puente=' + b_puente + '&b_empresa=' + b_empresa + '&b_empresa2=' + b_empresa2" >
                                         <i class="icon-pencil"></i>&nbsp;Excel
@@ -210,7 +223,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
                                     <div class="col-md-6">
-                                       <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id),selectModelo(fraccionamiento_id),selectManzana(fraccionamiento_id)" >
+                                       <select class="form-control" v-model="fraccionamiento_id" @change="selectEtapa(fraccionamiento_id),selectModelo(fraccionamiento_id),selectManzana(fraccionamiento_id)" >
                                             <option value="0">Seleccione</option>
                                             <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                         </select>
@@ -253,7 +266,7 @@
                                   <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Modelo</label>
                                     <div class="col-md-6">
-                                       <select class="form-control" @click="selectConsYTerreno(modelo_id)" v-model="modelo_id">
+                                       <select class="form-control" @change="selectConsYTerreno(modelo_id)" v-model="modelo_id">
                                             <option value="0">Seleccione</option>
                                             <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.id" v-text="modelos.nombre"></option>
                                         </select>
@@ -432,7 +445,7 @@
                          <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
                                     <div class="col-md-6">
-                                       <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id),selectModelo(fraccionamiento_id)" >
+                                       <select class="form-control" v-model="fraccionamiento_id" @change="selectEtapa(fraccionamiento_id),selectModelo(fraccionamiento_id)" >
                                             <option value="0">Seleccione</option>
                                             <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                         </select>
@@ -452,7 +465,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Modelo</label>
                                     <div class="col-md-6">
-                                       <select class="form-control" @click="selectConsYTerreno(modelo_id)" v-model="modelo_id">
+                                       <select class="form-control" @change="selectConsYTerreno(modelo_id)" v-model="modelo_id">
                                             <option value="0">Seleccione</option>
                                             <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.id" v-text="modelos.nombre"></option>
                                         </select>

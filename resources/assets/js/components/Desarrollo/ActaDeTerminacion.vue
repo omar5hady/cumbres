@@ -21,27 +21,21 @@
                             <div class="col-md-8">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
+                                    <select class="form-control col-md-4" v-model="criterio" @change="selectFraccionamientos()">
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
                                         <option value="licencias.term_ingreso">Fecha ingreso</option>
                                         <option value="licencias.term_salida">Fecha salida</option>
                                         <option value="licencias.avance">Porcentaje de avance</option>
                                         <option value="licencias.perito_dro">DRO</option>
                                     </select>
-
                                     <select class="form-control"  v-if="criterio=='licencias.perito_dro'" v-model="buscar">
-                                            <option value="0">Seleccione</option>
+                                            <option value="">Seleccione</option>
                                             <option value="15044">Ing. Alejandro F. Perez Espinosa</option>
                                             <option value="23679">Raúl Palos López</option>
                                     </select>
-
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @click="selectPuente(buscar),selectEtapas(buscar)">
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @change="selectPuente(buscar),selectEtapas(buscar)">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
-                                    </select>
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa" >
-                                        <option value="">Etapa</option>
-                                        <option v-for="etapa in arrayAllEtapas" :key="etapa.id" :value="etapa.id" v-text="etapa.num_etapa"></option>
                                     </select>
                                     <input type="date" v-if="criterio=='licencias.term_ingreso' || criterio== 'licencias.term_salida'" v-model="buscar" @keyup.enter="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="form-control col-md-6" placeholder="Desde" >
                                     <input type="date" v-if="criterio=='licencias.term_ingreso' || criterio== 'licencias.term_salida'" v-model="buscar2"  @keyup.enter="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="form-control col-md-6" placeholder="Hasta" >
@@ -49,21 +43,18 @@
                                     <input v-if="criterio!='lotes.fraccionamiento_id' && criterio!='licencias.term_ingreso' && criterio!='licencias.term_salida' && criterio!='licencias.perito_dro'" type="text"  v-model="buscar" @keyup.enter="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="form-control" placeholder="Texto a buscar">
                                    
                                 </div>
-                            </div>
-                        </div>
-                        <div class="form-group row" v-if="criterio=='lotes.fraccionamiento_id'">
-                            <div class="col-md-8">
-                                <div class="input-group">
-                                    <!--Criterios para el listado de busqueda -->
+                                <div class="input-group" v-if="criterio=='lotes.fraccionamiento_id'">
                                    
+                                    <select class="form-control col-md-10" v-model="b_etapa" >
+                                        <option value="">Etapa</option>
+                                        <option v-for="etapa in arrayAllEtapas" :key="etapa.id" :value="etapa.id" v-text="etapa.num_etapa"></option>
+                                    </select>
+                                </div>
+                                <div class="input-group" v-if="criterio=='lotes.fraccionamiento_id'">
+                                    <!--Criterios para el listado de busqueda -->
                                     <input v-if="criterio=='lotes.fraccionamiento_id'" type="text"  v-model="b_manzana" @keyup.enter="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="form-control" placeholder="Manzana">
                                     <input v-if="criterio=='lotes.fraccionamiento_id'" type="text"  v-model="b_lote" @keyup.enter="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="form-control" placeholder="# Lote">
-                                   
                                 </div>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-md-8">
                                 <div class="input-group">
                                     <select class="form-control" v-model="b_empresa" >
                                         <option value="">Empresa constructora</option>
@@ -74,16 +65,14 @@
                                         <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
                                     </select>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-md-8">
-                                <div class="input-group">
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_puente" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)"> 
+                                <div class="input-group"  v-if="criterio=='lotes.fraccionamiento_id'">
+                                    <select class="form-control" v-model="b_puente" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)"> 
                                         <option value="">Credito Puente</option>
                                         <option v-for="puente in arrayPuentes" :key="puente.credito_puente" :value="puente.credito_puente" v-text="puente.credito_puente"></option>
                                     </select>
-                                    <input v-if="criterio=='lotes.fraccionamiento_id'" type="text"  v-model="b_num_inicio" @keyup.enter="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="form-control" placeholder="# inicio de obra">
+                                    <input type="text"  v-model="b_num_inicio" @keyup.enter="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="form-control" placeholder="# inicio de obra">
+                                </div>
+                                <div class="input-group">
                                     <button type="submit" @click="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     <a class="btn btn-success" v-bind:href="'/acta_terminacion/excel?buscar=' + buscar + '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + '&criterio=' + criterio + '&buscar2=' + buscar2 + '&b_puente=' + b_puente + '&b_num_inicio=' + 
                                                 b_num_inicio + '&b_empresa=' + b_empresa + '&b_empresa2=' + b_empresa2 + '&b_etapa=' + b_etapa" >

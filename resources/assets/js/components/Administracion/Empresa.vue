@@ -168,7 +168,7 @@
                                 <div class="form-group row" v-if="tipoAccion > 2">
                                     <label class="col-md-3 form-control-label" for="text-input">Contacto</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="contacto" class="form-control" placeholder="Calle">
+                                        <input type="text" v-model="contacto" class="form-control" placeholder="Contacto">
                                     </div>
                                 </div>
                                 <div class="form-group row" v-if="tipoAccion < 3">
@@ -189,7 +189,7 @@
                                 <div class="form-group row" v-if="tipoAccion < 3">
                                     <label class="col-md-3 form-control-label" for="text-input">Estado</label>
                                     <div class="col-md-9">
-                                        <select class="form-control" v-model="estado" @click="selectCiudades(estado)">
+                                        <select class="form-control" v-model="estado" @change="selectCiudades(estado)">
                                             <option value="San Luis Potosí">San Luis Potosí</option>
                                             <option value="Baja California">Baja California</option>
                                             <option value="Baja California Sur">Baja California Sur</option>

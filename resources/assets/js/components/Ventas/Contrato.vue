@@ -60,7 +60,7 @@
                                 <div class="col-md-8">
                                        <div class="input-group">
                                         <!--Criterios para el listado de busqueda -->
-                                        <select class="form-control col-md-4" v-model="criterio2" @click="limpiarBusqueda()">
+                                        <select class="form-control col-md-4" v-model="criterio2" @change="limpiarBusqueda()">
                                             <option value="creditos.id"># Folio</option>
                                             <option value="personal.nombre">Cliente</option>
                                             <option v-if="rolId!=2" value="v.nombre">Vendedor</option>
@@ -93,7 +93,7 @@
                                 <div class="col-md-8">
                                        <div class="input-group">
                                         <!--Criterios para el listado de busqueda -->
-                                        <select class="form-control col-md-3" v-model="criterio2" @click="limpiarBusqueda()">
+                                        <select class="form-control col-md-3" v-model="criterio2" @change="limpiarBusqueda()">
                                             <option value="creditos.id"># Folio</option>
                                             <option value="personal.nombre">Cliente</option>
                                             <option v-if="rolId!=2" value="v.nombre">Vendedor</option>
@@ -127,7 +127,7 @@
                                         </label>
                                         
 
-                                        <select class="form-control" v-if="criterio2=='creditos.vendedor_id'"  @click="selectEtapas(buscar3)" v-model="buscar3" >
+                                        <select class="form-control" v-if="criterio2=='creditos.vendedor_id'"  @change="selectEtapas(buscar3)" v-model="buscar3" >
                                             <option value="">Fraccionamiento</option>
                                             <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
                                         </select>
@@ -164,7 +164,7 @@
                                 <div class="col-md-8">
                                        <div class="input-group">
                                         <!--Criterios para el listado de busqueda -->
-                                        <select class="form-control col-md-4" v-model="criterio2" @click="limpiarBusqueda()">
+                                        <select class="form-control col-md-4" v-model="criterio2" @change="limpiarBusqueda()">
                                             <option value="creditos.id"># Folio</option>
                                             <option value="personal.nombre">Cliente</option>
                                             <option v-if="rolId!=2" value="v.nombre">Vendedor</option>
@@ -173,12 +173,12 @@
                                             <option value="contratos.fecha">Fecha</option>
                                             <option value="contratos.fecha_status">Fecha status</option>
                                         </select>
-                                        <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'"  @click="selectEtapas(buscar2), selectModelo(buscar2)" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" v-model="buscar2" >
+                                        <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'"  @change="selectEtapas(buscar2), selectModelo(buscar2)" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" v-model="buscar2" >
                                             <option value="">Proyecto</option>
                                             <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
                                         </select>
 
-                                        <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" @click="selectManzanas(buscar2,b_etapa2)" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" v-model="b_etapa2" >
+                                        <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" @change="selectManzanas(buscar2,b_etapa2)" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" v-model="b_etapa2" >
                                             <option value="">Etapa</option>
                                             <option v-for="etapa in arrayAllEtapas" :key="etapa.id" :value="etapa.id" v-text="etapa.num_etapa"></option>
                                         </select>
@@ -187,7 +187,7 @@
                                 </div>
                                 <div class="col-md-8">
                                     <div class="input-group">
-                                        <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" @click="selectLotesManzana(buscar2,b_etapa2,b_manzana2)" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" v-model="b_manzana2" >
+                                        <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" @change="selectLotesManzana(buscar2,b_etapa2,b_manzana2)" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" v-model="b_manzana2" >
                                             <option value="">Manzana</option>
                                             <option v-for="manzana in arrayAllManzanas" :key="manzana.manzana" :value="manzana.manzana" v-text="manzana.manzana"></option>
                                         </select>
@@ -201,7 +201,7 @@
 
                                 <div class="col-md-8">
                                     <div class="input-group">
-                                        <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" @click="selectLotesManzana(buscar2,b_etapa2,b_manzana2)" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" v-model="b_modelo" >
+                                        <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" @change="selectLotesManzana(buscar2,b_etapa2,b_manzana2)" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" v-model="b_modelo" >
                                             <option value="">Modelo</option>
                                             <option v-for="modelo in arrayModelos" :key="modelo.id" :value="modelo.id" v-text="modelo.nombre"></option>
                                         </select>
@@ -254,7 +254,7 @@
                                 <div class="col-md-10">
                                     <div class="input-group">
                                         <!--Criterios para el listado de busqueda -->
-                                        <select class="form-control col-md-4" v-model="criterio2" @click="limpiarBusqueda()">
+                                        <select class="form-control col-md-4" v-model="criterio2" @change="limpiarBusqueda()">
                                             <option value="creditos.id"># Folio</option>
                                             <option value="personal.nombre">Cliente</option>
                                             <option v-if="rolId!=2" value="v.nombre">Vendedor</option>
@@ -374,7 +374,7 @@
                                 <div class="col-md-8">
                                        <div class="input-group">
                                         <!--Criterios para el listado de busqueda -->
-                                        <select class="form-control col-md-4" v-model="criterio" @click="limpiarBusqueda()">
+                                        <select class="form-control col-md-4" v-model="criterio" @change="limpiarBusqueda()">
                                             <option value="creditos.id"># Folio</option>
                                             <option value="personal.nombre">Cliente</option>
                                             <option value="v.nombre">Vendedor</option>
@@ -382,17 +382,17 @@
                                             <option value="inst_seleccionadas.tipo_credito">Tipo de credito</option>
                                         </select>
                                         
-                                        <select class="form-control" v-if="criterio=='creditos.fraccionamiento'"  @click="selectEtapas(buscar)" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-model="buscar" >
+                                        <select class="form-control" v-if="criterio=='creditos.fraccionamiento'"  @change="selectEtapas(buscar)" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-model="buscar" >
                                             <option value="">Seleccione</option>
                                             <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
                                         </select>
 
-                                        <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" @click="selectManzanas(buscar,b_etapa)" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-model="b_etapa" >
+                                        <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" @change="selectManzanas(buscar,b_etapa)" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-model="b_etapa" >
                                             <option value="">Seleccione</option>
                                             <option v-for="etapa in arrayAllEtapas" :key="etapa.id" :value="etapa.id" v-text="etapa.num_etapa"></option>
                                         </select>
 
-                                        <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" @click="selectLotesManzana(buscar,b_etapa,b_manzana)" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-model="b_manzana" >
+                                        <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" @change="selectLotesManzana(buscar,b_etapa,b_manzana)" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-model="b_manzana" >
                                             <option value="">Seleccione</option>
                                             <option v-for="manzana in arrayAllManzanas" :key="manzana.manzana" :value="manzana.manzana" v-text="manzana.manzana"></option>
                                         </select>
@@ -575,7 +575,7 @@
                                             <div class="col-md-3">
                                                     <div class="form-group">
                                                 <label for="">Estado <span style="color:red;" v-show="estado==''">(*)</span></label>
-                                                    <select class="form-control" v-if="listado==3 || listado==4 && btn_actualizar==1" v-model="estado" @click="selectCiudades(estado,0)" >
+                                                    <select class="form-control" v-if="listado==3 || listado==4 && btn_actualizar==1" v-model="estado" @change="selectCiudades(estado,0)" >
                                                         <option value="">Seleccione</option>
                                                         <option v-for="estados in arrayEstados" :key="estados.estado" :value="estados.estado" v-text="estados.estado"></option>    
                                                     </select>
@@ -682,7 +682,7 @@
                                             <div class="col-md-6" v-if="tipo_economia!=0">
                                                 <div class="form-group">
                                                     <label for="">Empresa <span style="color:red;" v-show="empresa==0">(*)</span></label>
-                                                        <select v-if="listado==3 || listado==4 && btn_actualizar==1" class="form-control" v-model="empresa" @click="getDatosEmpresa(empresa,0)">
+                                                        <select v-if="listado==3 || listado==4 && btn_actualizar==1" class="form-control" v-model="empresa" @change="getDatosEmpresa(empresa,0)">
                                                             <option value="">Seleccione</option>
                                                             <option v-for="empresas in arryaEmpresas" :key="empresas.id" :value="empresas.nombre" v-text="empresas.nombre"></option>    
                                                         </select>
@@ -859,11 +859,11 @@
                                                 </div>
                                                 </div>
 
-                                                    <div class="col-md-2" v-if="coacreditado==true">
-                                                        <div class="form-group">
-                                                    <label for="">Homoclave</label>
-                                                    <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control" v-model="homoclave_coa" placeholder="homoclave">
-                                                </div>
+                                                <div class="col-md-2" v-if="coacreditado==true">
+                                                    <div class="form-group">
+                                                        <label for="">Homoclave</label>
+                                                        <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control" v-model="homoclave_coa" placeholder="homoclave">
+                                                    </div>
                                                 </div>
 
 
@@ -908,71 +908,71 @@
                                                 </div>
 
                                                 <div class="col-md-2" v-if="coacreditado==true">
-                                                        <div class="form-group">
-                                                    <label for="">Colonia<span style="color:red;" v-show="colonia_coa==''">(*)</span></label>
+                                                    <div class="form-group">
+                                                        <label for="">Colonia<span style="color:red;" v-show="colonia_coa==''">(*)</span></label>
                                                         <select v-if="listado==3 || listado==4 && btn_actualizar==1" class="form-control" v-model="colonia_coa">
                                                             <option value="">Seleccione</option>
                                                             <option v-for="colonia in arrayColoniasCoa" :key="colonia.colonia " :value="colonia.colonia" v-text="colonia.colonia"></option>
                                                         </select>
                                                         <input type="text" v-if="listado==4 && btn_actualizar==0" class="form-control" :readonly="listado==4 && btn_actualizar==0" v-model="colonia_coa">
-                                                </div>
+                                                    </div>
                                                 </div>
 
                                                 
                                                 <div class="col-md-3">
-                                                        <div class="form-group">
-                                                    <label for="">Estado <span style="color:red;" v-show="estado_coa==''">(*)</span></label>
-                                                        <select v-if="listado==3 || listado==4 && btn_actualizar==1" class="form-control" v-model="estado_coa" @click="selectCiudades(estado_coa,1)" >
+                                                    <div class="form-group">
+                                                        <label for="">Estado <span style="color:red;" v-show="estado_coa==''">(*)</span></label>
+                                                        <select v-if="listado==3 || listado==4 && btn_actualizar==1" class="form-control" v-model="estado_coa" @change="selectCiudades(estado_coa,1)" >
                                                             <option value="">Seleccione</option>
                                                             <option v-for="estado in arrayEstados" :key="estado.estado " :value="estado.estado" v-text="estado.estado"></option>    
                                                         </select>
                                                         <input type="text" v-if="listado==4 && btn_actualizar==0" class="form-control" :readonly="listado==4 && btn_actualizar==0" v-model="estado_coa">
-                                                        </div>
                                                     </div>
+                                                </div>
 
 
                                                         
                                                 <div class="col-md-3">
-                                                        <div class="form-group">
-                                                    <label for="">Ciudad <span style="color:red;" v-show="ciudad_coa==''">(*)</span></label>
+                                                    <div class="form-group">
+                                                        <label for="">Ciudad <span style="color:red;" v-show="ciudad_coa==''">(*)</span></label>
                                                         <select v-if="listado==3 || listado==4 && btn_actualizar==1" class="form-control" v-model="ciudad_coa" >
                                                             <option value="">Seleccione</option>
                                                             <option v-for="ciudades in arrayCiudadesCoa" :key="ciudades.municipio" :value="ciudades.municipio" v-text="ciudades.municipio"></option>    
                                                         </select>
                                                         <input type="text" v-if="listado==4 && btn_actualizar==0" class="form-control" :readonly="listado==4 && btn_actualizar==0" v-model="ciudad_coa">
-                                                        </div>
                                                     </div>
+                                                </div>
                                                 
                                                 
                                                 <div class="col-md-3" v-if="coacreditado==true">
-                                                        <div class="form-group">
-                                                    <label for="">Celular</label>
-                                                    <input :readonly="listado==4 && btn_actualizar==0" type="text" maxlength="10" pattern="\d*" class="form-control" v-model="celular_coa" placeholder="Celular">
-                                                </div>
+                                                    <div class="form-group">
+                                                        <label for="">Celular</label>
+                                                        <input :readonly="listado==4 && btn_actualizar==0" type="text" maxlength="10" pattern="\d*" class="form-control" v-model="celular_coa" placeholder="Celular">
+                                                    </div>
                                                 </div>
 
                                                 
                                                 <div class="col-md-3" v-if="coacreditado==true">
-                                                        <div class="form-group">
-                                                    <label for="">Telefono</label>
-                                                    <input :readonly="listado==4 && btn_actualizar==0" type="text" maxlength="10" pattern="\d*" class="form-control" v-model="telefono_coa" placeholder="Telefono">
-                                                </div>
+                                                    <div class="form-group">
+                                                        <label for="">Telefono</label>
+                                                        <input :readonly="listado==4 && btn_actualizar==0" type="text" maxlength="10" pattern="\d*" class="form-control" v-model="telefono_coa" placeholder="Telefono">
+                                                    </div>
                                                 </div>
 
                                                 
                                                 <div class="col-md-3" v-if="coacreditado==true">
-                                                        <div class="form-group">
-                                                    <label for="">Email</label>
-                                                    <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control" v-model="email_coa" placeholder="Correo">
-                                                </div>
+                                                    <div class="form-group">
+                                                        <label for="">Email</label>
+                                                        <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control" v-model="email_coa" placeholder="Correo">
+                                                    </div>
                                                 </div>
 
 
                                                 <div class="col-md-3" v-if="coacreditado==true">
-                                                        <div class="form-group">
-                                                    <label for="">Email institucional</label>
-                                                    <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control" v-model="email_institucional_coa" placeholder="Correo institucional">
-                                                </div>
+                                                    <div class="form-group">
+                                                        <label for="">Email institucional</label>
+                                                        <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control" v-model="email_institucional_coa" placeholder="Correo institucional">
+                                                    </div>
                                                 </div>
 
                                                 <div class="col-md-4">
@@ -986,54 +986,54 @@
                                                     </div>
                                                 </div>    
 
-
                                             <div class="col-md-12" v-if="coacreditado==true">
-                                                    <div class="form-group">
+                                                <div class="form-group">
                                                     <center> <h5>Lugar de trabajo</h5> </center>
-                                                    </div>
+                                                </div>
                                             </div>
+
                                             <div class="col-md-6" v-if="coacreditado==true">
                                                 <div class="form-group">
                                                     <label for="">Empresa <span style="color:red;" v-show="empresa_coa==0">(*)</span></label>
-                                                        <select v-if="listado==3 || listado==4 && btn_actualizar==1" class="form-control" v-model="empresa_coa" @click="getDatosEmpresa(empresa_coa,1)">
-                                                                <option value="">Seleccione</option>
-                                                                <option v-for="empresas in arryaEmpresas" :key="empresas.id" :value="empresas.nombre" v-text="empresas.nombre"></option>    
-                                                        </select>
-                                                        <input type="text" v-if="listado==4 && btn_actualizar==0" class="form-control" :readonly="listado==4 && btn_actualizar==0" v-model="empresa_coa">
+                                                    <select v-if="listado==3 || listado==4 && btn_actualizar==1" class="form-control" v-model="empresa_coa" @change="getDatosEmpresa(empresa_coa,1)">
+                                                        <option value="">Seleccione</option>
+                                                        <option v-for="empresas in arryaEmpresas" :key="empresas.id" :value="empresas.nombre" v-text="empresas.nombre"></option>    
+                                                    </select>
+                                                    <input type="text" v-if="listado==4 && btn_actualizar==0" class="form-control" :readonly="listado==4 && btn_actualizar==0" v-model="empresa_coa">
                                                 </div>
                                             </div>
 
                                             <div class="col-md-3" v-if="coacreditado==true">
                                                 <div class="form-group">
                                                     <label for="">Domicilio de empresa <span style="color:red;" v-show="empresa==0">(*)</span></label>
-                                                        <input :readonly="listado==4 && btn_actualizar==0" v-if="empresa != null" type="text" class="form-control" v-model="direccion_empresa_coa">
+                                                    <input :readonly="listado==4 && btn_actualizar==0" v-if="empresa != null" type="text" class="form-control" v-model="direccion_empresa_coa">
                                                 </div>
                                             </div>
                                             <div class="col-md-2" v-if="coacreditado==true">
                                                 <div class="form-group">
                                                     <label for="">CP <span style="color:red;" v-show="empresa==0">(*)</span></label>
-                                                        <input :readonly="listado==4 && btn_actualizar==0" v-if="empresa != null" type="text" class="form-control"  v-model="cp_empresa_coa">
+                                                    <input :readonly="listado==4 && btn_actualizar==0" v-if="empresa != null" type="text" class="form-control"  v-model="cp_empresa_coa">
                                                 </div>
                                             </div>
 
                                             <div class="col-md-2" v-if="coacreditado==true">
                                                 <div class="form-group">
                                                     <label for="">Colonia <span style="color:red;" v-show="empresa==0">(*)</span></label>
-                                                        <input :readonly="listado==4 && btn_actualizar==0" v-if="empresa != null" type="text" class="form-control"  v-model="colonia_empresa_coa">
+                                                    <input :readonly="listado==4 && btn_actualizar==0" v-if="empresa != null" type="text" class="form-control"  v-model="colonia_empresa_coa">
                                                 </div>
                                             </div>
 
                                             <div class="col-md-3" v-if="coacreditado==true">
                                                 <div class="form-group">
                                                     <label for="">Estado <span style="color:red;" v-show="empresa==0">(*)</span></label>
-                                                        <input :readonly="listado==4 && btn_actualizar==0" v-if="empresa != null" type="text" class="form-control"  v-model="estado_empresa_coa">
+                                                    <input :readonly="listado==4 && btn_actualizar==0" v-if="empresa != null" type="text" class="form-control"  v-model="estado_empresa_coa">
                                                 </div>
                                             </div>
 
                                             <div class="col-md-3" v-if="coacreditado==true">
                                                 <div class="form-group">
                                                     <label for="">Ciudad <span style="color:red;" v-show="empresa==0">(*)</span></label>
-                                                        <input :readonly="listado==4 && btn_actualizar==0" v-if="empresa != null" type="text" class="form-control"  v-model="ciudad_empresa_coa">
+                                                    <input :readonly="listado==4 && btn_actualizar==0" v-if="empresa != null" type="text" class="form-control"  v-model="ciudad_empresa_coa">
                                                 </div>
                                             </div>
 
@@ -1052,13 +1052,13 @@
                                             </div>
 
                                             <div class="col-md-12" v-if="coacreditado==true && listado==4 && btn_actualizar==1">
-                                                    <div class="form-group">
+                                                <div class="form-group">
                                                     <center> 
                                                         <div class="col-md-1">
                                                             <button type="button" class="btn btn-danger" @click="cambiarTitular()"> Cambiar titular </button>
                                                         </div>
                                                     </center>
-                                                    </div>
+                                                </div>
                                             </div>
                                                 
                                                  
@@ -1074,11 +1074,12 @@
                                     <div class="collapse" id="collapseThree" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion">
                                         <!--------------------------------  Apartado Referencias familiares ------------------------------->
                                         <div class="form-group row border border-warning" style="margin-right:0px; margin-left:0px;">
-                                                    <div class="col-md-12">
+                                                <div class="col-md-12">
                                                     <div class="form-group">
-                                                    <center> <h3></h3> </center>
+                                                        <center> <h3></h3> </center>
                                                     </div>
-                                                    </div> 
+                                                </div> 
+                                                
                                                 <div class="col-md-12">
                                                     <div class="form-group">
                                                         <center> <h5>Primera referencia</h5> </center>
@@ -1087,58 +1088,56 @@
 
 
                                                 <div class="col-md-4">
-                                                        <div class="form-group">
-                                                    <label for="">Nombre <span style="color:red;" v-show="nombre_referencia1==''">(*)</span></label>
-                                                    <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control"  v-model="nombre_referencia1" placeholder="Nombre">
-                                                </div>
+                                                    <div class="form-group">
+                                                        <label for="">Nombre <span style="color:red;" v-show="nombre_referencia1==''">(*)</span></label>
+                                                        <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control"  v-model="nombre_referencia1" placeholder="Nombre">
+                                                    </div>
                                                 </div>
 
 
                                                 <div class="col-md-4">
-                                                        <div class="form-group">
-                                                    <label for="">Telefono <span style="color:red;" v-show="telefono_referencia1==''">(*)</span></label>
-                                                    <input :readonly="listado==4 && btn_actualizar==0" type="text" v-on:keypress="isNumber($event)" maxlength="10" pattern="\d*" class="form-control"  v-model="telefono_referencia1" placeholder="Telefono">
-                                                </div>
+                                                    <div class="form-group">
+                                                        <label for="">Telefono <span style="color:red;" v-show="telefono_referencia1==''">(*)</span></label>
+                                                        <input :readonly="listado==4 && btn_actualizar==0" type="text" v-on:keypress="isNumber($event)" maxlength="10" pattern="\d*" class="form-control"  v-model="telefono_referencia1" placeholder="Telefono">
+                                                    </div>
                                                 </div>
 
                                                 
                                                 <div class="col-md-4">
-                                                        <div class="form-group">
-                                                    <label for="">Celular <span style="color:red;" v-show="celular_referencia1==''">(*)</span></label>
-                                                    <input :readonly="listado==4 && btn_actualizar==0" type="text" v-on:keypress="isNumber($event)" maxlength="10"  pattern="\d*" class="form-control"  v-model="celular_referencia1" placeholder="Celular">
-                                                </div>
+                                                    <div class="form-group">
+                                                        <label for="">Celular <span style="color:red;" v-show="celular_referencia1==''">(*)</span></label>
+                                                        <input :readonly="listado==4 && btn_actualizar==0" type="text" v-on:keypress="isNumber($event)" maxlength="10"  pattern="\d*" class="form-control"  v-model="celular_referencia1" placeholder="Celular">
+                                                    </div>
                                                 </div>
 
                                                 <div class="col-md-12">
                                                     <div class="form-group">
-                                                    <center> <h5>Segunda referencia</h5> </center>
+                                                        <center> <h5>Segunda referencia</h5> </center>
                                                     </div>
-                                                    </div> 
+                                                </div> 
 
                                                 <div class="col-md-4">
-                                                        <div class="form-group">
-                                                    <label for="">Nombre <span style="color:red;" v-show="nombre_referencia2==''">(*)</span></label>
-                                                    <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control"  v-model="nombre_referencia2" placeholder="Nombre">
-                                                </div>
+                                                    <div class="form-group">
+                                                        <label for="">Nombre <span style="color:red;" v-show="nombre_referencia2==''">(*)</span></label>
+                                                        <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control"  v-model="nombre_referencia2" placeholder="Nombre">
+                                                    </div>
                                                 </div>
 
 
                                                 <div class="col-md-4">
-                                                        <div class="form-group">
-                                                    <label for="">Telefono <span style="color:red;" v-show="telefono_referencia2==''">(*)</span></label>
-                                                    <input :readonly="listado==4 && btn_actualizar==0" type="text" v-on:keypress="isNumber($event)" maxlength="10" pattern="\d*" class="form-control"  v-model="telefono_referencia2" placeholder="Telefono">
-                                                </div>
+                                                    <div class="form-group">
+                                                        <label for="">Telefono <span style="color:red;" v-show="telefono_referencia2==''">(*)</span></label>
+                                                        <input :readonly="listado==4 && btn_actualizar==0" type="text" v-on:keypress="isNumber($event)" maxlength="10" pattern="\d*" class="form-control"  v-model="telefono_referencia2" placeholder="Telefono">
+                                                    </div>
                                                 </div>
 
                                                 
                                                 <div class="col-md-4">
-                                                        <div class="form-group">
-                                                    <label for="">Celular <span style="color:red;" v-show="celular_referencia2==''">(*)</span></label>
-                                                    <input :readonly="listado==4 && btn_actualizar==0" type="text" v-on:keypress="isNumber($event)" maxlength="10" pattern="\d*" class="form-control"  v-model="celular_referencia2" placeholder="Celular">
+                                                    <div class="form-group">
+                                                        <label for="">Celular <span style="color:red;" v-show="celular_referencia2==''">(*)</span></label>
+                                                        <input :readonly="listado==4 && btn_actualizar==0" type="text" v-on:keypress="isNumber($event)" maxlength="10" pattern="\d*" class="form-control"  v-model="celular_referencia2" placeholder="Celular">
+                                                    </div>
                                                 </div>
-                                                </div>
-
-                                                
                                         </div>
                                     </div>
                                 </div>
@@ -1290,8 +1289,6 @@
                                                         </div> 
                                                     </template>
 
-                                                   
-
                                                     <div class="col-md-12" v-if="precioBase!=''">
                                                         <div class="form-group">
                                                             <h6></h6>
@@ -1326,7 +1323,7 @@
                                                     <div class="col-md-3" v-if="listado==3 || listado==4 && btn_actualizar==1">
                                                         <div class="form-group">
                                                             <label for="">Paquete</label>
-                                                            <select class="form-control" v-model="paquete_id" @click="datosPaquetes(paquete_id)">
+                                                            <select class="form-control" v-model="paquete_id" @change="datosPaquetes(paquete_id)">
                                                                     <option value="0">Seleccione</option>
                                                                     <option v-for="paquetes in arrayPaquetes" :key="paquetes.id" :value="paquetes.id" v-text="paquetes.nombre"></option>
                                                             </select>
@@ -1385,24 +1382,24 @@
 
                                                     <div class="col-md-3">
                                                         <div class="form-group">
-                                                        <label style="color:#2271b3;" for=""><strong>Tipo de credito </strong><span style="color:red;" v-show="tipo_credito==0">(*)</span></label>
-                                                        <p v-if="change_credito==0" @click="change_credito=1,selectInstitucion(tipo_credito)" v-text="tipo_credito"></p>
-                                                        <select v-if="change_credito==1" class="form-control" v-model="tipo_credito" @click="selectInstitucion(tipo_credito)" >
-                                                            <option value="0">Seleccione</option>
-                                                            <option v-for="creditos in arrayCreditos" :key="creditos.nombre" :value="creditos.nombre" v-text="creditos.nombre"></option>   
-                                                        </select>
+                                                            <label style="color:#2271b3;" for=""><strong>Tipo de credito </strong><span style="color:red;" v-show="tipo_credito==0">(*)</span></label>
+                                                            <p v-if="change_credito==0" @click="change_credito=1,selectInstitucion(tipo_credito)" v-text="tipo_credito"></p>
+                                                            <select v-if="change_credito==1" class="form-control" v-model="tipo_credito" @change="selectInstitucion(tipo_credito)" >
+                                                                <option value="0">Seleccione</option>
+                                                                <option v-for="creditos in arrayCreditos" :key="creditos.nombre" :value="creditos.nombre" v-text="creditos.nombre"></option>   
+                                                            </select>
                                                         </div>
                                                     </div>
 
                                                     <template v-if="modelo != 'Terreno'">
                                                         <div class="col-md-3">
                                                             <div class="form-group">
-                                                            <label style="color:#2271b3;" for=""><strong>Institucion financiera </strong><span style="color:red;" v-show="inst_financiera==0">(*)</span></label>
-                                                            <p v-if="change_credito==0" @click="change_credito=1,selectInstitucion(tipo_credito)" v-text="inst_financiera"></p>
-                                                            <select v-if="change_credito==1" class="form-control" v-model="inst_financiera" >
-                                                                <option value="">Seleccione</option>
-                                                                <option v-for="institucion in arrayInstituciones" :key="institucion.institucion_fin" :value="institucion.institucion_fin" v-text="institucion.institucion_fin"></option>      
-                                                            </select>
+                                                                <label style="color:#2271b3;" for=""><strong>Institucion financiera </strong><span style="color:red;" v-show="inst_financiera==0">(*)</span></label>
+                                                                <p v-if="change_credito==0" @click="change_credito=1,selectInstitucion(tipo_credito)" v-text="inst_financiera"></p>
+                                                                <select v-if="change_credito==1" class="form-control" v-model="inst_financiera" >
+                                                                    <option value="">Seleccione</option>
+                                                                    <option v-for="institucion in arrayInstituciones" :key="institucion.institucion_fin" :value="institucion.institucion_fin" v-text="institucion.institucion_fin"></option>      
+                                                                </select>
                                                             </div>
                                                         </div>
                                                     </template>
@@ -1428,8 +1425,8 @@
 
                                                      <div class="col-md-2" v-if="inst_financiera!=''">
                                                         <div class="form-group">
-                                                        <label v-if="modelo != 'Terreno'" style="color:#2271b3;" for=""><strong>Plazo (años) </strong><span style="color:red;" v-show="plazo_credito==0">(*)</span></label>
-                                                        <label v-else style="color:#2271b3;" for=""><strong>Plazo (meses) </strong><span style="color:red;" v-show="plazo_credito==0">(*)</span></label>
+                                                            <label v-if="modelo != 'Terreno'" style="color:#2271b3;" for=""><strong>Plazo (años) </strong><span style="color:red;" v-show="plazo_credito==0">(*)</span></label>
+                                                            <label v-else style="color:#2271b3;" for=""><strong>Plazo (meses) </strong><span style="color:red;" v-show="plazo_credito==0">(*)</span></label>
                                                             <p v-if="change_credito==0" v-text="plazo_credito"></p>
                                                             <input v-if="change_credito==1" v-model="plazo_credito" type="number" @keyup.enter="change_credito=0,actualizarContrato()" class="form-control" >
                                                         </div>
@@ -1444,7 +1441,7 @@
                                                     <template v-if="modelo != 'Terreno'">
                                                         <div class="col-md-3" v-if="inst_financiera!='' && listado==3 || listado==4 && btn_actualizar==1 && inst_financiera!=''">
                                                             <div class="form-group">
-                                                            <label for="">Comisión por apertura</label>
+                                                                <label for="">Comisión por apertura</label>
                                                                 <input type="text" pattern="\d*" v-model="comision_apertura" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
                                                             </div>
                                                         </div>
@@ -1479,7 +1476,7 @@
                                                     <template v-if="modelo != 'Terreno'">
                                                         <div class="col-md-3" v-if="inst_financiera!=''&& listado==3 || listado==4 && btn_actualizar==1 && inst_financiera!=''">
                                                             <div class="form-group">
-                                                            <label for="">Investigación</label>
+                                                                <label for="">Investigación</label>
                                                                 <input type="text" pattern="\d*" v-model="investigacion" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
                                                             </div>
                                                         </div>
@@ -1493,14 +1490,14 @@
 
                                                         <div class="col-md-3" v-if="tipo_credito=='Alia2' && listado==3 || tipo_credito=='Respalda2' && listado==3 || tipo_credito=='Alia2' && listado==4 && btn_actualizar==1 || tipo_credito=='Respalda2' && listado==4 && btn_actualizar==1 || tipo_credito=='INFONAVIT-FOVISSSTE' && listado==3 || tipo_credito=='INFONAVIT-FOVISSSTE' && listado==4 && btn_actualizar==1 ">
                                                             <div class="form-group">
-                                                            <label for="">Fovissste</label>
+                                                                <label for="">Fovissste</label>
                                                                 <input type="text" pattern="\d*" v-model="fovissste" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
                                                             </div>
                                                         </div>
 
                                                         <div class="col-md-3" v-if="tipo_credito=='Cofinavit' && listado==3 || tipo_credito=='Cofinavit' && listado==4 && btn_actualizar==1">
                                                             <div class="form-group">
-                                                            <label for="">Infonavit</label>
+                                                                <label for="">Infonavit</label>
                                                                 <input type="text" pattern="\d*" v-model="infonavit" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
                                                             </div>
                                                         </div>
@@ -1531,7 +1528,7 @@
                                                     <template v-if="modelo != 'Terreno'">
                                                         <div class="col-md-3" v-if="inst_financiera!=''&& listado==3 || inst_financiera!=''&& listado==4 && btn_actualizar==1">
                                                             <div class="form-group">
-                                                            <label for="">Avaluo por parte del banco</label>
+                                                                <label for="">Avaluo por parte del banco</label>
                                                                 <input type="text" pattern="\d*" v-model="avaluo" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
                                                             </div>
                                                         </div>
@@ -1566,7 +1563,7 @@
                                                     <template v-if="modelo != 'Terreno'">
                                                         <div class="col-md-3" v-if="inst_financiera!=''&& listado==3 || inst_financiera!=''&& listado==4 && btn_actualizar==1">
                                                             <div class="form-group">
-                                                            <label for="">Gastos de escrituración</label>
+                                                                <label for="">Gastos de escrituración</label>
                                                                 <input type="text" pattern="\d*" v-model="escrituras" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
                                                             </div>
                                                         </div>
@@ -1617,7 +1614,7 @@
 
                                                         <div class="col-md-3" v-if="inst_financiera!='' && listado==3 || inst_financiera!=''&& listado==4 && btn_actualizar==1" ><hr>
                                                             <div class="form-group">
-                                                            <label for="">Avaluo por parte del cliente</label>
+                                                                <label for="">Avaluo por parte del cliente</label>
                                                                 <input type="text" pattern="\d*" v-model="avaluo_cliente" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
                                                             </div>
                                                         </div>
@@ -1693,7 +1690,7 @@
 
                                                     <div class="col-md-3" v-if="inst_financiera!='' && listado==3 || inst_financiera!='' && listado==4 && btn_actualizar == 1">
                                                         <div class="form-group">
-                                                        <label for="">Monto pago</label>
+                                                            <label for="">Monto pago</label>
                                                             <input type="text" pattern="\d*" v-model="monto_pago" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
                                                         </div>
                                                     </div>
@@ -1735,54 +1732,54 @@
                                                     </div>
                                                 
 
-                                <div class="col-md-6">
-                                    <div class="form-group row" v-if="arrayPagos.length">
-                                        <div class="table-responsive col-md-12">
-                                            <table class="table table-bordered table-striped table-sm">
-                                                <thead>
-                                                    <tr>
-                                                        <th v-if="listado==3 || listado==4 && btn_actualizar==1">Opciones</th>
-                                                        <th># Pago</th>
-                                                        <th>Fecha de pago</th>
-                                                        <th>Monto</th>
-                                                        <th v-if="btn_actualizar == 1"></th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody >
-                                                    <tr v-for="(pago,index) in arrayPagos" :key="pago.fecha_pago">
-                                                        <td v-if="listado==3  && modelo != 'Terreno' || listado==4 && btn_actualizar==1  && modelo != 'Terreno'">
-                                                            <button v-if="listado==3" @click="eliminarPago(index)" type="button" class="btn btn-danger btn-sm">
-                                                                <i class="icon-close"></i>
-                                                            </button>
-                                                            <button v-if="listado==4  && modelo != 'Terreno' && btn_actualizar==1 && pago.restante == pago.monto_pago  && modelo != 'Terreno'" @click="eliminarPagoBD(pago.id)" type="button" class="btn btn-warning btn-sm">
-                                                                <i class="icon-close"></i>
-                                                            </button>
-                                                        </td>
-                                                        <td v-else-if="listado==4 && btn_actualizar==1  && modelo == 'Terreno'"></td>
-                                                        <td v-text="'Pago no. ' + parseInt(index+1)"></td>
-                                                        <td v-if="btn_actualizar == 0" v-text="this.moment(pago.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
-                                                        <td v-else>
-                                                            <input v-if="modelo != 'Terreno' || modelo == 'Terreno' && index == 0" type="date" v-model="pago.fecha_pago">
-                                                        </td>
-                                                        <td v-if="btn_actualizar == 0 || btn_actualizar == 1 &&  modelo == 'Terreno'">
-                                                            {{ pago.monto_pago | currency}}
-                                                        </td>
-                                                        <td v-else>
-                                                            <input v-if="modelo != 'Terreno'" type="text" pattern="\d*" v-on:keypress="isNumber($event)" v-model="pago.monto_pago">
-                                                        </td>
-                                                        <td v-if="btn_actualizar == 1 && modelo != 'Terreno' ||btn_actualizar == 1 && modelo == 'Terreno' && index == 0">
-                                                            <button @click="actualizarPagoBD(pago.id, pago.monto_pago, pago.fecha_pago)" type="button" class="btn btn-success btn-sm">
-                                                                <i class="icon-check"></i>
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>                                                
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row" v-if="arrayPagos.length">
+                                                            <div class="table-responsive col-md-12">
+                                                                <table class="table table-bordered table-striped table-sm">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th v-if="listado==3 || listado==4 && btn_actualizar==1">Opciones</th>
+                                                                            <th># Pago</th>
+                                                                            <th>Fecha de pago</th>
+                                                                            <th>Monto</th>
+                                                                            <th v-if="btn_actualizar == 1"></th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody >
+                                                                        <tr v-for="(pago,index) in arrayPagos" :key="pago.fecha_pago">
+                                                                            <td v-if="listado==3  && modelo != 'Terreno' || listado==4 && btn_actualizar==1  && modelo != 'Terreno'">
+                                                                                <button v-if="listado==3" @click="eliminarPago(index)" type="button" class="btn btn-danger btn-sm">
+                                                                                    <i class="icon-close"></i>
+                                                                                </button>
+                                                                                <button v-if="listado==4  && modelo != 'Terreno' && btn_actualizar==1 && pago.restante == pago.monto_pago  && modelo != 'Terreno'" @click="eliminarPagoBD(pago.id)" type="button" class="btn btn-warning btn-sm">
+                                                                                    <i class="icon-close"></i>
+                                                                                </button>
+                                                                            </td>
+                                                                            <td v-else-if="listado==4 && btn_actualizar==1  && modelo == 'Terreno'"></td>
+                                                                            <td v-text="'Pago no. ' + parseInt(index+1)"></td>
+                                                                            <td v-if="btn_actualizar == 0" v-text="this.moment(pago.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
+                                                                            <td v-else>
+                                                                                <input v-if="modelo != 'Terreno' || modelo == 'Terreno' && index == 0" type="date" v-model="pago.fecha_pago">
+                                                                            </td>
+                                                                            <td v-if="btn_actualizar == 0 || btn_actualizar == 1 &&  modelo == 'Terreno'">
+                                                                                {{ pago.monto_pago | currency}}
+                                                                            </td>
+                                                                            <td v-else>
+                                                                                <input v-if="modelo != 'Terreno'" type="text" pattern="\d*" v-on:keypress="isNumber($event)" v-model="pago.monto_pago">
+                                                                            </td>
+                                                                            <td v-if="btn_actualizar == 1 && modelo != 'Terreno' ||btn_actualizar == 1 && modelo == 'Terreno' && index == 0">
+                                                                                <button @click="actualizarPagoBD(pago.id, pago.monto_pago, pago.fecha_pago)" type="button" class="btn btn-success btn-sm">
+                                                                                    <i class="icon-check"></i>
+                                                                                </button>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>                                                
                                                             
-                                                </div>
+                                            </div>
                                     </div>
                               </div>
                                 <!--- Botones y div para errores -->
@@ -1895,7 +1892,7 @@
                             <div class="form-group row" v-if="tipoAccion==2">
                                 <label class="col-md-3 form-control-label" for="text-input">Fraccionamiento</label>
                                 <div class="col-md-9">
-                                    <select class="form-control" v-model="sel_proyecto" @click="selectEtapa(sel_proyecto)">
+                                    <select class="form-control" v-model="sel_proyecto" @change="selectEtapa(sel_proyecto)">
                                             <option value=0> Seleccione </option>
                                             <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
@@ -1905,7 +1902,7 @@
                             <div class="form-group row" v-if="tipoAccion==2">
                                 <label class="col-md-3 form-control-label" for="text-input">Etapa</label>
                                 <div class="col-md-9">
-                                    <select class="form-control" v-model="sel_etapa" @click="selectManzana(sel_etapa)">
+                                    <select class="form-control" v-model="sel_etapa" @change="selectManzana(sel_etapa)">
                                             <option value=''> Seleccione </option>
                                             <option v-for="etapas in arrayEtapas" :key="etapas.etapa" :value="etapas.etapa" v-text="etapas.etapa"></option>
                                     </select>
@@ -1915,7 +1912,7 @@
                             <div class="form-group row" v-if="tipoAccion==2">
                                 <label class="col-md-3 form-control-label" for="text-input">Manzana</label>
                                 <div class="col-md-9">
-                                    <select class="form-control" v-model="sel_manzana" @click="selectLotes(sel_manzana, sel_etapa, sel_proyecto)">
+                                    <select class="form-control" v-model="sel_manzana" @change="selectLotes(sel_manzana, sel_etapa, sel_proyecto)">
                                             <option value=''> Seleccione </option>
                                             <option v-for="manzanas in arrayManzanas" :key="manzanas.manzana" :value="manzanas.manzana" v-text="manzanas.manzana"></option>
                                     </select>

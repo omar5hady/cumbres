@@ -22,6 +22,7 @@ class CreateDigitalLeadsTable extends Migration
             $table->string('nombre',50);
             $table->string('apellidos',80)->nullable();
             $table->string('email')->nullable();
+            $table->integer('clv_lada',3)->default(52);
             $table->string('celular',10)->nullable();
             $table->string('telefono',10)->nullable();
             $table->integer('proyecto_interes')->nullable();

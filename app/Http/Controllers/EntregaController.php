@@ -214,7 +214,7 @@ class EntregaController extends Controller
             $contratos = $contratos//->whereNotNull('entregas.fecha_program')
                 
                 ->orderBy('licencias.avance','desc')
-                ->orderBy('lotes.fecha_program','desc')
+                ->orderBy('entregas.fecha_program','desc')
                 ->orderBy('lotes.fecha_entrega_obra','desc')
             ->get();
 
@@ -936,6 +936,8 @@ class EntregaController extends Controller
                     'expedientes.fecha_firma_esc',
                     'lotes.fecha_entrega_obra',
                     'lotes.id as loteId',
+                    'lotes.calle',
+                    'lotes.numero',
                     'entregas.fecha_program',
                     'entregas.hora_entrega_prog',
                     'entregas.fecha_entrega_real',
@@ -996,11 +998,11 @@ class EntregaController extends Controller
                 
                 $sheet->row(1, [
                     '# Ref','Proyecto', 'Etapa', 'Manzana',
-                    '# Lote','Cliente','# Celular', 'Fecha de firma', 'Fecha entrega (Obra)', 'Paquete y/o Promoción',
+                    '# Lote', 'Calle', '# Oficial','Cliente','# Celular', 'Fecha de firma', 'Fecha entrega (Obra)', 'Paquete y/o Promoción',
                     'Equipamiento','Fecha de entrega','# Reprogramaciones'
                 ]);
 
-                $sheet->cells('A1:M1', function ($cells) {
+                $sheet->cells('A1:O1', function ($cells) {
                     $cells->setBackground('#052154');
                     $cells->setFontColor('#ffffff');
                     // Set font family
@@ -1064,6 +1066,8 @@ class EntregaController extends Controller
                         $entrega->etapa,
                         $entrega->manzana,
                         $entrega->num_lote,
+                        $entrega->calle,
+                        $entrega->numero,
                         $entrega->nombre_cliente,
                         $entrega->celular,
                         $entrega->fecha_firma_esc,
@@ -1075,7 +1079,7 @@ class EntregaController extends Controller
 
                     ]);	
                 }
-                $num='A1:J' . $cont;
+                $num='A1:O' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
             }

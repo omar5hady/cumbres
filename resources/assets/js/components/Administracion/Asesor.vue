@@ -18,10 +18,10 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
-                            <div class="col-md-6">
+                            <div class="col-md-8">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-5" @click="limpiarBusqueda()"  v-model="criterio">
+                                    <select class="form-control col-md-3" @click="limpiarBusqueda()"  v-model="criterio">
                                       <option value="personal.id">Nombre</option>
                                       <option value="users.usuario">Usuario</option>
                                       <option value="vendedores.tipo">Tipo</option>
@@ -29,7 +29,7 @@
                                     </select>
                                     
                                  
-                                    <select class="form-control col-md-5"  v-if="criterio=='vendedores.tipo'" v-model="buscar" @keyup.enter="listarPersonal(1,buscar,criterio)" >
+                                    <select class="form-control"  v-if="criterio=='vendedores.tipo'" v-model="buscar" @keyup.enter="listarPersonal(1,buscar,criterio)" >
                                         <option value="0" >Interno</option>
                                         <option value="1" >Externo</option>
                                     </select>
@@ -40,6 +40,9 @@
                                     </select>
 
                                     <input v-else type="text" v-model="buscar" @keyup.enter="listarPersonal(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">                                   
+                                </div>
+                                <div class="input-group">
+                                    
                                     <button type="submit" @click="listarPersonal(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     <a :href="'/asesores/excel?buscar=' + buscar + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i>&nbsp;Excel</a>
                                 </div>
@@ -140,7 +143,7 @@
                                 <div class="col-md-10">
                                     <div class="input-group">
                                         <!--Criterios para el listado de busqueda -->
-                                        <select class="form-control col-md-5" @click="limpiarBusqueda()"  v-model="criterio2">
+                                        <select class="form-control col-md-5" @change="limpiarBusqueda()"  v-model="criterio2">
                                             <option value="personal.nombre">Nombre</option>
                                             <option value="personal.rfc">RFC</option>
                                             <option value="personal.id"># Identificador</option>

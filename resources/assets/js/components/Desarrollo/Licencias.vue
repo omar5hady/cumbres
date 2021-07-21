@@ -15,11 +15,11 @@
                             <i class="icon-pencil"></i>&nbsp;Descargar resumen
                         </a>
                         <!---->
-                        <button class="btn btn-info" @click="abrirModal5('lote','asignarMasa')"  v-if="allLic.length > 0 && rolId != '5'" >
+                        <button class="btn btn-info btn-sm" @click="abrirModal5('lote','asignarMasa')"  v-if="allLic.length > 0 && rolId != '5'" >
                             <i class="icon-pencil"></i>&nbsp;Asignar en masa
                         </button>
 
-                        <button class="btn btn-dark" @click="abrirModal5('lote','asignarLicencias')"  v-if="allLic.length > 0 && rolId != '5'" >
+                        <button class="btn btn-dark btn-sm" @click="abrirModal5('lote','asignarLicencias')"  v-if="allLic.length > 0 && rolId != '5'" >
                             <i class="fa fa-drivers-license-o "></i>&nbsp;Asignar licencias
                         </button>
 
@@ -30,7 +30,7 @@
                             <div class="col-md-10">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-3" v-model="criterio" @click="selectFraccionamientos()">
+                                    <select class="form-control col-md-3" v-model="criterio" @change="selectFraccionamientos()">
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
                                         <option value="modelos.nombre">Modelo</option>
                                         <option value="arquitecto">Arquitecto</option>
@@ -41,21 +41,17 @@
                                         <option value="licencias.perito_dro">DRO</option>
                                     </select>
 
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @click="selectPuente(buscar),selectEtapas(buscar),selectRuv()" >
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @change="selectPuente(buscar),selectEtapas(buscar),selectRuv()" >
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa" @click="selectRuv()" >
-                                        <option value="">Etapa</option>
-                                        <option v-for="etapa in arrayAllEtapas" :key="etapa.id" :value="etapa.id" v-text="etapa.num_etapa"></option>
-                                    </select>
+                                    
                                     <select class="form-control"  v-if="criterio=='licencias.perito_dro'" v-model="buscar">
-                                            <option value="0">Seleccione</option>
+                                            <option value="">Seleccione</option>
                                             <option value="1">Por Asignar</option>
                                             <option value="15044">Ing. Alejandro F. Perez Espinosa</option>
                                             <option value="23679">Raúl Palos López</option>
                                     </select>
-                                    <input v-if="criterio=='lotes.fraccionamiento_id'" type="text"  v-model="b_manzana" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control" placeholder="Manzana">
                                     <input type="date" v-if="criterio=='licencias.f_planos'" v-model="buscar" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control col-md-6" placeholder="Desde" >
                                     <input type="date" v-if="criterio=='licencias.f_planos'" v-model="buscar2"  @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control col-md-6" placeholder="Hasta" >
 
@@ -63,22 +59,38 @@
                     
                                     <input v-if="criterio!='lotes.fraccionamiento_id' && criterio!='licencias.f_planos' && criterio!='lotes.siembra' && criterio!='licencias.perito_dro' " type="text"  v-model="buscar" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control" placeholder="Texto a buscar">
                                 </div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group row" v-if="criterio=='lotes.fraccionamiento_id'">
-                            <div class="col-md-8">
-                                <div class="input-group">
-                                    <!--Criterios para el listado de busqueda -->
-                                    <input v-if="criterio=='lotes.fraccionamiento_id'" type="text"  v-model="b_lote" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control" placeholder="# Lote">
-                                    <input v-if="criterio=='lotes.fraccionamiento_id'" type="text"  v-model="b_modelo" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control" placeholder="Modelo">
-                                    <input v-if="criterio=='lotes.fraccionamiento_id'" type="text"  v-model="b_arquitecto" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control" placeholder="Arquitecto">
+                                <div class="input-group" v-if="criterio=='lotes.fraccionamiento_id'">
+                                    <select class="form-control" v-model="b_etapa" @change="selectRuv()" >
+                                        <option value="">Etapa</option>
+                                        <option v-for="etapa in arrayAllEtapas" :key="etapa.id" :value="etapa.id" v-text="etapa.num_etapa"></option>
+                                    </select>
+                                    <input type="text"  v-model="b_manzana" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control" placeholder="Manzana">
                                 </div>
-                            </div>
-                        </div>
+                                <div class="input-group" v-if="criterio=='lotes.fraccionamiento_id'">
+                                    <!--Criterios para el listado de busqueda -->
+                                    <input type="text"  v-model="b_lote" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control" placeholder="# Lote">
+                                    <input type="text"  v-model="b_modelo" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control" placeholder="Modelo">
+                                </div>
+                                <div class="input-group" v-if="criterio=='lotes.fraccionamiento_id'">
+                                    <!--Criterios para el listado de busqueda -->
+                                    <input type="text"  v-model="b_arquitecto" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control" placeholder="Arquitecto">
+                                </div>
+                                <div class="input-group" v-if="criterio=='lotes.fraccionamiento_id'">
+                                    <!--Criterios para el listado de busqueda -->
+                                    <select class="form-control"  v-model="b_puente" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)"> 
+                                        <option value="">Credito Puente</option>
+                                        <option v-for="puente in arrayPuentes" :key="puente.credito_puente" :value="puente.credito_puente" v-text="puente.credito_puente"></option>
+                                    </select>
 
-                        <div class="form-group row">
-                            <div class="col-md-8">
+                                    <input  type="text"  v-model="b_num_inicio" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control" placeholder="# Inicio">
+                                </div>
+                                <div class="input-group" v-if="criterio=='lotes.fraccionamiento_id'">
+                                    <!--Criterios para el listado de busqueda -->
+                                    <select class="form-control" v-model="b_ruv" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)"> 
+                                        <option value="">Paquete Ruv</option>
+                                        <option v-for="ruv in arrayRuv" :key="ruv.paq_ruv" :value="ruv.paq_ruv" v-text="ruv.paq_ruv"></option>
+                                    </select>
+                                </div>
                                 <div class="input-group">
                                     <select class="form-control" v-model="b_empresa" >
                                         <option value="">Empresa constructora</option>
@@ -95,27 +107,6 @@
                         <div class="form-group row">
                             <div class="col-md-8">
                                 <div class="input-group">
-                                    <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_puente" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)"> 
-                                        <option value="">Credito Puente</option>
-                                        <option v-for="puente in arrayPuentes" :key="puente.credito_puente" :value="puente.credito_puente" v-text="puente.credito_puente"></option>
-                                    </select>
-
-                                    <input v-if="criterio=='lotes.fraccionamiento_id'" type="text"  v-model="b_num_inicio" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control" placeholder="# Inicio">
-
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <div class="col-md-8">
-                                <div class="input-group">
-                                    <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_ruv" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)"> 
-                                        <option value="">Paquete Ruv</option>
-                                        <option v-for="ruv in arrayRuv" :key="ruv.paq_ruv" :value="ruv.paq_ruv" v-text="ruv.paq_ruv"></option>
-                                    </select>
-
                                     <button type="submit" @click="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" 
                                         class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     <a v-if="rolId != '5'" class="btn btn-success" v-bind:href="'/licencias/excel?buscar=' + buscar + '&b_manzana=' + b_manzana + 
@@ -611,7 +602,7 @@
                                     <label class="col-md-3 form-control-label" for="text-input">Observación </label>
                                     <div class="col-md-6">
 
-                                         <textarea rows="5" cols="30"  disabled v-model="observacion_completa" class="form-control" placeholder="Observacion"></textarea>
+                                        <textarea rows="5" cols="30"  disabled v-model="observacion_completa" class="form-control" placeholder="Observacion"></textarea>
                                         <button type="button" class="btn btn-info pull-right" @click="abrirModal3('lote','ver_todo',id)">Ver todos</button>
                                     </div>
                                 </div>
@@ -648,7 +639,6 @@
                                     <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
                                     <div class="col-md-6">
                                          <textarea rows="5" cols="30" v-model="observacion" class="form-control" placeholder="Observacion"></textarea>
-
                                     </div>
                                 </div>
                                 

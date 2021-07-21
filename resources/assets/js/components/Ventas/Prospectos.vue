@@ -26,7 +26,7 @@
                                 <div class="col-md-8" v-if="criterio =='clientes.created_at'">
                                     <div class="input-group">
                                         <!--Criterios para el listado de busqueda -->
-                                        <select class="form-control col-md-4" v-model="criterio" @click="limpiarBusqueda()">
+                                        <select class="form-control col-md-4" v-model="criterio" @change="limpiarBusqueda()">
                                             <option value="personal.nombre">Nombre</option>
                                             <option value="personal.rfc">RFC</option>
                                             <option value="clientes.curp">CURP</option>
@@ -68,7 +68,7 @@
                                 <div class="col-md-8" v-else>
                                     <div class="input-group">
                                         <!--Criterios para el listado de busqueda -->
-                                        <select class="form-control col-md-4" v-model="criterio" @click="limpiarBusqueda()">
+                                        <select class="form-control col-md-4" v-model="criterio" @change="limpiarBusqueda()">
                                             <option value="personal.nombre">Nombre</option>
                                             <option value="personal.rfc">RFC</option>
                                             <option value="clientes.curp">CURP</option>
@@ -443,7 +443,7 @@
                                  <div class="col-md-3">
                                      <div class="form-group">
                                   <label for="">Medio donde se entero de nosotros <span style="color:red;" v-show="publicidad_id==0">(*)</span></label>
-                                    <select class="form-control" v-model="publicidad_id" @click="nombre_recomendado=''" >
+                                    <select class="form-control" v-model="publicidad_id" @change="nombre_recomendado=''" >
                                             <option value="0">Seleccione</option>
                                             <option v-for="medios in arrayMediosPublicidad" :key="medios.id" :value="medios.id" v-text="medios.nombre"></option>    
                                     </select>
