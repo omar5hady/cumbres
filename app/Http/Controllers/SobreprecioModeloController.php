@@ -28,6 +28,7 @@ class SobreprecioModeloController extends Controller
             ->select('lotes.num_lote as lotes',DB::raw("CONCAT(sobreprecios.nombre,' $',sobreprecios_etapas.sobreprecio) AS sobreprecioModelo"),
                 'sobreprecios_modelos.id',
                 'sobreprecios_modelos.sobreprecio_etapa_id', 
+                'lotes.etapa_id', 'lotes.fraccionamiento_id',
                 'lotes.id as lote_id', 'lotes.manzana as manzana',
                 'etapas.num_etapa as etapa','fraccionamientos.nombre as proyecto');
 

@@ -697,8 +697,8 @@ class ContratoController extends Controller
                 ->first();
 
                 if($precioT){
-                    $credito->valor_terreno = ($precioT->precio_m2* $etapa[0]->terreno) + $precioT->total_gastos;
-                  //  $credito->valor_terreno = $credito->valor_terreno * 1.10;
+                    $credito->valor_terreno = ($precioT->precio_m2 * $etapa[0]->terreno) + $precioT->total_gastos;
+                  
                     $credito->porcentaje_terreno = ((($credito->valor_terreno)*100)/$credito->precio_venta);
                 }
             //Guardar el costo del lote

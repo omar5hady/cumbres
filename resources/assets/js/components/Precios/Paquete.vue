@@ -17,23 +17,26 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
-                            <div class="col-md-6">
+                            <div class="col-md-8">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-4" v-model="criterio">
                                         <option value="paquetes.nombre">Paquete</option>
                                         <option value="fraccionamientos.id">Proyecto</option>
                                     </select>
-                                    <select class="form-control" v-if="criterio=='fraccionamientos.id'" v-model="buscar" @click="selectEtapa(buscar), buscar2=''">
+                                    <select class="form-control" v-if="criterio=='fraccionamientos.id'" v-model="buscar" @change="selectEtapa(buscar), buscar2=''">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
 
-                                    <select class="form-control" v-if="criterio=='fraccionamientos.id'" v-model="buscar2" @keyup.enter="listarPromociones(1,buscar,buscar2,criterio)"> 
+                                    
+                                    <input v-else type="text" v-model="buscar" @keyup.enter="listarPaquetes(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
+                                </div>
+                                <div class="input-group">
+                                    <select class="form-control col-md-6" v-if="criterio=='fraccionamientos.id'" v-model="buscar2" @keyup.enter="listarPromociones(1,buscar,buscar2,criterio)"> 
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
-                                    <input v-else type="text" v-model="buscar" @keyup.enter="listarPaquetes(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
                                     <button type="submit" @click="listarPaquetes(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
@@ -120,7 +123,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
                                     <div class="col-md-6">
-                                       <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id)" >
+                                       <select class="form-control" v-model="fraccionamiento_id" @change="selectEtapa(fraccionamiento_id)" >
                                             <option value="0">Seleccione</option>
                                             <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                         </select>

@@ -16,46 +16,50 @@
                     <!-- avaluos por enviar a ventas -->
                     <div v-if="listado == 1" class="card-body">
                         <div class="form-group row">
-                            <div class="col-md-10">
+                            <div class="col-md-6">
                                 <select class="form-control" v-model="b_empresa" >
                                     <option value="">Empresa constructora</option>
                                     <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
                                 </select>
                             </div>
+                        </div>
+                        <div class="form-group row">
                             <div class="col-md-10">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
+                                    <select class="form-control col-md-5" v-model="criterio" @change="selectFraccionamientos()">
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
                                         <option value="licencias.visita_avaluo">Fecha de visita</option>
                                         <option value="contratos.id">Folio</option>
                                         <option value="cliente">Cliente</option>
                                     </select>
-
-                                    
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @click="selectEtapa(buscar)">
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @change="selectEtapa(buscar)">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
 
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa" @click="selectManzanas(buscar,b_etapa)"> 
-                                        <option value="">Etapa</option>
-                                        <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
-                                    </select>
-
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" @keyup.enter="listarAvaluos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-model="b_manzana" >
-                                        <option value="">Manzana</option>
-                                        <option v-for="manzana in arrayAllManzanas" :key="manzana.manzana" :value="manzana.manzana" v-text="manzana.manzana"></option>
-                                    </select>
-                                    <input type="text" @keyup.enter="listarAvaluos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar" >
                                     <input type="text" @keyup.enter="listarAvaluos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-else-if="criterio=='contratos.id' || criterio=='cliente'" v-model="buscar" class="form-control" placeholder="Texto a buscar">
 
                                     <input v-else type="date"  v-model="buscar" @keyup.enter="listarAvaluos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
                                    
                                 </div>
+                                <div class="input-group"  v-if="criterio=='lotes.fraccionamiento_id'">
+                                    <select class="form-control col-md-6" v-model="b_etapa" @change="selectManzanas(buscar,b_etapa)"> 
+                                        <option value="">Etapa</option>
+                                        <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                    </select>
+                                </div>
+                                <div class="input-group"  v-if="criterio=='lotes.fraccionamiento_id'">
+                                    <select class="form-control" @keyup.enter="listarAvaluos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-model="b_manzana" >
+                                        <option value="">Manzana</option>
+                                        <option v-for="manzana in arrayAllManzanas" :key="manzana.manzana" :value="manzana.manzana" v-text="manzana.manzana"></option>
+                                    </select>
+                                    <input type="text" @keyup.enter="listarAvaluos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-model="b_lote" class="form-control" placeholder="Lote a buscar" >
+                                </div>
                             </div>
-
-                            <div class="col-md-4">
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-5">
                                 <div class="input-group">
                                     <select class="form-control" @keyup.enter="listarAvaluos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-model="b_status" >
                                         <option value="">Status</option>
@@ -68,7 +72,6 @@
                                         <option value="Cancelado">Cancelado</option>
                                     </select>
                                     <button type="submit" @click="listarAvaluos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                   
                                 </div>
                             </div>
                         </div>
@@ -196,34 +199,35 @@
                             <div class="col-md-10">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-5" v-model="criterio2" @click="selectFraccionamientos()">
+                                    <select class="form-control col-md-5" v-model="criterio2" @change="selectFraccionamientos()">
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
                                         <option value="licencias.visita_avaluo">Fecha de visita</option>
                                         <option value="contratos.id">Folio</option>
                                         <option value="cliente">Cliente</option>
                                     </select>
-
                                     
-                                    <select class="form-control" v-if="criterio2=='lotes.fraccionamiento_id'" v-model="buscar2" @click="selectEtapa(buscar2)">
+                                    <select class="form-control" v-if="criterio2=='lotes.fraccionamiento_id'" v-model="buscar2" @change="selectEtapa(buscar2)">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
 
-                                    <select class="form-control" v-if="criterio2=='lotes.fraccionamiento_id'" v-model="b_etapa2" @click="selectManzanas(buscar2,b_etapa2)"> 
-                                        <option value="">Etapa</option>
-                                        <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
-                                    </select>
-
-                                    <select class="form-control" v-if="criterio2=='lotes.fraccionamiento_id'" @keyup.enter="listarHistorialAvaluos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" v-model="b_manzana2" >
-                                        <option value="">Manzana</option>
-                                        <option v-for="manzana in arrayAllManzanas" :key="manzana.manzana" :value="manzana.manzana" v-text="manzana.manzana"></option>
-                                    </select>
-                                    
-                                    <input type="text" v-if="criterio2=='lotes.fraccionamiento_id'" v-model="b_lote2" class="form-control" placeholder="Lote a buscar">
                                     <input type="text" v-else-if="criterio2=='contratos.id' || criterio2=='cliente'" v-model="buscar2" class="form-control" placeholder="Texto a buscar">
 
                                     <input v-else type="date"  v-model="buscar2" @keyup.enter="listarHistorialAvaluos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Texto a buscar">
                                    
+                                </div>
+                                <div class="input-group" v-if="criterio2=='lotes.fraccionamiento_id'">
+                                    <select class="form-control col-md-6" v-model="b_etapa2" @change="selectManzanas(buscar2,b_etapa2)"> 
+                                        <option value="">Etapa</option>
+                                        <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                    </select>
+                                </div>
+                                <div class="input-group" v-if="criterio2=='lotes.fraccionamiento_id'">
+                                    <select class="form-control" @keyup.enter="listarHistorialAvaluos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" v-model="b_manzana2" >
+                                        <option value="">Manzana</option>
+                                        <option v-for="manzana in arrayAllManzanas" :key="manzana.manzana" :value="manzana.manzana" v-text="manzana.manzana"></option>
+                                    </select>
+                                    <input type="text" v-model="b_lote2" class="form-control" placeholder="Lote a buscar">
                                 </div>
                             </div>
                         </div>

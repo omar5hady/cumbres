@@ -15,69 +15,62 @@
                         <div class="form-group row">
                             <div class="col-md-10">
                                 <div class="input-group">
-                                    <select class="form-control" v-model="b_empresa" >
+                                    <select class="form-control col-md-6" v-model="b_empresa" >
                                         <option value="">Empresa constructora</option>
                                         <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
                                     </select>
-
+                                    
+                                </div>
+                                <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
+                                    <select class="form-control col-md-5" v-model="criterio" @change="selectFraccionamientos()">
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
                                         <option value="licencias.visita_avaluo">Fecha de visita</option>
                                     </select>
-
-                                    
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @click="selectEtapa(buscar)">
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @change="selectEtapa(buscar)">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
-
                                     <input v-else type="date"  v-model="buscar" @keyup.enter="listarLotes(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
+                                </div>
 
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa" @click="selectManzanas(buscar,b_etapa)"> 
+                                 <div class="input-group" v-if="criterio=='lotes.fraccionamiento_id'" >
+                                    <select class="form-control" v-model="b_etapa" @change="selectManzanas(buscar,b_etapa)"> 
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
-                                   
                                 </div>
-                            </div>
-                        </div>
 
-                        <div class="form-group row">
-                            <div class="col-md-8">
-                                <div class="input-group">
-                                   
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" @keyup.enter="listarLotes(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-model="b_manzana" >
+                                <div class="input-group"  v-if="criterio=='lotes.fraccionamiento_id'">
+                                    <select class="form-control" @keyup.enter="listarLotes(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-model="b_manzana" >
                                         <option value="">Manzana</option>
                                         <option v-for="manzana in arrayAllManzanas" :key="manzana.manzana" :value="manzana.manzana" v-text="manzana.manzana"></option>
                                     </select>
 
                                     <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
+                                </div>
 
+                                <div class="input-group">
                                     <select class="form-control" @keyup.enter="listarLotes(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-model="b_status" >
                                         <option value="">Status</option>
                                         <option value="0"> Disponibles </option>
                                         <option value="1"> Vendidas </option>
                                         <option value="2"> Individualizadas </option>
                                     </select>
-
                                     <button type="submit" @click="listarLotes(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     <a class="btn btn-success" v-bind:href="'/licencias/excelVisita?buscar=' + buscar + '&b_etapa=' + b_etapa + 
                                             '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio + '&status=' + b_status +
                                             '&b_empresa='+b_empresa" >
                                         <i class="icon-pencil"></i>&nbsp;Excel
                                     </a>
-                                   
                                 </div>
                             </div>
                         </div>
-                        
-                        
+
                         <div class="table-responsive">
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr> 
-                                        
                                         <th>Proyecto</th>
                                         <th>Etapa</th>
                                         <th>Manzana</th>
@@ -187,12 +180,8 @@
                                         <input type="date" v-model="visita_avaluo" class="form-control">
                                     </div>
                                 </div>
-                                
-                                
                             </form>
                             <!-- fin del form solicitud de avaluo -->
-
-
                         </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">
@@ -255,7 +244,6 @@
             }
         },
         computed:{
-
             isActived: function(){
                 return this.pagination.current_page;
             },
@@ -285,9 +273,7 @@
 
         },
 
-        
         methods : {
-
             /**Metodo para mostrar los registros */
             listarLotes(page, buscar, b_etapa, b_manzana, b_lote, criterio){
                 let me = this;
@@ -305,7 +291,6 @@
                 
             },
         
-            
             selectFraccionamientos(){
                 let me = this;
                 me.buscar=""
@@ -335,7 +320,6 @@
                     console.log(error);
                 });
             },
-
 
             cambiarPagina(page,buscar,b_etapa,b_manzana,b_lote,criterio){
                 let me = this;
@@ -384,7 +368,6 @@
                 });
             },
 
-
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
@@ -416,7 +399,6 @@
                     console.log(error);
                 });
             },
-        
         },
        
         mounted() {
@@ -442,8 +424,7 @@
         opacity: 1 !important;
         position: fixed !important;
         background-color: #3c29297a !important;
-         overflow-y: auto;
-        
+        overflow-y: auto;
     }
     .div-error{
         display:flex;
@@ -454,13 +435,13 @@
         font-weight: bold;
     }
     .table2 {
-    margin: auto;
-    border-collapse: collapse;
-    overflow-x: auto;
-    display: block;
-    width: fit-content;
-    max-width: 100%;
-    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+        margin: auto;
+        border-collapse: collapse;
+        overflow-x: auto;
+        display: block;
+        width: fit-content;
+        max-width: 100%;
+        box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
     }
 
     .td2, .th2 {
@@ -469,38 +450,28 @@
     }
 
     .badge2 {
-    display: inline-block;
-    padding: 0.25em 0.4em;
-    font-size: 90%;
-    font-weight: bold;
-    line-height: 1;
-    color: #fff;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: baseline;
-}
-
-    /*th {
-    text-align: left;
-    background-color: rgb(190, 220, 250);
-    text-transform: uppercase;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: rgb(50, 50, 100) solid 2px;
-    border-top: none;
-    }*/
+        display: inline-block;
+        padding: 0.25em 0.4em;
+        font-size: 90%;
+        font-weight: bold;
+        line-height: 1;
+        color: #fff;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
+    }
 
     .td2 {
-    white-space: nowrap;
-    border-bottom: none;
-    color: rgb(20, 20, 20);
+        white-space: nowrap;
+        border-bottom: none;
+        color: rgb(20, 20, 20);
     }
 
     .td2:first-of-type, th:first-of-type {
-    border-left: none;
+        border-left: none;
     }
 
     .td2:last-of-type, th:last-of-type {
-    border-right: none;
+        border-right: none;
     } 
 </style>

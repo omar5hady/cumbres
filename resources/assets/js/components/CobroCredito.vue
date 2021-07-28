@@ -45,49 +45,54 @@
                             <div class="col-md-12">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-3" v-model="criterio" @click="buscar='', buscar2=''">
+                                    <select class="form-control col-md-3" v-model="criterio" @change="buscar='', buscar2=''">
                                       <option value="creditos.fraccionamiento">Proyecto</option>
                                       <option value="contratos.id"># Referencia</option>
                                       <option value="personal.nombre">Cliente</option>
                                     </select>
 
-                                    <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" @click="selectEtapa(buscar)" v-model="buscar" >
+                                    <select class="form-control col-md-6" v-if="criterio=='creditos.fraccionamiento'" @change="selectEtapa(buscar)" v-model="buscar" >
                                         <option value="">Seleccionar</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.nombre" v-text="fraccionamientos.nombre"></option>
                                     </select>
-                                     <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" v-model="buscar2"  @keyup.enter="listarCreditos(1,buscar, buscar2, buscar3, buscar4, b_cobrados, criterio)" @click="selectManzana(buscar, buscar2)"> 
+                                   
+                                    <input type="text" v-else v-model="buscar" @keyup.enter="listarCreditos(1,buscar, buscar2, buscar3, buscar4, b_cobrados, criterio)" class="form-control col-md-3" placeholder="Texto a buscar">
+                                    <input type="text" v-if="criterio=='personal.nombre'" v-model="buscar2" @keyup.enter="listarCreditos(1,buscar, buscar2, buscar3, buscar4, b_cobrados, criterio)" class="form-control col-md-3" placeholder="Apellidos">
+                                </div>
+                                <div class="input-group" v-if="criterio=='creditos.fraccionamiento'">
+                                    <select class="form-control col-md-4" v-model="buscar2"  @keyup.enter="listarCreditos(1,buscar, buscar2, buscar3, buscar4, b_cobrados, criterio)" @change="selectManzana(buscar, buscar2)"> 
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.num_etapa" v-text="etapas.num_etapa"></option>
                                     </select>
-                                    <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" v-model="buscar3" @keyup.enter="listarCreditos(1,buscar, buscar2, buscar3, buscar4, b_cobrados, criterio)"> 
+                                    <select class="form-control col-md-4" v-model="buscar3" @keyup.enter="listarCreditos(1,buscar, buscar2, buscar3, buscar4, b_cobrados, criterio)"> 
                                         <option value="">Manzana</option>
                                         <option v-for="manzana in arrayManzana" :key="manzana.manzana" :value="manzana.manzana" v-text="manzana.manzana"></option>
                                     </select>
-                                    <input type="text" v-if="criterio=='creditos.fraccionamiento'" v-model="buscar4" @keyup.enter="listarCreditos(1,buscar, buscar2, buscar3, buscar4, b_cobrados, criterio)" class="form-control" placeholder="# Lote">
-                                    <input type="text" v-if="criterio=='contratos.id'|| criterio=='personal.nombre'" v-model="buscar" @keyup.enter="listarCreditos(1,buscar, buscar2, buscar3, buscar4, b_cobrados, criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <input type="text" v-if="criterio=='personal.nombre'" v-model="buscar2" @keyup.enter="listarCreditos(1,buscar, buscar2, buscar3, buscar4, b_cobrados, criterio)" class="form-control" placeholder="Apellidos">
                                 </div>
-                                <div class="col-md-5">
-                                    <div class="input-group">
-                                        <select class="form-control" v-model="b_firmado" @keyup.enter="listarCreditos(1,buscar, buscar2, buscar3, buscar4, b_cobrados, criterio)"> 
-                                            <option value="0">No firmados</option>
-                                            <option value="1">Firmado</option>
-                                        </select>
-                                    </div>
-                                    <div class="input-group">
-                                        <button v-if="b_cobrados==1" type="submit" @click="b_cobrados=0" class="btn btn-success"><i class="fa fa-check-square"></i> Cobrados / Abonados</button>
-                                        <button v-if="b_cobrados==0" type="submit" @click="b_cobrados=1" class="btn btn-danger"><i class="fa fa-window-close-o"></i> Pendiente</button>                           
-                                        <button type="submit" @click="listarCreditos(1,buscar, buscar2, buscar3, buscar4, b_cobrados, criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                        <a  :href="'/cobroCredito/excel?buscar=' + buscar + '&buscar2=' + buscar2 + 
-                                            '&buscar3=' + buscar3 + '&buscar4=' + buscar4 + '&b_cobrados=' + b_cobrados + '&empresa='+ b_empresa + 
-                                            '&firmado=' + b_firmado + '&criterio=' + criterio"  class="btn btn-success">
-                                            <i class="fa fa-file-text"></i> Excel
-                                        </a>
-                                        <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
-                                    </div>
+                                <div class="input-group" v-if="criterio=='creditos.fraccionamiento'">
+                                    <input type="text" v-model="buscar4" @keyup.enter="listarCreditos(1,buscar, buscar2, buscar3, buscar4, b_cobrados, criterio)" class="form-control col-md-3" placeholder="# Lote">
                                 </div>
-                                    
-                                
+                                <div class="input-group">
+                                    <select class="form-control col-md-2" v-model="b_firmado" @keyup.enter="listarCreditos(1,buscar, buscar2, buscar3, buscar4, b_cobrados, criterio)"> 
+                                        <option value="0">No firmados</option>
+                                        <option value="1">Firmado</option>
+                                    </select>
+                                    <button v-if="b_cobrados==1" type="submit" @click="b_cobrados=0" class="btn btn-success"><i class="fa fa-check-square"></i> Cobrados / Abonados</button>
+                                    <button v-if="b_cobrados==0" type="submit" @click="b_cobrados=1" class="btn btn-danger"><i class="fa fa-window-close-o"></i> Pendiente</button>                           
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <button type="submit" @click="listarCreditos(1,buscar, buscar2, buscar3, buscar4, b_cobrados, criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <a  :href="'/cobroCredito/excel?buscar=' + buscar + '&buscar2=' + buscar2 + 
+                                        '&buscar3=' + buscar3 + '&buscar4=' + buscar4 + '&b_cobrados=' + b_cobrados + '&empresa='+ b_empresa + 
+                                        '&firmado=' + b_firmado + '&criterio=' + criterio"  class="btn btn-success">
+                                        <i class="fa fa-file-text"></i> Excel
+                                    </a>
+                                    <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
+                                </div>
                             </div>
                         </div>
                         <div class="table-responsive">
@@ -446,10 +451,6 @@
                                         </tr>                               
                                     </tbody>
                                 </table>
-
-                                
-                                
-                                
                             </form>
                         </div>
                         <!-- Botones del modal -->

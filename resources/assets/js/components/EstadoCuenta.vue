@@ -20,7 +20,7 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
-                            <div class="col-md-8">
+                            <div class="col-md-6">
                                 <select class="form-control" v-model="b_empresa" >
                                     <option value="">Empresa constructora</option>
                                     <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
@@ -28,28 +28,21 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <div class="col-md-10">
+                            <div class="col-md-9">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
+                                    <select class="form-control col-md-3" v-model="criterio" @change="selectFraccionamientos()">
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
                                         <option value="c.nombre">Cliente</option>
                                         <option value="contratos.id"># Folio</option>
                                         <option value="contratos.fecha">Fecha de venta</option>
                                     </select>
 
-                                    
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @click="selectEtapa(buscar)">
+                                    <select class="form-control col-md-7" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @change="selectEtapa(buscar)">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
 
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar2"> 
-                                        <option value="">Etapa</option>
-                                        <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
-                                    </select>
-
-                                    
                                     <input v-else-if="criterio=='contratos.id'" type="text"  v-model="buscar" @keyup.enter="listarContratos(1,buscar,buscar2,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
                                     <input v-else-if="criterio=='c.nombre'" type="text"  v-model="buscar" @keyup.enter="listarContratos(1,buscar,buscar2,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
                                     <input v-else-if="criterio=='contratos.fecha'" type="date"  v-model="buscar" @keyup.enter="listarContratos(1,buscar,buscar2,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
@@ -58,35 +51,29 @@
                                    
                                 </div>
 
-                            </div>
-                        </div>
+                                <div class="input-group" v-if="criterio=='lotes.fraccionamiento_id'">
 
-                        <div class="form-group row" v-if="criterio=='lotes.fraccionamiento_id'">
+                                    <select class="form-control"  v-model="buscar2"> 
+                                        <option value="">Etapa</option>
+                                        <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                    </select>
+                                    <input type="text" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
+                                   
+                                </div>
 
-                            <div class="col-md-8">
-                                <div class="input-group">
-                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
-                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_credito"> 
+                                <div class="input-group" v-if="criterio=='lotes.fraccionamiento_id'">
+                                    
+                                    <input type="text" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
+                                    <select class="form-control" v-model="b_credito"> 
                                         <option value="">Tipo de Credito</option>
                                         <option v-for="credito in arrayCreditos" :key="credito.nombre" :value="credito.nombre" v-text="credito.nombre"></option>
                                     </select>
-                                </div>    
-                            </div>
+                                </div>
 
-                        </div>
-
-                        <div class="form-group row">
-                            <div class="col-md-6">
                                 <div class="input-group">
                                     <input type="text" v-model="b_direccion" class="form-control" placeholder="Direccion oficial">
-                                </div>    
-                            </div>
+                                </div>   
 
-                        </div>
-
-                        <div class="form-group row">
-                            <div class="col-md-6">
                                 <div class="input-group">
                                     <select class="form-control col-md-4" v-model="b_status">
                                             <option value="">Seleccionar Status</option>
@@ -95,13 +82,13 @@
                                             <option value="2">No firmado</option>
                                             <option value="3">Firmado</option>
                                     </select>
+                                </div>
+                                <div class="input-group">
                                     <button type="submit" @click="listarContratos(1,buscar,buscar2,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
-                                </div>    
+                                </div>
                             </div>
-
                         </div>
-
 
                         <div class="table-responsive">
                             <table class="table2 table-bordered table-striped table-sm">

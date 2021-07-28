@@ -17,15 +17,15 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
-                            <div class="col-md-6">
+                            <div class="col-md-9">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-4" v-model="b_id_gral">
+                                    <select class="form-control col-md-5" v-model="b_id_gral">
                                         <option value="">Detalle General</option>
                                         <option v-for="general in arrayGenerales" :key="general.id" :value="general.id" v-text="general.general"></option>
                                     </select>
                                     
-                                    <input type="text" v-model="b_subconcepto" @keyup.enter="listarSubConcepto(1,b_id_gral,b_subconcepto)" class="form-control" placeholder="Texto a buscar">
+                                    <input type="text" v-model="b_subconcepto" @keyup.enter="listarSubConcepto(1,b_id_gral,b_subconcepto)" class="form-control" placeholder="Subconcepto a buscar">
                                     <button type="submit" @click="listarSubConcepto(1,b_id_gral,b_subconcepto)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>

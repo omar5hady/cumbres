@@ -48,7 +48,7 @@
                             <div class="col-md-8">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-4" v-model="criterio" @click="buscar='', buscar2=''">
+                                    <select class="form-control col-md-4" v-model="criterio" @change="buscar='', buscar2=''">
                                       <option value="creditos.fraccionamiento">Proyecto</option>
                                       <option value="contratos.id"># Referencia</option>
                                       <option value="personal.nombre">Cliente</option>
@@ -60,29 +60,30 @@
                                         <option value="1">Abonados</option>
                                         <option value="2">Liquidados</option>
                                     </select>
-                                    <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" @click="selectEtapa(buscar)" v-model="buscar" >
+                                    <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" @change="selectEtapa(buscar)" v-model="buscar" >
                                         <option value="">Seleccionar</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.nombre" v-text="fraccionamientos.nombre"></option>
                                     </select>
-                                     <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" v-model="buscar2"  @keyup.enter="listarPagares(1,buscar, buscar2, buscar3, b_vencidos,criterio)" @click="selectManzana(buscar, buscar2)"> 
+                                    <input type="text" v-if="criterio=='contratos.id'|| criterio=='personal.nombre'" v-model="buscar" @keyup.enter="listarPagares(1,buscar, buscar2, buscar3, b_vencidos,criterio)" class="form-control" placeholder="Texto a buscar">
+                                </div>
+                                <div class="input-group" v-if="criterio=='creditos.fraccionamiento'">
+                                    <!--Criterios para el listado de busqueda -->
+                                    <select class="form-control" v-model="buscar2"  @keyup.enter="listarPagares(1,buscar, buscar2, buscar3, b_vencidos,criterio)" @change="selectManzana(buscar, buscar2)"> 
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.num_etapa" v-text="etapas.num_etapa"></option>
                                     </select>
-                                    <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" v-model="buscar3" @keyup.enter="listarPagares(1,buscar, buscar2, buscar3, b_vencidos,criterio)"> 
+                                    <select class="form-control" v-model="buscar3" @keyup.enter="listarPagares(1,buscar, buscar2, buscar3, b_vencidos,criterio)"> 
                                         <option value="">Manzana</option>
                                         <option v-for="manzana in arrayManzana" :key="manzana.manzana" :value="manzana.manzana" v-text="manzana.manzana"></option>
                                     </select>
-                                   
                                 </div>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-md-8">
+
+                                <div class="input-group" v-if="criterio=='pagos_contratos.fecha_pago'">
+                                    <input type="date" v-model="buscar" @keyup.enter="listarPagares(1,buscar, buscar2, buscar3, b_vencidos,criterio)" class="form-control" >
+                                    <input type="date" v-model="buscar2" @keyup.enter="listarPagares(1,buscar, buscar2, buscar3, b_vencidos,criterio)" class="form-control" >
+                                </div>
+
                                 <div class="input-group">
-                                    <input type="date" v-if="criterio=='pagos_contratos.fecha_pago'" v-model="buscar" @keyup.enter="listarPagares(1,buscar, buscar2, buscar3, b_vencidos,criterio)" class="form-control" >
-                                    <input type="date" v-if="criterio=='pagos_contratos.fecha_pago'" v-model="buscar2" @keyup.enter="listarPagares(1,buscar, buscar2, buscar3, b_vencidos,criterio)" class="form-control" >
-                                    <input type="text" v-if="criterio=='contratos.id'|| criterio=='personal.nombre'" v-model="buscar" @keyup.enter="listarPagares(1,buscar, buscar2, buscar3, b_vencidos,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    
                                     <button v-if="b_vencidos==0" type="submit" @click="b_vencidos=1" class="btn btn-success"><i class="fa fa-check-square"></i> Todos</button>
                                     <button v-if="b_vencidos==1" type="submit" @click="b_vencidos=2" class="btn btn-danger"><i class="fa fa-window-close-o"></i> Vencidos</button>
                                     <button v-if="b_vencidos==2" type="submit" @click="b_vencidos=0" class="btn btn-warning"><i class="fa fa-window-close-o"></i> Pagares cancelados</button>
@@ -90,6 +91,7 @@
                                 </div>
                             </div>
                         </div>
+                       
                         <div class="table-responsive">
                             <table class="table2 table table-bordered table-striped table-sm">
                                 <thead>
@@ -501,35 +503,33 @@
                             </button>
                         </div>
                         <div class="modal-body">
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de deposito</label>
-                                    <div class="col-md-4">
-                                        <label class="col-md-1 form-control-label" for="text-input">Desde</label>
-                                        <input type="date" v-model="desde" class="form-control">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="col-md-1 form-control-label" for="text-input">Hasta</label>
-                                        <input type="date" v-model="hasta" class="form-control">
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Fecha de deposito</label>
+                                <div class="col-md-4">
+                                    <label class="col-md-1 form-control-label" for="text-input">Desde</label>
+                                    <input type="date" v-model="desde" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="col-md-1 form-control-label" for="text-input">Hasta</label>
+                                    <input type="date" v-model="hasta" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Banco</label>
+                                <div class="col-md-6">
+                                    <select class="form-control" v-model="banco">
+                                        <option value="">Seleccione</option>
+                                        <option v-for="banco in arrayBancos" :key="banco.num_cuenta + '-' + banco.banco" :value="banco.num_cuenta + '-' + banco.banco" v-text="banco.num_cuenta + '-' + banco.banco"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- Div para mostrar los errores que mande validerDepartamento -->
+                            <div v-show="errorDeposito" class="form-group row div-error">
+                                <div class="text-center text-error">
+                                    <div v-for="error in errorMostrarMsjDeposito" :key="error" v-text="error">
                                     </div>
                                 </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Banco</label>
-                                    <div class="col-md-6">
-                                        <select class="form-control" v-model="banco">
-                                            <option value="">Seleccione</option>
-                                            <option v-for="banco in arrayBancos" :key="banco.num_cuenta + '-' + banco.banco" :value="banco.num_cuenta + '-' + banco.banco" v-text="banco.num_cuenta + '-' + banco.banco"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <!-- Div para mostrar los errores que mande validerDepartamento -->
-                                <div v-show="errorDeposito" class="form-group row div-error">
-                                    <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjDeposito" :key="error" v-text="error">
-                                        </div>
-                                    </div>
-                                </div>
+                            </div>
                         </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">
@@ -554,180 +554,180 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
-                                    <div class="col-md-9">
-                                        <input type="text" disabled v-model="nombre_cliente" class="form-control">
-                                    </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
+                                <div class="col-md-9">
+                                    <input type="text" disabled v-model="nombre_cliente" class="form-control">
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Sexo</label>
-                                    <div class="col-md-3">
-                                        <input type="text" v-model="sexo_cliente" disabled class="form-control">
-                                    </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Sexo</label>
+                                <div class="col-md-3">
+                                    <input type="text" v-model="sexo_cliente" disabled class="form-control">
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
-                                    <div class="col-md-3">
-                                        <input type="text" disabled v-model="telefono_cliente" class="form-control">
-                                    </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
+                                <div class="col-md-3">
+                                    <input type="text" disabled v-model="telefono_cliente" class="form-control">
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Celular</label>
-                                    <div class="col-md-3">
-                                        <input type="text" v-model="celular_cliente" disabled class="form-control">
-                                    </div>
-                                    <a title="Llamar" class="btn btn-dark" :href="'tel:'+celular_cliente"><i class="fa fa-phone fa-lg"></i></a>
-                                    <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+celular_cliente+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>             
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Celular</label>
+                                <div class="col-md-3">
+                                    <input type="text" v-model="celular_cliente" disabled class="form-control">
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Email</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="email_cliente" disabled class="form-control">
-                                    </div>
-                                    <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+email_cliente"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                <a title="Llamar" class="btn btn-dark" :href="'tel:'+celular_cliente"><i class="fa fa-phone fa-lg"></i></a>
+                                <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+celular_cliente+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>             
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Email</label>
+                                <div class="col-md-6">
+                                    <input type="text" v-model="email_cliente" disabled class="form-control">
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Direccion</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="direccion_cliente" disabled class="form-control">
-                                    </div>
+                                <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+email_cliente"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Direccion</label>
+                                <div class="col-md-6">
+                                    <input type="text" v-model="direccion_cliente" disabled class="form-control">
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">C.P</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="cp_cliente" disabled class="form-control">
-                                    </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">C.P</label>
+                                <div class="col-md-6">
+                                    <input type="text" v-model="cp_cliente" disabled class="form-control">
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="colonia_cliente" disabled class="form-control">
-                                    </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
+                                <div class="col-md-6">
+                                    <input type="text" v-model="colonia_cliente" disabled class="form-control">
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Estado</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="estado_cliente" disabled class="form-control">
-                                    </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Estado</label>
+                                <div class="col-md-6">
+                                    <input type="text" v-model="estado_cliente" disabled class="form-control">
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Ciudad</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="ciudad_cliente" disabled class="form-control">
-                                    </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Ciudad</label>
+                                <div class="col-md-6">
+                                    <input type="text" v-model="ciudad_cliente" disabled class="form-control">
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de nacimiento</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="fechanac_cliente" disabled class="form-control">
-                                    </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Fecha de nacimiento</label>
+                                <div class="col-md-6">
+                                    <input type="text" v-model="fechanac_cliente" disabled class="form-control">
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">CURP</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="curp_cliente" disabled class="form-control">
-                                    </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">CURP</label>
+                                <div class="col-md-6">
+                                    <input type="text" v-model="curp_cliente" disabled class="form-control">
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">RFC</label>
-                                    <div class="col-md-3">
-                                        <input type="text" v-model="rfc_cliente" disabled class="form-control">
-                                    </div>
-                                    <label class="col-md-3 form-control-label" for="text-input">Homoclave</label>
-                                    <div class="col-md-2">
-                                        <input type="text" v-model="homoclave_cliente" disabled class="form-control">
-                                    </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">RFC</label>
+                                <div class="col-md-3">
+                                    <input type="text" v-model="rfc_cliente" disabled class="form-control">
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">NSS</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="nss_cliente" disabled class="form-control">
-                                    </div>
+                                <label class="col-md-3 form-control-label" for="text-input">Homoclave</label>
+                                <div class="col-md-2">
+                                    <input type="text" v-model="homoclave_cliente" disabled class="form-control">
                                 </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">NSS</label>
+                                <div class="col-md-6">
+                                    <input type="text" v-model="nss_cliente" disabled class="form-control">
+                                </div>
+                            </div>
 
-                                <hr>
-                                <h3 style="text-align:center;">LUGAR DE TRABAJO</h3>
-                                <hr>
-                                
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Tipo de economia</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="tipoeconomia_cliente" disabled class="form-control">
-                                    </div>
+                            <hr>
+                            <h3 style="text-align:center;">LUGAR DE TRABAJO</h3>
+                            <hr>
+                            
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Tipo de economia</label>
+                                <div class="col-md-6">
+                                    <input type="text" v-model="tipoeconomia_cliente" disabled class="form-control">
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Empresa</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="empresa_cliente" disabled class="form-control">
-                                    </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Empresa</label>
+                                <div class="col-md-6">
+                                    <input type="text" v-model="empresa_cliente" disabled class="form-control">
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Giro del negocio</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="gironegocio_cliente" disabled class="form-control">
-                                    </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Giro del negocio</label>
+                                <div class="col-md-6">
+                                    <input type="text" v-model="gironegocio_cliente" disabled class="form-control">
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Domicilio Empresa</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="domicilio_empresa" disabled class="form-control">
-                                    </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Domicilio Empresa</label>
+                                <div class="col-md-6">
+                                    <input type="text" v-model="domicilio_empresa" disabled class="form-control">
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">C.P</label>
-                                    <div class="col-md-3">
-                                        <input type="text" v-model="cpempresa_cliente" disabled class="form-control">
-                                    </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">C.P</label>
+                                <div class="col-md-3">
+                                    <input type="text" v-model="cpempresa_cliente" disabled class="form-control">
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="coloniaempresa_cliente" disabled class="form-control">
-                                    </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
+                                <div class="col-md-6">
+                                    <input type="text" v-model="coloniaempresa_cliente" disabled class="form-control">
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Estado</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="estadoempresa_cliente" disabled class="form-control">
-                                    </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Estado</label>
+                                <div class="col-md-6">
+                                    <input type="text" v-model="estadoempresa_cliente" disabled class="form-control">
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Ciudad</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="ciudadempresa_cliente" disabled class="form-control">
-                                    </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Ciudad</label>
+                                <div class="col-md-6">
+                                    <input type="text" v-model="ciudadempresa_cliente" disabled class="form-control">
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Email institucional</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="emailinstitucional_cliente" disabled class="form-control">
-                                    </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Email institucional</label>
+                                <div class="col-md-6">
+                                    <input type="text" v-model="emailinstitucional_cliente" disabled class="form-control">
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Telefono de la empresa</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="telefonoempresa_cliente" disabled class="form-control">
-                                    </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Telefono de la empresa</label>
+                                <div class="col-md-6">
+                                    <input type="text" v-model="telefonoempresa_cliente" disabled class="form-control">
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">EXT</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="ext_cliente" disabled class="form-control">
-                                    </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">EXT</label>
+                                <div class="col-md-6">
+                                    <input type="text" v-model="ext_cliente" disabled class="form-control">
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Estado civil</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="edocivil_cliente" disabled class="form-control">
-                                    </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Estado civil</label>
+                                <div class="col-md-6">
+                                    <input type="text" v-model="edocivil_cliente" disabled class="form-control">
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input"># Dependientes economicos</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="depeconomicos_cliente" disabled class="form-control">
-                                    </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input"># Dependientes economicos</label>
+                                <div class="col-md-6">
+                                    <input type="text" v-model="depeconomicos_cliente" disabled class="form-control">
                                 </div>
+                            </div>
                         </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">

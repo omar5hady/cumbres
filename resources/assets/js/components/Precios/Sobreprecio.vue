@@ -23,12 +23,12 @@
                             <div class="col-md-8">
                              
 
-                                    <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id)" >
+                                    <select class="form-control" v-model="fraccionamiento_id" @change="selectEtapa(fraccionamiento_id)" >
                                         <option value="0">Seleccione proyecto</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
                                         <br/>
-                                    <select class="form-control" v-model="etapa_id" @click="selectManzanas(fraccionamiento_id,etapa_id)">
+                                    <select class="form-control" v-model="etapa_id" @change="selectManzanas(fraccionamiento_id,etapa_id)">
                                             <option value="">Seleccione etapa</option>
                                             <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
@@ -82,14 +82,14 @@
                                     <div class="form-group row">
                                         <label class="col-md-2 form-control-label" for="text-input">Proyecto</label>
                                         <div class="col-md-4">
-                                            <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id)" >
+                                            <select class="form-control" v-model="fraccionamiento_id" @change="selectEtapa(fraccionamiento_id)" >
                                                 <option value="0">Seleccione proyecto</option>
                                                 <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                             </select>
                                         </div>
                                         <label class="col-md-2 form-control-label" style="align:right" for="text-input">Etapa</label>
                                         <div class="col-md-3">
-                                             <select class="form-control" v-model="etapa_id" @click="selectManzanas(fraccionamiento_id,etapa_id)">
+                                             <select class="form-control" v-model="etapa_id" @change="selectManzanas(fraccionamiento_id,etapa_id)">
                                                 <option value="">Seleccione etapa</option>
                                                 <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                             </select>
@@ -107,7 +107,7 @@
                                         
                                     <div class="form-group row" v-if="mostrar==1">
                                         <div class="col-md-4">
-                                        <select class="form-control" v-model="manzana" @click="selectLotesManzana(fraccionamiento_id,etapa_id,manzana)">
+                                        <select class="form-control" v-model="manzana" @change="selectLotesManzana(fraccionamiento_id,etapa_id,manzana)">
                                                 <option value="">Seleccione manzana</option>
                                                 <option v-for="manzanas in arrayManzanas" :key="manzanas.id" :value="manzanas.manzana" v-text="manzanas.manzana"></option>
                                         </select>
@@ -190,14 +190,14 @@
                                     <div class="form-group row">
                                         <label class="col-md-2 form-control-label" for="text-input">Proyecto</label>
                                         <div class="col-md-4">
-                                            <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id)" >
+                                            <select class="form-control" v-model="fraccionamiento_id" @change="selectEtapa(fraccionamiento_id)" >
                                                 <option value="0">Seleccione proyecto</option>
                                                 <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                             </select>
                                         </div>
                                         <label class="col-md-2 form-control-label" style="align:right" for="text-input">Etapa</label>
                                         <div class="col-md-3">
-                                             <select class="form-control" v-model="etapa_id" @click="selectManzanas(fraccionamiento_id,etapa_id)">
+                                             <select class="form-control" v-model="etapa_id" @change="selectManzanas(fraccionamiento_id,etapa_id)">
                                                 <option value="">Seleccione etapa</option>
                                                 <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                             </select>
@@ -215,7 +215,7 @@
                                         
                                     <div class="form-group row" v-if="mostrar==1">
                                         <div class="col-md-4">
-                                        <select class="form-control" v-model="manzana" @click="selectLotesManzana(fraccionamiento_id,etapa_id,manzana)">
+                                        <select class="form-control" v-model="manzana" @change="selectLotesManzana(fraccionamiento_id,etapa_id,manzana)">
                                                 <option value="">Seleccione manzana</option>
                                                 <option v-for="manzanas in arrayManzanas" :key="manzanas.id" :value="manzanas.manzana" v-text="manzanas.manzana"></option>
                                         </select>
@@ -309,7 +309,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
                                     <div class="col-md-6">
-                                        <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id)" >
+                                        <select class="form-control" v-model="fraccionamiento_id" @change="selectEtapa(fraccionamiento_id)" >
                                             <option value="0">Seleccione</option>
                                             <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                         </select>
@@ -319,7 +319,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Etapa</label>
                                     <div class="col-md-6">
-                                       <select class="form-control" v-model="etapa_id" @click="selectManzanas(fraccionamiento_id,etapa_id),selectSobrepreciosEtapas(etapa_id)" >
+                                       <select class="form-control" v-model="etapa_id" @change="selectManzanas(fraccionamiento_id,etapa_id),selectSobrepreciosEtapas(etapa_id)" >
                                             <option value="0">Seleccione</option>
                                             <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                         </select>
@@ -329,7 +329,7 @@
                                 <div class="form-group row" v-if="tipoAccion<3">
                                     <label class="col-md-3 form-control-label" for="text-input">Manzanas</label>
                                     <div class="col-md-6">
-                                       <select class="form-control" v-model="manzana" @click="selectLotesManzana(fraccionamiento_id,etapa_id,manzana)">
+                                       <select class="form-control" v-model="manzana" @change="selectLotesManzana(fraccionamiento_id,etapa_id,manzana)">
                                             <option value="">Seleccione</option>
                                             <option v-for="manzanas in arrayManzanas" :key="manzanas.id" :value="manzanas.manzana" v-text="manzanas.manzana"></option>
                                         </select>
@@ -351,7 +351,7 @@
                                     <div class="col-md-6">
                                        <select class="form-control" v-model="sobreprecioEtapaModelo_id">
                                             <option value="0">Seleccione</option>
-                                             <option v-for="sobrepreciosM in arraySobreprecioEtapaModelo" :key="sobrepreciosM.id" :value="sobrepreciosM.id" v-text="sobrepreciosM.sobreprecioEtapa"></option>
+                                            <option v-for="sobrepreciosM in arraySobreprecioEtapaModelo" :key="sobrepreciosM.id" :value="sobrepreciosM.id" v-text="sobrepreciosM.sobreprecioEtapa"></option>
                                         </select>
                                     </div>
                                 </div>
@@ -803,13 +803,13 @@
                                 this.lote_id = data['lote_id']
                                 this.sobreprecioEtapaModelo_id = data['sobreprecio_etapa_id'];
                                 this.manzana=data["manzana"]
+                                this.etapa_id = data['etapa_id'];
+                                this.fraccionamiento_id = data['fraccionamiento_id'];
                                 break;
                             }
                         }
                     }
                 }
-                this.selectFraccionamientos();
-                this.selectEtapa(this.fraccionamiento_id);
                 this.selectManzanas(this.fraccionamiento_id, this.etapa_id);
                 this.selectLotesManzana(this.fraccionamiento_id, this.etapa_id,this.manzana);
                 this.selectSobrepreciosEtapas(this.etapa_id);
@@ -823,46 +823,7 @@
         }
     }
 </script>
-<style>
-    input[type=number]::-webkit-inner-spin-button, 
-    input[type=number]::-webkit-outer-spin-button { 
-        -webkit-appearance: none; 
-        margin: 0; 
-    }
-    .modal-content{
-        width: 100% !important;
-        position: absolute !important;
-    }
-    .mostrar{
-        display: list-item !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        background-color: #3c29297a !important;
-    }
-    .div-error{
-        display:flex;
-        justify-content: center;
-    }
-    .text-error{
-        color: red !important;
-        font-weight: bold;
-    }
-</style>
-selectFraccionamientos();
-                this.selectEtapa(this.fraccionamiento_id);
-                this.selectManzanas(this.fraccionamiento_id, this.etapa_id);
-                this.selectLotesManzana(this.fraccionamiento_id, this.etapa_id,this.manzana);
-                this.selectSobrepreciosEtapas(this.etapa_id);
-            }
-        },
-        mounted() {
-            this.selectFraccionamientos();
-            this.selectEtapa(this.fraccionamiento_id);
-            this.listarSobrePrecioEtapa(1,this.etapa_id);
-            this.listarSobrePrecioModelo(1,this.etapa_id,this.buscar2,this.buscar3);
-        }
-    }
-</script>
+
 <style>
     input[type=number]::-webkit-inner-spin-button, 
     input[type=number]::-webkit-outer-spin-button { 

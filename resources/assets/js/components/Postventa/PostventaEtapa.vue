@@ -12,13 +12,10 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
-                            <div class="col-md-8">
+                            <div class="col-md-6">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-4" v-model="criterio" @click="limpiarBusqueda()">
-                                        <option value="fraccionamientos.nombre">Fraccionamiento</option>
-                                    </select>
-                                    <input type="text" v-if="criterio=='fraccionamientos.nombre'"  v-model="buscar" @keyup.enter="listarEtapa(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <input type="text" v-model="buscar" @keyup.enter="listarEtapa(1,buscar,criterio)" class="form-control" placeholder="Fraccionamiento a buscar">
                                     <button type="submit" @click="listarEtapa(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>

@@ -22,7 +22,7 @@
 
                         <div>
                             <div class="form-group row">
-                                <div class="col-md-5">
+                                <div class="col-md-8">
                                     <div class="input-group">
                                         <input type="date" v-model="b_fecha1" @keyup.enter="listarReporte()" class="form-control" >
                                         <input type="date" v-model="b_fecha2" @keyup.enter="listarReporte()" class="form-control" >
@@ -30,7 +30,7 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <div class="col-md-6">
+                                <div class="col-md-8">
                                     <div class="input-group">
                                         <select class="form-control" v-model="b_proyecto">
                                             <option value="">Seleccione</option>

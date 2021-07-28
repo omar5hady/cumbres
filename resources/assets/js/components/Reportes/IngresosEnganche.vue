@@ -22,7 +22,7 @@
                     
                     <div class="card-body" v-if="deposito==2">
                         <div class="form-group row">
-                            <div class="col-md-8">
+                            <div class="col-md-6">
                                 <select class="form-control" v-model="b_empresa" >
                                     <option value="">Empresa constructora</option>
                                     <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
@@ -36,17 +36,19 @@
                                     <input type="date" v-model="b_fecha1" @keyup.enter="listarHistorialDep(1)" class="form-control" >
                                     <input type="date" v-model="b_fecha2" @keyup.enter="listarHistorialDep(1)" class="form-control" >
                                 </div>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-md-8">
                                 <div class="input-group">
-                                    <select class="form-control" v-model="banco">
+                                    <select class="form-control col-md-6" v-model="banco">
                                         <option value="">Seleccione</option>
                                         <option v-for="banco in arrayBancos" :key="banco.num_cuenta + '-' + banco.banco" :value="banco.num_cuenta + '-' + banco.banco" v-text="banco.num_cuenta + '-' + banco.banco"></option>
                                     </select>
                                     
                                     <input type="text" pattern="\d*" v-on:keypress="isNumber($event)" v-model="b_deposito" maxlength="10" class="form-control" placeholder="Monto">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-8">
+                                <div class="input-group">
                                     <button type="submit" @click="listarHistorialDep(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>

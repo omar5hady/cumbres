@@ -16,7 +16,7 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
-                            <div class="col-md-8">
+                            <div class="col-md-10">
                                 <div class="input-group">
                                     <select class="form-control" v-model="b_empresa" >
                                         <option value="">Empresa constructora</option>
@@ -27,12 +27,8 @@
                                         <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
                                     </select>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-md-8">
                                 <div class="input-group">
-                                    <select class="form-control" v-model="b_proyecto" @click="selectEtapa(b_proyecto)">
+                                    <select class="form-control" v-model="b_proyecto" @change="selectEtapa(b_proyecto)">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
@@ -42,13 +38,17 @@
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-md-8">
                                 <div class="input-group">
                                     <input type="date" v-model="b_fecha1" @keyup.enter="listarDescargas()" class="form-control" >
                                     <input type="date" v-model="b_fecha2" @keyup.enter="listarDescargas()" class="form-control" >
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group row">
+                            <div class="col-md-8">
+                                <div class="input-group">
                                     <button type="submit" @click="listarDescargas()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>

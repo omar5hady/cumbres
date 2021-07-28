@@ -28,7 +28,7 @@
                                     <label >Proyecto</label>
                                     <div class="input-group">
                                         <!--Criterios para el listado de busqueda -->
-                                        <select class="form-control"  @click="selectEtapas(proyecto_id)" v-model="proyecto_id" >
+                                        <select class="form-control"  @change="selectEtapas(proyecto_id)" v-model="proyecto_id" >
                                             <option value="">Fraccionamiento</option>
                                             <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
                                         </select>

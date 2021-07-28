@@ -14,7 +14,7 @@
                         <div class="form-group row">
                             <div class="col-md-4">
                                 <div class="input-group">
-                                    <select class="form-control" @click="selectEtapas(b_proyecto)" v-model="b_proyecto" >
+                                    <select class="form-control" @change="selectEtapas(b_proyecto)" v-model="b_proyecto" >
                                         <option value="">Fraccionamiento</option>
                                         <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
                                     </select>
@@ -41,7 +41,7 @@
                         </div>
 
                         <div class="form-group row">
-                            <div class="col-md-6">
+                            <div class="col-md-7">
                                 <div class="input-group">
                                     <select class="form-control" v-model="b_contratista" >
                                         <option value="">Contratista</option>

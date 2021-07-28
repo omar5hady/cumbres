@@ -22,9 +22,9 @@
 
                         <div>
                             <div class="form-group row">
-                                <div class="col-md-8">
+                                <div class="col-md-10">
                                     <div class="input-group">
-                                        <select class="form-control col-md-4" v-model="mes">
+                                        <select class="form-control col-md-5" v-model="mes">
                                             <option value="">Seleccione mes</option>
                                             <option value="01">Enero</option>
                                             <option value="02">Febrero</option>
@@ -39,7 +39,7 @@
                                             <option value="11">Noviembre</option>
                                             <option value="12">Diciembre</option>
                                         </select>
-                                        <select class="form-control col-md-4" @keyup.enter="listarReporte()" v-model="anio">
+                                        <select class="form-control col-md-5" @keyup.enter="listarReporte()" v-model="anio">
                                             <option value="">Seleccione año</option>
                                             <option value="2018">2018</option>
                                             <option value="2019">2019</option>
@@ -60,7 +60,7 @@
                             <div class="form-group row">
                                 <div class="col-md-8">
                                     <div class="input-group">
-                                        <select class="form-control col-md-4" v-model="emp_constructora">
+                                        <select class="form-control col-md-7" v-model="emp_constructora">
                                             <option value="">Empresa constructora</option>
                                             <option value="Grupo Constructor Cumbres">Grupo Constructor Cumbres</option>
                                             <option value="CONCRETANIA">CONCRETANIA</option>

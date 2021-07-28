@@ -21,7 +21,7 @@
 
                         <div>
                             <div class="form-group row">
-                                <div class="col-md-8">
+                                <div class="col-md-9">
                                     <div class="input-group">
                                         <input type="date" v-model="b_fecha1" @keyup.enter="listarReporte(1)" class="form-control" >
                                         <input type="date" v-model="b_fecha2" @keyup.enter="listarReporte(1)" class="form-control" >
@@ -31,7 +31,7 @@
                             <div class="form-group row">
                                 <div class="col-md-8">
                                     <div class="input-group">
-                                        <select class="form-control col-md-4" v-model="emp_constructora">
+                                        <select class="form-control col-md-6" v-model="emp_constructora">
                                             <option value="">Empresa constructora</option>
                                             <option value="Grupo Constructor Cumbres">Grupo Constructor Cumbres</option>
                                             <option value="CONCRETANIA">CONCRETANIA</option>

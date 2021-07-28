@@ -13,15 +13,20 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
-                            <div class="col-md-10">
+                            <div class="col-md-6">
                                 <div class="input-group">
                                     <select class="form-control" v-model="b_empresa" >
                                         <option value="">Empresa constructora</option>
                                         <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
                                     </select>
-
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-10">
+                                <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
+                                    <select class="form-control col-md-4" v-model="criterio" @change="selectFraccionamientos()">
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
                                         <option value="c.nombre">Cliente</option>
                                         <option value="v.nombre">Asesor</option>
@@ -29,25 +34,27 @@
                                     </select>
 
                                     
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @click="selectEtapa(buscar)">
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @change="selectEtapa(buscar)">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
+                                    <input v-else type="text"  v-model="buscar" @keyup.enter="listarContratos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
                                 </div>
-                            </div>
-                            <div class="col-md-10">
                                 <div class="input-group">
-
                                     <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa"> 
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
-                                    
                                     <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
-                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
-
-                                    <input v-else type="text"  v-model="buscar" @keyup.enter="listarContratos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
-
+                                </div>
+                                <div class="input-group">
+                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control col-md-6" placeholder="Lote a buscar">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <div class="input-group">
                                     <button v-if="btn_status == 2" @click="btn_status=0" type="button" class="btn btn-secondary btn-primary">Todos</button>
                                     <button v-if="btn_status == 0" @click="btn_status=1" type="button" class="btn btn-secondary btn-success">Activos</button>
                                     <button v-if="btn_status == 1" @click="btn_status=2" type="button" class="btn btn-secondary btn-warning">Detenidos</button>
@@ -298,7 +305,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Estado</label>
                                     <div class="col-md-4">
-                                        <select class="form-control" v-model="estado" @click="selectCiudades(estado)">
+                                        <select class="form-control" v-model="estado" @change="selectCiudades(estado)">
                                             <option value="San Luis Potosí">San Luis Potosí</option>
                                             <option value="Baja California">Baja California</option>
                                             <option value="Baja California Sur">Baja California Sur</option>
@@ -336,7 +343,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Ciudad</label>
                                     <div class="col-md-4">
-                                        <select class="form-control" v-model="ciudad" @click="selectNotarias(estado,ciudad)">
+                                        <select class="form-control" v-model="ciudad" @change="selectNotarias(estado,ciudad)">
                                             <option v-for="ciudades in arrayCiudades" :key="ciudades.municipio" :value="ciudades.municipio" v-text="ciudades.municipio"></option>
                                         </select>
                                     </div>

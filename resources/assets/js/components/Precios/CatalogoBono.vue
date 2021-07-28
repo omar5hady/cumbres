@@ -20,7 +20,7 @@
                             <div class="col-md-6">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control" v-model="buscar" @click="selectEtapa(buscar), b_etapa=''">
+                                    <select class="form-control" v-model="buscar" @change="selectEtapa(buscar), b_etapa=''">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
@@ -113,7 +113,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
                                     <div class="col-md-6">
-                                       <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id)" >
+                                       <select class="form-control" v-model="fraccionamiento_id" @change="selectEtapa(fraccionamiento_id)" >
                                             <option value="">Seleccione</option>
                                             <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                         </select>

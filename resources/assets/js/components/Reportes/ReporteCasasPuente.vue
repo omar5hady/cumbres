@@ -18,9 +18,9 @@
                     <div class="card-body">
                         
                         <div class="form-group row">
-                            <div class="col-md-7">
+                            <div class="col-md-10">
                                 <div class="input-group">
-                                    <select class="form-control" v-model="proyecto" @click="selectEtapa(proyecto)">
+                                    <select class="form-control" v-model="proyecto" @change="selectEtapa(proyecto)">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>

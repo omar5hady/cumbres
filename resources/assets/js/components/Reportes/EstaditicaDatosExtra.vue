@@ -10,7 +10,7 @@
                 <div class="form-group row">
                     <div class="col-md-8">
                         <div class="input-group">
-                            <select class="form-control" @click="selectEtapas(buscar)" v-model="buscar" >
+                            <select class="form-control" @change="selectEtapas(buscar)" v-model="buscar" >
                                 <option value="">Seleccione el proyecto</option>
                                 <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                             </select>
@@ -560,7 +560,7 @@
             loadAutos(){
                 let me=this;
                 me.borrarGraficas();
-                me.titulo = 'Capacidades diferentes';
+                me.titulo = 'Autos';
                 me.ver_edades = 0;
                 me.ver_edadesComp = 0;
                 me.ver_mascotas = 0;
@@ -572,38 +572,40 @@
                 me.ver_amasCasa = 0;
                 me.ver_autos = 1;
                 me.grafico = 1;
+
+                if(me.ver_autos == 1){
+                    me.varAuto=document.getElementById('autos').getContext('2d');
                 
-                me.varAuto=document.getElementById('autos').getContext('2d');
-                
-                me.charAuto = new Chart(me.varAuto, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Sin Auto', 'Un auto', 'Dos autos', 'Tres autos', 'Cuatro autos o más'],
-                        datasets: [{
-                            label: ['# '],
-                            data: [me.autos.sinAuto,me.autos.unAuto, me.autos.dosAuto,me.autos.tresAuto,me.autos.cuatroAuto],
-                            backgroundColor: [
-                                                'rgba(35, 102, 40, 0.8)',
-                                                'rgba(35, 102, 40, 0.8)',
-                                                'rgba(35, 102, 40, 0.8)',
-                                                'rgba(35, 102, 40, 0.8)',
-                                                'rgba(35, 102, 40, 0.8)',
-                                                ],
-                            borderColor: 'rgba(0, 0, 0, 0.94)',
-                            borderWidth: 1
-                        },]
-                    },
-                    options: {
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero:true
-                                }
-                            }]
+                    me.charAuto = new Chart(me.varAuto, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Sin Auto', 'Un auto', 'Dos autos', 'Tres autos', 'Cuatro autos o más'],
+                            datasets: [{
+                                label: ['# '],
+                                data: [me.autos.sinAuto,me.autos.unAuto, me.autos.dosAuto,me.autos.tresAuto,me.autos.cuatroAuto],
+                                backgroundColor: [
+                                                    'rgba(35, 102, 40, 0.8)',
+                                                    'rgba(35, 102, 40, 0.8)',
+                                                    'rgba(35, 102, 40, 0.8)',
+                                                    'rgba(35, 102, 40, 0.8)',
+                                                    'rgba(35, 102, 40, 0.8)',
+                                                    ],
+                                borderColor: 'rgba(0, 0, 0, 0.94)',
+                                borderWidth: 1
+                            },]
                         },
-                        legend: {display:false}
-                    }
-                });
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero:true
+                                    }
+                                }]
+                            },
+                            legend: {display:false}
+                        }
+                    });
+                }
             },
             loadDiscap(){
                 let me=this;
@@ -621,35 +623,37 @@
                 me.ver_discap = 1;
                 me.grafico = 1;
                 
-                me.varDiscapacidad=document.getElementById('discapacidad').getContext('2d');
+                if(me.ver_discap == 1){
+                    me.varDiscapacidad=document.getElementById('discapacidad').getContext('2d');
 
-                me.charDiscapacidad = new Chart(me.varDiscapacidad, {
-                    type: 'bar',
-                    data: {
-                        labels: ['No', 'Si', 'Silla de ruedas'],
-                        datasets: [{
-                            label: ['# Casas'],
-                            data: [me.sinDiscap, me.discapacidad, me.silla_ruedas],
-                            backgroundColor: [
-                                                'rgba(39, 149, 50, 0.6)',
-                                                'rgba(39, 149, 50, 0.6)',
-                                                'rgba(8, 103, 18, 0.8)',
-                                                ],
-                            borderColor: 'rgba(0, 0, 0, 0.8)',
-                            borderWidth: 1
-                        },]
-                    },
-                    options: {
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero:true
-                                }
-                            }]
+                    me.charDiscapacidad = new Chart(me.varDiscapacidad, {
+                        type: 'bar',
+                        data: {
+                            labels: ['No', 'Si', 'Silla de ruedas'],
+                            datasets: [{
+                                label: ['# Casas'],
+                                data: [me.sinDiscap, me.discapacidad, me.silla_ruedas],
+                                backgroundColor: [
+                                                    'rgba(39, 149, 50, 0.6)',
+                                                    'rgba(39, 149, 50, 0.6)',
+                                                    'rgba(8, 103, 18, 0.8)',
+                                                    ],
+                                borderColor: 'rgba(0, 0, 0, 0.8)',
+                                borderWidth: 1
+                            },]
                         },
-                        legend: {display:false}
-                    }
-                });
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero:true
+                                    }
+                                }]
+                            },
+                            legend: {display:false}
+                        }
+                    });
+                }
             },
             loadEdades(){
                 let me=this;
@@ -867,36 +871,38 @@
                 me.ver_mascotas = 1;
                 me.grafico = 1;
                 
-                me.varMascotas=document.getElementById('mascotas').getContext('2d');
+                if(me.ver_mascotas == 1){
+                    me.varMascotas=document.getElementById('mascotas').getContext('2d');
 
-                me.charMascotas = new Chart(me.varMascotas, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Sin Mascotas', 'Con Mascotas', 'Residentes con perro'],
-                        datasets: [{
-                            label: '# ',
-                            data: [me.mascotas[0].sin_mascotas, me.mascotas[0].sumMascota,me.perros],
-                            backgroundColor: [
-                                                'rgba(102, 0, 0, 0.4)',
-                                                'rgba(102, 0, 0, 0.4)',
-                                                'rgba(121, 1, 1, 0.7)',
-                                                ],
-                            borderColor: 'rgba(102, 0, 0, 1)',
-                            borderWidth: 1
+                    me.charMascotas = new Chart(me.varMascotas, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Sin Mascotas', 'Con Mascotas', 'Residentes con perro'],
+                            datasets: [{
+                                label: '# ',
+                                data: [me.mascotas[0].sin_mascotas, me.mascotas[0].sumMascota,me.perros],
+                                backgroundColor: [
+                                                    'rgba(102, 0, 0, 0.4)',
+                                                    'rgba(102, 0, 0, 0.4)',
+                                                    'rgba(121, 1, 1, 0.7)',
+                                                    ],
+                                borderColor: 'rgba(102, 0, 0, 1)',
+                                borderWidth: 1
+                            },
+                            ]
                         },
-                        ]
-                    },
-                    options: {
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero:true
-                                }
-                            }]
-                        },
-                        legend: {display:false}
-                    }
-                });
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero:true
+                                    }
+                                }]
+                            },
+                            legend: {display:false}
+                        }
+                    });
+                }
             },
 
             loadAmasCasa(){

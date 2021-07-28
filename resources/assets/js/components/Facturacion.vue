@@ -32,12 +32,13 @@
                         <!-- Facturas de Depositos (DEPOSITOS DE PAGARE) -->
                         <div class="container" v-if="tab == 1">
                             <div class="row"><!-- campos de busqueda-->
-                                <select class="form-control col-md-2" v-model="b_empresa" >
+                                <select class="form-control col-md-4" v-model="b_empresa" >
                                     <option value="">Empresa constructora</option>
                                     <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
                                 </select>
-                                
-                                <select class="form-control col-md-2" v-model="criterio">
+                            </div>
+                            <div class="row"><!-- campos de busqueda-->
+                                <select class="form-control col-md-3" v-model="criterio">
                                     <option value="lotes.fraccionamiento_id">Proyecto</option>
                                     <option value="nombre">Cliente</option>
                                     <option value="depositos.folio_factura">Folio Factura</option>
@@ -46,17 +47,19 @@
                                 </select>
 
                                 <template v-if="criterio=='lotes.fraccionamiento_id'">
-                                    <select class="form-control col-md-2" v-model="buscar" @click="selectEtapa(buscar)">
+                                    <select class="form-control col-md-3" v-model="buscar" @change="selectEtapa(buscar)">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
-                                    <select class="form-control col-md-2" v-model="b_etapa">
+                                    <select class="form-control col-md-3" v-model="b_etapa">
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.num_etapa" v-text="etapas.num_etapa"></option>
                                     </select>
+                                    <input type="text" v-on:keyup.enter="listarDepositos()" v-model="b_gen" class="form-control col-md-3" placeholder="Texto a Buscar">
                                 </template>
-                                <input type="text" v-on:keyup.enter="listarDepositos()" v-model="b_gen" class="form-control col-md-2" placeholder="Buscar">
+                                <input type="text" v-else v-on:keyup.enter="listarDepositos()" v-model="b_gen" class="form-control col-md-5" placeholder="Texto a Buscar">
                             </div>
+                            
                             <div class="row"><!-- boton de busqueda-->
                                 <div class="col-sm-3 text-info"><strong>Depositos de pagares</strong></div>
                                 <div class="col-sm-9 text-right">
@@ -220,12 +223,13 @@
                         <div class="container" v-else-if="tab == 2">
                             <!-- Formularios -->
                             <div class="row">
-                                <select class="form-control col-md-2" v-model="b_empresa" >
+                                <select class="form-control col-md-4" v-model="b_empresa" >
                                     <option value="">Empresa constructora</option>
                                     <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
                                 </select>
-
-                                <select class="form-control col-md-2" v-model="criterio">
+                            </div>
+                            <div class="row">
+                                <select class="form-control col-md-3" v-model="criterio">
                                     <option value="lotes.fraccionamiento_id">Proyecto</option>
                                     <option value="nombre">Cliente</option>
                                     <option value="contratos.e_folio_factura">Folio Factura</option>
@@ -233,16 +237,18 @@
                                 </select>
 
                                 <template v-if="criterio=='lotes.fraccionamiento_id'">
-                                    <select class="form-control col-md-2" v-model="buscar" @click="selectEtapa(buscar)">
+                                    <select class="form-control col-md-3" v-model="buscar" @change="selectEtapa(buscar)">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
-                                    <select class="form-control col-md-2" v-model="b_etapa">
+                                    <select class="form-control col-md-3" v-model="b_etapa">
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.num_etapa" v-text="etapas.num_etapa"></option>
                                     </select>
+                                    <input type="text" v-on:keyup.enter="listarContratos()" v-model="b_gen" class="form-control col-md-3" placeholder="Buscar">
                                 </template>
-                                <input type="text" v-on:keyup.enter="listarContratos()" v-model="b_gen" class="form-control col-md-2" placeholder="Buscar">
+                                <input type="text" v-else v-on:keyup.enter="listarContratos()" v-model="b_gen" class="form-control col-md-5" placeholder="Buscar">
+                                
                             </div>
                             <div class="row">
                                 <div class="col-sm-3 text-info"><strong>Creditos Directos</strong></div>
@@ -398,12 +404,13 @@
                         <!-- Escritura -->
                         <div class="container" v-else-if="tab == 3">
                             <div class="row"><!-- campos de busqueda-->
-                                <select class="form-control col-md-2" v-model="b_empresa" >
+                                <select class="form-control col-md-4" v-model="b_empresa" >
                                     <option value="">Empresa constructora</option>
                                     <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
                                 </select>
-                            
-                                <select class="form-control col-md-2" v-model="criterio">
+                            </div>
+                            <div class="row"><!-- campos de busqueda-->
+                                <select class="form-control col-md-3" v-model="criterio">
                                     <option value="lotes.fraccionamiento_id">Proyecto</option>
                                     <option value="nombre">Cliente</option>
                                     <option value="creditos.folio_factura">Folio Factura</option>
@@ -411,16 +418,17 @@
                                 </select>
 
                                 <template v-if="criterio=='lotes.fraccionamiento_id'">
-                                    <select class="form-control col-md-2" v-model="buscar" @click="selectEtapa(buscar)">
+                                    <select class="form-control col-md-3" v-model="buscar" @change="selectEtapa(buscar)">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
-                                    <select class="form-control col-md-2" v-model="b_etapa">
+                                    <select class="form-control col-md-3" v-model="b_etapa">
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.num_etapa" v-text="etapas.num_etapa"></option>
                                     </select>
+                                    <input type="text" v-on:keyup.enter="listarLiqCredit()" v-model="b_gen" class="form-control col-md-3" placeholder="Buscar">
                                 </template>
-                                <input type="text" v-on:keyup.enter="listarLiqCredit()" v-model="b_gen" class="form-control col-md-2" placeholder="Buscar">
+                                <input type="text" v-else v-on:keyup.enter="listarLiqCredit()" v-model="b_gen" class="form-control col-md-5" placeholder="Buscar">
                             </div>
                             <div class="row"><!-- boton de busqueda-->
                                 <div class="col-sm-3 text-info"><strong>Creditos Escriturados</strong></div>
@@ -547,26 +555,27 @@
                                     <option value="">Empresa constructora</option>
                                     <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
                                 </select>
-                                
-                                <select class="form-control col-md-2" v-model="criterio">
+                            </div>
+                            <div class="row">
+                                <select class="form-control col-md-3" v-model="criterio">
                                     <option value="lotes.fraccionamiento_id">Proyecto</option>
                                     <option value="nombre">Cliente</option>
                                     <option value="dep_creditos.folio_factura">Folio Factura</option>
                                     <option value="dep_creditos.monto">Monto de Factura</option>
                                     <option value="dep_creditos.cant_depo">Monto de Deposito</option>
                                 </select>
-
                                 <template v-if="criterio=='lotes.fraccionamiento_id'">
-                                    <select class="form-control col-md-2" v-model="buscar" @click="selectEtapa(buscar)">
+                                    <select class="form-control col-md-3" v-model="buscar" @change="selectEtapa(buscar)">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
-                                    <select class="form-control col-md-2" v-model="b_etapa">
+                                    <select class="form-control col-md-3" v-model="b_etapa">
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.num_etapa" v-text="etapas.num_etapa"></option>
                                     </select>
+                                    <input type="text" v-on:keyup.enter="listarDepCredit()" v-model="b_gen" class="form-control col-md-3" placeholder="Buscar">
                                 </template>
-                                <input type="text" v-on:keyup.enter="listarDepCredit()" v-model="b_gen" class="form-control col-md-2" placeholder="Buscar">
+                                <input type="text" v-else v-on:keyup.enter="listarDepCredit()" v-model="b_gen" class="form-control col-md-5" placeholder="Buscar">
                             </div>
                             <div class="row">
                                 <div class="col-sm-3 text-info"><strong>Deposito a credito</strong></div>

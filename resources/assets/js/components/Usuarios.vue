@@ -24,10 +24,10 @@
                     <template v-if="privilegios==0">
                         <div class="card-body">
                             <div class="form-group row">
-                                <div class="col-md-6">
+                                <div class="col-md-8">
                                     <div class="input-group">
                                         <!--Criterios para el listado de busqueda -->
-                                        <select class="form-control col-md-5" @click="selectDepartamento(),limpiarBusqueda()"  v-model="criterio">
+                                        <select class="form-control col-md-5" @change="selectDepartamento(),limpiarBusqueda()"  v-model="criterio">
                                             <option value="personal.nombre">Nombre</option>
                                             <option value="users.usuario">Usuario</option>
                                             <option value="roles.nombre">Rol</option>
@@ -36,17 +36,7 @@
                                         
                                         <select class="form-control" v-if="criterio == 'roles.nombre'" v-model="buscar">
                                             <option value="">Seleccione</option>
-                                            <option value="Administrador">Administrador</option>
-                                            <option value="Asesor">Asesor</option>
-                                            <option value="Gerente Proyectos">Gerente Proyectos</option>
-                                            <option value="Gerente ventas">Gerente ventas</option>
-                                            <option value="Gerente obra">Gerente obra</option>
-                                            <option value="Admin Ventas">Admin Ventas</option>
-                                            <option value="Publicidad">Publicidad</option>
-                                            <option value="Gestor ventas">Gestor ventas</option>
-                                            <option value="Contabilidad">Contabilidad</option>
-                                            <option value="Proveedor">Proveedor</option>
-                                            <option value="Contratista">Contratista</option>
+                                            <option v-for="rol in arrayRoles" :key="rol.id" :value="rol.nombre" v-text="rol.nombre"></option>
                                         </select>
                                         <input type="text" v-else v-model="buscar" @keyup.enter="listarPersonal(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
                                         <button type="submit" @click="listarPersonal(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
@@ -2082,13 +2072,14 @@
                 this.selectDepartamento();
                 this.selectEmpresa();
                 this.selectColonias(this.cp);
-                this.selectRoles();
+                
                 this.selectPersonas();
                 this.selectGerentes();
             }
         },
         mounted() {
             this.listarPersonal(1,this.buscar,this.criterio);
+            this.selectRoles();
         }
     }
 </script>

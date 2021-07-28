@@ -17,30 +17,28 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
-                            <div class="col-md-6">
+                            <div class="col-md-8">
                                 <div class="input-group">
-                                    <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-4" v-model="criterio">
-                                      <option value="fraccionamientos.id">Proyecto</option>
-                                    </select>
                                     <select class="form-control" v-model="buscar" >
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
                                     <input type="text" v-model="buscar2" @keyup.enter="listarPartidas(1,buscar,buscar2,criterio)" class="form-control" placeholder="Modelo">
+                                </div>
+                                <div class="input-group">
                                     <button type="submit" @click="listarPartidas(1,buscar,buscar2,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </div>
                         <div class="table-responsive">
-                            <table class="table1 table-bordered table-striped table-sm">
+                            <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
                                         <th>Opciones</th>
                                         <th>Fraccionamiento</th>
                                         <th>Modelo</th>
                                         <th>Partida</th>
-                                        <th>Costo</th>
+                                        <th class="td2" >Costo por partida</th>
                                         <th>Porcentaje</th>
                                     </tr>
                                 </thead>
@@ -100,7 +98,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
                                     <div class="col-md-6">
-                                       <select class="form-control" v-model="fraccionamiento_id" @click="selectModelo(fraccionamiento_id)">
+                                       <select class="form-control" v-model="fraccionamiento_id" @change="selectModelo(fraccionamiento_id)">
                                             <option value="0">Seleccione</option>
                                             <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                         </select>
@@ -467,7 +465,7 @@
 </script>
 <style>
 
-    .table1{
+    /* .table1{
     margin: auto;
     border-collapse: collapse;
     overflow-x: auto;
@@ -475,7 +473,7 @@
     width: fit-content;
     max-width: 120%;
     box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
-    }
+    } */
 
     .modal-content{
         width: 100% !important;
@@ -497,4 +495,33 @@
         color: red !important;
         font-weight: bold;
     }
+
+    .table2 {
+        margin: auto;
+        border-collapse: collapse;
+        overflow-x: auto;
+        display: block;
+        width: fit-content;
+        max-width: 100%;
+        box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+    }
+
+    .td2, .th2 {
+        border: solid rgb(200, 200, 200) 1px;
+        padding: .5rem;
+    }
+
+    .td2 {
+        white-space: nowrap;
+        border-bottom: none;
+        color: rgb(20, 20, 20);
+    }
+
+    .td2:first-of-type, th:first-of-type {
+        border-left: none;
+    }
+
+    .td2:last-of-type, th:last-of-type {
+        border-right: none;
+    }  
 </style>

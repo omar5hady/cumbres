@@ -17,7 +17,7 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
-                            <div class="col-md-6">
+                            <div class="col-md-8">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-4" v-model="criterio">
@@ -25,6 +25,7 @@
                                         <option value="dias_garantia">Días de garantía</option>
                                     </select>
                                       <select class="form-control" v-if="criterio=='dias_garantia'" v-model="buscar">
+                                            <option value="">Seleccione</option>
                                             <option value="0">0 Dias</option>
                                             <option value="30">1 Mes</option>
                                             <option value="60">2 Mes</option>

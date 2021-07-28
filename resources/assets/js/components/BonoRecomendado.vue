@@ -16,14 +16,16 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
-                            <div class="col-md-9">
+                            <div class="col-md-6">
                                 <select class="form-control" v-model="b_empresa" >
                                     <option value="">Empresa constructora</option>
                                     <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
                                 </select>
-                            </div>
-                            <div class="col-md-9">
-                                <div class="input-group" v-if="criterio != 'fraccionamiento'">
+                            </div>>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-10">
+                                <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control" v-model="criterio">
                                         <option value="cliente">Cliente</option>
@@ -31,29 +33,18 @@
                                         <option value="con.id">Folio</option>
                                         <option value="fraccionamiento">Proyecto</option>
                                     </select>
-                                    <input type="text" v-model="buscar" @keyup.enter="listarBonos(1)" class="form-control">
-
-                                    
-
-                                </div>
-                                <div class="input-group" v-if="criterio == 'fraccionamiento'">
-                                    <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control" v-model="criterio">
-                                        <option value="cliente">Cliente</option>
-                                        <option value="recomendado">Recomendado por:</option>
-                                        <option value="con.id">Folio</option>
-                                        <option value="fraccionamiento">Proyecto</option>
-                                    </select>
-                                    <select class="form-control" v-model="buscar" @click="selectEtapa(buscar), b_etapa=''">
+                                    <select class="form-control" v-if="criterio == 'fraccionamiento'" v-model="buscar" @click="selectEtapa(buscar), b_etapa=''">
                                         <option value="">Fraccionamiento</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
 
-                                    <select class="form-control" v-model="b_etapa" @keyup.enter="listarBonos(1)"> 
+                                    <input type="text" v-else v-model="buscar" @keyup.enter="listarBonos(1)" class="form-control" placeholder="Texto a buscar">
+                                </div>
+                                <div class="input-group" v-if="criterio == 'fraccionamiento'">
+                                    <select class="form-control col-md-6" v-model="b_etapa" @keyup.enter="listarBonos(1)"> 
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
-
                                 </div>
                                 <div class="input-group" v-if="criterio == 'fraccionamiento'">
                                     <div class="input-group">
@@ -63,7 +54,9 @@
                                 </div>
                                 
                             </div>
-                            <div class="col-md-4">
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-6">
                                 <div class="input-group">
                                     <select class="form-control" v-model="status">
                                         <option value="">Todos</option>

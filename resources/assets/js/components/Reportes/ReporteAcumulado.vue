@@ -22,7 +22,7 @@
 
                         <div>
                             <div class="form-group row">
-                                <div class="col-md-8">
+                                <div class="col-md-10">
                                     <div class="input-group">
                                         <select class="form-control col-md-4" v-model="mes">
                                             <option value="">Seleccione mes</option>
@@ -60,7 +60,7 @@
                             <div class="form-group row">
                                 <div class="col-md-8">
                                     <div class="input-group">
-                                        <select class="form-control col-md-4" v-model="emp_constructora">
+                                        <select class="form-control col-md-6" v-model="emp_constructora">
                                             <option value="">Empresa constructora</option>
                                             <option value="Grupo Constructor Cumbres">Grupo Constructor Cumbres</option>
                                             <option value="CONCRETANIA">CONCRETANIA</option>

@@ -21,7 +21,7 @@
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
                                     
-                                    <select class="form-control"  @click="selectEtapa(buscar)" v-model="buscar" >
+                                    <select class="form-control"  @change="selectEtapa(buscar)" v-model="buscar" >
                                         <option value="">Proyecto</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.nombre" v-text="fraccionamientos.nombre"></option>
                                     </select>

@@ -27,26 +27,24 @@
                     </div>
                     <div class="card-body" v-if="historial == 0">
                         <div class="form-group row">
-                            <div class="col-md-7">
+                            <div class="col-md-8">
                                 <div class="input-group">
                                     <select class="form-control" v-model="b_empresa" >
                                         <option value="">Empresa constructora</option>
                                         <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
                                     </select>
                                     <!--Criterios para el listado de busqueda -->
-                                    <!--select class="form-control col-md-4" v-model="criterio">
-                                      <option value="lotes.fraccionamiento_id">Fraccionamiento</option>
-                                    </select-->
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @click="selectEtapa(buscar)" >
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @change="selectEtapa(buscar)" >
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
-
+                                    <input type="text" v-if="buscar!=''" v-model="buscar3" @keyup.enter="listarLotesIniObra(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Manzana a buscar">
+                                </div>
+                                <div class="input-group">
                                     <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar2" @keyup.enter="listarLotesIniObra(1,buscar,buscar2,buscar3,criterio)"> 
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
-                                    <input type="text" v-if="buscar!=''" v-model="buscar3" @keyup.enter="listarLotesIniObra(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Manzana a buscar">
                                     <button type="submit" @click="listarLotesIniObra(1,buscar,buscar2,buscar3,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
@@ -56,7 +54,7 @@
                                 <thead>
                                     <tr>
                                         <th>
-                                            <input type="checkbox" @click="selectAll" v-model="allSelected"> Todos
+                                            <input type="checkbox" @click="selectAll" v-model="allSelected">Todos
                                         </th>
                                         <th>Fraccionamiento</th>
                                         <th>Etapa</th>
@@ -111,31 +109,26 @@
                                         <option value="">Empresa constructora</option>
                                         <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
                                     </select>
-                                    <!--Criterios para el listado de busqueda -->
-                                    <!--select class="form-control col-md-4" v-model="criterio">
-                                      <option value="lotes.fraccionamiento_id">Fraccionamiento</option>
-                                    </select-->
                                     <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @click="selectEtapa(buscar)" >
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
-
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar2" @keyup.enter="listarHistorial(1,buscar,buscar2,buscar3,criterio)"> 
+                                    <input type="text" v-if="buscar!=''" v-model="buscar3" @keyup.enter="listarHistorial(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Manzana a buscar">
+                                </div>
+                                <div class="input-group"  v-if="criterio=='lotes.fraccionamiento_id'" >
+                                    <select class="form-control col-md-6" v-model="buscar2" @keyup.enter="listarHistorial(1,buscar,buscar2,buscar3,criterio)"> 
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
-                                    <input type="text" v-if="buscar!=''" v-model="buscar3" @keyup.enter="listarHistorial(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Manzana a buscar">
                                 </div>
-                            </div>
-
-                            <div class="col-md-7">
                                 <div class="input-group">
                                     <input type="date" v-model="b_fecha" @keyup.enter="listarHistorial(1,buscar,buscar2,buscar3,criterio)" class="form-control">
                                     <input type="date" v-model="b_fecha2" @keyup.enter="listarHistorial(1,buscar,buscar2,buscar3,criterio)" class="form-control">
+                                </div>
+                                <div class="input-group">
                                     <button type="submit" @click="listarHistorial(1,buscar,buscar2,buscar3,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
-                            
                         </div>
                         <div class="table-responsive">
                             <table class="table table-bordered table-striped table-sm">

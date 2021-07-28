@@ -32,33 +32,31 @@
                             <div class="col-md-8">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-4" v-model="criterio" @click="buscar='', buscar2=''">
+                                    <select class="form-control col-md-4" v-model="criterio" @change="buscar='', buscar2=''">
                                       <option value="creditos.fraccionamiento">Proyecto</option>
                                       <option value="contratos.id"># Referencia</option>
                                       <option value="personal.nombre">Cliente</option>
                                       <option value="gastos_admin.fecha">Fecha</option>
                                     </select>
-                                    <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" @click="selectEtapa(buscar)" v-model="buscar" >
+                                    <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" @change="selectEtapa(buscar)" v-model="buscar" >
                                         <option value="">Seleccionar</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.nombre" v-text="fraccionamientos.nombre"></option>
-                                    </select>
-                                     <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" v-model="buscar2"  @keyup.enter="listarGastos(1,buscar, buscar2, buscar3, criterio)" @click="selectManzana(buscar, buscar2)"> 
-                                        <option value="">Etapa</option>
-                                        <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.num_etapa" v-text="etapas.num_etapa"></option>
-                                    </select>
-                                    <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" v-model="buscar3" @keyup.enter="listarGastos(1,buscar, buscar2, buscar3, criterio)"> 
-                                        <option value="">Manzana</option>
-                                        <option v-for="manzana in arrayManzana" :key="manzana.manzana" :value="manzana.manzana" v-text="manzana.manzana"></option>
                                     </select>
                                     
                                     <input type="date" v-if="criterio=='gastos_admin.fecha'" v-model="buscar" @keyup.enter="listarGastos(1,buscar, buscar2, buscar3, criterio)" class="form-control" >
                                     <input type="date" v-if="criterio=='gastos_admin.fecha'" v-model="buscar2" @keyup.enter="listarGastos(1,buscar, buscar2, buscar3, criterio)" class="form-control" >
                                     <input type="text" v-if="criterio=='contratos.id'|| criterio=='personal.nombre'" v-model="buscar" @keyup.enter="listarGastos(1,buscar, buscar2, buscar3, criterio)" class="form-control" placeholder="Texto a buscar">
                                 </div>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" v-model="buscar2"  @keyup.enter="listarGastos(1,buscar, buscar2, buscar3, criterio)" @change="selectManzana(buscar, buscar2)"> 
+                                        <option value="">Etapa</option>
+                                        <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.num_etapa" v-text="etapas.num_etapa"></option>
+                                    </select>
+                                    <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" v-model="buscar3" @keyup.enter="listarGastos(1,buscar, buscar2, buscar3, criterio)">
+                                        <option value="">Manzana</option>
+                                        <option v-for="manzana in arrayManzana" :key="manzana.manzana" :value="manzana.manzana" v-text="manzana.manzana"></option>
+                                    </select>
+                                </div>
                                 <div class="input-group">
                                     <button type="submit" @click="listarGastos(1,buscar, buscar2, buscar3, criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     <a :href="'/gastos/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + 
@@ -68,6 +66,7 @@
                                 </div>
                             </div>
                         </div>
+                        
                         <div class="table-responsive">
                             <table class="table table-bordered table-striped table-sm">
                                 <thead>
@@ -141,16 +140,19 @@
                             <div class="col-md-8">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-4" v-model="criterio2" @click="b='', b2=''">
+                                    <select class="form-control col-md-4" v-model="criterio2" @change="b='', b2=''">
                                         <option value="creditos.fraccionamiento">Proyecto</option>
                                         <option value="contratos.id"># Referencia</option>
                                         <option value="personal.nombre">Cliente</option>
                                     </select>
-                                    <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" @click="selectEtapa(b)" v-model="b" >
+                                    <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" @change="selectEtapa(b)" v-model="b" >
                                         <option value="">Seleccionar</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.nombre" v-text="fraccionamientos.nombre"></option>
                                     </select>
-                                        <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" v-model="b2"  @keyup.enter="listarContratos(1,b,b2,b3,criterio2)" @click="selectManzana(b, b2)"> 
+                                    <input type="text" v-if="criterio2=='contratos.id'|| criterio2=='personal.nombre'" v-model="b" @keyup.enter="listarContratos(1,b,b2,b3,criterio2)" class="form-control" placeholder="Texto a buscar">
+                                </div>
+                                <div class="input-group">
+                                    <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" v-model="b2"  @keyup.enter="listarContratos(1,b,b2,b3,criterio2)" @change="selectManzana(b, b2)">
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.num_etapa" v-text="etapas.num_etapa"></option>
                                     </select>
@@ -158,9 +160,8 @@
                                         <option value="">Manzana</option>
                                         <option v-for="manzana in arrayManzana" :key="manzana.manzana" :value="manzana.manzana" v-text="manzana.manzana"></option>
                                     </select>
-                                    
-                                    <input type="text" v-if="criterio2=='contratos.id'|| criterio2=='personal.nombre'" v-model="b" @keyup.enter="listarContratos(1,b,b2,b3,criterio2)" class="form-control" placeholder="Texto a buscar">
-                                    
+                                </div>
+                                <div class="input-group">
                                     <button type="submit" @click="listarContratos(1,b,b2,b3,criterio2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>

@@ -20,7 +20,7 @@
                             <div class="col-md-6">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-5" @click="limpiarBusqueda()" v-model="criterio">
+                                    <select class="form-control col-md-5" @change="limpiarBusqueda()" v-model="criterio">
                                       <option value="nombre">Contratista</option>
                                       <option value="rfc">RFC</option>
                                       <option value="estado">Estado</option>
@@ -150,7 +150,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Estado</label>
                                     <div class="col-md-6">
-                                        <select class="form-control" v-model="estado" @click="selectCiudades(estado)">
+                                        <select class="form-control" v-model="estado" @change="selectCiudades(estado)">
                                             <option value="">Seleccione</option>
                                             <option value="San Luis Potosí">San Luis Potosí</option>
                                             <option value="Aguascalientes">Aguascalientes</option>
