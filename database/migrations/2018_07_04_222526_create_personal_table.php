@@ -28,7 +28,8 @@ class CreatePersonalTable extends Migration
             $table->string('ext',5)->nullable();
             $table->string('celular',10);
             $table->string('email',40);
-            $table->boolean('activo')->default(1);            
+            $table->boolean('activo')->default(1);       
+            $table->integer('clv_lada',4)->default(52);
             $table->timestamps();
 
             $table->foreign('departamento_id')->references('id_departamento')->on('departamento');

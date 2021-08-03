@@ -120,7 +120,7 @@
                                             <td v-text="prospecto.nombre.toUpperCase() + ' ' + prospecto.apellidos.toUpperCase() "></td>
                                             <td >
                                                  <a title="Llamar" class="btn btn-dark" :href="'tel:'+prospecto.celular"><i class="fa fa-phone fa-lg"></i></a>
-                                                 <a title="Enviar whatsapp" class="btn btn-success" :href="'https://api.whatsapp.com/send?phone=+52'+prospecto.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
+                                                 <a title="Enviar whatsapp" class="btn btn-success" :href="'https://api.whatsapp.com/send?phone=+'+prospecto.clv_lada+prospecto.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
                                                  
                                             </td>
                                             <td v-if="prospecto.email_institucional == null"> 
@@ -201,19 +201,22 @@
                                             </div>
                                             </div>
 
-                                                <div class="col-md-4">
+                                            <div class="col-md-4">
                                                 <div class="form-group">
-                                                <label for="">Telefono </label>
-                                                <input disabled type="text" maxlength="10" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="telefono" placeholder="Telefono">
-                                            </div>
+                                                    <label for="">Telefono </label>
+                                                    <input disabled type="text" maxlength="10" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="telefono" placeholder="Telefono">
+                                                </div>
                                             </div>
 
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                <label for="">Celular <span style="color:red;" v-show="celular==''">(*)</span></label>
-                                                <input disabled type="text" pattern="\d*" maxlength="10" class="form-control" v-on:keypress="isNumber($event)" v-model="celular" placeholder="Celular">
-                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="">Celular <span style="color:red;" v-show="celular==''">(*)</span></label>
+                                                    <div class="input-group">
+                                                        <input disabled type="text" maxlength="5" class="form-control col-md-4" v-on:keypress="isNumber($event)" v-model="clv_lada" placeholder="clave">
+                                                        <input disabled type="text" pattern="\d*" maxlength="10" class="form-control col-md-8" v-on:keypress="isNumber($event)" v-model="celular" placeholder="Celular">
+                                                    </div>
                                                 </div>
+                                            </div>
 
                                                 <div class="col-md-4">
                                                     <div class="form-group">
@@ -1172,9 +1175,12 @@
 
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                <label for="">Celular <span style="color:red;" v-show="celular==''">(*)</span></label>
-                                                <input disabled type="text" pattern="\d*" maxlength="10" class="form-control" v-on:keypress="isNumber($event)" v-model="celular" placeholder="Celular">
-                                            </div>
+                                                        <label for="">Celular <span style="color:red;" v-show="celular==''">(*)</span></label>
+                                                        <div class="input-group">
+                                                            <input disabled type="text" maxlength="5" class="form-control col-md-4" v-on:keypress="isNumber($event)" v-model="clv_lada" placeholder="clave">
+                                                            <input disabled type="text" pattern="\d*" maxlength="10" class="form-control" v-on:keypress="isNumber($event)" v-model="celular" placeholder="Celular">
+                                                        </div>
+                                                    </div>
                                                 </div>
 
                                                 <div class="col-md-4">
@@ -2285,6 +2291,7 @@
                 apellidos:'',
                 telefono : '',
                 celular : '',
+                clv_lada:'',
                 email:'',
                 email_inst:'',
                 puesto:'',
@@ -3150,6 +3157,7 @@
                 this.sexo = data['sexo'];
                 this.telefono = data['telefono'];
                 this.celular = data['celular'];
+                this.clv_lada='+'+data['clv_lada'];
                 this.email = data['email'];
                 this.direccion = data['direccion'];
                 this.cp = data['cp'];
@@ -3357,6 +3365,7 @@
                         this.sexo= prospecto['sexo'];
                         this.telefono= prospecto['telefono'];
                         this.celular= prospecto['celular'];
+                        this.clv_lada = '+'+prospecto['clv_lada'];
                         this.email_inst= prospecto['email_institucional'];
                         this.email = prospecto['email'];
                         this.empresa=prospecto['empresa'];

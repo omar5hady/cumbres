@@ -676,7 +676,7 @@ class DigitalLeadController extends Controller
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $lead = Digital_lead::findOrFail($request->id);
         $lead->status = $request->status;
-        $lead->save();
+        
 
         if($request->status == 0){
 
@@ -696,7 +696,10 @@ class DigitalLeadController extends Controller
                 foreach ($usuarios as $usuario) 
                     User::findOrFail($usuario->id)->notify(new NotifyAdmin($arreglo));
 
+                $lead->vendedor_asign = 104;
+
         }
+        $lead->save();
     }
 
     public function leadEnterado(Request $request){

@@ -170,7 +170,10 @@
                                             </template>
                                             <td class="td2" >
                                                  <a title="Llamar" class="btn btn-dark" :href="'tel:'+prospecto.celular"><i class="fa fa-phone fa-lg"></i></a>
-                                                 <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+prospecto.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
+                                                 <a title="Enviar whatsapp" class="btn btn-success" target="_blank" 
+                                                        :href="'https://api.whatsapp.com/send?phone=+'+prospecto.clv_lada+prospecto.celular+'&text=Hola'">
+                                                        <i class="fa fa-whatsapp fa-lg"></i>
+                                                 </a>
                                                  
                                             </td>
                                             <td class="td2" v-if="prospecto.email_institucional == null"> 
@@ -260,17 +263,23 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                     <label for="">Telefono </label>
                                     <input type="text" maxlength="10" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="telefono" placeholder="Telefono">
                                     </div>
                                 </div>
 
-                                <div class="col-md-4">
-                                     <div class="form-group">
+                                <div class="col-md-5">
+                                    <div class="form-group">
                                     <label for="">Celular <span style="color:red;" v-show="celular==''">(*)</span></label>
-                                    <input type="text" pattern="\d*" maxlength="10" class="form-control" v-on:keypress="isNumber($event)" v-model="celular" placeholder="Celular">
+                                        <div class="input-group">
+                                            <select  v-model="clv_lada"  class="form-control col-md-5" >
+                                                <option value="">Clave lada</option>
+                                                <option v-for="clave in arrayClaves" :key="clave.clave+clave.pais" :value="clave.clave" v-text="clave.pais+' +'+clave.clave"></option>
+                                            </select>
+                                            <input type="text" pattern="\d*" maxlength="10" class="form-control col-md-7" v-on:keypress="isNumber($event)" v-model="celular" placeholder="Celular">
+                                        </div>
                                     </div>
                                 </div>
 
@@ -611,17 +620,23 @@
                                 </div>
                                 </div>
 
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                     <label for="">Telefono </label>
                                     <input :disabled="edit == 1" type="text" maxlength="10" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="telefono" placeholder="Telefono">
                                 </div>
                                 </div>
 
-                                <div class="col-md-4">
+                                <div class="col-md-5">
                                      <div class="form-group">
                                     <label for="">Celular <span style="color:red;" v-show="celular==''">(*)</span></label>
-                                    <input :disabled="edit == 1" type="text" pattern="\d*" maxlength="10" class="form-control" v-on:keypress="isNumber($event)" v-model="celular" placeholder="Celular">
+                                    <div class="input-group">
+                                        <select :disabled="edit == 1" v-model="clv_lada"  class="form-control col-md-5" >
+                                            <option value="">Clave lada</option>
+                                            <option v-for="clave in arrayClaves" :key="clave.clave+clave.pais" :value="clave.clave" v-text="clave.pais+' +'+clave.clave"></option>
+                                        </select>
+                                        <input :disabled="edit == 1" type="text" pattern="\d*" maxlength="10" class="form-control col-md-7" v-on:keypress="isNumber($event)" v-model="celular" placeholder="Celular">
+                                    </div>
                                 </div>
                                  </div>
 
@@ -978,9 +993,13 @@
 
                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Celular </label>
-                                    <div class="col-md-3">
-                                    <input type="text" pattern="\d*" maxlength="10" class="form-control" v-on:keypress="isNumber($event)" v-model="celular_coa" placeholder="Celular">
-                                </div>
+                                    
+                                        <select  v-model="clv_lada_coa"  class="form-control col-md-3" >
+                                            <option value="">Clave lada</option>
+                                            <option v-for="clave in arrayClaves" :key="clave.clave+clave.pais" :value="clave.clave" v-text="clave.pais+' +'+clave.clave"></option>
+                                        </select>
+                                        <input type="text" pattern="\d*" maxlength="10" class="form-control col-md-4" v-on:keypress="isNumber($event)" v-model="celular_coa" placeholder="Celular">
+                                    
                                  </div>
 
                                <div class="form-group row">
@@ -1398,6 +1417,7 @@
                 arrayFraccionamientos2 : [],
                 arrayFraccionamientosVue : [],
                 arrayObservacion: [],
+                arrayClaves:[],
                 arrayAsesores : [],
                 fraccionamiento:'',
                 makeRemember:'',
@@ -1405,6 +1425,8 @@
                 usuario : '',
                 edit:0,
                 reasignar:0,
+                clv_lada:52,
+                clv_lada_coa:52,
             }
         },
         components:{
@@ -1778,6 +1800,19 @@
                 });
 
             },
+            getClavesLadas(){
+                let me = this;
+                me.arrayClaves=[];
+                var url = '/getClavesLadas';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayClaves = respuesta.claves;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            
+            },  
             selectMedioPublicidad(){
                 let me = this;
                 me.arrayMediosPublicidad=[];
@@ -1941,6 +1976,7 @@
                     'apellidos':this.apellidos+" "+this.apellidos2,
                     'telefono':this.telefono ,
                     'celular':this.celular ,
+                    'clv_lada':this.clv_lada,
                     'email':this.email,
                     'email_institucional':this.email_inst,
                     'ingreso': this.ingreso,
@@ -2015,6 +2051,7 @@
                     'apellidos':this.apellidos_coa,
                     'telefono':this.telefono_coa,
                     'celular':this.celular_coa,
+                    'clv_lada':this.clv_lada_coa,
                     'email':this.email_coa,
                     'email_institucional':this.email_institucional_coa,
                     'nss':this.nss_coa,
@@ -2070,6 +2107,7 @@
                     'nss':this.nss,
                     'sexo':this.sexo,
                     'f_nacimiento':this.fecha_nac,
+                    'clv_lada':this.clv_lada,
                     'curp':this.curp,
                     'rfc':this.rfc,
                     'homoclave':this.homoclave,
@@ -2470,6 +2508,7 @@
                     me.curp=me.arrayDatosProspecto['curp'];
                     me.rfc=me.arrayDatosProspecto['rfc'];
                     me.homoclave=me.arrayDatosProspecto['homoclave'];
+                    me.clv_lada = me.arrayDatosProspecto['clv_lada'];
                     me.nss=me.arrayDatosProspecto['nss'];
                     me.lugar_contacto=me.arrayDatosProspecto['lugar_contacto'];
                     me.clasificacion=me.arrayDatosProspecto['clasificacion'];
@@ -2603,7 +2642,7 @@
             this.selectLugarContacto();
             this.selectEstados();
             this.selectAsesores();
-          
+            this.getClavesLadas();
         }
     }
 </script>

@@ -50,6 +50,7 @@ class ClienteController extends Controller
                 'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado',
                 'clientes.clasificacion','clientes.created_at','clientes.precio_rango','clientes.ingreso',
                 'clientes.created_at', 'clientes.lugar_nacimiento','clientes.vendedor_aux','clientes.reasignar',
+                'personal.clv_lada',
                 
                 'clientes.sexo_coa', 'clientes.tipo_casa_coa','clientes.email_institucional_coa',
                 'clientes.empresa_coa','clientes.edo_civil_coa','clientes.nss_coa','clientes.curp_coa',
@@ -71,7 +72,7 @@ class ClienteController extends Controller
             'personal.f_nacimiento','personal.direccion','personal.telefono','personal.departamento_id',
             'personal.colonia','personal.ext','personal.cp',
             'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
-            'personal.email','personal.empresa_id', 
+            'personal.email','personal.empresa_id', 'personal.clv_lada',
             DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
             DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS v_completo"),
             DB::raw("CONCAT(vAux.nombre,' ',vAux.apellidos) AS vAux_completo"),
@@ -342,6 +343,7 @@ class ClienteController extends Controller
             $persona->telefono = $request->telefono;
             $persona->ext = $request->ext;
             $persona->celular = $request->celular;
+            $persona->clv_lada = $request->clv_lada;
             $persona->email = $request->email;
             $persona->departamento_id = 8;
             $persona->activo = 1;
@@ -437,6 +439,7 @@ class ClienteController extends Controller
             $persona->homoclave = $request->homoclave;
             $persona->telefono = $request->telefono;
             $persona->celular = $request->celular;
+            $persona->clv_lada = $request->clv_lada;
             $persona->email = $request->email;
             $persona->departamento_id = 8;
             $persona->activo = 1;
@@ -504,6 +507,7 @@ class ClienteController extends Controller
             $Persona->telefono = $request->telefono;
             $Persona->ext = $request->ext;
             $Persona->celular = $request->celular;
+            $Persona->clv_lada = $request->clv_lada;
             $Persona->email = $request->email;
             $Persona->homoclave = $request->homoclave;
             $Persona->activo = 1;
@@ -716,7 +720,7 @@ class ClienteController extends Controller
                 ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
                 ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave',
                 'personal.f_nacimiento','personal.direccion','personal.telefono','personal.departamento_id',
-                'personal.colonia','personal.ext','personal.cp',
+                'personal.colonia','personal.ext','personal.cp','personal.clv_lada',
                 'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
                 'personal.email',
 
@@ -855,7 +859,7 @@ class ClienteController extends Controller
                 'personal.f_nacimiento','personal.direccion','personal.telefono','personal.departamento_id',
                 'personal.colonia','personal.ext','personal.cp',
                 'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
-                'personal.email','personal.empresa_id', 
+                'personal.email','personal.empresa_id', 'personal.clv_lada',
                 DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
                 'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
                 'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss','clientes.created_at',
@@ -1109,7 +1113,7 @@ class ClienteController extends Controller
             ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
             ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave',
             'personal.f_nacimiento','personal.direccion','personal.telefono','personal.departamento_id',
-            'personal.colonia','personal.ext','personal.cp',
+            'personal.colonia','personal.ext','personal.cp', 'personal.clv_lada',
             'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
             'personal.email','personal.empresa_id', 
             DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
@@ -1134,7 +1138,7 @@ class ClienteController extends Controller
             'personal.f_nacimiento','personal.direccion','personal.telefono','personal.departamento_id',
             'personal.colonia','personal.ext','personal.cp',
             'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
-            'personal.email','personal.empresa_id', 
+            'personal.email','personal.empresa_id', 'personal.clv_lada',
             DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
             DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS v_completo"),
             'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
@@ -1450,7 +1454,7 @@ class ClienteController extends Controller
 
                     $sheet->row($index+2, [
                         $persona->n_completo, 
-                        $persona->celular, 
+                        '+'.$persona->clv_lada.$persona->celular, 
                         $persona->email, 
                         mb_strtoupper($persona->rfc), 
                         $persona->nss,
@@ -1482,9 +1486,9 @@ class ClienteController extends Controller
             ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
             ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave',
             'personal.f_nacimiento','personal.direccion','personal.telefono','personal.departamento_id',
-            'personal.colonia','personal.ext','personal.cp',
+            'personal.colonia','personal.ext','personal.cp', 
             'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
-            'personal.email','personal.empresa_id', 
+            'personal.email','personal.empresa_id', 'personal.clv_lada',
             DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
             'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
             'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss', 'clientes.nombre_recomendado',
@@ -1836,7 +1840,7 @@ class ClienteController extends Controller
 
                     $sheet->row($index+2, [
                         $persona->n_completo, 
-                        $persona->celular, 
+                        '+'.$persona->clv_lada.$persona->celular, 
                         $persona->telefono, 
                         $persona->email, 
                         mb_strtoupper($persona->rfc), 
@@ -2088,6 +2092,7 @@ class ClienteController extends Controller
                             DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS cliente"),
                             DB::raw("CONCAT(asesor.nombre,' ',asesor.apellidos) AS vendedor"),
                             'personal.id','personal.rfc','personal.celular','personal.email',
+                            'personal.clv_lada',
                             'fraccionamientos.nombre as proyecto','clientes.clasificacion','clientes.created_at',
                             'clientes.proyecto_interes_id'
                         )

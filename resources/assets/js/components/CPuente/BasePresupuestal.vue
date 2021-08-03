@@ -46,7 +46,7 @@
                                 <div class="col-md-4">
                                     <br>
                                     <select v-model="credito" class="form-control">
-                                        <option value="">Seleccione Crédito Puente (Opcional)</option>
+                                        <option value="">Seleccione Crédito Puente </option>
                                         <option v-for="credito in arrayCreditos" :key="credito.id" :value="credito.id" v-text="credito.folio"></option>
                                     </select>
                                 </div>

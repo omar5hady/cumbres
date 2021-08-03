@@ -606,7 +606,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row border" v-if="cabecera.base_p == 1">
+                            <div class="form-group row border">
                                 <div class="col-md-12">
                                     <br><center>
                                         <h5 v-text="`Checklist (${chk_listos}/${chk_total})`"></h5>
@@ -631,7 +631,7 @@
                                                 <th></th>
                                                 <th></th>
                                                 <th>Documento</th>
-                                                <th>
+                                                <th v-if="cabecera.base_p == 1">
                                                     <button v-if="cabecera.status == 0  && chk_listos != chk_total" type="button" title="Finalizar todos" 
                                                         class="btn btn-primary btn-sm rounded-circle" @click="finalizarChk(checklist)">
                                                         <i class="icon-check"></i>
@@ -641,7 +641,7 @@
                                         </thead>
                                         <tbody v-if="checklist.length">
                                             <tr v-for="chk in checklist" :key="chk.id">
-                                                <td>
+                                                <td v-if="cabecera.base_p == 1">
                                                     <button v-if="cabecera.status == 0" type="button" title="No aplica" 
                                                     class="btn btn-danger btn-sm rounded-circle" @click="deleteChk(chk.id)">
                                                         <i class="icon-close"></i>
@@ -649,7 +649,7 @@
                                                 </td>
                                                 <td v-text="chk.categoria"></td>
                                                 <td><strong>{{chk.documento}}</strong></td>
-                                                <td><input :disabled="cabecera.status > 0" type="checkbox" value="1" v-model="chk.listo" @change="cambiarChk(chk.id, chk.listo)">
+                                                <td><input :disabled="cabecera.status > 0 || cabecera.base_p == 0" type="checkbox" value="1" v-model="chk.listo" @change="cambiarChk(chk.id, chk.listo)">
                                                 </td>
                                             </tr>
                                         </tbody>

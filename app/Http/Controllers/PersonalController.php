@@ -208,6 +208,7 @@ class PersonalController extends Controller
                 'personal.f_nacimiento',
                 'personal.direccion',
                 'personal.telefono',
+                'personal.clv_lada',
                 'personal.colonia',
                 'personal.cp',
                 'personal.celular',

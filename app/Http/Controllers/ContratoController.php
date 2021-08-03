@@ -107,6 +107,7 @@ class ContratoController extends Controller
                     'personal.apellidos',
                     'personal.telefono',
                     'personal.celular',
+                    'personal.clv_lada',
                     'personal.email',
                     'personal.direccion',
                     'personal.cp',
@@ -516,6 +517,7 @@ class ContratoController extends Controller
                     'personal.email',
                     'personal.direccion',
                     'personal.cp',
+                    'personal.clv_lada',
                     'personal.colonia',
                     'clientes.ciudad',
                     'clientes.estado',
@@ -570,6 +572,7 @@ class ContratoController extends Controller
                 $credito->cp = $prospecto[0]->cp;
                 $credito->colonia = $prospecto[0]->colonia;
                 $credito->ciudad = $prospecto[0]->ciudad;
+                $credito->clv_lada = $prospecto[0]->clv_lada;
                 $credito->estado = $prospecto[0]->estado;
                 $credito->f_nacimiento = $prospecto[0]->f_nacimiento;
                 $credito->nacionalidad = $prospecto[0]->nacionalidad;
@@ -629,6 +632,7 @@ class ContratoController extends Controller
         $personal->cp = $request->cp;
         $personal->colonia = $request->colonia;
         $personal->telefono = $request->telefono;
+        $personal->clv_lada = $request->clv_lada;
         $personal->celular = $request->celular;
         $personal->email = $request->email;
 
@@ -890,6 +894,7 @@ class ContratoController extends Controller
                 'personal.apellidos',
                 'personal.telefono',
                 'personal.celular',
+                'personal.clv_lada',
                 'personal.email',
                 'clientes.email_institucional',
                 'personal.direccion',
@@ -999,6 +1004,8 @@ class ContratoController extends Controller
         $contratos[0]->f_nacimiento_coa = $fecha_nac_coa->formatLocalized('%d-%m-%Y');
 
         $contratos[0]->precio_base = $contratos[0]->precio_base - $contratos[0]->descuento_promocion;
+        $descuentoPromo = $contratos[0]->descuento_promocion;
+        
 
         $contratos[0]->precio_base = number_format((float)$contratos[0]->precio_base, 2, '.', ',');
         $contratos[0]->credito_solic = number_format((float)$contratos[0]->credito_solic, 2, '.', ',');
@@ -1060,12 +1067,14 @@ class ContratoController extends Controller
             ->first();
 
             $cotizacion->m2 = $cotizacion->valor_venta/$cotizacion->terreno_m2;
+            $cotizacion->valorVenta2 = $cotizacion->valor_venta + $descuentoPromo;
             $contratos[0]->m2 = number_format((float)$cotizacion->m2, 2, '.', ',');
             $contratos[0]->interes = $cotizacion->interes;
             $contratos[0]->mensualidades = $cotizacion->mensualidades;
             $contratos[0]->valor_venta = $cotizacion->valor_venta - $cotizacion->valor_descuento;
 
             $contratos[0]->valor_base = number_format((float)$cotizacion->valor_venta, 2, '.', ',');
+            $contratos[0]->valor_base2 = number_format((float)$cotizacion->valorVenta2, 2, '.', ',');
             $contratos[0]->valor_venta = number_format((float)$contratos[0]->valor_venta, 2, '.', ',');
             $contratos[0]->valor_descuento = number_format((float)$cotizacion->valor_descuento, 2, '.', ',');
             
@@ -1964,6 +1973,7 @@ class ContratoController extends Controller
                 $personal->cp = $request->cp;
                 $personal->colonia = $request->colonia;
                 $personal->telefono = $request->telefono;
+                $personal->clv_lada = $request->clv_lada;
                 $personal->celular = $request->celular;
                 $personal->email = $request->email;
 

@@ -154,7 +154,7 @@
                 </div>
                 <div class="table-row">
                     <div class="table-cell">TELEFONO: <u>{{$contratos[0]->telefono}}</u></div>
-                    <div class="table-cell">CELULAR: <u>{{$contratos[0]->celular}}</u></div> 
+                    <div class="table-cell">CELULAR: <u>+{{$contratos[0]->clv_lada}} {{$contratos[0]->celular}}</u></div> 
                     <div colspan="2" class="table-cell">EMAIL PERSONAL: <u>{{strtoupper($contratos[0]->email)}}</u></div>
                 </div>
                 <div class="table-row">
@@ -254,8 +254,12 @@
                     
                 </div>     
                 <div class="table-row">
-                    <div colspan="3" class="table-cell">PROMOCION:
-                        @if($contratos[0]->valor_descuento != '')
+                    <div colspan="3" class="table-cell">PROMOCION: 
+                        
+                        @if($contratos[0]->promocion != '')
+                             {{mb_strtoupper($contratos[0]->promocion)}}
+                        
+                        @elseif($contratos[0]->valor_descuento != '')
                             Descuento de ${{$contratos[0]->valor_descuento}}
                         @endif
                     </div>
@@ -381,7 +385,12 @@
         <thead>
             <tr>
                 <th style="background-color: #163253;" class="text-right">
+                    @if($contratos[0]->promocion != '')
+                        Valor de venta: ${{$contratos[0]->valor_base2}} - Descuento: ${{$contratos[0]->descuento_promocion}} Total a Pagar: ${{$contratos[0]->valor_venta}} 
+                    @elseif($contratos[0]->valor_descuento != '')
                         Valor de venta: ${{$contratos[0]->valor_base}} - Descuento: ${{$contratos[0]->valor_descuento}} Total a Pagar: ${{$contratos[0]->valor_venta}} 
+                    @endif
+                        
                 </th>
             </tr>
         </thead>

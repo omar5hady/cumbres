@@ -1101,7 +1101,7 @@ class DepositoController extends Controller
                         'i.segundo_credito',
                         DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                         'c.f_nacimiento','c.rfc',
-                        'c.homoclave','c.direccion','c.colonia','c.cp',
+                        'c.homoclave','c.direccion','c.colonia','c.cp', 'c.clv_lada',
                         'c.telefono','c.email','creditos.num_dep_economicos',
                         'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
                         'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
@@ -1854,6 +1854,30 @@ class DepositoController extends Controller
                 'ingresos' => $ingresos,
                 
             ];
+    }
+
+    public function getPagosVencidos(Request $request){
+        $hoy = new Carbon();
+        $pagos = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
+                    ->join('creditos','creditos.id','=','contratos.id')
+                    ->select('creditos.id','creditos.prospecto_id')
+                    ->where('pagos_contratos.pagado','<',2)
+                    ->where('fecha_pago','<=',$hoy)
+                    //->where('prospecto_id','=',113)
+                    //->groupBy('creditos.prospecto_id')
+                    ->distinct('creditos.prospecto_id')
+                    ->get();
+
+
+        if(sizeof($pagos)){
+            foreach ($pagos as $index => $pago) {
+                $pago->cliente = Personal::select('nombre','apellidos','celular','clv_lada')
+                        ->where('id','=',$pago->prospecto_id)
+                        ->first();
+            }
+        }
+
+        return $pagos;
     }
 
     

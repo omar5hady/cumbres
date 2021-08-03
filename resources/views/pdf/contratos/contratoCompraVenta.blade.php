@@ -122,7 +122,7 @@ body {
                 </div>
                 <div class="table-row">
                     <div class="table-cell">TELEFONO: <u>{{$contratos[0]->telefono}}</u></div>
-                    <div class="table-cell">CELULAR: <u>{{$contratos[0]->celular}}</u></div> 
+                    <div class="table-cell">CELULAR: <u>+{{$contratos[0]->clv_lada}} {{$contratos[0]->celular}}</u></div> 
                     <div colspan="2" class="table-cell">EMAIL PERSONAL: <u>{{strtoupper($contratos[0]->email)}}</u></div>
                 </div>
                 <div class="table-row">

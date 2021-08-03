@@ -95,7 +95,7 @@
                                 <tbody>
                                     <tr v-for="lote in arrayLote" :key="lote.id">
                                         <td class="td2">
-                                            <input v-if="lote.credito_puente == null" type="checkbox"  @click="select" :id="lote.id" :value="lote.id" v-model="lotes_ini" >
+                                            <input v-if="lote.credito_puente == null || lote.credito_puente == 'NO TIENE CREDITO PUENTE' || lote.credito_puente == 'NO TIENE CREDITO PUENTE CM'" type="checkbox"  @click="select" :id="lote.id" :value="lote.id" v-model="lotes_ini" >
                                         </td>
 
                                         <td class="td2" v-text="lote.proyecto"></td>

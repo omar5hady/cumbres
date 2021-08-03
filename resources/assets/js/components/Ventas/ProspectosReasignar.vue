@@ -68,7 +68,7 @@
                                             </td>
                                             <td class="td2" v-text="prospecto.cliente"></td>
                                             <td class="td2" v-text="prospecto.rfc"></td>
-                                            <td class="td2" v-text="prospecto.celular"></td>
+                                            <td class="td2" v-text="'+'+prospecto.clv_lada+prospecto.celular"></td>
                                             <td class="td2" v-text="prospecto.email"></td>
                                             <td class="td2" v-text="prospecto.proyecto"></td>
                                             <td class="td2" v-text="prospecto.vendedor"></td>

@@ -219,10 +219,14 @@ class CreditoPuenteController extends Controller
 
                         $arquitecto = Fraccionamiento::select('arquitecto_id')->where('id','=',$puente->fraccionamiento)->get();
                         if(sizeOf($arquitecto)){
-                            $aviso->store($arquitecto[0]->arquitecto_id,$msj);
-                            User::findOrFail($arquitecto[0]->arquitecto_id)->notify(new NotifyAdmin($notif));
+                            if($arquitecto[0]->arquitecto_id!= NULL){
+                                $aviso->store($arquitecto[0]->arquitecto_id,$msj);
+                                User::findOrFail($arquitecto[0]->arquitecto_id)->notify(new NotifyAdmin($notif));
+                            }
+                           
                         }
                         
+                        if(sizeof($user_proyectos))
                         foreach ($user_proyectos as $index => $user) {
                             $aviso->store($user->id,$msj);
                             User::findOrFail($user->id)->notify(new NotifyAdmin($notif));
@@ -1119,7 +1123,6 @@ class CreditoPuenteController extends Controller
                     $cargo->saldo = 0;
                 }
                 $cargo->save();
-
             }
             
         }

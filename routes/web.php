@@ -1129,6 +1129,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/ruvs/selectRuv','RuvController@selectRuv');
         Route::get('/getClavesLadas','PersonalController@getClavesLadas');
 
+        Route::get('/getPendientesPagos','DepositoController@getPagosVencidos');
+
     
     
 });

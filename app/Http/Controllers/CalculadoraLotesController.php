@@ -385,160 +385,177 @@ class CalculadoraLotesController extends Controller
 
     public function aprovarCotizacion(Request $request){
         if (!$request->ajax()) return redirect('/');
+        $cotizacion = Cotizacion_lotes::findOrFail($request->id);
         $datos = $request->datos;
-        try {
-            DB::beginTransaction();
 
+        $contrato = Contrato::join('creditos','creditos.id','=','contratos.id')
+                                ->select('creditos.lote_id')
+                                ->where('status','=',1)
+                                ->where('creditos.lote_id','=',$cotizacion->lotes_id)
+                                ->orWhere('status','=',3)
+                                ->where('creditos.lote_id','=',$cotizacion->lotes_id)
+                                ->get();
 
-            $cotizacion = Cotizacion_lotes::findOrFail($request->id);
-            $cotizacion->estatus = 1;
-            
-
-            $lote = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                        ->select('lotes.num_lote','lotes.manzana','modelos.nombre as modelo',
-                                    'etapas.num_etapa', 'lotes.precio_base', 'lotes.terreno',
-                                    'fraccionamientos.nombre as proyecto')
-                        ->where('lotes.id','=',$cotizacion->lotes_id)->get();
-            
-            $pagos = Pagos_lotes::where('cotizacion_lotes_id','=',$request->id)->get();
-            
-            $empresa = Empresa::where('id','=',$datos['empresa_id'])->get();
-            
-
-            // PERSONAL
-                $persona = Personal::findOrFail($datos['personalId']);
-                $persona->direccion = $datos['direccion'];
-                $persona->colonia = $datos['colonia'];
-                $persona->cp = $datos['cp'];
-                $persona->save();
-
-            //Cliente
-                $cliente = Cliente::findOrFail($datos['personalId']);
-                $cliente->curp = $datos['curp'];
-                $cliente->nss = $datos['nss'];
-                $cliente->empresa = $datos['empresa'];
-                $cliente->estado = $datos['estado'];
-                $cliente->ciudad = $datos['ciudad'];
-                $cliente->puesto = $request->puesto;
-                if($cliente->coacreditado == 1){
-                    $empresaCoa = Empresa::where('id','=',$datos['empresaCoa_id'])->get();
-                    $cliente->empresa_coa = $datos['empresa_coa'];
-                    $cliente->nss_coa = $datos['nss_coa'];
-                    $cliente->curp_coa = $datos['curp_coa'];
-                    $cliente->telefono_coa = $datos['telefono_coa'];
-                    $cliente->celular_coa = $datos['celular_coa'];
-                    $cliente->direccion_coa = $datos['direccion_coa'];
-                    $cliente->colonia_coa = $datos['colonia_coa'];
-                    $cliente->estado_coa = $datos['estado_coa'];
-                    $cliente->ciudad_coa = $datos['ciudad_coa'];
-                    $cliente->cp_coa = $datos['cp_coa'];
-                }
-                
-                $cliente->save();
-            
-            //Credito
-                $credito = new Credito();
-                $credito->prospecto_id = $datos['personalId'];
-                $credito->num_dep_economicos = $request->num_dep_economicos;
-                $credito->tipo_economia = $request->tipo_economia;
-                $credito->nombre_primera_ref = $request->nombre_primera_ref;
-                $credito->nombre_segunda_ref = $request->nombre_segunda_ref;
-                $credito->telefono_primera_ref = $request->telefono_primera_ref;
-                $credito->telefono_segunda_ref = $request->telefono_segunda_ref;
-                $credito->celular_primera_ref = $request->celular_primera_ref;
-                $credito->superficie = $lote[0]->terreno;
-                $credito->celular_segunda_ref = $request->celular_segunda_ref;
-                $credito->fraccionamiento = $lote[0]->proyecto;
-                $credito->etapa = $lote[0]->num_etapa;
-                $credito->manzana = $lote[0]->manzana;
-                $credito->modelo = $lote[0]->modelo;
-                $credito->num_lote = $lote[0]->num_lote;
-                $credito->precio_base = $cotizacion->valor_venta;
-                $credito->precio_venta = $cotizacion->valor_venta - $cotizacion->valor_descuento;
-                $credito->plazo = $cotizacion->mensualidades;
-                $credito->credito_solic = $credito->precio_venta;
-                if($cotizacion->valor_descuento > 0){
-                    $credito->promocion = 'Descuento de $'.$cotizacion->valor_descuento;
-                    $credito->descripcion_promocion = 'Descuento de $'.$cotizacion->valor_descuento;
-                    $credito->descuento_promocion = $cotizacion->valor_descuento;
-                }
-                $credito->status = 2;
-                $credito->lote_id = $cotizacion->lotes_id;
-                $credito->contrato = 1;
-                $credito->vendedor_id = $cliente->vendedor_id;
-                $credito->save();
-
-            // Inst Seleccionada
-                $inst_seleccionada = new inst_seleccionada();
-                $inst_seleccionada->credito_id = $credito->id;
-                $inst_seleccionada->tipo_credito = "Crédito Directo";
-                $inst_seleccionada->status = 2;
-                $inst_seleccionada->institucion = "Grupo Cumbres";
-                $inst_seleccionada->monto_credito = $credito->precio_venta;
-                $inst_seleccionada->plazo_credito = $credito->plazo;
-                $inst_seleccionada->elegido = 1;
-                $inst_seleccionada->save();
-
-            //Contrato
-                $contrato = new Contrato();
-                $contrato->id = $credito->id;
-                $contrato->total_pagar = $credito->precio_venta;
-                $contrato->enganche_total = $credito->precio_venta;
-                $contrato->saldo = $credito->precio_venta;
-                $contrato->status = 1;
-                $contrato->publicidad_id = $cliente->publicidad_id;
-                $contrato->fecha = Carbon::now();
-                $contrato->direccion_empresa = $empresa[0]->direccion;
-                $contrato->cp_empresa = $empresa[0]->cp;
-                $contrato->colonia_empresa = $empresa[0]->colonia;
-                $contrato->estado_empresa = $empresa[0]->estado;
-                $contrato->ciudad_empresa = $empresa[0]->ciudad;
-                $contrato->telefono_empresa = $empresa[0]->telefono;
-                $contrato->ext_empresa = $empresa[0]->ext;
-                if($cliente->coacreditado == 1){
-                    $contrato->direccion_empresa_coa = $empresaCoa[0]->direccion;
-                    $contrato->cp_empresa_coa = $empresaCoa[0]->cp;
-                    $contrato->colonia_empresa_coa = $empresaCoa[0]->colonia;
-                    $contrato->estado_empresa_coa = $empresaCoa[0]->estado;
-                    $contrato->ciudad_empresa_coa = $empresaCoa[0]->ciudad;
-                    $contrato->telefono_empresa_coa = $empresaCoa[0]->telefono;
-                    $contrato->ext_empresa_coa = $empresaCoa[0]->ext;
-                }
-                
-                $contrato->save();
-
-                $cotizacion->num_contrato = $credito->id;
-            
-            //Pagos
-            foreach ($pagos as $ep => $det) {
-                $pago = new Pago_contrato();
-                $pago->contrato_id = $credito->id;
-                $pago->num_pago = $det['folio'];
-                $pago->monto_pago = $det['total_a_pagar'];
-                $pago->restante = $det['total_a_pagar'];
-                $pago->fecha_pago = $det['fecha'];
-                $pago->save();
-
-                $pagoLote = Pagos_lotes::findOrFail($det['id']);
-                $pagoLote->pagare_id = $pago->id;
-                $pagoLote->save();
-            }
-            
-
-            // Deshabilita lote para venta
-                $lote = Lote::findOrFail($cotizacion->lotes_id);
-                $lote->contrato = 1;
-                $lote->save();
-
-                $cotizacion->save();
-
-            $this->cancelaOtros($cotizacion->id, $cotizacion->lotes_id);
-            DB::commit();
-        } catch (Exception $e) {
-            DB::rollBack();
+        if(sizeOf($contrato)){
+            return redirect('/');
         }
+        else{
+            try {
+                DB::beginTransaction();
+    
+    
+                
+                $cotizacion->estatus = 1;
+                
+    
+                $lote = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                            ->join('etapas','lotes.etapa_id','=','etapas.id')
+                            ->join('modelos','lotes.modelo_id','=','modelos.id')
+                            ->select('lotes.num_lote','lotes.manzana','modelos.nombre as modelo',
+                                        'etapas.num_etapa', 'lotes.precio_base', 'lotes.terreno',
+                                        'fraccionamientos.nombre as proyecto')
+                            ->where('lotes.id','=',$cotizacion->lotes_id)->get();
+                
+                $pagos = Pagos_lotes::where('cotizacion_lotes_id','=',$request->id)->get();
+                
+                $empresa = Empresa::where('id','=',$datos['empresa_id'])->get();
+                
+    
+                // PERSONAL
+                    $persona = Personal::findOrFail($datos['personalId']);
+                    $persona->direccion = $datos['direccion'];
+                    $persona->colonia = $datos['colonia'];
+                    $persona->cp = $datos['cp'];
+                    $persona->save();
+    
+                //Cliente
+                    $cliente = Cliente::findOrFail($datos['personalId']);
+                    $cliente->curp = $datos['curp'];
+                    $cliente->nss = $datos['nss'];
+                    $cliente->empresa = $datos['empresa'];
+                    $cliente->estado = $datos['estado'];
+                    $cliente->ciudad = $datos['ciudad'];
+                    $cliente->puesto = $request->puesto;
+                    if($cliente->coacreditado == 1){
+                        $empresaCoa = Empresa::where('id','=',$datos['empresaCoa_id'])->get();
+                        $cliente->empresa_coa = $datos['empresa_coa'];
+                        $cliente->nss_coa = $datos['nss_coa'];
+                        $cliente->curp_coa = $datos['curp_coa'];
+                        $cliente->telefono_coa = $datos['telefono_coa'];
+                        $cliente->celular_coa = $datos['celular_coa'];
+                        $cliente->direccion_coa = $datos['direccion_coa'];
+                        $cliente->colonia_coa = $datos['colonia_coa'];
+                        $cliente->estado_coa = $datos['estado_coa'];
+                        $cliente->ciudad_coa = $datos['ciudad_coa'];
+                        $cliente->cp_coa = $datos['cp_coa'];
+                    }
+                    
+                    $cliente->save();
+                
+                //Credito
+                    $credito = new Credito();
+                    $credito->prospecto_id = $datos['personalId'];
+                    $credito->num_dep_economicos = $request->num_dep_economicos;
+                    $credito->tipo_economia = $request->tipo_economia;
+                    $credito->nombre_primera_ref = $request->nombre_primera_ref;
+                    $credito->nombre_segunda_ref = $request->nombre_segunda_ref;
+                    $credito->telefono_primera_ref = $request->telefono_primera_ref;
+                    $credito->telefono_segunda_ref = $request->telefono_segunda_ref;
+                    $credito->celular_primera_ref = $request->celular_primera_ref;
+                    $credito->superficie = $lote[0]->terreno;
+                    $credito->celular_segunda_ref = $request->celular_segunda_ref;
+                    $credito->fraccionamiento = $lote[0]->proyecto;
+                    $credito->etapa = $lote[0]->num_etapa;
+                    $credito->manzana = $lote[0]->manzana;
+                    $credito->modelo = $lote[0]->modelo;
+                    $credito->num_lote = $lote[0]->num_lote;
+                    $credito->precio_base = $cotizacion->valor_venta;
+                    $credito->precio_venta = $cotizacion->valor_venta - $cotizacion->valor_descuento;
+                    $credito->plazo = $cotizacion->mensualidades;
+                    $credito->credito_solic = $credito->precio_venta;
+                    if($cotizacion->valor_descuento > 0){
+                        $credito->promocion = 'Descuento de $'.$cotizacion->valor_descuento;
+                        $credito->descripcion_promocion = 'Descuento de $'.$cotizacion->valor_descuento;
+                        $credito->descuento_promocion = $cotizacion->valor_descuento;
+                    }
+                    $credito->status = 2;
+                    $credito->lote_id = $cotizacion->lotes_id;
+                    $credito->contrato = 1;
+                    $credito->vendedor_id = $cliente->vendedor_id;
+                    $credito->save();
+    
+                // Inst Seleccionada
+                    $inst_seleccionada = new inst_seleccionada();
+                    $inst_seleccionada->credito_id = $credito->id;
+                    $inst_seleccionada->tipo_credito = "Crédito Directo";
+                    $inst_seleccionada->status = 2;
+                    $inst_seleccionada->institucion = "Grupo Cumbres";
+                    $inst_seleccionada->monto_credito = $credito->precio_venta;
+                    $inst_seleccionada->plazo_credito = $credito->plazo;
+                    $inst_seleccionada->elegido = 1;
+                    $inst_seleccionada->save();
+    
+                //Contrato
+                    $contrato = new Contrato();
+                    $contrato->id = $credito->id;
+                    $contrato->total_pagar = $credito->precio_venta;
+                    $contrato->enganche_total = $credito->precio_venta;
+                    $contrato->saldo = $credito->precio_venta;
+                    $contrato->status = 1;
+                    $contrato->publicidad_id = $cliente->publicidad_id;
+                    $contrato->fecha = Carbon::now();
+                    $contrato->direccion_empresa = $empresa[0]->direccion;
+                    $contrato->cp_empresa = $empresa[0]->cp;
+                    $contrato->colonia_empresa = $empresa[0]->colonia;
+                    $contrato->estado_empresa = $empresa[0]->estado;
+                    $contrato->ciudad_empresa = $empresa[0]->ciudad;
+                    $contrato->telefono_empresa = $empresa[0]->telefono;
+                    $contrato->ext_empresa = $empresa[0]->ext;
+                    if($cliente->coacreditado == 1){
+                        $contrato->direccion_empresa_coa = $empresaCoa[0]->direccion;
+                        $contrato->cp_empresa_coa = $empresaCoa[0]->cp;
+                        $contrato->colonia_empresa_coa = $empresaCoa[0]->colonia;
+                        $contrato->estado_empresa_coa = $empresaCoa[0]->estado;
+                        $contrato->ciudad_empresa_coa = $empresaCoa[0]->ciudad;
+                        $contrato->telefono_empresa_coa = $empresaCoa[0]->telefono;
+                        $contrato->ext_empresa_coa = $empresaCoa[0]->ext;
+                    }
+                    
+                    $contrato->save();
+    
+                    $cotizacion->num_contrato = $credito->id;
+                
+                //Pagos
+                foreach ($pagos as $ep => $det) {
+                    $pago = new Pago_contrato();
+                    $pago->contrato_id = $credito->id;
+                    $pago->num_pago = $det['folio'];
+                    $pago->monto_pago = $det['total_a_pagar'];
+                    $pago->restante = $det['total_a_pagar'];
+                    $pago->fecha_pago = $det['fecha'];
+                    $pago->save();
+    
+                    $pagoLote = Pagos_lotes::findOrFail($det['id']);
+                    $pagoLote->pagare_id = $pago->id;
+                    $pagoLote->save();
+                }
+                
+    
+                // Deshabilita lote para venta
+                    $lote = Lote::findOrFail($cotizacion->lotes_id);
+                    $lote->contrato = 1;
+                    $lote->save();
+    
+                    $cotizacion->save();
+    
+                $this->cancelaOtros($cotizacion->id, $cotizacion->lotes_id);
+                DB::commit();
+            } catch (Exception $e) {
+                DB::rollBack();
+            }
+
+        }
+        
 
     }
 

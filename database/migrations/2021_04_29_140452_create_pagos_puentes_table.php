@@ -26,7 +26,7 @@ class CreatePagosPuentesTable extends Migration
             $table->integer('deposito_id')->nullable();
             $table->float('porc_interes')->default(0);
             $table->date('fecha_interes')->nullable();
-            $table->date('monto_interes')->default(0);
+            $table->double('monto_interes')->default(0);
             $table->boolean('pendiente')->default(0);
             $table->double('saldo')->default(0);
             // $table->integer('mes')->default(0);

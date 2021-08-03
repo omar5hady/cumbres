@@ -524,17 +524,23 @@
                                             </div>
                                             </div>
 
-                                                <div class="col-md-4">
+                                                <div class="col-md-3">
                                                 <div class="form-group">
                                                 <label for="">Telefono </label>
                                                 <input  type="text" :readonly="listado==4 && btn_actualizar==0" maxlength="10" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="telefono" placeholder="Telefono">
                                             </div>
                                             </div>
 
-                                                <div class="col-md-4">
+                                                <div class="col-md-5">
                                                     <div class="form-group">
                                                 <label for="">Celular <span style="color:red;" v-show="celular==''">(*)</span></label>
-                                                <input  type="text" :readonly="listado==4 && btn_actualizar==0" pattern="\d*" maxlength="10" class="form-control" v-on:keypress="isNumber($event)" v-model="celular" placeholder="Celular">
+                                                <div class="input-group">
+                                                    <select :readonly="listado==4 && btn_actualizar==0" v-model="clv_lada"  class="form-control col-md-5" >
+                                                        <option value="">Clave lada</option>
+                                                        <option v-for="clave in arrayClaves" :key="clave.clave+clave.pais" :value="clave.clave" v-text="clave.pais+' +'+clave.clave"></option>
+                                                    </select>
+                                                    <input  type="text" :readonly="listado==4 && btn_actualizar==0" pattern="\d*" maxlength="10" class="form-control col-md-7" v-on:keypress="isNumber($event)" v-model="celular" placeholder="Celular">
+                                                </div>
                                             </div>
                                                 </div>
 
@@ -2181,7 +2187,9 @@
                 tituloModal: '',
                 tipoAccion: 0,
                 empresas:'',
-               b_empresa:'',
+                b_empresa:'',
+                clv_lada:52,
+                arrayClaves:[],
             }
         },
         computed:{
@@ -2328,6 +2336,19 @@
                     console.log(error);
                 })
             },
+            getClavesLadas(){
+                let me = this;
+                me.arrayClaves=[];
+                var url = '/getClavesLadas';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayClaves = respuesta.claves;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            
+            }, 
 
             abrirPDF(id){
                 const win = window.open('/estadoCuenta/estadoPDF/'+id, '_blank');
@@ -2823,6 +2844,7 @@
                 this.sexo = data['sexo'];
                 this.telefono = data['telefono'];
                 this.celular = data['celular'];
+                this.clv_lada = data['clv_lada'];
                 this.email = data['email'];
                 this.direccion = data['direccion'];
                 this.cp = data['cp'];
@@ -2930,6 +2952,7 @@
                    'cp':this.cp,
                    'colonia':this.colonia,
                    'telefono':this.telefono,
+                   'clv_lada':this.clv_lada,
                    'celular':this.celular,
                    'email':this.email,
                    'sexo':this.sexo,
@@ -3069,6 +3092,7 @@
                 this.sexo = data['sexo'];
                 this.telefono = data['telefono'];
                 this.celular = data['celular'];
+                this.clv_lada = data['clv_lada'];
                 this.email = data['email'];
                 this.direccion = data['direccion'];
                 this.lugar_nacimiento = data['lugar_nacimiento'];
@@ -3542,6 +3566,7 @@
                 'colonia':this.colonia,
                 'telefono':this.telefono,
                 'celular':this.celular,
+                'clv_lada':this.clv_lada,
                 'email':this.email,
                 'sexo':this.sexo,
                 'email_institucional':this.email_inst,
@@ -3846,6 +3871,7 @@
             this.selectCreditos();
             this.selectMedioPublicidad();
             this.getEmpresa();
+            this.getClavesLadas();
         }
     }
 </script>

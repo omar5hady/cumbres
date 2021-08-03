@@ -48,6 +48,7 @@ class CreditoController extends Controller
                         ->select('personal.nombre','personal.apellidos','clientes.sexo','personal.telefono','personal.celular',
                                  'personal.email','personal.direccion','personal.cp','personal.colonia','clientes.ciudad','clientes.estado',
                                  'personal.f_nacimiento','clientes.nacionalidad','clientes.curp','personal.rfc','personal.homoclave',
+                                 'personal.clv_lada',
                                  'clientes.nss','clientes.empresa','clientes.puesto','clientes.email_institucional','clientes.tipo_casa',
                                  'clientes.edo_civil','clientes.coacreditado','clientes.nombre_coa','clientes.apellidos_coa',
                                  'clientes.f_nacimiento_coa','clientes.rfc_coa','clientes.homoclave_coa','clientes.direccion_coa',
@@ -66,6 +67,7 @@ class CreditoController extends Controller
                         $credito->apellidos = $prospecto[0]->apellidos;
                         $credito->sexo = $prospecto[0]->sexo;
                         $credito->telefono = $prospecto[0]->telefono;
+                        $credito->clv_lada = $prospecto[0]->clv_lada;
                         $credito->celular = $prospecto[0]->celular;
                         $credito->email = $prospecto[0]->email;
                         $credito->direccion = $prospecto[0]->direccion;

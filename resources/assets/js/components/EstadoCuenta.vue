@@ -218,11 +218,14 @@
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-md-3 form-control-label" for="text-input">Celular</label>
-                                        <div class="col-md-3">
-                                            <input type="text" v-model="celular_cliente" disabled class="form-control">
+                                        <div class="col-md-6">
+                                            <div class="input-group">
+                                                <input type="text" v-model="clv_lada" disabled class="form-control col-md-3">
+                                                <input type="text" v-model="celular_cliente" disabled class="form-control">
+                                            </div>
                                         </div>
                                         <a title="Llamar" class="btn btn-dark" :href="'tel:'+celular_cliente"><i class="fa fa-phone fa-lg"></i></a>
-                                        <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+celular_cliente+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>             
+                                        <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+clv_lada+celular_cliente+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>             
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-md-3 form-control-label" for="text-input">Email</label>
@@ -409,6 +412,7 @@
                 sexo_cliente: '',
                 telefono_cliente: '',
                 celular_cliente:'',
+                clv_lada:'',
                 email_cliente: '',
                 direccion_cliente: '',
                 cp_cliente: 0,
@@ -619,6 +623,7 @@
                                 }
                                 this.telefono_cliente = data['telefono'];
                                 this.celular_cliente = data['celular'];
+                                this.clv_lada = data['clv_lada'];
                                 this.email_cliente = data['email'];
                                 this.direccion_cliente =data['direccion'];
                                 this.cp_cliente= data['cp'];

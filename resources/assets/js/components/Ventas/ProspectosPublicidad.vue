@@ -63,9 +63,7 @@
                                         <tr v-for="prospecto in arrayProspectos" :key="prospecto.id">
                                             <td class="td2" v-text="prospecto.n_completo"></td>
                                             <td class="td2" v-text="prospecto.direccion+' Col. '+prospecto.colonia"></td>
-                                            <td class="td2" >
-                                                {{prospecto.celular}}
-                                            </td>
+                                            <td class="td2" v-text="'+'+prospecto.clv_lada+prospecto.celular"></td>
                                             <td class="td2" v-text="prospecto.email"></td>
                                             <td class="td2" v-text="prospecto.proyecto"></td>
                                             <td class="td2" v-if="prospecto.clasificacion==1">No viable</td>
