@@ -22,6 +22,7 @@ class Credito_puente extends Model
         'fecha_sig_int',
 
         'credito_otorgado',
-        'num_cuenta'
+        'num_cuenta',
+        'archivo_siembra'
     ];
 }

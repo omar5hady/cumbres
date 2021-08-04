@@ -45,6 +45,7 @@
                                     <thead>
                                         <tr>
                                             <th>Opciones</th>
+                                            <th>Siembra</th>
                                             <th>Folio</th>
                                             <th>Proyecto</th>
                                             <th>Tasa de interes</th>
@@ -61,6 +62,17 @@
                                             <td>
                                                 <button v-if="creditosPuente.base_p == 1" type="button" class="btn btn-warning btn-sm" @click="verDetalla(creditosPuente, 3)">
                                                     <i class="icon-pencil"></i>
+                                                </button>
+                                            </td>
+                                            <td>
+                                                <a v-if="creditosPuente.archivo_siembra != null" title="Ver siembra" class="btn btn-primary btn-sm" 
+                                                    v-bind:href="'/cPuentes/versiembra/'+creditosPuente.archivo_siembra">
+                                                    <i class="icon-eye"></i>
+                                                </a>
+                                                &nbsp;&nbsp;
+                                                <button title="Subir archivo" type="button" 
+                                                    @click="abrirModal('siembra',creditosPuente.id)" class="btn btn-default btn-sm">
+                                                    <i class="icon-cloud-upload"></i>
                                                 </button>
                                             </td>
                                             <td v-on:dblclick="verDetalla(creditosPuente,2)">

@@ -1940,7 +1940,7 @@ class ClienteController extends Controller
             ->where('vendedores.tipo','=',0)
             ->where('users.condicion','=',1)
             ->whereNotIn('users.id',$cal)
-            ->whereNotIn('users.id',[28020,28230,55,29051])
+            ->whereNotIn('users.id',[28020,28230,55,29051,27])
             ->where('users.usuario','!=','descartado')
             ->where('users.usuario','!=','oficina')
             ->orderBy('vendedores.cont_leads','asc')

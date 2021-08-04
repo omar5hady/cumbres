@@ -47,6 +47,7 @@ class BasePresupuestalController extends Controller
     }
 
     private function createBase($data,$fraccionamiento,$credito){
+        $contAviso = 0;
 
         foreach($data as $index => $pagina){
 
@@ -103,7 +104,7 @@ class BasePresupuestalController extends Controller
 
                     $newBase->save();
 
-                    if($newBase->credito_id > 0){
+                    if($newBase->credito_id > 0 && $contAviso==0){
                         $credito_puente = Credito_puente::findOrFail($credito);
 
                         $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
@@ -121,7 +122,7 @@ class BasePresupuestalController extends Controller
                         ];
 
                         
-                        $aviso = new NotificacionesAvisosController();
+                        
                         $user_proyectos = User::select('id')
                                             ->whereIn('usuario',['eli_hdz','alemunoz','shady',
                                                                     'cp.martin','javis.mdz',
@@ -129,9 +130,11 @@ class BasePresupuestalController extends Controller
                                                                 ])
                                             ->get();
                         foreach ($user_proyectos as $index => $user) {
+                            $aviso = new NotificacionesAvisosController();
                             $aviso->store($user->id,$msj);
                             User::findOrFail($user->id)->notify(new NotifyAdmin($notif));
                         }
+                        $contAviso++;
                     }
             }
         }

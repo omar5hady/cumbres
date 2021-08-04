@@ -770,7 +770,7 @@ class ContratoController extends Controller
                         ->where('clientes.id','=',$credito->prospecto_id)->first();
 
             if($vendedor_aux)
-                $contrato->$vendedor_aux = $vendedor_aux->nombre.' '.$vendedor_aux->apellidos;
+                $contrato->vendedor_aux = $vendedor_aux->nombre.' '.$vendedor_aux->apellidos;
             
             $vendedor = Vendedor::findOrFail($credito->vendedor_id);
             $contrato->saldo = $request->precio_venta;
