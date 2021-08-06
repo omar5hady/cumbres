@@ -1197,7 +1197,8 @@
                                                     
                                                     <div class="col-md-2">
                                                         <div class="form-group">
-                                                            <label for=""><strong>Manzana</strong></label>
+                                                            <label v-if="tipo_proyecto == 1" for=""><strong>Manzana</strong></label>
+                                                            <label v-if="tipo_proyecto == 2" for=""><strong>Nivel</strong></label>
                                                         </div>
                                                     </div>
 
@@ -1210,7 +1211,8 @@
 
                                                     <div class="col-md-1">
                                                         <div class="form-group">
-                                                            <label for=""><strong>Lote</strong></label>
+                                                            <label v-if="tipo_proyecto == 1" for=""><strong>Lote</strong></label>
+                                                            <label v-if="tipo_proyecto == 2" for=""><strong>Departamento</strong></label>
                                                         </div>
                                                     </div>
 
@@ -1247,7 +1249,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <template v-if="modelo != 'Terreno'">
+                                                    <template v-if="modelo != 'Terreno' && tipo_proyecto == 1">
                                                         <div class="col-md-3" v-if="precioBase!=''">
                                                             <div class="form-group">
                                                                 <label style="color:#2271b3;" for=""><strong> Precio obra extra </strong></label>
@@ -1278,7 +1280,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <template v-if="modelo != 'Terreno'">
+                                                    <template v-if="modelo != 'Terreno' && tipo_proyecto == 1">
                                                         <div class="col-md-3" v-if="superficie!='' || terreno_tam_excedente>0">
                                                             <div class="form-group">
                                                                 <label style="color:#2271b3;" for=""><strong> Terreno excedente m&sup2;</strong></label>
@@ -2190,6 +2192,7 @@
                 b_empresa:'',
                 clv_lada:52,
                 arrayClaves:[],
+                tipo_proyecto:'',
             }
         },
         computed:{
@@ -2336,6 +2339,20 @@
                     console.log(error);
                 })
             },
+
+            getDatosProyecto(fraccionamiento){
+                let me = this;
+                me.tipo_proyecto='';
+                var url = '/fraccionamiento/datos?id='+fraccionamiento
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.tipo_proyecto = respuesta.tipo_proyecto;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
             getClavesLadas(){
                 let me = this;
                 me.arrayClaves=[];
@@ -2600,7 +2617,10 @@
                     var respuesta = response.data;
                     me.arrayDatosLotes = respuesta.lotes;
 
-                    me.reasignar(me.arrayDatosLotes[0],lote);
+                    if(me.listado == 4)
+                        me.reasignar(me.arrayDatosLotes[0],lote);
+                    if(me.listado == 3)
+                        me.reasignar2(me.arrayDatosLotes[0],lote);
                     
                     
                     me.selectPaquetes(me.etapa,me.proyecto);
@@ -2936,6 +2956,8 @@
                 this.getDatosEmpresa(this.empresa,0);
                 this.getDatosEmpresa(this.empresa_coa,1);
                 this.validarLoteContrato(this.lote_id);
+
+                this.getDatosProyecto(data['fraccionamiento_id']);
             },
             
             actualizarContrato(){
@@ -3082,6 +3104,8 @@
             },
 
             verContrato(data = []){
+                this.getDatosProyecto(data['fraccionamiento_id']);
+
                 this.detenido = data['detenido'];
                 this.publicidad_id = data['publicidadId'];
                 this.nombre_recomendado = data['nombre_recomendado'];
@@ -3810,8 +3834,8 @@
                         this.tipoAccion = 2;
                         break;
                     }
-                    this.selectFraccionamientos();
                 }
+                this.selectFraccionamientos();
             },
         /////
 
@@ -3819,6 +3843,42 @@
                 let me = this;
                 
                 axios.put('/contrato/reasignar',{
+                   'lote_id':me.lote_id,
+                   'sel_lote':me.sel_lote,
+                   'id':me.id,
+                   'fraccionamiento':data['proyecto'],
+                   'etapa':me.sel_etapa,
+                   'manzana':me.sel_manzana,
+                   'num_lote':data['num_lote'],
+                   'modelo':data['modelo'],
+                   'precio_base':data['precio_base'],
+                   'superficie':data['terreno'],
+                   'terreno_excedente':Math.round( data['terreno_tam_excedente']*100)/100,
+                   'precio_terreno_excedente':Math.round(data['excedente_terreno']*100)/100,
+                   'precio_obra_extra':data['obra_extra'],
+                   'promocion':data['promocion'],
+                   'descripcion_promocion':data['descripcionPromo'],
+                   'descuento_promocion':data['descuentoPromo'],
+                   'precio_venta':data['precio_venta'] - data['descuentoPromo'],
+
+                }).then(function (response){
+                    me.getNewDatosLote(lote)
+                    //window.alert("Cambios guardados correctamente");
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'El cliente ha sido reasignado correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });  
+            },
+            reasignar2(data=[],lote){
+                let me = this;
+                
+                axios.put('/contrato/reasignar2',{
                    'lote_id':me.lote_id,
                    'sel_lote':me.sel_lote,
                    'id':me.id,

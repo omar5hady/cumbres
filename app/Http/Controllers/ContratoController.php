@@ -187,7 +187,8 @@ class ContratoController extends Controller
                     'contratos.enganche_total',
                     'contratos.avance_lote',
                     'contratos.observacion',
-                    'contratos.exp_bono'
+                    'contratos.exp_bono',
+                    'lotes.fraccionamiento_id'
         );
 
         if($request->b_empresa != ''){
@@ -469,6 +470,7 @@ class ContratoController extends Controller
                     ->join('lotes','lotes.id','=','creditos.lote_id')
             ->select(
                 'lotes.sobreprecio',
+                'lotes.fraccionamiento_id',
                 'creditos.id',
                 'creditos.prospecto_id',
                 'creditos.num_dep_economicos',
@@ -841,6 +843,7 @@ class ContratoController extends Controller
             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
             ->join('personal as v', 'clientes.vendedor_id', 'v.id')
             ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+            ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
             ->join('medios_publicitarios', 'contratos.publicidad_id', '=', 'medios_publicitarios.id')
             ->select(
                 'creditos.id',
@@ -876,6 +879,7 @@ class ContratoController extends Controller
                 'creditos.precio_obra_extra',
                 'creditos.fraccionamiento as proyecto',
                 'creditos.lote_id',
+                'fraccionamientos.tipo_proyecto',
 
                 'lotes.calle',
                 'lotes.numero',
@@ -2259,6 +2263,108 @@ class ContratoController extends Controller
                         $contrato->save();
                     }
 
+
+            } catch (Exception $e) { 
+                DB::rollBack();
+        }
+    }
+
+    public function reasignarCliente2(Request $request)
+    {
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+
+        try {
+            $loteNuevo_id = $request->sel_lote;
+
+            $lote_ant = Lote::findOrFail($request->lote_id);
+            $terrenoExcedenteOld = 0;
+
+                    $precioTerrenoOld = Precio_etapa::select('precio_excedente','id')
+                    ->where('etapa_id','=',$lote_ant->etapa_id)
+                    ->where('fraccionamiento_id','=',$lote_ant->fraccionamiento_id)->get();
+
+                    $terrenoModelo = Modelo::select('terreno')
+                    ->where('id','=',$lote_ant->modelo_id)
+                    ->get();
+                            
+                    $precioBaseOld = Precio_modelo::select('precio_modelo')
+                    ->where('modelo_id','=',$lote_ant->modelo_id)
+                    ->where('precio_etapa_id', '=', $precioTerrenoOld[0]->id)
+                    ->get();
+            
+                    $sobrepreciosOld = Sobreprecio_modelo::join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
+                    ->select(DB::raw("SUM(sobreprecios_etapas.sobreprecio) as sobreprecios"))
+                    ->where('sobreprecios_modelos.lote_id','=',$lote_ant->id)->get();
+
+                    $terrenoExcedenteOld = ($lote_ant->terreno - $terrenoModelo[0]->terreno);
+                    if($terrenoExcedenteOld > 0)
+                        $lote_ant->excedente_terreno = $terrenoExcedenteOld * $precioTerrenoOld[0]->precio_excedente;
+
+                    $lote_ant->precio_base = $precioBaseOld[0]->precio_modelo;
+
+                    if($sobrepreciosOld[0]->sobreprecios != NULL)
+                        $lote_ant->sobreprecio = $sobrepreciosOld[0]->sobreprecios;
+                    else
+                        $lote_ant->sobreprecio = 0;
+
+
+            $varContrato = $lote_ant->contrato;
+            $lote_ant->paquete = '';
+            $lote_ant->save();
+            DB::beginTransaction();
+
+            $lote_new = Lote::findOrFail($loteNuevo_id);
+            $new_avance = Licencia::findOrFail($loteNuevo_id);
+
+            /////////////////////////////////////////////////////////////////
+            $precio_etapa = Precio_etapa::select('id','precio_excedente')
+                            ->where('fraccionamiento_id','=',$lote_new->fraccionamiento_id)
+                            ->where('etapa_id','=',$lote_new->etapa_id)->get();
+            
+            $precio_modelo = Precio_modelo::select('precio_modelo')->where('precio_etapa_id','=',$precio_etapa[0]->id)
+                            ->where('modelo_id','=',$lote_new->modelo_id)->get();
+            
+            $sobreprecios = Sobreprecio_modelo::join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
+            ->select(DB::raw("SUM(sobreprecios_etapas.sobreprecio) as sobreprecios"))
+            ->where('sobreprecios_modelos.lote_id','=',$loteNuevo_id)->get();
+            
+            $modelo = Modelo::select('terreno')->where('id','=',$lote_new->modelo_id)->get();
+            $terrenoExcedente = round(($lote_new->terreno - $modelo[0]->terreno),2);
+                if((double)$terrenoExcedente > 0)
+                    $lote_new->excedente_terreno = round(($terrenoExcedente * $precio_etapa[0]->precio_excedente), 2);
+                else {
+                    $lote_new->excedente_terreno = 0;
+                }
+            $lote_new->precio_base = $precio_modelo[0]->precio_modelo;
+            $lote_new->precio_base = round(($lote_new->precio_base), 2);
+            $precio_venta = round(($sobreprecios[0]->sobreprecios + $lote_new->precio_base + $lote_new->ajuste + $lote_new->excedente_terreno + $lote_new->obra_extra),2);
+            $terreno_tam_excedente = round(($lote_new->terreno - $modelo[0]->terreno),2);
+
+            ////////////////////////////////////////////////////////////////////////////////////////
+            
+
+            $credito = Credito::findOrFail($request->id);
+            $credito->fraccionamiento = $request->fraccionamiento;
+            $credito->etapa = $request->etapa;
+            $credito->manzana = $request->manzana;
+            $credito->num_lote = $request->num_lote;
+            $credito->modelo = $request->modelo;
+            $credito->precio_base = $lote_new->precio_base + $lote_new->ajuste;
+            $credito->superficie = $request->superficie;
+            $credito->terreno_excedente = $terreno_tam_excedente;
+            $credito->precio_terreno_excedente = $lote_new->excedente_terreno;
+            $credito->precio_obra_extra = $request->precio_obra_extra;
+            $credito->promocion = $request->promocion;
+            $credito->descripcion_promocion = $request->descripcion_promocion;
+            $credito->descuento_promocion = $request->descuento_promocion;
+            $credito->paquete = '';
+            $credito->descripcion_paquete = '';
+            $credito->costo_paquete = 0;
+            $credito->precio_venta = round($precio_venta - $request->descuento_promocion,2);
+            $credito->lote_id = $loteNuevo_id;
+            $credito->save();
+            $lote_new->save();
+            DB::commit();
 
             } catch (Exception $e) { 
                 DB::rollBack();

@@ -173,6 +173,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/downloadEscrituras/{fileName}' , 'FraccionamientoController@downloadFileEscrituras'); //descarga de escrituras
         Route::post('/formSubmitLogoFraccionamiento/{id}','FraccionamientoController@formSubmitLogoFraccionamiento');
         Route::get('/downloadLogoFraccionamiento/{fileName}' , 'FraccionamientoController@downloadFileLogoFraccionamiento');
+        Route::get('/fraccionamiento/datos' , 'FraccionamientoController@getDatos');
         
        
         
@@ -587,6 +588,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::delete('/contrato/pagos/eliminar','ContratoController@eliminarPago');
         Route::put('/contrato/actualizar','ContratoController@actualizarContrato');
         Route::put('/contrato/reasignar','ContratoController@reasignarCliente');
+        Route::put('/contrato/reasignar2','ContratoController@reasignarCliente2');
 
         Route::get('/contratoCompraVenta/pdf/{id}','ContratoController@contratoCompraVentaPdf')->name('contratoCompraVenta.pdf');
         Route::get('/pagareContrato/pdf/{id}','ContratoController@pagareContratopdf')->name('pagare.pdf');

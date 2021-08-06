@@ -29,90 +29,34 @@ class CreditoController extends Controller
         if (!$request->ajax()) return redirect('/');
 
         $creditos = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-            ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
-                'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
-                'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
-                'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','creditos.precio_base','creditos.precio_obra_extra',
-                'creditos.superficie','creditos.terreno_excedente','creditos.precio_terreno_excedente','creditos.contrato',
-                'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
-                'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
+                    ->join('lotes','creditos.lote_id','=','lotes.id')
+                    ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                    ->join('personal','clientes.id','=','personal.id')
+                    ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+            ->select('creditos.*',
                 'datos_extra.mascota','datos_extra.num_perros','datos_extra.rang010','datos_extra.rang1120',
                 'datos_extra.rang21','datos_extra.ama_casa','datos_extra.persona_discap','datos_extra.silla_ruedas',
-                'datos_extra.num_vehiculos','creditos.costo_paquete','creditos.status','creditos.fraccionamiento')
+                'datos_extra.num_vehiculos',
+                'lotes.fraccionamiento_id',
+
+                'personal.nombre','personal.apellidos','clientes.sexo','personal.telefono','personal.celular',
+                'personal.email','personal.direccion','personal.cp','personal.colonia','clientes.ciudad','clientes.estado',
+                'personal.f_nacimiento','clientes.nacionalidad','clientes.curp','personal.rfc','personal.homoclave',
+                'personal.clv_lada',
+                'clientes.nss','clientes.empresa','clientes.puesto','clientes.email_institucional','clientes.tipo_casa',
+                'clientes.edo_civil','clientes.coacreditado','clientes.nombre_coa','clientes.apellidos_coa',
+                'clientes.f_nacimiento_coa','clientes.rfc_coa','clientes.homoclave_coa','clientes.direccion_coa',
+                'clientes.cp_coa','clientes.colonia_coa','clientes.estado_coa','clientes.ciudad_coa','clientes.celular_coa',
+                'clientes.telefono_coa','clientes.email_coa','clientes.email_institucional_coa',
+                'clientes.empresa_coa','fraccionamientos.nombre as proyecto','clientes.curp_coa','clientes.nss_coa',
+                'clientes.nacionalidad_coa',
+
+                'inst_seleccionadas.tipo_credito','inst_seleccionadas.institucion','inst_seleccionadas.elegido'
+                
+                )
+                ->where('inst_seleccionadas.elegido','=',1)
                 ->where('creditos.prospecto_id','=',$request->prospecto_id)->get();
-        
-                foreach($creditos as $index => $credito) {
-                    $prospecto=[];
-                    $prospecto = Cliente::join('personal','clientes.id','=','personal.id')
-                        ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
-                        ->select('personal.nombre','personal.apellidos','clientes.sexo','personal.telefono','personal.celular',
-                                 'personal.email','personal.direccion','personal.cp','personal.colonia','clientes.ciudad','clientes.estado',
-                                 'personal.f_nacimiento','clientes.nacionalidad','clientes.curp','personal.rfc','personal.homoclave',
-                                 'personal.clv_lada',
-                                 'clientes.nss','clientes.empresa','clientes.puesto','clientes.email_institucional','clientes.tipo_casa',
-                                 'clientes.edo_civil','clientes.coacreditado','clientes.nombre_coa','clientes.apellidos_coa',
-                                 'clientes.f_nacimiento_coa','clientes.rfc_coa','clientes.homoclave_coa','clientes.direccion_coa',
-                                 'clientes.cp_coa','clientes.colonia_coa','clientes.estado_coa','clientes.ciudad_coa','clientes.celular_coa',
-                                 'clientes.telefono_coa','clientes.email_coa','clientes.email_institucional_coa',
-                                 'clientes.empresa_coa','fraccionamientos.nombre as proyecto','clientes.curp_coa','clientes.nss_coa',
-                                 'clientes.nacionalidad_coa')
-                        ->where('clientes.id','=',$credito->prospecto_id)->get();
-                    
-                    $institucion=[];
-                    $institucion=inst_seleccionada::select('tipo_credito','institucion','elegido')
-                        ->where('credito_id','=',$credito->id)
-                        ->where('elegido','=',1)->get();
-                    if(sizeof($prospecto) > 0){
-                        $credito->nombre = $prospecto[0]->nombre;
-                        $credito->apellidos = $prospecto[0]->apellidos;
-                        $credito->sexo = $prospecto[0]->sexo;
-                        $credito->telefono = $prospecto[0]->telefono;
-                        $credito->clv_lada = $prospecto[0]->clv_lada;
-                        $credito->celular = $prospecto[0]->celular;
-                        $credito->email = $prospecto[0]->email;
-                        $credito->direccion = $prospecto[0]->direccion;
-                        $credito->cp = $prospecto[0]->cp;
-                        $credito->colonia = $prospecto[0]->colonia;
-                        $credito->ciudad = $prospecto[0]->ciudad;
-                        $credito->estado = $prospecto[0]->estado;
-                        $credito->f_nacimiento = $prospecto[0]->f_nacimiento;
-                        $credito->nacionalidad = $prospecto[0]->nacionalidad;
-                        $credito->curp = $prospecto[0]->curp;
-                        $credito->rfc = $prospecto[0]->rfc;
-                        $credito->homoclave = $prospecto[0]->homoclave;
-                        $credito->nss = $prospecto[0]->nss;
-                        $credito->empresa = $prospecto[0]->empresa;
-                        $credito->puesto = $prospecto[0]->puesto;
-                        $credito->email_institucional = $prospecto[0]->email_institucional;
-                        $credito->tipo_casa = $prospecto[0]->tipo_casa;
-                        $credito->edo_civil = $prospecto[0]->edo_civil;
-                        $credito->coacreditado = $prospecto[0]->coacreditado;
-                        $credito->nombre_coa = $prospecto[0]->nombre_coa;
-                        $credito->apellidos_coa = $prospecto[0]->apellidos_coa;
-                        $credito->f_nacimiento_coa = $prospecto[0]->f_nacimiento_coa;
-                        $credito->rfc_coa = $prospecto[0]->rfc_coa;
-                        $credito->curp_coa = $prospecto[0]->curp_coa;
-                        $credito->nss_coa = $prospecto[0]->nss_coa;
-                        $credito->homoclave_coa = $prospecto[0]->homoclave_coa;
-                        $credito->direccion_coa = $prospecto[0]->direccion_coa;
-                        $credito->cp_coa = $prospecto[0]->cp_coa;
-                        $credito->nacionalidad_coa = $prospecto[0]->nacionalidad_coa;
-                        $credito->colonia_coa = $prospecto[0]->colonia_coa;
-                        $credito->estado_coa = $prospecto[0]->estado_coa;
-                        $credito->ciudad_coa = $prospecto[0]->ciudad_coa;
-                        $credito->celular_coa = $prospecto[0]->celular_coa;
-                        $credito->telefono_coa = $prospecto[0]->telefono_coa;
-                        $credito->email_coa = $prospecto[0]->email_coa;
-                        $credito->email_institucional_coa = $prospecto[0]->email_institucional_coa;
-                        $credito->empresa_coa = $prospecto[0]->empresa_coa;
-                        $credito->proyecto = $prospecto[0]->proyecto;
-                        
-                        $credito->tipo_credito = $institucion[0]->tipo_credito;
-                        $credito->institucion = $institucion[0]->institucion;
-                        $credito->elegido = $institucion[0]->elegido;
-                    }
-                    
-                }
 
         
         return['creditos' => $creditos];

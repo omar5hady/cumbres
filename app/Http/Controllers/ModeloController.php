@@ -317,9 +317,15 @@ class ModeloController extends Controller
 
         $buscar = $request->buscar;
         $modelos = Modelo::select('nombre','id')
-        ->where('fraccionamiento_id', '=', $buscar )
-        //->where('nombre','!=','Por Asignar')
-        ->orderBy('nombre','asc')
+        ->where('fraccionamiento_id', '=', $buscar );
+        if($request->mostrar == 1)
+            $modelos= $modelos->where('nombre','!=','Por Asignar');
+
+        if($request->mostrar == 2){
+            $modelos= $modelos->where('nombre','!=','Por Asignar')
+            ->where('nombre','!=','Terreno');
+        }
+        $modelos= $modelos->orderBy('nombre','asc')
         ->get();
         return['modelos' => $modelos];
     }

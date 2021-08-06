@@ -891,6 +891,52 @@ class LoteController extends Controller
     {
         if(!$request->ajax())return redirect('/');
 
+        $lotes = $this->getInventario($request);
+        
+        $tipo = 2;
+
+        if(Auth::user()->rol_id == 2)
+        {
+            $vendedor = Vendedor::findOrFail(Auth::user()->id);
+            $tipo = $vendedor->tipo;
+        }
+
+        if(sizeof($lotes))
+        foreach($lotes as $index => $lote) {
+            
+            $lote->precio_base = $lote->precio_base + $lote->ajuste;
+            $lote->tipo = $tipo;
+            $lote->precio_venta= $lote->sobreprecio + $lote->precio_base + $lote->excedente_terreno + $lote->obra_extra;
+            $promocion=[];
+            $promocion = Lote_promocion::join('promociones','lotes_promocion.promocion_id','=','promociones.id')
+                ->select('promociones.nombre','promociones.v_ini','promociones.v_fin','promociones.id')
+                ->where('lotes_promocion.lote_id','=',$lote->id)
+                ->where('promociones.v_fin','>=',Carbon::today()->format('ymd'))->get();
+            if(sizeof($promocion) > 0){
+                $lote->v_iniPromo = $promocion[0]->v_ini;
+                $lote->v_finPromo = $promocion[0]->v_fin;
+                $lote->promocion = $promocion[0]->nombre;
+            }
+            else
+                $lote->promocion = 'Sin Promoción';
+        } 
+        
+
+        return [
+            'pagination' => [
+                'total'         => $lotes->total(),
+                'current_page'  => $lotes->currentPage(),
+                'per_page'      => $lotes->perPage(),
+                'last_page'     => $lotes->lastPage(),
+                'from'          => $lotes->firstItem(),
+                'to'            => $lotes->lastItem(),
+            ],
+            'lotes' => $lotes
+        ];
+
+    }
+
+    private function getInventario(Request $request){
         $buscar = $request->buscar;
         $buscar2 = $request->buscar2;
         $buscar3 = $request->buscar3;
@@ -915,7 +961,8 @@ class LoteController extends Controller
                         'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
                         'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
                         'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'lotes.emp_constructora', 'lotes.emp_terreno',
-                        'v.nombre as v_nombre', 'apartados.fecha_apartado');
+                        'v.nombre as v_nombre', 'apartados.fecha_apartado')
+            ->where('fraccionamientos.tipo_proyecto','=',$request->tipo);
 
         $queryVendedores = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
             ->join('licencias','lotes.id','=','licencias.id')
@@ -927,7 +974,8 @@ class LoteController extends Controller
                     'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
                     'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance','lotes.extra','lotes.extra_ext',
                     'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste', 'lotes.emp_constructora', 'lotes.emp_terreno',
-                    'lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas');
+                    'lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
+            ->where('fraccionamientos.tipo_proyecto','=',$request->tipo);
 
                     // if($request->casa_muestra == 1){
                     //     $query = $query->where('lotes.casa_muestra','=',1);
@@ -935,7 +983,6 @@ class LoteController extends Controller
                     // } 
 
         if($rolId == 1 || $rolId == 4 || $rolId == 6 || $rolId == 8 || $rolId == 11 ){
-                 
             $lotes = $query
                         ->where('lotes.habilitado','=',1)
                         ->where('lotes.contrato','=',0);
@@ -947,7 +994,6 @@ class LoteController extends Controller
                     $lotes  = $lotes->where('lotes.apartado','!=',0);
             }
             
-
             if($buscar != '')
                 $lotes = $lotes->where($criterio, 'like', '%'.$buscar.'%');
             if($b_modelo != '')
@@ -958,18 +1004,14 @@ class LoteController extends Controller
                 $lotes = $lotes->where('lotes.manzana', 'like', '%'.$buscar3.'%');
             if($b_lote != '')
                 $lotes = $lotes->where('lotes.num_lote', 'like', '%'.$b_lote.'%');
-        
-
-            
+    
         }
         else{
-            
                 $lotes = $queryVendedores
                             ->where('lotes.habilitado','=',1)
                             ->where('lotes.apartado','=',0)
                             ->where('lotes.contrato','=',0);
-
-                            
+   
                     if($buscar != '')
                         $lotes = $lotes->where($criterio, 'like', '%'. $buscar . '%');
                     if($b_modelo != '')
@@ -982,7 +1024,6 @@ class LoteController extends Controller
                         $lotes = $lotes->where('lotes.num_lote', 'like', '%'. $b_lote . '%');
             
         }
-
 
         if($request->casa_muestra != ''){
             $lotes = $lotes->where('lotes.casa_muestra','=',$request->casa_muestra);
@@ -1001,49 +1042,9 @@ class LoteController extends Controller
         if(Auth::user()->rol_id == 2 || Auth::user()->rol_id == 4)
             $lotes = $lotes->paginate(25);  
         else
-            $lotes = $lotes->paginate(8);  
-        
-        $tipo = 2;
-        if(Auth::user()->rol_id == 2)
-        {
-            $vendedor = Vendedor::findOrFail(Auth::user()->id);
-            $tipo = $vendedor->tipo;
-        }
+            $lotes = $lotes->paginate(8); 
 
-        
-        
-        
-        foreach($lotes as $index => $lote) {
-            
-            $lote->precio_base = $lote->precio_base + $lote->ajuste;
-            $lote->tipo = $tipo;
-            $lote->precio_venta= $lote->sobreprecio + $lote->precio_base + $lote->excedente_terreno + $lote->obra_extra;
-            $promocion=[];
-            $promocion = Lote_promocion::join('promociones','lotes_promocion.promocion_id','=','promociones.id')
-                ->select('promociones.nombre','promociones.v_ini','promociones.v_fin','promociones.id')
-                ->where('lotes_promocion.lote_id','=',$lote->id)
-                ->where('promociones.v_fin','>=',Carbon::today()->format('ymd'))->get();
-            if(sizeof($promocion) > 0){
-                $lote->v_iniPromo = $promocion[0]->v_ini;
-                $lote->v_finPromo = $promocion[0]->v_fin;
-                $lote->promocion = $promocion[0]->nombre;
-            }
-            else
-                $lote->promocion = 'Sin Promoción';
-        } 
-        
-
-        return [
-        'pagination' => [
-            'total'         => $lotes->total(),
-            'current_page'  => $lotes->currentPage(),
-            'per_page'      => $lotes->perPage(),
-            'last_page'     => $lotes->lastPage(),
-            'from'          => $lotes->firstItem(),
-            'to'            => $lotes->lastItem(),
-        ],
-        'lotes' => $lotes
-             ];
+        return $lotes;
 
     }
 

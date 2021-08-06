@@ -726,7 +726,7 @@
                                                     
                                                     <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <select class="form-control" v-model="proyecto_interes_id" @change="selectEtapa(proyecto_interes_id)">
+                                                            <select class="form-control" v-model="proyecto_interes_id" @change="selectEtapa(proyecto_interes_id),getDatosProyecto(proyecto_interes_id)">
                                                                     <option value=0> Seleccione </option>
                                                                     <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                                             </select>
@@ -734,7 +734,7 @@
                                                     </div>
                                 
                                                 
-                                                <div class="col-md-1">
+                                                <div class="col-md-2">
                                                         <div class="form-group">
                                                             <label for="">Etapa<span style="color:red;" v-show="etapa==''">(*)</span></label>     
                                                         </div>
@@ -755,9 +755,10 @@
                                                     </div>
 
                                                     
-                                                    <div class="col-md-2">
+                                                    <div class="col-md-2" v-if="tipo_proyecto != ''">
                                                         <div class="form-group">
-                                                            <label for="">Manzana<span style="color:red;" v-show="manzana==''">(*)</span></label>
+                                                            <label v-if="tipo_proyecto == 1" for="">Manzana<span style="color:red;" v-show="manzana==''">(*)</span></label>
+                                                            <label v-if="tipo_proyecto == 2" for="">Nivel<span style="color:red;" v-show="manzana==''">(*)</span></label>
                                                         </div>
                                                     </div>
 
@@ -765,14 +766,16 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <select class="form-control" v-model="manzana" @change="selectLotes(manzana, etapa, proyecto_interes_id)">
+                                                                    <option value="">Seleccione</option>
                                                                     <option v-for="manzanas in arrayManzanas" :key="manzanas.manzana" :value="manzanas.manzana" v-text="manzanas.manzana"></option>
                                                             </select>
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-1">
+                                                    <div class="col-md-2" v-if="tipo_proyecto != ''">
                                                         <div class="form-group">
-                                                            <label for="">Lote<span style="color:red;" v-show="lote==''">(*)</span></label>
+                                                            <label v-if="tipo_proyecto == 1" for="">Lote<span style="color:red;" v-show="lote==''">(*)</span></label>
+                                                            <label v-if="tipo_proyecto == 2" for="">Departamento<span style="color:red;" v-show="lote==''">(*)</span></label>
                                                         </div>
                                                     </div>
 
@@ -1644,7 +1647,8 @@
                                                     
                                                     <div class="col-md-2">
                                                         <div class="form-group">
-                                                            <label for="">Manzana<span style="color:red;" v-show="manzana==''">(*)</span></label>
+                                                            <label v-if="tipo_proyecto == 1" for="">Manzana<span style="color:red;" v-show="manzana==''">(*)</span></label>
+                                                            <label v-if="tipo_proyecto == 2" for="">Nivel<span style="color:red;" v-show="manzana==''">(*)</span></label>
                                                         </div>
                                                     </div>
 
@@ -1655,9 +1659,10 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-1">
+                                                    <div class="col-md-2">
                                                         <div class="form-group">
-                                                            <label for="">Lote<span style="color:red;" v-show="lote==''">(*)</span></label>
+                                                            <label v-if="tipo_proyecto == 1" for="">Lote<span style="color:red;" v-show="lote==''">(*)</span></label>
+                                                            <label v-if="tipo_proyecto == 2" for="">Departamento<span style="color:red;" v-show="lote==''">(*)</span></label>
                                                         </div>
                                                     </div>
 
@@ -2451,7 +2456,8 @@
                 plazo_credito2:0,
                 monto_credito2:0,
                 contrato:0,
-                lote_id:''
+                lote_id:'',
+                tipo_proyecto:'',
                 
             }
         },
@@ -2621,6 +2627,20 @@
                     console.log(error);
                 });
             },
+            
+            getDatosProyecto(fraccionamiento){
+                let me = this;
+                me.tipo_proyecto='';
+                var url = '/fraccionamiento/datos?id='+fraccionamiento
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.tipo_proyecto = respuesta.tipo_proyecto;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
             selectManzana(etapa){
                 let me = this;
                 me.arrayManzanas=[];
@@ -3093,7 +3113,7 @@
                 if(this.nombre_referencia1=='' || this.nombre_referencia2=='' || this.telefono_referencia1 == '' 
                         || this.telefono_referencia2 == '' || this.celular_referencia1 == '' || this.celular_referencia2=='') 
                     this.errorMostrarMsjProspecto.push("Completar datos para referencias personales.");
-                if(this.etapa=='' || this.manzana=='' || this.lote == '') 
+                if(this.etapa=='' || this.manzana=='' || this.lote == '' || this.lote_id == 0 || this.lote_id == '') 
                     this.errorMostrarMsjProspecto.push("Seleccionar lote de interes.");
                 if(this.tipo_credito==0 || this.inst_financiera=='') 
                     this.errorMostrarMsjProspecto.push("Seleccionar credito a solicitar");
@@ -3240,6 +3260,8 @@
                 this.num_vehiculos = data['num_vehiculos'];
                 this.fraccionamiento = data['fraccionamiento'];
                 this.listado=5;
+
+                this.getDatosProyecto(data['fraccionamiento_id']);
             },
             limpiarDatos(){
                 this.clasificacion=1;
@@ -3334,6 +3356,7 @@
                 this.rang21=0;
                 this.num_vehiculos=0;
 
+                this.monto_credito = 0;
 
                 this.errorProspecto=0;
                 this.errorMostrarMsjProspecto=[];
@@ -3409,6 +3432,7 @@
                         this.num_habitantes=0;
                         this.valHab=0;
                         this.selectEtapa(this.proyecto_interes_id);
+                        this.getDatosProyecto(this.proyecto_interes_id)
                         
                         this.id=prospecto['id'];
                         this.listado=3;

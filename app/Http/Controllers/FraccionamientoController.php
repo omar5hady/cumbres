@@ -271,8 +271,20 @@ class FraccionamientoController extends Controller
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
         
-        $fraccionamientos = Fraccionamiento::select('nombre','id')->where('id','!=','1')->orderBy('nombre','asc')->get();
+        $fraccionamientos = Fraccionamiento::select('nombre','id')->where('id','!=','1');
+
+        if($request->tipo_proyecto != ''){
+            $fraccionamientos = $fraccionamientos->where('tipo_proyecto','=',$request->tipo_proyecto);
+        }
+        
+        $fraccionamientos = $fraccionamientos->orderBy('nombre','asc')->get();
         return['fraccionamientos' => $fraccionamientos];
+    }
+
+    public function getDatos(Request $request){
+        if(!$request->ajax())return redirect('/');
+        $datos = Fraccionamiento::where('id','=',$request->id)->first();
+        return $datos;
     }
 
     public function selectFraccionamientoVue(Request $request){

@@ -197,19 +197,32 @@ body {
 @endif
 
 <div style="position: static; margin-top: -20px;">
-    <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 450px; background-color: #0B173B;">DATOS DE LA VIVIENDA</p>        
+    @if($contratos[0]->tipo_proyecto == 1)
+        <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 450px; background-color: #0B173B;">DATOS DE LA VIVIENDA</p>
+    @elseif($contratos[0]->tipo_proyecto == 2)
+        <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 350px; background-color: #0B173B;">DATOS DEL DEPARTAMENTO</p>        
+    @endif
         <div class="table" style="border: ridge #0B173B 1px; color:black; margin-top: -10px;">
+            @if($contratos[0]->tipo_proyecto == 1)
                 <div class="table-row">
                     <div class="table-cell">FRACCIONAMIENTO: <u>{{mb_strtoupper($contratos[0]->proyecto)}}</u></div>
                     <div class="table-cell">MANZANA: <u>{{mb_strtoupper($contratos[0]->manzana)}}</u></div>
                     <div class="table-cell">LOTE: <u>{{$contratos[0]->num_lote}}</u></div>
                 </div>
+            @elseif($contratos[0]->tipo_proyecto == 1)
+                <div class="table-row">
+                    <div class="table-cell">FRACCIONAMIENTO: <u>{{mb_strtoupper($contratos[0]->proyecto)}}</u></div>
+                    <div class="table-cell">NIVEL: <u>{{mb_strtoupper($contratos[0]->manzana)}}</u></div>
+                    <div class="table-cell">DEPARTAMENTO: <u>{{$contratos[0]->num_lote}}</u></div>
+                </div>
+            @endif
                 <div class="table-row">
                     <div class="table-cell">CALLE: <u>{{mb_strtoupper($contratos[0]->calle)}}</u></div>
                     <div class="table-cell">NO. OFICIAL: <u>{{$contratos[0]->numero}} INT. {{strtoupper($contratos[0]->interior)}}</u></div>
                     <div class="table-cell">MODELO: <u>{{mb_strtoupper($contratos[0]->modelo)}}</u></div>
                 </div>
                 <div class="table-row">
+                    @if($contratos[0]->tipo_proyecto == 1)
                     <div class="table-cell">SUPERFICIE DE TERRENO: 
                         <u>{{$contratos[0]->terreno}} M2 
                             @if($contratos[0]->emp_constructora == "CONCRETANIA"  && $contratos[0]->emp_terreno == "Grupo Constructor Cumbres" )
@@ -217,13 +230,18 @@ body {
                             @endif
                         </u>
                     </div>
+                    @endif
                     <div class="table-cell" colspan="2">SUPERFICIE DE CONSTRUCCION: 
                         <u>{{$contratos[0]->construccion}} M2
-                            @if($contratos[0]->emp_constructora == "CONCRETANIA" && $contratos[0]->emp_terreno == "Grupo Constructor Cumbres" )
+                            @if($contratos[0]->emp_constructora == "CONCRETANIA" && $contratos[0]->emp_terreno == "Grupo Constructor Cumbres" && $contratos[0]->tipo_proyecto == 1 )
                                 ( {{100-$contratos[0]->porcentaje_terreno}}% )
                             @endif
                         </u>
                     </div>
+                    @if($contratos[0]->tipo_proyecto == 2)
+                    <div class="table-cell">
+                    </div>
+                    @endif
                     
                 </div> 
                 <div class="table-row">
@@ -235,85 +253,165 @@ body {
         </div>
 </div>
 
-    <div style="position: static; margin-top: -20px;">
-    <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 500px; background-color: #0B173B;">PRESUPUESTO</p>        
-        <div class="table" style="border: ridge #0B173B 1px; color:black; margin-top: -10px;">
+        <div style="position: static; margin-top: -20px;">
+            <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 500px; background-color: #0B173B;">PRESUPUESTO</p>        
+            <div class="table" style="border: ridge #0B173B 1px; color:black; margin-top: -10px;">
                
-                <div class="table-row">
-                @if($contratos[0]->infonavit > 0)
-                    <div class="table-cell2">INFONAVIT: </div>
-                    <div class="table-cell2">${{$contratos[0]->infonavit}}</div>
-                @elseif($contratos[0]->fovisste > 0)
-                    <div class="table-cell2">FOVISSTE: </div>
-                    <div class="table-cell2">${{$contratos[0]->fovisste}}</div> 
-                @else  
-                    <div class="table-cell2"></div>
-                    <div class="table-cell2"></div>
-                @endif  
-                    <div class="table-cell2">PRECIO DE LA VIVIENDA: </div>
-                    <div class="table-cell2">${{$contratos[0]->precio_base}}</div>
-                </div>
-                 <div class="table-row">
-                    <div class="table-cell2">{{mb_strtoupper($contratos[0]->institucion)}}: </div>
-                    <div class="table-cell2">${{$contratos[0]->credito_solic}}</div> 
-                    <div class="table-cell2"><u>{{$contratos[0]->terreno_excedente}} M2</u> TERR. EXCEDENTE: </div>
-                    <div class="table-cell2">${{$contratos[0]->precio_terreno_excedente}}</div>
-                </div>
-                <div class="table-row">
-                    <div class="table-cell2">COMISION X APERTURA: </div>
-                    <div class="table-cell2">${{$contratos[0]->comision_apertura}}</div>
-                    <div class="table-cell2">OBRA EXTRA: </div>
-                    <div class="table-cell2">${{$contratos[0]->precio_obra_extra}}</div>
-                </div>
-                <div class="table-row">
-                    <div class="table-cell2">INVESTIGACION: </div>
-                    <div class="table-cell2">${{$contratos[0]->investigacion}}</div>
-                    <div class="table-cell2">SOBREPRECIO: </div>
-                    <div class="table-cell2">${{$contratos[0]->sobreprecio}}</div>
+                @if($contratos[0]->tipo_proyecto == 1)
+                    <div class="table-row">
+                        @if($contratos[0]->infonavit > 0)
+                            <div class="table-cell2">INFONAVIT: </div>
+                            <div class="table-cell2">${{$contratos[0]->infonavit}}</div>
+                        @elseif($contratos[0]->fovisste > 0)
+                            <div class="table-cell2">FOVISSTE: </div>
+                            <div class="table-cell2">${{$contratos[0]->fovisste}}</div> 
+                        @else  
+                            <div class="table-cell2"></div>
+                            <div class="table-cell2"></div>
+                        @endif  
+                        <div class="table-cell2">PRECIO DE LA VIVIENDA: </div>
+                        <div class="table-cell2">${{$contratos[0]->precio_base}}</div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell2">{{mb_strtoupper($contratos[0]->institucion)}}: </div>
+                        <div class="table-cell2">${{$contratos[0]->credito_solic}}</div> 
+                        <div class="table-cell2"><u>{{$contratos[0]->terreno_excedente}} M2</u> TERR. EXCEDENTE: </div>
+                        <div class="table-cell2">${{$contratos[0]->precio_terreno_excedente}}</div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell2">COMISION X APERTURA: </div>
+                        <div class="table-cell2">${{$contratos[0]->comision_apertura}}</div>
+                        <div class="table-cell2">OBRA EXTRA: </div>
+                        <div class="table-cell2">${{$contratos[0]->precio_obra_extra}}</div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell2">INVESTIGACION: </div>
+                        <div class="table-cell2">${{$contratos[0]->investigacion}}</div>
+                        <div class="table-cell2">SOBREPRECIO: </div>
+                        <div class="table-cell2">${{$contratos[0]->sobreprecio}}</div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell2">AVALUO: </div>
+                        <div class="table-cell2">${{$contratos[0]->avaluo}}</div>
+                        <div class="table-cell2">PAQUETE: </div>
+                        <div class="table-cell2">${{$contratos[0]->costo_paquete}}</div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell2">GASTOS DE ESCRITURACION: </div>
+                        <div class="table-cell2">${{$contratos[0]->escrituras}}</div>
+                        <div class="table-cell2">VALOR TOTAL CASA: </div>
+                        <div class="table-cell2">${{$contratos[0]->precio_venta}}</div>            
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell2">CREDITO NETO {{strtoupper($contratos[0]->institucion)}}: </div>
+                        <div class="table-cell2">${{$contratos[0]->credito_neto}}</div>
+                        <div class="table-cell2">MONTO NETO CREDITO: </div>
+                        <div class="table-cell2">${{$contratos[0]->monto_total_credito}}</div>
+
+                    </div>           
+                    <div class="table-row">
+                        <div class="table-cell2"></div>
+                        <div class="table-cell2"></div>
+                        <div class="table-cell2">TOTAL A PAGAR: </div>
+                        <div class="table-cell2">${{$contratos[0]->total_pagar}}</div>
+                    </div>   
+                    <div class="table-row">
+                        <div class="table-cell2"></div>
+                        <div class="table-cell2"></div>
+                        <div class="table-cell2">AVALUO: </div>
+                        <div class="table-cell2">${{$contratos[0]->avaluo_cliente}}</div>
+                    </div>  
+                    <div class="table-row">
+                        <div class="table-cell2"></div>
+                        <div class="table-cell2"></div>
+                        <div class="table-cell2"><b> ENGANCHE TOTAL: </div>
+                        <div class="table-cell2"><b>${{$contratos[0]->enganche_total}}</div>
+                    </div>
+                @elseif($contratos[0]->tipo_proyecto == 2) 
+                    <div class="table-row">
+                        @if($contratos[0]->infonavit > 0)
+                            <div class="table-cell2">INFONAVIT: </div>
+                            <div class="table-cell2">${{$contratos[0]->infonavit}}</div>
+                        @elseif($contratos[0]->fovisste > 0)
+                            <div class="table-cell2">FOVISSTE: </div>
+                            <div class="table-cell2">${{$contratos[0]->fovisste}}</div> 
+                        @else  
+                            <div class="table-cell2"></div>
+                            <div class="table-cell2"></div>
+                        @endif  
+                        <div class="table-cell2"></div>
+                        <div class="table-cell2"></div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell2">{{mb_strtoupper($contratos[0]->institucion)}}: </div>
+                        <div class="table-cell2">${{$contratos[0]->credito_solic}}</div> 
+                        <div class="table-cell2">PRECIO DEL DEPARTAMENtO: </div>
+                        <div class="table-cell2">${{$contratos[0]->precio_base}}</div>
+                        
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell2">COMISION X APERTURA: </div>
+                        <div class="table-cell2">${{$contratos[0]->comision_apertura}}</div>
+                        <div class="table-cell2">PAQUETE: </div>
+                        <div class="table-cell2">${{$contratos[0]->costo_paquete}}</div>
+                        
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell2">INVESTIGACION: </div>
+                        <div class="table-cell2">${{$contratos[0]->investigacion}}</div>
+                        <div class="table-cell2">VALOR TOTAL DEPARTAMENTO: </div>
+                        <div class="table-cell2">${{$contratos[0]->precio_venta}}</div>
+                       
+                        
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell2">AVALUO: </div>
+                        <div class="table-cell2">${{$contratos[0]->avaluo}}</div>
+                        <div class="table-cell2">MONTO NETO CREDITO: </div>
+                        <div class="table-cell2">${{$contratos[0]->monto_total_credito}}</div>
+                        
+                    </div>
                     
-                </div>
-                <div class="table-row">
-                   <div class="table-cell2">AVALUO: </div>
-                    <div class="table-cell2">${{$contratos[0]->avaluo}}</div>
-                    <div class="table-cell2">PAQUETE: </div>
-                    <div class="table-cell2">${{$contratos[0]->costo_paquete}}</div>
-                </div>
                 
-             
-                <div class="table-row">
-                    <div class="table-cell2">GASTOS DE ESCRITURACION: </div>
-                    <div class="table-cell2">${{$contratos[0]->escrituras}}</div>
-                    <div class="table-cell2">VALOR TOTAL CASA: </div>
-                    <div class="table-cell2">${{$contratos[0]->precio_venta}}</div>            
+                    <div class="table-row">
+                        <div class="table-cell2">GASTOS DE ESCRITURACION: </div>
+                        <div class="table-cell2">${{$contratos[0]->escrituras}}</div>
+                        <div class="table-cell2">TOTAL A PAGAR: </div>
+                        <div class="table-cell2">${{$contratos[0]->total_pagar}}</div>
+                                    
 
-                </div>
-                <div class="table-row">
-                    <div class="table-cell2">CREDITO NETO {{strtoupper($contratos[0]->institucion)}}: </div>
-                    <div class="table-cell2">${{$contratos[0]->credito_neto}}</div>
-                    <div class="table-cell2">MONTO NETO CREDITO: </div>
-                    <div class="table-cell2">${{$contratos[0]->monto_total_credito}}</div>
+                    </div>
+                    <div class="table-row">
+                        <div class="table-cell2">CREDITO NETO {{strtoupper($contratos[0]->institucion)}}: </div>
+                        <div class="table-cell2">${{$contratos[0]->credito_neto}}</div>
+                        <div class="table-cell2"></div>
+                        <div class="table-cell2"></div>
+                        
 
-                </div>           
-                <div class="table-row">
-                    <div class="table-cell2"></div>
-                    <div class="table-cell2"></div>
-                    <div class="table-cell2">TOTAL A PAGAR: </div>
-                    <div class="table-cell2">${{$contratos[0]->total_pagar}}</div>
+                    </div>           
+                    <div class="table-row">
+                        <div class="table-cell2"></div>
+                        <div class="table-cell2"></div>
+                        <div class="table-cell2">AVALUO: </div>
+                        <div class="table-cell2">${{$contratos[0]->avaluo_cliente}}</div>
+                        
 
-                </div>   
-                <div class="table-row">
-                    <div class="table-cell2"></div>
-                    <div class="table-cell2"></div>
-                    <div class="table-cell2">AVALUO: </div>
-                    <div class="table-cell2">${{$contratos[0]->avaluo_cliente}}</div>
-                </div>  
-                <div class="table-row">
-                    <div class="table-cell2"></div>
-                    <div class="table-cell2"></div>
-                    <div class="table-cell2"><b> ENGANCHE TOTAL: </div>
-                    <div class="table-cell2"><b>${{$contratos[0]->enganche_total}}</div>
-                </div>           
-             </div>
+                    </div>   
+                    <div class="table-row">
+                        <div class="table-cell2"></div>
+                        <div class="table-cell2"></div>
+                        <div class="table-cell2"><b> ENGANCHE TOTAL: </div>
+                        <div class="table-cell2"><b>${{$contratos[0]->enganche_total}}</div>
+                        
+                    </div>  
+                    <div class="table-row">
+                        <div class="table-cell2"></div>
+                        <div class="table-cell2"></div>
+                        <div class="table-cell2"></div>
+                        <div class="table-cell2"></div>
+                    </div>       
+                @endif   
+            </div>
         </div>
 
 <div style="position: static; margin-top: -2px;">          
