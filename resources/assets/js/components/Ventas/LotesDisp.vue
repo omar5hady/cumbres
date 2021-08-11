@@ -13,7 +13,7 @@
                          <a class="btn btn-success" v-bind:href="'/lotes/resume_excel_lotes_disp?buscar=' + buscar + '&buscar2=' + 
                                 buscar2+ '&buscar3=' + buscar3 + '&b_modelo='+ b_modelo + '&b_lote='+ b_lote + '&b_apartado='+ 
                                 b_apartado +'&criterio=' + criterio + '&rolId=' + rolId + '&casa_muestra=' + casa_muestra+
-                                '&b_empresa='+b_empresa">
+                                '&b_empresa='+b_empresa  + '&tipo=' + tab">
                             <i class="fa fa-file-text"></i>&nbsp; Descargar relacion
                         </a>
                         <!---->
@@ -307,6 +307,8 @@
                                             <th># Departamento</th>
                                             <th>% Avance</th>
                                             <th style="text-align:center;">Modelo</th>
+                                            <th>Especificación</th>
+                                            <th>Construcción</th>
                                             <th># Oficial</th>
                                             <th>Precio venta</th>
                                             <th>Promoción</th>
@@ -333,13 +335,14 @@
                                             <td  style="width:20%" v-text="lote.proyecto"></td>
                                             <td  style="width:20%" v-text="lote.etapa"></td>
                                             <td  v-text="lote.manzana"></td>
-                                                <td v-if="!lote.sublote" v-text="lote.num_lote"></td>
-                                                <td v-else v-text="lote.num_lote + '-' + lote.sublote"></td>
+                                            <td  v-text="lote.num_lote"></td>
                                             <td  v-text="lote.avance + '%'"></td>
                                             <td >
                                                 <span class="badge badge-success" v-text="lote.modelo"></span>
                                                 <span v-if="lote.casa_muestra == 1" class="badge badge-danger">Casa muestra</span>
                                             </td>
+                                            <td class="td2" v-text="lote.sublote"></td>
+                                            <td class="td2" v-text="lote.construccion"></td>
                                                 <td class="td2" v-if="!lote.interior" v-text="lote.numero"></td>
                                                 <td class="td2" v-else v-text="lote.numero + '-' + lote.interior" ></td>
                                             <td class="td2" style="width:20%"> <strong>{{'$'+formatNumber(lote.precio_venta)}}</strong> </td>

@@ -982,7 +982,7 @@ class LoteController extends Controller
                     //     $queryVendedores = $queryVendedores->where('lotes.casa_muestra','=',1);
                     // } 
 
-        if($rolId == 1 || $rolId == 4 || $rolId == 6 || $rolId == 8 || $rolId == 11 ){
+        if($rolId == 1 || $rolId == 4 || $rolId == 6 || $rolId == 8 || $rolId == 11 || $rolId == 7 ){
             $lotes = $query
                         ->where('lotes.habilitado','=',1)
                         ->where('lotes.contrato','=',0);
@@ -1208,7 +1208,8 @@ class LoteController extends Controller
                     'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
                     'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
                     'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas',
-                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado');
+                    'personal.nombre as c_nombre', 'personal.apellidos as c_apellidos', 'v.nombre as v_nombre', 'apartados.fecha_apartado')
+                    ->where('fraccionamientos.tipo_proyecto','=',$request->tipo);
 
         $queryVendedores = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
             ->join('licencias','lotes.id','=','licencias.id')
@@ -1219,7 +1220,8 @@ class LoteController extends Controller
                     'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                     'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
                     'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas');
+                    'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
+                    ->where('fraccionamientos.tipo_proyecto','=',$request->tipo);
 
                     
 
@@ -1287,125 +1289,237 @@ class LoteController extends Controller
                     ->orderBy('lotes.manzana','ASC')
                     ->orderBy('lotes.num_lote','ASC')->get(); 
 
-                   
-            return Excel::create('Relacion lotes disponibles', function($excel) use ($lotes){
-                $excel->sheet('lotes', function($sheet) use ($lotes){
-                    
-                    $sheet->row(1, [
-                        'Proyecto', 'Etapa' ,'Manzana', '# Lote', '% Avance', 'Modelo', 'Calle',
-                        '# Oficial', 'Terreno', 'Construccion','Precio base','Terreno excedente','Obra extra',
-                        'Sobreprecios','Precio venta','Promocion','Fecha de termino', 'Canal de venta'
-                    ]);
 
-
-                    $sheet->cells('A1:R1', function ($cells) {
-                        $cells->setBackground('#052154');
-                        $cells->setFontColor('#ffffff');
-                        // Set font family
-                        $cells->setFontFamily('Calibri');
-
-                        // Set font size
-                        $cells->setFontSize(13);
-
-                        // Set font weight to bold
-                        $cells->setFontWeight('bold');
-                        $cells->setAlignment('center');
-                    });
-
-                    
-                    $cont=1;
-                    
-                    $sheet->setColumnFormat(array(
-                        'K' => '$#,##0.00',
-                        'L' => '$#,##0.00',
-                        'M' => '$#,##0.00',
-                        'N' => '$#,##0.00',
-                        'O' => '$#,##0.00',
-                    ));
-
-                    
-
-                    foreach($lotes as $index => $lote) {
-                        if($lote->fecha_termino_ventas == NULL){
-                            $lote->fecha_termino_ventas = 'Por definir';
-                        }else{
-                        setlocale(LC_TIME,'es_MX.utf8');
-                        $mesAño = new Carbon($lote->fecha_termino_ventas);
-                        $lote->fecha_termino_ventas = $mesAño->formatLocalized('%B %Y');
-                        }
-                        if($lote->casa_muestra == 1){
-                            $casaMuestra = 'Casa muestra';
+            if($request->tipo == 1){
+                return Excel::create('Relacion lotes disponibles', 
+                    function($excel) use ($lotes){
+                        $excel->sheet('lotes', function($sheet) use ($lotes){
                             
+                            $sheet->row(1, [
+                                'Proyecto', 'Etapa' ,'Manzana', '# Lote', '% Avance', 'Modelo', 'Calle',
+                                '# Oficial', 'Terreno', 'Construccion','Precio base','Terreno excedente','Obra extra',
+                                'Sobreprecios','Precio venta','Promocion','Fecha de termino', 'Canal de venta'
+                            ]);
+
+
+                            $sheet->cells('A1:R1', function ($cells) {
+                                $cells->setBackground('#052154');
+                                $cells->setFontColor('#ffffff');
+                                // Set font family
+                                $cells->setFontFamily('Calibri');
+
+                                // Set font size
+                                $cells->setFontSize(13);
+
+                                // Set font weight to bold
+                                $cells->setFontWeight('bold');
+                                $cells->setAlignment('center');
+                            });
+
                             
-                        }else{
-                            $casaMuestra = '';
-                        }
-                        
-                        $lote->precio_base = $lote->precio_base + $lote->ajuste;
-                        $lote->precio_venta= $lote->sobreprecio + $lote->precio_base + $lote->excedente_terreno + $lote->obra_extra;
-                        $promocion=[];
-                        $promocion = Lote_promocion::join('promociones','lotes_promocion.promocion_id','=','promociones.id')
-                            ->select('promociones.nombre','promociones.v_ini','promociones.v_fin','promociones.id')
-                            ->where('lotes_promocion.lote_id','=',$lote->id)
-                            ->where('promociones.v_fin','>=',Carbon::today()->format('ymd'))->get();
-                        if(sizeof($promocion) > 0){
-                            // $lote->v_iniPromo = $promocion[0]->v_ini;
-                            // $lote->v_finPromo = $promocion[0]->v_fin;
-                            $lote->promocion = $promocion[0]->nombre;
-                        }
-                        else
-                            $lote->promocion = 'Sin Promoción';
+                            $cont=1;
+                            
+                            $sheet->setColumnFormat(array(
+                                'K' => '$#,##0.00',
+                                'L' => '$#,##0.00',
+                                'M' => '$#,##0.00',
+                                'N' => '$#,##0.00',
+                                'O' => '$#,##0.00',
+                            ));
+
+                            
+
+                            foreach($lotes as $index => $lote) {
+                                if($lote->fecha_termino_ventas == NULL){
+                                    $lote->fecha_termino_ventas = 'Por definir';
+                                }else{
+                                setlocale(LC_TIME,'es_MX.utf8');
+                                $mesAño = new Carbon($lote->fecha_termino_ventas);
+                                $lote->fecha_termino_ventas = $mesAño->formatLocalized('%B %Y');
+                                }
+                                if($lote->casa_muestra == 1){
+                                    $casaMuestra = 'Casa muestra';
+                                    
+                                    
+                                }else{
+                                    $casaMuestra = '';
+                                }
+                                
+                                $lote->precio_base = $lote->precio_base + $lote->ajuste;
+                                $lote->precio_venta= $lote->sobreprecio + $lote->precio_base + $lote->excedente_terreno + $lote->obra_extra;
+                                $promocion=[];
+                                $promocion = Lote_promocion::join('promociones','lotes_promocion.promocion_id','=','promociones.id')
+                                    ->select('promociones.nombre','promociones.v_ini','promociones.v_fin','promociones.id')
+                                    ->where('lotes_promocion.lote_id','=',$lote->id)
+                                    ->where('promociones.v_fin','>=',Carbon::today()->format('ymd'))->get();
+                                if(sizeof($promocion) > 0){
+                                    // $lote->v_iniPromo = $promocion[0]->v_ini;
+                                    // $lote->v_finPromo = $promocion[0]->v_fin;
+                                    $lote->promocion = $promocion[0]->nombre;
+                                }
+                                else
+                                    $lote->promocion = 'Sin Promoción';
 
 
-                        $cont++; 
-                        if($lote->sublote !=''){
-                            $loteConSublote = $lote->num_lote.'-'.$lote->sublote;
-                        } else{
-                            $loteConSublote = $lote->num_lote;
-                        }
-                        if($lote->interior !=''){
-                            $loteConInterior = $lote->numero.'-'.$lote->interior;
-                        } else{
-                            $loteConInterior = $lote->numero;
-                        }
-                        
-                        $sheet->row($index+2, [
-                            $lote->proyecto, 
-                            $lote->etapa,
-                            $lote->manzana,
-                            $loteConSublote, 
-                            $lote->avance, 
-                            $lote->modelo, 
-                            $lote->calle,
-                            $loteConInterior,
-                            $lote->terreno,
-                            $lote->construccion,
-                            $lote->precio_base,
-                            $lote->excedente_terreno,
-                            $lote->obra_extra,
-                            $lote->sobreprecio,
-                            $lote->precio_venta,
-                            $lote->promocion,
-                            $lote->fecha_termino_ventas,
-                            $lote->comentarios,
-                            $casaMuestra
-                           
-                        ]);	
+                                $cont++; 
+                                if($lote->sublote !=''){
+                                    $loteConSublote = $lote->num_lote.'-'.$lote->sublote;
+                                } else{
+                                    $loteConSublote = $lote->num_lote;
+                                }
+                                if($lote->interior !=''){
+                                    $loteConInterior = $lote->numero.'-'.$lote->interior;
+                                } else{
+                                    $loteConInterior = $lote->numero;
+                                }
+                                
+                                $sheet->row($index+2, [
+                                    $lote->proyecto, 
+                                    $lote->etapa,
+                                    $lote->manzana,
+                                    $loteConSublote, 
+                                    $lote->avance, 
+                                    $lote->modelo, 
+                                    $lote->calle,
+                                    $loteConInterior,
+                                    $lote->terreno,
+                                    $lote->construccion,
+                                    $lote->precio_base,
+                                    $lote->excedente_terreno,
+                                    $lote->obra_extra,
+                                    $lote->sobreprecio,
+                                    $lote->precio_venta,
+                                    $lote->promocion,
+                                    $lote->fecha_termino_ventas,
+                                    $lote->comentarios,
+                                    $casaMuestra
+                                
+                                ]);	
+                            }
+
+
+                            $num='A1:R' . $cont;
+                            $sheet->setBorder($num, 'thin');
+                            $sheet->cells('S1:S'.$cont, function($cells) {
+
+                                
+                                $cells->setFontColor('#ff4040');
+                            
+                            });
+                        });
                     }
-
-
-                    $num='A1:R' . $cont;
-                    $sheet->setBorder($num, 'thin');
-                    $sheet->cells('S1:S'.$cont, function($cells) {
-
-                        
-                        $cells->setFontColor('#ff4040');
-                    
-                    });
-                });
+                )->download('xls');
             }
-            
-            )->download('xls');
+            else{
+                return Excel::create('Relacion Departamentos disponibles', 
+                    function($excel) use ($lotes){
+                        $excel->sheet('Departamentos', function($sheet) use ($lotes){
+                            
+                            $sheet->row(1, [
+                                'Proyecto', 'Etapa' ,'Nivel', '# Departamento', '% Avance', 'Modelo', 'Calle',
+                                '# Oficial', 'Construccion','Precio venta','Promocion','Fecha de termino', 'Canal de venta'
+                            ]);
+
+
+                            $sheet->cells('A1:M1', function ($cells) {
+                                $cells->setBackground('#052154');
+                                $cells->setFontColor('#ffffff');
+                                // Set font family
+                                $cells->setFontFamily('Calibri');
+
+                                // Set font size
+                                $cells->setFontSize(13);
+
+                                // Set font weight to bold
+                                $cells->setFontWeight('bold');
+                                $cells->setAlignment('center');
+                            });
+
+                            
+                            $cont=1;
+                            
+                            $sheet->setColumnFormat(array(
+                                'J' => '$#,##0.00',
+                            ));
+
+                            
+
+                            foreach($lotes as $index => $lote) {
+                                if($lote->fecha_termino_ventas == NULL){
+                                    $lote->fecha_termino_ventas = 'Por definir';
+                                }else{
+                                setlocale(LC_TIME,'es_MX.utf8');
+                                $mesAño = new Carbon($lote->fecha_termino_ventas);
+                                $lote->fecha_termino_ventas = $mesAño->formatLocalized('%B %Y');
+                                }
+                                if($lote->casa_muestra == 1){
+                                    $casaMuestra = 'Departamento muestra';
+                                    
+                                    
+                                }else{
+                                    $casaMuestra = '';
+                                }
+                                
+                                $lote->precio_base = $lote->precio_base + $lote->ajuste;
+                                $lote->precio_venta= $lote->sobreprecio + $lote->precio_base + $lote->excedente_terreno + $lote->obra_extra;
+                                $promocion=[];
+                                $promocion = Lote_promocion::join('promociones','lotes_promocion.promocion_id','=','promociones.id')
+                                    ->select('promociones.nombre','promociones.v_ini','promociones.v_fin','promociones.id')
+                                    ->where('lotes_promocion.lote_id','=',$lote->id)
+                                    ->where('promociones.v_fin','>=',Carbon::today()->format('ymd'))->get();
+                                if(sizeof($promocion) > 0){
+                                    // $lote->v_iniPromo = $promocion[0]->v_ini;
+                                    // $lote->v_finPromo = $promocion[0]->v_fin;
+                                    $lote->promocion = $promocion[0]->nombre;
+                                }
+                                else
+                                    $lote->promocion = 'Sin Promoción';
+
+
+                                $cont++; 
+                                if($lote->sublote !=''){
+                                    $loteConSublote = $lote->num_lote.'-'.$lote->sublote;
+                                } else{
+                                    $loteConSublote = $lote->num_lote;
+                                }
+                                if($lote->interior !=''){
+                                    $loteConInterior = $lote->numero.'-'.$lote->interior;
+                                } else{
+                                    $loteConInterior = $lote->numero;
+                                }
+                                
+                                $sheet->row($index+2, [
+                                    $lote->proyecto, 
+                                    $lote->etapa,
+                                    $lote->manzana,
+                                    $loteConSublote, 
+                                    $lote->avance, 
+                                    $lote->modelo, 
+                                    $lote->calle,
+                                    $loteConInterior,
+                                    $lote->construccion,
+                                    $lote->precio_venta,
+                                    $lote->promocion,
+                                    $lote->fecha_termino_ventas,
+                                    $lote->comentarios,
+                                    $casaMuestra
+                                ]);	
+                            }
+
+
+                            $num='A1:M' . $cont;
+                            $sheet->setBorder($num, 'thin');
+                            $sheet->cells('N1:N'.$cont, function($cells) {
+
+                                
+                                $cells->setFontColor('#ff4040');
+                            
+                            });
+                        });
+                    }
+                )->download('xls');
+
+            }
         
       
     }

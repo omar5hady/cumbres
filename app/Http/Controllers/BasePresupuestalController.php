@@ -15,6 +15,7 @@ use Auth;
 use Carbon\Carbon;
 use App\Notifications\NotifyAdmin;
 use App\Http\Controllers\NotificacionesAvisosController;
+use App\Http\Controllers\CreditoPuenteController;
 
 class BasePresupuestalController extends Controller
 {
@@ -106,6 +107,8 @@ class BasePresupuestalController extends Controller
 
                     if($newBase->credito_id > 0 && $contAviso==0){
                         $credito_puente = Credito_puente::findOrFail($credito);
+                        $obs = new CreditoPuenteController();
+                        $obs->nuevaObservacion($credito, 'Se ha cargado la base presupuestal del Crédito');
 
                         $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
                         $msj = 'Se ha cargado la base presupuestal para el Credito puente: '.$credito_puente->folio;

@@ -9,7 +9,10 @@ use App\DropboxFiles;
 use Spatie\Dropbox\Client;
 use App\Solic_detalle;
 use App\Doc_puente;
+use App\Credito_puente;
 use Auth;
+
+use App\Http\Controllers\CreditoPuenteController;
 
  
 class DropboxFilesController extends Controller
@@ -75,6 +78,15 @@ class DropboxFilesController extends Controller
                 $puente->save();
                 break;
             }
+            case 'siembraPuente':{
+                $puente = Credito_puente::findOrFail($request->id);
+                $puente->archivo_siembra = $name;
+                $puente->save();
+
+                $obs = new CreditoPuenteController();
+                $obs->nuevaObservacion($request->id, 'Se ha cargado el archivo de siembra');
+                break;
+            }
         }
         // Retornamos un redirección hacía atras
         //return back();
@@ -110,9 +122,13 @@ class DropboxFilesController extends Controller
                 $doc_puente->delete();
                 $break;
             }
-        }
-
-        
+            case 'siembraPuente':{
+                $puente = Credito_puente::findOrFail($request->id);
+                $puente->archivo_siembra = NULL;
+                $puente->save();
+                break;
+            }
+        }  
  
     }
 }

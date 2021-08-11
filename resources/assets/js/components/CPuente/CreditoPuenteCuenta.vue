@@ -498,9 +498,8 @@
                                         <div class="form-group row" v-if="tipo == 1">
                                             <label class="col-md-2 form-control-label" for="text-input">Interes</label>
                                             <div class="col-md-4">
-                                                <input type="number" v-model="interes" class="form-control">
+                                                <label class="form-control" for="text-input">${{formatNumber(interes)}}</label>
                                             </div>
-                                            <label class="col-md-3 form-control-label" for="text-input">${{formatNumber(interes)}}</label>
                                         </div>
 
                                         <div class="form-group row" v-if="tipo == 1">
@@ -641,15 +640,14 @@
                                             <div class="form-group row">
                                                 <label class="col-md-2 form-control-label" for="text-input">Interes</label>
                                                 <div class="col-md-4">
-                                                    <input type="number" v-model="interes" class="form-control">
+                                                    <label class="form-control" for="text-input">${{formatNumber(interes)}}</label>
                                                 </div>
-                                                <label class="col-md-3 form-control-label" for="text-input">${{formatNumber(interes)}}</label>
                                             </div>
 
                                             <div class="form-group row">
                                                 <h6 class="col-md-2 form-control-label" for="text-input">Pago total</h6>
                                                 <div class="col-md-4">
-                                                    <h6 class="form-control">${{formatNumber(total=totalPagar)}}</h6>
+                                                    <h6 class="form-control ">${{formatNumber(total=totalPagar)}}</h6>
                                                 </div>
                                             </div>
                                         </template>
@@ -701,9 +699,9 @@
                                         <div class="form-group row" v-if="tipo == 1">
                                             <label class="col-md-2 form-control-label" for="text-input">Interes</label>
                                             <div class="col-md-4">
-                                                <input type="number" v-model="interes" class="form-control">
+                                                <label class="form-control-label" for="text-input">${{formatNumber(interes)}}</label>
                                             </div>
-                                            <label class="col-md-3 form-control-label" for="text-input">${{formatNumber(interes)}}</label>
+                                            
                                         </div>
 
                                         <div class="form-group row" v-if="tipo == 1">

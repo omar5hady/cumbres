@@ -390,9 +390,9 @@ class CalculadoraLotesController extends Controller
 
         $contrato = Contrato::join('creditos','creditos.id','=','contratos.id')
                                 ->select('creditos.lote_id')
-                                ->where('status','=',1)
+                                ->where('contratos.status','=',1)
                                 ->where('creditos.lote_id','=',$cotizacion->lotes_id)
-                                ->orWhere('status','=',3)
+                                ->orWhere('contratos.status','=',3)
                                 ->where('creditos.lote_id','=',$cotizacion->lotes_id)
                                 ->get();
 

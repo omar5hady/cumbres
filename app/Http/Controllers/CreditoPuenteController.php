@@ -158,6 +158,8 @@ class CreditoPuenteController extends Controller
             $puente->folio = $request->banco . '-' . $request->cantidad. '-'.$puente->id;
             $puente->save();
 
+            $this->nuevaObservacion($puente->id,'Se crea la solicitud del Crédito Puente');
+
             $puente->folio = $request->banco . '-' . $request->cantidad. '-'.$puente->id;
             $puente->save();
 
@@ -300,20 +302,12 @@ class CreditoPuenteController extends Controller
         $creditos = Credito_puente::join('fraccionamientos', 'creditos_puente.fraccionamiento', '=', 'fraccionamientos.id')
             ->join('instituciones_financiamiento', 'creditos_puente.banco', '=', 'instituciones_financiamiento.nombre')
             ->select(
-                'creditos_puente.id',
-                'creditos_puente.banco',
-                'creditos_puente.folio',
-                'creditos_puente.interes',
-                'creditos_puente.status',
-                'creditos_puente.total',
-                'creditos_puente.apertura',
-                'creditos_puente.num_cuenta',
-                'creditos_puente.credito_otorgado',
+                'creditos_puente.*',
+              
                 'instituciones_financiamiento.lic',
-                'creditos_puente.fecha_integracion',
+               
                 'fraccionamientos.nombre as proyecto',
-                'creditos_puente.fraccionamiento',
-                'creditos_puente.fecha_sig_int',
+              
                 'fraccionamientos.arquitecto_id'
             );
 
@@ -588,14 +582,60 @@ class CreditoPuenteController extends Controller
     {
         if (!$request->ajax() || Auth::user()->rol_id == 11) return redirect('/');
         $totalPuente = Lote_puente::select('id')->where('solicitud_id', '=', $request->id)->count();
+        $id = $request->id;
 
         $datos = $request->cabecera;
         $credito = Credito_puente::findOrFail($request->id);
+        $bancoAnt = $credito->banco;
         $credito->banco = $datos['banco'];
+        $credito->folio = $datos['banco'] . '-' . $totalPuente . '-' . $request->id;
+
+        if($credito->banco != $bancoAnt){
+            $this->nuevaObservacion($id, "Se ha cambiado el banco del credito puente");
+            $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
+                        $msj = 'Se ha cambiado el banco del credito puente folio: '. $credito->folio;
+
+                        $fecha = Carbon::now();
+                        $notif = [
+                            'notificacion' => [
+                                'usuario' => $imagenUsuario[0]->usuario,
+                                'foto' => $imagenUsuario[0]->foto_user,
+                                'fecha' => $fecha,
+                                'msj' => $msj,
+                                'titulo' => 'Solic. Crédito Puente'
+                            ]
+                        ];
+
+                        
+                        $aviso = new NotificacionesAvisosController();
+                        $user_proyectos = User::select('id')
+                                            ->whereIn('usuario',['alemunoz','shady',
+                                                                    'cp.martin',
+                                                                    // 'javis.mdz',
+                                                                    // 'fede.mon',
+                                                                    'ing_david'
+                                                                ])
+                                            ->get();
+
+                        $arquitecto = Fraccionamiento::select('arquitecto_id')->where('id','=',$credito->fraccionamiento)->get();
+                        if(sizeOf($arquitecto)){
+                            if($arquitecto[0]->arquitecto_id!= NULL){
+                                $aviso->store($arquitecto[0]->arquitecto_id,$msj);
+                                User::findOrFail($arquitecto[0]->arquitecto_id)->notify(new NotifyAdmin($notif));
+                            }
+                           
+                        }
+                        
+                        if(sizeof($user_proyectos))
+                        foreach ($user_proyectos as $index => $user) {
+                            $aviso->store($user->id,$msj);
+                            User::findOrFail($user->id)->notify(new NotifyAdmin($notif));
+                        }
+        }
+
         $credito->interes = $datos['interes'];
         $credito->total = $request->total;
         $credito->apertura = $datos['apertura'];
-        $credito->folio = $datos['banco'] . '-' . $totalPuente . '-' . $request->id;
         $credito->save();
         //$credito->save();
     }
@@ -603,14 +643,17 @@ class CreditoPuenteController extends Controller
     public function getObs(Request $request)
     {
         return ['obs' => Obs_puente::where('puente_id', '=', $request->id)->orderBy('id', 'desc')->get()];
-        //return ['obs'=>$obs];
     }
 
     public function storeObs(Request $request)
     {
+        $this->nuevaObservacion($request->id,$request->observacion);
+    }
+
+    public function nuevaObservacion($id,$observacion){
         $obs = new Obs_puente();
-        $obs->puente_id = $request->id;
-        $obs->observacion = $request->observacion;
+        $obs->puente_id = $id;
+        $obs->observacion = $observacion;
         $obs->usuario = Auth::user()->usuario;
         $obs->save();
     }

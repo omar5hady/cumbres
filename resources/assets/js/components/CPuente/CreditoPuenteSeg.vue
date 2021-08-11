@@ -65,10 +65,12 @@
                                                 </button>
                                             </td>
                                             <td>
-                                                <a v-if="creditosPuente.archivo_siembra != null" title="Ver siembra" class="btn btn-primary btn-sm" 
-                                                    v-bind:href="'/cPuentes/versiembra/'+creditosPuente.archivo_siembra">
-                                                    <i class="icon-eye"></i>
+                                                <a  v-if="creditosPuente.archivo_siembra != null" class="btn btn-danger btn-sm" @click="eliminarArchivo(creditosPuente.archivo_siembra, creditosPuente.id)">
+                                                    <i class="icon-trash"></i>
                                                 </a>
+                                                <a v-if="creditosPuente.archivo_siembra != null" class="btn btn-primary btn-sm" title="Descargar siembra"
+                                                v-bind:href="'/files/'+'siembraPuente/'+ creditosPuente.archivo_siembra + '/download'" ><i class="icon-eye"></i></a>
+                                               
                                                 &nbsp;&nbsp;
                                                 <button title="Subir archivo" type="button" 
                                                     @click="abrirModal('siembra',creditosPuente.id)" class="btn btn-default btn-sm">
@@ -391,7 +393,7 @@
                                         <tbody v-if="checklist.length">
                                             <tr v-for="chk in checklist" :key="chk.id">
                                                 <td v-text="chk.categoria"></td>
-                                                <td><strong>{{chk.documento}}</strong></td>
+                                                <td><strong v-bind:class="{'entregado':chk.listo == 1}">{{chk.documento}}</strong></td>
                                                 <td><input disabled type="checkbox" value="1" v-model="chk.listo" @change="cambiarChk(chk.id, chk.listo)">
                                                 </td>
                                             </tr>
@@ -660,7 +662,7 @@
                                                     </button>
                                                 </td>
                                                 <td v-text="chk.categoria"></td>
-                                                <td><strong>{{chk.documento}}</strong></td>
+                                                <td><strong v-bind:class="{'entregado':chk.listo == 1}">{{chk.documento}}</strong></td>
                                                 <td><input :disabled="cabecera.status > 0 || cabecera.base_p == 0" type="checkbox" value="1" v-model="chk.listo" @change="cambiarChk(chk.id, chk.listo)">
                                                 </td>
                                             </tr>
@@ -672,15 +674,15 @@
                                 <div class="col-md-1">
                                     <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
                                 </div>
-                                <div class="col-md-1" v-if="chk_listos == chk_total && cabecera.status == 0">
+                                <div class="col-md-1" v-if="cabecera.status == 0">
                                     <button type="button" class="btn btn-success" @click="enviarExp()"> Integrar expediente </button>
                                 </div>
 
-                                <div class="col-md-1" v-if="chk_listos == chk_total && cabecera.status == 1">
+                                <div class="col-md-1" v-if="cabecera.status == 1">
                                     <button type="button" class="btn btn-success" @click="resBanco(1)"> Aprobar </button>
                                 </div>
 
-                                <div class="col-md-1" v-if="chk_listos == chk_total && cabecera.status == 1">
+                                <div class="col-md-1" v-if="cabecera.status == 1">
                                     <button type="button" class="btn btn-danger" @click="resBanco(0)"> Rechazar </button>
                                 </div>
                             </div>
@@ -1103,16 +1105,33 @@
                                     </template>
 
                                     <template v-if="tipoAccion == 3">
-                                        
+                                        <div class="form-group row">
+                                            <label class="col-md-2 form-control-label" for="text-input">Documento</label>
+                                            <div class="col-md-6">
+                                                <select class="form-control" v-model="chk_new" >
+                                                    <option value="">Seleccione</option>
+                                                    <option v-for="chk in arrayChk" :key="chk.id" :value="chk.id" v-text="chk.documento+'-'+chk.categoria"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </template>
+
+                                    <template v-if="tipoAccion == 4">
+
+                                        <form @submit="dropboxSubmit" method="POST" enctype="multipart/form-data">
+
                                             <div class="form-group row">
-                                                <label class="col-md-2 form-control-label" for="text-input">Documento</label>
                                                 <div class="col-md-6">
-                                                    <select class="form-control" v-model="chk_new" >
-                                                        <option value="">Seleccione</option>
-                                                        <option v-for="chk in arrayChk" :key="chk.id" :value="chk.id" v-text="chk.documento+'-'+chk.categoria"></option>
-                                                    </select>
+                                                    <input type="file" v-on:change="dropboxFile" name="file" >    
                                                 </div>
                                             </div>
+
+                                            <div class="form-group row">
+                                                <div class="col-md-6">
+                                                    <button class="btn btn-primary" type="submit">Guardar archivo</button>
+                                                </div>
+                                            </div>
+                                        </form>
                                         
                                     </template>
                                 </div>
@@ -1263,88 +1282,87 @@
             },
         },
         methods : {
-            // dropboxFile(e){
+            dropboxFile(e){
 
-            //     console.log(e.target);
+                console.log(e.target);
 
-            //     this.file = e.target.files[0];
+                this.file = e.target.files[0];
 
-            // },
-            // dropboxSubmit(e) {
+            },
+            dropboxSubmit(e) {
 
-            //     e.preventDefault();
+                e.preventDefault();
 
-            //     let formData = new FormData();
-            //     let me = this;
+                let formData = new FormData();
+                let me = this;
            
-            //     formData.append('file', me.file);
-            //     formData.append('descripcion', me.descripcion);
-            //     formData.append('clasificacion', me.clasificacion);
-            //     axios.post('/dropbox/files/'+me.id+'/planosPuente', formData)
-            //     .then(function (response) {
+                formData.append('file', me.file);
+                axios.post('/dropbox/files/'+me.id+'/siembraPuente', formData)
+                .then(function (response) {
                    
-            //         swal({
-            //             position: 'top-end',
-            //             type: 'success',
-            //             title: 'Archivo subido correctamente',
-            //             showConfirmButton: false,
-            //             timer: 2000
-            //             })
-            //         me.getPlanos(me.id);
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo subido correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+                    me.getPlanos(me.id);
                     
-            //     })
+                })
 
-            //     .catch(function (error) {
-            //         console.log(error);
+                .catch(function (error) {
+                    console.log(error);
 
-            //     });
+                });
 
-            // },
-            // eliminarArchivo(archivo,id){
-            //     swal({
-            //     title: '¿Desea eliminar este archivo?',
-            //     text: "El archivo se borrara completamente",
-            //     type: 'warning',
-            //     showCancelButton: true,
-            //     confirmButtonColor: '#3085d6',
-            //     cancelButtonColor: '#d33',
-            //     cancelButtonText: 'Cancelar',
-            //     confirmButtonText: 'Si, borrar!'
-            //     }).then((result) => {
-            //     if (result.value) {
-            //         let me = this;
+            },
+            eliminarArchivo(archivo,id){
+                swal({
+                title: '¿Desea eliminar este archivo?',
+                text: "El archivo se borrara completamente",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, borrar!'
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
 
-            //     //Con axios se llama el metodo update de LoteController
-            //         axios.delete('/files/delete',{
-            //             params: {
-            //             'file' : archivo,
-            //             'id' : id,
-            //             'sub' : 'planosPuente'
-            //             }
-            //         }).then(function (response){
-            //             //window.alert("Cambios guardados correctamente");
-            //             me.getPlanos(me.id);
-            //             const toast = Swal.mixin({
-            //                 toast: true,
-            //                 position: 'top-end',
-            //                 showConfirmButton: false,
-            //                 timer: 3000
-            //                 });
-            //                 toast({
-            //                 type: 'success',
-            //                 title: 'Archivo borrado correctamente'
-            //             })
-            //         }).catch(function (error){
-            //             console.log(error);
-            //         });
-            //     }
-            //     })
+                //Con axios se llama el metodo update de LoteController
+                    axios.delete('/files/delete',{
+                        params: {
+                        'file' : archivo,
+                        'id' : id,
+                        'sub' : 'siembraPuente'
+                        }
+                    }).then(function (response){
+                        //window.alert("Cambios guardados correctamente");
+                        me.listarAvisos(1);
+                        const toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                            });
+                            toast({
+                            type: 'success',
+                            title: 'Archivo borrado correctamente'
+                        })
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+                }
+                })
 
-            // },
+            },
             /**Metodo para mostrar los registros */
             listarAvisos(page){
                 let me = this;
-                var url = '/cPuentes/indexCreditos?page=' + page + '&fraccionamiento=' + me.buscar + '&folio=' + me.b_folio + '&status=' + me.b_status;
+                var url = '/cPuentes/indexCreditos?page=' + page + '&fraccionamiento=' + me.buscar 
+                                    + '&folio=' + me.b_folio + '&status=' + me.b_status;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayCreditosPuente = respuesta.creditos.data;
@@ -1757,8 +1775,8 @@
             storeObs(){
                 let me = this;
                 axios.post('/cPuentes/storeObs',{
-                    'id': this.id,
-                    'observacion': this.observacion,
+                    'id': me.id,
+                    'observacion': me.observacion,
                    
                 }).then(function (response){
                     //Obtener detalle
@@ -2086,6 +2104,14 @@
                         this.tipoAccion = 3;
                         break;
                     }
+                    case 'siembra':{
+                        this.modal = 1;
+                        this.file = '';
+                        this.id = id;
+                        this.tituloModal = 'Subir plano de siembra';
+                        this.tipoAccion = 4;
+                        break;
+                    }
                    
                 }
             },
@@ -2141,5 +2167,9 @@
         .btnagregar{
         margin-top: 2rem;
         }
+    }
+    
+    .entregado{
+        color: green;
     }
 </style>
