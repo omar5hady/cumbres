@@ -32,7 +32,7 @@
                                     <div class="input-group">
                                         <select class="form-control" @keyup.enter="listarAvisos(1)" v-model="b_status" >
                                             <option value="3">Aprobado</option>
-                                            <option value="2">Rechazado</option>
+                                            <!-- <option value="2">Rechazado</option> -->
                                             <option value="4">Liquidado</option>
                                         </select>
                                         <button type="submit" @click="listarAvisos(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
@@ -49,7 +49,6 @@
                                             <th>Tasa de interes</th>
                                             <th>Apertura</th>
                                             <th>Total</th>
-                                            <th>Status</th>
                                             <th></th>
                                             <!-- <th>Fecha solicitud</th>
                                             <th>Status</th> -->
@@ -71,12 +70,7 @@
                                             <td class="td2"> TIEE+{{formatNumber(creditosPuente.interes)}}</td>
                                             <td class="td2"> {{formatNumber(creditosPuente.apertura)}}%</td>
                                             <td class="td2"> ${{formatNumber(creditosPuente.total)}}</td>
-                                            <td class="td2" v-if="creditosPuente.status == 0">
-                                                <span class="badge badge-info">Pendiente</span>
-                                            </td>
-                                            <td class="td2" v-if="creditosPuente.status == 1">
-                                                <span class="badge badge-warning">Expediente integrado:</span> {{creditosPuente.fecha_integracion}}
-                                            </td>
+                                            
                                             <td class="td2">
                                                 <button type="button" @click="abrirModal('obs',creditosPuente.id)" class="btn btn-dark btn-sm" title="Observaciones">
                                                     <i class="fa fa-book">&nbsp;Observaciones</i>

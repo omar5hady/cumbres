@@ -278,6 +278,11 @@
                                         <a class="nav-link" href="#"><i class="fa fa-archive"></i> Estado de Cuenta - BANCREA</a>
                                     </li>
                                 @endif
+                                @if(Auth::user()->rol_id == 1)
+                                    <li @click="menu=261" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-archive"></i> Avance de obra</a>
+                                    </li>
+                                @endif
                             </ul>
                         </li>
                     @endif

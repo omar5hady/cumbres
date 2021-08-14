@@ -10,7 +10,7 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Casas Construidads Con Recursos Propios &nbsp;&nbsp;
                         <!--   Boton Nuevo    -->
-                         <a class="btn btn-success" v-bind:href="'/reprotes/excelReporteRecursosPropios'">
+                         <a class="btn btn-success" v-bind:href="'/reprotes/excelReporteRecursosPropios?proyecto=' + proyecto + '&etapa=' + b_etapa">
                             <i class="fa fa-file-text"></i>&nbsp; Excel
                         </a>
                         <!-- <a :href="'/etapa/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel </a> -->

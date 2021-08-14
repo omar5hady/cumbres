@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Avance;
+use App\Avance_urbanizacion;
 use App\Partida;
+use App\Partida_urbanizacion;
 use App\Licencia;
 use App\Lote;
 use DB;
@@ -23,6 +25,35 @@ class AvanceController extends Controller
         $avance->partida_id = $partida_id;
         $avance->save();
     }
+
+    public function storeUrbanizcion($lote){
+        if(Auth::user()->rol_id == 11)return redirect('/');
+        $partidas = Partida_urbanizacion::select('id')->get();
+
+        foreach($partidas as $index => $partida) {
+            $avance = new Avance_urbanizacion();
+            $avance->lote_id = $lote;
+            $avance->partida_id = $partida->id;
+            $avance->save();
+        }
+    }
+
+    public function addPartidasUrbanizacion(){
+        if(Auth::user()->rol_id != 1)return redirect('/');
+        $lotes = Lote::select('id')->where('ini_obra','=',1)->get();
+        $partidas = Partida_urbanizacion::select('id')->get();
+
+        foreach($lotes as $index => $lote) {
+            foreach($partidas as $index => $partida) {
+                $avance = new Avance_urbanizacion();
+                $avance->lote_id = $lote->id;
+                $avance->partida_id = $partida->id;
+                $avance->save();
+            }
+        }
+
+    }
+
 
     public function indexProm(Request $request){
         if(!$request->ajax())return redirect('/');
@@ -207,6 +238,25 @@ class AvanceController extends Controller
             ],
             'avance' => $avance
         ];
+    }
+
+    public function indexUrbanizacion(Request $request){
+
+        $partidas = Lote::join('avances_urbanizacion as au','lotes.id','=','au.lote_id')
+                                    ->join('partidas_urbanizacion as pu','au.partida_id','=','pu.id')
+                                    ->select('au.id','au.lote_id','au.avance','au.partida_id',
+                                        'pu.partida', 'lotes.num_lote')
+                                    ->where('au.lote_id','=',$request->lote_id)
+                                    ->get();
+        
+        return $partidas;
+
+    }
+
+    public function setAvanceUrb(Request $request){
+        $avance = Avance_urbanizacion::findOrFail($request->id);
+        $avance->avance = 1;
+        $avance->save();
     }
 
     public function update(Request $request)
@@ -656,7 +706,6 @@ class AvanceController extends Controller
         
         )->download('xls');
     }
-
 
     public function exportExcel(Request $request)
     {

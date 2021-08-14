@@ -517,6 +517,9 @@
         <template v-if="menu==260">
             <prospectos-reasignados></prospectos-reasignados>
         </template>
+        <template v-if="menu==261">
+            <puente-avances></puente-avances>
+        </template>
 
 
         

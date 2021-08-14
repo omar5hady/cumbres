@@ -481,65 +481,67 @@ class LoteController extends Controller
         $id = $request->id;
        
         try {
-        DB::beginTransaction();
-        //FindOrFail se utiliza para buscar lo que recibe de argumento
-        $lote = Lote::findOrFail($request->id);
-        $lote->fecha_ini = $request ->fecha_ini;
-        $lote->fecha_fin = $request ->fecha_fin;
-        $lote->fecha_termino_ventas = $request ->fecha_termino_ventas;
-        $lote->ini_obra = 1;
-        $lote->arquitecto_id = $request ->arquitecto_id;
-        $lote->ehl_solicitado = Carbon::today()->format('ymd');
+            DB::beginTransaction();
+            //FindOrFail se utiliza para buscar lo que recibe de argumento
+            $lote = Lote::findOrFail($request->id);
+            $lote->fecha_ini = $request ->fecha_ini;
+            $lote->fecha_fin = $request ->fecha_fin;
+            $lote->fecha_termino_ventas = $request ->fecha_termino_ventas;
+            $lote->ini_obra = 1;
+            $lote->arquitecto_id = $request ->arquitecto_id;
+            $lote->ehl_solicitado = Carbon::today()->format('ymd');
 
-        $lote->num_inicio = $request->num_inicio;
-        
-        $lote->save();
+            $lote->num_inicio = $request->num_inicio;
+            
+            $lote->save();
 
-        $lic = Licencia::findOrFail($request->id);
-        if($lic->avance == 0)
-            $lic->avance = 1;
-        $lic->save();
+            $n_avance = new AvanceController();
+            $n_avance->storeUrbanizcion($lote->id);
 
-        if($aviso != '0'){
-                
-            $loteIni = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-            ->select('fraccionamientos.nombre as proyecto','lotes.fecha_fin','lotes.fecha_ini')
-            ->where('lotes.id','=',$id)->get();
+            $lic = Licencia::findOrFail($request->id);
+            if($lic->avance == 0)
+                $lic->avance = 1;
+            $lic->save();
 
-            setlocale(LC_TIME, 'es_MX.utf8');
-            $fecha_fin = new Carbon($loteIni[0]->fecha_fin);
-            $loteIni[0]->fecha_fin = $fecha_fin->formatLocalized('%d-%m-%Y');
-            $fecha_ini = new Carbon($loteIni[0]->fecha_ini);
-            $loteIni[0]->fecha_ini = $fecha_ini->formatLocalized('%d-%m-%Y');
+            if($aviso != '0'){
+                    
+                $loteIni = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                ->select('fraccionamientos.nombre as proyecto','lotes.fecha_fin','lotes.fecha_ini')
+                ->where('lotes.id','=',$id)->get();
 
-            $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
-            $fecha = Carbon::now();
-            $msj = "Se han enviado ". $aviso ." lotes del Proyecto ". $loteIni[0]->proyecto . " a inicio de obra (" . $loteIni[0]->fecha_ini . " - " . $loteIni[0]->fecha_fin . ") ";
-            $iniciosObra = [
-                'notificacion' => [
-                    'usuario' => $imagenUsuario[0]->usuario,
-                    'foto' => $imagenUsuario[0]->foto_user,
-                    'fecha' => $fecha,
-                    'msj' => $msj,
-                    'titulo' => 'Inicio de obra pendiente'
-                ]
-            ];
+                setlocale(LC_TIME, 'es_MX.utf8');
+                $fecha_fin = new Carbon($loteIni[0]->fecha_fin);
+                $loteIni[0]->fecha_fin = $fecha_fin->formatLocalized('%d-%m-%Y');
+                $fecha_ini = new Carbon($loteIni[0]->fecha_ini);
+                $loteIni[0]->fecha_ini = $fecha_ini->formatLocalized('%d-%m-%Y');
 
-            $users = User::select('id')->where('rol_id','=','5')->get();
+                $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
+                $fecha = Carbon::now();
+                $msj = "Se han enviado ". $aviso ." lotes del Proyecto ". $loteIni[0]->proyecto . " a inicio de obra (" . $loteIni[0]->fecha_ini . " - " . $loteIni[0]->fecha_fin . ") ";
+                $iniciosObra = [
+                    'notificacion' => [
+                        'usuario' => $imagenUsuario[0]->usuario,
+                        'foto' => $imagenUsuario[0]->foto_user,
+                        'fecha' => $fecha,
+                        'msj' => $msj,
+                        'titulo' => 'Inicio de obra pendiente'
+                    ]
+                ];
 
-            foreach($users as $notificar){
-                User::findOrFail($notificar->id)->notify(new NotifyAdmin($iniciosObra));
+                $users = User::select('id')->where('rol_id','=','5')->get();
+
+                foreach($users as $notificar){
+                    User::findOrFail($notificar->id)->notify(new NotifyAdmin($iniciosObra));
+                }
             }
-        }
 
-        //Aqui se deberia hacer toda la asignacion para la tabla avances
-        $partidas = Partida::select('id','partida')
-            ->where('modelo_id','=',$lote->modelo_id)->get();
-        
-            foreach($partidas as $index => $partida) {
-                $n_avance = new AvanceController();
-                $n_avance->store($lote->id, $partida->id);
-            }
+            //Aqui se deberia hacer toda la asignacion para la tabla avances
+            $partidas = Partida::select('id','partida')
+                ->where('modelo_id','=',$lote->modelo_id)->get();
+            
+                foreach($partidas as $index => $partida) {
+                    $n_avance->store($lote->id, $partida->id);
+                }
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();

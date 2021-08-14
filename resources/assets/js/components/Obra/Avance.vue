@@ -36,82 +36,145 @@
                         </div>
 
                         <div class="form-group row">
-                            
                             <div class="col-md-3">
-                                <h6 v-text="'Lote: '+status"></h6>
+                                <h6 style="color:blue;" v-text="'Fraccionamiento: '"></h6>
+                                <h6 v-text="arrayAvance[0].proyecto"></h6>
+                            </div>
+                            <div class="col-md-3">
+                                <h6 style="color:blue;" v-text="'Manzana: '"></h6>
+                                <h6 v-text="arrayAvance[0].manzana"></h6>
+                            </div>
+                            <div class="col-md-3">
+                                <h6 style="color:blue;" v-text="'# Lote: '"></h6>
+                                <h6 v-text="arrayAvance[0].lote"></h6>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-3">
+                                <h6 style="color:blue;" v-text="'Modelo: '"></h6>
+                                <h6 v-text="arrayAvance[0].modelo"></h6>
+                            </div>
+                            
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-3">
+                                <strong>
+                                    <h6 style="color:blue;" v-text="'Lote: '+status"></h6>
+                                </strong>
                             </div>
                         </div>
                         <!---->
                     </div>
                     <div class="card-body" v-if="resumen==0">
+
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a @click="urbanizacion = 0" class="nav-link" v-bind:class="{ 'text-info active': urbanizacion==0 }">
+                                    EDIFICACIÓN
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a @click="urbanizacion = 1" class="nav-link" v-bind:class="{ 'text-info active': urbanizacion==1 }">
+                                    URBANIZACIÓN 
+                                </a>
+                            </li>
+                        </ul>
                         
-                        <table class="table1 table-bordered table-striped table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Opciones</th>
-                                    <th>Fraccionamiento</th>
-                                    <th>Modelo</th>
-                                    <th>Manzana</th>
-                                    <th>Lote</th>
-                                    <th>Partida</th>
-                                    <th>Avance</th>
-                                    <th>Porcentaje</th>
-                                    
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="avance in arrayAvance" :key="avance.id">
-                                    <td style="width:9%">
-                                        <button type="button" @click="abrirModal('avance','actualizar',avance)" class="btn btn-warning btn-sm">
-                                          <i class="icon-pencil"></i>
-                                        </button> &nbsp;
-                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarAvance(avance)">
-                                          <i class="icon-trash"></i>
-                                        </button>
-                                    </td>
-                                    <td v-text="avance.proyecto"></td>
-                                    <td v-text="avance.modelos"></td>
-                                    <td v-text="avance.manzana"></td>
-                                    <td v-text="avance.lote"></td>
-                                    <td v-text="avance.partida" style="width:30%"></td>
-                                     <td style="width:8%">
-                                        <input v-if="avance.cambio_avance == 1" pattern="\d*"  type="number" @keyup.enter="actualizarPorcentaje(avance.id,$event.target.value,avance.partida_id,lote_id)" :id="avance.id" :value="avance.avance" step=".1" min="0" max="1" v-on:keypress="isNumber($event)" class="form-control Fields" > 
-                                        <input v-else type="number" pattern="\d*" v-on:change="actualizarPorcentaje(avance.id,$event.target.value,avance.partida_id,lote_id)" :id="avance.id" :value="avance.avance" step=".1" min="0" max="1" v-on:keypress="isNumber($event)" class="form-control" >
-                                    </td>
-                                    <td v-text="formatNumber(avance.avance_porcentaje) + '%'"></td>
-                                    
-                                </tr>                               
-                            </tbody>
-                        </table>
-                        <nav>
-                            <!--Botones de paginacion -->
-                            <ul class="pagination">
-                                <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
-                                </li>
-                                <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
-                                </li>
-                                <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <div class="tab-content" v-if="urbanizacion == 0">
+                            <br>
+                            <table class="table1 table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Opciones</th>
+                                        
+                                        <th>Partida</th>
+                                        <th>Avance</th>
+                                        <th>Porcentaje</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="avance in arrayAvance" :key="avance.id">
+                                        <td style="width:9%">
+                                            <button type="button" @click="abrirModal('avance','actualizar',avance)" class="btn btn-warning btn-sm">
+                                            <i class="icon-pencil"></i>
+                                            </button> &nbsp;
+                                            <button type="button" class="btn btn-danger btn-sm" @click="eliminarAvance(avance)">
+                                            <i class="icon-trash"></i>
+                                            </button>
+                                        </td>
+                                        
+                                        <td v-text="avance.partida" style="width:30%"></td>
+                                        <td style="width:8%">
+                                            <input v-if="avance.cambio_avance == 1" pattern="\d*"  type="number" @keyup.enter="actualizarPorcentaje(avance.id,$event.target.value,avance.partida_id,lote_id)" :id="avance.id" :value="avance.avance" step=".1" min="0" max="1" v-on:keypress="isNumber($event)" class="form-control Fields" > 
+                                            <input v-else type="number" pattern="\d*" v-on:change="actualizarPorcentaje(avance.id,$event.target.value,avance.partida_id,lote_id)" :id="avance.id" :value="avance.avance" step=".1" min="0" max="1" v-on:keypress="isNumber($event)" class="form-control" >
+                                        </td>
+                                        <td style="width:10%" v-text="formatNumber(avance.avance_porcentaje) + '%'"></td>
+                                        
+                                    </tr>                               
+                                </tbody>
+                            </table>
+                            <nav>
+                                <!--Botones de paginacion -->
+                                <ul class="pagination">
+                                    <li class="page-item" v-if="pagination.current_page > 1">
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
+                                    </li>
+                                    <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
+                                    </li>
+                                    <li class="page-item" v-if="pagination.current_page < pagination.last_page">
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+
+                        <div class="tab-content" v-if="urbanizacion == 1">
+                            <br>
+                            <table class="table1 table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Partida</th>
+                                        <th>Avance</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="avance in arrayUrbanizacion" :key="avance.id">
+                                      
+                                        
+                                        <td v-text="avance.partida" style="width:30%"></td>
+                                        <td style="width:10%">
+                                            <button v-if="avance.avance == 0" @click="setAvanceUrb(avance.id)" type="button" class="btn btn-default btn-sm">
+                                                Terminar
+                                            </button>
+                                            <button v-else disabled type="button" class="btn btn-success btn-sm rounded">
+                                                <i class="icon-check"></i>
+                                            </button>
+                                        </td>
+                                        
+                                    </tr>                               
+                                </tbody>
+                            </table>
+                        </div>
                         <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#manualId">Manual</button>
                     </div>
 
                     <div class="card-body" v-if="resumen==1">
                         <div class="form-group row">
-                            <div class="col-md-10">
+                            <div class="col-md-8">
                                 <div class="input-group">
-                                    
-                                    <select class="form-control" v-model="b_empresa" >
+                                    <select class="form-control col-md-6" v-model="b_empresa" >
                                         <option value="">Empresa constructora</option>
                                         <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
                                     </select>
-                                    
+                                </div>
+                                <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-4" v-model="criterio" @click="selectFraccionamientosConLote()">
+                                    <select class="form-control col-md-4" v-model="criterio" @change="selectFraccionamientosConLote()">
                                       <option value="lotes.fraccionamiento_id">Fraccionamiento</option>
                                       <option value="modelos.nombre">Modelo</option>
                                       <option value="lotes.aviso">Clave</option>
@@ -120,9 +183,13 @@
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientosLote" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
+                                    <input v-else type="text" v-model="buscar" @keyup.enter="listarAvancePromedio(1,buscar,buscar1,buscar2,criterio)" class="form-control" placeholder="Texto a buscar">
+                                </div>
+                                <div class="input-group" v-if="criterio=='lotes.fraccionamiento_id'">
                                     <input v-if="criterio=='lotes.fraccionamiento_id'" type="text" v-model="buscar1" @keyup.enter="listarAvancePromedio(1,buscar,buscar1,buscar2,criterio)" class="form-control" placeholder="Manzana">
                                     <input v-if="criterio=='lotes.fraccionamiento_id'" type="text" v-model="buscar2" @keyup.enter="listarAvancePromedio(1,buscar,buscar1,buscar2,criterio)" class="form-control" placeholder="Lote">
-                                    <input v-else type="text" v-model="buscar" @keyup.enter="listarAvancePromedio(1,buscar,buscar1,buscar2,criterio)" class="form-control" placeholder="Texto a buscar">
+                                </div>
+                                <div class="input-group">
                                     <button type="submit" @click="listarAvancePromedio(1,buscar,buscar1,buscar2,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
@@ -179,7 +246,7 @@
                                         <td class="td2" v-text="avancepro.fecha_fin"></td>
                                         <td class="td2" v-if="avancepro.porcentajeTotal > 100" v-text="formatNumber(100) + '%'"></td>
                                         <td class="td2" v-else v-text="formatNumber(avancepro.porcentajeTotal) + '%'"></td>
-                                        <td class="td2"> <button v-if="avancepro.paquete != NULL && avancepro.paquete != ''" title="Ver paquete" type="button" class="btn btn-info pull-right" @click="mostrarPaquete(avancepro.paquete)">Ver paquete</button> </td>
+                                        <td class="td2"> <button v-if="avancepro.paquete != null && avancepro.paquete != ''" title="Ver paquete" type="button" class="btn btn-info pull-right" @click="mostrarPaquete(avancepro.paquete)">Ver paquete</button> </td>
                                        <td style="width:7%">
                                             <a v-if="avancepro.archivo" class="btn btn-primary btn-sm" v-bind:href="'/downloadModelo/'+avancepro.archivo"><i class="icon-cloud-download"></i></a>
                                             <a v-if="avancepro.espec_obra" class="btn btn-warning btn-sm" title="Especificaciones de obra" v-bind:href="'/downloadModelo/obra/'+avancepro.espec_obra"><i class="icon-cloud-download"></i></a>
@@ -439,6 +506,8 @@
                 status: '',
                 b_empresa:'',
                 empresas:[],
+                arrayUrbanizacion:[],
+                urbanizacion:0,
             }
         },
         computed:{
@@ -540,6 +609,17 @@
                     console.log(error);
                 });
             },
+            getPartidasUrbanizacion(lote_id){
+                let me = this;
+                var url = '/avance/urbanizacion?lote_id=' + lote_id;
+                axios.get(url).then(function (response) {
+                    me.arrayUrbanizacion = response.data;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
+            },
             cambiarPagina2(page, buscar, buscar1, buscar2, criterio){
                 let me = this;
                 //Actualiza la pagina actual
@@ -616,8 +696,9 @@
             },
             mostrarPartidas(lote){
                 let me = this;
-                console.log(lote)
+                this.urbanizacion = 0;
                 me.listarAvance(1,lote,'avances.lote_id');
+                me.getPartidasUrbanizacion(lote);
                 me.lote_id=lote;
                 me.resumen=0;
             },
@@ -649,6 +730,30 @@
                         showConfirmButton: false,
                         timer: 1500
                         })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+            setAvanceUrb(id){
+
+                let me = this;
+                //Con axios se llama el metodo update de PartidaController
+                axios.put('/avance/setAvanceUrb',{
+                    'id': id
+                }).then(function (response){
+                   
+                    me.getPartidasUrbanizacion(me.lote_id);
+                    //window.alert("Cambios guardados correctamente");
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Partida finalizada correctamente'
+                    })
                 }).catch(function (error){
                     console.log(error);
                 });

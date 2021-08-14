@@ -2963,13 +2963,13 @@ class ReportesController extends Controller
                         ->join('etapas','etapas.id','=','lotes.etapa_id')
                         ->join('licencias','licencias.id','=','lotes.id')
                         ->select('etapas.num_etapa','lotes.manzana','fraccionamientos.nombre as proyecto',
-                                'licencias.id', 'lotes.credito_puente','licencias.avance', 'lotes.num_lote',
+                                'lotes.id', 'lotes.credito_puente','licencias.avance', 'lotes.num_lote',
                                 'lotes.precio_base', 'lotes.excedente_terreno','lotes.sobreprecio',
                                 'lotes.ajuste','lotes.obra_extra');
     
                         $lotes = $lotes->where('lotes.credito_puente','like','NO TIENE CREDITO PUENTE%')
                         ->whereNotIn('lotes.id',$indiv)
-                        ->where('licencias.avance','>',1);
+                        ->where('licencias.avance','>',0);
 
                         if($request->proyecto != '')
                             $lotes = $lotes->where('lotes.fraccionamiento_id','=',$request->proyecto);
@@ -2978,7 +2978,7 @@ class ReportesController extends Controller
 
                         $lotes = $lotes->orWhere('lotes.credito_puente','like','EN PROCESO%')
                         ->whereNotIn('lotes.id',$indiv)
-                        ->where('licencias.avance','>',1);
+                        ->where('licencias.avance','>',0);
 
                         if($request->proyecto != '')
                             $lotes = $lotes->where('lotes.fraccionamiento_id','=',$request->proyecto);
@@ -2987,7 +2987,7 @@ class ReportesController extends Controller
                         
                         $lotes = $lotes->orWhere('lotes.credito_puente','like','LIQUIDADO%')
                         ->whereNotIn('lotes.id',$indiv)
-                        ->where('licencias.avance','>',1);
+                        ->where('licencias.avance','>',0);
 
                         if($request->proyecto != '')
                             $lotes = $lotes->where('lotes.fraccionamiento_id','=',$request->proyecto);

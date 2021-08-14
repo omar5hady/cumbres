@@ -537,8 +537,10 @@ Route::group(['middleware' => ['auth']],function(){
 
     /**********************************RUTAS AVANCE*************************** */
         Route::get('/avance','AvanceController@index');
+        Route::get('/avance/urbanizacion','AvanceController@indexUrbanizacion');
         Route::get('/avanceProm','AvanceController@indexProm');
         Route::put('/avance/actualizar','AvanceController@update');
+        Route::put('/avance/setAvanceUrb','AvanceController@setAvanceUrb');
         Route::get('/avances/resume_excel','AvanceController@exportExcel');
         Route::get('/avances/res_partidas/{contrato}','AvanceController@excelLotesPartidas');
 
@@ -951,9 +953,11 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/cPuentes/numCuenta','CreditoPuenteController@numCuenta');
 
         Route::get('/cPuentes/indexCreditos','CreditoPuenteController@indexCreditos');
+        Route::get('/cPuentes/indexCreditosAvances','CreditoPuenteController@indexCreditosAvances');
         Route::get('/cPuentes/selectLotes','CreditoPuenteController@selectLotes');
         Route::get('/cPuentes/getPreciosModelo','CreditoPuenteController@getPreciosModelo');
         Route::get('/cPuentes/getLotesPuente','CreditoPuenteController@getLotesPuente');
+        Route::get('/cPuentes/lotesAvance','CreditoPuenteController@lotesAvance');
         Route::get('/cPuentes/getObs','CreditoPuenteController@getObs');
         Route::get('/cPuentes/getPlanos','CreditoPuenteController@getPlanos');
         Route::get('/cPuentes/getChecklist','CreditoPuenteController@getChecklist');
@@ -1132,6 +1136,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/getClavesLadas','PersonalController@getClavesLadas');
 
         Route::get('/getPendientesPagos','DepositoController@getPagosVencidos');
+
+        Route::get('/asignarPartidasUrb','AvanceController@addPartidasUrbanizacion');
 
     
     

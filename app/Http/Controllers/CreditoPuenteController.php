@@ -16,6 +16,7 @@ use App\Cat_documento;
 use App\Pago_puente;
 use App\Base_presupuestal;
 use App\User;
+use App\Avance_urbanizacion;
 
 use Carbon\Carbon;
 use DB;
@@ -299,35 +300,7 @@ class CreditoPuenteController extends Controller
 
     public function indexCreditos(Request $request)
     {
-        $creditos = Credito_puente::join('fraccionamientos', 'creditos_puente.fraccionamiento', '=', 'fraccionamientos.id')
-            ->join('instituciones_financiamiento', 'creditos_puente.banco', '=', 'instituciones_financiamiento.nombre')
-            ->select(
-                'creditos_puente.*',
-              
-                'instituciones_financiamiento.lic',
-               
-                'fraccionamientos.nombre as proyecto',
-              
-                'fraccionamientos.arquitecto_id'
-            );
-
-        if ($request->fraccionamiento != '')
-            $creditos = $creditos->where('creditos_puente.fraccionamiento', '=', $request->fraccionamiento);
-
-        if(Auth::user()->rol_id == 3)
-            $creditos = $creditos->where('fraccionamientos.arquitecto_id', '=', Auth::user()->id);
-
-        if ($request->folio != '')
-            $creditos = $creditos->where('creditos_puente.folio', '=', $request->folio);
-
-        if ($request->status != '')
-            $creditos = $creditos->where('creditos_puente.status', '=', $request->status);
-
-        if($request->banco != '')
-            $creditos = $creditos->where('creditos_puente.banco', '=', $request->banco);
-
-        $creditos = $creditos->orderBy('creditos_puente.status', 'asc')
-            ->orderBy('creditos_puente.id', 'desc')->paginate(10);
+        $creditos = $this->getCreditosPuente($request);
 
         foreach ($creditos as $key => $credito) {
             $credito->lotes = Lote_puente::where('solicitud_id', '=', $credito->id)->count();
@@ -363,6 +336,84 @@ class CreditoPuenteController extends Controller
         ];
     }
 
+    private function getCreditosPuente(Request $request){
+        $creditos = Credito_puente::join('fraccionamientos', 'creditos_puente.fraccionamiento', '=', 'fraccionamientos.id')
+            ->join('instituciones_financiamiento', 'creditos_puente.banco', '=', 'instituciones_financiamiento.nombre')
+            ->select(
+                'creditos_puente.*',
+              
+                'instituciones_financiamiento.lic',
+               
+                'fraccionamientos.nombre as proyecto',
+              
+                'fraccionamientos.arquitecto_id'
+            );
+
+        if ($request->fraccionamiento != '')
+            $creditos = $creditos->where('creditos_puente.fraccionamiento', '=', $request->fraccionamiento);
+
+        if(Auth::user()->rol_id == 3)
+            $creditos = $creditos->where('fraccionamientos.arquitecto_id', '=', Auth::user()->id);
+
+        if ($request->folio != '')
+            $creditos = $creditos->where('creditos_puente.folio', '=', $request->folio);
+
+        if ($request->status != '')
+            $creditos = $creditos->where('creditos_puente.status', '=', $request->status);
+
+        if($request->banco != '')
+            $creditos = $creditos->where('creditos_puente.banco', '=', $request->banco);
+
+        $creditos = $creditos->orderBy('creditos_puente.status', 'asc')
+            ->orderBy('creditos_puente.id', 'desc')->paginate(10);
+
+        return $creditos;
+
+    }
+
+    public function indexCreditosAvances(Request $request){
+        $creditos = $this->getCreditosPuente($request);
+
+        foreach ($creditos as $key => $credito) {
+            $credito->lotes = Lote_puente::where('solicitud_id', '=', $credito->id)->count();
+            $lotes = Lote_puente::join('licencias','lotes_puente.lote_id','=','licencias.id')
+            ->select('licencias.id','licencias.avance')->where('lotes_puente.solicitud_id', '=', $credito->id);
+            $conteo = $lotes;
+            $conteo = $conteo->count();
+            $lotes = $lotes->get();
+            $sumaAvance = 0;
+            $promedioUrb = 0;
+            foreach ($lotes as $key => $lote) {
+                $sumaAvance += $lote->avance;
+                $avanceUrbanizacion = Avance_urbanizacion::select(
+                    DB::raw("SUM(avances_urbanizacion.avance) as totalAvance"))
+                ->where('lote_id','=',$lote->id)->get();
+                
+                if($avanceUrbanizacion[0]->totalAvance != 0){
+                    $conteoUrb = Avance_urbanizacion::where('lote_id','=',$lote->id)->count();
+                    $promedioUrb += ($avanceUrbanizacion[0]->totalAvance / $conteoUrb)*100;
+                }
+            }
+            $credito->avance = $sumaAvance/$conteo;
+            $credito->avanceUrb = $promedioUrb/$conteo;
+            // $credito->conteo = $conteo;
+            // $credito->lotes = $lotes;
+        }
+
+        return [
+            'pagination' => [
+                'total'         => $creditos->total(),
+                'current_page'  => $creditos->currentPage(),
+                'per_page'      => $creditos->perPage(),
+                'last_page'     => $creditos->lastPage(),
+                'from'          => $creditos->firstItem(),
+                'to'            => $creditos->lastItem(),
+            ],
+            'creditos' => $creditos
+        ];
+
+    }
+
     public function selectLotes(Request $request)
     {
         $lotes = $this->getSinCredito($request);
@@ -382,8 +433,8 @@ class CreditoPuenteController extends Controller
         return ['modelos' => $modelos];
     }
 
-    public function getLotesPuente(Request $request)
-    {
+    private function lotesPuente(Request $request){
+
         $lotes = Lote_puente::join('lotes', 'lotes_puente.lote_id', '=', 'lotes.id')
             ->join('licencias', 'lotes.id', '=', 'licencias.id')
             ->join('modelos', 'lotes_puente.modelo_id', '=', 'modelos.id')
@@ -413,7 +464,8 @@ class CreditoPuenteController extends Controller
                 'etapas.factibilidad',
                 'licencias.foto_predial',
                 'licencias.foto_lic',
-                'licencias.num_licencia'
+                'licencias.num_licencia',
+                'licencias.avance'
             )
             ->where('lotes_puente.solicitud_id', '=', $request->id)
             ->orderBy('lotes.etapa_id', 'asc')
@@ -421,8 +473,33 @@ class CreditoPuenteController extends Controller
             ->orderBy('lotes.num_lote', 'asc')
             ->get();
 
+            return $lotes;
+
+    }
+
+    public function lotesAvance(Request $request){
+        $lotes = $this->lotesPuente($request);
+
+        foreach ($lotes as $key => $lote) {
+
+            $avanceUrbanizacion = Avance_urbanizacion::select(
+                DB::raw("SUM(avances_urbanizacion.avance) as totalAvance"))
+            ->where('lote_id','=',$lote->id)->get();
+            $lote->avanceUrb = $avanceUrbanizacion[0]->totalAvance;
+            $lote->conteoUrb = Avance_urbanizacion::where('lote_id','=',$lote->id)->count();
+            
+        }
+
         return ['lotes' => $lotes];
     }
+
+    public function getLotesPuente(Request $request)
+    {
+        $lotes = $this->lotesPuente($request);
+        return ['lotes' => $lotes];
+    }
+
+
 
     public function getChecklist(Request $request)
     {
