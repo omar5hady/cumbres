@@ -190,7 +190,7 @@ class AvanceController extends Controller
                     ->join('licencias','lotes.id','=','licencias.id')
                     ->join('partidas','avances.partida_id','=','partidas.id')
                     ->select('lotes.num_lote as lote','avances.avance', 'avances.avance_porcentaje', 
-                    'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','avances.id'
+                    'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','avances.id','partidas.porcentaje'
                     ,'partidas.partida','licencias.visita_avaluo','avances.partida_id','avances.cambio_avance','lotes.aviso')
                     ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                     ->addSelect('fraccionamientos.nombre as proyecto')
@@ -203,7 +203,7 @@ class AvanceController extends Controller
             
             ->addSelect('lotes.contrato','lotes.firmado')
                 ->where('lotes.aviso', '!=', '0')
-                ->orderBy('avances.id','ASC')->distinct()->paginate(49);
+                ->orderBy('partidas.porcentaje','DESC')->distinct()->paginate(49);
         }
        else{
            if($criterio == 'avances.lote_id' || $criterio == 'lotes.id'){
@@ -213,16 +213,15 @@ class AvanceController extends Controller
             
                 ->where($criterio, '=', $buscar)
                 ->where('lotes.aviso', '!=', '0')
-                ->orderBy('avances.id','ASC')->distinct()->paginate(49);
+                ->orderBy('partidas.porcentaje','DESC')->distinct()->paginate(49);
            }
            else{
             $avance = $query 
             
             ->addSelect('lotes.contrato','lotes.firmado')
-            
                 ->where($criterio, 'like', '%'. $buscar . '%')
                 ->where('lotes.aviso', '!=', '0')
-                ->orderBy('avances.id','ASC')->distinct()->paginate(49);
+                ->orderBy('partidas.porcentaje','DESC')->distinct()->paginate(49);
            }
             
        }

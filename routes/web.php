@@ -252,6 +252,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/import', 'LoteController@import');
         Route::get('/lote_aviso','LoteController@indexIniObra');
         Route::get('/lote_aviso/historial','LoteController@indexHistorialIniObra');
+        Route::get('/lote_aviso/excelIniciosObra','LoteController@excelIniciosObra');
         Route::put('/lotes/enviarAviObra','LoteController@enviarAviso');
         Route::put('/lotes/enviarAviObra/actualizar','LoteController@actNumInicio');
         Route::get('/lotes/export_excel/{fraccionamiento_id}','LoteController@excelLotes');

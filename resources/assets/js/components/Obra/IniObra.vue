@@ -113,13 +113,17 @@
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
-                                    <input type="text" v-if="buscar!=''" v-model="buscar3" @keyup.enter="listarHistorial(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Manzana a buscar">
                                 </div>
                                 <div class="input-group"  v-if="criterio=='lotes.fraccionamiento_id'" >
                                     <select class="form-control col-md-6" v-model="buscar2" @keyup.enter="listarHistorial(1,buscar,buscar2,buscar3,criterio)"> 
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
+                                    <input type="text" v-if="buscar!=''" v-model="buscar3" @keyup.enter="listarHistorial(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Manzana a buscar">
+                                </div>
+                                <div class="input-group">
+                                    <input type="text" v-model="b_inicio" @keyup.enter="listarHistorial(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Numero de inicio">
+                                
                                 </div>
                                 <div class="input-group">
                                     <input type="date" v-model="b_fecha" @keyup.enter="listarHistorial(1,buscar,buscar2,buscar3,criterio)" class="form-control">
@@ -127,6 +131,12 @@
                                 </div>
                                 <div class="input-group">
                                     <button type="submit" @click="listarHistorial(1,buscar,buscar2,buscar3,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+
+                                    <a :href="'/lote_aviso/excelIniciosObra?buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + 
+                                                '&fecha=' + b_fecha + '&fecha2=' + b_fecha2 + '&criterio=' + criterio+'&b_empresa='+ b_empresa + 
+                                                '&b_inicio=' + b_inicio"
+                                        class="btn btn-success"><i class="fa fa-file-text"></i> Excel
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -349,6 +359,7 @@
                 num_inicio:'',
                 b_empresa:'',
                 empresas:[],
+                b_inicio:'',
             }
         },
         computed:{
@@ -502,7 +513,7 @@
             listarHistorial(page, buscar,buscar2,buscar3, criterio){
                 let me = this;
                 var url = '/lote_aviso/historial?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + 
-                '&fecha=' + me.b_fecha + '&fecha2=' + me.b_fecha2 + '&criterio=' + criterio+'&b_empresa='+this.b_empresa;
+                '&fecha=' + me.b_fecha + '&fecha2=' + me.b_fecha2 + '&criterio=' + criterio+'&b_empresa='+this.b_empresa+'&b_inicio='+this.b_inicio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayHistorial = respuesta.lotes.data;

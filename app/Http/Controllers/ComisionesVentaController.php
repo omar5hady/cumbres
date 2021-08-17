@@ -823,7 +823,7 @@ class ComisionesVentaController extends Controller
                             'det_com_ventas.isr',
                             'det_com_ventas.retencion',
                             'det_com_ventas.este_pago',
-                            'det_com_ventas.por_pagar',
+                            'det_com_individualizadas.pago as por_pagar',
                             'creditos.precio_venta','contratos.avance_lote',
                             'creditos.fraccionamiento as proyecto',
                             'inst_seleccionadas.tipo_credito',

@@ -96,7 +96,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="avance in arrayAvance" :key="avance.id">
+                                    <tr v-for="avance in arrayAvance" :key="avance.id" v-if="avance.porcentaje > 0">
                                         <td style="width:9%">
                                             <button type="button" @click="abrirModal('avance','actualizar',avance)" class="btn btn-warning btn-sm">
                                             <i class="icon-pencil"></i>

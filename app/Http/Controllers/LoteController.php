@@ -766,11 +766,7 @@ class LoteController extends Controller
         ];
     }
 
-    public function indexHistorialIniObra(Request $request)
-    {
-        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
-        if(!$request->ajax())return redirect('/');
-
+    public function getHistorialInicios(Request $request){
         $buscar = $request->buscar;
         $buscar2 = $request->buscar2;
         $buscar3 = $request->buscar3;
@@ -792,22 +788,34 @@ class LoteController extends Controller
             $lotes = $query;
             if($buscar != '')
                 $lotes = $lotes->where($criterio, '=',$buscar);
-            if($buscar != '')
+            if($buscar2 != '')
                 $lotes = $lotes->where('lotes.etapa_id', '=',$buscar2 );
-            if($buscar != '')
+            if($buscar3 != '')
                 $lotes = $lotes->where('lotes.manzana', 'like', '%'. $buscar3 . '%');
-            if($fecha == '' && $fecha2 == '')
+            if($fecha != '' && $fecha2 != '')
                 $lotes = $lotes->whereBetween('lotes.ehl_solicitado', [$fecha, $fecha2]);
-                  
-        
-        
 
+            if($request->b_inicio != '')
+                $lotes = $lotes->where('lotes.num_inicio', '=',$request->b_inicio);
+                  
         if($request->b_empresa != ''){
             $lotes= $lotes->where('lotes.emp_constructora','=',$request->b_empresa);
         }
 
         $lotes = $lotes->orderBy('lotes.ehl_solicitado','desc')
-                        ->orderBy('fraccionamientos.nombre','lotes.id')->paginate(15);
+                        ->orderBy('fraccionamientos.nombre','lotes.id');
+
+        return $lotes;
+    }
+
+    public function indexHistorialIniObra(Request $request)
+    {
+        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
+        if(!$request->ajax())return redirect('/');
+
+        $lotes = $this->getHistorialInicios($request);
+
+        $lotes = $lotes->paginate(15);
 
         return [
             'pagination' => [
@@ -820,6 +828,53 @@ class LoteController extends Controller
             ],
             'lotes' => $lotes
         ];
+    }
+
+    public function excelIniciosObra(Request $request){
+
+        $lotes = $this->getHistorialInicios($request);
+        $lotes = $lotes->get();
+
+        return Excel::create('Inicios de Obra' , function($excel) use ($lotes){
+            $excel->sheet('inicios', function($sheet) use ($lotes){
+                
+                $sheet->row(1, [
+                    'Fraccionamiento', 'Etapa', 'Modelo', 'Inicio', 'Termino'
+                ]);
+
+                $sheet->cells('A1:E1', function ($cells) {
+                    $cells->setBackground('#052154');
+                    $cells->setFontColor('#ffffff');
+                    // Set font family
+                    $cells->setFontFamily('Calibri');
+
+                    // Set font size
+                    $cells->setFontSize(12);
+
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+
+                $cont=1;
+
+                foreach($lotes as $index => $lote) {
+                    $cont++;       
+                    $sheet->row($index+2, [
+                        $lote->proyecto, 
+                        $lote->etapas, 
+                        $lote->modelo, 
+                        $lote->ehl_solicitado,
+                        $lote->fecha_termino_ventas,
+                    ]);	
+                }
+                $num='A1:E' . $cont;
+                $sheet->setBorder($num, 'thin');
+            });
+        }
+        
+        )->download('xls');
+
     }
 
     public function excelLotes (Request $request, $fraccionamiento_id)

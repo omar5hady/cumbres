@@ -679,7 +679,7 @@ class CreditoPuenteController extends Controller
                                 'foto' => $imagenUsuario[0]->foto_user,
                                 'fecha' => $fecha,
                                 'msj' => $msj,
-                                'titulo' => 'Solic. Crédito Puente'
+                                'titulo' => 'Cambio. Crédito Puente'
                             ]
                         ];
 
