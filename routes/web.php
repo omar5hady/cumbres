@@ -978,6 +978,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/cPuentes/getInteresePeriodo','CreditoPuenteController@getInteresePeriodo');
 
         Route::get('/cPuentes/selectCreditosPuente','CreditoPuenteController@selectCreditosPuente');
+
+        Route::get('/cPuentes/resumenCreditos','CreditoPuenteController@resumenCreditos');
         
     //////////////////// RUTAS BONOS RECOMENDADOS ///////////////////////
         Route::get('/cat_bono/index','CatalogoBonoController@index');

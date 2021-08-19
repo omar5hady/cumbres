@@ -168,7 +168,7 @@
                                             <span class="badge2 badge-danger">{{ lead.nombre.toUpperCase()+' '+lead.apellidos}}</span>
                                         </td>
                                         <td class="td2" v-if="lead.celular != null">
-                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>    
+                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>    
                                         </td><td class="td2" v-else ></td>
                                         <td class="td2" v-if="lead.email != null" >
                                             <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+lead.email+ ';'"> <i class="fa fa-envelope-o fa-lg"></i> </a>
@@ -229,7 +229,7 @@
                                             <span class="badge2 badge-danger">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
                                         </td>
                                         <td class="td2" v-if="lead.celular != null">
-                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>    
+                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>    
                                         </td><td class="td2" v-else ></td>
                                         <td class="td2" v-if="lead.email != null" >
                                             <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+lead.email+ ';'"> <i class="fa fa-envelope-o fa-lg"></i> </a>
@@ -285,7 +285,7 @@
                                             <span class="badge2 badge-danger">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
                                         </td>
                                         <td class="td2" v-if="lead.celular != null">
-                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>    
+                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>    
                                         </td><td class="td2" v-else ></td>
                                         <td class="td2" v-if="lead.email != null" >
                                             <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+lead.email+ ';'"> <i class="fa fa-envelope-o fa-lg"></i> </a>
@@ -393,7 +393,7 @@
                                             <span class="badge2 badge-danger">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
                                         </td>
                                         <td class="td2" v-if="lead.celular != null">
-                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>    
+                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>    
                                         </td><td class="td2" v-else ></td>
                                         <td class="td2" v-if="lead.email != null" >
                                             <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+lead.email+ ';'"> <i class="fa fa-envelope-o fa-lg"></i> </a>
@@ -444,7 +444,7 @@
                                             <span class="badge2 badge-danger">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
                                         </td>
                                         <td class="td2" v-if="lead.celular != null">
-                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>    
+                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>    
                                         </td><td class="td2" v-else ></td>
                                         <td class="td2" v-if="lead.email != null" >
                                             <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+lead.email+ ';'"> <i class="fa fa-envelope-o fa-lg"></i> </a>
@@ -495,7 +495,7 @@
                                             <span class="badge2 badge-danger">{{ lead.nombre.toUpperCase()+' '+lead.apellidos.toUpperCase()}}</span>
                                         </td>
                                         <td class="td2" v-if="lead.celular != null">
-                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>    
+                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+'+lead.clv_lada+lead.celular+'&text='"><i class="fa fa-whatsapp fa-lg"></i></a>    
                                         </td><td class="td2" v-else ></td>
                                         <td class="td2" v-if="lead.email != null" >
                                             <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+lead.email+ ';'"> <i class="fa fa-envelope-o fa-lg"></i> </a>

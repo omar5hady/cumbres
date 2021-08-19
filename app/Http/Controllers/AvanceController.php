@@ -286,7 +286,7 @@ class AvanceController extends Controller
             $suma[0]->porcentajeTotal = 100;
         $licencia->avance = $suma[0]->porcentajeTotal;
 
-        if($licencia->avance >= 90 && $licencia->avance <= 95 && $licencia->num_acta == NULL){
+        if($licencia->avance >= 90 && $licencia->avance <= 95 && $licencia->term_ingreso == NULL){
             $lote = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                         ->select('num_lote','manzana','fraccionamientos.nombre')
                         ->where('lotes.id','=',$licencia->id)

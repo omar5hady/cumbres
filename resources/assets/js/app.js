@@ -183,6 +183,7 @@ Vue.component('creditos-puente', require('./components/CPuente/CreditoPuenteSeg.
 Vue.component('base-presupuestal', require('./components/CPuente/BasePresupuestal.vue'));
 Vue.component('puente-cuenta', require('./components/CPuente/CreditoPuenteCuenta.vue'));
 Vue.component('puente-avances', require('./components/CPuente/Avances.vue'));
+Vue.component('puente-resumen', require('./components/CPuente/Resumen.vue'));
 
 
 //ENCUESTAS

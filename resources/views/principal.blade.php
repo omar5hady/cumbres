@@ -282,6 +282,9 @@
                                     <li @click="menu=261" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-archive"></i> Avance de obra</a>
                                     </li>
+                                    <li @click="menu=262" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-archive"></i> Resumen de Créditos</a>
+                                    </li>
                                 @endif
                             </ul>
                         </li>

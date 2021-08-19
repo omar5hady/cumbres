@@ -301,6 +301,7 @@ class CreditoPuenteController extends Controller
     public function indexCreditos(Request $request)
     {
         $creditos = $this->getCreditosPuente($request);
+        $creditos = $creditos->paginate(10);
 
         foreach ($creditos as $key => $credito) {
             $credito->lotes = Lote_puente::where('solicitud_id', '=', $credito->id)->count();
@@ -336,6 +337,49 @@ class CreditoPuenteController extends Controller
         ];
     }
 
+    public function resumenCreditos(Request $request){
+        $creditos = $this->getCreditosPuente($request);
+        $creditos = $creditos->paginate(10);
+
+        foreach ($creditos as $key => $credito) {
+            $credito->abono = $credito->cargo = $credito->interes = 0;
+            $credito->lotes = Lote_puente::where('solicitud_id', '=', $credito->id)->count();
+            
+            $pago = $this->calculatePagos($credito->id);
+            if($pago->abonoTotal != NULL){
+                $credito->abono = $pago->abonoTotal;
+                $credito->cargo = $pago->cargoTotal;
+                $credito->totalInteres = $pago->interesTotal;
+            }
+        }
+
+
+        return [
+            'pagination' => [
+                'total'         => $creditos->total(),
+                'current_page'  => $creditos->currentPage(),
+                'per_page'      => $creditos->perPage(),
+                'last_page'     => $creditos->lastPage(),
+                'from'          => $creditos->firstItem(),
+                'to'            => $creditos->lastItem(),
+            ],
+            'creditos' => $creditos
+        ];
+    }
+
+    private function calculatePagos($credito){
+
+        $pagos = Pago_puente::select(DB::raw("SUM(pagos_puentes.abono) as abonoTotal"),
+                        DB::raw("SUM(pagos_puentes.cargo) as cargoTotal"),
+                        DB::raw("SUM(pagos_puentes.monto_interes) as interesTotal")
+                    )
+                    ->where('credito_puente_id', '=', $credito)
+                    ->where('pendiente','=',0)
+                    ->first();
+
+        return $pagos;
+    }
+
     private function getCreditosPuente(Request $request){
         $creditos = Credito_puente::join('fraccionamientos', 'creditos_puente.fraccionamiento', '=', 'fraccionamientos.id')
             ->join('instituciones_financiamiento', 'creditos_puente.banco', '=', 'instituciones_financiamiento.nombre')
@@ -365,7 +409,7 @@ class CreditoPuenteController extends Controller
             $creditos = $creditos->where('creditos_puente.banco', '=', $request->banco);
 
         $creditos = $creditos->orderBy('creditos_puente.status', 'asc')
-            ->orderBy('creditos_puente.id', 'desc')->paginate(10);
+            ->orderBy('creditos_puente.id', 'desc');
 
         return $creditos;
 
@@ -373,6 +417,7 @@ class CreditoPuenteController extends Controller
 
     public function indexCreditosAvances(Request $request){
         $creditos = $this->getCreditosPuente($request);
+        $creditos = $creditos->paginate(10);
 
         foreach ($creditos as $key => $credito) {
             $credito->lotes = Lote_puente::where('solicitud_id', '=', $credito->id)->count();

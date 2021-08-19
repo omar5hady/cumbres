@@ -520,6 +520,9 @@
         <template v-if="menu==261">
             <puente-avances></puente-avances>
         </template>
+        <template v-if="menu==262">
+            <puente-resumen user-name="{{Auth::user()->usuario}}"></puente-resumen>
+        </template>
 
 
         
