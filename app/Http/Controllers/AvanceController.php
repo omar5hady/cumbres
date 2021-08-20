@@ -203,7 +203,7 @@ class AvanceController extends Controller
             
             ->addSelect('lotes.contrato','lotes.firmado')
                 ->where('lotes.aviso', '!=', '0')
-                ->orderBy('partidas.porcentaje','DESC')->distinct()->paginate(49);
+                ->orderBy('avances.id','ASC')->distinct()->paginate(49);
         }
        else{
            if($criterio == 'avances.lote_id' || $criterio == 'lotes.id'){
@@ -213,7 +213,7 @@ class AvanceController extends Controller
             
                 ->where($criterio, '=', $buscar)
                 ->where('lotes.aviso', '!=', '0')
-                ->orderBy('partidas.porcentaje','DESC')->distinct()->paginate(49);
+                ->orderBy('avances.id','ASC')->distinct()->paginate(49);
            }
            else{
             $avance = $query 
@@ -221,7 +221,7 @@ class AvanceController extends Controller
             ->addSelect('lotes.contrato','lotes.firmado')
                 ->where($criterio, 'like', '%'. $buscar . '%')
                 ->where('lotes.aviso', '!=', '0')
-                ->orderBy('partidas.porcentaje','DESC')->distinct()->paginate(49);
+                ->orderBy('avances.id','ASC')->distinct()->paginate(49);
            }
             
        }

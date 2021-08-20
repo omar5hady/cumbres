@@ -20,6 +20,8 @@ Route::group(['middleware' => ['guest']],function(){
 
     Route::get('/encuesta1','Form\EncuestaController@showEncuesta1');
     Route::post('/encuesta1/pruebaExcel','Form\EncuestaController@pruebaExcel');
+
+    Route::get('/api/movil/clientes','ApiMovilController@getClientes');
 });
 
 

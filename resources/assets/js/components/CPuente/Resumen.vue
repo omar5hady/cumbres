@@ -83,7 +83,7 @@
                     </template>
                     <template v-if="vista == 1">
                         <div class="card-body"> 
-                            <div class="col-xl-12 col-lg-5 col-md-4">
+                            <div class="col-xl-12">
                                 <div class="card">
 
                                      <!-- Cabecera con datos generales del crédito -->
@@ -91,7 +91,7 @@
                                              <div class="card-body p-12 d-flex align-items-center">
                                                 <div>
                                                     <div class="text-value text-uppercase font-weight-bold text-primary text-center">
-                                                        Estado de cuenta del Crédito Puente "{{datosPuente.proyecto}} {{datosPuente.lotes}} VIV"
+                                                        Resumen Crédito Puente "{{datosPuente.folio}}"
                                                     </div>
                                                 </div>
                                                 <br>
@@ -102,7 +102,7 @@
                                             <div class="card-body p-3 d-flex align-items-center">
                                                 <div>
                                                     <div class="text-uppercase font-weight-bold" 
-                                                        v-text="'Folio: '">
+                                                        v-text="'Proyecto: '">
                                                     </div>
                                                     
                                                     <div class="text-uppercase font-weight-bold" 
@@ -112,14 +112,14 @@
                                                         v-text="'Número de casas: '">
                                                     </div>
                                                     <div class="text-uppercase font-weight-bold" 
-                                                        v-text="'Ingresos a: '">
+                                                        v-text="'Crédito Otorgado: '">
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="card-body p-3 d-flex align-items-center">
                                                 <div>
                                                     <div class="text-uppercase" 
-                                                        v-text="datosPuente.folio">
+                                                        v-text="datosPuente.proyecto">
                                                     </div>
                                                     <div class="text-uppercase" 
                                                         v-text="datosPuente.banco">
@@ -128,7 +128,7 @@
                                                         v-text="datosPuente.lotes">
                                                     </div>
                                                     <div class="text-uppercase" 
-                                                        v-text="'CTA DE '+ datosPuente.banco+' '+datosPuente.num_cuenta">
+                                                        v-text="'$ '+ formatNumber(datosPuente.credito_otorgado)">
                                                     </div>
                                                 </div>
                                             </div>
@@ -144,8 +144,10 @@
                                             <th># Lote</th>
                                             <th>Manzana</th>
                                             <th>Modelo</th>
-                                            <th>Avance Edificación</th>
-                                            <th>Avance Urbanizacion</th>
+                                            <th></th>
+                                            <th>Costo de Liberación</th>
+                                            <th>Monto pagado</th>
+                                            <th>Saldo</th>
                                             <!-- <th>Fecha solicitud</th>
                                             <th>Status</th> -->
                                         </tr>
@@ -155,8 +157,10 @@
                                             <td v-text="lote.num_lote"></td>
                                             <td v-text="lote.manzana"></td>
                                             <td v-text="lote.modelo"></td>
-                                            <td v-bind:class="{'listo':lote.avance >= 99, 'zero':lote.avance <25}"> {{formatNumber(lote.avance)}}%</td>
-                                            <td> {{lote.avanceUrb}}/{{lote.conteoUrb}}</td>
+                                            <td></td>
+                                            <td> ${{formatNumber(lote.precio_c)}}</td>
+                                            <td> ${{formatNumber(lote.abonado)}}</td>
+                                            <td> ${{formatNumber(lote.saldo)}}</td>
                                             
                                         </tr>                               
                                     </tbody>
@@ -337,7 +341,7 @@
                 me.arrayLotes=[];
                 me.datosPuente = data;
                 me.vista = 1;
-                var url = '/cPuentes/lotesAvance?id=' + me.id;
+                var url = '/cPuentes/getLotesPuente?id=' + me.id;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLotes = respuesta.lotes;
