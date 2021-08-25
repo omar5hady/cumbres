@@ -1650,7 +1650,7 @@ class DepositoController extends Controller
 
                     $concepto = 'Deposito de crédito';
                     if($pendiente->tipo == 0)
-                        $concepto = $lote->concepto;
+                        $concepto = $pendiente->concepto;
                     
                     $sheet->row($index+2, [
                         $pendiente->fraccionamiento, 
@@ -1776,7 +1776,8 @@ class DepositoController extends Controller
                     'depositos.monto_terreno', 'depositos.fecha_ingreso_concretania', 'depositos.cuenta',
                     'depositos.f_carga_factura_terreno','depositos.cuenta')
             ->whereBetween('depositos.fecha_ingreso_concretania', [$request->fecha, $request->fecha2])
-            ->where('monto_terreno','>',0);
+            ->where('monto_terreno','>',0)
+            ->where('banco','!=','0102030405-Scotiabank');
 
         $ingresosCreditos = Dep_credito::join('inst_seleccionadas','inst_seleccionadas.id','=','dep_creditos.inst_sel_id')
             ->join('creditos','creditos.id','=','inst_seleccionadas.credito_id')

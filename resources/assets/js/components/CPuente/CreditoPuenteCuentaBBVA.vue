@@ -45,31 +45,36 @@
                                         <tr>
                                             <th>Folio</th>
                                             <th>Proyecto</th>
+                                            <th>Fecha de Firma</th>
                                             <th>Número de Cuenta</th>
                                             <th>Tasa de interes</th>
                                             <th>Apertura</th>
-                                            <th>Total</th>
+                                            <th>Crédito otorgado</th>
                                             <th></th>
                                             <!-- <th>Fecha solicitud</th>
                                             <th>Status</th> -->
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="creditosPuente in arrayCreditosPuente" :key="creditosPuente.id" @dblclick="verEdoCuenta(creditosPuente)">
+                                        <tr v-for="creditosPuente in arrayCreditosPuente" :key="creditosPuente.id">
                                             <td>
-                                                <a href="#" v-text="creditosPuente.folio"></a>
+                                                <template v-if="creditosPuente.fecha_firma == null">
+                                                        {{creditosPuente.folio}}
+                                                </template>
+                                                <a v-else @dblclick="verEdoCuenta(creditosPuente)" href="#" v-text="creditosPuente.folio"></a>
                                             </td>
                                             <td class="td2" v-text="creditosPuente.proyecto"></td>
-                                            <td class="td2" v-if="creditosPuente.num_cuenta == null">
-                                                <button v-if="userName == 'dora.m' || userName == 'cp.martin' || userName == 'shady'"
-                                                 type="button" @click="numCuenta(creditosPuente.id)" class="btn btn-primary btn-sm" title="Num Cuenta">
-                                                    <i class="fa fa-credit-card-alt">&nbsp;No. De cuenta</i>
+                                            <td class="td2" v-if="creditosPuente.fecha_firma == null">
+                                                <button v-if="userName == 'cp.martin' || userName == 'shady'"
+                                                 type="button" @click="abrirModal('fecha_firma',creditosPuente.id)" class="btn btn-primary btn-sm" title="Num Cuenta">
+                                                    <i class="fa fa-calendar">&nbsp;Fecha de firma</i>
                                                 </button>
                                             </td>
-                                            <td class="td2" v-else v-text="creditosPuente.num_cuenta"></td>
+                                            <td class="td2" v-else v-text="creditosPuente.fecha_firma"></td>
+                                            <td class="td2" v-text="creditosPuente.num_cuenta"></td>
                                             <td class="td2"> TIEE+{{formatNumber(creditosPuente.interes)}}</td>
                                             <td class="td2"> {{formatNumber(creditosPuente.apertura)}}%</td>
-                                            <td class="td2"> ${{formatNumber(creditosPuente.total)}}</td>
+                                            <td class="td2"> ${{formatNumber(creditosPuente.credito_otorgado)}}</td>
                                             
                                             <td class="td2">
                                                 <button type="button" @click="abrirModal('obs',creditosPuente.id)" class="btn btn-dark btn-sm" title="Observaciones">
@@ -174,7 +179,7 @@
                                                         v-text=" formatNumber(datosPuente.apertura)+'%'">
                                                     </div>
                                                     <div class="text-muted text-uppercase" 
-                                                        v-text="'TIIE PROMEDIO 28 DÍAS + ' + formatNumber(datosPuente.interes)">
+                                                        v-text="'TIIE ' + formatNumber(datosPuente.tiie_firma) + ' + ' + formatNumber(datosPuente.interes)">
                                                     </div>
                                                     
                                                     <div class="text-muted text-uppercase">
@@ -449,11 +454,7 @@
                                         <div class="form-group row">
                                             <label class="col-md-2 form-control-label" for="text-input">Fecha</label>
                                             <div class="col-md-4">
-                                                <input type="date" v-model="fecha" @change="getTiie(fecha)" class="form-control">
-                                            </div>
-                                            <label v-if="tiie != 0" class="col-md-2 form-control-label" for="text-input">TIIE a 28 dias:</label>
-                                            <div v-if="tiie != 0" class="col-md-4">
-                                                <label disabled type="text" v-text="tiie+' + '+datosPuente.interes" class="form-control"></label>
+                                                <input type="date" v-model="fecha"  class="form-control">
                                             </div>
                                         </div>
 
@@ -735,6 +736,43 @@
                     <!-- /.modal-dialog -->
                 </div>
             <!--Fin del modal-->
+
+            <!--Inicio del modal nuevo movimiento-->
+                <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 4}" 
+                    role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog modal-primary modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" v-text="tituloModal"></h4>
+                                <button type="button" class="close" @click="cerrarModal(1)" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                                <div class="modal-body">
+                                    <!-- Modal para registrar ingreso/abono -->
+                                        <div class="form-group row">
+                                            <label class="col-md-2 form-control-label" for="text-input">Fecha</label>
+                                            <div class="col-md-4">
+                                                <input type="date" v-model="fecha" @change="getTiie(fecha)" class="form-control">
+                                            </div>
+                                            <label v-if="tiie != 0" class="col-md-2 form-control-label" for="text-input">TIIE a 28 dias:</label>
+                                            <div v-if="tiie != 0" class="col-md-3">
+                                                <label disabled type="text" v-text="tiie" class="form-control"></label>
+                                            </div>
+                                        </div>
+                                    <!-- Fin Modal para registrar ingreso/abono -->
+                                </div>
+                                <!-- Botones del modal registarar abono o cargo -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" @click="cerrarModal(1)">Cerrar</button>
+                                    <button type="button" class="btn btn-success" @click="insertFechaFirma(id,fecha, tiie)">Guardar</button>
+                                </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+            <!--Fin del modal-->
         </main>
 </template>
 
@@ -795,6 +833,10 @@
                     'lotes':0,
                     'num_cuenta':'',
                     'credito_otorgado':0,
+                    'tiie_firma':0,
+                    'fecha_firma':'',
+                    'fecha_sig_int':'',
+                    'fecha_ini_int':''
                 },
                 movimientos:[],
                 modal:0,
@@ -819,11 +861,12 @@
                 tipo:'',
                 total:0,
                 fecha_sig_int:'',
+                fecha_ini_int:'',
                 lote_id:'',
                 lotePuenteId:'',
                 pago_id:'',
                 archivo:'',
-                totalUtilizado:0,
+                totalUtilizado:0
             }
         },
         components:{
@@ -860,9 +903,6 @@
             },
         },
         methods : {
-
-            //funciones para carga de los planos del fraccionamiento 
-
             onImageChange(e){
                 console.log(e.target.files[0]);
                 this.archivo = e.target.files[0];
@@ -903,7 +943,7 @@
                 let me = this;
                 me.vista = 0;
                 var url = '/cPuentes/indexCreditos?page=' + page + '&fraccionamiento=' + me.buscar + '&folio=' + me.b_folio + '&status=' + me.b_status
-                                + '&banco=Bancrea';
+                                + '&banco=BBVA Bancomer';
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayCreditosPuente = respuesta.creditos.data;
@@ -928,6 +968,11 @@
                 me.abrirModal('pagoLote',me.id);
                 
 
+            },
+            validarMonto(){
+                let creditoDisp = this.datosPuente.credito_otorgado - this.totalUtilizado;
+                if(this.cantidad > creditoDisp) 
+                    this.cantidad = creditoDisp;
             },
             getLotesPuente(id){
                 let me = this;
@@ -970,43 +1015,6 @@
                     console.log(error);
                 });
             },
-            numCuenta(id){
-                 (async function getFruit () {
-                    const {value: comentario} = await Swal({
-                    title: 'Numero de cuenta',
-                    input: 'text',
-                    inputPlaceholder: 'Numero de cuenta...',
-                    showCancelButton: true,
-                    inputValidator: (value) => {
-                        return new Promise((resolve) => {
-                        if (value != '') {
-                            resolve()
-                        } else {
-                            resolve('Es necesario escribir el numero de cuenta :)')
-                        }
-                        })
-                    }
-                    })
-                    if (comentario) {
-                        axios.put('/cPuentes/numCuenta',{
-                            'id' : id,
-                            'numCuenta': comentario
-                            
-                        }).then(function (response){
-                            me.ocultarDetalle();
-                            swal({
-                                position: 'top-end',
-                                type: 'success',
-                                title: 'Cambios guardados correctamente',
-                                showConfirmButton: false,
-                                timer: 1500
-                                })
-                        }).catch(function (error){
-                            console.log(error);
-                        });
-                    }
-                })()
-            },
             getEdoCuenta(id){
                 let me = this;
                 me.arrayObs=[];
@@ -1023,11 +1031,6 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-            },
-            validarMonto(){
-                let creditoDisp = this.datosPuente.credito_otorgado - this.totalUtilizado;
-                if(this.cantidad > creditoDisp) 
-                    this.cantidad = creditoDisp;
             },
             selectProyectos(){
                 let me = this;
@@ -1117,6 +1120,7 @@
             verEdoCuenta(data){
                 this.datosPuente = data;
                 this.fecha_sig_int = moment(this.datosPuente.fecha_sig_int).locale('es').format('DD/MMM/YYYY');
+                this.fecha_ini_int = moment(this.datosPuente.fecha_ini_int).locale('es').format('DD/MMM/YYYY');
                 this.vista = 1;
                 this.getEdoCuenta(this.datosPuente.id);
             },
@@ -1151,6 +1155,15 @@
                         this.id = id;
                         this.tipoAccion = 1;
                         this.getObs(id);
+                        break;
+                    }
+                    case 'fecha_firma':{
+                        this.modal = 4;
+                        this.tituloModal = 'Fecha de firma';
+                        this.id = id;
+                        this.tipoAccion = 4;
+                        this.fecha = '';
+                        this.tiie = 0;
                         break;
                     }
                     case 'movimiento':{
@@ -1313,6 +1326,29 @@
                     me.cerrarModal(1);
                     me.getEdoCuenta(id);
                     
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+            insertFechaFirma(id,fecha,tiie){
+                let me = this;
+
+                axios.put('/cPuentes/insertFechaFirma',{
+                    'id' : id,
+                    'fecha' : fecha,
+                    'tiie' : tiie
+                }).then(function (response){
+                     const toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                            });
+                            toast({
+                            type: 'success',
+                            title: 'fecha registrada correctamente'
+                        })
+                    me.cerrarModal(0);
                 }).catch(function (error){
                     console.log(error);
                 });

@@ -21,7 +21,7 @@ Route::group(['middleware' => ['guest']],function(){
     Route::get('/encuesta1','Form\EncuestaController@showEncuesta1');
     Route::post('/encuesta1/pruebaExcel','Form\EncuestaController@pruebaExcel');
 
-    Route::get('/api/movil/clientes','ApiMovilController@getClientes');
+    
 });
 
 
@@ -947,6 +947,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/cPuentes/saveDoc','CreditoPuenteController@saveDoc');
         Route::put('/cPuentes/confirmarEntrega/documento','CreditoPuenteController@confirmarEntregaDoc');
         Route::put('/cPuentes/actualizarFolio','CreditoPuenteController@actualizarFolio');
+        Route::put('/cPuentes/insertFechaFirma','CreditoPuenteController@insertFechaFirma');
 
         Route::post('/cPuentes/pagos/formSubmit','CreditoPuenteController@formSubmit');
         Route::get('/cPuentes/pagos/{tipo}/{fileName}' , 'CreditoPuenteController@downloadFile');

@@ -29,8 +29,11 @@ class CreateCreditosPuenteTable extends Migration
             $table->double('credito_otorgado',10,2)->default(0);
 
             $table->date('fecha_integracion')->nullable(); 
-            $table->date('fecha_banco')->nullable(); 
-            $table->date('fecha_sig_int')->nullable(); 
+            $table->date('fecha_banco')->nullable();
+            $table->date('fecha_firma')->nullable();
+            $table->float('tiie_firma')->default(0);
+            $table->date('fecha_sig_int')->nullable();
+            $table->date('fecha_ini_int')->nullable();
             $table->string('motivo_rechazo')->nullable();
 
             $table->string('archivo_siembra')->nullable();

@@ -523,6 +523,9 @@
         <template v-if="menu==262">
             <puente-resumen user-name="{{Auth::user()->usuario}}"></puente-resumen>
         </template>
+        <template v-if="menu==263">
+            <puente-bbva user-name="{{Auth::user()->usuario}}"></puente-bbva>
+        </template>
 
 
         

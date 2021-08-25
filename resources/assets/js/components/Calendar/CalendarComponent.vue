@@ -4,8 +4,55 @@
         <li class="breadcrumb-item"><strong><a style="color:#FFFFFF;" href="/">Calendario</a></strong></li>
     </ol>
     <div class="container-fluid">
+      <div class="header">
+          <button type="button" @click="nuevo = 1" v-if="nuevo == 0 && rolId != 2" class="btn btn-primary">
+              <i class="icon-plus"></i>&nbsp;Nuevo
+          </button>
+          <button type="button" @click="nuevo = 0" v-if="nuevo == 1" class="btn btn-secondary">
+              <i class="fa fa-mail-reply"></i>&nbsp;Filtrar
+          </button>
+      </div>
       <div class="row justify-content-center">
-        <div class="col-md-10">
+        <div class="col-md-10" v-if="nuevo == 0">
+          <div class="row"> 
+            <div class="col-md-6">
+              <div class="form-group">
+                <label >Proyecto de guardia: </label>
+                <select class="form-control" v-model="b_proyecto" >
+                    <option value="">Fraccionamiento</option>
+                    <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
+                </select>
+              </div>
+            </div>            
+          </div>
+          <div class="row"> 
+            <div class="col-md-6">
+              <div class="form-group">
+                <label >Tipo de Evento: </label>
+                <select class="form-control" v-model="b_evento" >
+                    <option value="">Evento</option>
+                    <option value="Vacaciones">Vacaciones</option>
+                    <option value="Descanso">Descanso</option>
+                    <option value="Guardia">Guardia</option>
+                    <option value="Pendientes">Pendientes</option>
+                    <option value="Propaganda">Propaganda</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row"> 
+            <div class="col-md-6">
+              <div class="form-group">
+                <button type="button" @click="getEvents()" class="btn btn-secondary">
+                <i class="fa fa-search"></i>&nbsp;Buscar
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="col-md-10" v-if="nuevo == 1">
           <form @submit.prevent>
             <div class="row">
               <div class="col-md-4">
@@ -150,7 +197,10 @@ export default {
       arrayUsers:[],
       arrayFraccionamientos:[],
       nombre:'',
-      vista:1
+      vista:1,
+      nuevo:0,
+      b_proyecto:'',
+      b_evento:'',
     };
   },
   created() {
@@ -283,7 +333,7 @@ export default {
     getEvents() {
       this.selectFraccionamientos();
       axios
-        .get("/api/calendar")
+        .get("/api/calendar?proyecto="+this.b_proyecto+'&evento='+this.b_evento)
         .then(resp => (this.calendarOptions.events = resp.data.data))
         .catch(err => console.log(err.response.data));
     },

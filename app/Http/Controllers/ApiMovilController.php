@@ -9,7 +9,7 @@ use App\Contrato;
 
 class ApiMovilController extends Controller
 {
-    public function getClientes(){
+    public function index(){
         $clientes = Cliente::join('personal','clientes.id','=','personal.id')
                         ->join('creditos','clientes.id','=','creditos.prospecto_id')
                         ->join('contratos','creditos.id','=','contratos.id')
@@ -18,7 +18,7 @@ class ApiMovilController extends Controller
                         ->join('modelos','lotes.modelo_id','=','modelos.id')
                         ->join('entregas','contratos.id','=','entregas.id')
                         ->select('personal.id', 'personal.nombre', 'personal.apellidos',
-                                'personal.celular',
+                                'personal.celular', 'personal.clv_lada',
                                 'personal.email')
                         ->where('entregas.status','=',1)
                         ->where('etapas.num_etapa','!=','EXTERIOR')

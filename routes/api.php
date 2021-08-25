@@ -18,3 +18,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::apiResource('/calendar', 'CalendarController');
+Route::apiResource('/movil/clientes','ApiMovilController');

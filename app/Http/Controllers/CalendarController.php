@@ -14,9 +14,15 @@ class CalendarController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return CalendarResource::collection(Calendar::join('personal','personal.id','=','calendars.user_id')->select('calendars.*','personal.apellidos','personal.nombre')->get());
+        return CalendarResource::collection(
+            Calendar::join('personal','personal.id','=','calendars.user_id')
+                ->select('calendars.*','personal.apellidos','personal.nombre')
+                ->where('calendars.proyecto_id','like','%'.$request->proyecto.'%')
+                ->where('calendars.event_name','like','%'.$request->evento.'%')
+                ->get()
+            );
     }
 
     /**

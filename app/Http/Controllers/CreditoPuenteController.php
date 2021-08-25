@@ -544,8 +544,6 @@ class CreditoPuenteController extends Controller
         return ['lotes' => $lotes];
     }
 
-
-
     public function getChecklist(Request $request)
     {
 
@@ -950,6 +948,9 @@ class CreditoPuenteController extends Controller
             $credito->fecha_banco = Carbon::now();
             $credito->motivo_rechazo = $request->comentario;
             $credito->credito_otorgado = $request->monto_aprob;
+            if($credito->banco == 'BBVA Bancomer'){
+                $credito->num_cuenta = '012970963023154101';
+            }
 
             $lotes = Lote::select('id')->where('puente_id', '=', $request->id)->get();
             $lotesPuente = Lote_puente::select('id')->where('solicitud_id', '=', $request->id)->get();
@@ -986,10 +987,20 @@ class CreditoPuenteController extends Controller
 
     public function getEdoCuenta(Request $request)
     {
+        $prestado = 0;
         $pagos = Pago_puente::where('credito_puente_id', '=', $request->id)
             ->where('pendiente','=',0)
             ->orderBy('fecha', 'asc')
             ->get();
+
+        $totalPrestado = Pago_puente::select(DB::raw("SUM(pagos_puentes.cargo) as total"))
+            ->where('credito_puente_id', '=', $request->id)
+            ->where('pendiente','=',0)
+            ->orderBy('fecha', 'asc')
+            ->first();
+
+        if($totalPrestado->total != NULL)
+            $prestado = $totalPrestado->total;
 
         $depCreditos = Pago_puente::join('dep_creditos','pagos_puentes.deposito_id','=','dep_creditos.id')
         ->join('inst_seleccionadas','dep_creditos.inst_sel_id','=','inst_seleccionadas.id')
@@ -1025,7 +1036,8 @@ class CreditoPuenteController extends Controller
         }
 
         return ['pagos' => $pagos, 'ultimoAbono' => $fecha, 
-                'saldo' => $saldo, 'depCreditos' => $depCreditos
+                'saldo' => $saldo, 'depCreditos' => $depCreditos,
+                'prestado' => $prestado
             ];
     }
 
@@ -1411,5 +1423,18 @@ class CreditoPuenteController extends Controller
             $l->credito_puente = $credito->folio;
             $l->save();
         }
+    }
+
+    public function insertFechaFirma(Request $request){
+        if (!$request->ajax() || Auth::user()->rol_id == 11) return redirect('/');
+
+        $fecha = $request->fecha;
+        $id = $request->id;
+        $tiie = $request->tiie;
+
+        $credito = Credito_puente::findOrFail($id);
+        $credito->fecha_firma = $fecha;
+        $credito->tiie_firma = $tiie;
+        $credito->save();
     }
 }

@@ -20,6 +20,12 @@ class Credito_puente extends Model
         'apertura',
         'fraccionamiento',
         'fecha_sig_int',
+        'fecha_ini_int',
+        'fecha_firma',
+        'tiie_firma',
+        'fecha_banco',
+        'fecha_integracion',
+        'motivo_rechazo',
 
         'credito_otorgado',
         'num_cuenta',

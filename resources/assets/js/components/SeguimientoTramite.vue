@@ -2124,25 +2124,25 @@
                         </p>
                         <p>
                             <strong>Autorizados:</strong> dentro del módulo de autorizados usted podrá.
-                            <lu>
+                            <ul>
                                 <li>Actualizar la fecha de aviso preventivo.</li>
                                 <li>Cambiar la fecha de vigencia.</li>
                                 <li>Realizar la inscripción a Infonavit.</li>
                                 <li>Agregar observaciones.</li>
-                            </lu>
+                            </ul>
                             Una vez que el lotea sea enviado tenga inscripción a Infonavit (en caso de que no 
                             aplique se debe indicar que no aplica) será enviado a la pestaña de “liquidación”.
                         </p>
                         <p>
                             <strong>Liquidación:</strong> dentro del módulo de liquidación usted podrá.
-                            <lu>
+                            <ul>
                                 <li>Actualizar la fecha de aviso preventivo.</li>
                                 <li>Cambiar la fecha de vigencia.</li>
                                 <li>Liquidar</li>
                                 <li>Generar intereses.</li>
                                 <li>Solicitar la entrega de vivienda.</li>
                                 <li>Agregar observaciones.</li>
-                            </lu>
+                            </ul>
                             En caso de que al generar la liquidación quede algún saldo pendiente debe tomar en 
                             cuenta que el sistema pedirá generar intereses (si aplica), para esto, aparecerá un 
                             botón con la leyenda “Generar Intereses” que le permitirá generar intereses por el 
@@ -2155,24 +2155,24 @@
                         </p>
                         <p>
                             <strong>Programación de firma:</strong> dentro del módulo de programación de firma usted podrá.
-                            <lu>
+                            <ul>
                                 <li>Actualizar la fecha de aviso preventivo.</li>
                                 <li>Cambiar la fecha de vigencia.</li>
                                 <li>Imprimir liquidación.</li>
                                 <li>Programar la fecha de firma de escritura.</li>
                                 <li>Solicitar la entrega de vivienda.</li>
                                 <li>Agregar observaciones.</li>
-                            </lu>
+                            </ul>
                             Una vez que sea programado la fecha de la firma de escritura el registro del lote será 
                             enviado a la pestaña de Historial.
                         </p>
                         <p>
                             <strong>Historial:</strong> dentro de la pestaña historial usted podrá.
-                            <lu>
+                            <ul>
                                 <li>Cambiar la fecha de vigencia.</li>
                                 <li>Imprimir liquidación.</li>
                                 <li>Agregar observaciones.</li>
-                            </lu>
+                            </ul>
                             Adema podrá ver el historial a todos los registros de lotes que se entregaron con anterioridad, 
                             además podrá ver el registro del lote en el módulo de <strong>“Obra -> Viviendas por entregar”</strong>. 
                         </p>
