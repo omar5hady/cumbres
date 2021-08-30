@@ -889,7 +889,7 @@ class InstSeleccionadasController extends Controller
         $creditos = $creditos->where('contratos.status','!=',0)
                             ->orderBy('inst_seleccionadas.cobrado','asc')
                             ->orderBy('inst_seleccionadas.monto_credito','desc')
-                            ->paginate(10);
+                            ->get();
         
 
         return Excel::create('Pendientes por excedente', function($excel) use ($creditos){

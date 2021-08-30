@@ -330,6 +330,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::get('/ingresosConcretania/indexEdoCuentaTerreno','CreditoController@indexEdoCuentaTerreno');
         Route::get('/ingresosConcretania/indexEdoCuentaTerreno/excel','CreditoController@indexEdoCuentaTerrenoExcel');
+        Route::get('/ingresosConcretania/indexTerrenosCerrados','CreditoController@indexTerrenosCerrados');
         
 
     ///////////////////       RUTAS LICENCIA-ACTA  ////////////////////////////////////
@@ -1142,8 +1143,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/getClavesLadas','PersonalController@getClavesLadas');
 
         Route::get('/getPendientesPagos','DepositoController@getPagosVencidos');
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
         Route::get('/asignarPartidasUrb','AvanceController@addPartidasUrbanizacion');
+        Route::get('/asignarLotesDep','DepositoController@asignarLotes');
 
     
     

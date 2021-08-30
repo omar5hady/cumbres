@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Contrato;
 use App\Devolucion;
 use App\Gasto_admin;
+use App\Dev_concretania;
 use App\Pago_contrato;
 use DB;
 use App\Credito;
@@ -671,5 +672,31 @@ class DevolucionController extends Controller
         }
         
         )->download('xls');
+    }
+
+    public function indexPendinetesConcretania(Request $request){
+        $cancelados = Contrato::join('creditos','contratos.id','=','creditos.id')
+            ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+            ->select('contratos.id','creditos.etapa',
+                    'creditos.manzana',
+                    'creditos.num_lote',
+                    'creditos.modelo',
+                    'creditos.valor_terreno',
+                    'creditos.saldo_terreno',
+                    'personal.nombre','personal.apellidos'
+                    )
+            ->where('contratos.status','=',0)
+            ->where('lotes.emp_constructora','=','CONCRETANIA')
+            ->where('lotes.emp_terreno','=','Grupo Constructor Cumbres')
+            ->where('saldo_terreno','>',0)
+            ->get();
+
+        
+        if(sizeof($cancelados)){
+            foreach ($cancelados as $key => $c) {
+                $ca = $c;
+            }
+        }
     }
 }

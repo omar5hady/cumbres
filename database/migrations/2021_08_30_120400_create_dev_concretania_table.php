@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCuentasTable extends Migration
+class CreateDevConcretaniaTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,14 @@ class CreateCuentasTable extends Migration
      */
     public function up()
     {
-        Schema::create('cuentas', function (Blueprint $table) {
+        Schema::create('dev_concretania', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('num_cuenta',50);
-            $table->string('sucursal',50);
-            $table->string('banco',50);
-            $table->string('empresa')->default('Grupo Constructor Cumbres');
+            $table->integer('contrato_id');
+            $table->date('fecha_dev');
+            $table->double('monto');
+            $table->string('cheque');
+            $table->string('cuenta');
+            $table->string('observaciones')->nullable();
             $table->timestamps();
         });
     }
@@ -30,6 +32,6 @@ class CreateCuentasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cuentas');
+        Schema::dropIfExists('dev_concretania');
     }
 }

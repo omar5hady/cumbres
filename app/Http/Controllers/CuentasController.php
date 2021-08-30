@@ -54,6 +54,7 @@ class CuentasController extends Controller
         $cuenta->num_cuenta = $request->num_cuenta;
         $cuenta->sucursal = $request->sucursal;
         $cuenta->banco = $request->banco;
+        $cuenta->empresa = $request->empresa;
         $cuenta->save();
     }
 
@@ -64,6 +65,7 @@ class CuentasController extends Controller
         $cuenta->num_cuenta = $request->num_cuenta;
         $cuenta->sucursal = $request->sucursal;
         $cuenta->banco = $request->banco;
+        $cuenta->empresa = $request->empresa;
         $cuenta->save();
     }
 
@@ -76,7 +78,7 @@ class CuentasController extends Controller
 
     public function selectCuenta(Request $request){
         if(!$request->ajax())return redirect('/');
-        $cuentas = Cuenta::select('num_cuenta','sucursal','banco')
+        $cuentas = Cuenta::select('num_cuenta','sucursal','banco','empresa')
         ->orderBy('banco','asc')->get();
 
         return ['cuentas' => $cuentas];

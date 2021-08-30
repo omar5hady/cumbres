@@ -42,6 +42,7 @@
                                         <th># Cuenta</th>
                                         <th>Sucursal</th>
                                         <th>Banco</th>
+                                        <th>Empresa</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -57,6 +58,7 @@
                                         <td v-text="cuenta.num_cuenta"></td>
                                         <td v-text="cuenta.sucursal"></td>
                                         <td v-text="cuenta.banco"></td>
+                                        <td v-text="cuenta.empresa"></td>
                                     </tr>                               
                                 </tbody>
                             </table>
@@ -111,6 +113,15 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Empresa</label>
+                                    <div class="col-md-9">
+                                        <select class="form-control" v-model="b_empresa" >
+                                            <option value="">Empresa</option>
+                                            <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                        </select>
+                                    </div>
+                                </div>
                                 <!-- Div para mostrar los errores que mande validerDepartamento -->
                                 <div v-show="errorCuenta" class="form-group row div-error">
                                     <div class="text-center text-error">
@@ -150,8 +161,10 @@
                 num_cuenta : '',
                 sucursal : '',
                 banco : '',
+                empresa: 'Grupo Constructor Cumbres',
                 arrayCuentas : [],
                 arrayBancos : [],
+                empresas:[],
                 modal : 0,
                 tituloModal : '',
                 tipoAccion: 0,
@@ -218,6 +231,18 @@
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarCuentas(page,buscar,criterio);
+            },
+            getEmpresa(){
+                let me = this;
+                me.empresas=[];
+                var url = '/lotes/empresa/select';
+                axios.get(url).then(function (response) {
+                    var respuesta = response;
+                    me.empresas = respuesta.data.empresas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
             },
             selectBancos(){
                 let me = this;
@@ -391,6 +416,7 @@
         mounted() {
             this.listarCuentas(1,this.buscar,this.criterio);
             this.selectBancos();
+            this.getEmpresa();
         }
     }
 </script>

@@ -201,7 +201,7 @@ const app = new Vue({
             var v = this;
             setInterval(function () {
                 v.created();
-            }, 30000);
+            }, 100000);
         },
         created() {
             let me = this;

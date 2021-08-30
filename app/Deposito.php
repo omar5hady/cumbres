@@ -9,7 +9,7 @@ class Deposito extends Model
     protected $table = 'depositos'; // se referencia a que tabla pertenece el modelo
     protected $primaryKey = 'id'; //Referenciar la llave primaria
     protected $fillable = ['pago_id','cant_depo','interes_mor','interes_ord','obs_mor',
-                            'cuenta','fecha_ingreso_concretania',
+                            'cuenta','fecha_ingreso_concretania','lote_id',
                             'obs_ord','num_recibo','banco','concepto','fecha_pago'];
 
 

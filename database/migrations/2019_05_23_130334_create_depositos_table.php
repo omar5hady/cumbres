@@ -26,6 +26,9 @@ class CreateDepositosTable extends Migration
             $table->string('concepto',80)->nullable();
             $table->date('fecha_pago')->nullable();
 
+            //Identificar el Lote 
+            $table->integer('lote_id')->nullable();
+
             //Intereses LOTES TERRENO
             $table->double('interes_pago')->default(0)->nullable();
             $table->double('pago_capital')->default(0)->nullable();

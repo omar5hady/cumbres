@@ -2605,12 +2605,12 @@ class ContratoController extends Controller
             $excel->sheet('contratos', function($sheet) use ($contratos){
                 
                 $sheet->row(1, [
-                    '# Contrato', 'Cliente', 'Telefono', 'Celular', 'Vendedor', 'Proyecto', 'Etapa', 'Manzana',
+                    '# Contrato', 'Cliente', 'Telefono', 'Celular','Email', 'Vendedor', 'Proyecto', 'Etapa', 'Manzana',
                     '# Lote','Modelo', 'Tipo de crédito', 'Institución','Fecha del contrato', 'Precio de Venta', 'Status', 'Publicidad'
                 ]);
 
 
-                $sheet->cells('A1:P1', function ($cells) {
+                $sheet->cells('A1:Q1', function ($cells) {
                     $cells->setBackground('#052154');
                     $cells->setFontColor('#ffffff');
                     // Set font family
@@ -2628,7 +2628,7 @@ class ContratoController extends Controller
                 $cont=1;
 
                 $sheet->setColumnFormat(array(
-                    'N' => '$#,##0.00',
+                    'O' => '$#,##0.00',
                 ));
 
                 foreach($contratos as $index => $contrato) {
@@ -2663,6 +2663,7 @@ class ContratoController extends Controller
                         $contrato->nombre. ' ' . $contrato->apellidos,
                         $contrato->telefono,
                         $contrato->celular,
+                        $contrato->email,
                         $contrato->vendedor_nombre. ' ' .$contrato->vendedor_apellidos,
                         $contrato->proyecto,
                         $contrato->etapa,
@@ -2678,7 +2679,7 @@ class ContratoController extends Controller
 
                     ]);	
                 }
-                $num='A1:P' . $cont;
+                $num='A1:Q' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
         }

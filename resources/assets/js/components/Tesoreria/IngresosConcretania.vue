@@ -33,6 +33,7 @@
                         </a>
                         <!---->
                     </div>
+                    <!-- Pendientes por Ingresar -->
                     <div class="card-body" v-if="historial == 0">
                         <div class="form-group row">
                             <div class="col-md-7">
@@ -100,7 +101,7 @@
                             </table>
                         </div>
                     </div>
-
+                    <!-- Historial de Ingresos -->
                     <div class="card-body" v-if="historial == 1">
                         <div class="form-group row">
                             <div class="col-md-7">
@@ -207,6 +208,7 @@
                         
                     </div>
 
+                    <!-- Edo de Cuenta del Terreno -->
                     <div class="card-body" v-if="historial == 2">
                         <div class="form-group row">
                             <div class="col-md-7">
@@ -247,71 +249,143 @@
                                 </div>
                             </div>
                         </div>
+
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a @click="cerrados = 0" class="nav-link" v-bind:class="{ 'text-info active': cerrados==0 }">
+                                    Activos
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a @click="cerrados = 1" class="nav-link" v-bind:class="{ 'text-info active': cerrados==1 }">
+                                    Cerrados 
+                                </a>
+                            </li>
+                        </ul>
                         
-                        
-                        <div class="table-responsive">
-                            <table class="table2 table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Fraccionamiento</th>
-                                        <th>Etapa</th>
-                                        <th>Manzana</th>
-                                        <th># Lote</th>
-                                        <th>Cliente</th>
-                                        <th>Valor de venta</th>
-                                        <th>Valor de escrituracion</th>
-                                        <th>Valor de terreno</th>
-                                        <th>Total pagado</th>
-                                        <th>Por pagar</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="lote in arrayCuenta" :key="lote.id">
-                                        
-                                        <td v-text="lote.fraccionamiento"></td>
-                                        <td v-text="lote.etapa"></td>
-                                        <td v-text="lote.manzana"></td>
-                                        <td v-text="lote.num_lote"></td>
-                                        <td class="td2" v-text="lote.nombre + ' ' + lote.apellidos"></td>
-                                        <td class="td2" v-text="'$'+formatNumber(lote.precio_venta)"></td>
-                                        <td class="td2" v-if="lote.valor_escrituras != null" v-text="'$'+formatNumber(lote.valor_escrituras)"></td>
-                                        <td class="td2" v-else v-text="'$'+formatNumber(0)"></td>
-                                        <td class="td2" v-text="'$'+formatNumber(lote.monto_terreno)"></td>
-                                        <td class="td2" v-text="'$'+formatNumber(lote.saldo_terreno)"></td>
-                                        <td class="td2" v-text="'$'+formatNumber(lote.monto_terreno - lote.saldo_terreno)"></td>
-                                        
-                                            <td class="td2" v-if="lote.status == '1'">
-                                                <span class="badge badge-warning">Pendiente</span>
-                                            </td>
-                                            <td class="td2" v-if="lote.status == '3'">
-                                                <span class="badge badge-success">Firmado</span>
-                                            </td>
-                                    </tr>  
-                                                            
-                                </tbody>
-                            </table>
+                        <div class="tab-content" v-if="cerrados == 0">
+                            <br>
+
+                            <div class="table-responsive">
+                                <table class="table2 table-bordered table-striped table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Fraccionamiento</th>
+                                            <th>Etapa</th>
+                                            <th>Manzana</th>
+                                            <th># Lote</th>
+                                            <th>Cliente</th>
+                                            <th>Valor de venta</th>
+                                            <th>Valor de escrituracion</th>
+                                            <th>Valor de terreno</th>
+                                            <th>Total pagado</th>
+                                            <th>Por pagar</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="lote in arrayCuenta" :key="lote.id">
+                                            
+                                            <td v-text="lote.fraccionamiento"></td>
+                                            <td v-text="lote.etapa"></td>
+                                            <td v-text="lote.manzana"></td>
+                                            <td v-text="lote.num_lote"></td>
+                                            <td class="td2" v-text="lote.nombre + ' ' + lote.apellidos"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(lote.precio_venta)"></td>
+                                            <td class="td2" v-if="lote.valor_escrituras != null" v-text="'$'+formatNumber(lote.valor_escrituras)"></td>
+                                            <td class="td2" v-else v-text="'$'+formatNumber(0)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(lote.monto_terreno)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(lote.saldo_terreno)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(lote.monto_terreno - lote.saldo_terreno)"></td>
+                                            
+                                                <td class="td2" v-if="lote.status == '1'">
+                                                    <span class="badge badge-warning">Pendiente</span>
+                                                </td>
+                                                <td class="td2" v-if="lote.status == '3'">
+                                                    <span class="badge badge-success">Firmado</span>
+                                                </td>
+                                        </tr>  
+                                                                
+                                    </tbody>
+                                </table>
+                            </div>
+                            <nav>
+                                <!--Botones de paginacion -->
+                                <ul class="pagination">
+                                    <li class="page-item" v-if="pagination.last_page > 7 && pagination.current_page > 7">
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(1)">Inicio</a>
+                                    </li>
+                                    <li class="page-item" v-if="pagination.current_page > 1">
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1)">Ant</a>
+                                    </li>
+                                    <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(page)" v-text="page"></a>
+                                    </li>
+                                    <li class="page-item" v-if="pagination.current_page < pagination.last_page">
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1)">Sig</a>
+                                    </li>
+                                    <li class="page-item" v-if="pagination.last_page > 7 && pagination.current_page<pagination.last_page">
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.last_page)">Ultimo</a>
+                                    </li>
+                                </ul>
+                            </nav>
                         </div>
-                        <nav>
-                            <!--Botones de paginacion -->
-                            <ul class="pagination">
-                                <li class="page-item" v-if="pagination.last_page > 7 && pagination.current_page > 7">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(1)">Inicio</a>
-                                </li>
-                                <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1)">Ant</a>
-                                </li>
-                                <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page)" v-text="page"></a>
-                                </li>
-                                <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1)">Sig</a>
-                                </li>
-                                <li class="page-item" v-if="pagination.last_page > 7 && pagination.current_page<pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.last_page)">Ultimo</a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <div class="tab-content" v-if="cerrados == 1">
+                            <br>
+
+                            <div class="table-responsive">
+                                <table class="table2 table-bordered table-striped table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Fraccionamiento</th>
+                                            <th>Etapa</th>
+                                            <th>Manzana</th>
+                                            <th># Lote</th>
+                                            <th>Cliente</th>
+                                            <th>Valor de venta</th>
+                                            <th>Valor de escrituracion</th>
+                                            <th>Valor de terreno</th>
+                                            <th>Total pagado</th>
+                                            <th>Total devuelto</th>
+                                            <th>Pendiente por devolver</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="lote in arrayCerrados" :key="lote.id">
+                                            
+                                            <td v-text="lote.fraccionamiento"></td>
+                                            <td v-text="lote.etapa"></td>
+                                            <td v-text="lote.manzana"></td>
+                                            <td v-text="lote.num_lote"></td>
+                                            <td class="td2" v-text="lote.nombre + ' ' + lote.apellidos"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(lote.precio_venta)"></td>
+                                            <td class="td2" v-if="lote.valor_escrituras != null" v-text="'$'+formatNumber(lote.valor_escrituras)"></td>
+                                            <td class="td2" v-else v-text="'$'+formatNumber(0)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(lote.monto_terreno)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(lote.saldo_terreno)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(lote.devuelto)"></td>
+                                            <td v-if="lote.status == 0" class="td2" v-text="'$'+formatNumber(lote.saldo_terreno - lote.devuelto)"></td>
+                                            <td v-else class="td2" v-text="'$'+formatNumber(0)"></td>
+                                                <td class="td2" v-if="lote.status == '0'">
+                                                    <span class="badge badge-danger">Cancelado</span>
+                                                </td>
+                                                <td class="td2" v-if="lote.status == '1'">
+                                                    <span class="badge badge-warning">Pendiente</span>
+                                                </td>
+                                                <td class="td2" v-if="lote.status == '4'">
+                                                    <span class="badge badge-success">Individualizado</span>
+                                                </td>
+                                                <td class="td2" v-if="lote.status == '3'">
+                                                    <span class="badge badge-success">Vendido</span>
+                                                </td>
+                                        </tr>  
+                                                                
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                        </div>
                     </div>
 
                 </div>
@@ -456,6 +530,7 @@
                 arrayBancos: [],
                 arrayFraccionamientos:[],
                 arrayCuenta:[],
+                arrayCerrados:[],
                 modal : 0,
                 tituloModal : '',
                 tipoAccion: 0,
@@ -496,6 +571,7 @@
                 lote:'',
 
                 ver:0,
+                cerrados : 0,
             }
         },
         computed:{
@@ -619,6 +695,7 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLotes = respuesta.pendientes;
+                    me.arrayLotes.sort((b, a) => (a.fecha_dep < b.fecha_dep) ? 1 : -1);
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -634,11 +711,27 @@
                     var respuesta = response.data;
                     me.arrayCuenta = respuesta.contratos.data;
                     me.pagination = respuesta.pagination;
+                    me.listarCerrados();
                     
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+            listarCerrados(){
+                let me = this;
+                me.arrayCerrados = [];
+                var url = '/ingresosConcretania/indexTerrenosCerrados?buscar=' + me.buscar + '&etapa=' + me.b_etapa
+                + '&manzana=' + me.b_manzana + '&lote=' + me.b_lote + '&criterio=' + me.criterio;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayCerrados = respuesta;
+                    
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
             },
 
             /**Metodo para mostrar los registros */

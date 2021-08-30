@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Cliente;
 use App\Contrato;
+use DB;
 
 class ApiMovilController extends Controller
 {
@@ -18,7 +19,9 @@ class ApiMovilController extends Controller
                         ->join('modelos','lotes.modelo_id','=','modelos.id')
                         ->join('entregas','contratos.id','=','entregas.id')
                         ->select('personal.id', 'personal.nombre', 'personal.apellidos',
-                                'personal.celular', 'personal.clv_lada',
+                                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre"),
+                                DB::raw("CONCAT(personal.clv_lada,'',personal.celular) AS celular"),
+                                // 'personal.celular', 'personal.clv_lada',
                                 'personal.email')
                         ->where('entregas.status','=',1)
                         ->where('etapas.num_etapa','!=','EXTERIOR')
@@ -34,7 +37,8 @@ class ApiMovilController extends Controller
                                         ->join('etapas','lotes.etapa_id','=','etapas.id')
                                         ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                                         ->select('fraccionamientos.nombre as fraccionamiento','etapas.num_etapa as privada',
-                                                'lotes.manzana','lotes.num_lote as lote'
+                                                'lotes.manzana','lotes.num_lote as lote', 'lotes.fraccionamiento_id',
+                                                'lotes.etapa_id'
                                         )
                                         ->where('creditos.prospecto_id','=',$cliente->id)
                                         ->where('entregas.status','=',1)

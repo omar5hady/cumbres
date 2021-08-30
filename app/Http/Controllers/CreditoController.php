@@ -766,39 +766,9 @@ class CreditoController extends Controller
     }
 
     public function indexEdoCuentaTerreno(Request $request){
-        $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
-                ->leftJoin('expedientes','contratos.id','=','expedientes.id')
-                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                ->select('contratos.id','creditos.saldo_terreno','creditos.precio_venta',
-                            'creditos.valor_terreno as monto_terreno', 'contratos.status',
-                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana',
-                            'expedientes.valor_escrituras',
-                            'creditos.num_lote','personal.nombre','personal.apellidos');
+        $contratos = $this->edoCuentaActivos($request);
 
-        if($request->buscar != '')                            
-            switch($request->criterio){
-                case 'cliente':{
-                    $contratos = $contratos->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $request->buscar . '%');
-                    break;
-                }
-                case 'fraccionamiento':{
-                    $contratos = $contratos->where('lotes.fraccionamiento_id','=',$request->buscar);
-                    if($request->etapa != '')
-                        $contratos = $contratos->where('lotes.etapa_id','=',$request->etapa);
-                    if($request->manzana != '')
-                        $contratos = $contratos->where('lotes.manzana', 'like', '%'. $request->manzana . '%');
-                    if($request->lote != '')
-                        $contratos = $contratos->where('lotes.num_lote','=',$request->lote);
-                    break;
-                }
-            }
-
-        $contratos = $contratos->where('lotes.emp_constructora','=','CONCRETANIA')
-                    ->where('lotes.emp_terreno','=','Grupo Constructor Cumbres')
-                    ->where('contratos.status','!=',0)
-                    ->where('contratos.status','!=',2)
-                    ->orderBy('contratos.id')->paginate(10);
+        $contratos = $contratos->paginate(10);
 
         return [
             'pagination' => [
@@ -813,8 +783,7 @@ class CreditoController extends Controller
         ];
     }
 
-    public function indexEdoCuentaTerrenoExcel(Request $request){
-
+    private function edoCuentaActivos(Request $request){
         $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
                 ->leftJoin('expedientes','contratos.id','=','expedientes.id')
                 ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
@@ -847,8 +816,118 @@ class CreditoController extends Controller
                     ->where('lotes.emp_terreno','=','Grupo Constructor Cumbres')
                     ->where('contratos.status','!=',0)
                     ->where('contratos.status','!=',2)
-                    ->orderBy('contratos.id')
-        ->get();
+                    ->whereRaw('creditos.valor_terreno > creditos.saldo_terreno')
+                    ->orderBy('contratos.id');
+
+        return $contratos;
+    }
+
+    private function edoCuentaCancelados(Request $request){
+        $cancelados = Contrato::join('creditos','contratos.id','=','creditos.id')
+                ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                ->leftJoin('expedientes','contratos.id','=','expedientes.id')
+                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                ->select('contratos.id','creditos.saldo_terreno','creditos.precio_venta',
+                            'creditos.valor_terreno as monto_terreno', 'contratos.status',
+                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana',
+                            'expedientes.valor_escrituras', 'inst_seleccionadas.tipo_credito',
+                            'expedientes.liquidado','expedientes.fecha_firma_esc',
+                            'creditos.num_lote','personal.nombre','personal.apellidos');
+
+        if($request->buscar != '')                            
+            switch($request->criterio){
+                case 'cliente':{
+                    $cancelados = $cancelados->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $request->buscar . '%');
+                    break;
+                }
+                case 'fraccionamiento':{
+                    $cancelados = $cancelados->where('lotes.fraccionamiento_id','=',$request->buscar);
+                    if($request->etapa != '')
+                        $cancelados = $cancelados->where('lotes.etapa_id','=',$request->etapa);
+                    if($request->manzana != '')
+                        $cancelados = $cancelados->where('lotes.manzana', 'like', '%'. $request->manzana . '%');
+                    if($request->lote != '')
+                        $cancelados = $cancelados->where('lotes.num_lote','=',$request->lote);
+                    break;
+                }
+            }
+        
+
+        $cancelados = $cancelados->where('lotes.emp_constructora','=','CONCRETANIA')
+                    ->where('lotes.emp_terreno','=','Grupo Constructor Cumbres')
+                    ->where('contratos.status','=',0)
+                    ->where('inst_seleccionadas.elegido', '=', '1')
+                    ->orderBy('contratos.id')->get();
+
+
+        if(sizeof($cancelados)){
+            foreach ($cancelados as $key => $cancelado) {  
+                $cancelado->devuelto = 0; 
+            }
+        }
+
+        return $cancelados;
+    }
+
+    private function edoCuentaLiquidados(Request $request){
+        $liquidados = Contrato::join('creditos','contratos.id','=','creditos.id')
+                ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                ->leftJoin('expedientes','contratos.id','=','expedientes.id')
+                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                ->select('contratos.id','creditos.saldo_terreno','creditos.precio_venta',
+                            'creditos.valor_terreno as monto_terreno', 'contratos.status',
+                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana',
+                            'expedientes.valor_escrituras', 'inst_seleccionadas.tipo_credito',
+                            'expedientes.liquidado','expedientes.fecha_firma_esc',
+                            'creditos.num_lote','personal.nombre','personal.apellidos');
+
+        if($request->buscar != '')                            
+            switch($request->criterio){
+                case 'cliente':{
+                    $liquidados = $liquidados->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $request->buscar . '%');
+                    break;
+                }
+                case 'fraccionamiento':{
+                    $liquidados = $liquidados->where('lotes.fraccionamiento_id','=',$request->buscar);
+                    if($request->etapa != '')
+                        $liquidados = $liquidados->where('lotes.etapa_id','=',$request->etapa);
+                    if($request->manzana != '')
+                        $liquidados = $liquidados->where('lotes.manzana', 'like', '%'. $request->manzana . '%');
+                    if($request->lote != '')
+                        $liquidados = $liquidados->where('lotes.num_lote','=',$request->lote);
+                    break;
+                }
+            }
+
+        $liquidados = $liquidados->where('lotes.emp_constructora','=','CONCRETANIA')
+                    ->where('lotes.emp_terreno','=','Grupo Constructor Cumbres')
+                    ->where('contratos.status','!=',0)
+                    ->where('contratos.status','!=',2)
+                    ->where('inst_seleccionadas.elegido', '=', '1')
+                    ->where('creditos.saldo_terreno', '>', 0)
+                    ->whereRaw('creditos.valor_terreno = creditos.saldo_terreno')
+                    ->orderBy('contratos.id')->get();
+
+        if(sizeof($liquidados)){
+            foreach ($liquidados as $key => $liquidado) {
+                $liquidado->devuelto = 0;
+                if($liquidado->tipo_credito == 'Crédito Directo' && $liquidado->liquidado == 1 || 
+                    $liquidado->tipo_credito != 'Crédito Directo' && $liquidado->fecha_firma_esc != NULL
+                )
+                    $liquidado->status = 4;
+            }
+        }
+
+        return $liquidados;
+    }
+
+    public function indexEdoCuentaTerrenoExcel(Request $request){
+
+        $contratos = $this->edoCuentaActivos($request);
+
+        $contratos = $contratos->get();
                     
         return Excel::create('Relación de los ingresos de Concretania', function($excel) use ($contratos){
             $excel->sheet('Estado de cuenta', function($sheet) use ($contratos){
@@ -911,6 +990,18 @@ class CreditoController extends Controller
                 $sheet->setBorder($num, 'thin');
             });
         })->download('xls');
+    }
+
+    public function indexTerrenosCerrados(Request $request){
+        $cancelados = $this->edoCuentaCancelados($request);
+        $liquidados = $this->edoCuentaLiquidados($request);
+
+        $cerrados = collect($cancelados)->merge(collect($liquidados));
+
+        return $cerrados;
+        // return ['cancelados' => $cancelados,
+        //         'liquidados' => $liquidados
+        //     ];
     }
 
 }
