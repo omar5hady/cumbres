@@ -273,7 +273,7 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                     <div style="float:left;">
+                            <div style="float:left;">
                             <form  method="post" @submit="formSubmitPlanos" enctype="multipart/form-data">
 
                                     <strong>Sube aqui los planos del fraccionamiento</strong>

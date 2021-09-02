@@ -55,6 +55,8 @@ class CreateLotesTable extends Migration
             $table->string('emp_constructora')->default('Grupo Constructor Cumbres');
 
             $table->string('nombre_archivo')->nullable();
+            $table->string('colindancias')->nullable();
+            $table->float('indivisos',8,2)->default(0);
 
             $table->date('fecha_entrega_obra')->nullable();
 

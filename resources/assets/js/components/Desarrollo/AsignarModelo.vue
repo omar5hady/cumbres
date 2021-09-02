@@ -146,7 +146,10 @@
 
                                         <td class="td2">
                                             <button type="button" @click="abrirModal('lote','actualizar',lote)" class="btn btn-warning btn-sm">
-                                            <i class="icon-pencil"></i>
+                                                <i class="icon-pencil"></i>
+                                            </button>
+                                            <button v-if="lote.tipo == 2" title="Subir colindancias" type="button" @click="abrirModal('lote','subirArchivo',lote)" class="btn btn-dark btn-sm">
+                                                <i class="icon-cloud-upload"></i>
                                             </button>
                                             <!-- <button type="button" class="btn btn-danger btn-sm" @click="eliminarLote(lote)">
                                             <i class="icon-trash"></i>
@@ -217,7 +220,7 @@
                               <span aria-hidden="true">×</span>
                             </button>
                         </div>
-                        <div class="modal-body">
+                        <div class="modal-body" v-if="tipoAccion == 2">
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
 
                                 <div class="form-group row">
@@ -418,6 +421,28 @@
                                 </div>
                             </form>
                         </div>
+
+                        <div class="modal-body" v-if="tipoAccion == 1">
+                            <form class="form-horizontal"  method="post" @submit="formSubmit" enctype="multipart/form-data">
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Colindancias</label>
+                                    <div class="col-md-7">
+                                       <input type="file" class="form-control" v-on:change="onImageChange">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="submit" class="btn btn-success">Cargar</button>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-2">
+                                        <a  title="Descargar colindancias" v-if ="colindancia" class="btn btn-primary btn-sm" v-bind:href="'/lote/colindancias/'+ colindancia">
+                                            <i class="fa fa-file-archive-o fa-lg">&nbsp;Descargar</i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
                         <!-- Botones del modal -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
@@ -595,7 +620,9 @@
                 b_empresa:'',
                 b_empresa2:'',
 
-                fecha_termino_ventas: ''
+                fecha_termino_ventas: '',
+                archivo:'',
+                colindancia:''
             }
         },
         computed:{
@@ -635,6 +662,41 @@
 
         
         methods : {
+            onImageChange(e){
+                console.log(e.target.files[0]);
+                this.archivo = e.target.files[0];
+            },
+
+            formSubmit(e) {
+
+                e.preventDefault();
+
+                let currentObj = this;
+            
+                let formData = new FormData();
+           
+                formData.append('archivo', this.archivo);
+                formData.append('id', this.id);
+                let me = this;
+                axios.post('/lote/subirColindancias', formData)
+                .then(function (response) {
+                    currentObj.success = response.data.success;
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo guardado correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+                    me.cerrarModal();
+                    me.listarLote(me.pagination.current_page,me.buscar,me.buscar2,me.buscar3,me.b_modelo,me.b_lote,me.b_habilitado,me.criterio);
+
+                }).catch(function (error) {
+                    currentObj.output = error;
+                });
+
+            },
+
             selectAll: function() {
             this.lotes_ini = [];
 
@@ -980,6 +1042,8 @@
                 
                 this.errorLote = 0;
                 this.errorMostrarMsjLote = [];
+                this.archivo = '';
+                this.id = '';
 
             },
             cerrarModal2(){
@@ -1000,14 +1064,14 @@
                 switch(lote){
                     case "lote":
                     {
-                   if(this.lotes_ini.length<1 && accion=='asignar'){
-                    Swal({
-                    title: 'No se ha seleccionado ningun lote',
-                    animation: false,
-                    customClass: 'animated tada'
-                    })
-                    return;
-                }
+                        if(this.lotes_ini.length<1 && accion=='asignar'){
+                            Swal({
+                                title: 'No se ha seleccionado ningun lote',
+                                animation: false,
+                                customClass: 'animated tada'
+                            })
+                            return;
+                        }
                         switch(accion){
                             case 'actualizar':
                             {
@@ -1057,6 +1121,17 @@
                                 this.etapa_id=0;
                                 this.modelo_id=0;
                                 this.fraccionamiento_id=0;
+                                break;
+                            }
+
+                            case 'subirArchivo':
+                            {
+                                this.id = data['id'];
+                                this.archivo = '';
+                                this.tituloModal='Subir Colindancias';
+                                this.modal = 1;
+                                this.tipoAccion = 1;
+                                this.colindancia = data['colindancias'];
                                 break;
                             }
 

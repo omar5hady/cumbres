@@ -60,7 +60,6 @@ class FraccionamientoController extends Controller
         ];
     }
 
-
     public function excelIndex(Request $request)
     {
 
@@ -193,7 +192,6 @@ class FraccionamientoController extends Controller
 
     }
 
-    
     //funcion para actualizar los datos
     public function update(Request $request)
     {
@@ -366,11 +364,10 @@ class FraccionamientoController extends Controller
          return response()->json(['success'=>'You have successfully upload file.']);
      }
  
-     public function downloadFilePlanos($fileName){
-         
-         $pathtoFile = public_path().'/files/fraccionamientos/planos/'.$fileName;
-         return response()->download($pathtoFile);
-     }
+    public function downloadFilePlanos($fileName){       
+        $pathtoFile = public_path().'/files/fraccionamientos/planos/'.$fileName;
+        return response()->download($pathtoFile);
+    }
 
 
       //funciones para carga y descarga de archivos de escrituras

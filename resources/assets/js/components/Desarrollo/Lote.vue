@@ -97,6 +97,7 @@
                                         <th>Calle</th>
                                         <th># Oficial</th>
                                         <th style="width:8%">Terreno m&sup2;</th>
+                                        <th style="width:8%">% Proindiviso</th>
                                         <th>Clave Catastral</th>
                                         <th>Modelo</th>
                                         <th>Construc. m&sup2;</th>
@@ -130,6 +131,7 @@
                                         <td class="td2" v-if="!lote.interior" v-text="lote.numero"></td>
                                         <td class="td2" v-else v-text="lote.numero + '-' + lote.interior" ></td>
                                         <td class="td2" v-text="lote.terreno"></td>
+                                        <td class="td2" v-text="lote.indivisos+'%'"></td>
                                         <td class="td2" v-text="lote.clv_catastral"></td>
                                         <td class="td2">
                                             <span v-if = "lote.modelo!='Por Asignar'" class="badge badge-success" v-text="lote.modelo"></span>
@@ -205,24 +207,22 @@
                                 
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Manzana</label>
-                                    <div class="col-md-4">
+                                    <div class="col-md-5">
                                         <input type="text" v-model="manzana" class="form-control" placeholder="Manzana">
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input"># Lote</label>
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <input type="text" v-model="num_lote" class="form-control" placeholder="num_lote">
+                                    </div>
+                                    <label class="col-md-2 form-control-label" for="text-input">Sublote</label>
+                                    <div class="col-md-3">
+                                        <input type="text" v-model="sublote" class="form-control" placeholder="Sublote">
                                     </div>
                                 </div>
 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Duplex</label>
-                                    <div class="col-md-4">
-                                        <input type="text" v-model="sublote" class="form-control" placeholder="Duplex">
-                                    </div>
-                                </div>
 
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Dirección</label>
@@ -239,23 +239,23 @@
                                 
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Terreno (mts&sup2;)</label>
-                                    <div class="col-md-4" >
-                                     
+                                    <div class="col-md-2" >
                                         <input type="text"  v-model="terreno" class="form-control" placeholder="Terreno">
-                                
                                     </div>
-                                </div>
-                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Construcción (mts&sup2;)</label>
-                                    <div class="col-md-7">
-
+                                    <div class="col-md-2">
                                         <input type="text" v-model="construccion" disabled class="form-control" placeholder="Construccion">
-                                  
                                     </div>
                                 </div>
-                                
-                                
-                                
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">% Proindiviso</label>
+                                    <div class="col-md-2" >
+                                        <input type="number"  v-model="indivisos" class="form-control" placeholder="Proindivisos">
+                                    </div>
+                                </div>
+
+                              
                                 <!-- Div para mostrar los errores que mande validerModelo -->
                                 <div v-show="errorLote" class="form-group row div-error">
                                     <div class="text-center text-error">
@@ -484,7 +484,8 @@
                 b_empresa:'',
                 b_empresa2:'',
                 arrayAllEtapas:[],
-                b_etapa:''
+                b_etapa:'',
+                indivisos:0
             }
         },
         computed:{
@@ -759,6 +760,7 @@
                     'clv_catastral': this.clv_catastral,
                     'etapa_servicios':this.etapa_servicios,
                     'comentarios': this.comentarios,
+                    'indivisos': this.indivisos
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
@@ -829,6 +831,7 @@
                             'clv_catastral': me.clv_catastral,
                             'etapa_servicios': me.etapa_servicios,
                             'comentarios': me.comentarios,
+                            'indivisos': me.indivisos
                             
                         }).then(function (response){
                             me.cerrarModal();
@@ -988,6 +991,7 @@
                 this.etapa_servicios='';
                 this.comentarios= '';
                 this.modal5 = 0;
+                this.indivisos = 0;
                 
                 this.errorLote = 0;
                 this.errorMostrarMsjLote = [];
@@ -1035,6 +1039,7 @@
                                 this.clv_catastral='';
                                 this.etapa_servicios='';
                                 this.tipoAccion = 1;
+                                this.indivisos = 0;
                                 break;
                             }
                             case 'actualizar':
@@ -1060,6 +1065,7 @@
                                 this.clv_catastral=data['clv_catastral'];
                                 this.etapa_servicios=data['etapa_servicios'];
                                 this.comentarios=data['comentarios'];
+                                this.indivisos = data['indivisos'];
                                 break;
                             }
 

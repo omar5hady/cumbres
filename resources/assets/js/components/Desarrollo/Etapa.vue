@@ -39,6 +39,7 @@
                                         <th>Opciones</th>
                                         <th>Fraccionamiento</th>
                                         <th>Etapa</th>
+                                        <th>Terreno m&sup2;</th>
                                         <th>Fecha de inicio </th>
                                         <th>Fecha de termino</th>
                                         <th>Encargado</th>
@@ -57,6 +58,7 @@
                                         </td>
                                         <td v-text="etapa.fraccionamiento"></td>
                                         <td v-text="etapa.num_etapa"></td>
+                                        <td>{{etapa.terreno_m2}}m&sup2;</td>
                                         <td v-text="etapa.f_ini"></td>
                                         <td v-text="etapa.f_fin"></td>
                                         <td v-text="etapa.name"></td>
@@ -108,6 +110,12 @@
                                     <label class="col-md-3 form-control-label" for="text-input">Numero de etapa</label>
                                     <div class="col-md-4">
                                         <input type="text" v-model="num_etapa" class="form-control" placeholder="# de etapa">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Superficie de terreno</label>
+                                    <div class="col-md-4">
+                                        <input type="number" v-model="terreno_m2" class="form-control" placeholder="Terreno">
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -211,6 +219,7 @@
                 personal_id : 0,
                 arrayEtapa : [],
                 modal : 0,
+                terreno_m2 : 0,
                 tituloModal : '',
                 tipoAccion: 0,
                 errorEtapa : 0,
@@ -333,6 +342,7 @@
                 axios.post('/etapa/registrar',{
                     'fraccionamiento_id': this.fraccionamiento_id,
                     'num_etapa': this.num_etapa,
+                    'terreno_m2':this.terreno_m2,
                     'f_ini': this.f_ini,
                     'f_fin': this.f_fin,
                     'personal_id': this.personal_id
@@ -374,6 +384,7 @@
                     'id' : this.id,
                     'fraccionamiento_id': this.fraccionamiento_id,
                     'num_etapa': this.num_etapa,
+                    'terreno_m2':this.terreno_m2,
                     'f_ini': this.f_ini,
                     'f_fin': this.f_fin,
                     'personal_id': this.personal_id,
@@ -464,6 +475,7 @@
                 this.errorEtapa = 0;
                 this.errorMostrarMsjEtapa = [];
                 this.contador=0;
+                this.terreno_m2=0;
 
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
@@ -482,6 +494,7 @@
                                 this.f_fin = '';
                                 this.personal_id = '0';
                                 this.tipoAccion = 1;
+                                this.terreno_m2 = 0;
                                 break;
                             }
                             case 'actualizar':
@@ -497,6 +510,7 @@
                                 this.f_fin=data['f_fin'];
                                 this.personal_id=data['personal_id'];
                                 this.fecha_ini_venta = data['fecha_ini_venta'];
+                                this.terreno_m2 = data['terreno_m2'];
                                 break;
                             }
                         }

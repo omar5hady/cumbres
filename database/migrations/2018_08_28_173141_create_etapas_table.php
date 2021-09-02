@@ -36,6 +36,7 @@ class CreateEtapasTable extends Migration
             $table->string('sucursal_admin',50)->nullable();
             $table->string('titular_admin',100)->nullable();
             $table->string('banco_admin',50)->nullable();
+            $table->float('terreno_m2',10,2)->default(0);
 
             $table->date('fecha_ini_venta')->nullable();
 

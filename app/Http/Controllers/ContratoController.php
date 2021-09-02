@@ -693,19 +693,32 @@ class ContratoController extends Controller
         $lote->contrato = 1;
 
         //////
-                    //Guardar el costo del lote
+            //Guardar el costo del lote
+            $loteId = $credito->lote_id;
+            //Guardar el costo del lote
                 $etapa = Lote::join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                    ->select('etapas.id', 'lotes.terreno')
-                ->where('lotes.id', '=', $credito->lote_id)->get();
+                            ->join('modelos','lotes.modelo_id','=','modelos.id')
+                            ->select('etapas.id', 'lotes.terreno','etapas.terreno_m2 as etapaTerreno','modelos.tipo','lotes.indivisos')
+                ->where('lotes.id', '=', $loteId)->get();
 
                 $precioT = Precios_terreno::where('etapa_id', '=', $etapa[0]->id)
                     ->where('estatus', '=', 1)
                 ->first();
 
+                
+
                 if($precioT){
-                    $credito->valor_terreno = ($precioT->precio_m2 * $etapa[0]->terreno) + $precioT->total_gastos;
-                  
+                    if($etapa[0]->tipo == 2){
+                        $credito->valor_terreno = ($etapa[0]->etapaTerreno*($etapa[0]->indivisos/100))*$precioT->precio_m2;
+                    }
+                    else{
+                        $credito->valor_terreno = ($precioT->precio_m2* $etapa[0]->terreno) + $precioT->total_gastos;
+                        
+                    //  $credito->valor_terreno = $credito->valor_terreno * 1.10;
+                        
+                    }
                     $credito->porcentaje_terreno = ((($credito->valor_terreno)*100)/$credito->precio_venta);
+                    
                 }
             //Guardar el costo del lote
 
@@ -781,23 +794,34 @@ class ContratoController extends Controller
             $credito->descripcion_paquete = $request->descripcion_paquete;
             $credito->costo_paquete = $request->costo_paquete;
             $credito->precio_venta = $request->precio_venta;
-
+            
+            $loteId = $credito->lote_id;
             //Guardar el costo del lote
                 $etapa = Lote::join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                    ->select('etapas.id', 'lotes.terreno')
-                ->where('lotes.id', '=', $credito->lote_id)->get();
+                            ->join('modelos','lotes.modelo_id','=','modelos.id')
+                            ->select('etapas.id', 'lotes.terreno','etapas.terreno_m2 as etapaTerreno','modelos.tipo','lotes.indivisos')
+                ->where('lotes.id', '=', $loteId)->get();
 
                 $precioT = Precios_terreno::where('etapa_id', '=', $etapa[0]->id)
                     ->where('estatus', '=', 1)
                 ->first();
 
+                
+
                 if($precioT){
-                    $credito->valor_terreno = ($precioT->precio_m2* $etapa[0]->terreno) + $precioT->total_gastos;
-                  //  $credito->valor_terreno = $credito->valor_terreno * 1.10;
+                    if($etapa[0]->tipo == 2){
+                        $credito->valor_terreno = ($etapa[0]->etapaTerreno*($etapa[0]->indivisos/100))*$precioT->precio_m2;
+                    }
+                    else{
+                        $credito->valor_terreno = ($precioT->precio_m2* $etapa[0]->terreno) + $precioT->total_gastos;
+                        
+                    //  $credito->valor_terreno = $credito->valor_terreno * 1.10;
+                        
+                    }
                     $credito->porcentaje_terreno = ((($credito->valor_terreno)*100)/$credito->precio_venta);
+                    
                 }
             //Guardar el costo del lote
-
             $credito->save();
 
             if($vendedor->tipo == 1){
@@ -1349,6 +1373,7 @@ class ContratoController extends Controller
             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
             ->join('personal as v', 'clientes.vendedor_id', 'v.id')
             ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+            ->join('modelos','lotes.modelo_id','=','modelos.id')
             ->join('fraccionamientos', 'lotes.fraccionamiento_id', '=', 'fraccionamientos.id')
             ->select(
                 'creditos.id',
@@ -1368,8 +1393,11 @@ class ContratoController extends Controller
                 'lotes.regimen_condom',
                 'lotes.emp_constructora',
                 'lotes.emp_terreno',
+                'lotes.indivisos',
+                'modelos.tipo',
 
                 'fraccionamientos.ciudad as ciudad_proy','fraccionamientos.estado as estado_proy',
+                'fraccionamientos.calle as direccionProyecto',
 
                 'personal.nombre',
                 'personal.apellidos',
@@ -1529,10 +1557,16 @@ class ContratoController extends Controller
             }
         }
 
-        if($contratoPromesa[0]->emp_constructora == $contratoPromesa[0]->emp_terreno)
-            $pdf = \PDF::loadview('pdf.contratos.contratoDePromesaCredito', ['contratoPromesa' => $contratoPromesa, 'pagos' => $pagos]);
-        else
-            $pdf = \PDF::loadview('pdf.contratos.contratoDePromesaCredito2', ['contratoPromesa' => $contratoPromesa, 'pagos' => $pagos]);
+        if($contratoPromesa[0]->tipo == 2){
+            $pdf = \PDF::loadview('pdf.contratos.contratoCreditoDepartamento', ['contratoPromesa' => $contratoPromesa, 'pagos' => $pagos]);   
+        }
+        else{
+            if($contratoPromesa[0]->emp_constructora == $contratoPromesa[0]->emp_terreno)
+                $pdf = \PDF::loadview('pdf.contratos.contratoDePromesaCredito', ['contratoPromesa' => $contratoPromesa, 'pagos' => $pagos]);
+            else
+                $pdf = \PDF::loadview('pdf.contratos.contratoDePromesaCredito2', ['contratoPromesa' => $contratoPromesa, 'pagos' => $pagos]);
+        }
+            
         return //['contratoPromesa' => $contratoPromesa, 'pagos' => $pagos];
         $pdf->stream('contrato_promesa_credito.pdf');
     }
@@ -2126,18 +2160,31 @@ class ContratoController extends Controller
             $contrato->saldo = $credito->precio_venta + $sumaTotal;
 
             //Guardar el costo del lote
-            $etapa = Lote::join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
-                ->select('etapas.id', 'lotes.terreno')
-                ->where('lotes.id', '=', $credito->lote_id)->get();
+            $loteId = $credito->lote_id;
+            //Guardar el costo del lote
+                $etapa = Lote::join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
+                            ->join('modelos','lotes.modelo_id','=','modelos.id')
+                            ->select('etapas.id', 'lotes.terreno','etapas.terreno_m2 as etapaTerreno','modelos.tipo','lotes.indivisos')
+                ->where('lotes.id', '=', $loteId)->get();
 
                 $precioT = Precios_terreno::where('etapa_id', '=', $etapa[0]->id)
                     ->where('estatus', '=', 1)
                 ->first();
 
+                
+
                 if($precioT){
-                    $credito->valor_terreno = ($precioT->precio_m2* $etapa[0]->terreno) + $precioT->total_gastos;
-                   // $credito->valor_terreno = $credito->valor_terreno * 1.10;
+                    if($etapa[0]->tipo == 2){
+                        $credito->valor_terreno = ($etapa[0]->etapaTerreno*($etapa[0]->indivisos/100))*$precioT->precio_m2;
+                    }
+                    else{
+                        $credito->valor_terreno = ($precioT->precio_m2* $etapa[0]->terreno) + $precioT->total_gastos;
+                        
+                    //  $credito->valor_terreno = $credito->valor_terreno * 1.10;
+                        
+                    }
                     $credito->porcentaje_terreno = ((($credito->valor_terreno)*100)/$credito->precio_venta);
+                    
                 }
             //Guardar el costo del lote
 
@@ -2714,5 +2761,18 @@ class ContratoController extends Controller
         $contrato = Contrato::findOrFail($request->id);
         $contrato->exp_bono = 1;
         $contrato->save();
+    }
+
+    public function printAnexoA($id){
+        $contrato =  Credito::join('lotes','creditos.lote_id','=','lotes.id')
+                        //->join('etapas','lotes.etapa_id','=','etapas.id')
+                        ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                        ->select('lotes.colindancias','fraccionamientos.logo_fracc')
+                        ->where('creditos.id','=',1221)
+                        ->first();
+
+        // return $contrato;
+        $pdf = \PDF::loadview('pdf.contratos.anexoA', ['contrato' => $contrato]);
+        return $pdf->stream('anexoA.pdf');
     }
 }

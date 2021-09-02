@@ -55,9 +55,9 @@ I.- Declara <strong>EL PROMITENTE VENDEDOR</strong>, por conducto de su represen
 <p>
     @if($contratoPromesa[0]->emp_constructora == 'Grupo Constructor Cumbres')
         a) Que es una sociedad mercantil constituida de acuerdo a la legislación de la República Mexicana, mediante Escritura Pública número tres,
-        del tomo cuarenta y siete, otorgada ante la fe del Licenciado Leopoldo de la Garza Marroquín, Notario Público numero 33, 
+        del tomo cuarenta y siete, otorgada ante la fe del Licenciado Leopoldo de la Garza Marroquín, Notario Público número 33, 
         con ejercicio en esta ciudad, con fecha ocho de diciembre de mil novecientos noventa y nueve, y cuyo primer testimonio obra inscrito en el 
-        Registro Publico de la Propiedad y de Comercio, de esta ciudad, bajo la inscripción numero tres del folio mercantil y 
+        Registro Público de la Propiedad y de Comercio, de esta ciudad, bajo la inscripción número tres del folio mercantil y 
         folio de muebles número setenta, desde el día diecinueve de enero del dos mil.
     @else
         a) QQue es una sociedad mercantil constituida de acuerdo a la legislación de la República Mexicana,

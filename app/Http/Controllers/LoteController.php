@@ -58,6 +58,7 @@ class LoteController extends Controller
                   'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                   'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
                   'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
+                  'lotes.colindancias', 'lotes.indivisos', 'modelos.tipo',
                   'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios',
                   'lotes.regimen_condom','lotes.extra', 'lotes.extra_ext','lotes.emp_terreno', 'lotes.emp_constructora',
                   'lotes.fecha_termino_ventas');
@@ -127,7 +128,8 @@ class LoteController extends Controller
             ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
                     'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                     'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
-                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
+                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios', 
+                    'lotes.colindancias', 'lotes.indivisos', 'modelos.tipo',
                     'lotes.emp_terreno', 'lotes.emp_constructora',
                     'lotes.clv_catastral','lotes.etapa_servicios');
         
@@ -205,6 +207,7 @@ class LoteController extends Controller
                 $lote->clv_catastral = $request->clv_catastral;
                 $lote->etapa_servicios = $request ->etapa_servicios;
                 $lote->arquitecto_id = 1;
+                $lote->indivisos = $request->indivisos;
                 $lote->save();   
 
                 $licencia = new Licencia();
@@ -241,6 +244,7 @@ class LoteController extends Controller
         $lote->construccion = $request->construccion;
         $lote->clv_catastral = $request->clv_catastral;
         $lote->etapa_servicios = $request ->etapa_servicios;
+        $lote->indivisos = $request->indivisos;
         
 
         $lote->save();
@@ -1982,6 +1986,34 @@ class LoteController extends Controller
 
         return ['empresas'=>$empresas];
     }
+
+    public function formSubmitColindancias(Request $request)
+    {
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $lote = Lote::findOrFail($request->id);
+    
+        //$fileName = time().$request->archivo->getClientOriginalName().'.'.$request->archivo->getClientOriginalExtension();
+        $fileName = time().$request->archivo->getClientOriginalName();
+            
+            $pathAnterior = public_path() . '/files/lotes/colindancias/' . $lote->colindancias;
+            File::delete($pathAnterior);
+
+            $moved =  $request->archivo->move(public_path('/files/lotes/colindancias'), $fileName);
+    
+            if($moved){
+                $lote->colindancias = $fileName;
+                $lote->save(); //Insert
+            }
+            
+            return response()->json(['success'=>'You have successfully upload file.']);
+    }
+    
+    public function downloadFile($fileName){
+        
+        $pathtoFile = public_path().'/files/lotes/colindancias/'.$fileName;
+        return response()->download($pathtoFile);
+    }
+
 
 
 }

@@ -34,7 +34,7 @@ class EtapaController extends Controller
             ->join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
             ->select('etapas.num_etapa','etapas.f_ini',
                 'etapas.f_fin','etapas.id','etapas.personal_id', 'etapas.fecha_ini_venta',
-                'etapas.factibilidad',
+                'etapas.factibilidad', 'etapas.terreno_m2',
                 DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
                 'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento', 'etapas.plantilla_carta_servicios2',
                 'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento', 'etapas.costo_mantenimiento2','etapas.plantilla_telecom','etapas.empresas_telecom',
@@ -174,6 +174,7 @@ class EtapaController extends Controller
             $etapa->f_ini = $request->f_ini;
             $etapa->f_fin = $request->f_fin;
             $etapa->personal_id = $request->personal_id;
+            $etapa->terreno_m2 = $request->terreno_m2;
             $etapa->save();
 
             $precio_etapa = new Precio_etapa();
@@ -212,6 +213,7 @@ class EtapaController extends Controller
         $etapa->f_fin = $request->f_fin;
         $etapa->personal_id = $request->personal_id;
         $etapa->fecha_ini_venta = $request->fecha_ini_venta;
+        $etapa->terreno_m2 = $request->terreno_m2;
         $etapa->save();
     }
 

@@ -264,6 +264,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/lotes/actualizar/ajuste','LoteController@updateAjuste');
         Route::put('/lotes/masa/empresa','LoteController@asignarEmpresa');
         Route::get('/lotes/empresa/select','LoteController@selectEmpresaConstructora'); 
+
+        Route::post('/lote/subirColindancias','LoteController@formSubmitColindancias');
+        Route::get('/lote/colindancias/{fileName}' , 'LoteController@downloadFile');
         
     ////////////////////        RUTAS APARTADOS    /////////////////////////////////
         Route::post('/apartado/registrar','ApartadoController@store');
@@ -538,6 +541,7 @@ Route::group(['middleware' => ['auth']],function(){
     Route::get('/get/cotizacion/editar','CalculadoraLotesController@getCotizacionEdita');
 
     Route::get('/contrato/contratoLote/pdf/{id}','ContratoController@contratoLote')->name('contrato_promesa_credito.pdf');
+    Route::get('/contrato/anexoA/{id}','ContratoController@printAnexoA')->name('anexoA.pdf');
 
     /**********************************RUTAS AVANCE*************************** */
         Route::get('/avance','AvanceController@index');

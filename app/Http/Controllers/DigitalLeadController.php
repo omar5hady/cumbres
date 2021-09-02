@@ -87,7 +87,7 @@ class DigitalLeadController extends Controller
                     $sheet->row($index+2, [
                         $lead->nombre, 
                         $lead->apellidos,
-                        '+'.$lead->clv_lada.$lead->celular,
+                        $lead->clv_lada.' '.$lead->celular,
                         $lead->email,
                         $proyecto,
                         $lead->modelo_interes,
