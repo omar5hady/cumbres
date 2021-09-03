@@ -21,7 +21,7 @@
                     </button>
                    
                     <div class="px-3 py-2 text-right">
-                        <button type="button" class="btn btn-light rounded" @click="setEnterado(rem.id)">
+                        <button type="button" class="btn btn-light rounded" data-dismiss="alert" @click="setEnterado(rem.id)">
                             <span aria-hidden="true">Enterado</span>
                         </button>
                     </div>
@@ -43,7 +43,7 @@
                     Tel <a :href="'tel:+'+rem.celular" v-text="rem.celular"></a>
                     <br>
                     <div class="px-3 py-2 text-right">
-                        <button type="button" class="btn btn-dark rounded" @click="enterado(rem.id)">
+                        <button type="button" class="btn btn-dark rounded" data-dismiss="alert" @click="enterado(rem.id)">
                             <span aria-hidden="true">Enterado</span>
                         </button>
                     </div>
@@ -65,7 +65,7 @@
                     Tel <a :href="'tel:+'+rem.celular" v-text="rem.celular"></a>
                     <br>
                     <div class="px-3 py-2 text-right">
-                        <button type="button" class="btn btn-dark rounded" @click="enterado(rem.id)">
+                        <button type="button" class="btn btn-dark rounded" data-dismiss="alert" @click="enterado(rem.id)">
                             <span aria-hidden="true">Enterado</span>
                         </button>
                     </div>
@@ -464,7 +464,7 @@ export default {
           'id': id,
         })
         .then(function(response) {
-          location.reload();
+          //location.reload();
         })
 
         .catch(function(error) {
@@ -478,7 +478,7 @@ export default {
           'id': id,
         })
         .then(function(response) {
-          location.reload();
+          //location.reload();
         })
 
         .catch(function(error) {

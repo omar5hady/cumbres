@@ -31,4 +31,15 @@ class NotificacionesAvisosController extends Controller
         $aviso->enterado = 1;
         $aviso->save();
     }
+
+    public function indexAvisos(Request $request){
+        $aviso = Notificacion_aviso::join('personal','notificaciones_avisos.user_id','=','personal.id')
+                ->select('notificaciones_avisos.id','notificaciones_avisos.mensaje',
+                            'notificaciones_avisos.periodo','notificaciones_avisos.created_at',
+                            'personal.nombre', 'personal.apellidos'    
+                        )
+                ->where('periodo','!=',0)
+                ->get();
+        return $aviso;
+    }
 }

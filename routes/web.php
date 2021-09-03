@@ -31,6 +31,8 @@ Route::group(['middleware' => ['auth']],function(){
     //Notificaciones
     Route::post('/notification/get','NotificationController@get');
     Route::get('/notification/getListado','NotificationController@getListado');
+    Route::get('/notification/getRol','NotificationController@getRol');
+    Route::get('/notification/getUser','NotificationController@getUser');
 
     //para desloguearse
     Route::post('/logout','Auth\LoginController@logout')->name('logout');
@@ -1020,6 +1022,8 @@ Route::group(['middleware' => ['auth']],function(){
         ///////////////////// RUTAS MENSAJES NOTIFICACION GENERAL /////////////////////
         Route::get('/notificacion/gral', 'NotificacionesAvisosController@getAvisos');
         Route::put('/notificacion/setEnterado','NotificacionesAvisosController@setEnterado');
+
+        Route::get('/notificacion/indexAvisos', 'NotificacionesAvisosController@indexAvisos');
         
 
 

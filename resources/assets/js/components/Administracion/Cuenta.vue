@@ -116,7 +116,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Empresa</label>
                                     <div class="col-md-9">
-                                        <select class="form-control" v-model="b_empresa" >
+                                        <select class="form-control" v-model="empresa" >
                                             <option value="">Empresa</option>
                                             <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
                                         </select>
@@ -273,7 +273,8 @@
                 axios.post('/cuenta/registrar',{
                     'num_cuenta': this.num_cuenta,
                     'sucursal': this.sucursal,
-                    'banco': this.banco
+                    'banco': this.banco,
+                    'empresa' : this.empresa
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
@@ -307,7 +308,8 @@
                     'num_cuenta': this.num_cuenta,
                     'sucursal': this.sucursal,
                     'banco': this.banco,
-                    'id' : this.id
+                    'id' : this.id,
+                    'empresa' : this.empresa
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal();
@@ -396,6 +398,7 @@
                         this.num_cuenta = '';
                         this.banco = '';
                         this.tipoAccion = 1;
+                        this.empresa = 'Grupo Constructor Cumbres';
                         break;
                     }
                     case 'actualizar':
@@ -408,6 +411,7 @@
                         this.sucursal=data['sucursal'];
                         this.banco=data['banco'];
                         this.id=data['id'];
+                        this.empresa = data['empresa'];
                         break;
                     }
                 }

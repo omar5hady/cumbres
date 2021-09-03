@@ -527,10 +527,10 @@
             <puente-bbva user-name="{{Auth::user()->usuario}}"></puente-bbva>
         </template>
 
+        <template v-if="menu==264">
+            <notificacion-component></notificacion-component>
+        </template>
 
-        
-
-        
     @endif
 
        

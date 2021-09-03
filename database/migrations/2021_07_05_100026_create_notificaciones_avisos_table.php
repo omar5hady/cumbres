@@ -18,6 +18,7 @@ class CreateNotificacionesAvisosTable extends Migration
             $table->text('mensaje');
             $table->integer('user_id');
             $table->boolean('enterado')->default(0);
+            $table->integer('periodo')->default(0);
             $table->timestamps();
         });
     }
