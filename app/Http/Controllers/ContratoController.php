@@ -37,6 +37,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\NotificationReceived;
 use App\User;
 use App\Notifications\NotifyAdmin;
+use App\Http\Controllers\ReubicacionController;
 use Excel;
 use File;
 
@@ -79,6 +80,7 @@ class ContratoController extends Controller
                     'creditos.etapa',
                     'creditos.manzana',
                     'creditos.num_lote',
+                    'creditos.valor_terreno',
                     'lotes.sobreprecio',
                     'creditos.modelo',
                     'creditos.precio_base',
@@ -2278,6 +2280,25 @@ class ContratoController extends Controller
 
             $credito = Credito::findOrFail($request->id);
             $contrato = Contrato::findOrFail($request->id);
+
+            $institucion = inst_seleccionada::select('tipo_credito','institucion')
+                        ->where('credito_id','=',$credito->id)
+                        ->where('elegido','=',1)->first();
+            
+            $reubicacion = new ReubicacionController();
+            $reubicacion->createReubicacion(
+                                $credito->id,
+                                $credito->lote_id,
+                                $credito->prospecto_id,
+                                $credito->vendedor_id,
+                                $credito->promocion,
+                                $institucion->tipo_credito,
+                                $institucion->institucion,
+                                $credito->valor_terreno,
+                                $request->observacion,
+                                ''
+                            );
+
             $contrato->avance_lote = $new_avance->avance;
             $credito->fraccionamiento = $request->fraccionamiento;
             $credito->etapa = $request->etapa;

@@ -111,4 +111,13 @@ class PromocionController extends Controller
         $promocion = Promocion::findOrFail($request->id);
         $promocion->delete();
     }
+
+    public function selectPromocion(Request $request){
+        $promociones = Promocion::join('lotes_promocion','promociones.id','=','lotes_promocion.promocion_id')
+                            ->select('promociones.id','promociones.descripcion','promociones.nombre','promociones.v_ini')
+                            ->where('lotes_promocion.lote_id','=',$request->lote)
+                            ->get();
+
+        return $promociones;
+    }
 }

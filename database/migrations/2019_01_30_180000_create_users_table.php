@@ -97,6 +97,7 @@ class CreateUsersTable extends Migration
             $table->boolean('docs')->default(0);
             $table->boolean('equipamientos')->default(0);
             $table->boolean('digital_lead')->default(0);
+            $table->boolean('reubicaciones')->default(0);
 
             //Saldos
             $table->boolean('edo_cuenta')->default(0);

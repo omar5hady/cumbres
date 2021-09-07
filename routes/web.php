@@ -408,6 +408,7 @@ Route::group(['middleware' => ['auth']],function(){
         
     ////////////////////        RUTAS PROMOCIONES    /////////////////////////////////
         Route::get('/promocion','PromocionController@index');
+        Route::get('/selectPromocion','PromocionController@selectPromocion');
         Route::post('/promocion/registrar','PromocionController@store');
         Route::put('/promocion/actualizar','PromocionController@update');
         Route::delete('/promocion/eliminar','PromocionController@destroy');
@@ -1071,6 +1072,10 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::post('/basePresupuestal/storeBases', 'BasePresupuestalController@storeBases');
         Route::get('/basePresupuestal/getBaseActiva', 'BasePresupuestalController@getBaseActiva');
+
+        /////////////////// RUTAS REUBICACIONES ////////////////////////
+        Route::get('/reubicaciones/getReubicaciones','ReubicacionController@getReubicaciones');
+        Route::post('/reubicaciones/store','ReubicacionController@store');
 
 
     });

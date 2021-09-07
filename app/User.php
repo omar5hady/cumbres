@@ -85,6 +85,7 @@ class User extends Authenticatable
         'docs',
         'equipamientos',
         'digital_lead',
+        'reubicaciones',
 
         //Saldos
         'edo_cuenta',

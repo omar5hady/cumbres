@@ -429,7 +429,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="prospecto in arraySimulaciones" :key="prospecto.id" v-on:dblclick="obtenerDatosCredito(prospecto.id)" title="Doble click">
+                                        <tr v-for="prospecto in arraySimulaciones" :key="prospecto.id" v-on:dblclick="obtenerDatosCredito(prospecto.id), nuevo = 1" title="Doble click">
                                             <td class="td2" v-text="prospecto.id"></td>
                                             <td class="td2">
                                                 <a href="#" v-text="prospecto.nombre.toUpperCase() + ' ' + prospecto.apellidos.toUpperCase() "></a>
@@ -1930,6 +1930,16 @@
                                     </select>
                                 </div>
                             </div>
+
+                            <div class="form-group row" v-if="tipoAccion==2 && nuevo == 0">
+                                <label class="col-md-3 form-control-label" for="text-input">Reubicacion?</label>
+                                <div class="col-md-2">
+                                   <input type="checkbox" v-model="reubicacion" value="1">
+                                </div>
+                                <div class="col-md-7" v-if="reubicacion == 1">
+                                   <textarea rows="3" cols="30" class="form-control" v-model="observacion" placeholder="Observacion"></textarea>
+                                </div>
+                            </div>
                       </form>
 
                         </div>
@@ -1995,6 +2005,8 @@
                 motivo_cancel:'',
 
                 sobreprecio:0,
+                reubicacion:0,
+                nuevo:0,
 
                 /// variables datos del prospecto //
                     nombre:'',
@@ -3556,6 +3568,7 @@
                     me.limpiarDatos();
                     me.listarSimulaciones(me.pagination.current_page,me.buscar,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
                     me.listado=0;
+                    me.nuevo = 0;
                     
                     //Se muestra mensaje Success
                     swal({
@@ -3644,6 +3657,7 @@
                 let me = this;
                 me.id=0;
                 me.proceso=false;
+                me.nuevo = 0;
 
                 me.arrayDatosSimulacion=[];
                 me.arryaEmpresas=[];
@@ -3826,6 +3840,8 @@
                         this.modal = 1;
                         this.tituloModal='Reasignar cliente';
                         this.tipoAccion = 2;
+                        this.reubicacion = 0;
+                        this.observacion = '';
                         break;
                     }
                 }
@@ -3854,9 +3870,13 @@
                    'descripcion_promocion':data['descripcionPromo'],
                    'descuento_promocion':data['descuentoPromo'],
                    'precio_venta':data['precio_venta'] - data['descuentoPromo'],
+                   'reubicar': me.reubicacion,
+                   'observacion' : me.observacion
 
                 }).then(function (response){
-                    me.getNewDatosLote(lote)
+                    me.getNewDatosLote(lote);
+                    me.reubicacion = 0;
+                    me.observacion = '';
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',

@@ -243,6 +243,9 @@
                                                     <li class="nav-item">
                                                         <a class="nav-link"><i class="fa fa-vcard"></i> <input v-model="digital_lead" type="checkbox" value="1"/> Digital leads</a>
                                                     </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="fa fa-vcard"></i> <input v-model="reubicaciones" type="checkbox" value="1"/> Reubicaciones</a>
+                                                    </li>
                                                 </ul>
                                     </div>
                                 </div>
@@ -893,6 +896,7 @@
                     docs: 0,
                     equipamientos : 0,
                     digital_lead : 0,
+                    reubicaciones : 0,
 
                     //Saldos
                     edo_cuenta:0,
@@ -1124,6 +1128,7 @@
                 this.edit_cotizacion=0;
                 this.opc_cotizador=0;
                 this.digital_lead = 0;
+                this.reubicaciones = 0;
             },
             limpiarComisiones(){
                 this.bono_com=0;
@@ -1281,6 +1286,7 @@
                     me.docs=usuarios[0].docs;
                     me.equipamientos = usuarios[0].equipamientos;
                     me.digital_lead = usuarios[0].digital_lead;
+                    me.reubicaciones = usuarios[0].reubicaciones;
 
                     //Saldos
                     me.edo_cuenta = usuarios[0].edo_cuenta;
@@ -1601,6 +1607,7 @@
                     'docs':this.docs,
                     'equipamientos':this.equipamientos,
                     'digital_lead':this.digital_lead,
+                    'reubicaciones':this.reubicaciones,
                         //Cotizador de lotes
                     'calc_lotes':this.calc_lotes,
                     'edit_cotizacion':this.edit_cotizacion,
