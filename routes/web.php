@@ -1023,6 +1023,7 @@ Route::group(['middleware' => ['auth']],function(){
         ///////////////////// RUTAS MENSAJES NOTIFICACION GENERAL /////////////////////
         Route::get('/notificacion/gral', 'NotificacionesAvisosController@getAvisos');
         Route::put('/notificacion/setEnterado','NotificacionesAvisosController@setEnterado');
+        Route::post('/notificacion/storeAviso','NotificacionesAvisosController@storeAviso');
 
         Route::get('/notificacion/indexAvisos', 'NotificacionesAvisosController@indexAvisos');
         

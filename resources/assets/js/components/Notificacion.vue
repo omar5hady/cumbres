@@ -17,19 +17,18 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
-                            <div class="col-md-6">
+                            <div class="col-md-8">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-4" v-model="criterio">
-                                        <option value="nombre">Nombre</option>
-                                        <option value="fecha">Fecha Creado</option>
-                                    </select>
-
-                                    <input type="date" class="form-control"  v-if="criterio=='fecha'" v-model="fecha_inicio"  >
-                                    <input type="date" class="form-control"  v-if="criterio=='fecha'" v-model="fecha_fin" >
-
-                                    <input type="text" v-else v-model="b_nombre" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <input type="text" class="form-control" disabled value="Fecha de creación"  >
+                                    <input @keyup.enter="getNotificaciones(1)" type="date" class="form-control" v-model="fecha_inicio"  >
+                                    <input @keyup.enter="getNotificaciones(1)" type="date" class="form-control" v-model="fecha_fin" >
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <input @keyup.enter="getNotificaciones(1)" type="text" v-model="b_nombre" class="form-control" placeholder="Nombre">
+                                    <button  @click="getNotificaciones(1)" type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </div>
@@ -60,13 +59,13 @@
                             <!--Botones de paginacion -->
                             <ul class="pagination">
                                 <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar, buscar2,criterio)">Ant</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1)">Ant</a>
                                 </li>
                                 <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar, buscar2,criterio)" v-text="page"></a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page)" v-text="page"></a>
                                 </li>
                                 <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar, buscar2,criterio)">Sig</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1)">Sig</a>
                                 </li>
                             </ul>
                         </nav>
@@ -93,7 +92,7 @@
                              <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Mensaje</label>
                                     <div class="col-md-6">
-                                        <textarea rows="10" cols="30" v-model="nombre" class="form-control" placeholder="Mensaje"></textarea>
+                                        <textarea rows="10" cols="30" v-model="mensaje" class="form-control" placeholder="Mensaje"></textarea>
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -144,21 +143,29 @@
                                                         <td v-if="array.nombre !='' && array.apellidos !=''" v-text="array.nombre + ' ' + array.apellidos"></td>
                                                         <td v-else v-text="array.nombre" ></td>
                                                     <!--    <td v-text="array.id"></td> -->
-                                                        
-                                                        
                                                     </tr>                               
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Div para mostrar los errores que mande validerModelo -->
+                                <div v-show="error" class="form-group row div-error">
+                                    <div class="text-center text-error">
+                                        <div v-for="error in errorMostrarMsj" :key="error" v-text="error">
+
+                                        </div>
+                                    </div>
+                                </div>
+
                             </form>
                         </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" class="btn btn-primary">Guardar</button>
+                            <button type="button" class="btn btn-primary" @click="storeNotificacion()">Guardar</button>
 
                             </div>
                              
@@ -250,12 +257,12 @@
         },
         methods : {
             /**Metodo para mostrar los registros */
-            cambiarPagina(page, buscar, buscar2, criterio){
+            cambiarPagina(page){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarPromociones(page,buscar,buscar2,criterio);
+                me.getNotificaciones(page);
             },
            
             selectRol(){
@@ -286,30 +293,70 @@
                 });
             },
 
-            getNotificaciones(){
+            getNotificaciones(page){
                 let me = this;
 
                 me.arrayNotificacion=[];
-                var url = '/notificacion/indexAvisos';
+                var url = '/notificacion/indexAvisos?page=' + page+'&nombre='+me.b_nombre+
+                        '&fecha_inicio='+me.fecha_inicio+'&fecha_fin='+me.fecha_fin;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                    me.arrayNotificacion = respuesta;
+                    me.arrayNotificacion = respuesta.aviso.data;
+                    me.pagination = respuesta.pagination;
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
             },
 
+            storeNotificacion(){
+                let me = this;
+                if(this.validar()) //Se verifica si hay un error (campo vacio)
+                    return;
+
+               Swal({
+                    title: 'Estas seguro?',
+                    animation: false,
+                    customClass: 'animated bounceInDown',
+                    text: "Se programaran las notificaciones para los usuarios seleccionados",
+                    type: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Cancelar',
+                    
+                    confirmButtonText: 'Si, enviar notificación!'
+                    }).then((result) => {
+
+                    if (result.value) {
+                        me.arrayPer.forEach(element => {
+                            axios.post('/notificacion/storeAviso',{
+                                'user_id': element.id,
+                                'periodo' : this.recurrencia,
+                                'mensaje' : this.mensaje
+                            }); 
+                        });
+                        me.cerrarModal();
+                        me.getNotificaciones(1);
+                        Swal({
+                            title: 'Hecho!',
+                            text: 'Los modelos se han asignado',
+                            type: 'success',
+                            animation: false,
+                            customClass: 'animated bounceInRight'
+                        })
+                    }})
+            },
+
             validar(){
                 this.error=0;
                 this.errorMostrarMsj=[];
 
-                if(!this.mensaje) //Si la variable  esta vacia
-                    this.errorMostrarMsj.push("...");
-               
-                if(this.nombre=='') //Si la variable esta vacia
-                    this.errorMostrarMsj.push("...");
-
+                if(this.mensaje == '') //Si la variable  esta vacia
+                    this.errorMostrarMsj.push("Mensaje vacio");
+                if(this.arrayPer.length == 0)
+                    this.errorMostrarMsj.push("Ningun usuario seleccionado");
+                
                 if(this.errorMostrarMsj.length)//Si el mensaje tiene almacenado algo en el array
                     this.error = 1;
 

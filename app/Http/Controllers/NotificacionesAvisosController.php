@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Notificacion_aviso;
 use Auth;
+use DB;
 
 
 class NotificacionesAvisosController extends Controller
@@ -13,6 +14,14 @@ class NotificacionesAvisosController extends Controller
         $aviso = new Notificacion_aviso();
         $aviso->user_id = $user_id;
         $aviso->mensaje = $mensaje;
+        $aviso->save();
+    }
+
+    public function storeAviso(Request $request){
+        $aviso = new Notificacion_aviso();
+        $aviso->user_id = $request->user_id;
+        $aviso->mensaje = $request->mensaje;
+        $aviso->periodo = $request->periodo;
         $aviso->save();
     }
 
@@ -38,8 +47,23 @@ class NotificacionesAvisosController extends Controller
                             'notificaciones_avisos.periodo','notificaciones_avisos.created_at',
                             'personal.nombre', 'personal.apellidos'    
                         )
-                ->where('periodo','!=',0)
-                ->get();
-        return $aviso;
+                ->where('periodo','!=',0);
+                if($request->nombre != '')
+                    $aviso = $aviso->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $request->nombre . '%');
+                if($request->fecha_inicio != '' && $request->fecha_fin != '')
+                    $aviso = $aviso->whereBetween('notificaciones_avisos.created_at', [$request->fecha_inicio, $request->fecha_fin]);
+                
+                $aviso = $aviso->paginate(10);
+        return [
+            'pagination' => [
+                'total'         => $aviso->total(),
+                'current_page'  => $aviso->currentPage(),
+                'per_page'      => $aviso->perPage(),
+                'last_page'     => $aviso->lastPage(),
+                'from'          => $aviso->firstItem(),
+                'to'            => $aviso->lastItem(),
+            ],
+            'aviso' => $aviso
+        ];
     }
 }

@@ -74,6 +74,7 @@ class PartidaController extends Controller
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $partida = Partida::findOrFail($request->id);
+        $partida->partida = $request->partida;
         $partida->costo = $request->costo;
         $partida->save();
 

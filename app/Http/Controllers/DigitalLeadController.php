@@ -696,10 +696,17 @@ class DigitalLeadController extends Controller
                 foreach ($usuarios as $usuario) 
                     User::findOrFail($usuario->id)->notify(new NotifyAdmin($arreglo));
 
-                $lead->vendedor_asign = 104;
+                //$lead->vendedor_asign = 104;
+
+                $obs = new Obs_lead();
+                $obs->lead_id = $lead->id;
+                $obs->comentario = 'Lead Descartado';
+                $obs->usuario = Auth::user()->usuario;
+                $obs->save();
 
         }
         $lead->save();
+        
     }
 
     public function leadEnterado(Request $request){
