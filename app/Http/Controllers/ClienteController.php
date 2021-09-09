@@ -156,14 +156,14 @@ class ClienteController extends Controller
     
                     if($criterio == 'personal.nombre'){
                         $personas = $queryGen->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
-                        ->where('clientes.clasificacion', '=', $buscarC);
+                        ->where('clientes.clasificacion', 'like', '%'.  $buscarC . '%');
                     }
                     elseif($criterio == 'clientes.vendedor_id'){
                         if($buscar2 == ""){
                             $personas = $queryGen  
                             //->where('vendedor_id','=',Auth::user()->id)     
                             ->where($criterio, '=',$buscar)
-                            ->where('clientes.clasificacion', '=', $buscarC);
+                            ->where('clientes.clasificacion', 'like', '%'.  $buscarC . '%');
                             
                         }else{
                             $personas = $queryGen
@@ -180,7 +180,7 @@ class ClienteController extends Controller
                                 $personas = $queryGen
                                     //->where('vendedor_id','=',Auth::user()->id)     
                                     ->whereBetween($criterio, [$buscar, $buscar2])
-                                    ->where('clientes.clasificacion', '=', $buscarC)
+                                    ->where('clientes.clasificacion', 'like', '%'.  $buscarC . '%')
                                     ->where('fraccionamientos.id','=',$buscar3);
                             }
                             else{
@@ -188,7 +188,7 @@ class ClienteController extends Controller
                                     //->where('vendedor_id','=',Auth::user()->id)     
                                     ->whereBetween($criterio, [$buscar, $buscar2])
                                     ->where('clientes.clasificacion', '=', $buscarC)
-                                    ->where('clientes.publicidad_id', '=', $publicidad)
+                                    ->where('clientes.clasificacion', 'like', '%'.  $buscarC . '%')
                                     ->where('fraccionamientos.id','=',$buscar3);
 
                             }
@@ -199,13 +199,13 @@ class ClienteController extends Controller
                                 $personas = $queryGen
                                     //->where('vendedor_id','=',Auth::user()->id)     
                                     ->whereBetween($criterio, [$buscar, $buscar2])
-                                    ->where('clientes.clasificacion', '=', $buscarC);
+                                    ->where('clientes.clasificacion', 'like', '%'.  $buscarC . '%');
                             }
                             else{
                                 $personas = $queryGen  
                                     //->where('vendedor_id','=',Auth::user()->id)     
                                     ->whereBetween($criterio, [$buscar, $buscar2])
-                                    ->where('clientes.clasificacion', '=', $buscarC)
+                                    ->where('clientes.clasificacion', 'like', '%'.  $buscarC . '%')
                                     ->where('clientes.publicidad_id', '=', $publicidad);
 
                             }
@@ -217,7 +217,7 @@ class ClienteController extends Controller
                         $personas = $queryGen
                             //->where('vendedor_id','=',Auth::user()->id)     
                             ->where($criterio, 'like', '%'. $buscar . '%')
-                            ->where('clientes.clasificacion', '=', $buscarC);
+                            ->where('clientes.clasificacion', 'like', '%'.  $buscarC . '%');
                     }
                 }
 
@@ -232,7 +232,7 @@ class ClienteController extends Controller
     
                     if($criterio == 'personal.nombre'){
                         $personas = $queryGen->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
-                        ->where('clientes.clasificacion', '!=', 7);
+                        ->where('clientes.clasificacion', 'like', '%'.  $buscarC . '%');
                     }
                     elseif($criterio == 'clientes.vendedor_id'){
                         if($buscar2 == ""){
