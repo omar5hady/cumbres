@@ -77,7 +77,7 @@
                             <a class="nav-link" @click="menu=0" href="#"><i class="fa fa-calendar"></i> Calendario de actividades</a>
                         </li>
                     @endif
-                    @if(Auth::user()->rol_id == 1)
+                    @if(Auth::user()->notifications == 1)
                         <li @click="menu=264" class="nav-item">
                             <a class="nav-link" @click="menu=264" href="#"><i class="fa fa-commenting"></i> Notificaciones</a>
                         </li>

@@ -64,6 +64,7 @@
                                         <th># Lote</th>
                                         <th>Modelo</th>
                                         <th>Avance</th>
+                                        <th>Fecha de termino</th>
                                         <th>Status</th>
                                         <th>Precio Base</th>
                                         <th class="td2" style="width:50%">Ajuste de precio $</th>
@@ -82,6 +83,7 @@
                                             <span class="badge badge-success" v-text="lote.modelo"></span>
                                         </td>
                                        <td class="td2" v-text="lote.avance+'%'"></td>
+                                       <td class="td2" v-text="this.moment(lote.fecha_termino_ventas).locale('es').format('DD/MMM/YYYY')"></td>
                                        <template>
                                             <td v-if="lote.contrato == 0" class="td2">
                                                 <span class="badge badge-success"> Disponible </span>

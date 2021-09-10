@@ -1067,7 +1067,7 @@ class UserController extends Controller
         $privilegios=User::join('roles','users.rol_id','=','roles.id')
                         ->select( 'users.administracion','users.desarrollo','users.precios','users.obra','users.ventas',
                                 'users.acceso','users.reportes','users.rol_id','users.saldo','users.gestoria',
-                                'users.postventa','users.comisiones','users.calendario',
+                                'users.postventa','users.comisiones','users.calendario','users.notifications',
                                 //Administracion
                                 'users.departamentos','users.personas','users.empresas','users.medios_public','users.lugares_contacto','users.servicios',
                                 'users.inst_financiamiento','users.tipos_credito','users.asig_servicios','users.mis_asesores','users.cuenta','users.notaria',
@@ -1133,6 +1133,7 @@ class UserController extends Controller
         $user->postventa = $request->postventa;
         $user->comisiones = $request->comisiones;
         $user->calendario = $request->calendario;
+        $user->notifications = $request->notifications;
         //Administracion
         $user->departamentos = $request->departamentos;
         $user->personas = $request->personas;
