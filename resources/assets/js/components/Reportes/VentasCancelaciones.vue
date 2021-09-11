@@ -24,6 +24,10 @@
                             <li class="nav-item">
                                 <a class="nav-link" id="cancelacion-tab" data-toggle="tab" href="#cancelacion" role="tab" aria-controls="cancelacion" aria-selected="false" v-text="'Cancelaciones'"></a>
                             </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" id="reubicacion-tab" data-toggle="tab" href="#reubicacion" role="tab" aria-controls="reubicacion" aria-selected="false" v-text="'Reubicaciones'"></a>
+                            </li>
                         </ul>
 
                         <div class="tab-content" id="myTab1Content">
@@ -290,6 +294,125 @@
                                     </table>
                                 </div>
                             </div>
+
+                            <!-- Listado por Reubicaciones -->
+                            <div class="tab-pane fade" id="reubicacion" role="tabpanel" aria-labelledby="reubicacion-tab">
+                        
+                                <div class="form-group row">
+                                    <div class="col-md-8">
+                                        <div class="input-group">
+                                            <input type="date"  v-model="fecha" @keyup.enter="listarReporte()" class="form-control" placeholder="Fecha inicial">
+                                            <input type="date"  v-model="fecha2" @keyup.enter="listarReporte()" class="form-control" placeholder="Fecha final">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-md-8" v-if="fecha != ''">
+                                        <div class="input-group">
+                                            <!--Criterios para el listado de busqueda -->
+                                            <label class="form-control col-md-4" disabled>
+                                                Medio publicitario:
+                                            </label>
+
+                                            <select class="form-control" v-model="b_publicidad" >
+                                                <option value="">Publicidad</option>
+                                                <option v-for="publicidad in arrayMediosPublicidad" :key="publicidad.id" :value="publicidad.id" v-text="publicidad.nombre"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-md-8">
+                                        <div class="input-group">
+                                            <select class="form-control col-md-4" v-model="emp_constructora">
+                                                <option value="">Empresa constructora</option>
+                                                <option value="Grupo Constructor Cumbres">Grupo Constructor Cumbres</option>
+                                                <option value="CONCRETANIA">CONCRETANIA</option>
+                                            </select>
+                                            <select class="form-control col-md-4" v-model="emp_terreno">
+                                                <option value="">Empresa terreno</option>
+                                                <option value="Grupo Constructor Cumbres">Grupo Constructor Cumbres</option>
+                                                <option value="CONCRETANIA">CONCRETANIA</option>
+                                            </select>
+                                            <button type="submit" @click="listarReporte()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table class="table2 table-bordered table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="16" class="text-center"> Reubicaciones en el periodo ({{cont2}}) </th>
+                                            </tr>
+                                            <tr>
+                                                <th>Fecha de reubicación</th>
+                                                <th>Folio</th>
+                                                <th>Fraccionamiento</th>
+                                                <th>Etapa</th>
+                                                <th>Manzana</th>
+                                                <th>Lote</th>
+                                                <th>Asesor</th>
+                                                <th>Cliente</th>
+                                                <th>Valor de terreno</th>
+                                                <th>Crédito</th>
+                                                <th>Institución</th>
+                                                <th>Promoción</th>
+                                                <th>Emp Constructora</th>
+                                                <th>Emp Terreno</th>
+                                                <th>Observación</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody v-for="reubicacion in arrayReubicaciones"  :key="reubicacion.id">
+                                            <tr style="backgroundColor:#FF8E8E">
+                                                <td class="td2" v-text="reubicacion.fecha_reubicacion"></td>
+                                                <td class="td2" v-text="reubicacion.contrato_id"></td>
+                                                <td class="td2" v-text="reubicacion.proyecto"></td>
+                                                <td class="td2" v-text="reubicacion.etapa"></td>
+                                                <td class="td2" v-text="reubicacion.manzana"></td>
+                                                <td class="td2" v-text="reubicacion.num_lote"></td>
+                                                <td class="td2" v-text="reubicacion.a_nombre.toUpperCase() + ' ' + reubicacion.a_apellidos.toUpperCase()"></td>
+                                                <td class="td2" v-text="reubicacion.c_nombre.toUpperCase() + ' ' + reubicacion.c_apellidos.toUpperCase()"></td>
+                                                <td class="td2" v-text="'$'+formatNumber(reubicacion.valor_terreno)"></td>
+                                                <td class="td2" v-text="reubicacion.tipo_credito"></td>
+                                                <td class="td2" v-text="reubicacion.institucion"></td>
+                                                <td class="td2" v-text="reubicacion.promocion"></td>
+                                                <td class="td2" v-text="reubicacion.emp_constructora"></td>
+                                                <td class="td2" v-text="reubicacion.emp_terreno"></td>
+                                                <td class="td2" v-text="reubicacion.observacion"></td>
+                                            </tr>
+                                            <tr style="backgroundColor:#8EFF9B">
+                                                <td class="td2" v-text="reubicacion.venta.fecha"></td>
+                                                <td class="td2" v-text="reubicacion.venta.id"></td>
+                                                <td class="td2" v-text="reubicacion.venta.proyecto"></td>
+                                                <td class="td2" v-text="reubicacion.venta.etapa"></td>
+                                                <td class="td2" v-text="reubicacion.venta.manzana"></td>
+                                                <td class="td2" v-text="reubicacion.venta.num_lote"></td>
+                                                <td class="td2" v-text="reubicacion.venta.a_nombre.toUpperCase() + ' ' + reubicacion.venta.a_apellidos.toUpperCase()"></td>
+                                                <td class="td2" v-text="reubicacion.venta.c_nombre.toUpperCase() + ' ' + reubicacion.venta.c_apellidos.toUpperCase()"></td>
+                                                <td class="td2" v-text="'$'+formatNumber(reubicacion.venta.valor_terreno)"></td>
+                                                <td class="td2" v-text="reubicacion.venta.tipo_credito"></td>
+                                                <td class="td2" v-text="reubicacion.venta.institucion"></td>
+                                                <td class="td2" v-text="reubicacion.venta.promocion"></td>
+                                                <td class="td2" v-text="reubicacion.venta.emp_constructora"></td>
+                                                <td class="td2" v-text="reubicacion.venta.emp_terreno"></td>
+                                                <template>
+                                                    <td v-if="reubicacion.venta.status == 0" class="td2"> <span class="badge badge-danger">Cancelado</span></td>
+                                                    <td v-else-if="reubicacion.venta.status == 1" class="td2"> <span class="badge badge-warning">Vendida</span></td>
+                                                    <td v-else-if="reubicacion.venta.status == 3 && reubicacion.venta.firmado == 0" class="td2"> <span class="badge badge-warning">Vendida</span></td>
+                                                    <td v-else-if="reubicacion.venta.status == 3 && reubicacion.venta.firmado == 1" class="td2"> <span class="badge badge-success">Individualizada</span></td>
+                                                </template>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="13"><br></td>
+                                            </tr>
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -309,12 +432,14 @@
                
                 arrayLotes : [],
                 arrayCancelaciones : [],
+                arrayReubicaciones : [],
                 arrayMediosPublicidad : [],
                 b_publicidad : '',
                 fecha:'',
                 fecha2:'',
                 cont1:0,
                 cont2:0,
+                cont3:0,
                 activo:1,
                 emp_constructora:'',
                 emp_terreno:''
@@ -330,9 +455,11 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLotes = respuesta.ventas;
+                    me.arrayReubicaciones = respuesta.reubicaciones;
                     me.arrayCancelaciones = respuesta.cancelaciones;
                     me.cont1 = respuesta.contVentas;
                     me.cont2 = respuesta.contCancelaciones;
+                    me.conte = respuesta.contReubicaciones;
 
                 })
                 .catch(function (error) {

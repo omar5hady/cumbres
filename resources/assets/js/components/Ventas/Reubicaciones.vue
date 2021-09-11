@@ -258,6 +258,7 @@
                                             <th>Valor de terreno</th>
                                             <th>Tipo Crédito</th>
                                             <th>Institución</th>
+                                            <th>Promoción</th>
                                             <th>Observación</th>
                                         </tr>
                                     </thead>
@@ -273,6 +274,7 @@
                                             <td class="td2" v-text="'$'+formatNumber(reubicacion.valor_terreno)"></td>
                                             <td class="td2" v-text="reubicacion.tipo_credito"></td>
                                             <td class="td2" v-text="reubicacion.institucion"></td>
+                                            <td class="td2" v-text="reubicacion.promocion"></td>
                                             <td class="td2" v-text="reubicacion.observacion">
                                             </td>
                                         </tr>                               
@@ -371,7 +373,7 @@
                             <div v-if="promocion != '' && promocion != 'Sin Promoción'" class="form-group row">
                                 <label class="col-md-3 form-control-label" for="text-input">Promocion</label>
                                 <div class="col-md-9">
-                                    <textarea disabled v-model="promocion" cols="80" rows="4"></textarea>
+                                    <textarea v-model="promocion" cols="80" rows="4"></textarea>
                                 </div>
                                 
                             </div>

@@ -46,14 +46,19 @@ class NotificationController extends Controller
 
     public function getUser(Request $request){
 
-        $id = $request -> id;
+        $id = $request->id;
 
         $user=Rol::join('users','roles.id','=','users.rol_id')
-                 ->join('personal','users.id','=','personal.id')
-                 ->select('personal.nombre','personal.apellidos','personal.id')
-                 ->where('roles.id','=',$id)
-                 ->where('users.condicion','=',1)
-                 ->get();
+                ->leftJoin('vendedores','users.id','=','vendedores.id')
+                ->join('personal','users.id','=','personal.id')
+                ->select('personal.nombre','personal.apellidos','personal.id')
+                ->where('roles.id','=',$id);
+
+                if($id == 2){
+                    $user = $user->where('vendedores.tipo','=',0);
+                }
+                $user = $user->where('users.condicion','=',1)
+                ->get();
 
         return['personal'=> $user];
 

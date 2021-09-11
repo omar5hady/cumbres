@@ -26,6 +26,7 @@ use App\Cliente;
 use App\Vendedor;
 use App\Detalle_previo;
 use App\Revision_previa;
+use App\Reubicacion;
 
 class ReportesController extends Controller
 {
@@ -1174,65 +1175,86 @@ class ReportesController extends Controller
 
     public function reporteVentas(Request $request){
 
+        $ventas = $this->getVentas($request);
+        $cancelaciones = $this->getCancelaciones($request);
+        
+        $contVentas = $ventas->count();
+        $contCancelaciones = $cancelaciones->count();
+
+        $reubicaciones = $this->getReubicaciones($request);
+        $contReubicaciones = $reubicaciones->count();
+
+        return[
+            'ventas'=>$ventas,
+            'contVentas'=>$contVentas,
+            'contCancelaciones'=>$contCancelaciones,
+            'cancelaciones'=>$cancelaciones,
+            'reubicaciones'=>$reubicaciones,
+            'contReubicaciones'=>$contReubicaciones,
+        ];
+    }
+
+    private function getReubicaciones(Request $request){
         $empresa = $request->empresa;
         $empresa2 = $request->empresa2;
         $publicidad = $request->publicidad;
 
-        $ventas = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('inst_seleccionadas as ins', 'creditos.id', '=', 'ins.credito_id')
-                        ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                        ->join('personal as p','creditos.prospecto_id','=','p.id')
-                        ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
-                        ->join('etapas as et','lotes.etapa_id','=','et.id')
-                        ->select('lotes.manzana','lotes.num_lote','f.nombre as proyecto','et.num_etapa','p.nombre', 'p.apellidos',
-                                'lotes.emp_constructora','creditos.valor_terreno', 'lotes.emp_terreno',
-                                'modelos.nombre as modelo',
-                                'creditos.descripcion_promocion','creditos.descripcion_paquete', 'lotes.firmado',
-                                'creditos.costo_descuento', 'creditos.descuento_terreno', 'creditos.costo_alarma',
-                                'creditos.costo_cuota_mant', 'creditos.costo_protecciones','contratos.id',
-                                'medios_publicitarios.nombre as publicidad','contratos.publicidad_id',
-                                'contratos.avance_lote', 'contratos.motivo_cancel',
-                                'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta','contratos.status')
-                        
-                        ->where('contratos.status','=',3)
-                        ->where('ins.elegido','=',1)
-                        ->whereBetween('contratos.fecha', [$request->fecha, $request->fecha2]);
+        $reubicaciones = Reubicacion::join('lotes','reubicaciones.lote_id','=','lotes.id')
+                                ->join('contratos','reubicaciones.contrato_id','=','contratos.id')
+                                ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
+                                ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                ->join('personal as cliente','reubicaciones.cliente_id','=','cliente.id')
+                                ->join('personal as asesor','reubicaciones.asesor_id','=','asesor.id')
+                                ->select('reubicaciones.*',
+                                        'lotes.num_lote','lotes.manzana','lotes.emp_constructora','lotes.emp_terreno',
+                                        'etapas.num_etapa as etapa', 'fraccionamientos.nombre as proyecto',
+                                        'cliente.nombre as c_nombre', 'cliente.apellidos as c_apellidos',
+                                        'asesor.nombre as a_nombre', 'asesor.apellidos as a_apellidos'
+                                )
+                                ->whereBetween('reubicaciones.fecha_reubicacion', [$request->fecha, $request->fecha2]);
                         
                         if($empresa != '')
-                            $ventas = $ventas->where('lotes.emp_constructora','=', $empresa);
+                            $reubicaciones = $reubicaciones->where('lotes.emp_constructora','=', $empresa);
 
                         if($empresa2 != '')
-                            $ventas = $ventas->where('lotes.emp_terreno','=', $empresa2);
+                            $reubicaciones = $reubicaciones->where('lotes.emp_terreno','=', $empresa2);
 
                         if($publicidad != '')
-                            $ventas = $ventas->where('contratos.publicidad_id','=', $publicidad);
-
-                        $ventas = $ventas->orWhere('contratos.status','=',1)
-                        ->where('ins.elegido','=',1)
-                        ->whereBetween('contratos.fecha', [$request->fecha, $request->fecha2]);
-
-                        if($empresa != '')
-                            $ventas = $ventas->where('lotes.emp_constructora','=', $empresa);
-
-                        if($publicidad != '')
-                            $ventas = $ventas->where('contratos.publicidad_id','=', $publicidad);
-
-
-                        $ventas = $ventas->orWhere('contratos.status','=',0)
-                        ->where('ins.elegido','=',1)
-                        ->whereBetween('contratos.fecha', [$request->fecha, $request->fecha2]);
-
-                        if($empresa != '')
-                            $ventas = $ventas->where('lotes.emp_constructora','=', $empresa);
-
-                        if($publicidad != '')
-                            $ventas = $ventas->where('contratos.publicidad_id','=', $publicidad);
-
-                        $ventas = $ventas->orderBy('contratos.status','desc')
-                        ->orderBy('contratos.fecha','asc')
+                            $reubicaciones = $reubicaciones->where('contratos.publicidad_id','=', $publicidad);
+            
+                        $reubicaciones = $reubicaciones->orderBy('reubicaciones.fecha_reubicacion','asc')
                         ->get();
+    
+        foreach ($reubicaciones as $key => $reubicacion) {
+            $reubicacion->venta = Contrato::join('creditos','contratos.id','=','creditos.id')
+                    ->join('inst_seleccionadas as ins', 'creditos.id', '=', 'ins.credito_id')
+                    ->join('lotes','creditos.lote_id','=','lotes.id')
+                    ->join('personal as cliente','creditos.prospecto_id','=','cliente.id')
+                    ->join('personal as asesor','creditos.vendedor_id','=','asesor.id')
+                    ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                    ->join('etapas','lotes.etapa_id','=','etapas.id')
+                    ->select(
+                        'lotes.num_lote','lotes.manzana','lotes.emp_constructora','lotes.emp_terreno','lotes.firmado',
+                        'contratos.id', 'contratos.fecha', 'etapas.num_etapa as etapa',
+                        'creditos.valor_terreno', 'creditos.promocion',
+                        'fraccionamientos.nombre as proyecto',
+                        'cliente.nombre as c_nombre', 'cliente.apellidos as c_apellidos',
+                        'asesor.nombre as a_nombre', 'asesor.apellidos as a_apellidos',
+                        'ins.tipo_credito','ins.institucion','contratos.status'
+                    )
+                    ->where('ins.elegido','=',1)
+                    ->where('contratos.id','=',$reubicacion->contrato_id)->first();
+            # code...
+        }
+
+        return $reubicaciones;
+    }
+    private function getCancelaciones(Request $request){
+
+        $empresa = $request->empresa;
+        $empresa2 = $request->empresa2;
+        $publicidad = $request->publicidad;
 
         $cancelaciones = Contrato::join('creditos','contratos.id','=','creditos.id')
                         ->join('inst_seleccionadas as ins', 'creditos.id', '=', 'ins.credito_id')
@@ -1265,18 +1287,10 @@ class ReportesController extends Controller
                         $cancelaciones = $cancelaciones->orderBy('contratos.fecha_status','asc')
                         ->get();
 
-        
-        $contVentas = $ventas->count();
-        $contCancelaciones = $cancelaciones->count();
-        return[
-            'ventas'=>$ventas,
-            'contVentas'=>$contVentas,
-            'contCancelaciones'=>$contCancelaciones,
-            'cancelaciones'=>$cancelaciones,
-        ];
-    }
+                    return $cancelaciones;
 
-    public function reporteVentasExcel(Request $request){
+    }
+    private function getVentas(Request $request){
 
         $empresa = $request->empresa;
         $empresa2= $request->empresa2;
@@ -1338,36 +1352,16 @@ class ReportesController extends Controller
                         ->orderBy('contratos.fecha','asc')
                         ->get();
 
-        $cancelaciones = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('inst_seleccionadas as ins', 'creditos.id', '=', 'ins.credito_id')
-                        ->join('medios_publicitarios','contratos.publicidad_id','=','medios_publicitarios.id')
-                        ->join('lotes','creditos.lote_id','=','lotes.id')
-                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                        ->join('personal as p','creditos.prospecto_id','=','p.id')
-                        ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
-                        ->join('etapas as et','lotes.etapa_id','=','et.id')
-                        ->select('lotes.manzana','lotes.num_lote','f.nombre as proyecto','et.num_etapa','p.nombre', 'p.apellidos',
-                                'lotes.emp_constructora','creditos.valor_terreno', 'lotes.emp_terreno',
-                                'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta',
-                                'contratos.avance_lote', 'modelos.nombre as modelo',
-                                'medios_publicitarios.nombre as publicidad', 'contratos.publicidad_id',
-                                'creditos.descripcion_promocion','creditos.descripcion_paquete','contratos.motivo_cancel',
-                                'contratos.fecha_status')
-                        ->where('ins.elegido','=',1)
-                        ->where('contratos.status','=',0)
-                        ->whereBetween('contratos.fecha_status', [$request->fecha, $request->fecha2]);
+                        return $ventas;
+    }
 
-                        if($empresa != '')
-                            $cancelaciones = $cancelaciones->where('lotes.emp_constructora','=', $empresa);
+    public function reporteVentasExcel(Request $request){
 
-                        if($empresa2 != '')
-                            $cancelaciones = $cancelaciones->where('lotes.emp_terreno','=', $empresa2);
+        $empresa = $request->empresa;
 
-                        if($publicidad != '')
-                            $cancelaciones = $cancelaciones->where('contratos.publicidad_id','=', $publicidad);
+        $ventas = $this->getVentas($request);
 
-                        $cancelaciones = $cancelaciones->orderBy('contratos.fecha_status','asc')
-                        ->get();
+        $cancelaciones = $this->getCancelaciones($request);
 
                         setlocale(LC_TIME, 'es_MX.utf8');
                         $fecha1 = new Carbon($request->fecha);
@@ -1378,8 +1372,9 @@ class ReportesController extends Controller
 
                         $periodo = 'Del '.$fecha1.' al '.$fecha2;
 
+        $reubicaciones = $this->getReubicaciones($request);
         
-        return Excel::create('Reporte de ventas y cancelaciones', function($excel) use ($ventas,$cancelaciones,$periodo,$empresa){
+        return Excel::create('Reporte de ventas y cancelaciones', function($excel) use ($ventas,$cancelaciones,$periodo,$empresa, $reubicaciones){
             $excel->sheet('Ventas', function($sheet) use ($ventas,$periodo, $empresa){
 
                 $sheet->mergeCells('A1:M1');
@@ -1836,6 +1831,162 @@ class ReportesController extends Controller
                 }
 
                 
+
+                
+            });
+
+            $excel->sheet('Reubicaciones', function($sheet) use ($reubicaciones,$periodo, $empresa){
+
+                $sheet->mergeCells('A1:O1');
+                $sheet->mergeCells('A2:O2');
+                $sheet->mergeCells('C4:G4');
+
+                $sheet->cell('A1', function($cell) {
+
+                    // manipulate the cell
+                    $cell->setValue(  'GRUPO CONSTRUCTOR CUMBRES, SA DE C.V.');
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(14);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                
+                });
+                $sheet->cell('A2', function($cell) {
+
+                    // manipulate the cell
+                    $cell->setValue(  'REPORTE DE REUBICACIONES');
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(14);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                
+                });
+
+                $sheet->cell('B4', function($cell) {
+
+                    // manipulate the cell
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(12);
+                    $cell->setAlignment('center');
+                
+                });
+
+                $sheet->row(4,[
+                    '',
+                    'Periodo: ',
+                    $periodo
+                ]);
+
+                $sheet->cell('C4', function($cell) {
+
+                    // manipulate the cell
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(12);
+                    $cell->setAlignment('center');
+                });
+
+                $sheet->setColumnFormat(array(
+                    
+                    'I' => '$#,##0.00'
+                ));
+
+
+                    $sheet->row(8, [
+                        'Fecha',
+                        'Folio',
+                        'Fraccionamiento',
+                        'Etapa',
+                        'Manzana',
+                        'Lote',
+                        'Asesor',
+                        'Cliente',
+                        'Valor de terreno',
+                        'Tipo de Crédito',
+                        'Institución',
+                        'Promoción',
+                        'Emp Constructora',
+                        'Emp Terreno',
+                        'Observación'
+                    ]);
+                    
+    
+                    $sheet->cells('A8:O8', function ($cells) {
+                        // Set font family
+                        $cells->setFontFamily('Calibri');
+    
+                        // Set font size
+                        $cells->setFontSize(12);
+    
+                        // Set font weight to bold
+                        $cells->setFontWeight('bold');
+                        $cells->setAlignment('center');
+                    });
+    
+                    $cont=9;
+    
+                    
+    
+                    foreach($reubicaciones as $index => $lote) {
+    
+                        $sheet->row($index+$cont, [
+                            $lote->fecha_reubicacion,
+                            $lote->contrato_id,
+                            $lote->proyecto, 
+                            $lote->etapa,
+                            $lote->manzana,
+                            $lote->num_lote,
+                            $lote->a_nombre.' '.$lote->a_apellidos,
+                            $lote->c_nombre.' '.$lote->c_apellidos,
+                            $lote->valor_terreno,
+                            $lote->tipo_credito,
+                            $lote->institucion,
+                            $lote->promocion,
+                            $lote->emp_constructora,
+                            $lote->emp_terreno,
+                            $lote->observacion
+                        ]);	
+                        $sheet->row($index+$cont+1, [
+                            $lote->venta->fecha,
+                            $lote->venta->id,
+                            $lote->venta->proyecto, 
+                            $lote->venta->etapa,
+                            $lote->venta->manzana,
+                            $lote->venta->num_lote,
+                            $lote->venta->a_nombre.' '.$lote->venta->a_apellidos,
+                            $lote->venta->c_nombre.' '.$lote->venta->c_apellidos,
+                            $lote->venta->valor_terreno,
+                            $lote->venta->tipo_credito,
+                            $lote->venta->institucion,
+                            $lote->venta->promocion,
+                            $lote->venta->emp_constructora,
+                            $lote->venta->emp_terreno,
+                            '',
+                        ]);	
+
+                        $sheet->row($index+$cont+2, [
+                            '',
+                            '',
+                            '', 
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                        ]);	
+
+                        $cont+=2;
+                    }
+                
+                    $num='A8:O' . $cont;
+                    $sheet->setBorder($num, 'thin');
+
 
                 
             });

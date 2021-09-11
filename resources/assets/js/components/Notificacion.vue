@@ -340,7 +340,7 @@
                         me.getNotificaciones(1);
                         Swal({
                             title: 'Hecho!',
-                            text: 'Los modelos se han asignado',
+                            text: 'Las notificaciones se han enviado',
                             type: 'success',
                             animation: false,
                             customClass: 'animated bounceInRight'
