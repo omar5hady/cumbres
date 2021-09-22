@@ -1,8 +1,7 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
+
 use App\Dato_extra;
 use App\Credito;
 use App\Personal;
@@ -10,14 +9,18 @@ use App\Cliente;
 use App\inst_seleccionada;
 use App\Vendedor;
 use App\Cliente_observacion;
-use DB;
+use App\Dev_virtual;
+use App\Devolucion;
 use App\User;
-use App\Notifications\NotifyAdmin;
+use App\Cuenta;
+use App\Pago_contrato;
 use App\Obs_inst_selec;
-use Auth;
+use App\Notifications\NotifyAdmin;
 use Carbon\Carbon;
 use App\Contrato;
 use Excel;
+use DB;
+use Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\NotificationReceived;
 use App\Http\Controllers\ReubicacionController;
@@ -25,6 +28,17 @@ use App\Http\Controllers\ReubicacionController;
 class CreditoController extends Controller
 
 {
+    private function getCuentas(){
+        $cuentas = Cuenta::select('num_cuenta','banco')->where('empresa','=','Grupo Constructor Cumbres')->get();
+        $arrayCuentas = [];
+
+        foreach($cuentas as $index => $cuenta){
+            array_push($arrayCuentas,$cuenta->num_cuenta.'-'.$cuenta->banco);
+        }
+
+        return $arrayCuentas;
+
+    }
 
     public function indexCreditos(Request $request){
         if (!$request->ajax()) return redirect('/');
@@ -842,6 +856,8 @@ class CreditoController extends Controller
     }
 
     private function edoCuentaCancelados(Request $request){
+        $cuentas = $this->getCuentas();
+
         $cancelados = Contrato::join('creditos','contratos.id','=','creditos.id')
                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
                 ->leftJoin('expedientes','contratos.id','=','expedientes.id')
@@ -876,6 +892,7 @@ class CreditoController extends Controller
         $cancelados = $cancelados->where('lotes.emp_constructora','=','CONCRETANIA')
                     ->where('lotes.emp_terreno','=','Grupo Constructor Cumbres')
                     ->where('contratos.status','=',0)
+                    ->where('creditos.saldo_terreno','!=',0)
                     ->where('inst_seleccionadas.elegido', '=', '1')
                     ->orderBy('contratos.id')->get();
 
@@ -883,6 +900,42 @@ class CreditoController extends Controller
         if(sizeof($cancelados)){
             foreach ($cancelados as $key => $cancelado) {  
                 $cancelado->devuelto = 0; 
+                $cancelado->devueltoVirtual = 0;
+                $cancelado->transferido = 0;
+
+                $devoluciones = Devolucion::whereIn('devoluciones.cuenta',$cuentas)
+                                ->where('devoluciones.contrato_id','=',$cancelado->id)
+                                ->get();
+
+                $dev_virtuales = Dev_virtual::where('contrato_id','=',$cancelado->id)
+                                ->get();
+
+                $depositos_pagado = Pago_contrato::join('depositos','pagos_contratos.id','=','depositos.pago_id')
+                ->where('pagos_contratos.contrato_id','=',$cancelado->id)
+                ->where('depositos.fecha_ingreso_concretania','!=',NULL)
+                ->get();
+
+                if(sizeof($dev_virtuales)){
+                    $cancelado->dev_virtuales = $dev_virtuales;
+                    foreach ($dev_virtuales as $key => $dev) {
+                        $cancelado->devueltoVirtual += $dev->monto;
+                    }
+                }
+
+                if(sizeof($devoluciones)){
+                    $cancelado->devoluciones = $devoluciones;
+                    foreach ($devoluciones as $key => $dev) {
+                        $cancelado->devuelto += $dev->devolver;
+                    }
+                }
+
+                if(sizeof($depositos_pagado)){
+                        $cancelado->depositos_transferidos = $depositos_pagado;
+                    foreach($depositos_pagado as $key => $deposito) {
+                        $cancelado->transferido += $deposito->monto_terreno;
+                    }
+                    
+                }
             }
         }
 

@@ -352,9 +352,10 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="lote in arrayCerrados" :key="lote.id">
-                                            
-                                            <td v-text="lote.fraccionamiento"></td>
+                                        <tr v-for="lote in arrayCerrados" :key="lote.id" @dblclick="abrirModal('info',lote)">
+                                            <td>
+                                                <a href="#" v-text="lote.fraccionamiento"></a>
+                                            </td>
                                             <td v-text="lote.etapa"></td>
                                             <td v-text="lote.manzana"></td>
                                             <td v-text="lote.num_lote"></td>
@@ -363,9 +364,9 @@
                                             <td class="td2" v-if="lote.valor_escrituras != null" v-text="'$'+formatNumber(lote.valor_escrituras)"></td>
                                             <td class="td2" v-else v-text="'$'+formatNumber(0)"></td>
                                             <td class="td2" v-text="'$'+formatNumber(lote.monto_terreno)"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(lote.saldo_terreno)"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(lote.devuelto)"></td>
-                                            <td v-if="lote.status == 0" class="td2" v-text="'$'+formatNumber(lote.saldo_terreno - lote.devuelto)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(lote.transferido)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(lote.devuelto + lote.devueltoVirtual)"></td>
+                                            <td v-if="lote.status == 0" class="td2" v-text="'$'+formatNumber(lote.transferido - lote.devuelto)"></td>
                                             <td v-else class="td2" v-text="'$'+formatNumber(0)"></td>
                                                 <td class="td2" v-if="lote.status == '0'">
                                                     <span class="badge badge-danger">Cancelado</span>
@@ -495,6 +496,134 @@
                             </form>
                         </div>
 
+                        <div class="modal-body" v-if="tipoAccion == 3">
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                                <div class="form-group row">
+                                    
+                                    <label class="col-md-2 form-control-label" for="text-input">Fraccionamiento</label>
+                                    <div class="col-md-4">
+                                        <input type="text" v-model="fraccionamiento" class="form-control" disabled>
+                                    </div>
+
+                                    
+                                    <label class="col-md-1 form-control-label" for="text-input">Etapa</label>
+                                    <div class="col-md-4">
+                                        <input type="text" v-model="etapa" class="form-control" disabled>
+                                    </div>
+                                </div>
+                                
+                                
+                                <div class="form-group row">
+                                    
+                                    <label class="col-md-2 form-control-label" for="text-input">Manzana</label>
+                                    <div class="col-md-4">
+                                        <input type="text" v-model="manzana" class="form-control" disabled>
+                                    </div>
+
+                                    <label class="col-md-1 form-control-label" for="text-input">Lote</label>
+                                    <div class="col-md-2">
+                                        <input type="text" v-model="lote" class="form-control" disabled>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row line-separator"></div>
+
+
+                                <div class="form-group row" v-if="transferido > 0">
+                                    <div class="col-md-12">
+                                        <table class="table table-bordered table-striped table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th colspan="3" style="color:green">Transferido</th>
+                                                </tr>
+                                                <tr>
+                                                    <th>Fecha de ingreso</th>
+                                                    <th>Cuenta</th>
+                                                    <th>Monto</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="dev in arrayTransferidos" :key="dev.id">
+                                                    <td class="td2" v-text="dev.fecha_ingreso_concretania"></td>
+                                                    <td class="td2" v-text="dev.cuenta"></td>
+                                                    <td v-text="'$'+formatNumber(dev.monto_terreno)"></td>
+                                                </tr>  
+                                                <tr>
+                                                    <td align="right" colspan="2"><strong>Total: </strong></td>
+                                                    <td> ${{formatNumber(transferido)}} </td>
+                                                </tr>                     
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+
+                                
+                                <div class="form-group row" v-if="devuelto > 0">
+                                    <div class="col-md-12">
+                                        <table class="table table-bordered table-striped table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th colspan="4" style="color:red">Devoluciones</th>
+                                                </tr>
+                                                <tr>
+                                                    <th>Fecha</th>
+                                                    <th>Cuenta</th>
+                                                    <th>Cheque</th>
+                                                    <th>Monto</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="dev in arrayDevoluciones" :key="dev.id">
+                                                    <td class="td2" v-text="dev.fecha"></td>
+                                                    <td class="td2" v-text="dev.cuenta"></td>
+                                                    <td class="td2" v-text="dev.cheque"></td>
+                                                    <td v-text="'$'+formatNumber(dev.devolver)"></td>
+                                                </tr>  
+                                                <tr>
+                                                    <td align="right" colspan="3"><strong>Total: </strong></td>
+                                                    <td> ${{formatNumber(devuelto)}} </td>
+                                                </tr>                     
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group row" v-if="devueltoVirtual > 0">
+                                    <div class="col-md-12">
+                                        <table class="table table-bordered table-striped table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th colspan="4" style="color:red">Devoluciones Virtuales</th>
+                                                </tr>
+                                                <tr>
+                                                    <th>Fecha</th>
+                                                    <th>Cuenta</th>
+                                                    <th>Cheque</th>
+                                                    <th>Monto</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="dev in dev_virtuales" :key="dev.id">
+                                                    <td class="td2" v-text="dev.fecha"></td>
+                                                    <td class="td2" v-text="dev.cuenta"></td>
+                                                    <td class="td2" v-text="dev.cheque"></td>
+                                                    <td v-text="'$'+formatNumber(dev.monto)"></td>
+                                                </tr>  
+                                                <tr>
+                                                    <td align="right" colspan="3"><strong>Total: </strong></td>
+                                                    <td> ${{formatNumber(devueltoVirtual)}} </td>
+                                                </tr>                     
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                                
+                            </form>
+                        </div>
+
                         <!-- Botones del modal -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
@@ -572,6 +701,14 @@
 
                 ver:0,
                 cerrados : 0,
+
+                devuelto : 0,
+                devueltoVirtual : 0,
+                arrayDevoluciones:[],
+                dev_virtuales:[],
+                arrayTransferidos:[],
+                transferido:0,
+
             }
         },
         computed:{
@@ -850,6 +987,24 @@
                         this.tipoAccion = 2;
                         break;
                     }
+                    case 'info':
+                    {
+                        this.modal = 1;
+                        this.tituloModal = 'Detalle';
+                        this.fraccionamiento = data['fraccionamiento'];
+                        this.etapa = data['etapa'];
+                        this.manzana = data['manzana'];
+                        this.lote = data['num_lote'];
+                        this.devuelto = data['devuelto'];
+                        this.devueltoVirtual = data['devueltoVirtual']
+                        this.arrayDevoluciones = data['devoluciones'];
+                        this.dev_virtuales = data['dev_virtuales'];
+                        this.arrayTransferidos = data['depositos_transferidos'];
+                        this.transferido = data['transferido'];
+                        
+                        this.tipoAccion = 3;
+                        break;
+                    }   
                 }
             }
         },
