@@ -1088,7 +1088,7 @@ class UserController extends Controller
                                 'users.reubicaciones',
                                 //Saldo
                                 'users.edo_cuenta','users.depositos','users.gastos_admn','users.cobro_credito',
-                                'users.dev_exc','users.dev_cancel','users.facturas','users.ingresos_concretania',
+                                'users.dev_exc','users.dev_cancel','users.facturas','users.ingresos_concretania', 'users.dev_virtual',
                                 //Gestoria
                                 'users.expediente','users.asig_gestor','users.seg_tramite','users.avaluos','users.bonos_rec',
                                 //Postventa
@@ -1208,6 +1208,7 @@ class UserController extends Controller
         $user->dev_cancel = $request->dev_cancel;
         $user->facturas = $request->facturas;
         $user->ingresos_concretania = $request->ingresos_concretania;
+        $user->dev_virtual = $request->dev_virtual;
         //Gestoria
         $user->expediente = $request->expediente;
         $user->asig_gestor = $request->asig_gestor;

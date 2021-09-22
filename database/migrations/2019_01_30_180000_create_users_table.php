@@ -108,6 +108,7 @@ class CreateUsersTable extends Migration
             $table->boolean('dev_cancel')->default(0);
             $table->boolean('dev_exc')->default(0);
             $table->boolean('ingresos_concretania')->default(0);
+            $table->boolean('dev_virtual')->default(0);
 
             //Gestoria
             $table->boolean('expediente')->default(0);

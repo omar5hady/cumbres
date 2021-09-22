@@ -516,6 +516,11 @@
                                         <a class="nav-link" href="#"><i class="icon-reload"></i> Devolución por credito excedente</a>
                                     </li>
                                 @endif
+                                @if(Auth::user()->dev_virtual == 1)
+                                    <li @click="menu=266" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="icon-reload"></i> Devolución virtual</a>
+                                    </li>
+                                @endif
                                 @if(Auth::user()->facturas == 1)
                                     <li @click="menu=1001" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-inbox"></i> Facturas</a>

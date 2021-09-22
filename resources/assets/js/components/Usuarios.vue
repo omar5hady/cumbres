@@ -280,6 +280,9 @@
                                                     <li class="nav-item">
                                                         <a class="nav-link" ><i class="icon-reload"></i> <input v-model="ingresos_concretania" type="checkbox" value="1"/> Ingresos Concretania</a>
                                                     </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" ><i class="icon-reload"></i> <input v-model="dev_virtual" type="checkbox" value="1"/> Devoluciones virtuales</a>
+                                                    </li>
                                                     
                                                 </ul>
                                     </div>
@@ -909,6 +912,7 @@
                     dev_cancel :0,
                     facturas:0,
                     ingresos_concretania:0,
+                    dev_virtual:0,
 
                     //Gestoria
                     expediente:0,
@@ -1162,6 +1166,7 @@
                 this.dev_cancel=0;
                 this.facturas=0;
                 this.ingresos_concretania=0;
+                this.dev_virtual = 0;
             },
             limpiarCreditosPuente(){
                 this.bases = 0;
@@ -1300,6 +1305,7 @@
                     me.dev_exc = usuarios[0].dev_exc;
                     me.facturas = usuarios[0].facturas;
                     me.ingresos_concretania = usuarios[0].ingresos_concretania;
+                    me.dev_virtual = usuarios[0].dev_virtual;
 
                     //Gestoria
                     me.expediente = usuarios[0].expediente;
@@ -1630,6 +1636,7 @@
                     'dev_exc':this.dev_exc,
                     'facturas':this.facturas,
                     'ingresos_concretania':this.ingresos_concretania,
+                    'dev_virtual':this.dev_virtual,
                         //Gestoria
                     'expediente':this.expediente,
                     'asig_gestor':this.asig_gestor,

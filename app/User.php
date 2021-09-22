@@ -97,6 +97,7 @@ class User extends Authenticatable
         'dev_exc',
         'facturas',
         'ingresos_concretania',
+        'dev_virtual',
 
         //Gestoria
         'expediente',

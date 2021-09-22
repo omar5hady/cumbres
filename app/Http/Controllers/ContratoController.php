@@ -2077,6 +2077,22 @@ class ContratoController extends Controller
 
             $credito_sol = inst_seleccionada::findOrFail($inst_sel[0]->id);
                 $credito_sol->monto_credito = $request->credito_solic;
+                if($credito_sol->tipo_credito != $request->tipo_credito){
+
+                    $reubicacion = new ReubicacionController();
+                    $reubicacion->createReubicacion(
+                                $credito->id,
+                                $credito->lote_id,
+                                $credito->prospecto_id,
+                                $credito->vendedor_id,
+                                $credito->promocion,
+                                $credito_sol->tipo_credito,
+                                $credito_sol->institucion,
+                                $credito->valor_terreno,
+                                'Se cambia de crédito por: '.$request->tipo_credito.' con '.$request->institucion,
+                                ''
+                            );
+                }
                 $credito_sol->tipo_credito = $request->tipo_credito;
                 $credito_sol->institucion = $request->institucion;
                 $credito_sol->plazo_credito = $request->plazo_credito;

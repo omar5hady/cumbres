@@ -97,7 +97,7 @@
                                         <th>Calle</th>
                                         <th># Oficial</th>
                                         <th style="width:8%">Terreno m&sup2;</th>
-                                        <th style="width:8%">% Proindiviso</th>
+                                        <th style="width:8%">% Indiviso</th>
                                         <th>Clave Catastral</th>
                                         <th>Modelo</th>
                                         <th>Construc. m&sup2;</th>
@@ -249,9 +249,9 @@
                                 </div>
 
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">% Proindiviso</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">% Indiviso</label>
                                     <div class="col-md-2" >
-                                        <input type="number"  v-model="indivisos" class="form-control" placeholder="Proindivisos">
+                                        <input type="number"  v-model="indivisos" class="form-control" placeholder="Indivisos">
                                     </div>
                                 </div>
 

@@ -69,6 +69,7 @@ class CreateCreditosTable extends Migration
             $table->double('valor_terreno',10,2)->default(0);
             $table->double('saldo_terreno',10,2)->default(0);
             $table->float('porcentaje_terreno',6,2)->default(0);
+            $table->boolean('dev_terreno')->default(0);
         });
     }
 

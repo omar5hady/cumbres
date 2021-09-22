@@ -20,6 +20,7 @@ use App\Contrato;
 use Excel;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\NotificationReceived;
+use App\Http\Controllers\ReubicacionController;
 
 class CreditoController extends Controller
 
@@ -695,6 +696,24 @@ class CreditoController extends Controller
             $newClienteTitular->parentesco_coa = $newClienteCoa->parentesco_coa;
 
             $credito = Credito::findOrFail($credito_id);
+            $institucion = inst_seleccionada::select('tipo_credito','institucion')
+                        ->where('credito_id','=',$credito->id)
+                        ->where('elegido','=',1)->first();
+
+            $reubicacion = new ReubicacionController();
+            $reubicacion->createReubicacion(
+                                $credito->id,
+                                $credito->lote_id,
+                                $credito->prospecto_id,
+                                $credito->vendedor_id,
+                                $credito->promocion,
+                                $institucion->tipo_credito,
+                                $institucion->institucion,
+                                $credito->valor_terreno,
+                                'Se cambia de titular por '.$newTitularP->nombre.' '.$newTitularP->apellidos,
+                                ''
+                            );
+            
             $credito->prospecto_id = $id_coa;
 
             $observacion = new Cliente_observacion();

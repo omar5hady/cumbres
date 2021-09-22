@@ -110,6 +110,7 @@ Vue.component('asignargestor', require('./components/AsignarGestor.vue'));
 Vue.component('seguimiento-tramite', require('./components/SeguimientoTramite.vue'));
 Vue.component('facturacion', require('./components/Facturacion.vue'));
 Vue.component('devolucion-cancelacion', require('./components/Devolucion.vue'));
+Vue.component('devolucion-virtual', require('./components/Tesoreria/DevolucionVirtual.vue'));
 Vue.component('devolucion-credito', require('./components/CreditoDevolucion.vue'));
 Vue.component('bono-recomendado', require('./components/BonoRecomendado.vue'));
 

@@ -837,6 +837,10 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/devolucion/indexDevoluciones','DevolucionController@indexDevoluciones');
         Route::get('/devoluciones/excel','DevolucionController@excelHistDev');
 
+        Route::get('/devolucionVirtual/index','DevolucionController@cancelacionesVirtuales');
+        Route::post('/devolucionVirtual/store','DevolucionController@storeDevolucionVirtual');
+        Route::get('/devolucionVirtual/indexDevoluciones','DevolucionController@indexDevolucionesVirtuales');
+
     ////////////////////// RUTAS DEVOLUCION (Credito)
         Route::get('/credito_devolucion/index','InstSeleccionadasController@indexDevolucion');
         Route::get('/credito_devolucion/excel','InstSeleccionadasController@excelDevolucion');

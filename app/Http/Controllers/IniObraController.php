@@ -957,7 +957,7 @@ class IniObraController extends Controller
                 if($anticipoT->total != null)
                     $obra->total_anticipo = $anticipoT->total;
 
-                $obra->anticipo = round($obra->total_anticipo/$obra->total_importe,3);
+                $obra->anticipo = round(($obra->total_anticipo/$obra->total_importe)*100,3);
                 
             }
         
@@ -1095,7 +1095,8 @@ class IniObraController extends Controller
             if($anticipoT->total != null)
                 $total_anticipo = $anticipoT->total;
 
-            $anticipo = round($total_anticipo/$request->total_importe,3);
+            $total_anticipo = $total_anticipo/$request->total_importe;
+            $anticipo = round($total_anticipo*100,3);
 
         
 

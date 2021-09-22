@@ -7,7 +7,9 @@ use App\Contrato;
 use App\Devolucion;
 use App\Gasto_admin;
 use App\Dev_concretania;
+use App\Dev_virtual;
 use App\Pago_contrato;
+use App\Cuenta;
 use DB;
 use App\Credito;
 use Excel;
@@ -163,6 +165,145 @@ class DevolucionController extends Controller
         ];
     }
 
+    private function getCuentas(){
+        $cuentas = Cuenta::select('num_cuenta','banco')->where('empresa','=','Grupo Constructor Cumbres')->get();
+        $arrayCuentas = [];
+
+        foreach($cuentas as $index => $cuenta){
+            array_push($arrayCuentas,$cuenta->num_cuenta.'-'.$cuenta->banco);
+        }
+
+        return $arrayCuentas;
+
+    }
+
+    public function cancelacionesVirtuales(Request $request){
+        // if(!$request->ajax())return redirect('/');
+        $buscar = $request->buscar;
+        $b_etapa = $request->b_etapa;
+        $b_manzana = $request->b_manzana;
+        $b_lote = $request->b_lote;
+        $criterio = $request->criterio;
+
+        $cuentas = $this->getCuentas();
+
+        $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+            ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+            ->join('personal as v', 'creditos.vendedor_id', 'v.id')
+            ->select(
+                'creditos.id',
+                'creditos.prospecto_id',
+                'creditos.etapa',
+                'creditos.manzana',
+                'creditos.num_lote',
+                'creditos.modelo',
+                'creditos.precio_base',
+                'creditos.precio_venta',
+                'creditos.valor_terreno',
+                'creditos.saldo_terreno',
+                'creditos.dev_terreno',
+                'creditos.fraccionamiento as proyecto',
+                'creditos.lote_id',
+
+                'personal.nombre',
+                'personal.apellidos',
+                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
+                
+                'v.nombre as vendedor_nombre',
+                'v.apellidos as vendedor_apellidos',
+                DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
+                
+                'contratos.status',
+                'contratos.fecha_status'
+        );
+
+        if ($buscar == '') {
+            $contratos = $contratos;
+        }
+        else{
+            switch ($criterio){
+                case 'lotes.fraccionamiento_id':{
+
+                    $contratos = $contratos->where($criterio, '=', $buscar);
+
+                    if($b_etapa != '')
+                        $contratos = $contratos->where('lotes.etapa_id', '=', $b_etapa);
+                    if($b_manzana != '')
+                        $contratos = $contratos->where('lotes.manzana', '=', $b_manzana);
+                    if($b_lote != '')
+                        $contratos = $contratos->where('lotes.num_lote', '=', $b_lote);
+ 
+                    break;
+                }
+                case 'creditos.id':{
+                    $contratos = $contratos
+                    ->where($criterio, '=', $buscar);
+                    break;
+                }
+                case 'personal.nombre':{
+                    $contratos = $contratos
+                        ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
+                    break;
+                }
+            }
+        }
+
+        $contratos = $contratos
+            ->where('contratos.status', '=', '0')
+            ->where('creditos.dev_terreno', '!=', '2')
+            ->where('lotes.emp_constructora','=','CONCRETANIA')
+            ->where('lotes.emp_terreno','=','Grupo Constructor Cumbres')
+            ->orderBy('fecha_status', 'asc')->get();
+
+
+            if(sizeof($contratos)){
+                foreach ($contratos as $index => $contrato) {
+
+                    $contrato->depositos = 0;
+                    $contrato->devolucionTotal = 0;
+                    $contrato->sumaDev = 0;
+
+                    $devoluciones = Devolucion::whereIn('devoluciones.cuenta',$cuentas)
+                                    ->where('devoluciones.contrato_id','=',$contrato->id)
+                                    ->get();
+
+                    $dev_virtuales = Dev_virtual::where('contrato_id','=',$contrato->id)
+                                    ->get();
+    
+                    $depositos_pagado = Pago_contrato::join('depositos','pagos_contratos.id','=','depositos.pago_id')
+                    ->select(DB::raw("SUM(depositos.monto_terreno) as pagado"))
+                    ->where('pagos_contratos.contrato_id','=',$contrato->id)
+                    ->where('depositos.fecha_ingreso_concretania','!=',NULL)
+                    ->first();
+
+                    if(sizeof($dev_virtuales)){
+                        $contrato->dev_virtuales = $dev_virtuales;
+                        foreach ($dev_virtuales as $key => $dev) {
+                            $contrato->sumaDev += $dev->monto;
+                        }
+                    }
+
+                    if(sizeof($devoluciones)){
+                        $contrato->devoluciones = $devoluciones;
+                        foreach ($devoluciones as $key => $dev) {
+                            $contrato->devolucionTotal += $dev->devolver;
+                        }
+                    }
+
+                    if($depositos_pagado->pagado != NULL){
+                        $contrato->depositos = $depositos_pagado->pagado;
+                    }
+                    
+                }
+                
+            }
+        
+        return [
+            'contratos' => $contratos//, 'contadorContrato' => $contadorContratos
+        ];
+    }
+
     public function storeDevolucion(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         try{
@@ -203,6 +344,106 @@ class DevolucionController extends Controller
         } catch (Exception $e){
             DB::rollBack();
         }       
+    }
+
+    public function storeDevolucionVirtual(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        try{
+            DB::beginTransaction();
+
+            $devolucion = new Dev_virtual();
+            $devolucion->contrato_id = $request->id;
+            $devolucion->monto = $request->monto;
+            $devolucion->fecha = $request->fecha;
+            $devolucion->cheque = $request->cheque;
+            $devolucion->cuenta = $request->cuenta;
+            $devolucion->observaciones = $request->observaciones;
+            $devolucion->save();
+
+            $sum = Dev_virtual::select(DB::raw("SUM(dev_virtuales.monto) as totalMonto"))->where('contrato_id','=',$request->id)->first();
+
+            $credito = Credito::findOrFail($request->id);
+            if($credito->saldo_terreno == $sum->totalMonto)
+                $credito->dev_terreno = 2;
+            else
+                $credito->dev_terreno = 1;
+            $credito->save();
+
+            DB::commit();
+        } catch (Exception $e){
+            DB::rollBack();
+        }       
+    }
+
+    public function indexDevolucionesVirtuales(Request $request){
+        $buscar = $request->buscar;
+        $b_etapa = $request->b_etapa;
+        $b_manzana = $request->b_manzana;
+        $b_lote = $request->b_lote;
+        $criterio = $request->criterio;
+
+        $devoluciones = Dev_virtual::join('creditos', 'dev_virtuales.contrato_id', '=', 'creditos.id')
+                            ->join('contratos','creditos.id','=','contratos.id')
+                            ->join('personal','creditos.prospecto_id','=','personal.id')
+                            ->join('lotes','creditos.lote_id','=','lotes.id')
+                            ->select('dev_virtuales.*',
+                                'creditos.etapa',
+                                'creditos.fraccionamiento as proyecto',
+                                'creditos.num_lote',
+                                'creditos.etapa',
+                                'creditos.manzana',
+                                'contratos.fecha_status',
+
+                                'personal.nombre',
+                                'personal.apellidos'
+                            );
+                           
+                            if ($buscar != '') {
+                                switch ($criterio){
+                                    case 'lotes.fraccionamiento_id':{
+                    
+                                        $devoluciones = $devoluciones
+                                        ->where($criterio, '=', $buscar);
+                    
+                                        if($b_etapa != '')
+                                            $devoluciones = $devoluciones->where('lotes.etapa_id', '=', $b_etapa);
+                                        if($b_manzana != '')
+                                            $devoluciones = $devoluciones->where('lotes.manzana', '=', $b_manzana);
+                                        if($b_lote != '')
+                                            $devoluciones = $devoluciones->where('lotes.num_lote', '=', $b_lote);
+                                        
+                                        
+                                        break;
+                                    }
+                                    case 'creditos.id':{
+                                        $devoluciones = $devoluciones
+                                        ->where($criterio, '=', $buscar);
+                                        break;
+                                    }
+                                    case 'personal.nombre':{
+                                        $devoluciones = $devoluciones
+                                            ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%');
+                                        
+                                        break;
+                                    }
+                                }
+                            }
+                    
+                            $devoluciones = $devoluciones
+                                ->orderBy('id', 'desc')->paginate(10);
+                            
+                            return [
+                                'pagination' => [
+                                    'total'         => $devoluciones->total(),
+                                    'current_page'  => $devoluciones->currentPage(),
+                                    'per_page'      => $devoluciones->perPage(),
+                                    'last_page'     => $devoluciones->lastPage(),
+                                    'from'          => $devoluciones->firstItem(),
+                                    'to'            => $devoluciones->lastItem(),
+                                ], 'devoluciones' => $devoluciones//, 'contadorContrato' => $contadorContratos
+                            ];
+                            
+
     }
 
     public function indexDevoluciones(Request $request){

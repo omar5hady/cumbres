@@ -533,6 +533,9 @@
         <template v-if="menu==265">
             <reubicacion-component></reubicacion-component>
         </template>
+        <template v-if="menu==266">
+            <devolucion-virtual></devolucion-virtual>
+        </template>
 
     @endif
 
