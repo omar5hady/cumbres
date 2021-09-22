@@ -388,9 +388,24 @@ class LicenciasController extends Controller
                                         ->where('avaluos.fecha_solicitud','!=', NULL)
                                         ->get();
 
+            $creditos = Contrato    ::  join('creditos','contratos.id','=','creditos.id')
+                                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                                        ->select('contratos.id','inst_seleccionadas.tipo_credito',
+                                                'inst_seleccionadas.institucion'
+                                            )
+                                        ->where('creditos.lote_id','=',$lote->id)
+                                        ->where('inst_seleccionadas.elegido','=',1)
+                                        ->where('contratos.status','=',3)
+                                        ->get();
+
             
             if(sizeof($contrato))
                 $lote->firmado = 1;
+
+            if(sizeof($creditos)){
+                $lote->tipo_credito = $creditos[0]->tipo_credito;
+                $lote->institucion = $creditos[0]->institucion;
+            }
 
             if(sizeof($avaluo))
                 $lote->avaluo_solic = $avaluo[0]->fecha_solicitud;

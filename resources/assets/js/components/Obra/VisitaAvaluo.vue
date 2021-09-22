@@ -82,6 +82,8 @@
                                         <th>Credito puente</th>
                                         <th>Fecha termino</th>
                                         <th>Paquete</th>
+                                        <th>Crédito</th>
+                                        <th>Institución</th>
                                         <th>Avaluo Solicitado</th>
                                         <th>Fecha de visita</th>
                                         <th>Status</th>
@@ -114,6 +116,8 @@
                                         <td class="td2" v-text="lotes.credito_puente"></td>
                                         <td class="td2" v-text="this.moment(lotes.fecha_fin).locale('es').format('MMMM YYYY')"></td>
                                         <td class="td2" v-text="lotes.paquete"></td>
+                                        <td class="td2" v-text="lotes.tipo_credito"></td>
+                                        <td class="td2" v-text="lotes.institucion"></td>
                                         <td class="td2" v-if="lotes.avaluo_solic == ''"></td>
                                         <td class="td2" v-else v-text="'Avaluo solicitado el: '+this.moment(lotes.avaluo_solic).locale('es').format('DD/MMM/YYYY')"></td>
                                         

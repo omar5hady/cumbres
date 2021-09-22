@@ -1081,6 +1081,7 @@ Route::group(['middleware' => ['auth']],function(){
         /////////////////// RUTAS REUBICACIONES ////////////////////////
         Route::get('/reubicaciones/getReubicaciones','ReubicacionController@getReubicaciones');
         Route::post('/reubicaciones/store','ReubicacionController@store');
+        Route::delete('/reubicaciones/delete','ReubicacionController@delete');
 
 
     });

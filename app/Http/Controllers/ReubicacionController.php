@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Reubicacion;
 use App\Credito;
 use Carbon\Carbon;
+use Auth;
 
 class ReubicacionController extends Controller
 {
@@ -28,6 +29,12 @@ class ReubicacionController extends Controller
             $fecha_reubicacion = new Carbon();
         $reubicacion->fecha_reubicacion = $fecha_reubicacion;
         $reubicacion->save();
+    }
+
+    public function delete(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $reubicacion = Reubicacion::findOrFail($request->id);
+        $reubicacion->delete();
     }
 
     public function getReubicaciones(Request $request){

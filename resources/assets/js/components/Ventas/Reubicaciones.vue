@@ -264,6 +264,11 @@
                                     </thead>
                                     <tbody>
                                         <tr v-for="reubicacion in arrayReubicaciones" :key="reubicacion.id">
+                                            <td>
+                                                <button title="Eliminar" type="button" @click="eliminar(reubicacion.id)" class="btn btn-danger btn-sm">
+                                                    <i class="icon-trash"></i>
+                                                </button>  
+                                            </td>
                                             <td class="td2" v-text="this.moment(reubicacion.fecha_reubicacion).locale('es').format('DD/MMM/YYYY')"></td>
                                             <td class="td2" v-text="reubicacion.fraccionamiento"></td>
                                             <td class="td2" v-text="reubicacion.etapa"></td>
@@ -720,6 +725,36 @@
                 });
               
             },
+
+            eliminar(id){
+                swal({
+                title: '¿Desea eliminar?',
+                text: "Esta acción no se puede revertir!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, eliminar!'
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+
+                axios.delete('/reubicaciones/delete', 
+                        {params: {'id': id}}).then(function (response){
+                        swal(
+                        'Borrado!',
+                        'Reubicación borrada correctamente.',
+                        'success'
+                        )
+                        me.getReubicaciones(me.contrato.id);
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+                }
+                })
+            },
+
         /////
             selectEmpresas(){
                 let me = this;
