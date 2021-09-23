@@ -8,8 +8,33 @@ use App\Credito;
 use Carbon\Carbon;
 use Auth;
 
+use App\Deposito;
+
 class ReubicacionController extends Controller
 {
+    public function pruebaReubicaciones(Request $request){
+        $reubicaciones = Reubicacion::orderBy('fecha_reubicacion','desc')->get();
+
+        if(sizeof($reubicaciones))
+            foreach ($reubicaciones as $key => $reubicacion) {
+                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+                                    ->select('depositos.lote_id','depositos.fecha_pago','depositos.id')
+                                    ->where('depositos.fecha_pago','<',$reubicacion->fecha_reubicacion)
+                                    ->where('pagos_contratos.contrato_id','=',$reubicacion->contrato_id)
+                                    ->get();
+                // if(sizeof($depositos))
+                //     foreach($depositos as $key => $dep){
+                //         $deposito = Deposito::findOrFail($dep->id);
+                //         $deposito->lote_id = $reubicacion->lote_id;
+                //         $deposito->save();
+                //     }
+
+                $reubicacion->depositos = $depositos;
+            }
+
+        return $reubicaciones;
+    }
+
     public function createReubicacion($contrato_id, $lote_id, $cliente_id,
             $asesor_id, $promocion, $tipo_credito, $institucion,
             $valor_terreno, $observacion, $fecha_reubicacion

@@ -558,7 +558,6 @@
 
                                 </div>
 
-                                
                                 <div class="form-group row" v-if="devuelto > 0">
                                     <div class="col-md-12">
                                         <table class="table table-bordered table-striped table-sm">
@@ -620,6 +619,40 @@
                                     </div>
 
                                 </div>
+
+                                <div class="form-group row">
+                                    <div class="col-md-7">
+                                    </div>
+
+                                    <div class="col-md-5">
+                                        <table class="table table-bordered table-striped table-sm">
+                                            <tbody>
+                                                <tr>
+                                                    <th class="td2">+ Total transferido</th>
+                                                    <td v-text="'$'+formatNumber(transferido)"></td>
+                                                </tr>  
+                                                <tr>
+                                                    <th class="td2">- Devoluciones virtuales</th>
+                                                    <td v-text="'$'+formatNumber(devueltoVirtual)"></td>
+                                                </tr>  
+                                                <tr>
+                                                    <th class="td2">- Devoluciones</th>
+                                                    <td v-text="'$'+formatNumber(devuelto)"></td>
+                                                </tr>  
+                                                <tr>
+                                                    <th>
+                                                        Pendiente
+                                                    </th>
+                                                    <th v-text="'$'+formatNumber(transferido - devuelto - devueltoVirtual)"></th>
+                                                </tr>
+                                                                 
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+
+                                
                                 
                             </form>
                         </div>

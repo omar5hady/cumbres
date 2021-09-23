@@ -202,7 +202,11 @@
                     
                     <div class="table-cell">{{$gastos_admin[$i]->fecha}}</div>
                     <div class="table-cell">---</div>    
-                    <div colspan="2" class="table-cell">OFICINA - OFICINA</div>
+                    @if($gastos_admin[$i]->cuenta != '')
+                        <div colspan="2" class="table-cell">{{mb_strtoupper($gastos_admin[$i]->cuenta)}}</div>
+                    @else
+                        <div colspan="2" class="table-cell">OFICINA - OFICINA</div>
+                    @endif
                     <div class="table-cell">$ {{$gastos_admin[$i]->costo}}</div>  
                     <div class="table-cell">$ 0.00</div>  
                 </div>

@@ -1166,6 +1166,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/asignarPartidasUrb','AvanceController@addPartidasUrbanizacion');
         Route::get('/asignarLotesDep','DepositoController@asignarLotes');
 
+        Route::get('/reubicaciones/prueba','ReubicacionController@pruebaReubicaciones');
+
     
     
 });

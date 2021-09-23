@@ -12,6 +12,7 @@ use DB;
 use NumerosEnLetras;
 use App\Gasto_admin;
 use App\Dep_credito;
+use App\Devolucion;
 use Excel;
 use Auth;
 use File;
@@ -1563,6 +1564,21 @@ class DepositoController extends Controller
         ->where('contrato_id','=',$id)
         ->get();
 
+        if(sizeof($gastos_admin)){
+            foreach ($gastos_admin as $key => $gasto) {
+                $gasto->cuenta = '';
+                if($gasto->concepto == 'Devolución por cancelación' || $gasto->concepto == 'Devolución'){
+                    $dev = Devolucion::select('cuenta')->where('contrato_id','=',$id)
+                                ->where('devolver','=',$gasto->costo)
+                                ->where('fecha','=',$gasto->fecha)->first();
+                    
+                    if($dev)
+                        $gasto->cuenta = $dev->cuenta;
+                }
+                # code...
+            }
+        }
+
         for($i = 0; $i < count($gastos_admin); $i++){
             $gastos_admin[$i]->costo = number_format((float)$gastos_admin[$i]->costo, 2, '.', ',');
         }
@@ -1710,6 +1726,7 @@ class DepositoController extends Controller
                     ->where('lotes.emp_terreno','=','Grupo Constructor Cumbres')
                     ->where('banco','!=','0102030405-Scotiabank')
                     ->where('monto_terreno','>',0)
+                    ->where('contratos.status','!=',0)
                     ->where('fecha_ingreso_concretania','=',NULL);
                     if($fecha1 != '' && $fecha2 != ''){
                         $depositos = $depositos->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2]);
@@ -1718,6 +1735,7 @@ class DepositoController extends Controller
                     ->where('lotes.emp_terreno','=','Grupo Constructor Cumbres')
                     ->where('banco','!=','0102030405-Scotiabank')
                     ->where('monto_terreno','>',0)
+                    ->where('contratos.status','!=',0)
                     ->where('fecha_ingreso_concretania','=',NULL);
                     if($fecha1 != '' && $fecha2 != ''){
                         $depositos = $depositos->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2]);
