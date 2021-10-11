@@ -16,6 +16,9 @@ use Excel;
 use Carbon\Carbon;
 use Auth;
 
+use App\Deposito_conc;
+use App\Deposito_gcc;
+
 class DevolucionController extends Controller
 {
     public function indexCancelaciones(Request $request)
@@ -264,6 +267,9 @@ class DevolucionController extends Controller
                     $contrato->devolucionTotal = 0;
                     $contrato->sumaDev = 0;
 
+                    $contrato->gccTransf = 0;
+                    $contrato->concTransf = 0;
+
                     $devoluciones = Devolucion::whereIn('devoluciones.cuenta',$cuentas)
                                     ->where('devoluciones.contrato_id','=',$contrato->id)
                                     ->get();
@@ -272,10 +278,22 @@ class DevolucionController extends Controller
                                     ->get();
     
                     $depositos_pagado = Pago_contrato::join('depositos','pagos_contratos.id','=','depositos.pago_id')
-                    ->select(DB::raw("SUM(depositos.monto_terreno) as pagado"))
-                    ->where('pagos_contratos.contrato_id','=',$contrato->id)
-                    ->where('depositos.fecha_ingreso_concretania','!=',NULL)
-                    ->first();
+                        ->select(DB::raw("SUM(depositos.monto_terreno) as pagado"))
+                        ->where('pagos_contratos.contrato_id','=',$contrato->id)
+                        ->where('depositos.fecha_ingreso_concretania','!=',NULL)
+                        ->where('depositos.lote_id','=',$contrato->lote_id)
+                        ->first();
+
+                    $transfGCC = Deposito_gcc::select(DB::raw("SUM(depositos_gcc.monto) as pagado"))
+                        ->where('depositos_gcc.contrato_id','=',$contrato->id)
+                        ->where('depositos_gcc.lote_id','=',$contrato->lote_id)
+                        ->first();
+
+                    $transfConc = Deposito_conc::select(DB::raw("SUM(depositos_conc.monto) as pagado"))
+                        ->where('depositos_conc.contrato_id','=',$contrato->id)
+                        ->where('depositos_conc.lote_id','=',$contrato->lote_id)
+                        ->where('depositos_conc.devolucion','=',1)
+                        ->first();
 
                     if(sizeof($dev_virtuales)){
                         $contrato->dev_virtuales = $dev_virtuales;
@@ -293,6 +311,14 @@ class DevolucionController extends Controller
 
                     if($depositos_pagado->pagado != NULL){
                         $contrato->depositos = $depositos_pagado->pagado;
+                    }
+
+                    if($transfGCC->pagado != NULL){
+                        $contrato->gccTransf = 0;
+                    }
+
+                    if($transfConc->pagado != NULL){
+                        $contrato->concTransf = 0;
                     }
                     
                 }

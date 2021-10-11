@@ -76,8 +76,13 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="contratos in arrayContratos" :key="contratos.id" v-on:dblclick="abrirModal('devolucion',contratos)" title="Doble click"> 
-                                    <template v-if="(contratos.depositos - contratos.sumaDev - contratos.devolucionTotal) > 0">
-                                        <td class="td2" v-text="contratos.id"></td>
+                                    <template v-if="(contratos.depositos + contratos.concTransf - contratos.sumaDev - contratos.devolucionTotal - contratos.gccTransf) > 0">
+                                        <td class="td2">
+                                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{contratos.id}}</a>
+                                                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                        <a class="dropdown-item" @click="abrirPDF(contratos.id)">Estado de cuenta</a>
+                                                    </div>
+                                        </td>
                                         <td class="td2">
                                             <a href="#" v-text="contratos.nombre_cliente"></a>
                                         </td>
@@ -85,9 +90,9 @@
                                         <td class="td2" v-text="contratos.etapa"></td>
                                         <td class="td2" v-text="contratos.manzana"></td>
                                         <td class="td2" v-text="contratos.num_lote"></td>
-                                        <td class="td2" v-text="'$'+formatNumber(contratos.depositos)"></td>
-                                        <td class="td2" v-text="'$'+formatNumber(contratos.devolucionTotal + contratos.sumaDev)"></td>
-                                        <td class="td2" v-text="'$'+formatNumber(contratos.depositos - contratos.sumaDev - contratos.devolucionTotal)"></td>
+                                        <td class="td2" v-text="'$'+formatNumber(contratos.depositos+contratos.concTransf)"></td>
+                                        <td class="td2" v-text="'$'+formatNumber(contratos.devolucionTotal + contratos.sumaDev + contratos.gccTransf)"></td>
+                                        <td class="td2" v-text="'$'+formatNumber(contratos.depositos + contratos.concTransf - contratos.sumaDev - contratos.devolucionTotal - contratos.gccTransf)"></td>
                                         <td class="td2" v-text="this.moment(contratos.fecha_status).locale('es').format('DD/MMM/YYYY')"></td>
                                     </template>
                                     </tr>                               
@@ -632,6 +637,11 @@
 
             },
 
+            abrirPDF(id){
+                const win = window.open('/estadoCuenta/estadoPDF/'+id, '_blank');
+                win.focus();
+            },
+
             generarDevolucion(){
                 if(this.validarDev()) //Se verifica si hay un error (campo vacio)
                 {
@@ -735,7 +745,7 @@
                         this.depositos = data['depositos'];
                         this.devuelto = data['devolucionTotal'];
                         this.devueltoVirutal = data['sumaDev'];
-                        this.maximoDevolver = this.depositos - this.devuelto - this.devueltoVirutal;
+                        this.maximoDevolver = this.depositos + data['concTransf'] - this.devuelto - this.devueltoVirutal - data['gccTransf'];
                         this.cheque ='';
                         this.cant_dev = 0;
                         this.arrayDevoluciones = data['devoluciones'];

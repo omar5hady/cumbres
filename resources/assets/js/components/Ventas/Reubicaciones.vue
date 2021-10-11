@@ -248,6 +248,7 @@
                                 <table class="table2 table-bordered table-striped table-sm">
                                     <thead>
                                         <tr>
+                                            <th></th>
                                             <th>Fecha de reubicación</th>
                                             <th>Fraccionamiento</th>
                                             <th>Etapa</th>
@@ -280,8 +281,7 @@
                                             <td class="td2" v-text="reubicacion.tipo_credito"></td>
                                             <td class="td2" v-text="reubicacion.institucion"></td>
                                             <td class="td2" v-text="reubicacion.promocion"></td>
-                                            <td class="td2" v-text="reubicacion.observacion">
-                                            </td>
+                                            <td class="td2" v-text="reubicacion.observacion"></td>
                                         </tr>                               
                                     </tbody>
                                 </table>

@@ -1083,6 +1083,11 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/reubicaciones/store','ReubicacionController@store');
         Route::delete('/reubicaciones/delete','ReubicacionController@delete');
 
+        Route::get('/reubicaciones/depositosPorReubicar','ReubicacionController@depositosPorReubicar');
+        Route::post('/reubicaciones/storeDepositoReubicacion','ReubicacionController@storeDepositoReubicacion');
+        Route::get('/reubicaciones/indexGCC','ReubicacionController@indexGCC');
+        Route::get('/reubicaciones/indexConc','ReubicacionController@indexConc');
+
 
     });
 
@@ -1166,7 +1171,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/asignarPartidasUrb','AvanceController@addPartidasUrbanizacion');
         Route::get('/asignarLotesDep','DepositoController@asignarLotes');
 
-        Route::get('/reubicaciones/prueba','ReubicacionController@pruebaReubicaciones');
+        
 
     
     

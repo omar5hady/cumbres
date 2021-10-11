@@ -29,6 +29,8 @@ use App\Expediente;
 use App\Gasto_admin;
 use App\Deposito;
 use App\Dep_credito;
+use App\Deposito_gcc;
+use App\Deposito_conc;
 use App\Precios_terreno;
 use App\Lote;
 use App\Modelo;
@@ -2077,7 +2079,7 @@ class ContratoController extends Controller
 
             $credito_sol = inst_seleccionada::findOrFail($inst_sel[0]->id);
                 $credito_sol->monto_credito = $request->credito_solic;
-                if($credito_sol->tipo_credito != $request->tipo_credito){
+                if($credito_sol->tipo_credito != $request->tipo_credito && $credito_sol->tipo_credito != 'Apartado'){
 
                     $reubicacion = new ReubicacionController();
                     $reubicacion->createReubicacion(
@@ -2163,6 +2165,8 @@ class ContratoController extends Controller
                     $sumaDepositoCredit[0]->suma = 0;
                 }
 
+            $this->calculateSaldoTerreno($request->contrato_id);
+
             $sumaDepositoCredit2 = Dep_credito::join('inst_seleccionadas','dep_creditos.inst_sel_id','=','inst_seleccionadas.id')
                 ->join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
                 ->join('contratos','creditos.id','=','contratos.id')
@@ -2172,7 +2176,6 @@ class ContratoController extends Controller
                 if($sumaDepositoCredit[0]->suma == NULL){
                     $sumaDepositoCredit[0]->suma = 0;
                 }
-
                 $sumaTotal =  $sumaIntereses[0]->suma + $sumaGastos[0]->suma - $sumaDeposito[0]->suma - $sumaDepositoCredit[0]->suma - $sumaDepositoCredit2[0]->suma - $sumaDescuento[0]->suma;
 
             $contrato->saldo = $credito->precio_venta + $sumaTotal;
@@ -2216,6 +2219,52 @@ class ContratoController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
         }
+    }
+
+    private function calculateSaldoTerreno($id){
+
+        $credito = Credito::findOrFail($id);
+
+            $sumaDepositoCreditTerreno = Dep_credito::join('inst_seleccionadas','dep_creditos.inst_sel_id','=','inst_seleccionadas.id')
+                ->join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
+                ->join('contratos','creditos.id','=','contratos.id')
+                ->select(DB::raw("SUM(dep_creditos.monto_terreno) as suma"))->where('contratos.id','=',$id)
+                ->where('inst_seleccionadas.elegido','=',1)
+                ->get();
+                if($sumaDepositoCreditTerreno[0]->suma == NULL){
+                    $sumaDepositoCreditTerreno[0]->suma = 0;
+                }
+
+            $sumaDepositoTerreno = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+                ->select(DB::raw("SUM(depositos.monto_terreno) as suma"))->where('contratos.id','=',$id)
+                ->where('depositos.fecha_ingreso_concretania','!=',NULL)
+                ->where('depositos.lote_id','=',$credito->lote_id)
+                ->get();
+                if($sumaDepositoTerreno[0]->suma == NULL){
+                    $sumaDepositoTerreno[0]->suma = 0;
+                }
+
+            $depositoGCC = Deposito_gcc::select(DB::raw("SUM(depositos_gcc.monto) as suma"))
+                ->where('depositos_gcc.contrato_id','=',$id)
+                ->where('depositos_gcc.lote_id','=',$credito->lote_id)
+                ->get();
+                if($depositoGCC[0]->suma == NULL){
+                    $depositoGCC[0]->suma = 0;
+                }
+
+            $depositoConc = Deposito_conc::select(DB::raw("SUM(monto) as suma"))
+                ->where('contrato_id','=',$id)
+                ->where('lote_id','=',$credito->lote_id)
+                ->where('devolucion','=',1)
+                ->get();
+                if($depositoConc[0]->suma == NULL){
+                    $depositoConc[0]->suma = 0;
+                }
+        
+        $credito->saldo_terreno = $sumaDepositoCreditTerreno[0]->suma + $sumaDepositoTerreno[0]->suma + $depositoGCC[0]->suma -  $depositoConc[0]->suma;
+        $credito->save();
+
     }
 
     public function reasignarCliente(Request $request)

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Deposito;
+use App\Deposito_conc;
+use App\Deposito_gcc;
 use App\Contrato;
 use App\Credito;
 use App\Pago_contrato;
@@ -1510,6 +1512,8 @@ class DepositoController extends Controller
         ->where('contratos.id',$id)
         ->get();
 
+        $this->calculateSaldoTerreno($id);
+
         if($contratos[0]->descuento == NULL)
             $contratos[0]->descuento = 0;
 
@@ -1536,6 +1540,7 @@ class DepositoController extends Controller
         for ($i = 0; $i < count($depositos); $i++) {
             $depositos[$i]->cant_depo = $depositos[$i]->cant_depo - $depositos[$i]->interes_mor;
             $depositos[$i]->cant_depo = number_format((float)$depositos[$i]->cant_depo, 2, '.', ',');
+            $depositos[$i]->interes_mor = number_format((float)$depositos[$i]->interes_mor, 2, '.', ',');
         }
 
         for ($i = 0; $i < count($desc_interes); $i++) {
@@ -1554,7 +1559,7 @@ class DepositoController extends Controller
         ->where('contratos.id','=',$id)
         ->get();
 
-        $contratos[0]->sumDeposito = $totalDepositos[0]->sumDeposito - $totalDepositos[0]->sumMor;
+        $contratos[0]->sumDeposito = $totalDepositos[0]->sumDeposito;
 
         $contratos[0]->gastos = number_format((float)$contratos[0]->gastos, 2, '.', ',');
         $contratos[0]->precio_venta = number_format((float)$contratos[0]->precio_venta, 2, '.', ',');
@@ -1575,7 +1580,6 @@ class DepositoController extends Controller
                     if($dev)
                         $gasto->cuenta = $dev->cuenta;
                 }
-                # code...
             }
         }
 
@@ -1624,6 +1628,52 @@ class DepositoController extends Controller
         
         $pdf = \PDF::loadview('pdf.contratos.estadoDeCuenta', ['contratos' => $contratos, 'depositos' => $depositos, 'descuentos' => $desc_interes, 'gastos_admin' => $gastos_admin, 'depositos_credito' => $depositos_credito, 'fecha'=> $tiempo]);
         return $pdf->stream('EstadoDeCuenta.pdf');
+    }
+
+    private function calculateSaldoTerreno($id){
+
+        $credito = Credito::findOrFail($id);
+
+            $sumaDepositoCreditTerreno = Dep_credito::join('inst_seleccionadas','dep_creditos.inst_sel_id','=','inst_seleccionadas.id')
+                ->join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
+                ->join('contratos','creditos.id','=','contratos.id')
+                ->select(DB::raw("SUM(dep_creditos.monto_terreno) as suma"))->where('contratos.id','=',$id)
+                ->where('inst_seleccionadas.elegido','=',1)
+                ->get();
+                if($sumaDepositoCreditTerreno[0]->suma == NULL){
+                    $sumaDepositoCreditTerreno[0]->suma = 0;
+                }
+
+            $sumaDepositoTerreno = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+                ->select(DB::raw("SUM(depositos.monto_terreno) as suma"))->where('contratos.id','=',$id)
+                ->where('depositos.fecha_ingreso_concretania','!=',NULL)
+                ->where('depositos.lote_id','=',$credito->lote_id)
+                ->get();
+                if($sumaDepositoTerreno[0]->suma == NULL){
+                    $sumaDepositoTerreno[0]->suma = 0;
+                }
+
+            $depositoGCC = Deposito_gcc::select(DB::raw("SUM(depositos_gcc.monto) as suma"))
+                ->where('depositos_gcc.contrato_id','=',$id)
+                ->where('depositos_gcc.lote_id','=',$credito->lote_id)
+                ->get();
+                if($depositoGCC[0]->suma == NULL){
+                    $depositoGCC[0]->suma = 0;
+                }
+
+            $depositoConc = Deposito_conc::select(DB::raw("SUM(depositos_conc.monto) as suma"))
+                ->where('depositos_conc.contrato_id','=',$id)
+                ->where('depositos_conc.lote_id','=',$credito->lote_id)
+                ->where('depositos_conc.devolucion','=',1)
+                ->get();
+                if($depositoConc[0]->suma == NULL){
+                    $depositoConc[0]->suma = 0;
+                }
+        
+        $credito->saldo_terreno = $sumaDepositoCreditTerreno[0]->suma + $sumaDepositoTerreno[0]->suma + $depositoGCC[0]->suma -  $depositoConc[0]->suma;
+        $credito->save();
+
     }
 
     public function pendeintesIngresar(Request $request){
@@ -1807,15 +1857,17 @@ class DepositoController extends Controller
         $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
             ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
             ->join('creditos','creditos.id','=','contratos.id')
-            ->join('lotes','creditos.lote_id','=','lotes.id')
+            ->join('lotes','depositos.lote_id','=','lotes.id')
+            ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+            ->join('etapas','lotes.etapa_id','=','etapas.id')
             ->join('clientes','creditos.prospecto_id','=','clientes.id')
             ->join('personal','clientes.id','=','personal.id')
             ->select('contratos.id','depositos.id as depId',
-                    'pagos_contratos.fecha_pago', 'creditos.fraccionamiento',
-                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 'creditos.saldo_terreno',
+                    'pagos_contratos.fecha_pago', 'fraccionamientos.nombre as fraccionamiento',
+                    'etapas.num_etapa as etapa', 'lotes.manzana', 'lotes.num_lote', 'creditos.saldo_terreno',
                     'personal.nombre','personal.apellidos','depositos.concepto', 'creditos.valor_terreno',
                     'depositos.monto_terreno', 'depositos.fecha_ingreso_concretania', 'depositos.cuenta',
-                    'depositos.f_carga_factura_terreno','depositos.cuenta')
+                    'depositos.fecha_pago as fecha','depositos.cuenta')
             ->whereBetween('depositos.fecha_ingreso_concretania', [$request->fecha, $request->fecha2])
             ->where('monto_terreno','>',0);
 
@@ -1829,7 +1881,7 @@ class DepositoController extends Controller
                     'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 'creditos.saldo_terreno',
                     'personal.nombre','personal.apellidos', 'dep_creditos.concepto', 'creditos.valor_terreno',
                     'dep_creditos.monto_terreno', 'dep_creditos.fecha_ingreso_concretania', 'dep_creditos.cuenta',
-                    'dep_creditos.f_carga_factura_terreno','dep_creditos.cuenta')
+                    'dep_creditos.f_carga_factura_terreno','dep_creditos.cuenta', 'dep_creditos.fecha_deposito as fecha')
             ->whereBetween('dep_creditos.fecha_ingreso_concretania', [$request->fecha, $request->fecha2])
             ->where('monto_terreno','>',0);
 
@@ -1837,8 +1889,6 @@ class DepositoController extends Controller
                 $depositos = $depositos->where('depositos.cuenta','=',$request->cuenta);
                 $ingresosCreditos = $ingresosCreditos->where('dep_creditos.cuenta','=',$request->cuenta);
             }
-
-        
 
         
         if($request->buscar != '')                            

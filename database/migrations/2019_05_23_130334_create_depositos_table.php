@@ -55,6 +55,8 @@ class CreateDepositosTable extends Migration
             $table->double('monto_terreno', 8,2)->nullable()->default(0);
             $table->date('f_carga_factura_terreno')->nullable();
 
+            $table->boolean('reubicado')->default(0);
+
             $table->timestamps();
 
             $table->foreign('pago_id')->references('id')->on('pagos_contratos')->onDelete('cascade');

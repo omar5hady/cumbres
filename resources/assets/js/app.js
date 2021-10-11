@@ -114,6 +114,8 @@ Vue.component('devolucion-virtual', require('./components/Tesoreria/DevolucionVi
 Vue.component('devolucion-credito', require('./components/CreditoDevolucion.vue'));
 Vue.component('bono-recomendado', require('./components/BonoRecomendado.vue'));
 
+Vue.component('reubicaciones-devolucion', require('./components/Tesoreria/DepositosTransferir.vue'));
+
 // Componentes Tesoreria
 Vue.component('ingresos-concretania', require('./components/Tesoreria/IngresosConcretania.vue'));
 

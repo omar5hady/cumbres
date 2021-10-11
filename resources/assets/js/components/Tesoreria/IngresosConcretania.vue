@@ -179,7 +179,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="lote in arrayHistorial" :key="lote.id" @dblclick="abrirModal('detalle',lote)" title="Doble clic">
+                                    <tr v-for="lote in arrayHistorial" :key="lote.depId" @dblclick="abrirModal('detalle',lote)" title="Doble clic">
                                         
                                         <td><a href="#" v-text="lote.fraccionamiento"></a></td>
                                         <td v-text="lote.etapa"></td>
@@ -193,7 +193,7 @@
                                             <td class="td2" v-text="'Deposito de crédito'"></td>
                                         </template>
                                         <td class="td2" v-text="'$'+formatNumber(lote.monto_terreno)"></td>
-                                        <td class="td2" v-text="lote.f_carga_factura_terreno"></td>
+                                        <td class="td2" v-text="lote.fecha"></td>
                                         <td class="td2" v-text="lote.cuenta"></td>
                                         <td class="td2" v-text="lote.fecha_ingreso_concretania"></td>
                                     </tr>  
@@ -366,7 +366,7 @@
                                             <td class="td2" v-text="'$'+formatNumber(lote.monto_terreno)"></td>
                                             <td class="td2" v-text="'$'+formatNumber(lote.transferido)"></td>
                                             <td class="td2" v-text="'$'+formatNumber(lote.devuelto + lote.devueltoVirtual)"></td>
-                                            <td v-if="lote.status == 0" class="td2" v-text="'$'+formatNumber(lote.transferido - lote.devuelto)"></td>
+                                            <td v-if="lote.status == 0" class="td2" v-text="'$'+formatNumber(lote.transferido + lote.conc - lote.devuelto - lote.devueltoVirtual)"></td>
                                             <td v-else class="td2" v-text="'$'+formatNumber(0)"></td>
                                                 <td class="td2" v-if="lote.status == '0'">
                                                     <span class="badge badge-danger">Cancelado</span>
@@ -543,7 +543,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr v-for="dev in arrayTransferidos" :key="dev.id">
+                                                <tr v-for="dev in arrayTransferidos" :key="dev.id+dev">
                                                     <td class="td2" v-text="dev.fecha_ingreso_concretania"></td>
                                                     <td class="td2" v-text="dev.cuenta"></td>
                                                     <td v-text="'$'+formatNumber(dev.monto_terreno)"></td>
@@ -620,6 +620,37 @@
 
                                 </div>
 
+                                <div class="form-group row" v-if="sumaConc > 0">
+                                    <div class="col-md-12">
+                                        <table class="table table-bordered table-striped table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th colspan="4" style="color:red">Traspaso a Concretania</th>
+                                                </tr>
+                                                <tr>
+                                                    <th>Fecha</th>
+                                                    <th>Cuenta</th>
+                                                    <th>Cheque</th>
+                                                    <th>Monto</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="dev in depositoConcTransf" :key="dev.id">
+                                                    <td class="td2" v-text="dev.fecha"></td>
+                                                    <td class="td2" v-text="dev.cuenta"></td>
+                                                    <td class="td2" v-text="dev.cheque"></td>
+                                                    <td v-text="'$'+formatNumber(dev.monto)"></td>
+                                                </tr>  
+                                                <tr>
+                                                    <td align="right" colspan="3"><strong>Total: </strong></td>
+                                                    <td> ${{formatNumber(sumaConc)}} </td>
+                                                </tr>                     
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+
                                 <div class="form-group row">
                                     <div class="col-md-7">
                                     </div>
@@ -630,6 +661,10 @@
                                                 <tr>
                                                     <th class="td2">+ Total transferido</th>
                                                     <td v-text="'$'+formatNumber(transferido)"></td>
+                                                </tr> 
+                                                <tr v-if="conc>0">
+                                                    <th class="td2">+ Traspaso a Concretania</th>
+                                                    <td v-text="'$'+formatNumber(sumaConc)"></td>
                                                 </tr>  
                                                 <tr>
                                                     <th class="td2">- Devoluciones virtuales</th>
@@ -643,7 +678,7 @@
                                                     <th>
                                                         Pendiente
                                                     </th>
-                                                    <th v-text="'$'+formatNumber(transferido - devuelto - devueltoVirtual)"></th>
+                                                    <th v-text="'$'+formatNumber(transferido + sumaConc - devuelto - devueltoVirtual)"></th>
                                                 </tr>
                                                                  
                                             </tbody>
@@ -741,6 +776,8 @@
                 dev_virtuales:[],
                 arrayTransferidos:[],
                 transferido:0,
+                depositoConcTransf:[],
+                sumaConc : 0,
 
             }
         },
@@ -1034,6 +1071,8 @@
                         this.dev_virtuales = data['dev_virtuales'];
                         this.arrayTransferidos = data['depositos_transferidos'];
                         this.transferido = data['transferido'];
+                        this.depositoConcTransf = data['depositoConcTransf'];
+                        this.sumaConc = data['conc'];
                         
                         this.tipoAccion = 3;
                         break;
@@ -1059,6 +1098,7 @@
         opacity: 1 !important;
         position: fixed !important;
         background-color: #3c29297a !important;
+        overflow-y: auto;
     }
     .div-error{
         display:flex;

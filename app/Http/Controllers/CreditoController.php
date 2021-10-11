@@ -11,6 +11,8 @@ use App\Vendedor;
 use App\Cliente_observacion;
 use App\Dev_virtual;
 use App\Devolucion;
+use App\Deposito_gcc;
+use App\Deposito_conc;
 use App\User;
 use App\Cuenta;
 use App\Pago_contrato;
@@ -865,6 +867,7 @@ class CreditoController extends Controller
                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                 ->select('contratos.id','creditos.saldo_terreno','creditos.precio_venta',
                             'creditos.valor_terreno as monto_terreno', 'contratos.status',
+                            'creditos.lote_id',
                             'creditos.fraccionamiento','creditos.etapa','creditos.manzana',
                             'expedientes.valor_escrituras', 'inst_seleccionadas.tipo_credito',
                             'expedientes.liquidado','expedientes.fecha_firma_esc',
@@ -903,6 +906,8 @@ class CreditoController extends Controller
                 $cancelado->devueltoVirtual = 0;
                 $cancelado->transferido = 0;
 
+                
+
                 $devoluciones = Devolucion::whereIn('devoluciones.cuenta',$cuentas)
                                 ->where('devoluciones.contrato_id','=',$cancelado->id)
                                 ->get();
@@ -911,9 +916,18 @@ class CreditoController extends Controller
                                 ->get();
 
                 $depositos_pagado = Pago_contrato::join('depositos','pagos_contratos.id','=','depositos.pago_id')
+                ->select('depositos.id','depositos.fecha_ingreso_concretania','depositos.cuenta',
+                        'depositos.monto_terreno','depositos.num_recibo')
                 ->where('pagos_contratos.contrato_id','=',$cancelado->id)
                 ->where('depositos.fecha_ingreso_concretania','!=',NULL)
+                ->where('depositos.lote_id','=',$cancelado->lote_id)
                 ->get();
+
+                $depositoGCC = Deposito_gcc::select('id','fecha as fecha_ingreso_concretania',
+                        'cuenta','monto as monto_terreno','cheque as num_recibo')
+                    ->where('depositos_gcc.contrato_id','=',$cancelado->id)
+                    ->where('depositos_gcc.lote_id','=',$cancelado->lote_id)
+                    ->get();
 
                 if(sizeof($dev_virtuales)){
                     $cancelado->dev_virtuales = $dev_virtuales;
@@ -930,13 +944,50 @@ class CreditoController extends Controller
                 }
 
                 if(sizeof($depositos_pagado)){
-                        $cancelado->depositos_transferidos = $depositos_pagado;
+                        $cancelado->depositos_transferidos = collect($depositos_pagado)->merge(collect($depositoGCC));
                     foreach($depositos_pagado as $key => $deposito) {
                         $cancelado->transferido += $deposito->monto_terreno;
                     }
                     
                 }
-            }
+
+                $depositoGCC = Deposito_gcc::select(DB::raw("SUM(depositos_gcc.monto) as suma"))
+                    ->where('depositos_gcc.contrato_id','=',$cancelado->id)
+                    ->where('depositos_gcc.lote_id','=',$cancelado->lote_id)
+                    ->get();
+                    if($depositoGCC[0]->suma == NULL){
+                        $depositoGCC[0]->suma = 0;
+                    }
+
+                $depositoConc = Deposito_conc::select(DB::raw("SUM(depositos_conc.monto) as suma"))
+                    ->where('depositos_conc.contrato_id','=',$cancelado->id)
+                    ->where('depositos_conc.lote_id','=',$cancelado->lote_id)
+                    ->where('depositos_conc.devolucion','=',1)
+                    ->get();
+                    if($depositoConc[0]->suma == NULL){
+                        $depositoConc[0]->suma = 0;
+                    }
+
+                $depositoConcTransf = Deposito_conc::select('id','fecha',
+                            'cuenta','monto','cheque')
+                    ->where('depositos_conc.contrato_id','=',$cancelado->id)
+                    ->where('depositos_conc.lote_id','=',$cancelado->lote_id)
+                    ->where('depositos_conc.devolucion','=',1)
+                    ->get();
+
+                    if(sizeof($depositoConcTransf)){
+                        $cancelado->depositoConcTransf = $depositoConcTransf;
+                    }
+                    
+                
+
+                    $cancelado->gcc = $depositoGCC[0]->suma;
+                    $cancelado->transferido =  $cancelado->transferido +  $cancelado->gcc;
+
+                    $cancelado->conc =  $depositoConc[0]->suma;
+                }
+
+                
         }
 
         return $cancelados;

@@ -52,10 +52,10 @@ class DigitalLeadController extends Controller
                 $sheet->row(1, [
                     'Nombre','Apellidos', 'Celular', 'Correo electronico',
                     'Proyecto de interés','Prototipo de interés','Campaña publicitaria', 
-                    'Medio de contacto','Vendedor asignado','Fecha de alta'
+                    'Medio de contacto','Vendedor asignado','Fecha de alta','Hora de alta'
                 ]);
 
-                $sheet->cells('A1:J1', function ($cells) {
+                $sheet->cells('A1:K1', function ($cells) {
                     $cells->setBackground('#052154');
                     $cells->setFontColor('#ffffff');
                     // Set font family
@@ -74,6 +74,10 @@ class DigitalLeadController extends Controller
                     $cont++;
                     $campaña = 'Tráfico organico';
                     $proyecto = '';
+                    $fecha = new Carbon($lead->created_at);
+                    $fecha = $fecha->format('Y-m-d');
+                    $hora = new Carbon($lead->created_at);
+                    $hora = $hora->format('H:i');
                     if($lead->nombre_campania != NULL){
                         $campaña = $lead->nombre_campania.'-'.$lead->medio_digital;
                     }
@@ -94,10 +98,11 @@ class DigitalLeadController extends Controller
                         $campaña,
                         $lead->medio_contacto,
                         $lead->vendedor,
-                        $lead->created_at
+                        $fecha,
+                        $hora
                     ]);	
                 }
-                $num='A1:J' . $cont;
+                $num='A1:K' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
             }

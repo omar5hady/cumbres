@@ -34,7 +34,7 @@
 <p style="text-align: center;"> <strong> ESTADO DE CUENTA </strong></p>
 
 
-    <div style="position: static; margin: 30px;">
+    <div style="position: static; margin: 20px;">
         <div class="table1" style="margin-top: 0.3em;">
             <div class="table-row">
                 <div class="table-cell"> <strong> Constructora:</strong> {{$contratos[0]->emp_constructora}}</div>        
@@ -104,7 +104,7 @@
     </div> 
 
     <div style="position: static; margin: 25px;">
-        <div class="table" style="margin-top: 0.2em;">
+        <div class="table" style="margin-top: 0.1em;">
             <div class="table-row">
                 <div colspan="2" class="table-cell"><b> Tipo de Credito: </div>
                 @if($contratos[0]->emp_constructora == 'CONCRETANIA' && $contratos[0]->emp_terreno == 'CONCRETANIA' && $contratos[0]->institucion == 'Grupo Cumbres')
@@ -151,15 +151,15 @@
                     <div colspan="2" class="table-cell">{{mb_strtoupper($contratos[0]->fraccionamiento)}} Mza: {{mb_strtoupper($contratos[0]->manzana)}} Lote: {{$contratos[0]->num_lote}}</div>
                     <div class="table-cell">{{$contratos[0]->fecha}}</div>
                     <div colspan="3" class="table-cell"></div>  
-                    <div class="table-cell">${{$contratos[0]->precio_venta}}</div> 
-                    <div class="table-cell">$ 0.00</div>   
+                    <div class="table-cell" align="right">${{$contratos[0]->precio_venta}}</div> 
+                    <div class="table-cell" align="right">$ 0.00</div>   
                 </div>
 
                 
                 <div class="table-row">
                     <div colspan="4" class="table-cell"></div>
                     <div colspan="2" class="table-cell"><b>TOTAL(VENTA)</div>
-                    <div class="table-cell"><b>${{$contratos[0]->precio_venta}}</div>  
+                    <div class="table-cell" align="right"><b>${{$contratos[0]->precio_venta}}</div>  
                     <div class="table-cell"></div>    
                 </div>
 
@@ -180,16 +180,27 @@
                     <div class="table-cell">{{$depositos[$i]->fecha_pago}}</div>
                     <div class="table-cell">{{$depositos[$i]->num_recibo}}</div>    
                     <div colspan="2" class="table-cell">{{$depositos[$i]->banco}}</div>
-                    <div class="table-cell">$ 0.00</div>  
-                    <div class="table-cell">$ {{$depositos[$i]->cant_depo}}</div>
+                    <div class="table-cell" align="right">$ 0.00</div>  
+                    <div class="table-cell" align="right">$ {{$depositos[$i]->cant_depo}}</div>
                 </div>
+                @if ($depositos[$i]->interes_mor != 0)
+                    <div class="table-row">
+                        <div class="table-cell">&nbsp;&nbsp;Pago de interés</div>
+                        <div class="table-cell"></div>
+                        <div class="table-cell"></div>
+                        <div class="table-cell"></div>    
+                        <div colspan="2" class="table-cell"></div>
+                        <div class="table-cell" align="right">$ 0.00</div>  
+                        <div class="table-cell" align="right">$ {{$depositos[$i]->interes_mor}}</div>
+                    </div>
+                @endif
               @endfor
 
                 <div class="table-row">
                     <div colspan="4" class="table-cell"></div>   
                     <div colspan="2" class="table-cell"><b>TOTAL (ENGANCHE)</div>
                     <div class="table-cell"></div>  
-                    <div class="table-cell"> <b> $ {{$contratos[0]->sumDeposito}}</div>  
+                    <div class="table-cell" align="right"> <b> $ {{$contratos[0]->sumDeposito}}</div>  
                 </div>
 
                 <div class="table-row">
@@ -207,16 +218,16 @@
                     @else
                         <div colspan="2" class="table-cell">OFICINA - OFICINA</div>
                     @endif
-                    <div class="table-cell">$ {{$gastos_admin[$i]->costo}}</div>  
-                    <div class="table-cell">$ 0.00</div>  
+                    <div class="table-cell" align="right">$ {{$gastos_admin[$i]->costo}}</div>  
+                    <div class="table-cell" align="right">$ 0.00</div>  
                 </div>
             @endfor
 
                 <div class="table-row">
                     <div colspan="4" class="table-cell"></div>   
                     <div colspan="2" class="table-cell"><b>TOTAL(CARGOS)</div>
-                    <div class="table-cell"><b>$ {{$contratos[0]->gastos}}</div>  
-                    <div class="table-cell"></div>  
+                    <div class="table-cell" align="right"><b>$ {{$contratos[0]->gastos}}</div>  
+                    <div class="table-cell" align="right"></div>  
                 </div>
 
                 <div class="table-row">
@@ -229,8 +240,8 @@
                     <div class="table-cell">{{$depositos_credito[$i]->fecha_deposito}}</div>
                     <div class="table-cell"></div>    
                     <div colspan="2" class="table-cell">{{$depositos_credito[$i]->banco}}</div>
-                    <div class="table-cell">$ 0.00</div>  
-                    <div class="table-cell">$ {{$depositos_credito[$i]->cant_depo}}</div>
+                    <div class="table-cell" align="right">$ 0.00</div>  
+                    <div class="table-cell" align="right">$ {{$depositos_credito[$i]->cant_depo}}</div>
                 </div>
             @endfor
 
@@ -238,7 +249,7 @@
                     <div colspan="4" class="table-cell"></div>   
                     <div colspan="2" class="table-cell"><b>TOTAL(CREDITO)</div>
                     <div class="table-cell"></div>  
-                    <div class="table-cell"><b>$ {{$contratos[0]->sumDepositoCredito}}</div>  
+                    <div class="table-cell" align="right"><b>$ {{$contratos[0]->sumDepositoCredito}}</div>  
                 </div>
 
                 <div class="table-row">
@@ -258,8 +269,8 @@
                         <div class="table-cell">{{$contratos[0]->fecha_liquidacion}}</div>
                         <div class="table-cell"></div>    
                         <div colspan="2" class="table-cell"></div>
-                        <div class="table-cell">$ 0.00</div>  
-                        <div class="table-cell">$ {{$contratos[0]->descuento}}</div>
+                        <div class="table-cell" align="right">$ 0.00</div>  
+                        <div class="table-cell" align="right">$ {{$contratos[0]->descuento}}</div>
                     </div>
                 @endif
 
@@ -270,8 +281,8 @@
                         <div class="table-cell">{{$descuentos[$i]->fecha_pago}}</div>
                         <div class="table-cell">{{$descuentos[$i]->num_recibo}}</div>    
                         <div colspan="2" class="table-cell"></div>
-                        <div class="table-cell">$ 0.00</div>  
-                        <div class="table-cell">$ {{$descuentos[$i]->desc_interes}}</div>
+                        <div class="table-cell" align="right">$ 0.00</div>  
+                        <div class="table-cell" align="right">$ {{$descuentos[$i]->desc_interes}}</div>
                     </div>
                 @endfor
 
@@ -283,7 +294,7 @@
                     <div colspan="4" class="table-cell"></div>   
                     <div colspan="2" class="table-cell"><b>TOTAL(DESCUENTO)</div>
                     <div class="table-cell"></div>  
-                    <div class="table-cell"><b>$ {{$contratos[0]->totalDesc}}</div>  
+                    <div class="table-cell" align="right"><b>$ {{$contratos[0]->totalDesc}}</div>  
                 </div>
                 @endif
 
@@ -295,15 +306,15 @@
                 <div class="table-row">
                     <div colspan="4" class="table-cell"></div>   
                     <div colspan="2" class="table-cell"><b>TOTAL</div>
-                    <div class="table-cell"><b>$ {{$contratos[0]->totalCargo}}</div>  
-                    <div class="table-cell"><b>$ {{$contratos[0]->totalAbono}}</div>
+                    <div class="table-cell" align="right"><b>$ {{$contratos[0]->totalCargo}}</div>  
+                    <div class="table-cell" align="right"><b>$ {{$contratos[0]->totalAbono}}</div>
                 </div>
 
                 <div class="table-row">
                     <div colspan="4" class="table-cell"></div>   
                     <div colspan="2" class="table-cell"><b>SALDO ACTUAL</div>
-                    <div class="table-cell"><b>$ {{$contratos[0]->saldo}}</div>  
-                    <div class="table-cell"></div>
+                    <div class="table-cell" align="right"><b>$ {{$contratos[0]->saldo}}</div>  
+                    <div class="table-cell" align="right"></div>
                 </div>
 
                

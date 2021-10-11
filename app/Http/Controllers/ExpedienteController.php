@@ -1048,8 +1048,21 @@ class ExpedienteController extends Controller
                                     ->where('pagos_contratos.contrato_id','=',$folio)
                                     ->first();
 
+        $moratorio = Pago_contrato::join('depositos','pagos_contratos.id','=','depositos.pago_id')
+                                    ->select(DB::raw("SUM(depositos.interes_mor) as moratorio"))
+                                    ->where('pagos_contratos.contrato_id','=',$folio)
+                                    ->first();
+
+        $ordinario = Pago_contrato::join('depositos','pagos_contratos.id','=','depositos.pago_id')
+                                    ->select(DB::raw("SUM(depositos.interes_ord) as ordinario"))
+                                    ->where('pagos_contratos.contrato_id','=',$folio)
+                                    ->first();
+
         if($depositos->pagado == NULL)
             $depositos->pagado = 0;
+        else{
+            $depositos->pagado = $depositos->pagado;
+        }
 
 
         return ['pagares' => $pagares,
