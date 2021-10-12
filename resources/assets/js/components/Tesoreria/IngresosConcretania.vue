@@ -337,6 +337,7 @@
                                 <table class="table2 table-bordered table-striped table-sm">
                                     <thead>
                                         <tr>
+                                            <th></th>
                                             <th>Fraccionamiento</th>
                                             <th>Etapa</th>
                                             <th>Manzana</th>
@@ -353,6 +354,13 @@
                                     </thead>
                                     <tbody>
                                         <tr v-for="lote in arrayCerrados" :key="lote.id" @dblclick="abrirModal('info',lote)">
+                                            <td>
+                                                <button v-if="(lote.transferido + lote.conc - lote.devuelto - lote.devueltoVirtual)<0" 
+                                                    title="Generar transferencia a Concretania" type="button" @click="abrirModal('concretania',lote)" class="btn rounded btn-dark btn-sm">
+                                                    <i class="fa fa-money"></i>
+                                                </button>
+
+                                            </td>
                                             <td>
                                                 <a href="#" v-text="lote.fraccionamiento"></a>
                                             </td>
@@ -692,11 +700,103 @@
                             </form>
                         </div>
 
+                        <div class="modal-body" v-if="tipoAccion == 4">
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Proyecto</label>
+                                    <div class="col-md-3">
+                                        <input type="text" disabled v-model="fraccionamiento" class="form-control" >
+                                    </div>
+
+                                    <label class="col-md-1 form-control-label" for="text-input">Etapa</label>
+                                    <div class="col-md-4">
+                                        <input type="text" disabled v-model="etapa" class="form-control">
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Manzana</label>
+                                    <div class="col-md-5">
+                                        <input type="text" disabled v-model="manzana" class="form-control" >
+                                    </div>
+
+                                    <label class="col-md-1 form-control-label" for="text-input">Lote</label>
+                                    <div class="col-md-2">
+                                        <input type="text" disabled v-model="lote" class="form-control">
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Cliente</label>
+                                    <div class="col-md-8">
+                                        <input type="text" disabled v-model="cliente" class="form-control" >
+                                    </div>
+                                </div>
+
+                                <div class="form-group row line-separator"></div>
+
+                                
+                                <div class="form-group row" >
+                                    <div class="col-md-12">
+                                        <h5 align="center"><strong> Máximo a transferir </strong></h5>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <h5 align="center"><strong> ${{ formatNumber(sumaConc)}} </strong></h5>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" >
+                                    <label class="col-md-3 form-control-label" for="text-input"  >Cantidad a transferir</label>
+                                    <div  class="col-md-2">
+                                        <input type="text" pattern="\d*" v-on:keypress="isNumber($event)" @change="validar()" v-model="cant_dev" class="form-control" placeholder="Concepto" >
+                                    </div>
+                                    <div class="col-md-2">
+                                        <h6><strong> ${{ formatNumber(cant_dev)}} </strong></h6>
+                                    </div>
+                                </div>
+                                
+
+                                <div class="form-group row line-separator"></div>
+
+                                <div class="form-group row"> 
+                                    <label class="col-md-3 form-control-label" for="text-input">Fecha</label>
+                                    <div class="col-md-4">
+                                        <input type="date" v-model="fecha" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row"> 
+                                    <label class="col-md-3 form-control-label" for="text-input"># Cheque</label>
+                                    <div class="col-md-4">
+                                        <input type="text" v-model="cheque" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Cuenta de Banco</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control" v-model="cuenta">
+                                            <option value="">Seleccione</option>
+                                            <option v-for="banco in arrayBancos" :key="banco.num_cuenta + '-' + banco.banco" :value="banco.num_cuenta + '-' + banco.banco" v-text="banco.num_cuenta + '-' + banco.banco"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                
+                            </form>
+                            <!-- fin del form solicitud de avaluo -->
+
+                        </div>
+
                         <!-- Botones del modal -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
                             <button type="button" v-if="tipoAccion==1 && fecha != '' && cuenta != '' && ver == 1" class="btn btn-primary" @click="registrarIngreso()">Enviar</button>
+                            <button type="button" v-if="tipoAccion==4 && fecha != '' && cuenta != '' && cant_dev > 0" class="btn btn-primary" @click="guardarTransferencia()">Guardar</button>
                         </div>
                     </div>
                     <!-- /.modal-content -->
@@ -748,6 +848,8 @@
                 cuenta:'',
                 criterio:'cliente',
                 total:0,
+                cant_dev:0,
+                cliente:'',
 
                  pagination : {
                     'total' : 0,         
@@ -766,6 +868,7 @@
                 etapa:'',
                 manzana:'',
                 lote:'',
+                lote_id:'',
 
                 ver:0,
                 cerrados : 0,
@@ -778,6 +881,7 @@
                 transferido:0,
                 depositoConcTransf:[],
                 sumaConc : 0,
+                cheque:'',
 
             }
         },
@@ -880,10 +984,10 @@
                 });
             },
 
-            selectCuenta(){
+            selectCuenta(empresa){
                 let me = this;
                 me.arrayBancos=[];
-                var url = '/select_cuenta';
+                var url = '/select_cuenta?empresa='+empresa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayBancos = respuesta.cuentas;
@@ -1013,6 +1117,52 @@
                 this.lotes_ini = [];
                 this.allSelected = false;
                 this.total = 0;
+                this.selectCuenta('');
+                this.sumaConc = 0;
+                this.cant_dev = 0;
+            },
+
+            guardarTransferencia(){
+                let me = this;
+                axios.post('/reubicaciones/storeConc',{
+                'contrato_id':this.id,
+                'cuenta':this.cuenta,
+                'fecha':this.fecha,
+                'lote_id':this.lote_id,
+                'cuenta_conc':this.cuenta,
+                'cheque_conc':this.cheque,
+                'monto_conc':this.cant_dev,
+                'devolucion':1
+
+                }).then(function (response){
+                me.cerrarModal(); //al guardar el registro se cierra el modal
+                me.listarCerrados();
+                //Se muestra mensaje Success
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Traspaso creados correctamente',
+                    showConfirmButton: false,
+                    timer: 1500
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            isNumber: function(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46 ) {
+                    evt.preventDefault();;
+                } else {
+                    return true;
+                }
+            },
+
+            validar(){
+                if(this.cant_dev>this.sumaConc)
+                    this.cant_dev = this.sumaConc;
             },
 
             formatNumber(value) {
@@ -1076,14 +1226,35 @@
                         
                         this.tipoAccion = 3;
                         break;
-                    }   
+                    }
+                    case 'concretania':
+                    {
+                        this.modal = 1;
+                        this.tipoAccion = 4;
+                        this.tituloModal = 'Transferencia a Concretania';
+                        this.fraccionamiento = data['fraccionamiento'];
+                        this.etapa = data['etapa'];
+                        this.manzana = data['manzana'];
+                        this.lote = data['num_lote'];
+
+                        this.sumaConc = (data['transferido'] + data['conc'] - data['devuelto'] - data['devueltoVirtual'])*-1;
+                        this.cant_dev = this.sumaConc;
+                        this.cheque = '';
+                        this.cliente = data['nombre']+ ' ' + data['apellidos'];
+                        this.id = data['id'];
+                        this.lote_id = data['lote_id'];
+
+
+
+                        this.selectCuenta('CONCRETANIA');
+                    }
                 }
             }
         },
         mounted() {
             this.listarLotes();
             this.selectFraccionamientos();
-            this.selectCuenta();
+            this.selectCuenta('');
             this.listarContratos();
         }
     }

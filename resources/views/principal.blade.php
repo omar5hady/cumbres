@@ -521,7 +521,7 @@
                                         <a class="nav-link" href="#"><i class="icon-reload"></i> Devolución virtual</a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->rol_id == 1)
+                                @if(Auth::user()->dev_virtual == 1)
                                     <li @click="menu=267" class="nav-item">
                                         <a class="nav-link" href="#"><i class="icon-reload"></i> Depositos por transferir</a>
                                     </li>
