@@ -136,6 +136,119 @@ class ReubicacionController extends Controller
         return $depositos;
     }
 
+    public function depositosPorReubicarGCC(Request $request){
+        $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+                            ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+                            ->join('creditos','contratos.id','=','creditos.id')
+                            ->join('lotes','creditos.lote_id','=','lotes.id')
+                            //->leftjoin('lotes as l','depositos.lote_id','=','l.id')
+                            ->select('creditos.lote_id',
+                                    'creditos.id as folio',
+                                    'creditos.fraccionamiento',
+                                    'creditos.etapa',
+                                    'lotes.manzana',
+                                    'lotes.num_lote',
+                                    'depositos.lote_id as lote',
+                                    'contratos.status',
+                                    'lotes.emp_constructora',
+                                    'lotes.emp_terreno',
+                                    'depositos.cant_depo',
+                                    'depositos.banco',
+                                    'depositos.cuenta',
+                                    'depositos.num_recibo',
+                                    'creditos.valor_terreno',
+                                    'creditos.saldo_terreno',
+                                    'creditos.porcentaje_terreno',
+                                    'depositos.id'
+                                    )
+                            ->whereRaw('creditos.lote_id != depositos.lote_id')
+                            ->where('lotes.emp_constructora','=','Grupo Constructor Cumbres')
+                            ->where('lotes.emp_terreno','=','Grupo Constructor Cumbres')
+                            ->where('contratos.status','!=',0)
+                            ->where('depositos.reubicado','=',0);
+
+                            if($request->buscar != '')                            
+                                switch($request->criterio){
+                                    case 'lotes.fraccionamiento_id':{
+                                        $depositos = $depositos->where('lotes.fraccionamiento_id','=',$request->buscar);
+                                        if($request->b_etapa != '')
+                                            $depositos = $depositos->where('lotes.etapa_id','=',$request->b_etapa);
+                                        if($request->b_manzana != '')
+                                            $depositos = $depositos->where('lotes.manzana', 'like', '%'. $request->b_manzana . '%');
+                                        if($request->b_lote != '')
+                                            $depositos = $depositos->where('lotes.num_lote','=',$request->b_lote);
+                                        break;
+                                    }
+                                    default:{
+                                        $depositos = $depositos->where($request->criterio,'=',$request->buscar);
+                                        break;
+                                    }
+                                }
+
+                            $depositos =  $depositos->orderBy('depositos.fecha_pago','asc')
+                            ->get();
+
+            if(sizeof($depositos)){
+                foreach ($depositos as $key => $deposito) {
+                    $saldo = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+                        ->select(
+                            DB::raw('SUM(depositos.cant_depo) as monto_gcc')
+                        )
+                        ->where('pagos_contratos.contrato_id', '=', $deposito->folio)
+                        ->where('depositos.lote_id','=',$deposito->lote_id)
+                        ->where('depositos.reubicado','=',0)
+                        ->get();
+
+                        $deposito->cant_depo_act = 0;
+
+                        $saldoAnt = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+                        ->select(
+                            DB::raw('SUM(depositos.cant_depo) as monto_gcc')
+                        )
+                        ->where('pagos_contratos.contrato_id', '=', $deposito->folio)
+                        ->where('depositos.lote_id','=',$deposito->lote)
+                        ->where('depositos.reubicado','=',0)
+                        ->get();
+
+                    if($saldo[0]->monto_gcc != NULL)
+                        $deposito->cant_depo_act = $saldo[0]->monto_gcc;
+
+                    $reubicacion = Reubicacion::join('lotes','reubicaciones.lote_id','=','lotes.id')
+                            ->join('etapas', 'lotes.etapa_id','=','etapas.id')
+                            ->join('modelos','lotes.modelo_id','=','modelos.id')
+                            ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                            ->select('fraccionamientos.nombre as fraccionamiento','etapas.num_etapa as etapa',
+                                    'lotes.manzana', 'lotes.num_lote', 'lotes.emp_constructora','lotes.emp_terreno',
+                                    'reubicaciones.valor_terreno',
+                                    'reubicaciones.contrato_id',
+                                    'reubicaciones.fecha_reubicacion'
+                                )
+                            ->where('reubicaciones.contrato_id','=',$deposito->folio)
+                            ->where('lotes.emp_constructora','=','Grupo Constructor Cumbres')
+                            ->where('lotes.emp_terreno','=','Grupo Constructor Cumbres')
+                            ->where('reubicaciones.lote_id','=',$deposito->lote);
+
+                            if($request->fecha1 != '' && $request->fecha2 != '')
+                                $reubicacion =  $reubicacion->whereBetween('reubicaciones.fecha_reubicacion',[$request->fecha1, $request->fecha2]);
+
+                            $reubicacion =  $reubicacion->orderBy('reubicaciones.fecha_reubicacion','desc')
+                            ->first();
+
+                    if($reubicacion){
+                        $deposito->reubicacion = $reubicacion;
+
+                        $reubicacion->cant_depo = $deposito->cant_depo;
+                        $reubicacion->gcc = $deposito->gcc;
+
+                        if($saldoAnt[0]->monto_gcc != NULL)
+                            $reubicacion->monto_gcc = $saldoAnt[0]->monto_gcc;
+                    }
+                }
+            }
+
+        return $depositos;
+    }
+
     public function indexGCC(Request $request){
         $gcc = Deposito_gcc::join('lotes','depositos_gcc.lote_id','=','lotes.id')
                     ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')

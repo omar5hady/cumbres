@@ -18,7 +18,7 @@
                     </div>
 
                     <!-- listado de devoluciones -->
-                    <div v-if="listado == 1" class="card-body">
+                    <div v-if="listado == 1" class="card-body">               
                         
                         <div class="form-group row">
                             <div class="col-md-7">
@@ -29,27 +29,27 @@
                                         <option value="creditos.id"># Folio</option>
                                     </select>
                                     
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar"  @keyup.enter="listarDepositos()" @change="selectEtapa(buscar)">
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar"  @keyup.enter="listarDepositos(),listarDepositosGCC()" @change="selectEtapa(buscar)">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
 
-                                    <input type="text" class="form-control" v-if="criterio != 'lotes.fraccionamiento_id'" v-model="buscar" @keyup.enter="listarDepositos()" placeholder="Texto a Buscar">
+                                    <input type="text" class="form-control" v-if="criterio != 'lotes.fraccionamiento_id'" v-model="buscar" @keyup.enter="listarDepositos(),listarDepositosGCC()" placeholder="Texto a Buscar">
                                    
                                 </div>
                                 <div class="input-group" v-if="criterio=='lotes.fraccionamiento_id'">
-                                    <select class="form-control"  v-model="b_etapa"  @keyup.enter="listarDepositos()" @change="selectManzanas(buscar,b_etapa)"> 
+                                    <select class="form-control"  v-model="b_etapa"  @keyup.enter="listarDepositos(),listarDepositosGCC()" @change="selectManzanas(buscar,b_etapa)"> 
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
 
-                                    <select class="form-control" @keyup.enter="listarDepositos()" v-model="b_manzana" >
+                                    <select class="form-control" @keyup.enter="listarDepositos(),listarDepositosGCC()" v-model="b_manzana" >
                                         <option value="">Seleccione</option>
                                         <option v-for="manzana in arrayManzanas" :key="manzana.manzana" :value="manzana.manzana" v-text="manzana.manzana"></option>
                                     </select>
                                 </div>
                                 <div class="input-group" v-if="criterio=='lotes.fraccionamiento_id'">
-                                    <input type="text" class="form-control col-md-5" v-model="b_lote" @keyup.enter="listarDepositos()" placeholder="Número de Lote">
+                                    <input type="text" class="form-control col-md-5" v-model="b_lote" @keyup.enter="listarDepositos(),listarDepositosGCC()" placeholder="Número de Lote">
                                 </div>
                                 <div class="input-group">
                                     <input type="text" disabled class="form-control col-md-4" placeholder="Fecha de reubicación">
@@ -61,83 +61,146 @@
                         <div class="form-group row">
                             <div class="col-md-8">
                                 <div class="input-group">
-                                    <button type="submit" @click="listarDepositos()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <button type="submit" @click="listarDepositos(),listarDepositosGCC()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table2 table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr> 
-                                        <th>Folio</th>
-                                        <th>Fraccionamiento</th>
-                                        <th>Etapa</th>
-                                        <th>Manzana</th>
-                                        <th>Lote</th>
-                                        <th>Convenio</th>
-                                        <th>Pago Deposito</th>
-                                        <th>Concretania</th>
-                                        <th>GCC</th>
-                                        <th>V. Terreno</th>
-                                        <th>Saldo Terreno</th>
-                                    </tr>
-                                </thead>
-                                <tbody v-for="contratos in arrayContratos" :key="contratos.id">
-                                    <tr v-if="contratos.reubicacion != null" style="backgroundColor:#B8FCC0" v-on:dblclick="abrirModal('devolucion',contratos)" title="Doble click" > 
-                                        <td class="td2" v-text="contratos.folio"></td>
-                                        <td class="td2">
-                                            <a href="#" v-text="contratos.fraccionamiento"></a>
-                                        </td>
-                                        <td class="td2" v-text="contratos.etapa"></td>
-                                        <td class="td2" v-text="contratos.manzana"></td>
-                                        <td class="td2" v-text="contratos.num_lote"></td>
-                                        <td class="td2">
-                                            <template v-if="contratos.emp_constructora != contratos.emp_terreno">
-                                                    GCC - Conc
-                                            </template>
-                                            <template v-else-if="contratos.emp_constructora == 'CONCRETANIA'">
-                                                    Concretania
-                                            </template>
-                                             <template v-else>
+
+                        <ul class="nav nav2 nav-tabs" id="myTab1" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active show" id="convenio-tab" data-toggle="tab" href="#convenio" role="tab" aria-controls="convenio" v-text="'Depositos con convenio'"></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="gcc-tab" data-toggle="tab" href="#gcc" role="tab" aria-controls="gcc" aria-selected="false" v-text="'Depositos GCC'"></a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content" id="myTab1Content">
+                            <div class="tab-pane fade active show" id="convenio" role="tabpanel" aria-labelledby="convenio-tab">
+                                <div class="table-responsive">
+                                    <table class="table2 table-bordered table-striped table-sm">
+                                        <thead>
+                                            <tr> 
+                                                <th>Folio</th>
+                                                <th>Fraccionamiento</th>
+                                                <th>Etapa</th>
+                                                <th>Manzana</th>
+                                                <th>Lote</th>
+                                                <th>Convenio</th>
+                                                <th>Pago Deposito</th>
+                                                <th>Concretania</th>
+                                                <th>GCC</th>
+                                                <th>V. Terreno</th>
+                                                <th>Saldo Terreno</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody v-for="contratos in arrayContratos" :key="contratos.id">
+                                            <tr v-if="contratos.reubicacion != null" style="backgroundColor:#B8FCC0" v-on:dblclick="abrirModal('devolucion',contratos)" title="Doble click" > 
+                                                <td class="td2" v-text="contratos.folio"></td>
+                                                <td class="td2">
+                                                    <a href="#" v-text="contratos.fraccionamiento"></a>
+                                                </td>
+                                                <td class="td2" v-text="contratos.etapa"></td>
+                                                <td class="td2" v-text="contratos.manzana"></td>
+                                                <td class="td2" v-text="contratos.num_lote"></td>
+                                                <td class="td2">
+                                                    <template v-if="contratos.emp_constructora != contratos.emp_terreno">
+                                                            GCC - Conc
+                                                    </template>
+                                                    <template v-else-if="contratos.emp_constructora == 'CONCRETANIA'">
+                                                            Concretania
+                                                    </template>
+                                                    <template v-else>
+                                                            GCC
+                                                    </template>
+                                                </td>
+                                                <td class="td2" v-text="'$'+formatNumber(contratos.cant_depo_act)"></td>
+                                                <td class="td2" v-text="'$'+formatNumber(contratos.cant_depo_act - contratos.saldo_terreno_act)"></td>
+                                                <td class="td2" v-text="'$'+formatNumber(contratos.saldo_terreno_act)"></td>
+                                                <td class="td2" v-text="'$'+formatNumber(contratos.valor_terreno)"></td>
+                                                <td class="td2" v-text="'$'+formatNumber(contratos.valor_terreno - contratos.saldo_terreno_act)"></td>
+                                            </tr>
+                                            <tr v-if="contratos.reubicacion != null" v-on:dblclick="abrirModal('devolucion',contratos)">
+                                                <td class="td2"></td>
+                                                <td class="td2">
+                                                    <a href="#" v-text="contratos.reubicacion.fraccionamiento"></a>
+                                                </td>
+                                                <td class="td2" v-text="contratos.reubicacion.etapa"></td>
+                                                <td class="td2" v-text="contratos.reubicacion.manzana"></td>
+                                                <td class="td2" v-text="contratos.reubicacion.num_lote"></td>
+                                                <td class="td2">
+                                                    <template v-if="contratos.reubicacion.emp_constructora != contratos.reubicacion.emp_terreno">
+                                                            GCC - Conc
+                                                    </template>
+                                                    <template v-else-if="contratos.reubicacion.emp_constructora == 'CONCRETANIA'">
+                                                            Concretania
+                                                    </template>
+                                                    <template v-else>
+                                                            GCC
+                                                    </template>
+                                                </td>
+                                                <td class="td2" v-text="'$'+formatNumber(contratos.reubicacion.cant_depo)"></td>
+                                                <td class="td2" v-text="'$'+formatNumber(contratos.reubicacion.cant_depo - contratos.reubicacion.gcc)"></td>
+                                                <td class="td2" v-text="'$'+formatNumber(contratos.reubicacion.gcc)"></td>
+                                                <td class="td2" v-text="'$'+formatNumber(contratos.reubicacion.valor_terreno)"></td>
+                                                <td class="td2" v-text="'$'+formatNumber(contratos.reubicacion.valor_terreno - contratos.reubicacion.saldo_terreno_ant)"></td>
+                                            </tr>
+                                            <tr v-if="contratos.reubicacion != null">
+                                                <td colspan="11"> </td>
+                                            </tr>                               
+                                        </tbody>
+                                    </table>  
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="gcc" role="tabpanel" aria-labelledby="gcc-tab">
+                                <div class="table-responsive">
+                                    <table class="table2 table-bordered table-striped table-sm">
+                                        <thead>
+                                            <tr> 
+                                                <th>Folio</th>
+                                                <th>Fraccionamiento</th>
+                                                <th>Etapa</th>
+                                                <th>Manzana</th>
+                                                <th>Lote</th>
+                                                <th>Convenio</th>
+                                                <th>Deposito</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody v-for="contratos in arrayContratosGCC" :key="contratos.id">
+                                            <tr v-if="contratos.reubicacion != null" style="backgroundColor:#B8FCC0" v-on:dblclick="abrirModal('devolucion',contratos)" title="Doble click" > 
+                                                <td class="td2" v-text="contratos.folio"></td>
+                                                <td class="td2">
+                                                    <a href="#" v-text="contratos.fraccionamiento"></a>
+                                                </td>
+                                                <td class="td2" v-text="contratos.etapa"></td>
+                                                <td class="td2" v-text="contratos.manzana"></td>
+                                                <td class="td2" v-text="contratos.num_lote"></td>
+                                                <td class="td2">
                                                     GCC
-                                            </template>
-                                        </td>
-                                        <td class="td2" v-text="'$'+formatNumber(contratos.cant_depo_act)"></td>
-                                        <td class="td2" v-text="'$'+formatNumber(contratos.cant_depo_act - contratos.saldo_terreno_act)"></td>
-                                        <td class="td2" v-text="'$'+formatNumber(contratos.saldo_terreno_act)"></td>
-                                        <td class="td2" v-text="'$'+formatNumber(contratos.valor_terreno)"></td>
-                                        <td class="td2" v-text="'$'+formatNumber(contratos.valor_terreno - contratos.saldo_terreno_act)"></td>
-                                    </tr>
-                                    <tr v-if="contratos.reubicacion != null" v-on:dblclick="abrirModal('devolucion',contratos)">
-                                        <td class="td2"></td>
-                                        <td class="td2">
-                                            <a href="#" v-text="contratos.reubicacion.fraccionamiento"></a>
-                                        </td>
-                                        <td class="td2" v-text="contratos.reubicacion.etapa"></td>
-                                        <td class="td2" v-text="contratos.reubicacion.manzana"></td>
-                                        <td class="td2" v-text="contratos.reubicacion.num_lote"></td>
-                                        <td class="td2">
-                                            <template v-if="contratos.reubicacion.emp_constructora != contratos.reubicacion.emp_terreno">
-                                                    GCC - Conc
-                                            </template>
-                                            <template v-else-if="contratos.reubicacion.emp_constructora == 'CONCRETANIA'">
-                                                    Concretania
-                                            </template>
-                                             <template v-else>
+                                                </td>
+                                                <td class="td2" v-text="'$'+formatNumber(contratos.cant_depo_act)"></td>
+                                            </tr>
+                                            <tr v-if="contratos.reubicacion != null" v-on:dblclick="abrirModal('devolucion',contratos)">
+                                                <td class="td2"></td>
+                                                <td class="td2">
+                                                    <a href="#" v-text="contratos.reubicacion.fraccionamiento"></a>
+                                                </td>
+                                                <td class="td2" v-text="contratos.reubicacion.etapa"></td>
+                                                <td class="td2" v-text="contratos.reubicacion.manzana"></td>
+                                                <td class="td2" v-text="contratos.reubicacion.num_lote"></td>
+                                                <td class="td2">
                                                     GCC
-                                            </template>
-                                        </td>
-                                        <td class="td2" v-text="'$'+formatNumber(contratos.reubicacion.cant_depo)"></td>
-                                        <td class="td2" v-text="'$'+formatNumber(contratos.reubicacion.cant_depo - contratos.reubicacion.gcc)"></td>
-                                        <td class="td2" v-text="'$'+formatNumber(contratos.reubicacion.gcc)"></td>
-                                        <td class="td2" v-text="'$'+formatNumber(contratos.reubicacion.valor_terreno)"></td>
-                                        <td class="td2" v-text="'$'+formatNumber(contratos.reubicacion.valor_terreno - contratos.reubicacion.saldo_terreno_ant)"></td>
-                                    </tr>
-                                    <tr v-if="contratos.reubicacion != null">
-                                        <td colspan="11"> </td>
-                                    </tr>                               
-                                </tbody>
-                            </table>  
+                                                </td>
+                                                <td class="td2" v-text="'$'+formatNumber(contratos.reubicacion.cant_depo)"></td>
+                                            </tr>
+                                            <tr v-if="contratos.reubicacion != null">
+                                                <td colspan="7"> </td>
+                                            </tr>                               
+                                        </tbody>
+                                    </table>  
+                                </div>
+                            </div>
                         </div>
                         
                     </div>
@@ -537,6 +600,7 @@
                 id: 0,
 
                 arrayContratos : [],
+                arrayContratosGCC : [],
                 arrayFraccionamientos:[],
                 arrayEtapas:[],
                 arrayManzanas:[],
@@ -643,6 +707,19 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayContratos = respuesta;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            listarDepositosGCC(){
+                let me = this;
+                var url = '/reubicaciones/depositosPorReubicarGCC?buscar=' + me.buscar + '&b_etapa=' + me.b_etapa + '&b_manzana=' + me.b_manzana + 
+                '&b_lote=' + me.b_lote +  '&criterio=' + me.criterio + '&fecha1=' + me.b_fecha1 + '&fecha2=' + me.b_fecha2;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayContratosGCC = respuesta;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -787,6 +864,7 @@
                 me.cerrarModal(); //al guardar el registro se cierra el modal
                 me.transferenciasGCC(me.pagination2.current_page);
                 me.listarDepositos(); //se enlistan nuevamente los registros
+                me.listarDepositosGCC();
                 //Se muestra mensaje Success
                 swal({
                     position: 'top-end',
@@ -888,11 +966,18 @@
                         if(this.convenio_act == 'GCC'){
                             //Traspaso a cuenta de GCC
                             this.tituloModal='Generar traspaso a Cumbres';
-                            this.cant_dev = data['cant_depo'] - data['gcc'];
+                            
                             this.tipoAccion = 2;
                             this.banco_gcc = '';
                             this.cheque_gcc = '';
                             this.verGCC = 1;
+                            if(this.convenio_ant == 'GCC'){
+                                this.cant_dev = data['cant_depo'];
+                                this.banco_gcc = data['banco'];
+                                this.cheque_gcc = 'Reubicacion de recibo: '+ data['num_recibo'];
+                            }else{
+                                this.cant_dev = data['cant_depo'] - data['gcc'];
+                            }
                         }
                         else{
                             if(this.convenio_ant == 'GCC'){
@@ -956,6 +1041,7 @@
        
         mounted() {
             this.listarDepositos();
+            this.listarDepositosGCC();
             this.selectFraccionamientos();
         }
     }

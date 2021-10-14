@@ -1084,6 +1084,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::delete('/reubicaciones/delete','ReubicacionController@delete');
 
         Route::get('/reubicaciones/depositosPorReubicar','ReubicacionController@depositosPorReubicar');
+        Route::get('/reubicaciones/depositosPorReubicarGCC','ReubicacionController@depositosPorReubicarGCC');
         Route::post('/reubicaciones/storeDepositoReubicacion','ReubicacionController@storeDepositoReubicacion');
         Route::get('/reubicaciones/indexGCC','ReubicacionController@indexGCC');
         Route::get('/reubicaciones/indexConc','ReubicacionController@indexConc');
