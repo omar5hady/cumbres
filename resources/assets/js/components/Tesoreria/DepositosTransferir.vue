@@ -51,6 +51,11 @@
                                 <div class="input-group" v-if="criterio=='lotes.fraccionamiento_id'">
                                     <input type="text" class="form-control col-md-5" v-model="b_lote" @keyup.enter="listarDepositos()" placeholder="Número de Lote">
                                 </div>
+                                <div class="input-group">
+                                    <input type="text" disabled class="form-control col-md-4" placeholder="Fecha de reubicación">
+                                    <input type="date" class="form-control col-md-4" v-model="b_fecha1">
+                                    <input type="date" class="form-control col-md-4" v-model="b_fecha2">
+                                </div>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -78,7 +83,7 @@
                                     </tr>
                                 </thead>
                                 <tbody v-for="contratos in arrayContratos" :key="contratos.id">
-                                    <tr style="backgroundColor:#B8FCC0" v-on:dblclick="abrirModal('devolucion',contratos)" title="Doble click" > 
+                                    <tr v-if="contratos.reubicacion != null" style="backgroundColor:#B8FCC0" v-on:dblclick="abrirModal('devolucion',contratos)" title="Doble click" > 
                                         <td class="td2" v-text="contratos.folio"></td>
                                         <td class="td2">
                                             <a href="#" v-text="contratos.fraccionamiento"></a>
@@ -103,7 +108,7 @@
                                         <td class="td2" v-text="'$'+formatNumber(contratos.valor_terreno)"></td>
                                         <td class="td2" v-text="'$'+formatNumber(contratos.valor_terreno - contratos.saldo_terreno_act)"></td>
                                     </tr>
-                                    <tr v-on:dblclick="abrirModal('devolucion',contratos)">
+                                    <tr v-if="contratos.reubicacion != null" v-on:dblclick="abrirModal('devolucion',contratos)">
                                         <td class="td2"></td>
                                         <td class="td2">
                                             <a href="#" v-text="contratos.reubicacion.fraccionamiento"></a>
@@ -128,7 +133,7 @@
                                         <td class="td2" v-text="'$'+formatNumber(contratos.reubicacion.valor_terreno)"></td>
                                         <td class="td2" v-text="'$'+formatNumber(contratos.reubicacion.valor_terreno - contratos.reubicacion.saldo_terreno_ant)"></td>
                                     </tr>
-                                    <tr>
+                                    <tr v-if="contratos.reubicacion != null">
                                         <td colspan="11"> </td>
                                     </tr>                               
                                 </tbody>
@@ -585,6 +590,8 @@
                 b_etapa: '',
                 b_manzana: '',
                 b_lote: '',
+                b_fecha1:'',
+                b_fecha2:'',
                 listado : 1,
                 saldo_act : 0,
                 convenio_act:'',
@@ -595,10 +602,6 @@
             }
         },
         computed:{
-
-         
-            
-
             // Funciones de la paginacion del historial de devoluciones
             isActived2: function(){
                 return this.pagination2.current_page;
@@ -636,7 +639,7 @@
             listarDepositos(){
                 let me = this;
                 var url = '/reubicaciones/depositosPorReubicar?buscar=' + me.buscar + '&b_etapa=' + me.b_etapa + '&b_manzana=' + me.b_manzana + 
-                '&b_lote=' + me.b_lote +  '&criterio=' + me.criterio;
+                '&b_lote=' + me.b_lote +  '&criterio=' + me.criterio + '&fecha1=' + me.b_fecha1 + '&fecha2=' + me.b_fecha2;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayContratos = respuesta;

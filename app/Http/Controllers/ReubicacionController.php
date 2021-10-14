@@ -113,8 +113,12 @@ class ReubicacionController extends Controller
                                     'reubicaciones.fecha_reubicacion'
                                 )
                             ->where('reubicaciones.contrato_id','=',$deposito->folio)
-                            ->where('reubicaciones.lote_id','=',$deposito->lote)
-                            ->orderBy('reubicaciones.fecha_reubicacion','desc')
+                            ->where('reubicaciones.lote_id','=',$deposito->lote);
+
+                            if($request->fecha1 != '' && $request->fecha2 != '')
+                                $reubicacion =  $reubicacion->whereBetween('reubicaciones.fecha_reubicacion',[$request->fecha1, $request->fecha2]);
+
+                            $reubicacion =  $reubicacion->orderBy('reubicaciones.fecha_reubicacion','desc')
                             ->first();
 
                     if($reubicacion){
@@ -125,9 +129,7 @@ class ReubicacionController extends Controller
 
                         if($saldoAnt[0]->transferido != NULL)
                             $reubicacion->saldo_terreno_ant = $saldoAnt[0]->transferido;
-
                     }
-                        
                 }
             }
 
@@ -216,8 +218,7 @@ class ReubicacionController extends Controller
                 $this->storeConc($request);
             }
 
-            $this->calculateSaldoTerreno($request->contrato_id);
-
+            
             DB::commit();
             } catch (Exception $e) { 
                 DB::rollBack();
@@ -233,6 +234,8 @@ class ReubicacionController extends Controller
         $gcc->cheque = $request->cheque_gcc;
         $gcc->monto = $request->monto_gcc;
         $gcc->save();
+
+        $this->calculateSaldoTerreno($request->contrato_id);
     }
 
     public function storeConc(Request $request){
@@ -245,6 +248,8 @@ class ReubicacionController extends Controller
         $conc->monto = $request->monto_conc;
         $conc->devolucion = $request->devolucion;
         $conc->save();
+
+        $this->calculateSaldoTerreno($request->contrato_id);
     }
 
     private function calculateSaldoTerreno($id){

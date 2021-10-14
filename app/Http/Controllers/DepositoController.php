@@ -1781,7 +1781,7 @@ class DepositoController extends Controller
                     if($fecha1 != '' && $fecha2 != ''){
                         $depositos = $depositos->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2]);
                     }
-                    $depositos = $depositos->orWhere('lotes.emp_constructora','=','Grupo Constructor Cumbres')
+                    $depositos = $depositos->orWhere('lotes.emp_constructora','=','Concretania')
                     ->where('lotes.emp_terreno','=','Grupo Constructor Cumbres')
                     ->where('banco','!=','0102030405-Scotiabank')
                     ->where('monto_terreno','>',0)
@@ -1800,7 +1800,7 @@ class DepositoController extends Controller
                     if($fecha1 != '' && $fecha2 != ''){
                         $ingresosCreditos = $ingresosCreditos->whereBetween('dep_creditos.fecha_deposito', [$fecha1, $fecha2]);
                     }
-                    $ingresosCreditos = $ingresosCreditos->orWhere('lotes.emp_constructora','=','Grupo Constructor Cumbres')
+                    $ingresosCreditos = $ingresosCreditos->orWhere('lotes.emp_constructora','=','Concretania')
                     ->where('lotes.emp_terreno','=','Grupo Constructor Cumbres')
                     ->where('monto_terreno','>',0)
                     ->where('fecha_ingreso_concretania','=',NULL);
@@ -1833,9 +1833,11 @@ class DepositoController extends Controller
 
     public function guardarIngreso(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $credito = Credito::findOrFail($request->id);
         if($request->tipo == 0){
             $deposito = Deposito::findOrFail($request->depId);
             $deposito->cuenta = $request->cuenta;
+            $deposito->lote_id = $credito->lote_id;
             $deposito->fecha_ingreso_concretania = $request->fecha_ingreso_concretania;
             $deposito->save();
         }

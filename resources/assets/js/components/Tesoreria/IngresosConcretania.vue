@@ -270,6 +270,7 @@
                                 <table class="table2 table-bordered table-striped table-sm">
                                     <thead>
                                         <tr>
+                                            <th></th>
                                             <th>Fraccionamiento</th>
                                             <th>Etapa</th>
                                             <th>Manzana</th>
@@ -285,7 +286,12 @@
                                     </thead>
                                     <tbody>
                                         <tr v-for="lote in arrayCuenta" :key="lote.id">
-                                            
+                                            <td>
+                                                <button v-if="lote.pendiente == 1" 
+                                                    title="Generar transferencia a Cumbres" type="button" @click="abrirModal('cumbres',lote)" class="btn rounded btn-dark btn-sm">
+                                                    <i class="fa fa-money"></i>
+                                                </button>
+                                            </td>
                                             <td v-text="lote.fraccionamiento"></td>
                                             <td v-text="lote.etapa"></td>
                                             <td v-text="lote.manzana"></td>
@@ -700,7 +706,7 @@
                             </form>
                         </div>
 
-                        <div class="modal-body" v-if="tipoAccion == 4">
+                        <div class="modal-body" v-if="tipoAccion == 4 || tipoAccion == 5">
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
 
                                 <div class="form-group row">
@@ -797,6 +803,7 @@
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
                             <button type="button" v-if="tipoAccion==1 && fecha != '' && cuenta != '' && ver == 1" class="btn btn-primary" @click="registrarIngreso()">Enviar</button>
                             <button type="button" v-if="tipoAccion==4 && fecha != '' && cuenta != '' && cant_dev > 0" class="btn btn-primary" @click="guardarTransferencia()">Guardar</button>
+                            <button type="button" v-if="tipoAccion==5 && fecha != '' && cuenta != '' && cant_dev > 0" class="btn btn-primary" @click="guardarTransferenciaCumbres()">Guardar</button>
                         </div>
                     </div>
                     <!-- /.modal-content -->
@@ -1150,6 +1157,35 @@
                 });
             },
 
+            guardarTransferenciaCumbres(){
+                let me = this;
+                axios.post('/reubicaciones/storeGCC',{
+                'contrato_id':this.id,
+                'cuenta':this.cuenta,
+                'fecha':this.fecha,
+                'lote_id':this.lote_id,
+                'cuenta_gcc':this.cuenta,
+                'cheque_gcc':this.cheque,
+                'monto_gcc':this.cant_dev,
+                'devolucion':1
+
+                }).then(function (response){
+                me.cerrarModal(); //al guardar el registro se cierra el modal
+                me.listarCerrados();
+                me.listarContratos(1);
+                //Se muestra mensaje Success
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Traspaso creados correctamente',
+                    showConfirmButton: false,
+                    timer: 1500
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
             isNumber: function(evt) {
                 evt = (evt) ? evt : window.event;
                 var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -1248,6 +1284,26 @@
 
                         this.selectCuenta('CONCRETANIA');
                     }
+
+                    case 'cumbres':
+                    {
+                        this.modal = 1;
+                        this.tipoAccion = 5;
+                        this.tituloModal = 'Transferencia a Cumbres';
+                        this.fraccionamiento = data['fraccionamiento'];
+                        this.etapa = data['etapa'];
+                        this.manzana = data['manzana'];
+                        this.lote = data['num_lote'];
+
+                        this.sumaConc = data['monto_terreno'] - data['saldo_terreno'];
+                        this.cant_dev = this.sumaConc;
+                        this.cheque = '';
+                        this.cliente = data['nombre']+ ' ' + data['apellidos'];
+                        this.id = data['id'];
+                        this.lote_id = data['lote_id'];
+
+                        this.selectCuenta('Grupo Constructor Cumbres');
+                    }
                 }
             }
         },
@@ -1255,7 +1311,7 @@
             this.listarLotes();
             this.selectFraccionamientos();
             this.selectCuenta('');
-            this.listarContratos();
+            this.listarContratos(1);
         }
     }
 </script>

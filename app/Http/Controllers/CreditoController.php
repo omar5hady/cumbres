@@ -13,6 +13,8 @@ use App\Dev_virtual;
 use App\Devolucion;
 use App\Deposito_gcc;
 use App\Deposito_conc;
+use App\Dep_credito;
+use App\Deposito;
 use App\User;
 use App\Cuenta;
 use App\Pago_contrato;
@@ -805,6 +807,29 @@ class CreditoController extends Controller
 
         $contratos = $contratos->paginate(10);
 
+        foreach ($contratos as $key => $contrato) {
+            $contrato->pendiente = 0;
+            if($contrato->saldo <= 0){
+                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+                            ->select('depositos.id')
+                            ->where('depositos.monto_terreno','!=',0)
+                            ->where('depositos.fecha_ingreso_concretania','=',NULL)
+                            ->where('pagos_contratos.contrato_id','=',$contrato->id)->get();
+                
+                $dep_creditos = Dep_credito::join('inst_seleccionadas','dep_creditos.inst_sel_id','=','inst_seleccionadas.id')
+                            //->join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
+                            ->select('dep_creditos.id')
+                            ->where('dep_creditos.monto_terreno','!=',0)
+                            ->where('dep_creditos.fecha_ingreso_concretania','=',NULL)
+                            ->where('inst_seleccionadas.elegido','=',1)
+                            ->where('inst_seleccionadas.credito_id','=',$contrato->id)
+                            ->get();
+
+                if(sizeof($dep_creditos) == 0 && sizeof($depositos) == 0)
+                    $contrato->pendiente = 1;
+            }
+        }
+
         return [
             'pagination' => [
                 'total'         => $contratos->total(),
@@ -826,7 +851,7 @@ class CreditoController extends Controller
                 ->select('contratos.id','creditos.saldo_terreno','creditos.precio_venta',
                             'creditos.valor_terreno as monto_terreno', 'contratos.status',
                             'creditos.fraccionamiento','creditos.etapa','creditos.manzana',
-                            'expedientes.valor_escrituras',
+                            'expedientes.valor_escrituras','contratos.saldo','creditos.lote_id',
                             'creditos.num_lote','personal.nombre','personal.apellidos');
 
         if($request->buscar != '')                            
@@ -1105,7 +1130,7 @@ class CreditoController extends Controller
                         $contrato->valor_escrituras,
                         $contrato->monto_terreno,
                         $contrato->saldo_terreno,
-                        $contrato->monto_terreno+$contrato->saldo_terreno,
+                        $contrato->monto_terreno-$contrato->saldo_terreno,
                         $contrato->status,
                     ]);	
                 }
