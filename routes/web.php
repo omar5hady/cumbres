@@ -1092,6 +1092,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/reubicaciones/storeConc','ReubicacionController@storeConc');
         Route::post('/reubicaciones/storeGCC','ReubicacionController@storeGCC');
 
+        Route::get('/reubicaciones/getComentarios','ReubicacionController@getComentarios');
+        Route::post('/reubicaciones/agregarComentario','ReubicacionController@agregarComentario');
+
 
     });
 

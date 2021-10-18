@@ -709,7 +709,7 @@
                                     </template>
                                     <!-- Fin Modal para registrar ingreso/abono -->
                                 </div>
-                                <!-- Botones del modal registarar abono o cargo -->
+                                <!-- Botones del modal registrar abono o cargo -->
                                 <div class="modal-footer" v-if="tipoAccion == 1">
                                     <button type="button" class="btn btn-secondary" @click="cerrarModal(1)">Cerrar</button>
                                     <button type="button" v-if="tipo == 0 && cantidad > 0" class="btn btn-success" @click="registrarCargo()">Guardar</button>
@@ -737,7 +737,7 @@
                 </div>
             <!--Fin del modal-->
 
-            <!--Inicio del modal nuevo movimiento-->
+            <!--Inicio del modal SET fecha de firma-->
                 <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 4}" 
                     role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                     <div class="modal-dialog modal-primary modal-lg" role="document">
@@ -1119,7 +1119,9 @@
             },
             verEdoCuenta(data){
                 this.datosPuente = data;
-                this.fecha_sig_int = moment(this.datosPuente.fecha_sig_int).locale('es').format('DD/MMM/YYYY');
+                if(this.datosPuente.fecha_sig_int != null)
+                    this.fecha_sig_int = moment(this.datosPuente.fecha_sig_int).locale('es').format('DD/MMM/YYYY');
+                else this.fecha_sig_int = 'Sin fecha'
                 this.fecha_ini_int = moment(this.datosPuente.fecha_ini_int).locale('es').format('DD/MMM/YYYY');
                 this.vista = 1;
                 this.getEdoCuenta(this.datosPuente.id);

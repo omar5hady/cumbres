@@ -735,6 +735,7 @@ class ComisionesVentaController extends Controller
                         ->where('pagos_contratos.num_pago','=',0)
                         ->where('pagos_contratos.pagado','>',1)
                         ->where('pagos_contratos.tipo_pagare','=',0)
+                        ->where('det_com_ventas.pendiente','!=',2)
                         ->where('inst_seleccionadas.elegido', '=', '1')
                         ->where('creditos.vendedor_id','=',$vendedor)
                         ->get();

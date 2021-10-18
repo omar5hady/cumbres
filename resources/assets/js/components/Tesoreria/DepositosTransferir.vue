@@ -92,6 +92,7 @@
                                                 <th>GCC</th>
                                                 <th>V. Terreno</th>
                                                 <th>Saldo Terreno</th>
+                                                <th></th>
                                             </tr>
                                         </thead>
                                         <tbody v-for="contratos in arrayContratos" :key="contratos.id">
@@ -119,6 +120,10 @@
                                                 <td class="td2" v-text="'$'+formatNumber(contratos.saldo_terreno_act)"></td>
                                                 <td class="td2" v-text="'$'+formatNumber(contratos.valor_terreno)"></td>
                                                 <td class="td2" v-text="'$'+formatNumber(contratos.valor_terreno - contratos.saldo_terreno_act)"></td>
+                                                <td class="td2">
+                                                    <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
+                                                                @click="verObservacion('deposito',contratos.id)">Observaciones</button>
+                                                </td>
                                             </tr>
                                             <tr v-if="contratos.reubicacion != null" v-on:dblclick="abrirModal('devolucion',contratos)">
                                                 <td class="td2"></td>
@@ -259,6 +264,7 @@
                                         <th>Fecha</th>
                                         <th># Cheque</th>
                                         <th>Cuenta</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -284,6 +290,10 @@
                                         <td class="td2" v-text="this.moment(gcc.fecha).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2" v-text="gcc.cheque"></td>
                                         <td class="td2" v-text="gcc.cuenta"></td>
+                                        <td class="td2">
+                                            <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
+                                                        @click="verObservacion('gcc',gcc.id)">Observaciones</button>
+                                        </td>
                                     </template>
                                     </tr>                               
                                 </tbody>
@@ -365,6 +375,7 @@
                                         <th>Fecha</th>
                                         <th># Cheque</th>
                                         <th>Cuenta</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -390,6 +401,10 @@
                                         <td class="td2" v-text="this.moment(conc.fecha).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2" v-text="conc.cheque"></td>
                                         <td class="td2" v-text="conc.cuenta"></td>
+                                        <td class="td2">
+                                            <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
+                                                        @click="verObservacion('conc',conc.id)">Observaciones</button>
+                                        </td>
                                     </template>
                                     </tr>                               
                                 </tbody>
@@ -582,6 +597,60 @@
                 </div>
                 <!-- /.modal-dialog -->
             </div>
+
+
+            <!--Inicio del modal observaciones-->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal == 2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal"></h4>
+                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
+                                    <div class="col-md-6">
+                                         <textarea rows="3" cols="30" v-model="comentario" class="form-control" placeholder="Observacion"></textarea>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button"  class="btn btn-primary" @click="agregarComentario()">Guardar</button>
+                                    </div>
+                                </div>
+
+                                <table class="table table-bordered table-striped table-sm" >
+                                    <thead>
+                                        <tr>
+                                            <th>Usuario</th>
+                                            <th>Observacion</th>
+                                            <th>Fecha</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="observacion in arrayObservacion" :key="observacion.id">
+                                            
+                                            <td v-text="observacion.usuario" ></td>
+                                            <td v-text="observacion.comentario" ></td>
+                                            <td v-text="observacion.created_at"></td>
+                                        </tr>                               
+                                    </tbody>
+                                </table>
+                            </form>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
+                        </div>
+                    </div>
+                      <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
             <!--Fin del modal consulta-->
             
          
@@ -608,6 +677,9 @@
                 arrayCuentaConc:[],
                 arrayTranspGCC: [],
                 arrayTranspConc: [],
+
+                arrayObservacion:[],
+                comentario: '',
 
                 devolucionVirutal:[],
 
@@ -662,7 +734,9 @@
                 convenio_ant:'',
                 porc_terreno:'',
                 verConc:0,
-                verGCC:0
+                verGCC:0,
+                dep_conc:'',
+                dep_gcc:''
             }
         },
         computed:{
@@ -720,6 +794,46 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayContratosGCC = respuesta;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            verObservacion(accion,id){
+                this.modal = 2;
+                this.tituloModal = 'Observaciones';
+                this.comentario = '';
+                this.arrayObservacion = [];
+                let me = this;
+                let url = '';
+                this.id = '';
+                this.dep_conc = '';
+                this.dep_gcc = '';
+
+                switch(accion){
+                    case 'deposito':
+                    {
+                        me.id = id;
+                        url = '/reubicaciones/getComentarios?id=' + id;
+                        break;
+                    }
+                    case 'gcc':
+                    {
+                        me.dep_gcc = id;
+                        url = '/reubicaciones/getComentarios?dep_gcc=' + id;
+                        break;   
+                    }
+                    case 'conc':
+                    {
+                        me.dep_conc = id;
+                        url = '/reubicaciones/getComentarios?dep_conc=' + id;
+                        break;
+                    }
+                }
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayObservacion = respuesta;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -870,6 +984,31 @@
                     position: 'top-end',
                     type: 'success',
                     title: 'Traspaso creados correctamente',
+                    showConfirmButton: false,
+                    timer: 1500
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            agregarComentario(){
+                let me = this;
+                axios.post('/reubicaciones/agregarComentario',{
+                'deposito_id': this.id,
+                'dep_conc':this.dep_conc,
+                'dep_gcc':this.dep_gcc,
+                'comentario':this.comentario,
+                }).then(function (response){
+                me.cerrarModal(); //al guardar el registro se cierra el modal
+                me.transferenciasGCC(me.pagination2.current_page);
+                me.listarDepositos(); //se enlistan nuevamente los registros
+                me.listarDepositosGCC();
+                //Se muestra mensaje Success
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Comentario guardado correctamente',
                     showConfirmButton: false,
                     timer: 1500
                     })

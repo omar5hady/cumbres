@@ -11,6 +11,7 @@ use App\Deposito;
 use App\Dep_credito;
 use App\Credito;
 use Carbon\Carbon;
+use App\Comentario_transferencia;
 use Auth;
 use DB;
 
@@ -134,6 +135,20 @@ class ReubicacionController extends Controller
             }
 
         return $depositos;
+    }
+
+    public function getComentarios(Request $request){
+        
+        $comentarios = Comentario_transferencia::select('id','comentario','usuario','created_at');
+                        if($request->id != '')
+                            $comentarios = $comentarios->where('deposito_id','=',$request->id);
+                        if($request->dep_conc != '')
+                            $comentarios = $comentarios->where('dep_conc','=',$request->dep_conc);
+                        if($request->dep_gcc != '')
+                            $comentarios = $comentarios->where('dep_gcc','=',$request->dep_gcc);
+
+                $comentarios = $comentarios->get();
+        return $comentarios;
     }
 
     public function depositosPorReubicarGCC(Request $request){
@@ -348,7 +363,26 @@ class ReubicacionController extends Controller
         $gcc->monto = $request->monto_gcc;
         $gcc->save();
 
+        $comentarios = Comentario_transferencia::select('id')->where('deposito_id','=',$request->id)->get();
+
+        if(sizeof($comentarios))
+            foreach ($comentarios as $key => $comentario) {
+                $com = Comentario_transferencia::findOrFail($comentario->id);
+                $com->dep_gcc = $gcc->id;
+                $com->save();
+            }
+
         $this->calculateSaldoTerreno($request->contrato_id);
+    }
+
+    public function agregarComentario(Request $request){
+        $comentario = new Comentario_transferencia();
+        $comentario->deposito_id = $request->deposito_id;
+        $comentario->dep_conc = $request->dep_conc;
+        $comentario->dep_gcc = $request->dep_gcc;
+        $comentario->comentario = $request->comentario;
+        $comentario->usuario = Auth::user()->usuario;
+        $comentario->save();
     }
 
     public function storeConc(Request $request){
@@ -361,6 +395,15 @@ class ReubicacionController extends Controller
         $conc->monto = $request->monto_conc;
         $conc->devolucion = $request->devolucion;
         $conc->save();
+
+        $comentarios = Comentario_transferencia::select('id')->where('deposito_id','=',$request->id)->get();
+
+        if(sizeof($comentarios))
+            foreach ($comentarios as $key => $comentario) {
+                $com = Comentario_transferencia::findOrFail($comentario->id);
+                $com->dep_conc = $conc->id;
+                $com->save();
+            }
 
         $this->calculateSaldoTerreno($request->contrato_id);
     }
