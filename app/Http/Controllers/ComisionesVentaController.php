@@ -1589,7 +1589,7 @@ class ComisionesVentaController extends Controller
                             '', '', '', 'Total: ',
                             $total_comision_indiv, 
                             $total_iva_indiv,
-                            $total_retención_indiv,
+                            $total_retencion_indiv,
                             $total_isr_indiv,
                             $total_pagado_indiv, 0
                         ]);

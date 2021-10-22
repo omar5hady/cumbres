@@ -1035,9 +1035,13 @@ class CreditoPuenteController extends Controller
             }
         }
 
+        $credito = Credito_puente::findOrFail($request->id);
+
+
         return ['pagos' => $pagos, 'ultimoAbono' => $fecha, 
                 'saldo' => $saldo, 'depCreditos' => $depCreditos,
-                'prestado' => $prestado
+                'prestado' => $prestado,
+                'fecha_sig_int' => $credito->fecha_sig_int
             ];
     }
 
@@ -1190,6 +1194,36 @@ class CreditoPuenteController extends Controller
             DB::rollBack();
         }
     }
+    /// Función para registrar el pago de intereses en crédito BBVA ////////
+    public function storeInteresesBBVA(Request $request)
+    {
+        if (!$request->ajax() || Auth::user()->rol_id == 11) return redirect('/');
+        try {
+            DB::beginTransaction();
+            // SE REGISTRA EL MOVIMIENTO EN LA BASE DE PAGOS
+            $pago = new Pago_puente();
+            $pago->credito_puente_id = $request->id;
+            $pago->fecha = $request->fecha;
+            $pago->concepto = $request->concepto;
+            $pago->tipo = $request->tipo;
+            $pago->saldo = 0;
+            $pago->porc_interes = $request->interes + $request->tiie;
+            $pago->fecha_interes = $request->fecha;
+            $pago->monto_interes = $request->cantidad;
+            $pago->save();
+            
+            //ACCIONES AL CREDITO BANCARIO GENERAL
+            $credito = Credito_puente::findOrFail($request->id);
+            $fecha = new Carbon($credito->fecha_sig_int);
+            
+            $fecha = $fecha->addMonths(1);
+            $credito->fecha_sig_int = $fecha->format('Y-m-j');
+            $credito->save();
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+        }
+    }
     /// Función para guardar cargos en crédito BANCREA ////////
     public function storeCargo(Request $request)
     {
@@ -1211,7 +1245,7 @@ class CreditoPuenteController extends Controller
 
             // CALCULO EL MONTO PRESTADO POR EL BANCO HASTA EL MOMENTO
             $cargos = Pago_puente::select(DB::raw("SUM(pagos_puentes.cargo) as total"))
-                ->where('concepto', '!=', 'PREPUENTE')
+                //->where('concepto', '!=', 'PREPUENTE')
                 ->where('credito_puente_id', '=', $request->id)
                 ->first();
 
@@ -1229,20 +1263,24 @@ class CreditoPuenteController extends Controller
             $credito->cobrado = $cargos->total;
             //SI ES EL PRIMER CARGO SE CALCULA EL SIGUIENTE MES A PAGAR DE LOS INTERESES
             if ($conteo == 1) {
-
                 $fecha = new Carbon($request->fecha);
-                $fecha = $fecha->addMonths(1);
+                if($credito->banco == 'Bancrea'){
+                    $fecha = $fecha->addMonths(1);
+                    $band = true;
 
-                $band = true;
-
-                while ($band == true) {
-                    if ($fecha->isWeekend())
-                        $fecha = $fecha->addDays(1);
-                    else
-                        $band = false;
+                    while ($band == true) {
+                        if ($fecha->isWeekend())
+                            $fecha = $fecha->addDays(1);
+                        else
+                            $band = false;
+                    }
                 }
-
-                $credito->fecha_sig_int = $fecha->format('Y-m-j');
+                if($credito->banco == 'BBVA Bancomer'){
+                    if($fecha->day >= 20)
+                        $fecha = $fecha->addMonths(1);
+                    $fecha->day = 21;
+                }
+                $credito->fecha_sig_int = $fecha->format('Y-m-d');
             }
 
             $credito->save();
@@ -1252,6 +1290,7 @@ class CreditoPuenteController extends Controller
             DB::rollBack();
         }
     }
+
     /// Función para guardar abonos en crédito BANCREA ////////
     public function storeAbono(Request $request)
     {
@@ -1303,6 +1342,51 @@ class CreditoPuenteController extends Controller
             }
             
         }
+    }
+
+    /// Función para guardar abonos en crédito BBVA ////////
+    public function storeAbonoBBVA(Request $request)
+    {
+        // SE REGISTRA EL MOVIMIENTO EN LA BASE DE PAGOS
+        $pago = new Pago_puente();
+        $pago->credito_puente_id = $request->id;
+        $pago->fecha = $request->fecha;
+        $pago->concepto = $request->concepto;
+        $pago->abono = $request->monto;
+        $pago->tipo = $request->tipo;
+        $pago->saldo = 0;
+        $pago->monto_interes = $request->interes;
+        $pago->save();
+
+        if($request->pagoLote == 1){
+            $lote = Lote_puente::findOrFail($request->lotePuenteId);
+            $lote->saldo -= $pago->abono;
+            $lote->abonado += $pago->abono;
+            if($lote->saldo == 0){
+                $lote->liberado = 1;
+            }
+            $lote->save();
+        }
+
+        $credito = Credito_puente::findOrFail($request->id);
+
+        if($request->interes > 0){
+            //ACCIONES AL CREDITO BANCARIO GENERAL
+            $fecha = new Carbon($credito->fecha_sig_int);
+            $fecha = $fecha->addMonths(1);
+            $credito->fecha_sig_int = $fecha->format('Y-m-j');
+        }
+
+        $lotes = Lote_puente::select('liberado')
+                ->where('liberado','=',0)
+                ->where('solicitud_id','=',$request->id)
+                ->get();
+                
+        if(sizeof($lotes) == 0)
+            $credito->status = 4;
+
+        $credito->save();
+        
     }
 
     /// Función para guardar abonos en crédito BANCREA ////////
@@ -1437,4 +1521,84 @@ class CreditoPuenteController extends Controller
         $credito->tiie_firma = $tiie;
         $credito->save();
     }
+
+    public function getInteresBBVA(Request $request){
+        $credito = Credito_puente::select('id','cobrado','banco','tiie_firma','interes','status','fecha_sig_int')
+                ->where('tiie_firma','>',0)
+                ->where('status','=',3)
+                ->where('cobrado','>',0)
+                ->where('banco','=','BBVA Bancomer')
+                ->where('id','=',$request->id)
+                ->first();
+
+        //if(sizeof($creditoBbva))
+            
+                $credito->porcInteres = ($credito->interes + $credito->tiie_firma)/100;
+
+                $primerPago = Pago_puente::select('fecha')->where('credito_puente_id','=',$credito->id)
+                        ->orderBy('fecha','asc')->first();
+
+                $fechaPrimerCargo = new Carbon($primerPago->fecha);
+                $fechaInteres = new Carbon($credito->fecha_sig_int);
+                $fechaAnt = new Carbon($credito->fecha_sig_int);
+                $fechaAnt = $fechaAnt->subMonths(1);
+
+                $ultimoDiaMes = new Carbon($credito->fecha_sig_int);
+                $ultimoDiaMes = $ultimoDiaMes->endOfMonth();
+                
+
+                if($fechaAnt->lt($fechaPrimerCargo)){
+                    $diff = $fechaPrimerCargo->diffInDays($fechaInteres);
+                    $fechaIniInt = $primerPago->fecha;
+                }
+                else{
+                    $diff = $fechaAnt->diffInDays($fechaInteres);
+                    $fechaIniInt = $fechaAnt->format('Y-m-d');
+                }
+
+                $credito->fecha = collect([]);
+
+                for ($i=1; $i <= $diff; $i++) { 
+
+                    $fecha = new Carbon($fechaIniInt);
+                    $fecha->addDays($i-1);
+
+                    $pagos = Pago_puente::select(DB::raw("SUM(pagos_puentes.abono) as abonos"),DB::raw("SUM(pagos_puentes.cargo) as cargos"))
+                        ->where('pagos_puentes.credito_puente_id','=',$credito->id)
+                        ->whereBetween('fecha',[$fechaPrimerCargo, $fecha])
+                        ->first();
+
+                    $saldo = $pagos->cargos - $pagos->abonos;
+                    $interes = ($credito->porcInteres/360)*$saldo;
+
+                    $credito->fecha->push(
+                        [
+                            'id' => $i,
+                            'fecha' => $fecha->format('Y-m-d'),
+                            'abonos' => $pagos->abonos,
+                            'cargos' => $pagos->cargos,
+                            'saldo' => $saldo,
+                            'interes' => $credito->interes + $credito->tiie_firma,
+                            'monto_interes' => $interes
+                        ]
+                    );
+
+                    $credito->sumaInteres += $interes;
+                }
+
+                $interesesPagados = Pago_puente::select(DB::raw("SUM(pagos_puentes.monto_interes) as interes"))
+                        ->where('pagos_puentes.credito_puente_id','=',$credito->id)
+                        ->whereBetween('fecha',[$credito->fecha_sig_int, $ultimoDiaMes->format('Y-m-d')])
+                        ->first();
+
+                if(  $interesesPagados->interes == NULL )
+                {
+                    $interesesPagados->interes = 0;
+                }
+
+
+        return['pagos'=> $credito->fecha, 'interes' => $credito->sumaInteres, 'pagado'=> $interesesPagados->interes];
+    }
+
+
 }

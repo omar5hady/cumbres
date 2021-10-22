@@ -371,7 +371,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Fecha deposito</label>
                                     <div class="col-md-6">
-                                        <input type="date" v-model="fecha_deposito" @change="calcularDescuento()" class="form-control">
+                                        <input type="date" v-model="fecha_deposito" @change="calcularDescuento(), actualizarInteresMoratorio()" class="form-control">
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -1017,6 +1017,17 @@
                     
                         
                 }
+            },
+            actualizarInteresMoratorio(){
+                var a = moment(this.fecha_limite);
+                var b = moment(this.fecha_deposito);
+                this.diferencia = b.diff(a,'days');
+
+                if(this.diferencia>0){
+                    this.interes_mor = ((this.monto_pagare * .05)/30) * this.diferencia;
+                    this.interes_mor=this.interes_mor.toFixed(2);
+                }
+
             },
             formatNumber(value) {
                 let val = (value/1).toFixed(2)

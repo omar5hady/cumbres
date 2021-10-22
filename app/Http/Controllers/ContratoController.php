@@ -66,7 +66,7 @@ class ContratoController extends Controller
                 ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                ->join('personal as v', 'creditos.vendedor_id', 'v.id')
                 
                 ->select(
                     'creditos.id',
@@ -2522,7 +2522,7 @@ class ContratoController extends Controller
             ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
             ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-            ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+            ->join('personal as v', 'creditos.vendedor_id', 'v.id')
             ->select(
                 'creditos.id',
                 'creditos.prospecto_id',

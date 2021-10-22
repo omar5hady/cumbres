@@ -987,7 +987,9 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::post('/cPuentes/storeCargo','CreditoPuenteController@storeCargo');
         Route::post('/cPuentes/storeAbono','CreditoPuenteController@storeAbono');
+        Route::post('/cPuentes/storeAbonoBBVA','CreditoPuenteController@storeAbonoBBVA');
         Route::post('/cPuentes/storeIntereses','CreditoPuenteController@storeIntereses');
+        Route::post('/cPuentes/storeInteresesBBVA','CreditoPuenteController@storeInteresesBBVA');
         Route::put('/cPuentes/storePago','CreditoPuenteController@storePago');
         Route::get('/cPuentes/interesCargos','CreditoPuenteController@calcularInteresPagos');
         Route::get('/cPuentes/getInteresePeriodo','CreditoPuenteController@getInteresePeriodo');
@@ -995,6 +997,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/cPuentes/selectCreditosPuente','CreditoPuenteController@selectCreditosPuente');
 
         Route::get('/cPuentes/resumenCreditos','CreditoPuenteController@resumenCreditos');
+
+        Route::get('/cPuentes/getInteresBBVA','CreditoPuenteController@getInteresBBVA');
         
     //////////////////// RUTAS BONOS RECOMENDADOS ///////////////////////
         Route::get('/cat_bono/index','CatalogoBonoController@index');

@@ -1539,6 +1539,8 @@ class DepositoController extends Controller
 
         for ($i = 0; $i < count($depositos); $i++) {
             $depositos[$i]->cant_depo = $depositos[$i]->cant_depo - $depositos[$i]->interes_mor;
+            if($depositos[$i]->cant_depo < 0)
+                $depositos[$i]->cant_depo = 0;
             $depositos[$i]->cant_depo = number_format((float)$depositos[$i]->cant_depo, 2, '.', ',');
             $depositos[$i]->interes_mor = number_format((float)$depositos[$i]->interes_mor, 2, '.', ',');
         }

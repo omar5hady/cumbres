@@ -51,8 +51,6 @@
                                             <th>Apertura</th>
                                             <th>Crédito otorgado</th>
                                             <th></th>
-                                            <!-- <th>Fecha solicitud</th>
-                                            <th>Status</th> -->
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -181,14 +179,12 @@
                                                     <div class="text-muted text-uppercase" 
                                                         v-text="'TIIE ' + formatNumber(datosPuente.tiie_firma) + ' + ' + formatNumber(datosPuente.interes)">
                                                     </div>
-                                                    
                                                     <div class="text-muted text-uppercase">
                                                         {{fecha_sig_int}}
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-
 
                                         <div class="row" style="margin-left:0px;">
                                             <div class="card-body p-4 d-flex align-items-center">
@@ -208,22 +204,14 @@
                                             </div>
                                             <!-- Botones para pagar intereses o registrar abono/cargo -->
                                             <div class="card-body p-4 d-flex align-items-center">
-                                                <!-- <button v-if="vista == 1 && datosPuente.diasInt < 0 || arrayPagos.length == 0" @click="abrirModal('movimiento',datosPuente.id)" class="btn btn-success rounded">
-                                                    <i class="icon-plus"></i>&nbsp;Nuevo movimiento
-                                                </button> -->
                                                 <button v-if="vista == 1 || arrayPagos.length == 0" @click="abrirModal('movimiento',datosPuente.id)" class="btn btn-success rounded">
                                                     <i class="icon-plus"></i>&nbsp;Nuevo movimiento
                                                 </button>
+                                                &nbsp;&nbsp;
                                                 <button v-if="vista == 1 && datosPuente.diasInt >= 0" @click="abrirModal('intereses',datosPuente.id)" class="btn btn-success rounded">
                                                     <i class="fa fa-calendar-plus-o"></i>&nbsp;Pago de intereses
                                                 </button>
-                                                &nbsp;&nbsp;
-                                                <!-- <button v-if="vista == 1 && datosPuente.diasInt < 0 && arrayPagosPendientes.length" @click="abrirModal('pendientes',datosPuente.id)" class="btn btn-warning rounded">
-                                                    <i class=" fa fa-bank"></i>&nbsp;Hipotecas pendientes
-                                                </button> -->
-                                                <button v-if="vista == 1 && arrayPagosPendientes.length" @click="abrirModal('pendientes',datosPuente.id)" class="btn btn-warning rounded">
-                                                    <i class=" fa fa-bank"></i>&nbsp;Hipotecas pendientes
-                                                </button>
+                                                
                                             </div>
                                             <!-- Fin Botones para pagar intereses o registrar abono/cargo -->
                                         </div>
@@ -249,7 +237,7 @@
                                                     <tbody>
                                                         <!--Comisiones Bancarias--->
                                                             <tr v-for="pago in arrayPagos" :key="pago.id">
-                                                                <td class="td2" v-text="pago.fecha"></td>
+                                                                <td class="td2" align="left" v-text="pago.fecha"></td>
                                                                 <td class="td2" v-text="pago.concepto"></td>
                                                                 <td class="td2" v-text="'$'+formatNumber(pago.cargo)"></td>
                                                                 <td class="td2" v-text="'$'+formatNumber(pago.abono)"></td>
@@ -313,7 +301,7 @@
                                                                     <!-- <button v-if="lote.liberado == 0 && datosPuente.diasInt < 0" title="Seleccionar" type="button" @click="selectLote(lote)" class="btn btn-warning btn-sm">
                                                                         <i class="icon-pencil"></i>
                                                                     </button> -->
-                                                                    <button v-if="lote.liberado == 0" title="Seleccionar" type="button" @click="selectLote(lote)" class="btn btn-warning btn-sm">
+                                                                    <button v-if="lote.liberado == 0" title="Abonar" type="button" @click="selectLote(lote)" class="btn btn-warning btn-sm">
                                                                         <i class="icon-pencil"></i>
                                                                     </button>
                                                                 </td>
@@ -473,7 +461,7 @@
                                             </div>
 
                                             <div class="col-md-4">
-                                                <select v-model="tipo" class="form-control" @change="iva_comision = 0, iva_honorario = 0, interes = 0" v-on:change="calcularInteres()">
+                                                <select v-model="tipo" class="form-control" disabled @change="iva_comision = 0, iva_honorario = 0, interes = 0" v-on:change="calcularInteres()">
                                                     <option value="">Tipo de movimiento</option>
                                                     <option value="0">Cargo</option>
                                                     <option value="1">Abono</option>
@@ -484,26 +472,10 @@
                                         <div class="form-group row" v-if="tipo != ''">
                                             <label class="col-md-2 form-control-label" for="text-input">Monto</label>
                                             <div class="col-md-4">
-                                                <input v-if="tipo == 1" @change="calcularInteres()" type="number" v-model="cantidad" class="form-control">
-                                                <input v-else type="number" @change="validarMonto()" v-model="cantidad" class="form-control">
+                                                <input type="number" @change="validarMonto()" v-model="cantidad" class="form-control">
                                             </div>
                                             <label class="col-md-3 form-control-label" for="text-input">${{formatNumber(cantidad)}}</label>
                                         </div>
-
-                                        <div class="form-group row" v-if="tipo == 1">
-                                            <label class="col-md-2 form-control-label" for="text-input">Interes</label>
-                                            <div class="col-md-4">
-                                                <label class="form-control" for="text-input">${{formatNumber(interes)}}</label>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group row" v-if="tipo == 1">
-                                            <h6 class="col-md-2 form-control-label" for="text-input">Pago total</h6>
-                                            <div class="col-md-4">
-                                                <h6 class="form-control">${{formatNumber(total=totalPagar)}}</h6>
-                                            </div>
-                                        </div>
-
                                     </template>
                                     <!-- Fin Modal para registrar ingreso/abono -->
                                     <!-- Modal para pagar intereses -->
@@ -513,28 +485,40 @@
                                                 <table class="table table-bordered table-striped table-sm">
                                                     <thead>
                                                         <tr>
-                                                            <th>Concepto</th>
+                                                            <th>Fecha</th>
                                                             <th>Saldo</th>
-                                                            <th>Tasa</th>
-                                                            <th>Interes generado</th>
+                                                            <th>Tasa de Int</th>
+                                                            <th>Interes diario</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr v-for="cargo in arrayCargos" :key="cargo.id">
-                                                            <td class="td2" v-text="cargo.concepto"></td>
-                                                            <td class="td2" v-text="'$'+formatNumber(cargo.saldo)"></td>
-                                                            <td class="td2" v-text="formatNumber(cargo.tasa)+'%'"></td>
-                                                            <td class="td2" v-text="'$'+formatNumber(cargo.interes)"></td>
-                                                        </tr> 
-                                                        <tr>
-                                                            <td class="td2" colspan="4"></td>
-                                                        </tr>                    
+                                                        <tr v-for="inte in arrayIntereses" :key="inte.id">
+                                                            <td class="td2" v-text="inte.fecha"></td>
+                                                            <td class="td2" v-text="'$'+formatNumber(inte.saldo)"></td>
+                                                            <td class="td2" v-text="formatNumber(inte.interes)+'%'"></td>
+                                                            <td class="td2" v-text="'$'+formatNumber(inte.monto_interes)"></td>
+                                                        </tr>  
                                                         <tr>
                                                             <td class="td2" colspan="3">
-                                                                <strong>Total</strong>
+                                                                <strong>Intereses generados</strong>
                                                             </td>
-                                                            <td class="td2" v-text="'$'+formatNumber(cantidad)"></td>
+                                                            <td class="td2" v-text="'$'+formatNumber(interes)"></td>
                                                         </tr>  
+                                                        <tr v-if="interesesPagados > 0">
+                                                            <td class="td2" colspan="3">
+                                                                <strong>Intereses pagados</strong>
+                                                            </td>
+                                                            <td class="td2" v-text="'$'+formatNumber(interesesPagados)"></td>
+                                                        </tr>   
+                                                        <tr>
+                                                            <td class="td2" colspan="4"></td>
+                                                        </tr>   
+                                                        <tr>
+                                                            <td class="td2" colspan="3">
+                                                                <strong>Intereses a cubrir</strong>
+                                                            </td>
+                                                            <td class="td2" v-text="'$'+formatNumber(interes - interesesPagados)"></td>
+                                                        </tr>     
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -545,10 +529,6 @@
                                             <div class="col-md-4">
                                                 <input type="date" disabled v-model="fecha" @change="getTiie(fecha)" class="form-control">
                                             </div>
-                                            <label v-if="tiie != 0" class="col-md-2 form-control-label" for="text-input">TIIE a 28 dias:</label>
-                                            <div v-if="tiie != 0" class="col-md-4">
-                                                <label disabled type="text" v-text="tiie+' + '+datosPuente.interes" class="form-control"></label>
-                                            </div>
                                         </div>
 
                                         <div class="form-group row">
@@ -558,7 +538,7 @@
                                             </div>
 
                                             <div class="col-md-4">
-                                                <select disabled v-model="tipo" class="form-control" @change="iva_comision = 0, iva_honorario = 0, interes = 0" v-on:change="calcularInteres()">
+                                                <select disabled v-model="tipo" class="form-control">
                                                     <option value="">Tipo de movimiento</option>
                                                     <option value="0">Cargo</option>
                                                     <option value="1">Abono</option>
@@ -569,96 +549,17 @@
 
                                         <div class="form-group row" v-if="tipo != ''">
                                             <h6 class="col-md-2 form-control-label" for="text-input">Total a pagar</h6>
-                                            <h6 class="col-md-3 form-control-label" for="text-input">${{formatNumber(cantidad)}}</h6>
+                                            <h6 class="col-md-3 form-control-label" for="text-input">${{formatNumber(interes - interesesPagados)}}</h6>
                                         </div>
 
                                     </template>
                                     <!--Fin Modal para pagar intereses -->
-                                    <!-- Modal para registrar pago pendiente de lote -->
-                                    <template v-if="tipoAccion == 3">
-                                        <template v-if="edit == 0">
-                                            <div class="form-group row">
-                                                <div class="col-md-12">
-                                                    <table class="table table-bordered table-striped table-sm">
-                                                        <thead>
-                                                            <tr>
-                                                                <th></th>
-                                                                <th>Concepto</th>
-                                                                <th>Fecha</th>
-                                                                <th>Monto</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr v-for="anticipo in arrayPagosPendientes" :key="anticipo.id">
-                                                                <td class="td2">
-                                                                    <button title="Seleccionar" type="button" @click="addDatos(anticipo), edit = 1" class="btn btn-warning btn-sm">
-                                                                        <i class="icon-pencil"></i>
-                                                                    </button>
-                                                                </td>
-                                                                <td class="td2" v-text="anticipo.concepto"></td>
-                                                                <td class="td2" v-text="anticipo.fecha"></td>
-                                                                <td class="td2" v-text="'$'+formatNumber(anticipo.abono)"></td>
-                                                            </tr>                     
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </template>
-
-                                        <template v-if="edit == 1">
-                                            <div class="form-group row">
-                                                <label class="col-md-2 form-control-label" for="text-input">Fecha</label>
-                                                <div class="col-md-4">
-                                                    <input type="date" v-model="fecha" @change="getTiie(fecha)" class="form-control">
-                                                </div>
-                                                <label v-if="tiie != 0" class="col-md-2 form-control-label" for="text-input">TIIE a 28 dias:</label>
-                                                <div v-if="tiie != 0" class="col-md-4">
-                                                    <label disabled type="text" v-text="tiie+' + '+datosPuente.interes" class="form-control"></label>
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group row">
-                                                <label class="col-md-2 form-control-label" for="text-input">Concepto</label>
-                                                <div class="col-md-7">
-                                                    <input type="text" disabled class="form-control" v-model="concepto">
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group row">
-                                                <label class="col-md-2 form-control-label" for="text-input">Monto</label>
-                                                <div class="col-md-4">
-                                                    <input type="number" v-model="cantidad" class="form-control">
-                                                </div>
-                                                <label class="col-md-3 form-control-label" for="text-input">${{formatNumber(cantidad)}}</label>
-                                            </div>
-
-                                            <div class="form-group row">
-                                                <label class="col-md-2 form-control-label" for="text-input">Interes</label>
-                                                <div class="col-md-4">
-                                                    <label class="form-control" for="text-input">${{formatNumber(interes)}}</label>
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group row">
-                                                <h6 class="col-md-2 form-control-label" for="text-input">Pago total</h6>
-                                                <div class="col-md-4">
-                                                    <h6 class="form-control ">${{formatNumber(total=totalPagar)}}</h6>
-                                                </div>
-                                            </div>
-                                        </template>
-                                    </template>
-                                    <!-- Fin Modal para registrar ingreso/abono -->
                                     <!-- Modal para registrar abono a Lote-->
                                     <template v-if="tipoAccion == 4">
-                                        
                                         <div class="form-group row">
                                             <label class="col-md-2 form-control-label" for="text-input">Fecha</label>
                                             <div class="col-md-4">
-                                                <input type="date" v-model="fecha" @change="getTiie(fecha)" class="form-control">
-                                            </div>
-                                            <label v-if="tiie != 0" class="col-md-2 form-control-label" for="text-input">TIIE a 28 dias:</label>
-                                            <div v-if="tiie != 0" class="col-md-4">
-                                                <label disabled type="text" v-text="tiie+' + '+datosPuente.interes" class="form-control"></label>
+                                                <input type="date" v-model="fecha" @change="calcularInteres(fecha)" class="form-control">
                                             </div>
                                         </div>
 
@@ -686,7 +587,7 @@
                                         <div class="form-group row">
                                             <label class="col-md-2 form-control-label" for="text-input">Monto</label>
                                             <div class="col-md-4">
-                                                <input type="number" @change="verificarSaldo(),calcularInteres()" v-model="cantidad" class="form-control">
+                                                <input type="number" @change="verificarSaldo()" v-model="cantidad" class="form-control">
                                             </div>
                                             <label class="col-md-3 form-control-label" for="text-input">${{formatNumber(cantidad)}}</label>
                                         </div>
@@ -694,7 +595,7 @@
                                         <div class="form-group row" v-if="tipo == 1">
                                             <label class="col-md-2 form-control-label" for="text-input">Interes</label>
                                             <div class="col-md-4">
-                                                <label class="form-control-label" for="text-input">${{formatNumber(interes)}}</label>
+                                                <label class="form-control-label" for="text-input">${{formatNumber(interes-interesesPagados)}}</label>
                                             </div>
                                             
                                         </div>
@@ -713,17 +614,11 @@
                                 <div class="modal-footer" v-if="tipoAccion == 1">
                                     <button type="button" class="btn btn-secondary" @click="cerrarModal(1)">Cerrar</button>
                                     <button type="button" v-if="tipo == 0 && cantidad > 0" class="btn btn-success" @click="registrarCargo()">Guardar</button>
-                                    <button type="button" v-if="tipo == 1 && cantidad > 0" class="btn btn-success" @click="registrarAbono(0)">Guardar</button>
                                 </div>
                                 <!-- Botones del modal pago de intereses -->
                                 <div class="modal-footer" v-if="tipoAccion == 2">
                                     <button type="button" class="btn btn-secondary" @click="cerrarModal(1)">Cerrar</button>
                                     <button type="button" class="btn btn-success" @click="registrarInteres()">Guardar</button>
-                                </div>
-                                <!-- Botones del modal pago de abono pendiente -->
-                                <div class="modal-footer" v-if="tipoAccion == 3">
-                                    <button type="button" class="btn btn-secondary" @click="cerrarModal(1)">Cerrar</button>
-                                    <button type="button" v-if="cantidad > 0" class="btn btn-success" @click="registrarPago()">Registrar pago</button>
                                 </div>
                                 <!-- Botones del modal pago de abono a lote -->
                                 <div class="modal-footer" v-if="tipoAccion == 4">
@@ -821,7 +716,7 @@
                 b_folio:'',
                 b_status:3,
                 arrayProyectos : [],
-                arrayCargos : [],
+                arrayIntereses : [],
                 datosPuente:{
                     'banco':'',
                     'apertura':'',
@@ -844,7 +739,6 @@
                 tipoAccion:1,
                 arrayObs:[],
                 arrayPagos:[],
-                arrayPagosPendientes : [],
                 arrayLotes : [],
                 observacion:'',
                 fecha:'',
@@ -866,7 +760,9 @@
                 lotePuenteId:'',
                 pago_id:'',
                 archivo:'',
-                totalUtilizado:0
+                totalUtilizado:0,
+                interesesPagados:0,
+                dia:'',
             }
         },
         components:{
@@ -878,7 +774,7 @@
             totalPagar: function(){
                 let me = this;
                 var total_pago =0;
-                    total_pago =parseFloat(me.interes) + parseFloat(me.cantidad); 
+                    total_pago =parseFloat(me.interes) + parseFloat(me.cantidad) - parseFloat(me.interesesPagados); 
                 return total_pago;
             },
             //Calcula los elementos de la paginación
@@ -937,7 +833,6 @@
                 });
 
             },
-
             /**Metodo para mostrar los registros */
             listarAvisos(page){
                 let me = this;
@@ -987,7 +882,6 @@
                     console.log(error);
                 });
             },
-            
             getObs(id){
                 let me = this;
                 me.arrayObs=[];
@@ -1000,20 +894,20 @@
                     console.log(error);
                 });
             },
-            calcularInteres(){
+            calcularInteres(fecha){
                 let me = this;
+
+                let d = moment(fecha);
+                let dia = d.date();
+
                 me.interes = 0;
-                me.total = 0;
-                var url = '/cPuentes/interesCargos?id='+me.datosPuente.id+'&fecha='+me.fecha+'&pago='+me.cantidad;
-                if(me.tipo == 1)
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.interes = respuesta.interes;
-                    me.total = respuesta.interes;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
+                me.cantidad = 0;
+                me.interesesPagados = 0;
+
+                if(dia >= 21 && dia <31){
+                    me.getInteresePeriodo(me.id, me.datosPuente.fecha_sig_int);
+                }
+                
             },
             getEdoCuenta(id){
                 let me = this;
@@ -1023,10 +917,13 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayPagos = respuesta.pagos;
-                    me.arrayPagosPendientes = respuesta.depCreditos;
                     me.fecha_interes = respuesta.ultimoAbono;
                     me.saldo = respuesta.saldo;
                     me.totalUtilizado = respuesta.prestado;
+                    me.fecha_sig_int = respuesta.fecha_sig_int;
+                    if(me.fecha_sig_int != null)
+                        me.fecha_sig_int = moment(me.fecha_sig_int).locale('es').format('DD/MMM/YYYY');
+                    else me.fecha_sig_int = 'Sin fecha';
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -1056,13 +953,15 @@
                     console.log(error);
                 });
             },
-            getInteresePeriodo(id,fecha){
+            getInteresePeriodo(id){
                 let me = this;
-                var url = '/cPuentes/getInteresePeriodo?fecha_sig_int='+fecha+'&id='+id;
+                var url = '/cPuentes/getInteresBBVA?id='+id;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                    me.arrayCargos = respuesta.cargos;
-                    me.cantidad = respuesta.interes;
+                    me.arrayIntereses = respuesta.pagos;
+                    me.interes = respuesta.interes;
+                    me.interesesPagados = respuesta.pagado;
+                    me.cantidad = 0;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -1070,22 +969,22 @@
             },
             registrarInteres(){
                 let me = this;
-                axios.post('/cPuentes/storeIntereses',{
+                let interes = me.interes - me.interesesPagados;
+                axios.post('/cPuentes/storeInteresesBBVA',{
                     'id': me.id,
                     'fecha': me.fecha,
                     'concepto' : me.concepto,
-                    'cantidad' : me.cantidad,
+                    'cantidad' : interes,
                     'tipo' : me.tipo,
                     'interes' : me.datosPuente.interes,
-                    'tiie' : me.tiie,
-                    'datos' : me.arrayCargos,
+                    'tiie' : me.datosPuente.tiie_firma,
                    
                 }).then(function (response){
                     //Obtener detalle
                         swal({
                             position: 'top-end',
                             type: 'success',
-                            title: 'Cargo registrado correctamente',
+                            title: 'Pago de interés registrado correctamente',
                             showConfirmButton: false,
                             timer: 1500
                         })
@@ -1119,9 +1018,6 @@
             },
             verEdoCuenta(data){
                 this.datosPuente = data;
-                if(this.datosPuente.fecha_sig_int != null)
-                    this.fecha_sig_int = moment(this.datosPuente.fecha_sig_int).locale('es').format('DD/MMM/YYYY');
-                else this.fecha_sig_int = 'Sin fecha'
                 this.fecha_ini_int = moment(this.datosPuente.fecha_ini_int).locale('es').format('DD/MMM/YYYY');
                 this.vista = 1;
                 this.getEdoCuenta(this.datosPuente.id);
@@ -1179,7 +1075,7 @@
                         this.iva_comision = 0;
                         this.iva_honorario = 0;
                         this.tiie = 0;
-                        this.tipo = '';
+                        this.tipo = 0;
                         this.total = 0;
                         break;
                     }
@@ -1194,15 +1090,6 @@
                         this.tiie = 0;
                         this.tipo = 3;
                         this.getInteresePeriodo(this.id, this.datosPuente.fecha_sig_int);
-                        this.getTiie(this.datosPuente.fecha_sig_int);
-                        break;
-                    }
-                    case 'pendientes':{
-                        this.modal = 2;
-                        this.tipoAccion = 3;
-                        this.tituloModal = 'Hipotecas pendientes por cobrar';
-                        this.id = id;
-                        this.edit = 0;
                         break;
                     }
                     case 'pagoLote':{
@@ -1242,7 +1129,7 @@
                     'monto' : me.cantidad,
                     'tipo' : me.tipo,
                     'interes' : me.datosPuente.interes,
-                    'tiie' : me.tiie,
+                    'tiie' : me.datosPuente.tiie_firma,
                    
                 }).then(function (response){
                     //Obtener detalle
@@ -1262,13 +1149,14 @@
             },
             registrarAbono(pagoLote){
                 let me = this;
-                axios.post('/cPuentes/storeAbono',{
+                let interes = me.interes - me.interesesPagados;
+                axios.post('/cPuentes/storeAbonoBBVA',{
                     'id': me.id,
                     'fecha': me.fecha,
                     'concepto' : me.concepto,
                     'monto' : me.cantidad,
                     'tipo' : me.tipo,
-                    'interes' : me.interes,
+                    'interes' : interes,
                     'pagoLote' : pagoLote,
                     'lote_id' : me.lote_id,
                     'lotePuenteId' : me.lotePuenteId
@@ -1295,18 +1183,6 @@
                 this.observacion = '';
                 if(vista == 0)
                     this.listarAvisos(vista);
-            },
-            addDatos(datos){
-                this.pagoId = datos.id;
-                this.fecha = datos.fecha;
-                this.getTiie(this.fecha);
-                this.tipo = datos.tipo;
-                this.cantidad = datos.abono;
-                this.concepto = datos.concepto;
-                this.id = datos.credito_puente_id;
-                this.lote_id = datos.lote_id;
-                this.lotePuenteId = datos.lotePuenteId;
-                this.calcularInteres();
             },
             actualizarFolio(id,folio){
                 let me = this;
@@ -1355,32 +1231,6 @@
                     console.log(error);
                 });
             },
-            registrarPago(){
-                let me = this;
-                axios.put('/cPuentes/storePago',{
-                    'id': me.id,
-                    'fecha': me.fecha,
-                    'monto' : me.cantidad,
-                    'interes' : me.interes,
-                    'lotePuenteId' : me.lotePuenteId,
-                    'pagoId' : me.pagoId
-                   
-                }).then(function (response){
-                    //Obtener detalle
-                        swal({
-                            position: 'top-end',
-                            type: 'success',
-                            title: 'Abono registrado correctamente',
-                            showConfirmButton: false,
-                            timer: 1500
-                        })
-                        me.cerrarModal(1);
-                        me.getEdoCuenta(me.datosPuente.id);
-                    
-                }).catch(function (error){
-                    console.log(error);
-                });
-            }
         },
         mounted() {
             this.listarAvisos(1);
