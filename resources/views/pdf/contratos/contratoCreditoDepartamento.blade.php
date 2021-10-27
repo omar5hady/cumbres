@@ -79,7 +79,7 @@ body{
                 e)	Que para la construcción y edificación de viviendas tiene concertado un acuerdo con <strong>CONCRETANIA</strong>, 
                 quien cuenta con los elementos, práctica y servicios de empleados que son necesarios para desarrollar un edificio de 
                 departamentos en régimen de condominio vertical, cuyas características se encuentran debidamente especificadas en el 
-                anexo “A” del presente contrato, el que debidamente firmado por las partes formar parte integrante del mismo.
+                anexo “A” del presente contrato, el que debidamente firmado por las partes forma parte integrante del mismo.
             </p>
 
             <p>
@@ -100,7 +100,7 @@ body{
             <p>II.- Declara <strong>CONCRETANIA</strong> por conducto de su representante:</p>
 
             <p>
-                a) Que es una sociedad mercantil constituida de acuerdo a la legislación de la República Mexicana, mediante Escritura Pública número setecientos 
+                a) Que es una sociedad mercantil constituida de acuerdo a la legislación de la República Mexicana, mediante Escritura Pública número seiscientos 
                 sesenta y cuatro, del volumen veintiuno, otorgada ante la fe del Licenciado Octaviano Gómez y González, Notario Público número Cuatro, 
                 con ejercicio en esta ciudad, con fecha veinticinco de julio de dos mil dieciocho, y cuyo primer testimonio obra inscrito en el Registro Público de la 
                 Propiedad y de Comercio, de esta ciudad, bajo el Folio Mercantil Eléctronico N-2018073682, desde el día siete de septiembre de dos mil dieciocho.

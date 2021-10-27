@@ -663,7 +663,8 @@
             },
             mostrarPromo(promo){
                  Swal({
-                    title: promo,
+                    title: 'Promoción',
+                    html: "<h5 style='color:#111F4F'>" + promo + "</h5>",
                     animation: false,
                     customClass: 'animated tada'
                     })

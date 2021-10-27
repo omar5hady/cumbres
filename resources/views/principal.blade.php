@@ -283,7 +283,7 @@
                                         <a class="nav-link" href="#"><i class="fa fa-archive"></i> Estado de Cuenta - BANCREA</a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->rol_id == 1)
+                                @if(Auth::user()->edo_cta_bancrea == 1)
                                     <li @click="menu=263" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-archive"></i> Estado de Cuenta - BBVA</a>
                                     </li>

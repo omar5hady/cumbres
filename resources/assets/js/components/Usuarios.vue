@@ -430,7 +430,7 @@
                                                     <a class="nav-link"><i class="icon-book-open"></i> <input v-model="seg_cp" type="checkbox" value="1"/> Créditos Puente</a>
                                                 </li>
                                                 <li class="nav-item">
-                                                    <a class="nav-link"><i class="icon-book-open"></i> <input v-model="edo_cta_bancrea" type="checkbox" value="1"/> Estado de Cuenta - BANCREA</a>
+                                                    <a class="nav-link"><i class="icon-book-open"></i> <input v-model="edo_cta_bancrea" type="checkbox" value="1"/> Estados de Cuenta</a>
                                                 </li>
                                                 
                                             </ul>

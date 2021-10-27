@@ -34,6 +34,7 @@ use App\Deposito_conc;
 use App\Precios_terreno;
 use App\Lote;
 use App\Modelo;
+use App\Cuenta;
 use NumerosEnLetras;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\NotificationReceived;
@@ -858,6 +859,7 @@ class ContratoController extends Controller
         if(!$request->ajax())return redirect('/');
         $pagos = Pago_contrato::select('id', 'num_pago', 'monto_pago', 'fecha_pago','restante')
             ->where('contrato_id', '=', $request->contrato_id)
+            ->where('tipo_pagare','=',0)
             ->orderBy('fecha_pago', 'ASC')
             ->get();
 
@@ -2221,15 +2223,29 @@ class ContratoController extends Controller
         }
     }
 
+    private function getCuentas($cuenta){
+        $cuentas = Cuenta::select('num_cuenta','banco')->where('empresa','=',$cuenta)->get();
+        $arrayCuentas = [];
+
+        foreach($cuentas as $index => $cuenta){
+            array_push($arrayCuentas,$cuenta->num_cuenta.'-'.$cuenta->banco);
+        }
+
+        return $arrayCuentas;
+
+    }
+
     private function calculateSaldoTerreno($id){
 
         $credito = Credito::findOrFail($id);
+        $cuentas = $this->getCuentas('Grupo Constructor Cumbres');
 
             $sumaDepositoCreditTerreno = Dep_credito::join('inst_seleccionadas','dep_creditos.inst_sel_id','=','inst_seleccionadas.id')
                 ->join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
                 ->join('contratos','creditos.id','=','contratos.id')
                 ->select(DB::raw("SUM(dep_creditos.monto_terreno) as suma"))->where('contratos.id','=',$id)
                 ->where('inst_seleccionadas.elegido','=',1)
+                ->where('dep_creditos.fecha_ingreso_concretania','!=',NULL)
                 ->get();
                 if($sumaDepositoCreditTerreno[0]->suma == NULL){
                     $sumaDepositoCreditTerreno[0]->suma = 0;
@@ -2243,6 +2259,17 @@ class ContratoController extends Controller
                 ->get();
                 if($sumaDepositoTerreno[0]->suma == NULL){
                     $sumaDepositoTerreno[0]->suma = 0;
+                }
+
+            $sumaCuentaCumbres = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+                ->select(DB::raw("SUM(depositos.cant_depo) as suma"))
+                ->where('contratos.id','=',$id)
+                ->where('depositos.lote_id','=',$credito->lote_id)
+                ->whereIn('depositos.banco',$cuentas)
+                ->get();
+                if($sumaCuentaCumbres[0]->suma == NULL){
+                    $sumaCuentaCumbres[0]->suma = 0;
                 }
 
             $depositoGCC = Deposito_gcc::select(DB::raw("SUM(depositos_gcc.monto) as suma"))
@@ -2262,7 +2289,9 @@ class ContratoController extends Controller
                     $depositoConc[0]->suma = 0;
                 }
         
-        $credito->saldo_terreno = $sumaDepositoCreditTerreno[0]->suma + $sumaDepositoTerreno[0]->suma + $depositoGCC[0]->suma -  $depositoConc[0]->suma;
+        $credito->saldo_terreno = $sumaDepositoCreditTerreno[0]->suma + $sumaCuentaCumbres[0]->suma + 
+        $sumaDepositoTerreno[0]->suma + $depositoGCC[0]->suma -  $depositoConc[0]->suma;
+        
         $credito->save();
 
     }
@@ -2854,7 +2883,7 @@ class ContratoController extends Controller
                         //->join('etapas','lotes.etapa_id','=','etapas.id')
                         ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                         ->select('lotes.colindancias','fraccionamientos.logo_fracc')
-                        ->where('creditos.id','=',1221)
+                        ->where('creditos.id','=',$id)
                         ->first();
 
         // return $contrato;
