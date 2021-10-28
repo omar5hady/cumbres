@@ -57,6 +57,8 @@ class CreateDepositosTable extends Migration
 
             $table->boolean('reubicado')->default(0);
 
+            $table->text('obs_ingreso')->nullable();
+
             $table->timestamps();
 
             $table->foreign('pago_id')->references('id')->on('pagos_contratos')->onDelete('cascade');

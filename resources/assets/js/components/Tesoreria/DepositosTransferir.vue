@@ -82,6 +82,7 @@
                                         <thead>
                                             <tr> 
                                                 <th>Folio</th>
+                                                <th>Cliente</th>
                                                 <th>Fraccionamiento</th>
                                                 <th>Etapa</th>
                                                 <th>Manzana</th>
@@ -98,6 +99,7 @@
                                         <tbody v-for="contratos in arrayContratos" :key="contratos.id">
                                             <tr v-if="contratos.reubicacion != null" style="backgroundColor:#B8FCC0" v-on:dblclick="abrirModal('devolucion',contratos)" title="Doble click" > 
                                                 <td class="td2" v-text="contratos.folio"></td>
+                                                <td class="td2" v-text="contratos.nombre+' '+contratos.apellidos"></td>
                                                 <td class="td2">
                                                     <a href="#" v-text="contratos.fraccionamiento"></a>
                                                 </td>
@@ -127,6 +129,9 @@
                                             </tr>
                                             <tr v-if="contratos.reubicacion != null" v-on:dblclick="abrirModal('devolucion',contratos)">
                                                 <td class="td2"></td>
+                                                <td>
+
+                                                </td>
                                                 <td class="td2">
                                                     <a href="#" v-text="contratos.reubicacion.fraccionamiento"></a>
                                                 </td>

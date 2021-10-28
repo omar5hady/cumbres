@@ -266,8 +266,9 @@ class InstSeleccionadasController extends Controller
             }
             else{
                 $depositos = $query
-                        ->whereBetween('dep_creditos.fecha_deposito', [$fecha1, $fecha2])
-                        ->where('dep_creditos.banco','=',$banco);
+                        ->where('dep_creditos.banco','like',$banco.'%')
+                        ->whereBetween('dep_creditos.fecha_deposito', [$fecha1, $fecha2]);
+                        
             }
         }
         else{
@@ -276,7 +277,7 @@ class InstSeleccionadasController extends Controller
             }
             else{
                 $depositos = $query
-                        ->where('dep_creditos.banco','=',$banco);
+                        ->where('dep_creditos.banco','like',$banco.'%');
             }
         }
 
@@ -303,7 +304,7 @@ class InstSeleccionadasController extends Controller
         $fecha2 = $request->fecha2;
         $banco = $request->banco;
 
-        $query =  Dep_credito::join('inst_seleccionadas','inst_seleccionadas.id','=','dep_creditos.inst_sel_id')
+        $query = Dep_credito::join('inst_seleccionadas','inst_seleccionadas.id','=','dep_creditos.inst_sel_id')
             ->join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
             ->join('contratos','contratos.id','=','creditos.id')
             ->join('lotes','lotes.id','=','creditos.lote_id')
@@ -312,34 +313,34 @@ class InstSeleccionadasController extends Controller
                 'creditos.fraccionamiento as proyecto',
                 'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
                 'personal.nombre','personal.apellidos', 
+                'inst_seleccionadas.id as inst_sel_id',
                 'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                'dep_creditos.cant_depo', 'dep_creditos.banco', 'dep_creditos.fecha_deposito'
+                'dep_creditos.cant_depo', 'dep_creditos.banco', 'dep_creditos.fecha_deposito',
+                'lotes.credito_puente'
             );
-
+  
         if($fecha1 != '' && $fecha2 != ''){
             if($banco == ''){
                 $depositos = $query
-                        ->whereBetween('dep_creditos.fecha_deposito', [$fecha1, $fecha2])
-                        ->orderBy('dep_creditos.fecha_deposito','desc')->get();
+                        ->whereBetween('dep_creditos.fecha_deposito', [$fecha1, $fecha2]);
             }
             else{
                 $depositos = $query
                         ->whereBetween('dep_creditos.fecha_deposito', [$fecha1, $fecha2])
-                        ->where('dep_creditos.banco','=',$banco)
-                        ->orderBy('dep_creditos.fecha_deposito','desc')->get();
+                        ->where('dep_creditos.banco','like',$banco.'%');
             }
         }
         else{
             if($banco == ''){
-                $depositos = $query->orderBy('dep_creditos.fecha_deposito','desc')->get();
+                $depositos = $query;
             }
             else{
                 $depositos = $query
-                        ->where('dep_creditos.banco','=',$banco)
-                        ->orderBy('dep_creditos.fecha_deposito','desc')->get();
+                        ->where('dep_creditos.banco','like',$banco.'%');
             }
-            
         }
+        
+        $depositos = $depositos->orderBy('dep_creditos.fecha_deposito','desc')->get();
 
         return Excel::create('Depositos', function($excel) use ($depositos){
                 $excel->sheet('Depositos', function($sheet) use ($depositos){

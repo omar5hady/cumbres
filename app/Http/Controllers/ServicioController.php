@@ -129,7 +129,7 @@ class ServicioController extends Controller
     public function cartaDeServicioDocs($etapa_id){
         $archivos = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
         ->join('etapas','fraccionamientos.id','=','etapas.fraccionamiento_id')
-        ->select('etapas.plantilla_carta_servicios','etapas.costo_mantenimiento')
+        ->select('etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','etapas.num_etapa')
         ->where('modelos.nombre','!=','Por Asignar')
         ->where('etapas.num_etapa','!=','Sin Asignar')
         ->where('etapas.id','=',$etapa_id)

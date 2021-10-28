@@ -176,6 +176,7 @@
                                         <th>Fecha deposito</th>
                                         <th>Cuenta</th>
                                         <th>Fecha de ingreso</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -196,6 +197,9 @@
                                         <td class="td2" v-text="lote.fecha"></td>
                                         <td class="td2" v-text="lote.cuenta"></td>
                                         <td class="td2" v-text="lote.fecha_ingreso_concretania"></td>
+                                        <td class="td2">
+                                            <a href="#" v-if="lote.obs_ingreso != null" @click="verObservacion(lote.obs_ingreso)">Ver observación</a>
+                                        </td>
                                     </tr>  
                                     <tr>
                                         <th colspan="6" class="td2 text-right">Total</th>
@@ -435,6 +439,14 @@
                                         </select>
                                     </div>
                                 </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Observaciones</label>
+                                    <div class="col-md-6">
+                                        <textarea rows="1" cols="30" class="form-control" v-model="observacion" placeholder="Observaciones"></textarea>
+                                    </div>
+                                </div>
+
                                 <div class="form-group row"></div>
 
                                 <div class="form-group row">
@@ -889,6 +901,7 @@
                 depositoConcTransf:[],
                 sumaConc : 0,
                 cheque:'',
+                observacion:'',
 
             }
         },
@@ -1005,6 +1018,14 @@
 
             },
 
+            verObservacion(observacion){
+                 Swal({
+                    title: '',
+                    html: "<h5 style='color:#111F4F'>" + observacion + "</h5>",
+                    animation: false,
+                    })
+            },
+
             /**Metodo para mostrar los registros */
             listarLotes(){
                 let me = this;
@@ -1094,6 +1115,7 @@
                     'tipo': element['tipo'],
                     'monto_terreno': element['monto_terreno'],
                     'cuenta' : this.cuenta,
+                    'observacion' : this.observacion,
                     'fecha_ingreso_concretania': this.fecha
                     }); 
                 });
@@ -1227,6 +1249,7 @@
                         this.cuenta = '';
                         this.tipoAccion = 1;
                         this.ver = 1;
+                        this.observacion = '';
                         break;
                     }
                     case 'detalle':

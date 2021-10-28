@@ -1763,6 +1763,114 @@ class DepositoController extends Controller
 
     private function pendientesIngresoConcretania($fecha1, $fecha2){
         $cuentas = $this->getCuentas('CONCRETANIA');
+        $depositos = $this->getDepositosConc();
+        $ingresosCreditos = $this->getIngresosConc();
+
+        $depositos = $depositos
+            ->where('lotes.emp_constructora','=','Concretania')
+            ->where('lotes.emp_terreno','=','Grupo Constructor Cumbres')
+            ->where('monto_terreno','>',0)
+            ->where('contratos.status','!=',0)
+            ->whereIn('depositos.banco',$cuentas)
+            ->where('fecha_ingreso_concretania','=',NULL);
+            if($fecha1 != '' && $fecha2 != ''){
+                $depositos = $depositos->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2]);
+            }
+            $depositos = $depositos->get();
+
+        $ingresosCreditos = $ingresosCreditos
+            ->where('lotes.emp_constructora','=','Concretania')
+            ->where('lotes.emp_terreno','=','Grupo Constructor Cumbres')
+            ->where('monto_terreno','>',0)
+            ->Where(function ($query) use($cuentas) {
+                for ($i = 0; $i < count($cuentas); $i++){
+                    $query->orwhere('dep_creditos.banco', 'like',  $cuentas[$i] .'%');
+                }      
+            })
+            ->where('dep_creditos.fecha_ingreso_concretania','=',NULL);
+            if($fecha1 != '' && $fecha2 != ''){
+                $ingresosCreditos = $ingresosCreditos->whereBetween('dep_creditos.fecha_deposito', [$fecha1, $fecha2]);
+            }
+            $ingresosCreditos = $ingresosCreditos->get();
+
+        
+        $cont =1;
+
+        if($fecha1 != '' && $fecha2 != ''){
+            $depositosAnt = $this->getDepositosConc();
+            $ingresosCreditosAnt = $this->getIngresosConc();
+
+            $depositosAnt = $depositosAnt
+                ->where('lotes.emp_constructora','=','Concretania')
+                ->where('lotes.emp_terreno','=','Grupo Constructor Cumbres')
+                ->where('monto_terreno','>',0)
+                ->where('contratos.status','!=',0)
+                ->whereIn('depositos.banco',$cuentas)
+                ->where('fecha_ingreso_concretania','=',NULL);
+                if($fecha1 != '' && $fecha2 != ''){
+                    $depositosAnt = $depositosAnt->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2]);
+                }
+                $depositosAnt = $depositosAnt->orWhere('lotes.emp_constructora','=','Concretania')
+                ->where('lotes.emp_terreno','=','Grupo Constructor Cumbres')
+                ->where('monto_terreno','>',0)
+                ->where('contratos.status','!=',0)
+                ->whereIn('depositos.banco',$cuentas)
+                ->where('fecha_ingreso_concretania','=',NULL);
+                if($fecha1 != '' && $fecha2 != ''){
+                    $depositosAnt = $depositosAnt->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2]);
+                }
+                $depositosAnt = $depositosAnt->get();
+
+            $ingresosCreditosAnt = $ingresosCreditosAnt
+                ->where('lotes.emp_constructora','=','Concretania')
+                ->where('lotes.emp_terreno','=','Grupo Constructor Cumbres')
+                ->where('monto_terreno','>',0)
+                ->Where(function ($query) use($cuentas) {
+                    for ($i = 0; $i < count($cuentas); $i++){
+                        $query->orwhere('dep_creditos.banco', 'like',  $cuentas[$i] .'%');
+                    }      
+                })
+                ->where('dep_creditos.fecha_ingreso_concretania','=',NULL);
+                if($fecha1 != '' && $fecha2 != ''){
+                    $ingresosCreditosAnt = $ingresosCreditosAnt->whereBetween('dep_creditos.fecha_deposito', [$fecha1, $fecha2]);
+                }
+                $ingresosCreditosAnt = $ingresosCreditosAnt->orWhere('lotes.emp_constructora','=','Concretania')
+                ->where('lotes.emp_terreno','=','Grupo Constructor Cumbres')
+                ->where('monto_terreno','>',0)
+                ->Where(function ($query) use($cuentas) {
+                    for ($i = 0; $i < count($cuentas); $i++){
+                    $query->orwhere('dep_creditos.banco', 'like',  $cuentas[$i] .'%');
+                    }      
+                })
+                ->where('dep_creditos.fecha_ingreso_concretania','=',NULL);
+                if($fecha1 != '' && $fecha2 != ''){
+                    $ingresosCreditosAnt = $ingresosCreditosAnt->whereBetween('dep_creditos.fecha_deposito', [$fecha1, $fecha2]);
+                }
+                $ingresosCreditosAnt = $ingresosCreditosAnt->get();
+
+        }
+
+        if(sizeof($depositos))
+            foreach($depositos as $index => $dep){
+                $dep->cont = $cont;
+                $dep->tipo = 0;
+                $cont++;
+            }
+
+        if(sizeof($ingresosCreditos))
+            foreach($ingresosCreditos as $index => $dep){
+                $dep->cont = $cont;
+                $dep->tipo = 1;
+                $cont++;
+            }
+
+        $pendienteIngresar = collect($depositos)->merge(collect($ingresosCreditos));
+
+        return $pendienteIngresar;
+
+    }
+
+    private function getDepositosConc(){
         $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
             ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
             ->join('creditos','creditos.id','=','contratos.id')
@@ -1775,7 +1883,11 @@ class DepositoController extends Controller
                     'personal.nombre','personal.apellidos','depositos.concepto',
                     'depositos.monto_terreno', 'depositos.cant_depo',
                     'depositos.fecha_pago as fecha_dep','depositos.banco');
+        
+        return $depositos;
 
+    }
+    private function getIngresosConc(){
         $ingresosCreditos = Dep_credito::join('inst_seleccionadas','inst_seleccionadas.id','=','dep_creditos.inst_sel_id')
             ->join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
             ->join('contratos','contratos.id','=','creditos.id')
@@ -1788,77 +1900,7 @@ class DepositoController extends Controller
                     'dep_creditos.monto_terreno', 'dep_creditos.cant_depo',
                     'dep_creditos.fecha_deposito as fecha_dep','dep_creditos.banco');
 
-        $depositos = $depositos
-                    ->where('lotes.emp_constructora','=','Concretania')
-                    ->where('lotes.emp_terreno','=','Grupo Constructor Cumbres')
-                    //->where('banco','!=','0102030405-Scotiabank')
-                    ->where('monto_terreno','>',0)
-                    ->where('contratos.status','!=',0)
-                    ->whereIn('depositos.banco',$cuentas)
-                    ->where('fecha_ingreso_concretania','=',NULL);
-                    if($fecha1 != '' && $fecha2 != ''){
-                        $depositos = $depositos->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2]);
-                    }
-                    $depositos = $depositos->orWhere('lotes.emp_constructora','=','Concretania')
-                    ->where('lotes.emp_terreno','=','Grupo Constructor Cumbres')
-                    //->where('banco','!=','0102030405-Scotiabank')
-                    ->where('monto_terreno','>',0)
-                    ->where('contratos.status','!=',0)
-                    ->whereIn('depositos.banco',$cuentas)
-                    ->where('fecha_ingreso_concretania','=',NULL);
-                    if($fecha1 != '' && $fecha2 != ''){
-                        $depositos = $depositos->whereBetween('depositos.fecha_pago', [$fecha1, $fecha2]);
-                    }
-                    $depositos = $depositos->get();
-
-        $ingresosCreditos = $ingresosCreditos
-                    ->where('lotes.emp_constructora','=','Concretania')
-                    ->where('lotes.emp_terreno','=','Grupo Constructor Cumbres')
-                    ->where('monto_terreno','>',0)
-                    //->whereIn('dep_creditos.banco',$cuentas)
-                    ->Where(function ($query) use($cuentas) {
-                        for ($i = 0; $i < count($cuentas); $i++){
-                           $query->orwhere('dep_creditos.banco', 'like',  $cuentas[$i] .'%');
-                        }      
-                   })
-                    ->where('dep_creditos.fecha_ingreso_concretania','=',NULL);
-                    if($fecha1 != '' && $fecha2 != ''){
-                        $ingresosCreditos = $ingresosCreditos->whereBetween('dep_creditos.fecha_deposito', [$fecha1, $fecha2]);
-                    }
-                    $ingresosCreditos = $ingresosCreditos->orWhere('lotes.emp_constructora','=','Concretania')
-                    ->where('lotes.emp_terreno','=','Grupo Constructor Cumbres')
-                    ->where('monto_terreno','>',0)
-                   // ->whereIn('dep_creditos.banco',$cuentas)
-                   ->Where(function ($query) use($cuentas) {
-                        for ($i = 0; $i < count($cuentas); $i++){
-                        $query->orwhere('dep_creditos.banco', 'like',  $cuentas[$i] .'%');
-                        }      
-                    })
-                    ->where('dep_creditos.fecha_ingreso_concretania','=',NULL);
-                    if($fecha1 != '' && $fecha2 != ''){
-                        $ingresosCreditos = $ingresosCreditos->whereBetween('dep_creditos.fecha_deposito', [$fecha1, $fecha2]);
-                    }
-                    $ingresosCreditos = $ingresosCreditos->get();
-
-        $cont =1;
-        if(sizeof($depositos))
-        foreach($depositos as $index => $dep){
-            $dep->cont = $cont;
-            $dep->tipo = 0;
-            $cont++;
-        }
-
-        if(sizeof($ingresosCreditos))
-        foreach($ingresosCreditos as $index => $dep){
-            $dep->cont = $cont;
-            $dep->tipo = 1;
-            $cont++;
-        }
-
-        $pendienteIngresar = collect($depositos)->merge(collect($ingresosCreditos));
-
-        return $pendienteIngresar;
-
+        return $ingresosCreditos;
     }
 
     public function guardarIngreso(Request $request){
@@ -1869,12 +1911,14 @@ class DepositoController extends Controller
             $deposito->cuenta = $request->cuenta;
             $deposito->lote_id = $credito->lote_id;
             $deposito->fecha_ingreso_concretania = $request->fecha_ingreso_concretania;
+            $deposito->obs_ingreso = $request->observacion;
             $deposito->save();
         }
         else{
             $deposito = Dep_credito::findOrFail($request->depId);
             $deposito->cuenta = $request->cuenta;
             $deposito->fecha_ingreso_concretania = $request->fecha_ingreso_concretania;
+            $deposito->obs_ingreso = $request->observacion;
             $deposito->save();
         }
 
@@ -1899,7 +1943,7 @@ class DepositoController extends Controller
                     'etapas.num_etapa as etapa', 'lotes.manzana', 'lotes.num_lote', 'creditos.saldo_terreno',
                     'personal.nombre','personal.apellidos','depositos.concepto', 'creditos.valor_terreno',
                     'depositos.monto_terreno', 'depositos.fecha_ingreso_concretania', 'depositos.cuenta',
-                    'depositos.fecha_pago as fecha','depositos.cuenta')
+                    'depositos.fecha_pago as fecha','depositos.cuenta','depositos.obs_ingreso')
             ->whereBetween('depositos.fecha_ingreso_concretania', [$request->fecha, $request->fecha2])
             ->where('monto_terreno','>',0);
 
@@ -1913,7 +1957,9 @@ class DepositoController extends Controller
                     'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 'creditos.saldo_terreno',
                     'personal.nombre','personal.apellidos', 'dep_creditos.concepto', 'creditos.valor_terreno',
                     'dep_creditos.monto_terreno', 'dep_creditos.fecha_ingreso_concretania', 'dep_creditos.cuenta',
-                    'dep_creditos.f_carga_factura_terreno','dep_creditos.cuenta', 'dep_creditos.fecha_deposito as fecha')
+                    'dep_creditos.f_carga_factura_terreno','dep_creditos.cuenta', 'dep_creditos.fecha_deposito as fecha',
+                    'dep_creditos.obs_ingreso'
+                    )
             ->whereBetween('dep_creditos.fecha_ingreso_concretania', [$request->fecha, $request->fecha2])
             ->where('monto_terreno','>',0);
 

@@ -12,6 +12,7 @@ class Dep_credito extends Model
             'banco','concepto','fecha_deposito',
             'cuenta',
             'fecha_ingreso_concretania',
+            'obs_ingreso'
     ];
  
  

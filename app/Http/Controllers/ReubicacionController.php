@@ -22,6 +22,7 @@ class ReubicacionController extends Controller
         $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
                             ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
                             ->join('creditos','contratos.id','=','creditos.id')
+                            ->join('personal','creditos.prospecto_id','=','personal.id')
                             ->join('lotes','creditos.lote_id','=','lotes.id')
                             //->leftjoin('lotes as l','depositos.lote_id','=','l.id')
                             ->select('creditos.lote_id',
@@ -42,7 +43,9 @@ class ReubicacionController extends Controller
                                     'creditos.valor_terreno',
                                     'creditos.saldo_terreno',
                                     'creditos.porcentaje_terreno',
-                                    'depositos.id'
+                                    'depositos.id',
+                                    'personal.nombre',
+                                    'personal.apellidos'
                                     )
                             ->whereRaw('creditos.lote_id != depositos.lote_id')
                             ->where('depositos.fecha_ingreso_concretania','!=',NULL)

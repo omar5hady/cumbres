@@ -37,6 +37,8 @@ class CreateDepCreditosTable extends Migration
              $table->string('folio_factura_terreno',30)->nullable();
              $table->double('monto_terreno', 8,2)->nullable()->default(0);
              $table->date('f_carga_factura_terreno')->nullable();
+
+             $table->text('obs_ingreso')->nullable();
         });
     }
 
