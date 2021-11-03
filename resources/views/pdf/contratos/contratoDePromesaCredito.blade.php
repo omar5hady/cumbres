@@ -60,7 +60,7 @@ I.- Declara <strong>EL PROMITENTE VENDEDOR</strong>, por conducto de su represen
         Registro Público de la Propiedad y de Comercio, de esta ciudad, bajo la inscripción número tres del folio mercantil y 
         folio de muebles número setenta, desde el día diecinueve de enero del dos mil.
     @else
-        a) QQue es una sociedad mercantil constituida de acuerdo a la legislación de la República Mexicana,
+        a) Que es una sociedad mercantil constituida de acuerdo a la legislación de la República Mexicana,
         mediante Escritura Pública número setecientos sesenta y cuatro, del volumen veintiuno, otorgada ante la fe
         del Licenciado Octaviano Gómez y González, Notario Público número Cuatro, con ejercicio en esta
         ciudad, con fecha veinticinco de julio de dos mil dieciocho, y cuyo primer testimonio obra inscrito en el

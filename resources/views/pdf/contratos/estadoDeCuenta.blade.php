@@ -154,12 +154,25 @@
                     <div class="table-cell" align="right">${{$contratos[0]->precio_venta}}</div> 
                     <div class="table-cell" align="right">$ 0.00</div>   
                 </div>
+            @if($contratos[0]->modelo == 'Terreno')
+                <div class="table-row">
+                    <div colspan="2" class="table-cell">Interés de financiamiento</div>
+                    <div class="table-cell">{{$contratos[0]->fecha}}</div>
+                    <div colspan="3" class="table-cell"></div>  
+                    <div class="table-cell" align="right">${{$contratos[0]->interesTerreno}}</div> 
+                    <div class="table-cell" align="right">$ 0.00</div>   
+                </div>
+            @endif
 
                 
                 <div class="table-row">
                     <div colspan="4" class="table-cell"></div>
                     <div colspan="2" class="table-cell"><b>TOTAL(VENTA)</div>
-                    <div class="table-cell" align="right"><b>${{$contratos[0]->precio_venta}}</div>  
+                    @if($contratos[0]->modelo == 'Terreno')
+                        <div class="table-cell" align="right">${{$contratos[0]->ventaCInteres}}</div> 
+                    @else
+                        <div class="table-cell" align="right">${{$contratos[0]->precio_venta}}</div> 
+                    @endif
                     <div class="table-cell"></div>    
                 </div>
 

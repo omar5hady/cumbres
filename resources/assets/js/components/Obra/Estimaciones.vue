@@ -394,7 +394,7 @@
                                             <center>
                                                 Esta estimacion: 
                                                 <h5 style="color: #153157;">
-                                                    <strong> ${{formatNumber(total_estimacion)}} </strong>
+                                                    <strong> ${{formatNumber(pagado_total_estimacion)}} </strong>
                                                 </h5> 
                                             </center> 
                                         </div>

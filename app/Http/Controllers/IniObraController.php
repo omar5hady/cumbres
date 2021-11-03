@@ -1143,12 +1143,12 @@ class IniObraController extends Controller
         $contrato = Ini_obra::join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
                         ->join('contratistas','ini_obras.contratista_id','=','contratistas.id')
                         ->select('ini_obras.emp_constructora','fraccionamientos.nombre','ini_obras.clave',
-                                'total_importe2 as total_importe', 'total_anticipo', 'garantia_ret', 'porc_garantia_ret', 'anticipo',
+                                'total_importe2 as total_importe', 'ini_obras.total_anticipo', 'garantia_ret', 'porc_garantia_ret', 'ini_obras.anticipo',
                                 'contratistas.nombre as contratista'
                         )->where('ini_obras.id','=',$request->clave)->get();
 
         $anticipoT = Anticipo_estimacion::select(DB::raw("SUM(monto_anticipo) as total"))
-            ->where('aviso_id','=',$contrato[0]->id)->first();
+            ->where('aviso_id','=',$request->clave)->first();
         $contrato[0]->total_anticipo = 0;
         if($anticipoT->total != null)
             $contrato[0]->total_anticipo = $anticipoT->total;
@@ -1249,6 +1249,8 @@ class IniObraController extends Controller
                 }
             }
         }
+
+        //return $contrato;
 
         return Excel::create('Estimaciones' , function($excel) use ($clave, $estimaciones, 
                 $num_est, $contrato, $num_casas , $totalEstimacionAnt , 
@@ -1429,9 +1431,9 @@ class IniObraController extends Controller
                     $suma0, 
                     '', 
                     '',
-                    $suma1,
-                    $num_casas,
                     '',
+                    $num_casas,
+                    $suma1,
                     '',
                     $suma3,
                     '',
@@ -1442,10 +1444,11 @@ class IniObraController extends Controller
 
                 $total_acum_actual = $totalEstimacionAnt + $total_estimacion;
                 $total_por_estimar = $contrato[0]->total_importe - $total_acum_actual;
+                $porcAnticipo = $contrato[0]->anticipo;
 
                 //'AMOR. ANTICIPO'
-                $amor_total_acum_ant = $totalEstimacionAnt * ($contrato[0]->anticipo / 100);
-                $amor_total_estimacion = $total_estimacion * ( $contrato[0]->anticipo /100 );
+                $amor_total_acum_ant = $totalEstimacionAnt * ($porcAnticipo);
+                $amor_total_estimacion = $total_estimacion * ($porcAnticipo);
                 $amor_total_acum_actual = $amor_total_acum_ant + $amor_total_estimacion;
                 $amor_total_por_estimar = $contrato[0]->total_anticipo - $amor_total_acum_actual;
 
@@ -1478,7 +1481,7 @@ class IniObraController extends Controller
                 ));
 
                 $sheet->row($cont+6, ['', '', '', '','Esta estimacion']);
-                $sheet->row($cont+7, ['', '', '', '',$total_estimacion]);
+                $sheet->row($cont+7, ['', '', '', '',$pagado_total_estimacion]);
                 $cont2 = $cont+7;
                 $sheet->cell('E'.$cont2, function($cell) {
 
@@ -1548,10 +1551,19 @@ class IniObraController extends Controller
                 $cont2+=2;
                 
                 $cont3=$cont2;
-                $saldoExtra = $importesExtra[0]->impExtra;
-                $sheet->row($cont2, 
+                if(sizeof($importesExtra)){
+                    $saldoExtra = $importesExtra[0]->impExtra;
+                    $sheet->row($cont2, 
                         ['','Obra extra:',$importesExtra[0]->impExtra]
                     );
+                }
+                else{
+                    $saldoExtra = 0;
+                    $sheet->row($cont2, 
+                        ['','Obra extra:',0]
+                    );
+                }
+                
                 $cont2++;
                 $sheet->row($cont2, 
                         ['','Concepto','Importe','Fecha']

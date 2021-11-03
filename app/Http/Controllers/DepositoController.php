@@ -1459,6 +1459,7 @@ class DepositoController extends Controller
         $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
         ->leftJoin('creditos','contratos.id','=','creditos.id')
         ->leftJoin('lotes','creditos.lote_id','=','lotes.id')
+        ->leftJoin('modelos','lotes.modelo_id','modelos.id')
         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
         ->join('personal as c', 'clientes.id', '=', 'c.id')
         ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
@@ -1474,6 +1475,7 @@ class DepositoController extends Controller
                 'lotes.credito_puente',
                 'lotes.emp_constructora',
                 'lotes.emp_terreno',
+                'modelos.nombre as modelo',
                 'contratos.enganche_total',
                 'contratos.fecha',
                 'contratos.saldo',
@@ -1512,17 +1514,31 @@ class DepositoController extends Controller
         ->where('i.elegido', '=', 1)
         ->where('contratos.id',$id)
         ->get();
+        $contratos[0]->interesGen = 0;
+
+        if($contratos[0]->modelo == 'Terreno'){
+            $pagos = Pago_contrato::join('pagos_lotes','pagos_contratos.id','=','pagos_lotes.pagare_id')
+                        ->select('pagos_lotes.interes_monto')
+                        ->where('pagos_contratos.contrato_id','=',$contratos[0]->folio)->get();
+
+            foreach ($pagos as $key => $pago) {
+                $contratos[0]->interesGen += $pago->interes_monto;
+            }
+
+            $contratos[0]->ventaCInteres = $contratos[0]->interesGen + $contratos[0]->precio_venta;
+            $contratos[0]->ventaCInteres = number_format((float)$contratos[0]->ventaCInteres, 2, '.', ',');
+        }
 
         $this->calculateSaldoTerreno($id);
 
         if($contratos[0]->descuento == NULL)
             $contratos[0]->descuento = 0;
 
-        $contratos[0]->totalCargo = $contratos[0]->precio_venta + $contratos[0]->gastos;
+        $contratos[0]->totalCargo = $contratos[0]->precio_venta + $contratos[0]->gastos + $contratos[0]->interesGen;
 
         if($contratos[0]->status== 0 || $contratos[0]->status == 2){
-            $contratos[0]->saldo = $contratos[0]->saldo - $contratos[0]->precio_venta;
-            $contratos[0]->totalCargo = $contratos[0]->totalCargo - $contratos[0]->precio_venta;
+            $contratos[0]->saldo = $contratos[0]->saldo - $contratos[0]->precio_venta - $contratos[0]->interesGen;
+            $contratos[0]->totalCargo = $contratos[0]->totalCargo - $contratos[0]->precio_venta - $contratos[0]->interesGen;
         }
 
         $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
@@ -1567,6 +1583,8 @@ class DepositoController extends Controller
         $contratos[0]->gastos = number_format((float)$contratos[0]->gastos, 2, '.', ',');
         $contratos[0]->precio_venta = number_format((float)$contratos[0]->precio_venta, 2, '.', ',');
         $contratos[0]->valor_escrituras = number_format((float)$contratos[0]->valor_escrituras, 2, '.', ',');
+
+        $contratos[0]->interesTerreno = number_format((float)$contratos[0]->interesGen, 2, '.', ',');
 
         $gastos_admin = Gasto_admin::select('concepto','costo','fecha')
         ->where('contrato_id','=',$id)

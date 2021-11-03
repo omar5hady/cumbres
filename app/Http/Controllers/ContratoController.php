@@ -1020,7 +1020,11 @@ class ContratoController extends Controller
         $contratos = $this->getDatosContrato($id);
 
 
-            if($contratos[0]->institucion == 'Gamu' && $contratos[0]->tipo_credito == 'INFONAVIT-FOVISSSTE' || $contratos[0]->institucion == 'Crea Más' && $contratos[0]->tipo_credito == 'INFONAVIT-FOVISSSTE'){
+            // if($contratos[0]->institucion == 'Gamu' && $contratos[0]->tipo_credito == 'INFONAVIT-FOVISSSTE' || $contratos[0]->institucion == 'Crea Más' && $contratos[0]->tipo_credito == 'INFONAVIT-FOVISSSTE'){
+            //     $contratos[0]->institucion = 'INFONAVIT';
+            // }
+
+            if($contratos[0]->institucion == 'Gamu' && $contratos[0]->tipo_credito == 'INFONAVIT-FOVISSSTE'){
                 $contratos[0]->institucion = 'INFONAVIT';
             }
 
