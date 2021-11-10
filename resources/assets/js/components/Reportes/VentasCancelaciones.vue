@@ -96,6 +96,7 @@
                                                 <th>Lote</th>
                                                 <th>% Avance</th>
                                                 <th>Cliente</th>
+                                                <th>Asesor</th>
                                                 <th>Fecha de venta</th>
                                                 <th>Crédito</th>
                                                 <th>Institución</th>
@@ -129,6 +130,7 @@
                                                 <td class="td2" v-text="lote.num_lote"></td>
                                                 <td class="td2" v-text="lote.avance_lote + ' %'"></td>
                                                 <td class="td2" v-text="lote.nombre.toUpperCase() + ' ' + lote.apellidos.toUpperCase()"></td>
+                                                <td class="td2" v-text="lote.a_nombre.toUpperCase() + ' ' + lote.a_apellidos.toUpperCase()"></td>
                                                 <td class="td2" v-text="lote.fecha"></td>
                                                 <td class="td2" v-text="lote.tipo_credito"></td>
                                                 <td class="td2" v-text="lote.institucion"></td>
@@ -240,6 +242,7 @@
                                                 <th>Modelo</th>
                                                 <th>Lote</th>
                                                 <th>Cliente</th>
+                                                <th>Asesor</th>
                                                 <th>Fecha de cancelación</th>
                                                 <th>Fecha de venta</th>
                                                 <th>Crédito</th>
@@ -267,6 +270,7 @@
                                                 <td class="td2" v-text="cancelacion.modelo"></td>
                                                 <td class="td2" v-text="cancelacion.num_lote"></td>
                                                 <td class="td2" v-text="cancelacion.nombre.toUpperCase() + ' ' + cancelacion.apellidos.toUpperCase()"></td>
+                                                <td class="td2" v-text="cancelacion.a_nombre.toUpperCase() + ' ' + cancelacion.a_apellidos.toUpperCase()"></td>
                                                 <td class="td2" v-text="cancelacion.fecha_status"></td>
                                                 <td class="td2" v-text="cancelacion.fecha"></td>
                                                 <td class="td2" v-text="cancelacion.tipo_credito"></td>

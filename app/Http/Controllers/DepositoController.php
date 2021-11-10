@@ -757,8 +757,38 @@ class DepositoController extends Controller
 
             $pago_contrato = Pago_contrato::findOrFail($request->pago_id);
             $pago_contrato->restante =  $pago_contrato->restante - $pago;
-            if($pago_contrato->restante <= 0)
+            if($pago_contrato->restante <= 0){
                 $pago_contrato->pagado = 2;
+                if($pago_contrato->restante < 0){
+                    $restante = abs($pago_contrato->restante);
+                    $pago_contrato->restante = 0;
+                    $pago_contrato->save();
+                    
+                    $nextPago = Pago_contrato::select('id')
+                                ->where('contrato_id','=',$pago_contrato->contrato_id)
+                                ->where('pagado','<',2)
+                                ->where('tipo_pagare','=',$pago_contrato->tipo_pagare)
+                                ->orderBy('fecha_pago','asc')
+                                ->get();
+                    if(sizeof($nextPago)){
+                        $i = 0;
+                        do{
+                            $n = Pago_contrato::findOrFail($nextPago[$i]->id);
+                            $n->restante = $n->restante - $restante;
+                            $restante = $n->restante;
+                            $n->pagado = 1;
+                            if($n->restante < 0){
+                                $restante = abs($n->restante);
+                                $n->restante = 0;
+                                $n->pagado = 2;
+                            }
+                            $n->save();
+                            $i++;
+                        }while($n->restante < 0);
+                    }
+                        
+                }
+            }
             else{
                 $pago_contrato->pagado = 1;
             }

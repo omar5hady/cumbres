@@ -348,18 +348,17 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/formSubmitPredial/{id}','LicenciasController@formSubmitPredial'); //carga de predial
         Route::get('/downloadPredial/{fileName}' , 'LicenciasController@downloadFilePredial'); //descarga de predial
         Route::get('/acta_terminacion/excel','LicenciasController@exportExcelActaTerminacion'); //excel de las actas
-    
-    ////////////////////        RUTAS TERRENOS    /////////////////////////////////
-        Route::get('/terreno','TerrenoController@index');
-        Route::post('/terreno/registrar','TerrenoController@store');
-        Route::put('/terreno/actualizar','TerrenoController@update');
-        Route::delete('/terreno/eliminar','TerrenoController@destroy');
         
     ////////////////////        RUTAS PRECIO TERRENO    /////////////////////////////////
         Route::get('/precio/terrenos/list','PrecioTerrenoController@show');
         Route::post('/precio/terrenos/storage','PrecioTerrenoController@storage');
         Route::put('/precio/terrenos/edit','PrecioTerrenoController@edit');
         Route::delete('/precio/terrenos/delete','PrecioTerrenoController@destroy');
+
+    ///////////////////     RUTAS ABONO A TERRENOS //////
+
+        Route::get('/terrenos/getTerrenosAdeudo','TerrenoController@getTerrenosAdeudo');
+        Route::get('/terrenos/getPagosPendientes','TerrenoController@getPagosPendientes');
 
     ////////////////////        RUTAS PRECIO ETAPA    /////////////////////////////////
         Route::get('/precio_etapa','PrecioEtapaController@index');

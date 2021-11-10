@@ -1070,7 +1070,9 @@ class ContratoController extends Controller
             $contratos[0]->terreno_excedente = 0;
         }
 
-        $pagos = Pago_contrato::select('monto_pago', 'num_pago', 'fecha_pago')->where('contrato_id', '=', $id)->orderBy('fecha_pago', 'asc')->get();
+        $pagos = Pago_contrato::select('monto_pago', 'num_pago', 'fecha_pago')->where('contrato_id', '=', $id)
+        ->where('tipo_pagare','=',0)
+        ->orderBy('fecha_pago', 'asc')->get();
         for ($i = 0; $i < count($pagos); $i++) {
             $pagos[$i]->monto_pago = number_format((float)$pagos[$i]->monto_pago, 2, '.', ',');
             $fecha_pago = new Carbon($pagos[$i]->fecha_pago);

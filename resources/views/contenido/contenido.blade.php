@@ -539,6 +539,9 @@
         <template v-if="menu==267">
             <reubicaciones-devolucion></reubicaciones-devolucion>
         </template>
+        <template v-if="menu==268">
+            <pagos-anticipados></pagos-anticipados>
+        </template>
 
     @endif
 

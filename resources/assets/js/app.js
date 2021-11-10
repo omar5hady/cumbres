@@ -159,6 +159,7 @@ Vue.component('avaluos', require('./components/Avaluos.vue'));
 Vue.component('gastos-admin', require('./components/GastosAdministrativos.vue'));
 Vue.component('estado-cuenta', require('./components/EstadoCuenta.vue'));
 Vue.component('cobro-credito', require('./components/CobroCredito.vue'));
+Vue.component('pagos-anticipados', require('./components/Tesoreria/AdelantoDep.vue'));
 
 // CATALOGO DETALLES
 Vue.component('catalogo-detalles', require('./components/Postventa/CatalogoDetalles.vue'));

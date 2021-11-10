@@ -494,6 +494,9 @@
                                     <li @click="menu=200" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-money"></i> Depositos</a>
                                     </li>
+                                    <li @click="menu=268" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-money"></i> Pago anticipado</a>
+                                    </li>
                                 @endif
                                 @if(Auth::user()->gastos_admn == 1)
                                     <li @click="menu=205" class="nav-item">

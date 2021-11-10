@@ -1262,12 +1262,14 @@ class ReportesController extends Controller
                         ->join('lotes','creditos.lote_id','=','lotes.id')
                         ->join('modelos','lotes.modelo_id','=','modelos.id')
                         ->join('personal as p','creditos.prospecto_id','=','p.id')
+                        ->join('personal as a','creditos.vendedor_id','=','a.id')
                         ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
                         ->join('etapas as et','lotes.etapa_id','=','et.id')
                         ->select('lotes.manzana','lotes.num_lote','f.nombre as proyecto','et.num_etapa','p.nombre', 'p.apellidos',
                                 'lotes.emp_constructora','creditos.valor_terreno', 'lotes.emp_terreno',
                                 'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta',
                                 'contratos.avance_lote', 'modelos.nombre as modelo',
+                                'a.nombre as a_nombre','a.apellidos as a_apellidos',
                                 'medios_publicitarios.nombre as publicidad', 'contratos.publicidad_id',
                                 'creditos.descripcion_promocion','creditos.descripcion_paquete','contratos.motivo_cancel',
                                 'contratos.fecha_status')
@@ -1302,6 +1304,7 @@ class ReportesController extends Controller
                         ->join('lotes','creditos.lote_id','=','lotes.id')
                         ->join('modelos','lotes.modelo_id','=','modelos.id')
                         ->join('personal as p','creditos.prospecto_id','=','p.id')
+                        ->join('personal as a','creditos.vendedor_id','=','a.id')
                         ->join('fraccionamientos as f','lotes.fraccionamiento_id','=','f.id')
                         ->join('etapas as et','lotes.etapa_id','=','et.id')
                         ->select('lotes.manzana','lotes.num_lote','f.nombre as proyecto','et.num_etapa','p.nombre', 'p.apellidos',
@@ -1312,6 +1315,7 @@ class ReportesController extends Controller
                                 'creditos.costo_cuota_mant', 'creditos.costo_protecciones','contratos.id',
                                 'medios_publicitarios.nombre as publicidad','contratos.publicidad_id',
                                 'contratos.avance_lote', 'contratos.motivo_cancel',
+                                'a.nombre as a_nombre','a.apellidos as a_apellidos',
                                 'contratos.fecha','ins.tipo_credito','ins.institucion','creditos.precio_venta','contratos.status')
                         
                         ->where('contratos.status','=',3)
@@ -1427,7 +1431,6 @@ class ReportesController extends Controller
 
                 $sheet->setColumnFormat(array(
                     
-                    'M' => '$#,##0.00',
                     'N' => '$#,##0.00',
                     'O' => '$#,##0.00',
                     'P' => '$#,##0.00',
@@ -1435,6 +1438,7 @@ class ReportesController extends Controller
                     'R' => '$#,##0.00',
                     'S' => '$#,##0.00',
                     'T' => '$#,##0.00',
+                    'U' => '$#,##0.00',
                 ));
 
                 if($empresa == 'CONCRETANIA'){
@@ -1447,6 +1451,7 @@ class ReportesController extends Controller
                         'Modelo',
                         'Lote',
                         'Cliente',
+                        'Asesor',
                         'Fecha de venta',
                         'Crédito',
                         'Institución',
@@ -1509,6 +1514,7 @@ class ReportesController extends Controller
                             $lote->modelo,
                             $lote->num_lote,
                             $lote->nombre.' '.$lote->apellidos,
+                            $lote->a_nombre.' '.$lote->a_apellidos,
                             $lote->fecha,
                             $lote->tipo_credito,
                             $lote->institucion,
@@ -1539,6 +1545,7 @@ class ReportesController extends Controller
                         'Modelo',
                         'Lote',
                         'Cliente',
+                        'Asesor',
                         'Fecha de venta',
                         'Crédito',
                         'Institución',
@@ -1600,6 +1607,7 @@ class ReportesController extends Controller
                             $lote->modelo,
                             $lote->num_lote,
                             $lote->nombre.' '.$lote->apellidos,
+                            $lote->a_nombre.' '.$lote->a_apellidos,
                             $lote->fecha,
                             $lote->tipo_credito,
                             $lote->institucion,
@@ -1675,10 +1683,9 @@ class ReportesController extends Controller
                 });
 
                 $sheet->setColumnFormat(array(
-                    
-                    'P' => '$#,##0.00',
-                    'N' => '$#,##0.00',
                     'O' => '$#,##0.00',
+                    'P' => '$#,##0.00',
+                    'Q' => '$#,##0.00',
                 ));
 
                 if($empresa == 'CONCRETANIA'){
@@ -1691,6 +1698,7 @@ class ReportesController extends Controller
                         'Modelo',
                         'Lote',
                         'Cliente',
+                        'Asesor',
                         'Fecha de cancelación',
                         'Fecha de venta',
                         'Crédito',
@@ -1741,6 +1749,7 @@ class ReportesController extends Controller
                             $lote->modelo,
                             $lote->num_lote,
                             $lote->nombre.' '.$lote->apellidos,
+                            $lote->a_nombre.' '.$lote->a_apellidos,
                             $lote->fecha_status,
                             $lote->fecha,
                             $lote->tipo_credito,
@@ -1766,6 +1775,7 @@ class ReportesController extends Controller
                         'Modelo',
                         'Lote',
                         'Cliente',
+                        'Asesor',
                         'Fecha de cancelación',
                         'Fecha de venta',
                         'Crédito',
@@ -1815,6 +1825,7 @@ class ReportesController extends Controller
                             $lote->modelo,
                             $lote->num_lote,
                             $lote->nombre.' '.$lote->apellidos,
+                            $lote->a_nombre.' '.$lote->a_apellidos,
                             $lote->fecha_status,
                             $lote->fecha,
                             $lote->tipo_credito,
@@ -1829,8 +1840,6 @@ class ReportesController extends Controller
                     $num='A8:P' . $cont;
                     $sheet->setBorder($num, 'thin');
                 }
-
-                
 
                 
             });
