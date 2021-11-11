@@ -826,7 +826,7 @@ class DepositoController extends Controller
                 $porcentaje = $credit->porcentaje_terreno/100;
                 $monto_terreno = $pago*$porcentaje;
                 
-                if($deposito->monto_terreno > $saldo)
+                if($monto_terreno > $saldo)
                     $deposito->monto_terreno = $saldo;
                 else
                     $deposito->monto_terreno = $monto_terreno;

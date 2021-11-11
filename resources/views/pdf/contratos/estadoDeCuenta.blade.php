@@ -289,7 +289,7 @@
 
                 @for($i=0; $i < count($descuentos); $i++)
                     <div class="table-row">
-                        <div class="table-cell">Descuento por pargo anticipado</div>
+                        <div class="table-cell">Descuento por pago anticipado</div>
                         <div class="table-cell"></div>
                         <div class="table-cell">{{$descuentos[$i]->fecha_pago}}</div>
                         <div class="table-cell">{{$descuentos[$i]->num_recibo}}</div>    

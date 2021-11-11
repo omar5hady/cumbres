@@ -282,6 +282,29 @@
                                             $ {{formatNumber(desc_interes)}}
                                         </div>
                                     </div>
+
+                                    <div class="row">
+                                        <div class="col-md-2"></div>
+                                        <label class="col-md-2 form-control-label" for="text-input">Numero de recibo:</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="num_recibo" class="form-control col-md-8" placeholder="Numero de recibo">
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-2"></div>
+                                        <label class="col-md-2 form-control-label" for="text-input">Cuenta:</label>
+                                        <div class="col-md-4">
+                                            <select class="form-control" v-model="banco">
+                                                <option value="">Seleccione</option>
+                                                <option v-for="banco in arrayCuentas" :key="banco.num_cuenta + '-' + banco.banco" :value="banco.num_cuenta + '-' + banco.banco" v-text="banco.num_cuenta + '-' + banco.banco"></option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <button class="btn btn-success" v-if="banco != ''" @click="guardaCotizacion()">Guardar</button>
+                                        </div>
+                                    </div>
+                                   
                                 </div>
                             </div>
 
@@ -317,21 +340,23 @@
                 b_lote : '',
                 b_cliente : '',
 
-                total_capital:0,
-                total_interes:0,
-                total_pago:0,
-                total_saldo:0,
-                total_moratorio:0,
+                total_capital : 0,
+                total_interes : 0,
+                total_pago : 0,
+                total_saldo : 0,
+                total_moratorio : 0,
 
-                min_dep:0,
+                min_dep : 0,
 
                 monto_dep : 0,
                 monto_cap : 0,
                 monto_interes : 0,
                 monto_intMor : 0,
                 desc_interes : 0,
-                ver:0,
-                editar:0,
+                ver : 0,
+                editar : 0,
+                banco : '',
+                num_recibo : '',
 
                 listado : 1,
                 datosContrato:{
@@ -346,6 +371,17 @@
                     'manzana':'',
                     'num_lote':0,
                 },
+                myAlerts:{
+                popAlert : function(title = 'Alert',type = "success", description =''){
+                    swal({
+                        title: title,
+                        type: type,
+                        text: description,
+                        showConfirmButton:false,
+                        timer:1500,
+                    })
+                }
+            },
             }
         },
         computed:{
@@ -430,6 +466,8 @@
                 this.monto_interes  = 0;
                 this.monto_intMor = 0;
                 this.desc_interes  = 0;
+                this.num_recibo = '';
+                this.banco = '';
             },
             editarMor(){
                 let me = this;
@@ -518,16 +556,15 @@
 
                                 //El pagare se marca como pagado
                                 element.pagado = 2;
-                                element.restante = 0;
                             }
                             else{
                                 let porcentaje = 0;
                                 porcentaje = (monto)/(element.restante - element.interes_monto);
-                                me.monto_cap += ((element.restante - element.interes_monto)*porcentaje);
+                                me.monto_cap += monto;
                                 me.desc_interes = me.desc_interes + (element.interes_monto*porcentaje);
                                 element.pagado = 1;
 
-                                element.abonado = ((element.restante - element.interes_monto)*porcentaje) +  (element.interes_monto*porcentaje);
+                                element.abonado = monto + (element.interes_monto*porcentaje);
 
                                 monto = 0;
                             }
@@ -563,6 +600,44 @@
                     console.log(error);
                 });
             },
+
+            guardaCotizacion(){
+            Swal.fire({
+                title: '¿Estas seguro?',
+                text: "Se registrara el monto a depositar!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Si guardar!',
+                cancelButtonText: 'Cancelar',
+            }).then((result) => {
+                if (result.value) {
+                    axios.post('/terrenos/storeAdelanto',{
+                        'pagos':this.pagosPendientes,
+                        'folio':this.datosContrato.folio,
+                        'lote_id':this.datosContrato.lote_id,
+                        'monto_cap':this.monto_cap,
+                        'monto_interes':this.monto_interes,
+                        'monto_intMor':this.monto_intMor,
+                        'desc_interes':this.desc_interes,
+                        'banco' : this.banco,
+                        'num_recibo' : this.num_recibo,
+                        'monto_dep' : this.monto_dep
+                    }).then(
+                        response => {
+                            this.myAlerts.popAlert('Deposito registrado correctamente');
+
+                            this.listarContratos(1);
+                            this.limpiar();
+
+                            return response.data;
+                        }
+                    ).catch(error => console.log(error));
+                }
+            });
+
+        },
 
             formatNumber(value) {
                 let val = (value/1).toFixed(2)

@@ -356,9 +356,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::delete('/precio/terrenos/delete','PrecioTerrenoController@destroy');
 
     ///////////////////     RUTAS ABONO A TERRENOS //////
-
         Route::get('/terrenos/getTerrenosAdeudo','TerrenoController@getTerrenosAdeudo');
         Route::get('/terrenos/getPagosPendientes','TerrenoController@getPagosPendientes');
+        Route::post('/terrenos/storeAdelanto','TerrenoController@storeAdelanto');
 
     ////////////////////        RUTAS PRECIO ETAPA    /////////////////////////////////
         Route::get('/precio_etapa','PrecioEtapaController@index');

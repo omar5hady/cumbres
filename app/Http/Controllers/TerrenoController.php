@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 use App\Contrato;
+use App\Credito;
 use App\Pago_contrato;
 use App\Pagos_lotes;
 use Carbon\Carbon;
+use App\Deposito;
+use App\Gasto_admin;
 use DB;
 
 use Illuminate\Http\Request;
@@ -30,6 +33,7 @@ class TerrenoController extends Controller
                     'lotes.num_lote',
                     'lotes.manzana',
                     'creditos.precio_venta',
+                    'creditos.lote_id',
                     'contratos.status',
                     'cotizacion_lotes.id as cotizacionId',
                     'expedientes.liquidado'
@@ -61,7 +65,6 @@ class TerrenoController extends Controller
 
             return $contrato;
     }
-
 
     public function getPagosPendientes(Request $request){
         $current = Carbon::today()->format('ymd');
@@ -97,6 +100,74 @@ class TerrenoController extends Controller
         }
 
         return $pagos;
+    }
+
+    public function storeAdelanto(Request $request){
+
+        $pagos = $request->pagos;
+        $current = Carbon::today();
+
+        try{
+            DB::beginTransaction();
+            $deposito = new Deposito();
+            $deposito->pago_id = $pagos[0]['id'];
+            $deposito->cant_depo = $request->monto_dep;
+            
+            $deposito->num_recibo = $request->num_recibo;
+            $deposito->banco = $request->banco;
+            $deposito->concepto = 'Abono anticipado a Lote';
+            $deposito->fecha_pago = $current;
+            $deposito->desc_interes = $request->desc_interes;
+            
+            foreach ($pagos as $key => $pago) {
+                if($pago['pagado'] != 0){
+                    $pagare = Pago_contrato::findOrFail($pago['id']);
+                    $pagare->pagado = $pago['pagado'];
+                    if($pago['pagado'] == 2)
+                        $pagare->restante = 0;
+                    else
+                        $pagare->restante = $pagare->restante - $pago['abonado'];
+
+                    $pagare->save();
+                }
+            }
+
+            if($request->monto_intMor != 0){
+                $gasto = new Gasto_admin();
+                $gasto->contrato_id = $request->folio;
+                $gasto->concepto = 'Interes Moratorio';
+                $gasto->costo = $request->monto_intMor;
+                $gasto->fecha = $current;
+                $gasto->observacion = '';
+                $gasto->save();
+            }
+
+            $contrato = Contrato::findOrFail($request->folio);
+            $contrato->saldo = round($contrato->saldo - $request->monto_dep - $request->desc_interes,2);
+
+            $credit = Credito::findOrFail($request->folio);
+            $deposito->lote_id = $request->lote_id;
+
+            if($credit->porcentaje_terreno > 0){
+                $saldo = $credit->monto_terreno - $credit->saldo_terreno;
+
+                $porcentaje = $credit->porcentaje_terreno/100;
+                $monto_terreno = $pago*$porcentaje;
+                
+                if($monto_terreno > $saldo)
+                    $deposito->monto_terreno = $saldo;
+                else
+                    $deposito->monto_terreno = $monto_terreno;
+            }
+            
+            $contrato->save(); 
+            $deposito->save();
+
+            DB::commit();
+        } catch (Exception $e){
+            DB::rollBack();
+        }  
+
     }
 
 }
