@@ -13,6 +13,7 @@ use App\Fraccionamiento;
 use App\Credito;
 use App\Contrato;
 use App\Expediente;
+use App\Entrega;
 use App\Dep_credito;
 use App\Lote;
 use App\Pago_contrato;
@@ -4364,6 +4365,69 @@ class ReportesController extends Controller
 
         $pathtoFile = public_path() . '/files/escrituras/' . $fileName;
         return response()->download($pathtoFile);
+    }
+
+    public function reporteEntregas(Request $request){
+        
+        $entregas = $this->getEntregas();
+        $entregas = $entregas->where('entregas.status','=',1);
+            if($request->proyecto != '')
+                $entregas = $entregas->where('lotes.fraccionamiento_id','=',$request->proyecto);
+            if($request->etapa != '')
+                $entregas = $entregas->where('lotes.etapa_id','=',$request->etapa);
+
+            if($request->fecha_1 != '' && $request->fecha_2 != '')
+                $entregas = $entregas->whereBetween('entregas.fecha_entrega_real', [$request->fecha_1, $request->fecha_2]);
+            $entregas = $entregas->orderBy('entregas.fecha_program','desc')->get();
+
+        $sinEntregar = $this->getEntregas();
+        $sinEntregar = $sinEntregar->where('entregas.status','=',0);
+            if($request->proyecto != '')
+                $sinEntregar = $sinEntregar->where('lotes.fraccionamiento_id','=',$request->proyecto);
+            if($request->etapa != '')
+                $sinEntregar = $sinEntregar->where('lotes.etapa_id','=',$request->etapa);
+            if($request->fecha_1 != '' && $request->fecha_2 != '')
+                $sinEntregar = $sinEntregar->whereBetween('entregas.fecha_program', [$request->fecha_1, $request->fecha_2]);
+            $sinEntregar = $sinEntregar->orderBy('entregas.fecha_program','desc')->get();
+
+        return[
+            'entregas' => $entregas,
+            'sinEntregar' => $sinEntregar,
+            'contEntregas' => $entregas->count(),
+            'contSinEntregar' => $sinEntregar->count()
+        ];
+
+    }
+
+    private function getEntregas(){
+        $entrega = Entrega::join('expedientes','entregas.id','=','expedientes.id')
+                    ->join('contratos','expedientes.id','=','contratos.id')
+                    ->join('creditos','contratos.id','=','creditos.id')
+                    ->join('lotes','creditos.lote_id','=','lotes.id')
+                    ->join('modelos','lotes.modelo_id','=','modelos.id')
+                    ->join('etapas','lotes.etapa_id','=','etapas.id')
+                    ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                    ->join('personal','creditos.prospecto_id','=','personal.id')
+                    ->select('contratos.id as folio',
+                        'personal.nombre','personal.apellidos',
+                        'fraccionamientos.nombre as proyecto',
+                        'etapas.num_etapa as etapa',
+                        'lotes.manzana',
+                        'lotes.num_lote',
+                        'modelos.nombre as modelo',
+                        'expedientes.fecha_firma_esc',
+                        'entregas.fecha_program',
+                        'entregas.fecha_entrega_real',
+                        'entregas.status as entregado',
+                        'entregas.revision_previa',
+                        'entregas.puntualidad',
+                        'entregas.cero_detalles',
+                        'entregas.cont_reprogram',
+                        'contratos.status'
+                    )
+                    ->where('contratos.status','=',3);
+
+        return $entrega;
     }
     
 }

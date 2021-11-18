@@ -85,7 +85,7 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="contratos in arrayContratos" :key="contratos.id" v-on:dblclick="abrirModal('devolucion',contratos)" title="Doble click"> 
-                                    <template v-if="(contratos.sumaPagares - contratos.sumaRestante -  contratos.sumGastos) > 0">
+                                    <template v-if="(contratos.sumaPagares + contratos.descuento - contratos.sumaRestante -  contratos.sumGastos) > 0">
                                         <td class="td2">
                                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{contratos.id}}</a>
                                             <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">

@@ -152,6 +152,8 @@ class CreateUsersTable extends Migration
             $table->boolean('rep_ingresos')->default(0);
             $table->boolean('rep_escrituras')->default(0);
             $table->boolean('rep_leads')->default(0);
+            $table->boolean('rep_entregas')->default(0);
+
 
             $table->boolean('rep_asesores')->default(0);
             $table->boolean('rep_ini_term_ventas')->default(0);

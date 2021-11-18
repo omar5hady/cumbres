@@ -151,6 +151,8 @@ class DevolucionController extends Controller
                         $contrato->sumaPagares = $depositos_pagado->pagado;
                         $contrato->sumaRestante = 0;
                     }
+                    if($contrato->descuento == NULL)
+                        $contrato->descuento = 0;
                     
                 }
                 

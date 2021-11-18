@@ -132,6 +132,7 @@ class User extends Authenticatable
         'rep_detalles_post',
         'rep_acumulado',
         'rep_leads',
+        'rep_entregas',
 
         //Cotizador Lotes
         'calc_lotes',

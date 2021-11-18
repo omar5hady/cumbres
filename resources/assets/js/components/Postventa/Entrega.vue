@@ -932,7 +932,7 @@
                 hora_entrega_prog:'',
                 fecha_entrega_real:'',
                 hora_entrega_real:'',
-                cero_detalles : 0,
+                cero_detalles : 1,
 
                 reprogramar : 0,
                 
@@ -1549,7 +1549,7 @@
                                     this.modal2 = 1;
                                     this.tituloModal = "Finalizar entrega";
                                     this.tipoAccion = 3;
-                                    this.cero_detalles = 0;
+                                    this.cero_detalles = 1;
                                     this.fecha_entrega_real = data['fecha_program'];
                                     this.hora_entrega_real = data['hora_entrega_prog'];
                                 }
@@ -1560,7 +1560,7 @@
                                 this.modal2 = 1;
                                 this.tituloModal = "Finalizar entrega";
                                 this.tipoAccion = 3;
-                                this.cero_detalles = 0;
+                                this.cero_detalles = 1;
                                 this.fecha_entrega_real = data['fecha_program'];
                                 this.hora_entrega_real = data['hora_entrega_prog'];
                             }

@@ -696,6 +696,7 @@ Route::group(['middleware' => ['auth']],function(){
             Route::get('/reportes/reporteModelos','ReportesController@reporteModelos');
 
             Route::get('/reportes/revicionprevia','ReportesController@revicionPreviaRep');
+            Route::get('/reportes/reporteEntregas','ReportesController@reporteEntregas');
 
             Route::get('/reportes/digitalLeads','DigitalLeadController@reporteLeads');
 

@@ -542,6 +542,9 @@
         <template v-if="menu==268">
             <pagos-anticipados></pagos-anticipados>
         </template>
+        <template v-if="menu==269">
+            <reporte-entregas></reporte-entregas>
+        </template>
 
     @endif
 

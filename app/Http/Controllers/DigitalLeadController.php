@@ -697,7 +697,9 @@ class DigitalLeadController extends Controller
                     ]
                 ];
 
-                $usuarios = User::select('id')->where('rol_id','=',8)->where('digital_lead','=',1)->get();
+                $usuarios = User::select('id')->where('rol_id','=',8)->where('digital_lead','=',1)
+                    ->where('id','!=',Auth::user()->id)
+                    ->get();
                 foreach ($usuarios as $usuario) 
                     User::findOrFail($usuario->id)->notify(new NotifyAdmin($arreglo));
 
