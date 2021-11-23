@@ -4390,11 +4390,17 @@ class ReportesController extends Controller
                 $sinEntregar = $sinEntregar->whereBetween('entregas.fecha_program', [$request->fecha_1, $request->fecha_2]);
             $sinEntregar = $sinEntregar->orderBy('entregas.fecha_program','desc')->get();
 
+
+        
+        $firmadas = $this->getFirmadas($request);
+
         return[
             'entregas' => $entregas,
             'sinEntregar' => $sinEntregar,
+            'firmadas' => $firmadas,
             'contEntregas' => $entregas->count(),
-            'contSinEntregar' => $sinEntregar->count()
+            'contSinEntregar' => $sinEntregar->count(),
+            'contFirmadas' => $firmadas->count(),
         ];
 
     }
@@ -4428,6 +4434,40 @@ class ReportesController extends Controller
                     ->where('contratos.status','=',3);
 
         return $entrega;
+    }
+
+    private function getFirmadas(Request $request){
+        $firmadas = Expediente::leftJoin('entregas','expedientes.id','=','entregas.id')
+                    ->join('contratos','expedientes.id','=','contratos.id')
+                    ->join('creditos','contratos.id','=','creditos.id')
+                    ->join('lotes','creditos.lote_id','=','lotes.id')
+                    ->join('modelos','lotes.modelo_id','=','modelos.id')
+                    ->join('etapas','lotes.etapa_id','=','etapas.id')
+                    ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                    ->join('personal','creditos.prospecto_id','=','personal.id')
+                    ->select('contratos.id as folio',
+                        'personal.nombre','personal.apellidos',
+                        'fraccionamientos.nombre as proyecto',
+                        'etapas.num_etapa as etapa',
+                        'lotes.manzana',
+                        'lotes.num_lote',
+                        'modelos.nombre as modelo',
+                        'expedientes.fecha_firma_esc',
+                        'entregas.fecha_program',
+                        'contratos.status'
+                    )
+                    ->where('contratos.status','=',3)
+                    ->where('expedientes.fecha_firma_esc','!=',NULL);
+
+                    if($request->proyecto != '')
+                        $firmadas = $firmadas->where('lotes.fraccionamiento_id','=',$request->proyecto);
+                    if($request->etapa != '')
+                        $firmadas = $firmadas->where('lotes.etapa_id','=',$request->etapa);
+                    if($request->fecha_1 != '' && $request->fecha_2 != '')
+                        $firmadas = $firmadas->whereBetween('expedientes.fecha_firma_esc', [$request->fecha_1, $request->fecha_2]);
+                    $firmadas = $firmadas->orderBy('expedientes.fecha_firma_esc','desc')->get();
+
+        return $firmadas;
     }
     
 }

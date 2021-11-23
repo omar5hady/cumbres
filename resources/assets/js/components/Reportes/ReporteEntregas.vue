@@ -49,13 +49,16 @@
                                 <a class="nav-link active show" id="convenio-tab" data-toggle="tab" href="#convenio" role="tab" aria-controls="convenio" v-text="'Entregadas'"></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="gcc-tab" data-toggle="tab" href="#gcc" role="tab" aria-controls="gcc" aria-selected="false" v-text="'Sin Entregar'"></a>
+                                <a class="nav-link" id="gcc-tab" data-toggle="tab" href="#gcc" role="tab" aria-controls="gcc" aria-selected="false" v-text="'Programadas sin entregar'"></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="firmadas-tab" data-toggle="tab" href="#firmadas" role="tab" aria-controls="firmadas" aria-selected="false" v-text="'Firmadas sin entregar'"></a>
                             </li>
                         </ul>
 
                        
                         <div class="tab-content" id="myTab1Content">
-                             <!-- Entregadas -->
+                            <!-- Entregadas -->
                             <div class="tab-pane fade active show" id="convenio" role="tabpanel" aria-labelledby="convenio-tab">
 
                                 <div class="form-group row">
@@ -138,7 +141,7 @@
                                 </div>
                             </div>
 
-                             <!-- Sin Entregar -->
+                            <!-- Sin Entregar -->
                             <div class="tab-pane fade" id="gcc" role="tabpanel" aria-labelledby="gcc-tab">
 
                                 <div class="form-group row">
@@ -185,12 +188,70 @@
                                                 <td class="td2" v-text="contrato.etapa"></td>
                                                 <td class="td2" v-text="contrato.manzana"></td>
                                                 <td class="td2" v-text="contrato.num_lote"></td>
-                                                <td class="td2" v-text="this.moment(contrato.fecha_firma_esc).locale('es').format('DD/MMM/YYYY')"></td>
+                                                <td class="td2" v-if="contrato.fecha_firma_esc == null">Sin firmar</td>
+                                                <td class="td2" v-else v-text="this.moment(contrato.fecha_firma_esc).locale('es').format('DD/MMM/YYYY')"></td>
                                                 <td class="td2" v-text="this.moment(contrato.fecha_program).locale('es').format('DD/MMM/YYYY')"></td>
                                                 <td class="td2">
                                                     <span class="badge badge-danger" v-if="contrato.revision_previa == 0">No</span>
                                                     <span class="badge badge-success" v-if="contrato.revision_previa == 2">Si</span>
                                                     <span class="badge badge-warning" v-if="contrato.revision_previa == 1">Si</span>
+                                                </td>
+                                            </tr>                     
+                                        </tbody>
+                                    </table>  
+                                </div>
+                            </div>
+
+                            <!-- Firmadas Sin Entregar -->
+                            <div class="tab-pane fade" id="firmadas" role="tabpanel" aria-labelledby="firmadas-tab">
+
+                                <div class="form-group row">
+                                    <div class="col-md-3">
+                                        <div class="input-group">
+                                        <table class="table table-bordered table-striped table-sm">
+                                            <tr>
+                                                <th>Total firmadas</th>
+                                                <th v-text="cont_firmadas"></th>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                            </tr>
+                                            
+                                            <tr>
+                                                <td>Programadas</td>
+                                                <td v-text="cont_firmmadasProg = totalFirmadasProg"></td>
+                                            </tr>
+                                        </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table class="table2 table-bordered table-striped table-sm">
+                                        <thead>
+                                            <tr> 
+                                                <th>Folio</th>
+                                                <th>Cliente</th>
+                                                <th>Fraccionamiento</th>
+                                                <th>Etapa</th>
+                                                <th>Manzana</th>
+                                                <th>Lote</th>
+                                                <th>Fecha de firma</th>
+                                                <th>Fecha progamada</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="contrato in arrayFirmadas" :key="contrato.id"> 
+                                                <td class="td2" v-text="contrato.folio"></td>
+                                                <td class="td2" v-text="contrato.nombre+' '+contrato.apellidos"></td>
+                                                <td class="td2" v-text="contrato.proyecto"></td>
+                                                <td class="td2" v-text="contrato.etapa"></td>
+                                                <td class="td2" v-text="contrato.manzana"></td>
+                                                <td class="td2" v-text="contrato.num_lote"></td>
+                                                <td class="td2" v-text="this.moment(contrato.fecha_firma_esc).locale('es').format('DD/MMM/YYYY')"></td>
+                                                <td class="td2" v-if="contrato.fecha_program == null" v-text="'Sin programar'"></td>
+                                                <td class="td2" v-else 
+                                                    v-text="this.moment(contrato.fecha_program).locale('es').format('DD/MMM/YYYY')">
                                                 </td>
                                             </tr>                     
                                         </tbody>
@@ -219,6 +280,7 @@
             return{
                 arrayEntregas : [],
                 arraySinEntregar : [],
+                arrayFirmadas : [],
                 arrayFraccionamientos:[],
                 arrayEtapas:[],
                 buscar : '',
@@ -228,6 +290,9 @@
 
                 cont_entregas:0,
                 cont_sinEntregar:0,
+                cont_firmadas:0,
+                cont_firmmadasProg:0,
+                cont_programadas:0,
                 cont_puntuales:0,
                 cont_revSinEntregar:0,
                 cont_rev:0,
@@ -268,6 +333,14 @@
                         total++;
                 }
                 return total;
+            },
+            totalFirmadasProg : function(){
+                var total = 0;
+                for(var i=0;i<this.arrayFirmadas.length;i++){
+                    if(this.arrayFirmadas[i].fecha_program != null)
+                        total++;
+                }
+                return total;
             }
         },
 
@@ -281,9 +354,11 @@
                     var respuesta = response.data;
                     me.arrayEntregas = respuesta.entregas;
                     me.arraySinEntregar = respuesta.sinEntregar;
+                    me.arrayFirmadas = respuesta.firmadas;
 
                     me.cont_entregas = respuesta.contEntregas;
                     me.cont_sinEntregar = respuesta.contSinEntregar;
+                    me.cont_firmadas = respuesta.contFirmadas;
                 })
                 .catch(function (error) {
                     console.log(error);

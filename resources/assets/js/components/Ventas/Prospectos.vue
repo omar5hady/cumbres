@@ -286,7 +286,7 @@
                                 <div class="col-md-4">
                                      <div class="form-group">
                                     <label for="">Email personal <span style="color:red;" v-show="email==''">(*)</span></label>
-                                    <input type="text" class="form-control" v-model="email" placeholder="E-mail">
+                                    <input type="email" class="form-control" v-model="email" placeholder="E-mail">
                                     </div>
                                 </div>
 
@@ -308,7 +308,7 @@
                                 <div class="col-md-4">
                                      <div class="form-group">
                                     <label for="">Email institucional </label>
-                                    <input type="text" class="form-control" v-model="email_inst" placeholder="E-mail">
+                                    <input type="email" class="form-control" v-model="email_inst" placeholder="E-mail">
                                     </div>
                                 </div>
 
