@@ -41,16 +41,19 @@ class NotificacionPeriodica extends Command
     public function handle()
     {
         $today = Carbon::today()->format('Y-m-d');
-        $notificaciones = Notificacion_aviso::select('id','periodo','created_at','updated_at')->where('periodo','!=',0)->get();
+        $notificaciones = Notificacion_aviso::select('id','periodo','created_at','updated_at','finPeriodo')->where('periodo','!=',0)->get();
 
         if(sizeof($notificaciones))
             foreach ($notificaciones as $key => $n) {
-                $n->nuevaFecha = new Carbon($n->updated_at);
-                $n->nuevaFecha = $n->nuevaFecha->addDays($n->periodo)->format('Y-m-d');
-                if($n->nuevaFecha == $today){
-                    $notificacion = Notificacion_aviso::findOrFail($n->id);
-                    $notificacion->enterado = 0;
-                    $notificacion->save();
+                $fin = new Carbon($n->finPeriodo);
+                if(!$fin->isPast()){
+                    $n->nuevaFecha = new Carbon($n->updated_at);
+                    $n->nuevaFecha = $n->nuevaFecha->addDays($n->periodo)->format('Y-m-d');
+                    if($n->nuevaFecha == $today){
+                        $notificacion = Notificacion_aviso::findOrFail($n->id);
+                        $notificacion->enterado = 0;
+                        $notificacion->save();
+                    }
                 }
             }
     }

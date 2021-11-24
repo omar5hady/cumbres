@@ -1032,6 +1032,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/notificacion/gral', 'NotificacionesAvisosController@getAvisos');
         Route::put('/notificacion/setEnterado','NotificacionesAvisosController@setEnterado');
         Route::post('/notificacion/storeAviso','NotificacionesAvisosController@storeAviso');
+        Route::put('/notificacion/updateAviso','NotificacionesAvisosController@updateAviso');
 
         Route::get('/notificacion/indexAvisos', 'NotificacionesAvisosController@indexAvisos');
         

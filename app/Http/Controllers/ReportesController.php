@@ -4457,6 +4457,7 @@ class ReportesController extends Controller
                         'contratos.status'
                     )
                     ->where('contratos.status','=',3)
+                    ->where('contratos.entregado','=',0)
                     ->where('expedientes.fecha_firma_esc','!=',NULL);
 
                     if($request->proyecto != '')

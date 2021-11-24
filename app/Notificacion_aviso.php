@@ -11,6 +11,7 @@ class Notificacion_aviso extends Model
     protected $fillable = [
         'mensaje',
         'user_id',
-        'enterado'
+        'enterado',
+        'finPeriodo'
     ];
 }

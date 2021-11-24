@@ -32,24 +32,32 @@
                                 </div>
                             </div>
                         </div>
-                        <div class=" col-md-10 table-responsive">
-                            <table class="table table-bordered table-sm">
+                        <div class=" col-md-12 table-responsive">
+                            <table class="table2 table-bordered table-sm">
                                 <thead>
                                     <tr>
+                                        <th></th>
                                         <th>Nombre</th>
                                         <th>Mensaje</th>
                                         <th>Recurrencia</th>
+                                        <th>Fin de periodo</th>
                                         <th>Fecha Creado</th>
                                         
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="notificacion in arrayNotificacion" :key="notificacion.id">
+                                        <td class="td2">
+                                            <button type="button" @click="abrirModal('editar',notificacion)" class="btn btn-warning btn-sm" title="Fecha de finalización">
+                                                <i class="icon-pencil"></i>
+                                            </button> &nbsp;
+                                        </td>
                                         <td class="td2" v-text="notificacion.nombre+' '+notificacion.apellidos" ></td>
-                                        <td class="td2" v-text="notificacion.mensaje"></td>
+                                        <td v-text="notificacion.mensaje"></td>
                                         <td class="td2" v-if="notificacion.periodo == 1">Diario</td>
                                         <td class="td2" v-if="notificacion.periodo == 7">Semanal</td>
                                         <td class="td2" v-if="notificacion.periodo == 30">Mensual</td>
+                                        <td class="td2" v-text="notificacion.finPeriodo"></td>
                                         <td class="td2" v-text="notificacion.created_at"></td>
                                     </tr>                               
                                 </tbody>
@@ -89,7 +97,7 @@
                         <div class="modal-body">
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
 
-                             <div class="form-group row">
+                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Mensaje</label>
                                     <div class="col-md-6">
                                         <textarea rows="10" cols="30" v-model="mensaje" class="form-control" placeholder="Mensaje"></textarea>
@@ -107,7 +115,14 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group row">
+                                <div class="form-group row" v-if="recurrencia != 0">
+                                    <label class="col-md-3 form-control-label" for="text-input">Fin de periodo</label>
+                                    <div class="col-md-6">
+                                        <input type="date" v-model="finPeriodo" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row"  v-if="tipoAccion == 1">
                                     <label class="col-md-3 form-control-label" for="text-input">Rol</label>
                                     <div class="col-md-6">
                                        <select class="form-control" v-model="rol_id" @click="getUser(rol_id)">
@@ -117,16 +132,15 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group row">
+                                <div class="form-group row"  v-if="tipoAccion == 1">
                                     <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
                                     <div class="col-md-6">
                                        <select class="form-control" name = 'arrayPer[]' multiple size = 7 v-model="arrayPer">
-                                            
                                             <option v-for="persona in arrayPersonal" :key="persona.id" :value="persona" v-text="persona.nombre + ' ' + persona.apellidos"></option>
                                         </select>
                                     </div>
                                 </div>
-                                <div class="form-group row">
+                                <div class="form-group row"  v-if="tipoAccion == 1">
                                     <div class="col-md-3"></div>
                                     <div class="col-md-6">
                                         <div class="table-responsive">
@@ -165,7 +179,8 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" class="btn btn-primary" @click="storeNotificacion()">Guardar</button>
+                            <button type="button" v-if="tipoAccion == 1" class="btn btn-primary" @click="storeNotificacion()">Guardar</button>
+                            <button type="button" v-if="tipoAccion == 2" class="btn btn-primary" @click="updateNotificacion()">Guardar cambios</button>
 
                             </div>
                              
@@ -188,13 +203,13 @@
 <script>
     export default {
         data(){
-            return{
-                          
+            return{  
                 tituloModal : '',
                 mensaje :'',
                 rol_id :'',
                 periodo : 0,
                 fecha_creado : '',
+                finPeriodo : '',
                 recurrencia :0,
 
                 nombre : '',
@@ -207,6 +222,7 @@
                 modal : 0,
                 mostrar : 0,
                 error : 0,
+                tipoAccion : 1,
                 
                 errorMostrarMsj: [],
 
@@ -224,6 +240,7 @@
                 b_nombre :'',
                 fecha_inicio : '',
                 fecha_fin : '',
+                id : ''
             }
         },
         computed:{
@@ -333,7 +350,8 @@
                             axios.post('/notificacion/storeAviso',{
                                 'user_id': element.id,
                                 'periodo' : this.recurrencia,
-                                'mensaje' : this.mensaje
+                                'mensaje' : this.mensaje,
+                                'finPeriodo' : this.finPeriodo
                             }); 
                         });
                         me.cerrarModal();
@@ -346,6 +364,29 @@
                             customClass: 'animated bounceInRight'
                         })
                     }})
+            },
+
+            updateNotificacion(){
+                let me = this;
+                //Con axios se llama el metodo update de PersonalController
+                axios.put('/notificacion/updateAviso',{
+                    'id' : this.id,
+                    'periodo' : this.recurrencia,
+                    'mensaje' : this.mensaje,
+                    'finPeriodo' : this.finPeriodo
+                }).then(function (response){
+                    me.cerrarModal();
+                    me.getNotificaciones(1);
+                    Swal({
+                        title: 'Hecho!',
+                        text: 'La notificación se actualizo',
+                        type: 'success',
+                        animation: false,
+                        customClass: 'animated bounceInRight'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
             },
 
             validar(){
@@ -375,12 +416,13 @@
                 
                 this.error = 0;
                 this.errorMostrarMsj = [];
+                this.id = '';
                 
 
             },
            
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
-            abrirModal(accion){
+            abrirModal(accion,data=[]){
                 switch(accion){
                     case 'crear':
                     {
@@ -388,11 +430,24 @@
                         this.tituloModal = 'Crear mensaje';
                         this.mensaje ='';
                         this.rol_id ='';
-                        this.periodo = 0;
+                        this.recurrencia = 0;
                         this.fecha_creado = '';
+                        this.tipoAccion = 1;
+                        this.finPeriodo = '';
                     
                         break;
                     }   
+                    case 'editar':{
+                        this.modal = 1;
+                        this.tituloModal = 'Editar mensaje';
+                        this.mensaje =data['mensaje'];
+                        this.recurrencia = data['periodo'];
+                        this.tipoAccion = 2;
+                        this.finPeriodo = data['finPeriodo'];
+                        this.id = data['id'];
+                    
+                        break;
+                    }
                 }
             },
         },

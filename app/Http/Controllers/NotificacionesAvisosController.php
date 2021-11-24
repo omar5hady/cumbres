@@ -22,6 +22,16 @@ class NotificacionesAvisosController extends Controller
         $aviso->user_id = $request->user_id;
         $aviso->mensaje = $request->mensaje;
         $aviso->periodo = $request->periodo;
+        $aviso->finPeriodo = $request->finPeriodo;
+        $aviso->save();
+    }
+
+    public function updateAviso(Request $request){
+        $aviso = Notificacion_aviso::findOrFail($request->id);
+        $aviso->mensaje = $request->mensaje;
+        $aviso->periodo = $request->periodo;
+        $aviso->finPeriodo = $request->finPeriodo;
+        $aviso->enterado = 0;
         $aviso->save();
     }
 
@@ -43,7 +53,7 @@ class NotificacionesAvisosController extends Controller
 
     public function indexAvisos(Request $request){
         $aviso = Notificacion_aviso::join('personal','notificaciones_avisos.user_id','=','personal.id')
-                ->select('notificaciones_avisos.id','notificaciones_avisos.mensaje',
+                ->select('notificaciones_avisos.id','notificaciones_avisos.mensaje', 'notificaciones_avisos.finPeriodo',
                             'notificaciones_avisos.periodo','notificaciones_avisos.created_at',
                             'personal.nombre', 'personal.apellidos'    
                         )
