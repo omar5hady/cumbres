@@ -45,7 +45,7 @@ class BonoVentaController extends Controller
 
         if($request->b_proyecto == '' && $asesor == ''){
             $contratos = $contratos->where('pc.num_pago','=',0)
-                                        ->where('pc.pagado','=',2)
+                                        ->where('pc.pagado','>=',1)
                                         ->where('vendedores.tipo','=',0)
                                         ->where('pc.tipo_pagare','=',0)
                                         ->where('contratos.exp_bono','=',1)
@@ -63,7 +63,7 @@ class BonoVentaController extends Controller
         }
         elseif($request->b_proyecto != '' && $asesor == '' && $request->b_etapa == ''){
                 $contratos = $contratos->where('pc.num_pago','=',0)
-                                        ->where('pc.pagado','=',2)
+                                        ->where('pc.pagado','>=',1)
                                         ->where('vendedores.tipo','=',0)
                                         ->where('pc.tipo_pagare','=',0)
                                         ->where('contratos.exp_bono','=',1)
@@ -83,7 +83,7 @@ class BonoVentaController extends Controller
         }
         elseif($request->b_etapa != '' && $asesor == ''){
                 $contratos = $contratos->where('pc.num_pago','=',0)
-                                        ->where('pc.pagado','=',2)
+                                        ->where('pc.pagado','>=',1)
                                         ->where('vendedores.tipo','=',0)
                                         ->where('pc.tipo_pagare','=',0)
                                         ->where('contratos.exp_bono','=',1)
@@ -105,7 +105,7 @@ class BonoVentaController extends Controller
             }
             elseif($request->b_proyecto == '' && $asesor != ''){
                 $contratos = $contratos->where('pc.num_pago','=',0)
-                                            ->where('pc.pagado','=',2)
+                                            ->where('pc.pagado','>=',1)
                                             ->where('vendedores.tipo','=',0)
                                             ->where('pc.tipo_pagare','=',0)
                                             ->where('contratos.exp_bono','=',1)
@@ -125,7 +125,7 @@ class BonoVentaController extends Controller
             }
             elseif($request->b_proyecto != '' && $asesor != '' && $request->b_etapa == ''){
                 $contratos = $contratos->where('pc.num_pago','=',0)
-                                        ->where('pc.pagado','=',2)
+                                        ->where('pc.pagado','>=',1)
                                         ->where('vendedores.tipo','=',0)
                                         ->where('pc.tipo_pagare','=',0)
                                         ->where('contratos.exp_bono','=',1)
@@ -147,7 +147,7 @@ class BonoVentaController extends Controller
         }
         elseif($request->b_etapa != '' && $asesor != ''){
                 $contratos = $contratos->where('pc.num_pago','=',0)
-                                        ->where('pc.pagado','=',2)
+                                        ->where('pc.pagado','>=',1)
                                         ->where('vendedores.tipo','=',0)
                                         ->where('pc.tipo_pagare','=',0)
                                         ->where('contratos.exp_bono','=',1)

@@ -1115,13 +1115,16 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/select_ciudades','CiudadController@selectCiudades');
         Route::get('/select_personal','PersonalController@selectNombre'); //Nombre completo de persona (Directivos activos)
         Route::get('/select_fraccionamiento','FraccionamientoController@selectFraccionamiento'); 
+        Route::get('/selectFraccionamientoConInventario','FraccionamientoController@selectFraccionamientoConInventario'); 
         Route::get('/select_fraccionamiento2','FraccionamientoController@selectFraccionamientoVue'); 
         Route::get('/select_coacreditadoVue','ClienteController@selectCoacreditadoVue'); 
         Route::get('/select_Frac_Tipo','FraccionamientoController@selectFrac_Tipo');
         Route::get('/contador_etapa','EtapaController@contEtapa'); 
         Route::get('/select_etapa_proyecto','EtapaController@selectEtapa_proyecto'); 
+        Route::get('/selectEtapaDisp','EtapaController@selectEtapaDisp');
         Route::get('/select_etapa','EtapaController@selectEtapa'); 
         Route::get('/select_modelo_proyecto','ModeloController@selectModelo_proyecto');
+        Route::get('/selectModeloDisp','ModeloController@selectModeloDisp');
         Route::get('/select_modelo_proyecto2','ModeloController@selectModelo_proyecto2');
         Route::get('/select_manzana_proyecto','LoteController@selectManzana_proyecto'); 
         Route::get('/selectManzana_dist','CreditoController@selectManzana'); 

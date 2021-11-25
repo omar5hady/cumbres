@@ -330,6 +330,29 @@ class ModeloController extends Controller
         return['modelos' => $modelos];
     }
 
+    public function selectModeloDisp(Request $request){
+        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
+        if(!$request->ajax())return redirect('/');
+
+        $buscar = $request->buscar;
+        $modelos = Modelo::join('lotes','modelos.id','lotes.modelo_id')
+        ->select('modelos.nombre','modelos.id')
+        ->where('modelos.fraccionamiento_id', '=', $buscar )
+        ->where('lotes.habilitado','=',1)
+        ->where('lotes.contrato','=',0);
+        if($request->mostrar == 1)
+            $modelos= $modelos->where('modelos.nombre','!=','Por Asignar');
+
+        if($request->mostrar == 2){
+            $modelos= $modelos->where('modelos.nombre','!=','Por Asignar')
+            ->where('modelos.nombre','!=','Terreno');
+        }
+        $modelos= $modelos->orderBy('modelos.nombre','asc')
+        ->distinct()
+        ->get();
+        return['modelos' => $modelos];
+    }
+
     public function selectModelo_proyecto2(Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');

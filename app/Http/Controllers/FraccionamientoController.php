@@ -279,6 +279,25 @@ class FraccionamientoController extends Controller
         return['fraccionamientos' => $fraccionamientos];
     }
 
+    public function selectFraccionamientoConInventario(Request $request){
+        //if(!$request->ajax())return redirect('/');
+
+        $fraccionamientos = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                    ->select('fraccionamientos.nombre','fraccionamientos.id')
+                    ->where('lotes.habilitado','=',1)
+                    ->where('lotes.contrato','=',0);
+                    //->where('lotes.rentado','=',0)
+
+                    if($request->tipo_proyecto != ''){
+                        $fraccionamientos = $fraccionamientos->where('fraccionamientos.tipo_proyecto','=',$request->tipo_proyecto);
+                    }
+                    
+                    $fraccionamientos = $fraccionamientos->orderBy('nombre','asc')
+                    ->distinct()
+                    ->get();
+                    return['fraccionamientos' => $fraccionamientos];
+    }
+
     public function getDatos(Request $request){
         if(!$request->ajax())return redirect('/');
         $datos = Fraccionamiento::where('id','=',$request->id)->first();

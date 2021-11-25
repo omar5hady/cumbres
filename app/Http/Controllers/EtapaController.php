@@ -247,6 +247,23 @@ class EtapaController extends Controller
         return['etapas' => $etapas];
     }
 
+    public function selectEtapaDisp(Request $request){
+        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
+        if(!$request->ajax())return redirect('/');
+
+        $buscar = $request->buscar;
+        $etapas = Etapa::join('lotes','etapas.id','lotes.etapa_id')
+        ->select('etapas.num_etapa','etapas.id')
+        ->where('lotes.habilitado','=',1)
+        ->where('lotes.contrato','=',0)
+        ->where('etapas.fraccionamiento_id', '=', $buscar )
+        //>where('num_etapa', '!=', 'Sin Asignar' )
+        ->orderBy('etapas.num_etapa','desc')
+        ->distinct()
+        ->get();
+        return['etapas' => $etapas];
+    }
+
     public function selectEtapa(Request $request){
         if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;

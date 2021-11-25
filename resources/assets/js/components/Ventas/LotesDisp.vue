@@ -612,7 +612,7 @@
                 me.buscar2=""
                 me.buscar3=""
                 me.arrayFraccionamientos=[];
-                var url = '/select_fraccionamiento?tipo_proyecto='+this.tab;
+                var url = '/selectFraccionamientoConInventario?tipo_proyecto='+this.tab;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayFraccionamientos = respuesta.fraccionamientos;
@@ -639,7 +639,7 @@
                 me.buscar3=""
                 
                 me.arrayEtapas=[];
-                var url = '/select_etapa_proyecto?buscar=' + buscar;
+                var url = '/selectEtapaDisp?buscar=' + buscar;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayEtapas = respuesta.etapas;
@@ -652,7 +652,7 @@
                 let me = this;
                 me.b_modelo = '';
                 me.arrayModelos=[];
-                var url = '/select_modelo_proyecto?buscar=' + buscar+'&mostrar='+mostrar;
+                var url = '/selectModeloDisp?buscar=' + buscar+'&mostrar='+mostrar;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayModelos = respuesta.modelos;
