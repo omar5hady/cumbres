@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -1043,7 +1042,6 @@ class ContratoController extends Controller
 
         $contratos[0]->precio_base = $contratos[0]->precio_base - $contratos[0]->descuento_promocion;
         $descuentoPromo = $contratos[0]->descuento_promocion;
-        
 
         $contratos[0]->precio_base = number_format((float)$contratos[0]->precio_base, 2, '.', ',');
         $contratos[0]->credito_solic = number_format((float)$contratos[0]->credito_solic, 2, '.', ',');
@@ -2385,8 +2383,10 @@ class ContratoController extends Controller
                         ->where('credito_id','=',$credito->id)
                         ->where('elegido','=',1)->first();
             
-            $reubicacion = new ReubicacionController();
-            $reubicacion->createReubicacion(
+            if($request->reubicar == 1){
+
+                $reubicacion = new ReubicacionController();
+                $reubicacion->createReubicacion(
                                 $credito->id,
                                 $credito->lote_id,
                                 $credito->prospecto_id,
@@ -2398,6 +2398,9 @@ class ContratoController extends Controller
                                 $request->observacion,
                                 ''
                             );
+
+            }
+            
 
             $contrato->avance_lote = $new_avance->avance;
             $credito->fraccionamiento = $request->fraccionamiento;
