@@ -62,8 +62,7 @@ class PersonalController extends Controller
             'Personales' => $Personales
         ];
     }
-
-   
+ 
     //funcion para insertar en la tabla
     public function store(Request $request)
     {
@@ -178,9 +177,6 @@ class PersonalController extends Controller
                           }else{
                             return ['rfc1'=>$rfc1];
                           }
-                          
-       
-            
     }
 
     public function select_gestores (){

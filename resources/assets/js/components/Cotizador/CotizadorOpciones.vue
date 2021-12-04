@@ -16,7 +16,7 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-sm-6">
-                                <table class="table table-bordered table-striped">
+                                <table class="table2  table-bordered table-striped">
                                     <thead>
                                         <tr class="card-header"><th colspan="3"><i class="fa fa-align-justify"></i> Interes y descuentos</th></tr>
                                         <tr>
@@ -27,17 +27,17 @@
                                     </thead>
                                     <tbody>
                                         <tr v-for="item in arrayListA" :key="item.id">
-                                            <td v-text="item.clave">Concepto</td>
-                                            <td style="padding:0px;">
+                                            <td class="td2" v-text="item.clave">Concepto</td>
+                                            <td class="td2" style="padding:0px;">
                                                 <input v-model="item.valor" v-on:keyup.enter="editaPorcentajes(item)" type="number" min="0" step=".01" class="form-control" style="height: 45px;">
                                             </td>
-                                            <td v-text="item.descripcion"></td>
+                                            <td class="td2" v-text="item.descripcion"></td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
                             <div class="col-sm-6">
-                                <table class="table table-bordered table-striped">
+                                <table class="table2  table-bordered table-striped">
                                     <thead>
                                         <tr class="card-header">
                                             <th colspan="4">
@@ -51,20 +51,20 @@
                                             <th class="text-center">#</th>
                                             <th class="text-center">Fraccionamiento</th>
                                             <th class="text-center">Etapa</th>
-                                            <th>Costo m²</th>
+                                            <th class="td2" style="width:50%">$ Costo m²</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr v-for="item in arrayLotes" :key="item.id">
-                                            <td class="text-center" v-text="item.id"></td>
-                                            <td class="text-center">
+                                            <td style="width:10%" class="td2 text-center" v-text="item.id"></td>
+                                            <td style="width:20%" class="td2 text-center">
                                                 <a href="#" v-text="item.nombre" @click="setValues(item, 2), generalId = item.id" data-toggle="modal" data-target="#editCost"></a>
                                             </td>
-                                            <td class="text-center">
+                                            <td style="width:20%" class="td2 text-center">
                                                 <a href="#" v-text="item.num_etapa" @click="setValues(item, 2), generalId = item.id" data-toggle="modal" data-target="#editCost"></a>
                                             </td>
-                                            <td style="padding:0px;">
-                                                <input v-model="item.costom2" v-on:keyup.enter="editaLoteEnter(item)" type="number" min="0" step=".01" class="form-control" style="height: 45px;">
+                                            <td style="width:90%;">
+                                                <input v-model="item.costom2" v-on:keyup.enter="editaLoteEnter(item)" type="number" min="0" step=".01" class="form-control" >
                                             </td>
                                         </tr>
                                     </tbody>
@@ -320,6 +320,34 @@ export default {
   width: 100% !important;
   position: absolute !important;
 }
+.table2 {
+        margin: auto;
+        border-collapse: collapse;
+        overflow-x: auto;
+        display: block;
+        width: fit-content;
+        max-width: 100%;
+        box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+    }
+
+    .td2, .th2 {
+        border: solid rgb(200, 200, 200) 1px;
+        padding: .5rem;
+    }
+
+    .td2 {
+        white-space: nowrap;
+        border-bottom: none;
+        color: rgb(20, 20, 20);
+    }
+
+    .td2:first-of-type, th:first-of-type {
+       border-left: none;
+    }
+
+    .td2:last-of-type, th:last-of-type {
+       border-right: none;
+    } 
 .mostrar {
   display: list-item !important;
   opacity: 1 !important;

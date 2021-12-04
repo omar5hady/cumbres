@@ -657,7 +657,7 @@ class DigitalLeadController extends Controller
                 $reminders = $reminders->get();
             }
 
-            elseif(Auth::user()->id == 25816 ){
+            elseif(Auth::user()->id == 25816 || Auth::user()->id == 30993){
                 $reminders = $reminders->where('motivo','=', 3);
                 $reminders = $reminders->get();
             }

@@ -89,6 +89,11 @@
                         <li class="nav-item nav-dropdown">
                             <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-energy"></i> Administración </a>
                             <ul class="nav-dropdown-items">
+                                @if(Auth::user()->rol_id == 1)
+                                    <li @click="menu=270" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-car"></i> Vehiculos</a>
+                                    </li>
+                                @endif
                                 @if(Auth::user()->departamentos == 1)
                                     <li @click="menu=11" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-object-group"></i> Departamentos</a>
@@ -380,12 +385,12 @@
                                         <a class="nav-link" href="#"><i class="fa fa-star-half-o"></i> Visita para avaluo</a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->id == 25816 || Auth::user()->rol_id == 1)
+                                @if(Auth::user()->id == 25816 || Auth::user()->id == 30993 || Auth::user()->rol_id == 1)
                                     <li @click="menu=224" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-archive"></i> Equipamiento</a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->equipamientos == 1 && Auth::user()->id != 25816)
+                                @if(Auth::user()->equipamientos == 1 && Auth::user()->id != 25816 && Auth::user()->id != 25816)
                                     <li @click="menu=213" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-archive"></i> Solic. Equipamiento</a>
                                     </li>

@@ -14,6 +14,7 @@ class PrivadasController extends Controller
     public function index(){
         $privadas = Etapa::select('id','num_etapa as privada','fraccionamiento_id')
                     ->where('num_etapa','!=','Sin Asignar')
+                    ->where('num_etapa','!=','EXTERIOR')
                     ->get();
 
         foreach ($privadas as $key => $privada) {

@@ -545,6 +545,9 @@
         <template v-if="menu==269">
             <reporte-entregas></reporte-entregas>
         </template>
+        <template v-if="menu==270">
+            <vehiculos></vehiculos>
+        </template>
 
     @endif
 

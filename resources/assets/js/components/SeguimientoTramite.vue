@@ -3665,7 +3665,7 @@
         opacity: 1 !important;
         position: fixed !important;
         background-color: #3c29297a !important;
-         overflow-y: auto;
+        overflow-y: auto;
         
     }
     .div-error{

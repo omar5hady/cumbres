@@ -47,6 +47,7 @@ Vue.component('asesores-fracc', require('./components/Administracion/AsesoresFra
 Vue.component('notarias', require('./components/Administracion/Notaria.vue'));
 Vue.component('proveedores', require('./components/Administracion/Proveedores.vue'));
 Vue.component('campanias', require('./components/Administracion/Campania.vue'));
+Vue.component('vehiculos', require('./components/Administracion/Vehiculos.vue'));
 
 //Componentes Desarrollo
 Vue.component('fraccionamiento', require('./components/Desarrollo/Fraccionamiento.vue'));

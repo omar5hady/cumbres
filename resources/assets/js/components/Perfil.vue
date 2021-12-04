@@ -89,7 +89,7 @@
         <div class="text-center" v-if="arrayCumple.length >= 1 && arrayCumple.length > 1"> <h6>Deséales un Feliz Cumpleaños a tus Clientes</h6> </div>
         <div v-if="arrayCumple.length >= 1 && arrayCumple.length == 1"> <h6>Deséales un Feliz Cumpleaños a tus Clientes</h6> </div>
         
-        <div class="row" v-if="arrayCumple.length >= 1 " >
+        <div class="row" v-if="arrayCumple.length >= 1 && userId != 30993" >
             <div v-for="cumple in arrayCumple" :key="cumple.id" class="col-xl-4 col-lg-5 col-md-4">
                 <div class="card">
                     <div class="card-body p-3 d-flex align-items-center">
