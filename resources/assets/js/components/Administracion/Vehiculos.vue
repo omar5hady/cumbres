@@ -18,14 +18,30 @@
                     <div class="card-body">
                         <div class="form-group row">
                             <div class="col-md-6">
+                                <select class="form-control" v-model="b_empresa" >
+                                    <option value="">Empresa</option>
+                                    <option v-for="empresa in empresas" :key="empresa" :value="empresa" v-text="empresa"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-4">
+                                <select class="form-control" v-model="b_marca" >
+                                    <option value="">Marca</option>
+                                    <option v-for="marcas in marcasAutos" :key="marcas" :value="marcas" v-text="marcas"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-6">
                                 <div class="input-group">
-                                    <input type="text"  v-model="buscar" @keyup.enter="listarVehiculos(1)" class="form-control" placeholder="Texto a buscar">
+                                    <input type="text"  v-model="buscar" @keyup.enter="listarVehiculos(1)" class="form-control" placeholder="Vehiculo">
                                     <button type="submit" @click="listarVehiculos(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </div>
                         <div class="table-responsive"> 
-                            <table class="table table-bordered table-striped table-sm">
+                            <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
                                         <th>Opciones</th>
@@ -42,28 +58,74 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="vehiculo in arrayVehiculos.data" :key="vehiculo.id">
-                                        <td>
+                                        <td class="td2">
                                             <button type="button" @click="abrirModal('actualizar',vehiculo)" class="btn btn-warning btn-sm">
                                                 <i class="icon-pencil"></i>
                                             </button>
                                         </td>
-                                        <td v-text="vehiculo.vehiculo"></td>
-                                        <td v-text="vehiculo.marca"></td>
-                                        <td v-text="vehiculo.modelo"></td>
-                                        <td v-text="vehiculo.clave"></td>
-                                        <td v-text="vehiculo.numero_serie"></td>
-                                        <td v-text="vehiculo.numero_motor"></td>
-                                        <td v-text="vehiculo.placas"></td>
-                                        <td v-text="vehiculo.nombre + ' '+ vehiculo.apellidos"></td>
-                                        <td v-text="vehiculo.empresa"></td>
+                                        <td class="td2" v-text="vehiculo.vehiculo"></td>
+                                        <td class="td2" v-text="vehiculo.marca"></td>
+                                        <td class="td2" v-text="vehiculo.modelo"></td>
+                                        <td class="td2" v-text="vehiculo.clave"></td>
+                                        <td class="td2" v-text="vehiculo.numero_serie"></td>
+                                        <td class="td2" v-text="vehiculo.numero_motor"></td>
+                                        <td class="td2" v-text="vehiculo.placas"></td>
+                                        <td class="td2" v-text="vehiculo.nombre + ' '+ vehiculo.apellidos"></td>
+                                        <td class="td2" v-text="vehiculo.empresa"></td>
                                     </tr>                               
                                 </tbody>
                             </table>
                         </div>
                         <nav>
                             <!--Botones de paginacion -->
+                           <!--Botones de paginacion -->
                             <ul class="pagination">
-                                
+                                <li class="page-item" v-if="arrayVehiculos.current_page > 5" @click="listarVehiculos(1)">
+                                    <a class="page-link" href="#" >Inicio</a>
+                                </li>
+                                <li class="page-item" v-if="arrayVehiculos.current_page > 1"
+                                    @click="listarVehiculos(arrayVehiculos.current_page-1)">
+                                    <a class="page-link" href="#" >Ant</a>
+                                </li>
+
+                                <li class="page-item" v-if="arrayVehiculos.current_page-3 >= 1"
+                                    @click="listarVehiculos(arrayVehiculos.current_page-3)">
+                                    <a class="page-link" href="#" v-text="arrayVehiculos.current_page-3"></a>
+                                </li>
+                                <li class="page-item" v-if="arrayVehiculos.current_page-2 >= 1"
+                                    @click="listarVehiculos(arrayVehiculos.current_page-2)">
+                                    <a class="page-link" href="#" v-text="arrayVehiculos.current_page-2"></a>
+                                </li>
+                                <li class="page-item" v-if="arrayVehiculos.current_page-1 >= 1"
+                                    @click="listarVehiculos(arrayVehiculos.current_page-1)">
+                                    <a class="page-link" href="#" v-text="arrayVehiculos.current_page-1"></a>
+                                </li>
+                                <li class="page-item active" >
+                                    <a class="page-link" href="#" v-text="arrayVehiculos.current_page"></a>
+                                </li>
+                                <li class="page-item" 
+                                    v-if="arrayVehiculos.current_page+1 <= arrayVehiculos.last_page">
+                                    <a class="page-link" href="#" @click="listarVehiculos(arrayVehiculos.current_page+1)" 
+                                    v-text="arrayVehiculos.current_page+1"></a>
+                                </li>
+                                <li class="page-item" 
+                                    v-if="arrayVehiculos.current_page+2 <= arrayVehiculos.last_page">
+                                    <a class="page-link" href="#" @click="listarVehiculos(arrayVehiculos.current_page+2)"
+                                     v-text="arrayVehiculos.current_page+2"></a>
+                                </li>
+                                <li class="page-item" 
+                                    v-if="arrayVehiculos.current_page+3 <= arrayVehiculos.last_page">
+                                    <a class="page-link" href="#" @click="listarVehiculos(arrayVehiculos.current_page+3)"
+                                    v-text="arrayVehiculos.current_page+3"></a>
+                                </li>
+
+                                <li class="page-item" v-if="arrayVehiculos.current_page < arrayVehiculos.last_page"
+                                    @click="listarVehiculos(arrayVehiculos.current_page+1)">
+                                    <a class="page-link" href="#" >Sig</a>
+                                </li>
+                                <li class="page-item" v-if="arrayVehiculos.current_page < 5 && arrayVehiculos.last_page > 5" @click="listarVehiculos(arrayVehiculos.last_page)">
+                                    <a class="page-link" href="#" >Ultimo</a>
+                                </li>
                             </ul>
                         </nav>
                     </div>
@@ -216,7 +278,9 @@
                 errorMostrarMsjVehiculo : [],
                 buscar : '',
                 vista: 1,
-                nombre:''
+                nombre:'',
+                b_empresa : '',
+                b_marca:''
             }
         },
         computed:{
@@ -226,7 +290,8 @@
             /**Metodo para mostrar los registros */
             listarVehiculos(page){
                 let me = this;
-                var url = '/vehiculos/index?page=' + page;
+                var url = '/vehiculos/index?page=' + page+'&b_vehiculo='
+                    +this.buscar + '&b_empresa='+this.b_empresa + '&b_marca='+this.b_marca;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayVehiculos = respuesta;
@@ -307,24 +372,31 @@
             },
             actualizar(){
               
-                if(this.validarRegistro()) //Se verifica si hay un error (campo vacio)
+               if(this.validarRegistro()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
-               
                 let me = this;
-                //Con axios se llama el metodo update de FraccionaminetoController
-                axios.put('/notaria/actualizar',{
-                   
+                //Con axios se llama el metodo store de FraccionaminetoController
+                axios.put('/vehiculos/update',{
+                    'id' : this.id,
+                    'vehiculo' : this.vehiculo,
+                    'modelo' : this.modelo,
+                    'marca' : this.marca,
+                    'clave' : this.clave,
+                    'placas' : this.placas,
+                    'numero_serie' : this.numero_serie,
+                    'numero_motor ' : this.numero_motor,
+                    'responsable_id' : this.responsable_id,
+                    'empresa' : this.empresa
                 }).then(function (response){
-                    
-                    me.cerrarModal();
-                    me.listarVehiculos(1);
-                    //window.alert("Cambios guardados correctamente");
+                    me.cerrarModal(); //al guardar el registro se cierra el modal
+                    me.listarVehiculos(1); //se enlistan nuevamente los registros
+                    //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
                         type: 'success',
-                        title: 'Cambios guardados correctamente',
+                        title: 'Vehiculo actualizado correctamente',
                         showConfirmButton: false,
                         timer: 1500
                         })
@@ -387,6 +459,7 @@
                         //console.log(data);
                         this.modal =1;
                         this.tituloModal='Actualizar Vehiculo';
+                        this.id = data['id'];
                         this.vehiculo = data['vehiculo'];
                         this.modelo = data['modelo'];
                         this.marca = data['marca'];
@@ -432,4 +505,32 @@
         color: red !important;
         font-weight: bold;
     }
+    .table2 {
+        margin: auto;
+        border-collapse: collapse;
+        overflow-x: auto;
+        display: block;
+        width: fit-content;
+        max-width: 100%;
+        box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+    }
+
+    .td2, .th2 {
+        border: solid rgb(200, 200, 200) 1px;
+        padding: .5rem;
+    }
+
+    .td2 {
+        white-space: nowrap;
+        border-bottom: none;
+        color: rgb(20, 20, 20);
+    }
+
+    .td2:first-of-type, th:first-of-type {
+       border-left: none;
+    }
+
+    .td2:last-of-type, th:last-of-type {
+       border-right: none;
+    } 
 </style>

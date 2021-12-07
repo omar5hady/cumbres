@@ -1082,6 +1082,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/vehiculos/index','VehiculosController@index');
         Route::get('/vehiculos/getMarcas','VehiculosController@getMarcas');
         Route::post('/vehiculos/store','VehiculosController@store');
+        Route::put('/vehiculos/update','VehiculosController@update');
 
 
     });
